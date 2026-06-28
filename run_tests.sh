@@ -39,6 +39,7 @@ rm -rf build && mkdir -p build
 $NVC $NVCWORK -a lib/statsim_disc.vhd lib/statsim_taps.vhd lib/statsim_io.vhd \
      models/sky130_dfxtp.vhd models/sky130_dfxtp_cdc_trap.vhd \
      test/statsim_disc_tb.vhd test/statsim_cdc_tb.vhd test/cdc_latch_tb.vhd \
+     test/statsim_rc_tb.vhd test/cdc_latch_wire_tb.vhd \
   || { echo "FAIL: analyse"; exit 1; }
 
 run_tb() { # entity  expect-substring
@@ -48,9 +49,11 @@ run_tb() { # entity  expect-substring
 }
 
 say "nvc: testbenches"
-run_tb statsim_disc_tb "ALL OK"
-run_tb statsim_cdc_tb  "DFF OK"
-run_tb cdc_latch_tb    "CDC metastability risk" "--stop-time=200ns"
+run_tb statsim_disc_tb     "ALL OK"
+run_tb statsim_cdc_tb      "DFF OK"
+run_tb cdc_latch_tb        "CDC metastability risk" "--stop-time=200ns"
+run_tb statsim_rc_tb       "OK flight delay"        "--stop-time=15ns"
+run_tb cdc_latch_wire_tb   "DONE"                   "--stop-time=200ns"
 
 say "result"
 [ $fail -eq 0 ] && echo "ALL TESTS PASSED" || echo "SOME TESTS FAILED"

@@ -58,37 +58,31 @@ class NetRC:
 # ----------------------------------------------------------------------------
 # Half 1: KLayout extraction  (mirrors kestrel layout/extract.py + parasitics.py)
 # ----------------------------------------------------------------------------
-def extract_net_rc(gds_path: str, top_cell: str = None, skip=("VPWR", "VGND",
-                   "VDD", "VSS", "vpwr", "vgnd", "vdd", "vss")) -> list:
-    """Extract per-net (C, R) from a GDS using KLayout's LayoutToNetlist.
+DEFAULT_SKIP = ("VPWR", "VGND", "VDD", "VSS", "vpwr", "vgnd", "vdd", "vss")
+_OUT_PINS = {"out", "o", "q", "qn", "nq", "y", "z", "zn", "co", "cout", "x"}
+_PWR_PINS = {"vdd", "vss", "vpwr", "vgnd", "vnb", "vpb", "gnd", "vcc"}
 
-    For each net: C = sum_layers (Carea*area + Cfringe*perimeter); R =
-    sum_layers (Rsh * n_squares) + sum_vias (Rvia * count). `skip` drops the
-    power/ground rails (huge nets, not signal CDC paths) by net name.
-    """
+
+def _build_l2n(gds_path, top_cell=None):
+    """KLayout LayoutToNetlist setup (layers + NFET/PFET recognition + connectivity
+    + extract) -> (l2n, netlist, layers, dbu). Mirrors kestrel extract.py."""
     try:
         import klayout.db as kdb
     except ImportError as e:
         raise SystemExit(
             "klayout2spef: the `klayout` module is required for extraction.\n"
-            "  pip install klayout   (cp39-cp312 wheels; this box's WSL py3.14 / "
-            "Cygwin py3.9 have none -- run on a Linux py3.10-3.12).\n"
+            "  pip install klayout   (cp39-cp313 wheels; this box's WSL py3.14 / "
+            "Cygwin py3.9 have none -- run on a Linux py3.10-3.13, e.g. a venv).\n"
             f"  (import error: {e})")
-
     layout = kdb.Layout()
     layout.read(gds_path)
     dbu = layout.dbu
     tc = layout.cell(top_cell) if top_cell else layout.top_cells()[0]
-
     l2n = kdb.LayoutToNetlist(kdb.RecursiveShapeIterator(layout, tc, []))
-
-    # register layers (empty layer if absent, so booleans don't crash)
     layers = {}
     for name, (ln, dt) in LAYER_MAP.items():
         li = layout.find_layer(ln, dt)
         layers[name] = l2n.make_layer(li, name) if li is not None else l2n.make_layer(name)
-
-    # device recognition (NFET/PFET) -- same derivation as kestrel
     gate = layers['poly'] & layers['diff']
     sd = layers['diff'] - layers['poly']
     nsd = (sd & layers['nsdm']) - layers['nwell']
@@ -99,8 +93,6 @@ def extract_net_rc(gds_path: str, top_cell: str = None, skip=("VPWR", "VGND",
                         {"SD": nsd, "G": ngate, "P": ngate})
     l2n.extract_devices(kdb.DeviceExtractorMOS3Transistor("sky130_fd_pr__pfet_01v8"),
                         {"SD": psd, "G": pgate, "P": pgate})
-
-    # connectivity stack
     for ln in ('poly', 'li', 'met1', 'met2', 'met3', 'licon', 'mcon'):
         l2n.connect(layers[ln])
     for reg in (nsd, psd, ngate, pgate):
@@ -112,20 +104,38 @@ def extract_net_rc(gds_path: str, top_cell: str = None, skip=("VPWR", "VGND",
     l2n.connect(layers['mcon'], layers['met1']); l2n.connect(layers['met1'], layers['via1'])
     l2n.connect(layers['via1'], layers['met2']); l2n.connect(layers['met2'], layers['via2'])
     l2n.connect(layers['via2'], layers['met3'])
-
     l2n.extract_netlist()
     netlist = l2n.netlist()
     netlist.combine_devices()
     netlist.purge()
+    return l2n, netlist, layers, dbu
 
-    def region_area_perim(reg):
+
+def net_geometry_rc(l2n, net, layers, dbu):
+    """(C_farad, R_ohm) of one net from its own per-layer geometry (the wire only --
+    a parent-owned routing net's shapes exclude the cell interior)."""
+    c_fF = r_ohm = 0.0
+    for lname in ROUTING_LAYERS:
+        reg = l2n.shapes_of_net(net, layers[lname])
         a = p = 0.0
         for poly in reg.each():
             a += poly.area(); p += poly.perimeter()
-        return a * dbu * dbu, p * dbu          # um^2, um
+        area, perim = a * dbu * dbu, p * dbu
+        if area <= 0:
+            continue
+        c_fF += CAREA[lname] * area + CFRINGE[lname] * perim
+        avg_w = 2 * area / perim if perim > 0 else 0.0
+        if avg_w > 0:
+            r_ohm += RSH[lname] * (perim / (2 * avg_w))      # ~ n_squares
+    for vname in VIA_LAYERS:
+        r_ohm += RVIA[vname] * l2n.shapes_of_net(net, layers[vname]).count()
+    return c_fF * 1e-15, r_ohm
 
-    out = []
-    skip = set(skip)
+
+def extract_net_rc(gds_path, top_cell=None, skip=DEFAULT_SKIP) -> list:
+    """FULL extraction (every net, cell-internal + routing). Returns [NetRC]."""
+    l2n, netlist, layers, dbu = _build_l2n(gds_path, top_cell)
+    out, skip = [], set(skip)
     circuits = list(netlist.each_circuit())
     multi = len(circuits) > 1
     for circuit in circuits:
@@ -133,22 +143,99 @@ def extract_net_rc(gds_path: str, top_cell: str = None, skip=("VPWR", "VGND",
             nm = net.expanded_name()
             if nm in skip:
                 continue
-            c_fF = r_ohm = 0.0
-            for lname in ROUTING_LAYERS:
-                reg = l2n.shapes_of_net(net, layers[lname])    # this net's shapes on this layer
-                area, perim = region_area_perim(reg)
-                if area <= 0:
-                    continue
-                c_fF += CAREA[lname] * area + CFRINGE[lname] * perim
-                avg_w = 2 * area / perim if perim > 0 else 0.0
-                if avg_w > 0:
-                    r_ohm += RSH[lname] * (perim / (2 * avg_w))   # ~ n_squares
-            for vname in VIA_LAYERS:
-                nvia = l2n.shapes_of_net(net, layers[vname]).count()
-                r_ohm += RVIA[vname] * nvia                       # series vias (worst case)
-            qual = f"{circuit.name}/{nm}" if multi else nm
-            out.append(NetRC(qual, c_fF * 1e-15, r_ohm))
+            c, r = net_geometry_rc(l2n, net, layers, dbu)
+            out.append(NetRC(f"{circuit.name}/{nm}" if multi else nm, c, r))
     return out
+
+
+# ----------------------------------------------------------------------------
+# Routing-only extraction (Ask A): subtract the cells, keep inter-cell wiring
+# ----------------------------------------------------------------------------
+def _classify_pins(net):
+    """(driver, receivers, ports) from a net's pin connectivity. Best-effort by
+    pin name (output set -> driver, power -> skip, else receiver); the binder
+    (which knows the cell models / port directions) can correct this."""
+    drv, recvs, ports = None, [], []
+    for spr in net.each_subcircuit_pin():
+        sc = spr.subcircuit()
+        pin = spr.pin().name() or ""
+        if pin.lower() in _PWR_PINS:
+            continue
+        inst = sc.name or (sc.circuit_ref().name if sc.circuit_ref() else "?")
+        ref = f"{inst}:{pin}"
+        if pin.lower() in _OUT_PINS:
+            drv = ref
+        else:
+            recvs.append(ref)
+    for pr in net.each_pin():
+        ports.append(pr.pin().name() or "")
+    return drv, recvs, ports
+
+
+def extract_routing_rc(gds_path, model_cells=(), top_cell=None, skip=DEFAULT_SKIP):
+    """ROUTING-ONLY extraction. Cell-internal nets are dropped (a "cell" = a
+    circuit that contains devices, or whose name is in `model_cells`); inter-cell
+    routing nets are kept with their wire R-C + a driver/receiver pin map. The
+    kept nets are wire-only by construction (parent-owned). Returns [route dict]."""
+    l2n, netlist, layers, dbu = _build_l2n(gds_path, top_cell)
+    mc, skip = set(model_cells or ()), set(skip)
+
+    def opaque(circ):                               # a behavioral-model cell (or a device cell)
+        return circ.name.split('$')[0] in mc or any(True for _ in circ.each_device())
+
+    routes = []
+    for circuit in netlist.each_circuit():
+        if opaque(circuit):                         # drop the whole cell's internal nets
+            continue
+        for net in circuit.each_net():
+            nm = net.expanded_name()
+            if nm in skip:
+                continue
+            drv, recvs, ports = _classify_pins(net)
+            if drv is None and not recvs and not ports:
+                continue                            # dangling
+            c, r = net_geometry_rc(l2n, net, layers, dbu)
+            routes.append({"net": nm, "circuit": circuit.name, "c": c, "r": r,
+                           "driver": drv, "receivers": recvs, "ports": ports})
+    return routes
+
+
+def write_routing_spef(routes, path, design="routing") -> int:
+    """Routing-only SPEF (same dialect spef.py reads) + a *CONN block per net, and
+    a <path>.json sidecar with the driver/receiver pin map for the nvc RC binder.
+    spef.parse() ignores *CONN/*I/*P, so net_loads() still returns (Ctot,Rtot)."""
+    lines = [
+        '*SPEF "IEEE 1481-1998"', f'*DESIGN "{design}"',
+        '*DATE "stat-sim klayout2spef --routing-only"', '*VENDOR "stat-sim"',
+        '*PROGRAM "klayout2spef"', '*VERSION "1.0"', '*DESIGN_FLOW "EXTRACTION"',
+        '*DIVIDER /', '*DELIMITER :', '*BUS_DELIMITER [ ]',
+        '*T_UNIT 1 PS', '*C_UNIT 1 FF', '*R_UNIT 1 OHM', '*L_UNIT 1 HENRY',
+        '', '*NAME_MAP',
+    ]
+    ids = {rt["net"]: i for i, rt in enumerate(routes, start=1)}
+    for rt in routes:
+        lines.append(f'*{ids[rt["net"]]} {rt["net"]}')
+    for rt in routes:
+        i = ids[rt["net"]]
+        c_fF = rt["c"] * 1e15
+        lines += ['', f'*D_NET *{i} {c_fF:.6g}', '*CONN']
+        if rt["driver"]:
+            lines.append(f'*I {rt["driver"]} O')
+        for rcv in rt["receivers"]:
+            lines.append(f'*I {rcv} I')
+        for p in rt["ports"]:
+            lines.append(f'*P {p} I')
+        if c_fF > 0:
+            lines += ['*CAP', f'1 *{i} {c_fF:.6g}']
+        if rt["r"] > 0:
+            lines += ['*RES', f'1 *{i} *0 {rt["r"]:.6g}']
+        lines.append('*END')
+    with open(path, 'w') as fh:
+        fh.write('\n'.join(lines) + '\n')
+    import json
+    with open(path + '.json', 'w') as fh:
+        json.dump(routes, fh, indent=1)
+    return len(routes)
 
 
 # ----------------------------------------------------------------------------
@@ -217,22 +304,67 @@ def _self_test() -> int:
     return 0
 
 
+def _self_test_routing() -> int:
+    import tempfile, json
+    import spef
+    routes = [
+        {"net": "n1", "circuit": "top", "c": 12e-15, "r": 350.0,
+         "driver": "U1:Y", "receivers": ["U2:A", "U3:A"], "ports": []},
+        {"net": "n2", "circuit": "top", "c": 4e-15, "r": 100.0,
+         "driver": "U2:Y", "receivers": ["U4:A"], "ports": ["OUT"]},
+    ]
+    d = tempfile.mkdtemp(prefix="k2sr_")
+    p = os.path.join(d, "r.spef")
+    write_routing_spef(routes, p, design="selftest")
+    loads = spef.net_loads(open(p).read())          # *CONN ignored -> RC still parses
+    conn = spef.net_conn(open(p).read())            # *CONN -> driver/receivers
+    cw, rw = loads["n1"]
+    if abs(cw - 12e-15) > 1e-18 or abs(rw - 350.0) > 1e-9:
+        print(f"SELF-TEST FAIL (routing): net_loads {cw:g},{rw:g}"); return 1
+    if conn["n1"]["driver"] != "U1:Y" or conn["n1"]["receivers"] != ["U2:A", "U3:A"]:
+        print(f"SELF-TEST FAIL (routing): net_conn {conn['n1']}"); return 1
+    if len(json.load(open(p + ".json"))) != 2:
+        print("SELF-TEST FAIL (routing): json sidecar"); return 1
+    print("self-test OK (routing): SPEF + *CONN + .json round-trips through spef.py "
+          "(n1 -> 12fF/350ohm, driver U1:Y, 2 receivers)")
+    return 0
+
+
+def _load_model_cells(path):
+    if not path:
+        return ()
+    with open(path) as fh:
+        return tuple(ln.strip() for ln in fh if ln.strip() and not ln.startswith("#"))
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(prog="klayout2spef",
         description="Extract per-net RC from a GDS via KLayout and write SPEF.")
     ap.add_argument("gds", nargs="?", help="input GDSII")
     ap.add_argument("-o", "--output", help="output SPEF (default <gds>.spef)")
     ap.add_argument("--top", help="top cell (auto-detect if omitted)")
+    ap.add_argument("--routing-only", action="store_true",
+                    help="emit routing-only SPEF (cell-internal nets dropped) + *CONN + .json")
+    ap.add_argument("--model-cells",
+                    help="file of cell names to treat as opaque (one per line); "
+                         "default = any circuit containing devices")
     ap.add_argument("--self-test", action="store_true",
-                    help="round-trip the SPEF writer through spef.py (no klayout)")
+                    help="round-trip the SPEF writers through spef.py (no klayout)")
     a = ap.parse_args(argv)
     if a.self_test:
-        return _self_test()
+        return _self_test() or _self_test_routing()
     if not a.gds:
         ap.error("a GDS file is required (or use --self-test)")
+    design = os.path.splitext(os.path.basename(a.gds))[0]
+    if a.routing_only:
+        out = a.output or (os.path.splitext(a.gds)[0] + ".routing.spef")
+        routes = extract_routing_rc(a.gds, model_cells=_load_model_cells(a.model_cells),
+                                    top_cell=a.top)
+        n = write_routing_spef(routes, out, design=design)
+        print(f"klayout2spef: wrote {n} routing nets -> {out} (+ {out}.json)")
+        return 0
     out = a.output or (os.path.splitext(a.gds)[0] + ".spef")
-    nets = extract_net_rc(a.gds, top_cell=a.top)
-    n = write_spef(nets, out, design=os.path.splitext(os.path.basename(a.gds))[0])
+    n = write_spef(extract_net_rc(a.gds, top_cell=a.top), out, design=design)
     print(f"klayout2spef: wrote {n} nets -> {out}")
     return 0
 

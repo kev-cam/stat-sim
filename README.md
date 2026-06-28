@@ -194,6 +194,34 @@ box's py3.14 / Cygwin-py3.9 have none). `klayout2spef.py design.gds -o design.sp
                               taps on the node ─┘   (delay & traps on real timing)
 ```
 
+### Cell subtraction (routing-only wiring) and RC-in-path
+
+The full extraction carries R/C for *every* net — including the metal *inside*
+each cell. But the behavioral cell models already own their intrinsic Cin/delay,
+so the SPEF should contribute only the **inter-cell routing**. Two reusable steps:
+
+- **Subtract the cells** (`klayout2spef.py --routing-only`): a "cell" is any
+  circuit that contains devices (or is named in `--model-cells`); its internal
+  nets are dropped, the inter-cell routing nets are kept (wire-only by
+  construction). The output is a routing-only SPEF **plus a `*CONN` block** (the
+  per-net driver/receiver pin map) and a `.json` sidecar. Because the cell/route
+  split rides in the SPEF (`*CONN`), the downstream steps are **SPEF-in/SPEF-out
+  and tool-agnostic** — they run on any RCX source (OpenRCX, magic, commercial),
+  not just klayout. `spef.net_conn()` reads `*CONN`; `spef.parse()`/`net_loads()`
+  ignore it, so RC parsing is unchanged.
+
+- **Pull the R-C into the path** (`statsim_pl_rc`, `lib/statsim_taps.vhd`): a
+  2-port element straddling a near node `a` (driver) and far node `b`
+  (receivers). The **receiver sees the RC-delayed forward probability**
+  (`transport` after `ln2·R·(α·C+ΣCin)`, α=0.5 Elmore / 1.0 legacy anchor; px
+  passes through) while the **driver sees C+ΣCin as backward load**. `resolve_pl`
+  and the generated DFF are *unchanged* — the wire R simply moves off the driver
+  node into the element. No algebraic loop: the forward (delayed) and backward
+  (static load) channels are orthogonal. `spef.taps_for_net(..., mode="rc")`
+  emits the binding. Measured: driver→receiver flight of exactly **2911 fs** for a
+  12 fF/350 Ω net (`test/statsim_rc_tb.vhd`); the CDC latch still flags
+  metastability with a wire on the data path (`test/cdc_latch_wire_tb.vhd`).
+
 **Verified end-to-end under nvc:** `disc.py` ↔ `lib/statsim_disc.vhd` run
 numerically identical (`test/statsim_disc_tb.vhd`: px=0.5, gdrv=0.02, cload=18 fF,
 t_pd 5.6145 ps), and the full waveform demo `test/statsim_cdc_tb.vhd` passes —

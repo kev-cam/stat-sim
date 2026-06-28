@@ -46,6 +46,20 @@ begin
         assert fl.px = 1.0 and fl.gdrv = 0.0 and approx(fl.cload, 5.0e-15, 1.0e-18)
             report "FAIL float (loads only)" severity failure;
 
+        -- RC-in-path helpers (lock-step with disc.py)
+        assert approx(wire_flight_delay(12.0e-15, 350.0, 6.0e-15, 0.5),
+                      LN2 * 350.0 * 12.0e-15, 1.0e-18)
+            report "FAIL wire_flight_delay" severity failure;
+        assert approx(LN2 * R_STRONG * 18.0e-15
+                      + wire_flight_delay(12.0e-15, 350.0, 6.0e-15, 1.0),
+                      LN2 * (R_STRONG + 350.0) * 18.0e-15, 1.0e-18)
+            report "FAIL legacy flight identity" severity failure;          -- == old d18
+        assert approx(g_series(G_STRONG, 350.0),
+                      G_STRONG / (1.0 + G_STRONG * 350.0), 1.0e-15)
+            report "FAIL g_series" severity failure;
+        assert g_series(1.0e-13, 350.0) = 0.0
+            report "FAIL g_series undriven" severity failure;
+
         report "statsim_disc_tb ALL OK: px=0.5 gdrv=0.02 cload=18fF d18="
             & real'image(d18) & "s d20=" & real'image(d20) & "s";
         wait;

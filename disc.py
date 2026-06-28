@@ -124,6 +124,22 @@ def slew_of(node: PL, r_drive: float, k: float = LN9) -> float:
     return k * (r_drive + node.rwire) * node.cload
 
 
+# --- RC-in-path wire helpers (the statsim_pl_rc 2-port element) --------------
+def g_series(gdrv: float, r: float) -> float:
+    """Driver conductance after a series wire R (R_drive and R in series):
+    gdrv/(1+gdrv*r). 0 below G_EPS so an undriven near end stays undriven at the
+    far end."""
+    return 0.0 if gdrv < G_EPS else gdrv / (1.0 + gdrv * r)
+
+
+def wire_flight_delay(c: float, r: float, cin_far: float,
+                      alpha: float = 0.5, k: float = LN2) -> float:
+    """Wire flight delay (driver end -> receiver end) for a routing R-C with far
+    load cin_far: k*R*(alpha*C + cin_far). alpha=0.5 = pi/Elmore self-cap (default,
+    more accurate); alpha=1.0 reproduces the legacy lumped receiver arrival."""
+    return k * r * (alpha * c + cin_far)
+
+
 # --- multi-UDN bridges: convert other natures to/from prob_load -------------
 def from_electrical(v: float, vlo: float, vhi: float,
                     gdrv: float = G_STRONG, cin: float = 0.0) -> PL:
@@ -203,6 +219,13 @@ def _self_test() -> int:
     t = resolve([PL_0, tri])
     assert t.p0 == 1.0 and abs(t.cload - 4e-15) < 1e-18            # PL_0 wins; tri only loads
     assert resolve([tri]).px == 1.0                                # lone disabled driver -> floats (no false clean rail)
+    # RC-in-path helpers (statsim_pl_rc): flight delay + series conductance
+    assert abs(wire_flight_delay(12e-15, 350.0, 6e-15, 0.5) - LN2 * 350.0 * 12e-15) < 1e-18
+    near = LN2 * R_STRONG * (12e-15 + 6e-15)                       # driver-end (rwire=0)
+    flight1 = wire_flight_delay(12e-15, 350.0, 6e-15, 1.0)         # legacy anchor (alpha=1)
+    assert abs(near + flight1 - LN2 * (R_STRONG + 350.0) * 18e-15) < 1e-18   # == old lumped d18
+    assert abs(g_series(G_STRONG, 350.0) - G_STRONG / (1.0 + G_STRONG * 350.0)) < 1e-15
+    assert g_series(1e-13, 350.0) == 0.0                           # sub-G_EPS -> undriven
     print("self-test OK: bidirectional prob_load (fwd prob + bwd load) consistent")
     print(f"  contention(0,1)->px={r.px:.3f} gdrv={r.gdrv:.3f} | "
           f"node cload={node.cload*1e15:.1f}fF rwire={node.rwire:.0f} "

@@ -57,6 +57,11 @@ package statsim_disc_pkg is
     function slew_of  (pl : prob_load; r_drive : real; k : real := LN9) return real;
     function px_of    (pl : prob_load) return real;     -- the CDC-trap metric
 
+    -- RC-in-path wire helpers (the statsim_pl_rc 2-port element); resolve_pl unchanged
+    function g_series (gdrv, r : real) return real;
+    function wire_flight_delay (c, r, cin_far : real;
+                                alpha : real := 0.5; k : real := LN2) return real;
+
     -- multi-UDN bridges
     function from_electrical (v, vlo, vhi : real;
                               gdrv : real := G_STRONG; cin : real := 0.0) return prob_load;
@@ -144,6 +149,17 @@ package body statsim_disc_pkg is
     function px_of (pl : prob_load) return real is
     begin
         return pl.px;
+    end function;
+
+    function g_series (gdrv, r : real) return real is
+    begin
+        if gdrv < G_EPS then return 0.0; else return gdrv / (1.0 + gdrv * r); end if;
+    end function;
+
+    function wire_flight_delay (c, r, cin_far : real;
+                                alpha : real := 0.5; k : real := LN2) return real is
+    begin
+        return k * r * (alpha * c + cin_far);
     end function;
 
     function from_electrical (v, vlo, vhi : real;

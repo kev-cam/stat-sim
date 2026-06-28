@@ -111,14 +111,78 @@ def rc_delay(r_drive: float, r_wire: float, c_node: float,
     return tpd0 + k * (r_drive + r_wire) * c_node
 
 
-def taps_for_net(text: str, net: str, fanout_cins) -> list:
-    """Binder helper: the prob_load taps to instantiate on `net` =
-    [("wire", c_wire, r_wire)] + [("load", Cin, 0.0) per receiver]. The driver is
-    a separate cell; these are the passive taps that set the backward load."""
+def taps_for_net(text: str, net: str, fanout_cins, mode: str = "lump") -> list:
+    """Binder helper: the prob_load taps to instantiate on `net`.
+    mode="lump" (default): one lumped load at the driver node --
+        [("wire", c_wire, r_wire)] + [("load", Cin, 0.0) per receiver].
+    mode="rc": pull the wire R-C into the driver->receiver PATH --
+        [("rc", c_wire, r_wire, "a", "b")] + [("load", Cin, 0.0, "b") per receiver]
+        (a = near/driver node, b = far/receiver node; statsim_pl_rc straddles them)."""
     c_wire, r_wire = net_load(text, net)
-    taps = [("wire", c_wire, r_wire)]
-    taps += [("load", cin, 0.0) for cin in fanout_cins]
-    return taps
+    if mode == "rc":
+        return ([("rc", c_wire, r_wire, "a", "b")]
+                + [("load", cin, 0.0, "b") for cin in fanout_cins])
+    return [("wire", c_wire, r_wire)] + [("load", cin, 0.0) for cin in fanout_cins]
+
+
+def rc_delay_flight(r: float, c: float, cin: float,
+                    alpha: float = 0.5, k: float = LN2) -> float:
+    """Wire flight delay (driver end -> receiver end) for the rc tap:
+    k*r*(alpha*c + cin). Mirrors disc.wire_flight_delay / the statsim_pl_rc element."""
+    return k * r * (alpha * c + cin)
+
+
+def net_conn(text: str) -> dict:
+    """Parse the *CONN sections -> {net: {"driver": "inst:pin"|None,
+    "receivers": [...], "ports": [(port,dir)...]}}. This is the reusable interface:
+    cell-subtraction (which nets to keep) and the RC-in-path binder (which end
+    drives) both read it -- and ANY RCX tool's SPEF carries *CONN. Driver = the
+    *I ...O pin (or an input *P port); receivers = *I ...I pins. Coords ignored."""
+    namemap, out, cur, in_conn = {}, {}, None, False
+    for raw in text.splitlines():
+        ln = raw.strip()
+        if not ln or ln.startswith("//"):
+            continue
+        if ln.startswith("*D_NET"):
+            cur = namemap.get(ln.split()[1], ln.split()[1])
+            out[cur] = {"driver": None, "receivers": [], "ports": []}
+            in_conn = False
+            continue
+        if ln.startswith("*END"):
+            cur = None; in_conn = False; continue
+        if ln.startswith("*CONN"):
+            in_conn = True; continue
+        if ln.startswith("*CAP") or ln.startswith("*RES"):
+            in_conn = False; continue
+        if cur is None and re.match(r"\*\d+\s", ln):              # name map
+            t = ln.split(); namemap[t[0]] = t[1]; continue
+        if cur is None or not in_conn:
+            continue
+        t = ln.split()
+        if ln.startswith("*I") and len(t) >= 3:                   # *I inst:pin DIR [*C x y]
+            if t[2] == "O":
+                out[cur]["driver"] = t[1]
+            else:
+                out[cur]["receivers"].append(t[1])
+        elif ln.startswith("*P") and len(t) >= 3:                 # *P port DIR (boundary)
+            out[cur]["ports"].append((t[1], t[2]))
+            if t[2] == "I" and out[cur]["driver"] is None:        # input port drives the net
+                out[cur]["driver"] = t[1]
+    return out
+
+
+def rc_path_for_net(text: str, net: str, receivers) -> dict:
+    """Structural RC-in-path plan for `net` (lumped one-pl_rc, shared far node):
+    the statsim_pl_rc(C,R) params + per-receiver Cin and flight delay.
+    `receivers` = [(pin, cin), ...]."""
+    c_wire, r_wire = net_load(text, net)
+    return {
+        "net": net,
+        "pl_rc": {"C": c_wire, "R": r_wire},
+        "receivers": [{"pin": p, "cin": cin,
+                       "flight": rc_delay_flight(r_wire, c_wire, cin)}
+                      for (p, cin) in receivers],
+    }
 
 
 def net_delays(text: str) -> dict:
@@ -169,8 +233,41 @@ def _self_test() -> int:
     # legacy r*c diagnostic still computes (zero-fan-out term)
     if abs(net_delays(_SAMPLE)["sync_d"] - 4.2e-12) > 1e-15:
         print("SELF-TEST FAIL: legacy r*c diagnostic"); return 1
-    print(f"self-test OK: sync_d C=12fF R=350ohm -> on-the-fly delay "
-          f"{d18*1e12:.2f}ps(3 fo) -> {d20*1e12:.2f}ps(4 fo); legacy r*c=4.2ps")
+    # --- RC-in-path / *CONN reusable interface ---
+    conn_spef = """\
+*C_UNIT 1 FF
+*R_UNIT 1 OHM
+*NAME_MAP
+*1 sync_d
+*D_NET *1 12.0
+*CONN
+*I drv_cell:Y O *C 1.0 2.0
+*I rcv_a:A I *C 3.0 4.0
+*I rcv_b:A I *C 5.0 6.0
+*CAP
+1 *1 12.0
+*RES
+1 *1 *0 350.0
+*END
+"""
+    cn = net_conn(conn_spef)["sync_d"]
+    if cn["driver"] != "drv_cell:Y" or cn["receivers"] != ["rcv_a:A", "rcv_b:A"]:
+        print(f"SELF-TEST FAIL: net_conn {cn}"); return 1
+    # back-compat: net_loads still parses the SAME *CONN-bearing text
+    cw, rw = net_loads(conn_spef)["sync_d"]
+    if abs(cw - 12e-15) > 1e-18 or abs(rw - 350.0) > 1e-9:
+        print(f"SELF-TEST FAIL: net_loads broke on *CONN text ({cw:g},{rw:g})"); return 1
+    # rc tap mode + flight delay
+    rc = taps_for_net(_SAMPLE, "sync_d", [2e-15] * 3, mode="rc")
+    k0, c0, r0, na, nb = rc[0]
+    if (k0 != "rc" or abs(c0 - 12e-15) > 1e-18 or abs(r0 - 350.0) > 1e-9
+            or na != "a" or nb != "b" or rc[1][0] != "load" or rc[1][3] != "b"):
+        print(f"SELF-TEST FAIL: rc taps {rc}"); return 1
+    if abs(rc_delay_flight(350.0, 12e-15, 6e-15, 0.5) - LN2 * 350.0 * 12e-15) > 1e-18:
+        print("SELF-TEST FAIL: rc_delay_flight"); return 1
+    print(f"self-test OK: sync_d C=12fF R=350ohm -> delay {d18*1e12:.2f}ps(3 fo) "
+          f"-> {d20*1e12:.2f}ps(4 fo); *CONN driver={cn['driver']} "
+          f"recv={len(cn['receivers'])}; rc flight={rc_delay_flight(350.0,12e-15,6e-15)*1e12:.2f}ps")
     return 0
 
 
