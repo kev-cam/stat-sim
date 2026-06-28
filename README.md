@@ -177,11 +177,14 @@ automatically** (`C_node = c_wire + Σ Cin`).
 GDS via KLayout's `LayoutToNetlist` (per-net connectivity) + analytic sky130
 geometry R/C, and writes the SPEF that `spef.py` reads — closing the loop from
 layout to CDC timing. The extraction recipe mirrors the proven kestrel flow
-(`/usr/local/src/kestrel/layout/{extract,parasitics}.py`); the SPEF writer is
-verified by round-tripping through `spef.py` (`klayout2spef.py --self-test`, no
-KLayout needed). Live extraction needs `pip install klayout` (cp39–cp312 wheels;
-run on Linux py3.10–3.12 — this box's py3.14/Cygwin-py3.9 have no wheel).
-`klayout2spef.py design.gds -o design.spef`. Worked example (SPEF net `sync_d`:
+(`kestrel/layout/{extract,parasitics}.py`); the SPEF writer is verified by
+round-tripping through `spef.py` (`klayout2spef.py --self-test`, no KLayout
+needed). **Validated end-to-end on a Linux box** (Debian 13, python3.13 venv,
+klayout 0.30.9): `klayout2spef.py kestrel/layout/kestrel_pll.gds -o pll.spef`
+extracted **247 nets** (top net 67.9 fF / 1.4 kΩ, VCO 34.7 fF, delay-cell/Mtail
+1–2 fF), round-tripped through `spef.py`. Needs a klayout wheel —
+`python3 -m venv v && v/bin/pip install klayout` on Linux py3.10–3.13 (this dev
+box's py3.14 / Cygwin-py3.9 have none). `klayout2spef.py design.gds -o design.spef`. Worked example (SPEF net `sync_d`:
 12 fF wire, 350 Ω; R_DRIVE=100 Ω): 3 fan-outs @2 fF → 18 fF → **5.61 ps**; a 4th →
 20 fF → **6.24 ps**. The old constant `R·C = 4.2 ps` was fan-out- and drive-blind.
 
