@@ -171,7 +171,17 @@ t_slew =      ln9·(R_DRIVE + node.rwire)·node.cload      # 10–90% edge
 `net_loads → {net: (c_wire, r_wire)}`; the binder drops one `statsim_pl_wire`
 tap + one `statsim_pl_load` per fan-out receiver (`lib/statsim_taps.vhd`) onto the
 node, and the resolver sums them so **adding a fan-out raises the delay
-automatically** (`C_node = c_wire + Σ Cin`). Worked example (SPEF net `sync_d`:
+automatically** (`C_node = c_wire + Σ Cin`).
+
+**Where the SPEF comes from:** `klayout2spef.py` extracts per-net RC from a real
+GDS via KLayout's `LayoutToNetlist` (per-net connectivity) + analytic sky130
+geometry R/C, and writes the SPEF that `spef.py` reads — closing the loop from
+layout to CDC timing. The extraction recipe mirrors the proven kestrel flow
+(`/usr/local/src/kestrel/layout/{extract,parasitics}.py`); the SPEF writer is
+verified by round-tripping through `spef.py` (`klayout2spef.py --self-test`, no
+KLayout needed). Live extraction needs `pip install klayout` (cp39–cp312 wheels;
+run on Linux py3.10–3.12 — this box's py3.14/Cygwin-py3.9 have no wheel).
+`klayout2spef.py design.gds -o design.spef`. Worked example (SPEF net `sync_d`:
 12 fF wire, 350 Ω; R_DRIVE=100 Ω): 3 fan-outs @2 fF → 18 fF → **5.61 ps**; a 4th →
 20 fF → **6.24 ps**. The old constant `R·C = 4.2 ps` was fan-out- and drive-blind.
 

@@ -18,7 +18,7 @@ fail=0
 say() { printf '\n=== %s ===\n' "$1"; }
 
 say "Python self-tests"
-for m in disc spef genmodel nvcgen; do
+for m in disc spef genmodel nvcgen klayout2spef; do
   if $PY "$m.py" --self-test 2>/dev/null || $PY "$m.py" 2>/dev/null; then
     :
   else
