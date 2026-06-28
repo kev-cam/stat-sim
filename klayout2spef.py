@@ -195,7 +195,8 @@ def extract_routing_rc(gds_path, model_cells=(), top_cell=None, skip=DEFAULT_SKI
             if drv is None and not recvs and not ports:
                 continue                            # dangling
             c, r = net_geometry_rc(l2n, net, layers, dbu)
-            routes.append({"net": nm, "circuit": circuit.name, "c": c, "r": r,
+            routes.append({"net": f"{circuit.name}/{nm}",   # qualify -> unique across circuits
+                           "circuit": circuit.name, "c": c, "r": r,
                            "driver": drv, "receivers": recvs, "ports": ports})
     return routes
 
