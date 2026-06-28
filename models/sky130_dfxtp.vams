@@ -1,0 +1,69 @@
+// ===========================================================================
+// sky130_dfxtp -- metastable D flip-flop  (stat-sim generated; do not hand-edit)
+// Characterized corner: tt
+//   tau=1.57e-11s  T0=1.57e-11s  tsetup=9e-11s  thold=3.5e-11s  tcq=1.1e-10s
+// US8478576B1 probability-waveform metastability. On a setup/hold violation the
+// output holds a mid-rail plateau for Exp(tau)-distributed time, then resolves.
+// ===========================================================================
+`include "constants.vams"
+`include "disciplines.vams"
+
+module sky130_dfxtp (d, clk, q);
+  input  d, clk;
+  output q;
+  electrical d, clk, q;
+
+  parameter real vdd       = 1.8;
+  parameter real vth       = 0.82;
+  parameter real tau       = 1.57e-11 from (0:inf);
+  parameter real tsetup    = 9e-11 from [0:inf);
+  parameter real thold     = 3.5e-11 from [0:inf);
+  parameter real tcq       = 1.1e-10 from [0:inf);
+  parameter real tmeta_max = 5e-09 from (0:inf);
+  parameter integer seed   = 1;
+  // tmeta_force >= 0 overrides the random draw (lets `check` sweep worst cases
+  // deterministically); < 0 means draw from Exp(tau).
+  parameter real tmeta_force = -1;
+
+  integer st;            // rng state
+  real    last_d_edge;   // $abstime of last data transition
+  real    t_resolve;     // absolute time metastability resolves
+  real    q_val;         // resolved logic level driven after t_resolve
+  real    u, tmeta;
+
+  analog begin
+    @(initial_step) begin
+      st          = seed;
+      last_d_edge = -1e30;
+      t_resolve   = -1e30;
+      q_val       = (V(d) > vth) ? vdd : 0.0;
+    end
+
+    // remember when data last crossed threshold (either direction)
+    @(cross(V(d) - vth, 0))
+      last_d_edge = $abstime;
+
+    // active (rising) clock edge: sample
+    @(cross(V(clk) - vth, +1)) begin
+      q_val = (V(d) > vth) ? vdd : 0.0;
+      // setup/hold aperture violated if the data edge sits inside it
+      if ($abstime - last_d_edge < tsetup && last_d_edge - $abstime < thold) begin
+        if (tmeta_force >= 0.0)
+          tmeta = tmeta_force;
+        else begin
+          u     = abs($random(st)) / 2147483647.0 + 1e-12;   // (0,1]
+          tmeta = -tau * ln(u);
+          if (tmeta > tmeta_max) tmeta = tmeta_max;
+        end
+        t_resolve = $abstime + tcq + tmeta;
+      end else
+        t_resolve = $abstime + tcq;
+    end
+
+    // output: mid-rail plateau while metastable, else the resolved level
+    if ($abstime < t_resolve)
+      V(q) <+ vth;              // invalid level -> downstream CDC-bug detector
+    else
+      V(q) <+ q_val;
+  end
+endmodule

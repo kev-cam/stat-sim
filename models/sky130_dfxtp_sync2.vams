@@ -1,0 +1,28 @@
+// ===========================================================================
+// sky130_dfxtp_sync2 -- standard 2-flop CDC synchronizer (two sky130_dfxtp chained)
+// First stage absorbs metastability; second resamples. MTBF is set by the
+// slack between stages = one clock period minus tcq.  (stat-sim generated)
+// ===========================================================================
+`include "disciplines.vams"
+
+module sky130_dfxtp_sync2 (d, clk, q);
+  input  d, clk;
+  output q;
+  electrical d, clk, q, n_mid;
+
+  parameter real vdd        = 1.8;
+  parameter real vth        = 0.82;
+  parameter real tau        = 1.57e-11;
+  parameter real tsetup     = 9e-11;
+  parameter real thold      = 3.5e-11;
+  parameter real tcq        = 1.1e-10;
+  parameter real tmeta_max  = 5e-09;
+  parameter integer seed    = 1;
+
+  sky130_dfxtp #(.vdd(vdd), .vth(vth), .tau(tau), .tsetup(tsetup), .thold(thold),
+           .tcq(tcq), .tmeta_max(tmeta_max), .seed(seed))
+    stage1 (.d(d),     .clk(clk), .q(n_mid));
+  sky130_dfxtp #(.vdd(vdd), .vth(vth), .tau(tau), .tsetup(tsetup), .thold(thold),
+           .tcq(tcq), .tmeta_max(tmeta_max), .seed(seed + 1))
+    stage2 (.d(n_mid), .clk(clk), .q(q));
+endmodule

@@ -1,0 +1,39 @@
+// ===========================================================================
+// sky130_dfxtp_cdc_trap -- CDC bug detector  (stat-sim generated)
+// The trap: at each latch/flop CLOCK TRANSITION (the sampling instant), check
+// whether the data node sits at a clean logic rail. A value inside the invalid
+// band (vlo, vhi) is a captured-metastability / CDC hazard. Accumulates the
+// empirical probability over the run; aggregate p_bad over Monte Carlo seeds to
+// get the failure probability (and, with the sampling rate, the MTBF).
+// This is the US8478576B1 probability-waveform overlap, evaluated at the clock.
+// ===========================================================================
+`include "disciplines.vams"
+
+module sky130_dfxtp_cdc_trap (clk, d);
+  input clk, d;
+  electrical clk, d;
+
+  parameter real vdd  = 1.8;
+  parameter real vth  = 0.82;               // clock decision threshold
+  parameter real vlo  = 0.18;               // <= vlo counts as a clean 0
+  parameter real vhi  = 1.62;               // >= vhi counts as a clean 1
+  // edge: +1 closing/rising only, -1 falling only, 0 either transition
+  parameter integer edge = 0;
+
+  integer n_sample, n_bad;
+  real    p_bad;
+
+  analog begin
+    @(initial_step) begin
+      n_sample = 0; n_bad = 0; p_bad = 0.0;
+    end
+    @(cross(V(clk) - vth, edge)) begin         // clock in transition = sample instant
+      n_sample = n_sample + 1;
+      if (V(d) > vlo && V(d) < vhi)             // not a clean rail -> CDC hazard
+        n_bad = n_bad + 1;
+      p_bad = (n_sample > 0) ? (1.0 * n_bad) / n_sample : 0.0;
+    end
+    @(final_step)
+      $strobe("[cdc_trap %M] samples=%0d bad=%0d p_bad=%g", n_sample, n_bad, p_bad);
+  end
+endmodule
