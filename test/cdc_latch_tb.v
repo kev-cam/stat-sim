@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+// SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+// Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.
 // cdc_latch_tb.v -- regular Verilog testbench for the stat-sim CDC latch demo.
 // A latch clock and a DATA line that is itself a clock at a slightly different
 // frequency (01XZ logic). The VHDL DUT's stat-sim inverters lift the 01XZ logic

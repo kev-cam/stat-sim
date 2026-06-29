@@ -1,3 +1,6 @@
+-- SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+-- SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+-- Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.
 -- statsim_io.vhd -- stat-sim boundary cells for CDC analysis.
 --   statsim_inv   : converts 01XZ digital logic (std_ulogic) -> prob_load (inverting).
 --                   This is the "lift into the probability domain" entry point: a

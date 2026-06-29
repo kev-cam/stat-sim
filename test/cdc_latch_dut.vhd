@@ -1,3 +1,6 @@
+-- SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+-- SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+-- Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.
 -- cdc_latch_dut.vhd -- the probability-domain DUT for the Verilog CDC testbench.
 -- Boundary ports are logic3d (the 01XZ type a Verilog signal presents once nvc
 -- translates the testbench via sv2ghdl). Inside, they convert to std_ulogic, the

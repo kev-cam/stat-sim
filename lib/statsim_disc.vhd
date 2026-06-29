@@ -1,3 +1,6 @@
+-- SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+-- SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+-- Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.
 -- statsim_disc.vhd -- the stat-sim discipline (nature) for nvc multi-UDN nodes.
 -- Mirrors disc.py field-for-field, number-for-number (self-tests enforce it).
 --

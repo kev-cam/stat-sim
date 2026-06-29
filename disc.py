@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.
 """
 stat-sim discipline -- Python reference model + validator for the `prob_load`
 nature: a BIDIRECTIONAL CONJUGATE pair on a multi-UDN node in nvc.

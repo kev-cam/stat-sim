@@ -1,3 +1,6 @@
+-- SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+-- SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+-- Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.
 -- statsim_cdc_tb.vhd -- end-to-end runtime check of the prob_load CDC flow:
 --   * metastable DFF drives q; a SPEF wire tap + 3 fan-out load taps share q
 --     (so q.cload = 12fF + 3*2fF = 18fF resolves on the multi-UDN node);

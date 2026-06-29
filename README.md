@@ -327,4 +327,25 @@ python3 genmodel.py --self-test
 ## Status
 
 `genmodel` generates models now. `characterize` and `check` have defined
-interfaces and are the next increments. Nothing here is committed/pushed yet.
+interfaces and are the next increments.
+
+## License
+
+stat-sim is **dual-licensed**:
+
+- **Noncommercial and personal use is free** under the
+  [PolyForm Noncommercial License 1.0.0](LICENSE) — research, teaching, personal
+  study, hobby, and evaluation use, and use by nonprofit / academic / government
+  organizations. Every source file carries an
+  `SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0` header.
+- **Commercial use requires a separate, paid license** (royalty-based terms are
+  available). See **[COMMERCIAL.md](COMMERCIAL.md)**.
+
+Why two: stat-sim implements the author's patented methods — **US 8,478,576 B1**
+(probability-waveform variability; the LEAD method) and **US 2023/0334213 A1**
+(analog/MS defect binning). A commercial user needs both a copyright license to
+the code *and* a patent license to practice the methods; the PolyForm patent
+grant is scoped to noncommercial use only, so the patents remain an independent
+right for commercial use. Both are conveyed by the commercial license.
+
+Copyright (c) 2026 D. Kevin Cameron. Commercial licensing: cameron.eda@gmail.com.

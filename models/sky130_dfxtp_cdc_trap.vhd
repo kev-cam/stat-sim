@@ -1,3 +1,6 @@
+-- SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+-- SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+-- Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.
 -- sky130_dfxtp_cdc_trap -- CDC bug detector, nvc/prob_load runtime form (stat-sim generated)
 -- At each RISING clock edge (the capture instant, matching the rising-edge DFF) flag
 -- px_of(d) > PX_THR: the data node is not at a clean rail = captured-metastability /

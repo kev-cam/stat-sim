@@ -1,3 +1,6 @@
+-- SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+-- SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+-- Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.
 -- statsim_taps.vhd -- passive prob_load taps for the binder (stat-sim).
 -- These carry only the BACKWARD channel (gdrv=0, so they never move the
 -- probability vote): a fan-out receiver pin presents its input capacitance, a

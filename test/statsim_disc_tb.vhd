@@ -1,3 +1,6 @@
+-- SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+-- SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+-- Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.
 -- statsim_disc_tb.vhd -- lock-step check: resolve_pl/delay_of must produce the
 -- SAME numbers as disc.py's _self_test (run under nvc). Keep in sync with disc.py.
 library ieee;

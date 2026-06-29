@@ -1,3 +1,6 @@
+-- SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+-- SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+-- Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.
 -- sky130_dfxtp -- metastable D flip-flop, nvc/prob_load runtime form (stat-sim generated)
 -- Authored in Verilog-AMS (sky130_dfxtp.vams). Event-driven; load-dependent delay.
 -- Corner: tt.  Output holds PL_X (mid-rail/invalid) for an Exp(tau) window

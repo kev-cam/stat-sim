@@ -1,3 +1,6 @@
+-- SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+-- SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+-- Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.
 -- cdc_latch_wire_tb.vhd -- the CDC latch demo with an RC-in-path wire on the data
 -- path (statsim_pl_rc between the data inverter and the latch). Proves the tool
 -- still flags the async crossing once routing R-C is pulled into the driver->

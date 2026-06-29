@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.
 """
 stat-sim nvcgen -- emit the nvc runtime form of the metastable models, on the
 bidirectional `prob_load` discipline (lib/statsim_disc.vhd).
@@ -43,6 +46,9 @@ def _real(x: float) -> str:
 
 
 _VHDL_DFF = """\
+-- SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+-- SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+-- Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.
 -- {name} -- metastable D flip-flop, nvc/prob_load runtime form (stat-sim generated)
 -- Authored in Verilog-AMS ({name}.vams). Event-driven; load-dependent delay.
 -- Corner: {corner}.  Output holds PL_X (mid-rail/invalid) for an Exp(tau) window
@@ -116,6 +122,9 @@ end architecture;
 
 
 _VHDL_TRAP = """\
+-- SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+-- SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+-- Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.
 -- {name}_cdc_trap -- CDC bug detector, nvc/prob_load runtime form (stat-sim generated)
 -- At each RISING clock edge (the capture instant, matching the rising-edge DFF) flag
 -- px_of(d) > PX_THR: the data node is not at a clean rail = captured-metastability /

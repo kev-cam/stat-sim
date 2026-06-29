@@ -1,3 +1,6 @@
+-- SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+-- SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+-- Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.
 -- cdc_latch_tb.vhd -- CDC detection demo (runnable under nvc).
 -- A regular 4-state (01XZ) testbench: a latch clock and a DATA line that is itself
 -- a clock at a slightly different frequency. The two stat-sim INVERTERS lift the

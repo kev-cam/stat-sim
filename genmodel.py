@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.
 """
 stat-sim genmodel -- emit Verilog-AMS models that carry silicon-characterized
 metastability, for finding clock-domain-crossing (CDC) bugs by simulation.
@@ -66,6 +69,9 @@ def mtbf(spec: CellSpec, t_slack: float, f_clk: float, f_data: float) -> float:
 # begin/end), so str.format substitution is safe.
 # ---------------------------------------------------------------------------
 _META_DFF = """\
+// SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+// SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+// Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.
 // ===========================================================================
 // {name} -- metastable D flip-flop  (stat-sim generated; do not hand-edit)
 // Characterized corner: {corner}
@@ -170,6 +176,9 @@ endmodule
 
 
 _CDC_TRAP = """\
+// SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+// SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+// Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.
 // ===========================================================================
 // {name}_cdc_trap -- CDC bug detector  (stat-sim generated)
 // The trap: at each latch/flop CLOCK TRANSITION (the sampling instant), check

@@ -1,3 +1,6 @@
+-- SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+-- SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+-- Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.
 -- statsim_rc_tb.vhd -- functional test of the RC-in-path element statsim_pl_rc.
 -- A driver feeds net_a; pl_rc(C,R) straddles net_a (near) and net_b (far); a
 -- receiver load sits on net_b. Checks: the receiver edge (net_b) lags the driver
