@@ -27,6 +27,7 @@ import argparse
 import os
 import random
 import re
+import struct
 import subprocess
 import sys
 import time
@@ -70,6 +71,13 @@ def main():
                          'VOLTLIM=0 applies to the whole run: big DCOP win '
                          'on high-gain feedback decks, but can slow stiff '
                          'transients — only use when DC dominates')
+    ap.add_argument('--jobs', type=int, default=1,
+                    help='run up to N members concurrently (parallel '
+                         'evaluation on spare cores). The watcher ingests '
+                         'each member\'s DC op as soon as its first '
+                         'recording row lands — a cycle behind the live '
+                         'runs — so later launches seed from members that '
+                         'are still simulating.')
     ap.add_argument('--knn', type=int, default=3)
     ap.add_argument('--rng', type=int, default=1234)
     a = ap.parse_args()
@@ -94,13 +102,15 @@ def main():
 
     tot_dc = tot_tr = 0
     t_all = time.time()
-    for i in range(a.n):
+
+    def prepare(i):
+        """Sample params, decide seeding from the manifold as it exists NOW
+        (launch time), write the member deck."""
         mid = 'm%03d' % i
         sample = {n: rng.gauss(nom, sig) for n, nom, sig in params}
         deck = tpl
         for k, v in sample.items():
             deck = deck.replace('@%s@' % k, '%.9g' % v)
-
         seeded = False
         seedinc = os.path.join(a.workdir, mid + '_seed.inc')
         if seeding and os.path.exists(os.path.join(manifold, 'manifest.jsonl')) \
@@ -112,60 +122,101 @@ def main():
                    '--deck', a.template]
             if a.seed_voltlim_off:
                 cmd.append('--voltlim-off')
-            rc = subprocess.run(cmd).returncode
-            seeded = (rc == 0)
+            seeded = subprocess.run(cmd).returncode == 0
         deck = deck.replace('@SEED@',
                             '.INCLUDE %s' % seedinc if seeded else '* cold start')
-
         deckpath = os.path.join(a.workdir, mid + '.cir')
         open(deckpath, 'w').write(deck)
-        orc = os.path.join(a.workdir, mid + '.orc')
-        outp = os.path.join(a.workdir, mid + '.out')
+        return {'mid': mid, 'sample': sample, 'deck': deck, 'seeded': seeded,
+                'seedinc': seedinc, 'deckpath': deckpath,
+                'orc': os.path.join(a.workdir, mid + '.orc'),
+                'outp': os.path.join(a.workdir, mid + '.out'),
+                'ingested': False, 'retried': False, 'wall': 0.0}
 
-        env = dict(os.environ, XYCE_ORACLE_RECORD=orc)
-        if i == 0:
-            # -namesfile is an introspection mode: Xyce dumps the solution
-            # variable names and exits without solving — run it as a
-            # pre-flight, then simulate the member normally.
-            subprocess.run(list(xyce_cmd) + ['-namesfile', namesfile, deckpath],
-                           stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT,
-                           cwd=a.workdir)
-        cmd = list(xyce_cmd) + [deckpath]
-        t0 = time.time()
-        r = subprocess.run(cmd, stdout=open(outp, 'w'),
-                           stderr=subprocess.STDOUT, env=env,
-                           cwd=a.workdir)
-        wall = time.time() - t0
-        if r.returncode != 0 and seeded:
-            # Advisory contract: a bad seed may only cost a retry. Rerun the
-            # member cold (no seed include, limiter on).
-            print('[ensemble] %s seeded run failed (rc=%d) — retrying cold'
-                  % (mid, r.returncode))
-            seeded = False
-            open(deckpath, 'w').write(
-                deck.replace('.INCLUDE %s' % seedinc, '* seed retried cold'))
-            t0 = time.time()
-            r = subprocess.run(cmd, stdout=open(outp, 'w'),
-                               stderr=subprocess.STDOUT, env=env,
-                               cwd=a.workdir)
-            wall += time.time() - t0
-        if r.returncode != 0:
-            print('[ensemble] %s FAILED (rc=%d) — see %s' % (mid, r.returncode, outp))
-            continue
+    def launch(st):
+        env = dict(os.environ, XYCE_ORACLE_RECORD=st['orc'])
+        st['t0'] = time.time()
+        st['proc'] = subprocess.Popen(list(xyce_cmd) + [st['deckpath']],
+                                      stdout=open(st['outp'], 'w'),
+                                      stderr=subprocess.STDOUT, env=env,
+                                      cwd=a.workdir)
 
-        dcj, trj, _, trs = xyce_counters(outp)
-        tot_dc += max(dcj, 0)
-        tot_tr += max(trj, 0)
-        pstr = ','.join('%s=%.9g' % (k, v) for k, v in sample.items())
+    def op_ready(st):
+        """Header plus one full row (the flushed DC op) on disk yet?"""
+        try:
+            sz = os.path.getsize(st['orc'])
+        except OSError:
+            return False
+        if sz < 16:
+            return False
+        with open(st['orc'], 'rb') as f:
+            nvar = struct.unpack('<q', f.read(8))[0]
+        return sz >= 8 + 8 * (1 + nvar)
+
+    def ingest(st):
+        pstr = ','.join('%s=%.9g' % (k, v) for k, v in st['sample'].items())
         subprocess.run([sys.executable, os.path.join(TOOLDIR, 'opmanifold.py'),
-                        'ingest', manifold, mid, orc, '--params', pstr],
-                       stdout=subprocess.DEVNULL)
-        csv.write('%s,%d,%s,%d,%d,%d,%.2f\n' %
-                  (mid, int(seeded),
-                   ','.join('%.9g' % sample[n] for n, _, _ in params),
-                   dcj, trj, trs, wall))
-        print('[ensemble] %s seeded=%d dc_jac=%d tran_jac=%d wall=%.2fs'
-              % (mid, int(seeded), dcj, trj, wall))
+                        'ingest', manifold, st['mid'], st['orc'],
+                        '--params', pstr], stdout=subprocess.DEVNULL)
+        st['ingested'] = True
+
+    running, next_i = [], 0
+    while next_i < a.n or running:
+        while len(running) < max(1, a.jobs) and next_i < a.n:
+            if seeding and running and \
+               not os.path.exists(os.path.join(manifold, 'manifest.jsonl')):
+                break   # hold the fleet until the bootstrap op lands
+            st = prepare(next_i)
+            if next_i == 0:
+                # -namesfile is an introspection mode: Xyce dumps the
+                # solution variable names and exits without solving — run
+                # it as a blocking pre-flight before the first member.
+                subprocess.run(list(xyce_cmd) + ['-namesfile', namesfile,
+                                                 st['deckpath']],
+                               stdout=subprocess.DEVNULL,
+                               stderr=subprocess.STDOUT, cwd=a.workdir)
+            launch(st)
+            running.append(st)
+            next_i += 1
+        time.sleep(0.05)
+        for st in running[:]:
+            # the trainer runs a cycle behind the live members: ingest each
+            # DC op as soon as its (flushed) first recording row appears,
+            # while that member's transient is still in progress.
+            if not st['ingested'] and op_ready(st):
+                ingest(st)
+            rc = st['proc'].poll()
+            if rc is None:
+                continue
+            st['wall'] += time.time() - st['t0']
+            running.remove(st)
+            if rc != 0 and st['seeded'] and not st['retried']:
+                # Advisory contract: a bad seed may only cost a retry.
+                print('[ensemble] %s seeded run failed (rc=%d) — retrying cold'
+                      % (st['mid'], rc))
+                open(st['deckpath'], 'w').write(
+                    st['deck'].replace('.INCLUDE %s' % st['seedinc'],
+                                       '* seed retried cold'))
+                st['seeded'] = False
+                st['retried'] = True
+                launch(st)
+                running.append(st)
+                continue
+            if rc != 0:
+                print('[ensemble] %s FAILED (rc=%d) — see %s'
+                      % (st['mid'], rc, st['outp']))
+                continue
+            if not st['ingested'] and op_ready(st):
+                ingest(st)
+            dcj, trj, _, trs = xyce_counters(st['outp'])
+            tot_dc += max(dcj, 0)
+            tot_tr += max(trj, 0)
+            csv.write('%s,%d,%s,%d,%d,%d,%.2f\n' %
+                      (st['mid'], int(st['seeded']),
+                       ','.join('%.9g' % st['sample'][n] for n, _, _ in params),
+                       dcj, trj, trs, st['wall']))
+            print('[ensemble] %s seeded=%d dc_jac=%d tran_jac=%d wall=%.2fs'
+                  % (st['mid'], int(st['seeded']), dcj, trj, st['wall']))
 
     csv.close()
     print('[ensemble] TOTAL: dc_jac=%d tran_jac=%d wall=%.1fs (%d members, seeding=%s)'
