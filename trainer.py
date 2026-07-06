@@ -22,12 +22,23 @@ Snapshot: OUTDIR/model.json.tmp -> rename model.json
   {epoch, t_head, rows_seen, lag_rows, fit_ms, nodes: N,
    coeffs: [[a,b,c]...], q_rms: one-step-ahead RMS over holdout}
 
-Usage: trainer.py RECORDING OUTDIR [--window 512] [--interval 0.2]
+Transports, cheapest first:
+  --shm : SOURCE is an XYCE_ORACLE_SHM ring (tmpfs, e.g. /dev/shm/xyce_live).
+          The data never leaves memory — the solver's per-step cost is one
+          in-cache row copy + a release-store; this side mmaps the same
+          pages and samples rows in place at its own pace. Ring overrun
+          just means training on a sampled window.
+  (default) : SOURCE is an XYCE_ORACLE_RECORD file being written (recorder
+          flushes every 64 rows). Portable across hosts/containers, but
+          pays stdio + filesystem on both sides.
+
+Usage: trainer.py SOURCE OUTDIR [--shm] [--window 512] [--interval 0.2]
        [--holdout 32] [--stop-idle 10]
 """
 
 import argparse
 import json
+import mmap
 import os
 import struct
 import sys
@@ -38,11 +49,77 @@ try:
 except ImportError:
     sys.exit('trainer.py needs numpy')
 
+MAGIC = 0x584C495645
+
+
+def file_rows(path, interval, stop_idle):
+    """Yield arrays of new rows from a growing recording file."""
+    while not (os.path.exists(path) and os.path.getsize(path) >= 8):
+        time.sleep(0.05)
+    f = open(path, 'rb')
+    n = struct.unpack('<q', f.read(8))[0]
+    rowbytes = 8 * (1 + n)
+    seen, last_new = 0, time.time()
+    yield n
+    while True:
+        k = (os.path.getsize(path) - 8 - seen * rowbytes) // rowbytes
+        if k > 0:
+            buf = f.read(k * rowbytes)
+            got = len(buf) // rowbytes
+            seen += got
+            last_new = time.time()
+            yield np.frombuffer(buf[:got * rowbytes],
+                                dtype='<f8').reshape(got, 1 + n), seen, seen
+        elif time.time() - last_new > stop_idle:
+            return
+        else:
+            time.sleep(interval / 4)
+
+
+def shm_rows(path, interval, stop_idle):
+    """Yield arrays of new rows sampled in place from the live ring."""
+    while True:
+        try:
+            with open(path, 'rb') as f:
+                hdr = f.read(32)
+            if len(hdr) >= 32 and struct.unpack('<q', hdr[:8])[0] == MAGIC:
+                break
+        except OSError:
+            pass
+        time.sleep(0.05)
+    f = open(path, 'r+b')
+    mm = mmap.mmap(f.fileno(), 0)
+    n, R = struct.unpack('<qq', mm[8:24])
+    ring = np.frombuffer(mm, dtype='<f8', offset=4096,
+                         count=R * (1 + n)).reshape(R, 1 + n)
+    margin = max(4, R // 8)
+    seen, last_new = 0, time.time()
+    yield n
+    while True:
+        seq = struct.unpack('<q', mm[24:32])[0]
+        if seq > seen:
+            lo = max(seen, seq - (R - margin))
+            idx = np.arange(lo, seq) % R
+            rows = ring[idx].copy()          # trainer-side copy, its own core
+            seq2 = struct.unpack('<q', mm[24:32])[0]
+            keep = len(rows) - max(0, seq2 - lo - (R - margin))
+            if keep > 0:
+                last_new = time.time()
+                yield rows[-keep:] if keep < len(rows) else rows, seq, seen
+                seen = seq
+                continue
+            seen = seq
+        elif time.time() - last_new > stop_idle:
+            return
+        time.sleep(interval / 4)
+
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('recording')
+    ap.add_argument('source')
     ap.add_argument('outdir')
+    ap.add_argument('--shm', action='store_true',
+                    help='SOURCE is a live XYCE_ORACLE_SHM ring, not a file')
     ap.add_argument('--window', type=int, default=512)
     ap.add_argument('--interval', type=float, default=0.2,
                     help='seconds between fit cycles')
@@ -53,37 +130,20 @@ def main():
     a = ap.parse_args()
     os.makedirs(a.outdir, exist_ok=True)
 
-    # wait for the header
-    while not (os.path.exists(a.recording)
-               and os.path.getsize(a.recording) >= 8):
-        time.sleep(0.05)
-    f = open(a.recording, 'rb')
-    n = struct.unpack('<q', f.read(8))[0]
-    rowbytes = 8 * (1 + n)
+    src = (shm_rows if a.shm else file_rows)(a.source, a.interval, a.stop_idle)
+    n = next(src)
 
     win = []                      # trailing window of rows (t + n values)
-    rows_seen = 0
+    rows_seen = 0                 # rows actually ingested (sampled, for shm)
+    produced = 0                  # rows the solver has produced
     epoch = 0
-    last_new = time.time()
     t_train = 0.0
 
-    while True:
-        avail = os.path.getsize(a.recording) - 8 - rows_seen * rowbytes
-        k = avail // rowbytes
-        if k > 0:
-            buf = f.read(k * rowbytes)
-            got = len(buf) // rowbytes
-            arr = np.frombuffer(buf[:got * rowbytes],
-                                dtype='<f8').reshape(got, 1 + n)
-            rows_seen += got
-            win.extend(arr.tolist())
-            del win[:-a.window]
-            last_new = time.time()
-        elif time.time() - last_new > a.stop_idle:
-            break
-        else:
-            time.sleep(a.interval / 4)
-            continue
+    for arr, head, _prev in src:
+        rows_seen += len(arr)
+        produced = head
+        win.extend(arr.tolist())
+        del win[:-a.window]
 
         if len(win) < 3 * a.holdout:
             continue
@@ -105,18 +165,20 @@ def main():
         t_train += time.time() - t0
 
         epoch += 1
-        lag = int((os.path.getsize(a.recording) - 8) // rowbytes - rows_seen)
         snap = {'epoch': epoch, 't_head': win[-1][0], 'rows_seen': rows_seen,
-                'lag_rows': lag, 'fit_ms': round(1000 * (time.time() - t0), 2),
+                'rows_produced': produced,
+                'coverage': round(rows_seen / max(1, produced), 4),
+                'fit_ms': round(1000 * (time.time() - t0), 2),
                 'nodes': n, 'coeffs': coeffs.tolist(), 'q_rms': q_rms}
         tmp = os.path.join(a.outdir, 'model.json.tmp')
         json.dump(snap, open(tmp, 'w'))
         os.replace(tmp, os.path.join(a.outdir, 'model.json'))
         time.sleep(a.interval)
 
-    print('[trainer] done: %d rows, %d epochs, %.2fs training cpu, '
-          'final q_rms=%.3e'
-          % (rows_seen, epoch, t_train,
+    print('[trainer] done: ingested %d of %d rows (%.0f%%), %d epochs, '
+          '%.2fs training cpu, final q_rms=%.3e'
+          % (rows_seen, produced,
+             100.0 * rows_seen / max(1, produced), epoch, t_train,
              snap['q_rms'] if epoch else float('nan')))
     return 0
 
