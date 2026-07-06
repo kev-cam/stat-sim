@@ -65,8 +65,11 @@ def main():
                     help='NAME=nominal:sigma (gaussian)')
     ap.add_argument('--no-seed', action='store_true')
     ap.add_argument('--seed-voltlim-off', action='store_true',
-                    help='disable DCOP voltage limiting for seeded members '
-                         '(auto-retries limiter-on if the member fails)')
+                    help='disable voltage limiting for seeded members '
+                         '(auto-retries limiter-on if the member fails). '
+                         'VOLTLIM=0 applies to the whole run: big DCOP win '
+                         'on high-gain feedback decks, but can slow stiff '
+                         'transients — only use when DC dominates')
     ap.add_argument('--knn', type=int, default=3)
     ap.add_argument('--rng', type=int, default=1234)
     a = ap.parse_args()

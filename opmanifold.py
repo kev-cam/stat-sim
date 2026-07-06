@@ -144,6 +144,11 @@ def cmd_seed(a):
             # ~1000 iterations even from the exact answer on high-gain
             # feedback decks; measured 1054 -> 6 with it off). Only safe
             # WITH a seed — the caller must retry limiter-on if DCOP fails.
+            # CAUTION: VOLTLIM=0 rides the WHOLE run, not just the DCOP.
+            # Fine when DC dominates or the transient tolerates it (MOS
+            # opamp: tran -2%), harmful on stiff switching/BJT transients
+            # (amp300 cascade: tran Jacobians +72%, wall +62%). Use only
+            # when the DC share of the run justifies it.
             f.write('.options DEVICE VOLTLIM=0\n')
         for i in range(n):
             nm = names.get(i)
