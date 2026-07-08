@@ -171,6 +171,12 @@ def main():
                     help='relative model distance below which two regime '
                          'keys are reported as merge candidates (the '
                          'Verilog-A branch structure is a hint, not truth)')
+    ap.add_argument('--promote-tol', type=float,
+                    help='promotion protocol: a regime model becomes '
+                         'substitution-eligible after its held-out q_rms '
+                         'stays <= this for --promote-epochs consecutive '
+                         'fits; one breach demotes it (revocable trust)')
+    ap.add_argument('--promote-epochs', type=int, default=5)
     ap.add_argument('--window', type=int, default=512)
     ap.add_argument('--interval', type=float, default=0.2,
                     help='seconds between fit cycles')
@@ -202,6 +208,9 @@ def main():
     buckets = {}                  # regime -> settled rows (no time col)
     models = {}                   # regime -> (coeffs, q_rms)
     trans = {}                    # "a>b" -> transition count
+    stable = {}                   # regime -> consecutive fits with q<=tol
+    promoted = set()              # substitution-eligible regimes
+    promo_log = []                # promotion/demotion events
     cur_reg, runlen = None, 0
     settled_ct = transit_ct = 0
     rows_seen = produced = epoch = 0
@@ -252,9 +261,29 @@ def main():
                 if len(b) >= 3 * a.holdout:
                     coeffs, q = fit_bucket(np.asarray(b))
                     models[r] = (coeffs, q)
+                    # promotion protocol: substitution eligibility is earned
+                    # by demonstrated agreement and revoked by one breach
+                    if a.promote_tol is not None:
+                        if q <= a.promote_tol:
+                            stable[r] = stable.get(r, 0) + 1
+                            if stable[r] >= a.promote_epochs \
+                               and r not in promoted:
+                                promoted.add(r)
+                                promo_log.append('epoch %d: regime %d '
+                                                 'PROMOTED (q=%.3e)'
+                                                 % (epoch + 1, r, q))
+                        else:
+                            stable[r] = 0
+                            if r in promoted:
+                                promoted.discard(r)
+                                promo_log.append('epoch %d: regime %d '
+                                                 'DEMOTED (q=%.3e)'
+                                                 % (epoch + 1, r, q))
                 if r in models:
                     c, q = models[r]
                     reginfo[str(r)] = {'settled': len(b), 'q_rms': q,
+                                       'stable': stable.get(r, 0),
+                                       'promoted': r in promoted,
                                        'coeffs': c.tolist()}
             # merge hints: regime keys whose fitted models coincide are
             # syntactic distinctions, not behavioral ones
@@ -277,6 +306,7 @@ def main():
                                           max(1, settled_ct + transit_ct), 4),
                     'transitions': trans, 'regimes': reginfo,
                     'merge_candidates': merge,
+                    'promotions': promo_log,
                     'fit_ms': round(1000 * (time.time() - t0), 2)}
         tmp = os.path.join(a.outdir, 'model.json.tmp')
         json.dump(snap, open(tmp, 'w'))
@@ -287,10 +317,13 @@ def main():
         print('[trainer] done: %d rows, %d epochs, %.2fs cpu, transit %.1f%%'
               % (rows_seen, epoch, t_train, 100 * snap['transit_frac']))
         for r, info in sorted(snap['regimes'].items(), key=lambda x: int(x[0])):
-            print('  regime %s: settled %d  q_rms %.3e'
-                  % (r, info['settled'], info['q_rms']))
+            print('  regime %s: settled %d  q_rms %.3e%s'
+                  % (r, info['settled'], info['q_rms'],
+                     '  [PROMOTED]' if info.get('promoted') else ''))
         print('  transitions: %s' % snap['transitions'])
         print('  merge candidates: %s' % snap['merge_candidates'])
+        for ev in snap.get('promotions', []):
+            print('  ' + ev)
     else:
         print('[trainer] done: ingested %d of %d rows (%.0f%%), %d epochs, '
               '%.2fs training cpu, final q_rms=%.3e'
