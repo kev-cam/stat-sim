@@ -1,0 +1,72 @@
+// hot-spot EM test case: a sky130 GPIO output-pad slice, DISTRIBUTED parasitics.
+// Hand-authored (klayout runs only on Linux) but shaped exactly like a real
+// klayout2spef --routing-only extraction: *NAME_MAP, per-net *CONN, and a chain
+// of *RES segments per net (one row per physical wire piece / via), so EM is
+// checked per segment -- the narrow driver neck fails long before the wide route.
+// Geometry (layer/width/length/coords) is in the sibling iopad_em.spef.json.
+// Resistances are the sky130 analytic model (RSH/RVIA in klayout2spef.py):
+//   met1 0.5um x5um = 10sq x0.125 = 1.25 ; mcon x4 = 9.3/4 = 2.325 ; ...
+*SPEF "IEEE 1481-1998"
+*DESIGN "sky130_gpiov2_out_slice"
+*DATE "stat-sim hot-spot test"
+*VENDOR "stat-sim"
+*PROGRAM "hand-authored"
+*VERSION "1.0"
+*DESIGN_FLOW "EXTRACTION"
+*DIVIDER /
+*DELIMITER :
+*BUS_DELIMITER [ ]
+*T_UNIT 1 PS
+*C_UNIT 1 FF
+*R_UNIT 1 OHM
+*L_UNIT 1 HENRY
+
+*NAME_MAP
+*1 pad_drv
+*2 vdd_rail
+*3 vss_rail
+*4 sig_in
+
+// --- pad_drv: driver output -> bond pad. 5 segments: met1 neck, mcon, met2
+//     route, via2, wide met3 to the pad. This carries the full drive current.
+*D_NET *1 30.0
+*CONN
+*I driver:X O
+*P PAD O
+*CAP
+1 *1:2 6.0
+2 PAD 12.0
+*RES
+1 *1 *1:1 1.25
+2 *1:1 *1:2 2.325
+3 *1:2 *1:3 2.5
+4 *1:3 *1:4 2.25
+5 *1:4 PAD 0.235
+*END
+
+// --- vdd_rail: VDDIO feed to the driver (wide met3, but big current).
+*D_NET *2 5.0
+*CONN
+*P VDD I
+*I driver:VDDIO I
+*RES
+1 VDD drv_top 0.09
+*END
+
+// --- vss_rail: pad load return to VSS (wide met3).
+*D_NET *3 5.0
+*CONN
+*P VSS I
+*I driver:VSSIO I
+*RES
+1 vss_bot VSS 0.09
+*END
+
+// --- sig_in: pre-driver control signal (thin met1, tiny current -> stays green).
+*D_NET *4 2.0
+*CONN
+*P IN I
+*I driver:A I
+*RES
+1 IN sig_in_1 5.0
+*END

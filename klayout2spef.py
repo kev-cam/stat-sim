@@ -243,6 +243,114 @@ def write_routing_spef(routes, path, design="routing") -> int:
 
 
 # ----------------------------------------------------------------------------
+# EM detail (Ask C): per-layer / per-via geometry -> distributed SPEF + a
+# geometry sidecar hot-spot (hotspot.py) reads for electromigration screening.
+# Additive: net_geometry_rc / the writers above are untouched.
+# ----------------------------------------------------------------------------
+def net_geometry_detail(l2n, net, layers, dbu):
+    """Break one net into per-layer metal segments + per-via-layer segments, with
+    the WIDTH each carries -- the quantity an EM current-density screen needs
+    (Imax = Jlin[layer]*width). Returns ([seg dict], c_farad). Same RSH/RVIA model
+    as net_geometry_rc, so the segments' R sum to that net's lumped R; in series
+    they carry the net's through-current, each checked against its own width limit.
+    A metal seg = {layer,width,length,area,r,x1,y1,x2,y2}; a via seg =
+    {layer,cuts,r,x1,y1,x2,y2}. Coordinates are the net's per-layer bounding box
+    (um) -- enough to place the segment on hot-spot's heat-map."""
+    segs, c_fF = [], 0.0
+    for lname in ROUTING_LAYERS:
+        reg = l2n.shapes_of_net(net, layers[lname])
+        a = p = 0.0
+        for poly in reg.each():
+            a += poly.area(); p += poly.perimeter()
+        area, perim = a * dbu * dbu, p * dbu
+        if area <= 0:
+            continue
+        c_fF += CAREA[lname] * area + CFRINGE[lname] * perim
+        avg_w = 2 * area / perim if perim > 0 else 0.0
+        if avg_w <= 0:
+            continue
+        bb = reg.bbox()
+        segs.append({"layer": lname, "width": round(avg_w, 4),
+                     "length": round(area / avg_w, 4), "area": round(area, 4),
+                     "r": round(RSH[lname] * (perim / (2 * avg_w)), 4),
+                     "x1": round(bb.left * dbu, 3), "y1": round(bb.bottom * dbu, 3),
+                     "x2": round(bb.right * dbu, 3), "y2": round(bb.top * dbu, 3)})
+    for vname in VIA_LAYERS:
+        reg = l2n.shapes_of_net(net, layers[vname])
+        n = reg.count()
+        if n <= 0:
+            continue
+        bb = reg.bbox()
+        segs.append({"layer": vname, "cuts": n, "r": round(RVIA[vname] * n, 4),
+                     "x1": round((bb.left + bb.right) / 2 * dbu, 3),
+                     "y1": round((bb.bottom + bb.top) / 2 * dbu, 3),
+                     "x2": round((bb.left + bb.right) / 2 * dbu, 3),
+                     "y2": round((bb.bottom + bb.top) / 2 * dbu, 3)})
+    return segs, c_fF * 1e-15
+
+
+def extract_detail_rc(gds_path, top_cell=None, skip=DEFAULT_SKIP) -> list:
+    """Per-net EM detail for every net. Returns [{"net","c","segs":[...]}]."""
+    l2n, netlist, layers, dbu = _build_l2n(gds_path, top_cell)
+    out, skip = [], set(skip)
+    circuits = list(netlist.each_circuit())
+    multi = len(circuits) > 1
+    for circuit in circuits:
+        for net in circuit.each_net():
+            nm = net.expanded_name()
+            if nm in skip:
+                continue
+            segs, c = net_geometry_detail(l2n, net, layers, dbu)
+            if not segs:
+                continue
+            out.append({"net": f"{circuit.name}/{nm}" if multi else nm,
+                        "c": c, "segs": segs})
+    return out
+
+
+def write_detail_spef(nets, path, design="detail") -> int:
+    """Distributed SPEF (one *RES row per layer/via, chained through net-internal
+    nodes) + a `<path>.json` geometry sidecar keyed (net,id) that hot-spot reads.
+    spef.py's net_loads() still sums the rows to the same (c_wire, r_wire)."""
+    lines = [
+        '*SPEF "IEEE 1481-1998"', f'*DESIGN "{design}"',
+        '*DATE "stat-sim klayout2spef --detail (EM)"', '*VENDOR "stat-sim"',
+        '*PROGRAM "klayout2spef"', '*VERSION "1.0"', '*DESIGN_FLOW "EXTRACTION"',
+        '*DIVIDER /', '*DELIMITER :', '*BUS_DELIMITER [ ]',
+        '*T_UNIT 1 PS', '*C_UNIT 1 FF', '*R_UNIT 1 OHM', '*L_UNIT 1 HENRY',
+        '', '*NAME_MAP',
+    ]
+    ids = {d["net"]: i for i, d in enumerate(nets, start=1)}
+    for d in nets:
+        lines.append(f'*{ids[d["net"]]} {d["net"]}')
+    geom = {"units": {"r": "ohm", "len": "um", "coord": "um"},
+            "design": design, "segments": []}
+    for d in nets:
+        i = ids[d["net"]]
+        c_fF = d["c"] * 1e15
+        lines += ['', f'*D_NET *{i} {c_fF:.6g}']
+        if c_fF > 0:
+            lines += ['*CAP', f'1 *{i} {c_fF:.6g}']
+        lines.append('*RES')
+        for k, seg in enumerate(d["segs"], start=1):
+            n1 = f'*{i}' if k == 1 else f'*{i}:{k-1}'
+            n2 = f'*{i}:{k}'
+            lines.append(f'{k} {n1} {n2} {seg["r"]:.6g}')
+            g = {"net": d["net"], "id": str(k), "layer": seg["layer"]}
+            for key in ("width", "length", "cuts", "x1", "y1", "x2", "y2"):
+                if key in seg:
+                    g[key] = seg[key]
+            geom["segments"].append(g)
+        lines.append('*END')
+    import json
+    with open(path, 'w') as fh:
+        fh.write('\n'.join(lines) + '\n')
+    with open(path + '.json', 'w') as fh:
+        json.dump(geom, fh, indent=1)
+    return len(nets)
+
+
+# ----------------------------------------------------------------------------
 # Half 2: SPEF writer  (the exact dialect spef.py parses; pure, self-tested)
 # ----------------------------------------------------------------------------
 def write_spef(nets, path, design="extracted") -> int:
@@ -334,6 +442,44 @@ def _self_test_routing() -> int:
     return 0
 
 
+def _self_test_detail() -> int:
+    """Round-trip the distributed EM SPEF + geometry sidecar through BOTH spef.py
+    (RC still sums) and hotspot.build_segments (geometry aligns, Imax set). No klayout."""
+    import tempfile, json
+    import spef
+    nets = [{"net": "pad_drv", "c": 30e-15, "segs": [
+        {"layer": "met1", "width": 0.5, "length": 5.0, "r": 1.25,
+         "x1": 10, "y1": 20, "x2": 15, "y2": 20},
+        {"layer": "mcon", "cuts": 4, "r": 2.325, "x1": 15, "y1": 20, "x2": 15, "y2": 20},
+        {"layer": "met3", "width": 4.0, "length": 20.0, "r": 0.235,
+         "x1": 15, "y1": 20, "x2": 90, "y2": 20}]}]
+    d = tempfile.mkdtemp(prefix="k2sd_")
+    p = os.path.join(d, "det.spef")
+    write_detail_spef(nets, p, design="selftest")
+    # spef.py: the 3 chained *RES rows sum to the net's lumped R
+    cw, rw = spef.net_loads(open(p).read())["pad_drv"]
+    if abs(rw - (1.25 + 2.325 + 0.235)) > 1e-6 or abs(cw - 30e-15) > 1e-18:
+        print(f"SELF-TEST FAIL (detail): net_loads {cw:g},{rw:g}"); return 1
+    # geometry sidecar aligns with *RES ids -> hot-spot builds & limits the segments
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import hotspot
+    segs, _ = hotspot.build_segments(open(p).read(), p + ".json")
+    by = {(s.net, s.sid): s for s in segs}
+    neck = by[("pad_drv", "1")]
+    if neck.layer != "met1" or abs(neck.width - 0.5) > 1e-9:
+        print(f"SELF-TEST FAIL (detail): neck geometry {neck}"); return 1
+    if abs(neck.imax["avg"] - 0.395e-3) > 1e-12:                # 0.79mA/um * 0.5um
+        print(f"SELF-TEST FAIL (detail): neck Imax {neck.imax}"); return 1
+    via = by[("pad_drv", "2")]
+    if not via.is_via or via.cuts != 4:
+        print(f"SELF-TEST FAIL (detail): via {via}"); return 1
+    if len(json.load(open(p + ".json"))["segments"]) != 3:
+        print("SELF-TEST FAIL (detail): sidecar segment count"); return 1
+    print("self-test OK (detail): distributed EM SPEF sums to 1.81ohm in spef.py AND "
+          "aligns with the geometry sidecar -> hot-spot neck met1 0.5um Imax_avg 0.395mA")
+    return 0
+
+
 def _load_model_cells(path):
     if not path:
         return ()
@@ -349,6 +495,9 @@ def main(argv=None):
     ap.add_argument("--top", help="top cell (auto-detect if omitted)")
     ap.add_argument("--routing-only", action="store_true",
                     help="emit routing-only SPEF (cell-internal nets dropped) + *CONN + .json")
+    ap.add_argument("--detail", action="store_true",
+                    help="emit DISTRIBUTED EM SPEF (per-layer/via *RES segments) + a "
+                         "geometry sidecar .json for hot-spot electromigration screening")
     ap.add_argument("--model-cells",
                     help="file of cell names to treat as opaque (one per line); "
                          "default = any circuit containing devices")
@@ -356,10 +505,16 @@ def main(argv=None):
                     help="round-trip the SPEF writers through spef.py (no klayout)")
     a = ap.parse_args(argv)
     if a.self_test:
-        return _self_test() or _self_test_routing()
+        return _self_test() or _self_test_routing() or _self_test_detail()
     if not a.gds:
         ap.error("a GDS file is required (or use --self-test)")
     design = os.path.splitext(os.path.basename(a.gds))[0]
+    if a.detail:
+        out = a.output or (os.path.splitext(a.gds)[0] + ".em.spef")
+        n = write_detail_spef(extract_detail_rc(a.gds, top_cell=a.top), out, design=design)
+        print(f"klayout2spef: wrote {n} nets (distributed EM SPEF) -> {out} (+ {out}.json)")
+        print(f"  now:  hotspot.py check {out} --harness <stim>   |   hotspot.py heatmap {out} -o em.svg")
+        return 0
     if a.routing_only:
         out = a.output or (os.path.splitext(a.gds)[0] + ".routing.spef")
         routes = extract_routing_rc(a.gds, model_cells=_load_model_cells(a.model_cells),

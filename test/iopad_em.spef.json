@@ -1,0 +1,17 @@
+{
+  "_comment": "hot-spot geometry sidecar for iopad_em.spef. One entry per *RES row, keyed (net,id). layer+width -> per-segment Imax; x1,y1,x2,y2 (um) place it on the heat-map. This is the schema klayout2spef.py net_geometry_detail() emits.",
+  "units": {"r": "ohm", "len": "um", "coord": "um"},
+  "design": "sky130_gpiov2_out_slice",
+  "segments": [
+    {"net": "pad_drv", "id": "1", "layer": "met1", "width": 0.5, "length": 5.0,  "x1": 10, "y1": 20, "x2": 15, "y2": 20, "note": "driver output neck"},
+    {"net": "pad_drv", "id": "2", "layer": "mcon", "cuts": 4,                     "x1": 15, "y1": 20, "x2": 15, "y2": 20, "note": "li/met1->met2 via array"},
+    {"net": "pad_drv", "id": "3", "layer": "met2", "width": 2.0, "length": 40.0, "x1": 15, "y1": 20, "x2": 55, "y2": 20, "note": "main route"},
+    {"net": "pad_drv", "id": "4", "layer": "via2", "cuts": 2,                     "x1": 55, "y1": 20, "x2": 55, "y2": 20, "note": "met2->met3 via"},
+    {"net": "pad_drv", "id": "5", "layer": "met3", "width": 4.0, "length": 20.0, "x1": 55, "y1": 20, "x2": 90, "y2": 20, "note": "wide metal to pad"},
+
+    {"net": "vdd_rail", "id": "1", "layer": "met3", "width": 8.0, "length": 15.0, "x1": 8,  "y1": 40, "x2": 8,  "y2": 20, "note": "VDDIO rail"},
+    {"net": "vss_rail", "id": "1", "layer": "met3", "width": 8.0, "length": 15.0, "x1": 90, "y1": 5,  "x2": 90, "y2": 20, "note": "VSSIO rail"},
+
+    {"net": "sig_in",  "id": "1", "layer": "met1", "width": 0.3, "length": 12.0, "x1": 0,  "y1": 10, "x2": 12, "y2": 10, "note": "control signal"}
+  ]
+}

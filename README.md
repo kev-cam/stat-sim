@@ -243,6 +243,63 @@ the sampled value (no 50/50 wrong-capture); `T0` feeds the analytic MTBF
 (`genmodel.mtbf`), not per-trial entry, which is deterministic within the setup
 aperture; the `d.p1 >= d.p0` tie-break is 1-biased.
 
+## hot-spot — electromigration screening from SPEF
+
+The same layout→SPEF→behavioral-model machinery answers a second reliability
+question: **electromigration (EM)**. `hot-spot` (`hotspot.py`) is the `-bfit`
+pattern applied to *interconnect* — the "structure" it recognizes is a wire
+segment and the smart behavioral model it substitutes is an **EM-aware wire that
+knows its own current-density limit** (from its layer + width) and alerts when the
+current through it is likely to migrate metal. Two modes, both driven from the
+extracted-parasitic SPEF:
+
+- **`instrument` / `check`** — replace every SPEF wire segment with a
+  `statsim_em_wire` model (an ammeter-wrapped resistor by default; the portable
+  `models/statsim_em_wire.vams` with `--va`), simulate on any engine (ngspice /
+  Xyce via bfit's `SimDriver`), reduce each segment's current to **(avg, rms,
+  peak)** and **print EM alerts** for every segment over limit — exit nonzero if
+  any is. The node names are the SPEF's own, so the instrumented deck either
+  back-annotates your design or runs stand-alone with a `--harness`.
+- **`heatmap`** — the same risk numbers painted onto the layout: a self-contained
+  SVG coloured by `I/Jmax` (log-scaled above the limit) with the wire drawn at its
+  real coordinates and width, plus a ranked CSV of the worst segments.
+
+**How EM is judged.** A foundry states EM as a maximum current per micron of wire
+width (metals) or per via cut (vias), separately for average current (mass
+transport / Black), rms (Joule self-heat) and peak. So for width *W* on layer *L*,
+`Imax = Jlin[L,kind]·W` — no film thickness needed, exactly what a sign-off EM
+checker screens. The width comes from geometry: `klayout2spef.py`'s analytic model
+already derives per-layer `avg_w = 2·area/perimeter`, so the extractor that
+produces the RC also produces the widths. The per-layer limit table
+(`hotspot.EM_RULES`) is *representative* sky130 (order-of-magnitude, per the
+project's ~1 % inter-engine tolerance philosophy); override with `--em-rules`.
+
+**Where the geometry comes from.** EM is per-segment (the narrow neck fails first),
+so hot-spot reads a *distributed* SPEF (one `*RES` per wire piece) plus a JSON
+**geometry sidecar** (layer/width/length/coordinates per segment).
+`klayout2spef.py --detail design.gds` emits both from a real GDS — the same
+SPEF-in/SPEF-out, tool-agnostic contract as the routing-only flow, so it also runs
+on OpenRCX / magic / commercial SPEF with a matching sidecar. `spef.py`'s
+`net_loads()` still sums the distributed rows to the same `(c_wire, r_wire)`, so
+the CDC timing path is unaffected.
+
+```sh
+# real flow (Linux + klayout):
+klayout2spef.py --detail sky130_ef_io__gpiov2_pad.gds -o gpio.em.spef
+hotspot.py check   gpio.em.spef --harness stim.sp          # -> EM alerts, nonzero exit if over
+hotspot.py heatmap gpio.em.spef --harness stim.sp -o gpio.em.svg --csv gpio.em.csv
+
+# runnable here with no klayout (WSL ngspice) -- the sky130 IO-pad test case:
+hotspot.py check   test/iopad_em.spef --harness test/iopad_em.harness.sp
+hotspot.py --self-test           # physics + SPEF pass + instrument + SVG, no simulator
+```
+
+**Worked example** (`test/hotspot_iopad_demo.md`): a GPIO output slice's 0.5 µm
+met1 driver neck runs **61× over** its peak EM limit (≈0 % of nominal lifetime),
+the via array 32×, the met2 route 15×, the wide met3 pad metal 5.6×, and the power
+rails ~2.5–2.8× — while the thin control signal stays green. The heat-map
+(`test/iopad_em.em.svg`) shows exactly where on the pad the metal is at risk.
+
 ## CDC detection test case
 
 `test/cdc_latch_tb.vhd` is a runnable end-to-end CDC demo. A regular 4-state

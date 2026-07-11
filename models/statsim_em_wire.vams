@@ -1,0 +1,53 @@
+// SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+// SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+// Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.
+//
+// statsim_em_wire -- the "smart behavioral wire" hot-spot substitutes for an
+// interconnect segment (hotspot.py instrument --va). It is a plain resistor for
+// the solver, but it KNOWS its own electromigration current limit (from its
+// layer+width, passed in as imax_*) and $strobe's an alert the instant its
+// current density crosses the peak limit, plus a one-line end-of-run summary.
+// This is the inline, during-simulation form of the alert; the default
+// (ammeter) path has hot-spot compute avg/rms/peak from the waveform instead.
+//
+// Portable Verilog-A: runs under ngspice+OpenVAF (`.hdl "statsim_em_wire.vams"`)
+// or Xyce via PyMS/VAE. Kept deliberately simple (cross()+$strobe, a running
+// peak) so it compiles on OpenVAF, which targets compact device models.
+`include "disciplines.vams"
+
+module statsim_em_wire(a, b);
+    inout a, b;
+    electrical a, b;
+    parameter real    r         = 1.0 from (0:inf); // segment resistance (ohm)
+    parameter real    imax_avg  = 0.0;              // EM avg-current limit  (A); 0 disables
+    parameter real    imax_rms  = 0.0;              // Joule self-heat limit (A)
+    parameter real    imax_peak = 0.0;              // short-pulse limit     (A)
+    parameter integer verbose   = 1;                // 0 = silent (solver-only resistor)
+    (* desc = "net:seg layer w=..  (alert label)" *) parameter string seg = "wire";
+    integer alerted;
+    real ipeak;
+
+    analog begin
+        @(initial_step) begin
+            alerted = 0;
+            ipeak   = 0.0;
+        end
+        I(a, b) <+ V(a, b) / r;                      // the wire itself
+        if (abs(I(a, b)) > ipeak)
+            ipeak = abs(I(a, b));
+        // inline alert the first time the current density crosses the peak limit
+        @(cross(abs(I(a, b)) - imax_peak, +1)) begin
+            if (verbose && imax_peak > 0.0 && alerted == 0) begin
+                $strobe("hot-spot EM ALERT [%s]: |I|=%g A crossed peak Imax=%g A (J-ratio %.2f)",
+                        seg, abs(I(a, b)), imax_peak, abs(I(a, b)) / imax_peak);
+                alerted = 1;
+            end
+        end
+        @(final_step) begin
+            if (verbose && imax_peak > 0.0)
+                $strobe("hot-spot EM [%s]: run peak |I|=%g A vs Imax_peak=%g A (%.2fx)%s",
+                        seg, ipeak, imax_peak, ipeak / imax_peak,
+                        (ipeak > imax_peak) ? "  <-- OVER LIMIT" : "");
+        end
+    end
+endmodule

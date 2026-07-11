@@ -18,13 +18,27 @@ fail=0
 say() { printf '\n=== %s ===\n' "$1"; }
 
 say "Python self-tests"
-for m in disc spef genmodel nvcgen klayout2spef; do
+for m in disc spef genmodel nvcgen klayout2spef hotspot; do
   if $PY "$m.py" --self-test 2>/dev/null || $PY "$m.py" 2>/dev/null; then
     :
   else
     echo "FAIL: $m.py"; fail=1
   fi
 done
+
+# hot-spot end-to-end EM screen on the IO-pad test case (needs ngspice; skipped if absent)
+say "hot-spot: EM check on the sky130 IO-pad slice"
+if command -v "${HOTSPOT_NGSPICE:-ngspice}" >/dev/null 2>&1; then
+  # exit 1 == EM violations found (expected for this stress deck); assert the neck alert
+  out=$($PY hotspot.py check test/iopad_em.spef --harness test/iopad_em.harness.sp 2>&1)
+  if echo "$out" | grep -q "pad_drv:1"  && echo "$out" | grep -qi "OVER-LIMIT"; then
+    echo "PASS: hot-spot EM check flags the met1 driver neck"
+  else
+    echo "FAIL: hot-spot EM check"; fail=1
+  fi
+else
+  echo "ngspice not found -- skipping hot-spot live EM run (self-test already covers the physics)"
+fi
 
 say "regenerate the generated cell set from the spec"
 $PY genmodel.py --spec specs/sky130_dfxtp.json --out models >/dev/null || fail=1
