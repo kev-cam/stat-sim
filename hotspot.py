@@ -57,12 +57,21 @@ if _BFIT not in sys.path:
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 # ---------------------------------------------------------------------------
-# EM rules -- representative sky130 max current-density limits.
+# EM rules -- per-layer max current-density limits.
 #   metal[L][kind]  = amps per micron of drawn WIDTH   (kind in avg|rms|peak)
 #   via[V][kind]    = amps per via CUT
 # avg  -> DC / mass-transport EM (Black);  rms -> Joule self-heat;  peak -> short pulse.
-# These are order-of-magnitude placeholders in the spirit of klayout2spef.py's
-# RSH/CAREA constants -- override the whole table with `--em-rules rules.json`.
+# A missing kind (value absent) means "not specified by this PDK" -> hot-spot does
+# not screen that kind (rather than inventing a number).
+#
+# THE sky130 TABLE BELOW IS AN ESTIMATE, NOT A FOUNDRY RULE. SkyWater publishes no
+# official EM limits for sky130 -- the periphery rules mark electromigration as
+# rule x.4 "NC" (not checked by DRC); the only public numbers are community
+# cross-section estimates. So these are hot-spot's estimates (Al J~1-2 mA/um^2 x
+# layer thickness), fine for a screening demo but NOT sign-off. For REAL foundry
+# numbers use a PDK that ships them: `--lef <pdk>_tech.lef` reads DCCURRENTDENSITY
+# straight from the LEF (e.g. IHP SG13G2 -> rules/ihp_sg13g2.em.json, real), or
+# `--em-rules rules.json`.
 # ---------------------------------------------------------------------------
 EM_RULES = {
     "metal": {
@@ -78,7 +87,45 @@ EM_RULES = {
         "via2":  {"avg": 0.38e-3, "rms": 0.65e-3, "peak": 0.90e-3},
     },
     "black_n": 2.0,     # Black's-equation current exponent for the relative-MTTF derate
+    "_provenance": ("ESTIMATE -- sky130 has no official EM rules (periphery rule x.4 "
+                    "is NC / not checked); community cross-section estimate. Use "
+                    "--lef or --em-rules for real foundry numbers."),
 }
+
+
+def em_rules_from_lef(path, black_n=2.0):
+    """Read REAL per-layer EM limits straight from a LEF tech file's
+    `DCCURRENTDENSITY AVERAGE` -- the authoritative-PDK path. Routing layers give
+    mA per micron of WIDTH, cut layers give mA per via; hot-spot stores them as
+    amps. Only the DC/average (mass-transport) limit lives in LEF -- rms/peak
+    (LEF ACCURRENTDENSITY tables) aren't provided by e.g. IHP, so those kinds stay
+    unset and are not screened. Point this at the PDK's own tech LEF, e.g.
+    IHP-Open-PDK/ihp-sg13g2/libs.ref/sg13g2_stdcell/lef/sg13g2_tech.lef."""
+    metal, via, cur, typ = {}, {}, None, None
+    for raw in open(path):
+        t = raw.split()
+        if not t:
+            continue
+        if t[0] == "LAYER" and len(t) >= 2:
+            cur, typ = t[1], None
+        elif t[0] == "END":
+            cur = typ = None
+        elif cur is not None and t[0] == "TYPE" and len(t) >= 2:
+            typ = t[1]
+        elif cur is not None and t[0] == "DCCURRENTDENSITY" and len(t) >= 3 and t[1] == "AVERAGE":
+            try:
+                a = float(t[2]) * 1e-3           # mA -> A (per um width / per cut)
+            except ValueError:
+                continue
+            if typ == "ROUTING":
+                metal[cur] = {"avg": a}
+            elif typ == "CUT":
+                via[cur] = {"avg": a}
+    if not metal and not via:
+        raise SystemExit(f"em_rules_from_lef: no DCCURRENTDENSITY AVERAGE found in {path}")
+    return {"metal": metal, "via": via, "black_n": black_n,
+            "_provenance": f"REAL -- LEF DCCURRENTDENSITY AVERAGE (DC/mass-transport, "
+                           f"mA/um width & mA/via) from {os.path.basename(path)}"}
 
 VIA_LAYERS = ("licon", "mcon", "via1", "via2")
 METAL_LAYERS = ("li", "met1", "met2", "met3")
@@ -89,28 +136,45 @@ DEFAULT_LAYER = "met1"
 
 
 def load_em_rules(path):
-    """Merge a user rules JSON over the defaults (deep, per layer/kind)."""
+    """Load an EM rules JSON. A file that defines `metal`/`via` REPLACES the
+    built-in table (that's the point -- your PDK's numbers, not the sky130
+    estimate); set `"extends":"builtin"` to instead layer over the defaults. A
+    file with neither key is treated as a partial per-layer override of the
+    built-in. Carries a `_provenance` string into the report."""
     if not path:
         return EM_RULES
-    user = json.load(open(path))
-    out = {"metal": {k: dict(v) for k, v in EM_RULES["metal"].items()},
-           "via": {k: dict(v) for k, v in EM_RULES["via"].items()},
-           "black_n": EM_RULES["black_n"]}
-    for grp in ("metal", "via"):
-        for lyr, kinds in (user.get(grp) or {}).items():
-            out[grp].setdefault(lyr, {}).update(kinds)
-    if "black_n" in user:
-        out["black_n"] = user["black_n"]
+    doc = json.load(open(path))
+    if "metal" not in doc and "via" not in doc:                 # partial override
+        out = {"metal": {k: dict(v) for k, v in EM_RULES["metal"].items()},
+               "via": {k: dict(v) for k, v in EM_RULES["via"].items()},
+               "black_n": doc.get("black_n", EM_RULES["black_n"]),
+               "_provenance": f"built-in sky130 estimate + overrides from {os.path.basename(path)}"}
+        for grp in ("metal", "via"):
+            for lyr, kinds in (doc.get(grp) or {}).items():
+                out[grp].setdefault(lyr, {}).update(kinds)
+        return out
+    out = {"metal": {k: dict(v) for k, v in doc.get("metal", {}).items()},
+           "via": {k: dict(v) for k, v in doc.get("via", {}).items()},
+           "black_n": doc.get("black_n", EM_RULES["black_n"]),
+           "_provenance": doc.get("_provenance", f"user rules {os.path.basename(path)}")}
+    if doc.get("extends") == "builtin":
+        for grp in ("metal", "via"):
+            merged = {k: dict(v) for k, v in EM_RULES[grp].items()}
+            merged.update(out[grp])
+            out[grp] = merged
     return out
 
 
 def imax(layer, kind, width_um=0.0, cuts=0, rules=EM_RULES):
     """The current limit (amps) for one segment: Jlin*W for a metal, Jcut*N for a
-    via. Unknown layer -> None (geometry-blind segment, skipped in the check)."""
-    if layer in rules["metal"]:
-        return rules["metal"][layer][kind] * max(width_um, 0.0)
-    if layer in rules["via"]:
-        return rules["via"][layer][kind] * max(cuts, 0)
+    via. Returns None for an unknown layer OR a kind this PDK doesn't specify
+    (e.g. IHP gives only avg) -- an unscreened kind, not a zero limit."""
+    if layer in rules.get("metal", {}):
+        j = rules["metal"][layer].get(kind)
+        return None if j is None else j * max(width_um, 0.0)
+    if layer in rules.get("via", {}):
+        j = rules["via"][layer].get(kind)
+        return None if j is None else j * max(cuts, 0)
     return None
 
 
@@ -361,6 +425,7 @@ def check_report(segments, ammeters, currents, rules=EM_RULES, out=sys.stdout):
     rows.sort(key=lambda sr: sr[1]["worst"], reverse=True)
     nviol = sum(1 for _, r in rows if r["worst"] > 1.0)
     out.write("\n=== hot-spot EM current-density report ===\n")
+    out.write(f"rules: {rules.get('_provenance', 'built-in')}\n")
     out.write(f"{'segment':<22}{'layer':<7}{'w(um)':>7}{'I_avg':>11}"
               f"{'Imax_avg':>11}{'worst':>8}  verdict\n")
     for seg, r in rows:
@@ -520,7 +585,10 @@ def main(argv=None):
     def common(p, need_out=False):
         p.add_argument("spef", nargs="?", help="input SPEF")
         p.add_argument("--geom", help="geometry sidecar JSON (default <spef>.json)")
-        p.add_argument("--em-rules", help="override EM current-density limits (JSON)")
+        p.add_argument("--em-rules", help="EM current-density limits (JSON); a file with "
+                       "metal/via REPLACES the built-in sky130 estimate")
+        p.add_argument("--lef", help="read REAL EM limits from a PDK tech LEF's "
+                       "DCCURRENTDENSITY (e.g. IHP sg13g2_tech.lef); wins over --em-rules")
         p.add_argument("--default-width", type=float, default=DEFAULT_WIDTH,
                        help="assumed width (um) for geometry-blind segments")
 
@@ -548,7 +616,10 @@ def main(argv=None):
     ap.add_argument("--self-test", action="store_true", help=argparse.SUPPRESS)
     a = ap.parse_args(argv)
 
-    rules = load_em_rules(getattr(a, "em_rules", None))
+    if getattr(a, "lef", None):
+        rules = em_rules_from_lef(a.lef)
+    else:
+        rules = load_em_rules(getattr(a, "em_rules", None))
     if not a.spef:
         ap.error("a SPEF file is required")
     geom = a.geom or (a.spef + ".json" if os.path.exists(a.spef + ".json") else None)
@@ -676,6 +747,22 @@ def _self_test():
     assert svg.startswith("<svg") and svg.rstrip().endswith("</svg>") and "<line" in svg
     csv = heatmap_csv(rows)
     assert csv.splitlines()[0].startswith("net,seg,layer") and len(csv.splitlines()) == 5
+    # 8. REAL rules parsed from a LEF (IHP-style DCCURRENTDENSITY) + unspecified-kind
+    lef = os.path.join(d, "t.lef")
+    open(lef, "w").write(
+        "LAYER Metal1\n  TYPE ROUTING ;\n  THICKNESS 0.40 ;\n"
+        "  DCCURRENTDENSITY AVERAGE 1 ; #mA/um\nEND Metal1\n"
+        "LAYER Via1\n  TYPE CUT ;\n  DCCURRENTDENSITY AVERAGE 0.4 ;\nEND Via1\n")
+    ihp = em_rules_from_lef(lef)
+    assert abs(ihp["metal"]["Metal1"]["avg"] - 1e-3) < 1e-12
+    assert abs(ihp["via"]["Via1"]["avg"] - 0.4e-3) < 1e-12 and "REAL" in ihp["_provenance"]
+    assert imax("Metal1", "avg", width_um=2.0, rules=ihp) == 2e-3       # 1mA/um * 2um
+    assert imax("Metal1", "peak", width_um=2.0, rules=ihp) is None      # LEF has no peak
+    nseg = Segment(net="n", sid="1", n1="a", n2="b", r=1.0, layer="Metal1", width=0.5)
+    nseg.set_limits(ihp)
+    assert abs(nseg.imax["avg"] - 0.5e-3) < 1e-12 and nseg.imax["peak"] is None
+    ir = risk(nseg, 20e-3, 25e-3, 40e-3, ihp)      # 20mA avg / 0.5mA = 40x; rms/peak unscreened
+    assert abs(ir["ratio"]["avg"] - 40.0) < 1e-6 and ir["ratio"]["peak"] == 0.0 and abs(ir["worst"] - 40.0) < 1e-6
     print("self-test OK: imax(met1 0.5um)=0.395mA; neck 20mA -> %.0fx over, "
           "rel-MTTF %.2e; %d/%d segs over limit; SVG+CSV render"
           % (risk(neck, 20e-3, 22e-3, 36e-3)["worst"],

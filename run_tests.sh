@@ -32,9 +32,17 @@ if command -v "${HOTSPOT_NGSPICE:-ngspice}" >/dev/null 2>&1; then
   # exit 1 == EM violations found (expected for this stress deck); assert the neck alert
   out=$($PY hotspot.py check test/iopad_em.spef --harness test/iopad_em.harness.sp 2>&1)
   if echo "$out" | grep -q "pad_drv:1"  && echo "$out" | grep -qi "OVER-LIMIT"; then
-    echo "PASS: hot-spot EM check flags the met1 driver neck"
+    echo "PASS: hot-spot EM check flags the met1 driver neck (sky130 estimate)"
   else
     echo "FAIL: hot-spot EM check"; fail=1
+  fi
+  # same circuit screened against the REAL IHP SG13G2 limits (from the PDK LEF)
+  out=$($PY hotspot.py check test/iopad_em.spef --harness test/iopad_em.harness.sp \
+            --geom test/iopad_em.ihp.json --em-rules rules/ihp_sg13g2.em.json 2>&1)
+  if echo "$out" | grep -q "REAL --" && echo "$out" | grep -q "Metal1"; then
+    echo "PASS: hot-spot EM check with real IHP SG13G2 rules"
+  else
+    echo "FAIL: hot-spot EM check (IHP rules)"; fail=1
   fi
 else
   echo "ngspice not found -- skipping hot-spot live EM run (self-test already covers the physics)"

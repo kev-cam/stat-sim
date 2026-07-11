@@ -270,9 +270,27 @@ transport / Black), rms (Joule self-heat) and peak. So for width *W* on layer *L
 `Imax = Jlin[L,kind]·W` — no film thickness needed, exactly what a sign-off EM
 checker screens. The width comes from geometry: `klayout2spef.py`'s analytic model
 already derives per-layer `avg_w = 2·area/perimeter`, so the extractor that
-produces the RC also produces the widths. The per-layer limit table
-(`hotspot.EM_RULES`) is *representative* sky130 (order-of-magnitude, per the
-project's ~1 % inter-engine tolerance philosophy); override with `--em-rules`.
+produces the RC also produces the widths.
+
+**Where the limit numbers come from — real vs estimate.** sky130 publishes **no
+official EM rules**: its periphery rules mark electromigration as rule x.4 *"NC"*
+(not checked by DRC), so hot-spot's built-in sky130 table (`hotspot.EM_RULES`) is
+an honest **estimate** (Al cross-section), fine for the demo but not sign-off. For
+**real foundry numbers**, point hot-spot at a PDK that ships them:
+`--lef <pdk>_tech.lef` reads `DCCURRENTDENSITY` straight from the LEF. The IHP
+Open-PDK **SG13G2** does — `em_rules_from_lef()` extracts its real limits
+(Metal1 1.0, Metal2–5 2.0, TopMetal1/2 15/16 mA/µm; vias 0.4–10 mA/cut, DC/average
+only) into `rules/ihp_sg13g2.em.json`. A rules JSON with `metal`/`via` **replaces**
+the estimate; a kind the PDK doesn't specify (IHP gives only avg) is **not
+screened** rather than guessed. The report header always prints which ruleset was
+used.
+
+```sh
+# screen with REAL IHP SG13G2 limits (straight from the PDK LEF, or the cached json)
+hotspot.py check design.em.spef --harness stim.sp \
+  --lef .../IHP-Open-PDK/ihp-sg13g2/libs.ref/sg13g2_stdcell/lef/sg13g2_tech.lef
+hotspot.py check design.em.spef --harness stim.sp --em-rules rules/ihp_sg13g2.em.json
+```
 
 **Where the geometry comes from.** EM is per-segment (the narrow neck fails first),
 so hot-spot reads a *distributed* SPEF (one `*RES` per wire piece) plus a JSON

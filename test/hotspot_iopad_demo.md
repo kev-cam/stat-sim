@@ -87,10 +87,43 @@ For a segment of width *W* on layer *L*, the limit is `Imax = Jlin[L,kind] · W`
 (metals) or `Jcut[V,kind] · cuts` (vias), for `kind ∈ {avg (EM/mass transport),
 rms (Joule self-heat), peak}` — exactly how a foundry states EM and how a sign-off
 checker screens it, with no film thickness needed. The relative-MTTF figure is
-Black's-equation `(Imax_avg/I_avg)ⁿ` (n≈2). The per-layer numbers in
-`hotspot.EM_RULES` are **representative** sky130 figures (order-of-magnitude, in
-the project's inter-engine ~1 % tolerance spirit) — refine them from the PDK's
-current-density rules or pass `--em-rules rules.json`.
+Black's-equation `(Imax_avg/I_avg)ⁿ` (n≈2).
+
+**Real numbers vs estimate.** sky130 publishes **no official EM rules** — its
+periphery rules mark electromigration as rule x.4 *"NC"* (not checked by DRC), so
+the built-in `hotspot.EM_RULES` sky130 table is an honest **estimate** (this run's
+header says so). For real foundry numbers, hot-spot reads a PDK's LEF directly:
+
+## Real IHP SG13G2 limits (from the PDK LEF)
+
+The IHP Open-PDK SG13G2 tech LEF *does* carry current-density rules
+(`DCCURRENTDENSITY AVERAGE`, DC/mass-transport, mA/µm of width and mA/via).
+`em_rules_from_lef()` extracts them into `rules/ihp_sg13g2.em.json`; screening the
+same circuit (relayered via `test/iopad_em.ihp.json`) against the **real** numbers:
+
+```sh
+hotspot.py check test/iopad_em.spef --harness test/iopad_em.harness.sp \
+    --geom test/iopad_em.ihp.json --em-rules rules/ihp_sg13g2.em.json
+    #  (or  --lef .../ihp-sg13g2/.../sg13g2_tech.lef  to read the PDK directly)
+```
+
+```
+rules: REAL -- LEF DCCURRENTDENSITY AVERAGE (DC/mass-transport, mA/um width & mA/via) from sg13g2_tech.lef
+segment               layer    w(um)      I_avg   Imax_avg   worst  verdict
+pad_drv:1             Metal1     0.5  2.046e-02  5.000e-04   40.93  OVER-LIMIT (EM)   # 1.0 mA/um * 0.5um
+pad_drv:4             Via2         0  2.046e-02  8.000e-04   25.58  OVER-LIMIT (EM)   # 0.4 mA/cut * 2
+pad_drv:2             Via1         0  2.046e-02  1.600e-03   12.79  OVER-LIMIT (EM)   # 0.4 mA/cut * 4
+pad_drv:3             Metal2       2  2.046e-02  4.000e-03    5.12  OVER-LIMIT (EM)   # 2.0 mA/um * 2um
+pad_drv:5             Metal3       4  2.046e-02  8.000e-03    2.56  OVER-LIMIT (EM)
+vdd_rail:1            Metal3       8  2.046e-02  1.600e-02    1.28  OVER-LIMIT (EM)
+vss_rail:1            Metal3       8  2.040e-02  1.600e-02    1.27  OVER-LIMIT (EM)
+sig_in:1              Metal1     0.3  5.558e-07  3.000e-04    0.00  ok
+```
+
+IHP's LEF specifies only the DC/average limit, so hot-spot screens **avg only** and
+leaves rms/peak unscreened (not invented) — the Metal1 neck is 40.9× over the real
+IHP limit. The `--em-rules`/`--lef` path is PDK-agnostic: any tech LEF with
+`DCCURRENTDENSITY`, or any hand-written rules JSON, plugs in the same way.
 
 ## The real flow (on Linux, with klayout)
 
