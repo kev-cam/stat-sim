@@ -200,12 +200,12 @@ class Segment:
     cuts: int = 0       # via cut count
     x1: float = 0.0; y1: float = 0.0; x2: float = 0.0; y2: float = 0.0
     imax: dict = field(default_factory=dict)   # {kind: amps}
-
-    @property
-    def is_via(self):
-        return self.layer in VIA_LAYERS
+    is_via: bool = False                       # set by set_limits (rules-aware)
 
     def set_limits(self, rules):
+        # via-ness comes from the active ruleset (any PDK's via names) or a cut
+        # count -- NOT a hardcoded sky130 list, so IHP Via1/Via2 classify too.
+        self.is_via = (self.layer in rules.get("via", {})) or (self.cuts > 0)
         self.imax = {k: imax(self.layer, k, self.width, self.cuts, rules) for k in KINDS}
 
 
