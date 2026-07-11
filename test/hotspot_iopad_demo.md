@@ -139,3 +139,49 @@ hotspot.py heatmap gpio.em.spef -o gpio.em.svg
 `--detail` writes the same distributed SPEF + geometry-sidecar contract, so the
 EM screen is **SPEF-in / SPEF-out and tool-agnostic** — it also runs on OpenRCX,
 magic, or a commercial extractor's SPEF once a matching sidecar is supplied.
+
+## Real result: IHP `sg13g2_IOPadOut30mA`, extracted on clevo-lx
+
+Not a hand-authored stand-in — the actual IHP Open-PDK 30 mA output pad, run
+end-to-end with klayout on **clevo-lx** (klayout 0.30.9 venv):
+
+```sh
+# clevo-lx: extract the real pad GDS with the IHP tech
+klayout2spef.py --pdk ihp-sg13g2 --detail --flatten \
+    --top sg13g2_IOPadOut30mA \
+    IHP-Open-PDK/.../sg13g2_io/gds/sg13g2_io.gds -o iopad30.em.spef
+# -> 17 nets, 105 per-layer/via segments (Metal1..TopMetal2, Via1..TopVia2)
+
+# name the nets from their GDS text labels + a 30 mA rated-drive budget
+python3 test/iopad30_ihp_annotate.py
+# screen the real geometry against the real IHP LEF limits (no transient needed)
+hotspot.py heatmap test/iopad30_ihp.em.spef --em-rules rules/ihp_sg13g2.em.json \
+    --net-currents test/iopad30_ihp.currents.json -o test/iopad30_ihp.em.svg
+```
+
+The port (`klayout2spef.py --pdk ihp-sg13g2`) is a routing/EM connectivity tech:
+metal + via stack, **no device recognition** — the diffusion is left unconnected
+so a FET's source/drain stay separate metal nets, giving correct top-level routing
+nets. Net names (pad / iovdd / iovss / vdd / vss / drv_o_*) are recovered by
+probing the pad's GDS text labels with `l2n.probe_net`. The current is the pad's
+**30 mA rating** applied to the output + IO-supply nets (`--net-currents` — how EM
+sign-off consumes a power analysis); everything else — geometry and limits — is
+real foundry data.
+
+Result (`test/iopad30_ihp.em.*`): **30 of 105 segments over the real IHP EM
+limit.** The hot-spots are exactly where a real IO EM check flags them —
+
+| segment | layer | width | worst |
+|---------|-------|-------|-------|
+| `drv_o_n:1` / `drv_o_p:1` | Metal1 | **0.16 µm** | **188× / 187×** |
+| `iovdd:1` | Metal1 | 0.17 µm | 175× |
+| `iovdd_esd:1` | Metal1 | 0.54 µm | 56× |
+| `pad:1` | Metal1 | 0.76 µm | 39× |
+| `iovdd:8` | Via1 | 2 cut | 37× |
+| `pad:3–5` | Metal3–5 | 2.88 µm | 5.2× |
+| `iovss:1–3` (bus) | Metal3–5 | 19.3 µm | 0.78× — safe (grey) |
+
+— the transistor output funnelled onto minimum-width (0.16 µm) Metal1 and the
+under-sized 2-cut supply vias, while the wide 14–19 µm top-metal straps carry the
+30 mA comfortably. The heat-map (`test/iopad30_ihp.em.svg`) renders the pad in grey
+with those hot-spots in colour.
