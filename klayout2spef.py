@@ -141,7 +141,9 @@ TECHS = {
                "connect": _connect_sky130},
     "ihp-sg13g2": {"LAYER_MAP": IHP_LAYER_MAP, "RSH": IHP_RSH, "RVIA": IHP_RVIA,
                    "CAREA": IHP_CAREA, "CFRINGE": IHP_CFRINGE, "ROUTING": IHP_ROUTING,
-                   "VIA": IHP_VIA, "connect": _connect_ihp},
+                   "VIA": IHP_VIA, "connect": _connect_ihp,
+                   # connectivity-only (no devices/pins): purge would delete the nets
+                   "combine_devices": False, "purge": False},
 }
 
 
@@ -163,8 +165,6 @@ def _build_l2n(gds_path, top_cell=None, tech=None, flatten=False):
     layout.read(gds_path)
     dbu = layout.dbu
     tc = layout.cell(top_cell) if top_cell else layout.top_cells()[0]
-    if flatten:
-        tc.flatten(-1, True)
     l2n = kdb.LayoutToNetlist(kdb.RecursiveShapeIterator(layout, tc, []))
     layers = {}
     for name, (ln, dt) in tech["LAYER_MAP"].items():
@@ -173,9 +173,13 @@ def _build_l2n(gds_path, top_cell=None, tech=None, flatten=False):
     tech["connect"](kdb, l2n, layers)
     l2n.extract_netlist()
     netlist = l2n.netlist()
-    netlist.combine_devices()
-    netlist.purge()
-    return l2n, netlist, layers, dbu
+    if flatten:
+        netlist.flatten()                    # merge the cell hierarchy -> one flat net set
+    if tech.get("combine_devices", True):
+        netlist.combine_devices()
+    if tech.get("purge", True):
+        netlist.purge()                      # purge drops pinless nets -> OFF for a
+    return l2n, netlist, layers, dbu         # connectivity-only tech (IHP EM routing)
 
 
 def net_geometry_rc(l2n, net, layers, dbu, tech=None):
