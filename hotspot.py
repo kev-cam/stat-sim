@@ -458,24 +458,30 @@ def _verdict(worst):
 # ---------------------------------------------------------------------------
 # heatmap: SVG layout risk map + ranked CSV
 # ---------------------------------------------------------------------------
-# perceptual-ish risk ramp: green(ok) -> yellow(marginal) -> red(over) -> magenta/white(gross).
-# EM overshoot spans orders of magnitude (a neck can be 60x while a rail is 2x), so
-# above the 1x limit the ratio is LOG-compressed -- L = 1 + log10(worst) -- giving the
-# top end real gradient (1x->L1, 10x->L2, 100x->L3) instead of saturating.
-def _heat_level(worst):
-    return worst if worst <= 1.0 else 1.0 + math.log10(worst)
+# Risk colormap: render the layout as GREY where EM is within limit (it recedes,
+# reads as an ordinary layout plot) and COLOUR it up only where risk is over --
+# so the hot-spots pop. Below 1x: neutral grey, lightening with load. At/above 1x:
+# saturated heat orange->red->magenta->hot pink, LOG-scaled (1x,10x,100x) because
+# overshoot spans orders of magnitude (a neck at 40x vs a rail at 1.3x).
+def _rgb_hex(r, g, b):
+    return "#%02x%02x%02x" % tuple(max(0, min(255, round(c * 255))) for c in (r, g, b))
 
 
 def risk_color(worst):
-    stops = [(0.0, (0x2e, 0x86, 0x3a)), (0.5, (0xd9, 0xc7, 0x22)),   # green -> yellow
-             (1.0, (0xe0, 0x5a, 0x1a)), (1.5, (0xd0, 0x1f, 0x3a)),   # orange(1x) -> red(~3x)
-             (2.0, (0x9e, 0x1c, 0x8e)), (3.0, (0xf0, 0x9c, 0xf0))]   # magenta(10x) -> pink(100x)
-    L = max(0.0, min(_heat_level(worst), stops[-1][0]))
+    if worst < 1.0:                                    # under limit -> greyscale layout
+        g = 0.42 + 0.32 * max(0.0, worst)              # 0.42 (idle) .. 0.74 (near limit)
+        return _rgb_hex(g, g, g)
+    L = min(math.log10(worst), 2.0)                    # 0 (1x) .. 1 (10x) .. 2 (100x)
+    stops = [(0.0, (0.94, 0.55, 0.17)),                # orange  ~1x
+             (0.5, (0.88, 0.20, 0.15)),                # red     ~3x
+             (1.0, (0.78, 0.12, 0.42)),                # magenta ~10x
+             (1.6, (0.82, 0.23, 0.75)),                # pink    ~40x
+             (2.0, (1.00, 0.66, 0.94))]                # hot     ~100x
     for (a, ca), (b, cb) in zip(stops, stops[1:]):
         if L <= b:
             t = 0.0 if b == a else (L - a) / (b - a)
-            return "#%02x%02x%02x" % tuple(round(ca[i] + t * (cb[i] - ca[i])) for i in range(3))
-    return "#%02x%02x%02x" % stops[-1][1]
+            return _rgb_hex(*(ca[i] + t * (cb[i] - ca[i]) for i in range(3)))
+    return _rgb_hex(*stops[-1][1])
 
 
 def heatmap_svg(rows, width_px=900, pad=48, title="hot-spot EM heat-map"):
@@ -517,9 +523,9 @@ def heatmap_svg(rows, width_px=900, pad=48, title="hot-spot EM heat-map"):
     # legend
     ly = height_px - 34
     body.append(f'<text x="{pad}" y="{ly-6}" fill="#9aa4ad" font-size="12">'
-                f'EM risk  I / Imax  (worst of avg/rms/peak; log-scaled above 1x)</text>')
-    for i, (lab, val) in enumerate([("ok 0.5x", 0.5), ("limit 1x", 1.0),
-                                    ("3x", 3.0), ("10x", 10.0), ("60x", 60.0)]):
+                f'EM risk  I / Imax   (grey = within limit; colour = over, log-scaled)</text>')
+    for i, (lab, val) in enumerate([("under 1x", 0.4), ("limit 1x", 1.0),
+                                    ("3x", 3.0), ("10x", 10.0), ("40x", 40.0)]):
         x = pad + i * 150
         body.append(f'<rect x="{x}" y="{ly}" width="16" height="16" fill="{risk_color(val)}"/>')
         body.append(f'<text x="{x+22}" y="{ly+13}" fill="#c9d1d9" font-size="12">{lab}</text>')
