@@ -559,16 +559,34 @@ def heatmap_csv(rows):
 # ---------------------------------------------------------------------------
 # CLI
 # ---------------------------------------------------------------------------
-def _run(spef_text, geom, rules, sim, raw, harness, default_width):
-    """Shared path for check/heatmap: build segments, get currents, make rows."""
+def _run(spef_text, geom, rules, sim, raw, harness, default_width, net_currents=None):
+    """Shared path for check/heatmap: build segments, get currents, make rows.
+    Current source, in priority: a per-net current budget (--net-currents, no sim
+    needed -- how EM sign-off consumes a power analysis), else a rawfile (--raw),
+    else a transient sim of the instrumented deck."""
     segments, nets = build_segments(spef_text, geom, rules, default_width)
     deck, ammeters = instrument(segments, nets, harness=harness)
-    if raw:
+    if net_currents:
+        nc = json.load(open(net_currents)) if isinstance(net_currents, str) else net_currents
+        currents = {v: _net_current(nc, ammeters[v].net) for v in ammeters}
+    elif raw:
         currents = _currents_from_raw(raw, ammeters)
     else:
         currents = simulate_currents(deck, ammeters, sim=sim)
     rows = [(ammeters[v], risk(ammeters[v], *currents[v], rules)) for v in ammeters]
     return segments, nets, ammeters, currents, rows
+
+
+def _net_current(nc, net):
+    """A net's (avg,rms,peak) from a budget dict: {net: amps} (all three equal) or
+    {net: {avg,rms,peak}}. Missing net -> zero (unscreened)."""
+    x = nc.get(net)
+    if x is None:
+        return (0.0, 0.0, 0.0)
+    if isinstance(x, (int, float)):
+        return (float(x), float(x), float(x))
+    a = float(x.get("avg", 0.0))
+    return (a, float(x.get("rms", a)), float(x.get("peak", a)))
 
 
 def _currents_from_raw(path, ammeters):
@@ -597,6 +615,9 @@ def main(argv=None):
                        "DCCURRENTDENSITY (e.g. IHP sg13g2_tech.lef); wins over --em-rules")
         p.add_argument("--default-width", type=float, default=DEFAULT_WIDTH,
                        help="assumed width (um) for geometry-blind segments")
+        p.add_argument("--net-currents", help="JSON current budget {net: amps} or "
+                       "{net:{avg,rms,peak}} to screen against WITHOUT a sim/harness "
+                       "(e.g. a pad's rated drive current)")
 
     pi = sub.add_parser("instrument", help="rewrite SPEF wires as EM behavioral models")
     common(pi)
@@ -642,13 +663,13 @@ def main(argv=None):
 
     if a.cmd == "check":
         segments, nets, ammeters, currents, _ = _run(
-            spef_text, geom, rules, a.sim, a.raw, harness, a.default_width)
+            spef_text, geom, rules, a.sim, a.raw, harness, a.default_width, a.net_currents)
         nviol, _ = check_report(segments, ammeters, currents, rules)
         return 1 if nviol else 0
 
     if a.cmd == "heatmap":
         _, _, _, _, rows = _run(
-            spef_text, geom, rules, a.sim, a.raw, harness, a.default_width)
+            spef_text, geom, rules, a.sim, a.raw, harness, a.default_width, a.net_currents)
         outp = a.out or (os.path.splitext(a.spef)[0] + ".em.svg")
         open(outp, "w").write(heatmap_svg(rows))
         sys.stderr.write(f"hot-spot: wrote heat-map -> {outp}\n")
@@ -769,6 +790,14 @@ def _self_test():
     assert abs(nseg.imax["avg"] - 0.5e-3) < 1e-12 and nseg.imax["peak"] is None
     ir = risk(nseg, 20e-3, 25e-3, 40e-3, ihp)      # 20mA avg / 0.5mA = 40x; rms/peak unscreened
     assert abs(ir["ratio"]["avg"] - 40.0) < 1e-6 and ir["ratio"]["peak"] == 0.0 and abs(ir["worst"] - 40.0) < 1e-6
+    # 9. per-net current budget path (screen a design with NO sim/harness)
+    assert _net_current({"pad_drv": 5e-3}, "pad_drv") == (5e-3, 5e-3, 5e-3)
+    assert _net_current({"pad_drv": {"avg": 1e-3, "peak": 4e-3}}, "pad_drv") == (1e-3, 1e-3, 4e-3)
+    assert _net_current({}, "x") == (0.0, 0.0, 0.0)
+    _, _, _am2, _c2, rows2 = _run(_SAMPLE_SPEF, gp, EM_RULES, None, None, "",
+                                  DEFAULT_WIDTH, {"pad_drv": 20e-3})
+    neck_row = [r for s, r in rows2 if s.net == "pad_drv" and s.sid == "1"][0]
+    assert neck_row["ratio"]["avg"] > 40, neck_row   # 20mA through 0.5um met1 neck
     print("self-test OK: imax(met1 0.5um)=0.395mA; neck 20mA -> %.0fx over, "
           "rel-MTTF %.2e; %d/%d segs over limit; SVG+CSV render"
           % (risk(neck, 20e-3, 22e-3, 36e-3)["worst"],

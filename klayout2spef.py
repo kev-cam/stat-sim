@@ -50,6 +50,34 @@ LAYER_MAP = {
     'met3': (70, 20),
 }
 
+# --- IHP SG13G2 interconnect parameters --------------------------------------
+# Sourced from the PDK itself: RSH = RESISTANCE RPERSQ, RVIA = via RESISTANCE, and
+# C = CPERSQDIST / EDGECAPACITANCE (LEF pF -> fF, x1000) all from
+#   ihp-sg13g2/libs.ref/sg13g2_stdcell/lef/sg13g2_tech.lef ;
+# GDS layer numbers + the via stack from sg13g2.map / sg13_tech_info.py. 5 thin
+# metals (Metal1..5) + 2 thick top metals, 6 via layers. (Same DCCURRENTDENSITY
+# LEF that feeds hotspot's --lef EM limits.)
+IHP_RSH = {'Metal1': 0.135, 'Metal2': 0.103, 'Metal3': 0.103, 'Metal4': 0.103,
+           'Metal5': 0.103, 'TopMetal1': 0.021, 'TopMetal2': 0.0145}          # ohm/square
+IHP_RVIA = {'Via1': 20.0, 'Via2': 20.0, 'Via3': 20.0, 'Via4': 20.0,
+            'TopVia1': 4.0, 'TopVia2': 2.2}                                   # ohm/via
+IHP_CAREA = {'Metal1': 0.0349, 'Metal2': 0.0181, 'Metal3': 0.0120, 'Metal4': 0.00894,
+             'Metal5': 0.00713, 'TopMetal1': 0.00564, 'TopMetal2': 0.00323}   # fF/um^2
+IHP_CFRINGE = {'Metal1': 0.0316, 'Metal2': 0.0447, 'Metal3': 0.0448, 'Metal4': 0.0450,
+               'Metal5': 0.0437, 'TopMetal1': 0.0508, 'TopMetal2': 0.0418}    # fF/um
+IHP_ROUTING = ('Metal1', 'Metal2', 'Metal3', 'Metal4', 'Metal5', 'TopMetal1', 'TopMetal2')
+IHP_VIA = ('Via1', 'Via2', 'Via3', 'Via4', 'TopVia1', 'TopVia2')
+IHP_LAYER_MAP = {
+    'Metal1': (8, 0), 'Via1': (19, 0), 'Metal2': (10, 0), 'Via2': (29, 0),
+    'Metal3': (30, 0), 'Via3': (49, 0), 'Metal4': (50, 0), 'Via4': (66, 0),
+    'Metal5': (67, 0), 'TopVia1': (125, 0), 'TopMetal1': (126, 0),
+    'TopVia2': (133, 0), 'TopMetal2': (134, 0),
+}
+# (bottom_metal, cut, top_metal) for connectivity
+IHP_VIA_STACK = [('Metal1', 'Via1', 'Metal2'), ('Metal2', 'Via2', 'Metal3'),
+                 ('Metal3', 'Via3', 'Metal4'), ('Metal4', 'Via4', 'Metal5'),
+                 ('Metal5', 'TopVia1', 'TopMetal1'), ('TopMetal1', 'TopVia2', 'TopMetal2')]
+
 
 @dataclass
 class NetRC:
@@ -66,26 +94,9 @@ _OUT_PINS = {"out", "o", "q", "qn", "nq", "y", "z", "zn", "co", "cout", "x"}
 _PWR_PINS = {"vdd", "vss", "vpwr", "vgnd", "vnb", "vpb", "gnd", "vcc"}
 
 
-def _build_l2n(gds_path, top_cell=None):
-    """KLayout LayoutToNetlist setup (layers + NFET/PFET recognition + connectivity
-    + extract) -> (l2n, netlist, layers, dbu). Mirrors kestrel extract.py."""
-    try:
-        import klayout.db as kdb
-    except ImportError as e:
-        raise SystemExit(
-            "klayout2spef: the `klayout` module is required for extraction.\n"
-            "  pip install klayout   (cp39-cp313 wheels; this box's WSL py3.14 / "
-            "Cygwin py3.9 have none -- run on a Linux py3.10-3.13, e.g. a venv).\n"
-            f"  (import error: {e})")
-    layout = kdb.Layout()
-    layout.read(gds_path)
-    dbu = layout.dbu
-    tc = layout.cell(top_cell) if top_cell else layout.top_cells()[0]
-    l2n = kdb.LayoutToNetlist(kdb.RecursiveShapeIterator(layout, tc, []))
-    layers = {}
-    for name, (ln, dt) in LAYER_MAP.items():
-        li = layout.find_layer(ln, dt)
-        layers[name] = l2n.make_layer(li, name) if li is not None else l2n.make_layer(name)
+def _connect_sky130(kdb, l2n, layers):
+    """sky130 device recognition (NFET/PFET) + full connectivity (poly/li/metN,
+    contacts, and the diffusion S/D + gate regions). Mirrors kestrel extract.py."""
     gate = layers['poly'] & layers['diff']
     sd = layers['diff'] - layers['poly']
     nsd = (sd & layers['nsdm']) - layers['nwell']
@@ -107,6 +118,59 @@ def _build_l2n(gds_path, top_cell=None):
     l2n.connect(layers['mcon'], layers['met1']); l2n.connect(layers['met1'], layers['via1'])
     l2n.connect(layers['via1'], layers['met2']); l2n.connect(layers['met2'], layers['via2'])
     l2n.connect(layers['via2'], layers['met3'])
+
+
+def _connect_ihp(kdb, l2n, layers):
+    """IHP SG13G2 ROUTING connectivity (metal + via stack only). No device
+    recognition: EM screens the metal interconnect, and because the diffusion
+    (Activ) is not connected, a transistor's source/drain stay separate metal nets
+    -- so the top-level routing nets (pad, rails, signals) come out correctly
+    without modelling the FETs. Cont is intentionally excluded (device contact)."""
+    for ln in IHP_ROUTING + IHP_VIA:
+        l2n.connect(layers[ln])
+    for bot, cut, top in IHP_VIA_STACK:
+        l2n.connect(layers[bot], layers[cut])
+        l2n.connect(layers[cut], layers[top])
+
+
+# PDK registry: each tech bundles its GDS layer map, R/C constants, routing/via
+# layer sets, and its connectivity/device-recognition setup. `--pdk` selects one.
+TECHS = {
+    "sky130": {"LAYER_MAP": LAYER_MAP, "RSH": RSH, "RVIA": RVIA, "CAREA": CAREA,
+               "CFRINGE": CFRINGE, "ROUTING": ROUTING_LAYERS, "VIA": VIA_LAYERS,
+               "connect": _connect_sky130},
+    "ihp-sg13g2": {"LAYER_MAP": IHP_LAYER_MAP, "RSH": IHP_RSH, "RVIA": IHP_RVIA,
+                   "CAREA": IHP_CAREA, "CFRINGE": IHP_CFRINGE, "ROUTING": IHP_ROUTING,
+                   "VIA": IHP_VIA, "connect": _connect_ihp},
+}
+
+
+def _build_l2n(gds_path, top_cell=None, tech=None, flatten=False):
+    """KLayout LayoutToNetlist setup for the selected `tech` (layers + its
+    connectivity/device recognition + extract) -> (l2n, netlist, layers, dbu).
+    flatten=True collapses the top cell's hierarchy first, so a single cell (e.g.
+    one IO pad) extracts to one flat set of nets."""
+    tech = tech or TECHS["sky130"]
+    try:
+        import klayout.db as kdb
+    except ImportError as e:
+        raise SystemExit(
+            "klayout2spef: the `klayout` module is required for extraction.\n"
+            "  pip install klayout   (cp39-cp313 wheels; this box's WSL py3.14 / "
+            "Cygwin py3.9 have none -- run on a Linux py3.10-3.13, e.g. a venv).\n"
+            f"  (import error: {e})")
+    layout = kdb.Layout()
+    layout.read(gds_path)
+    dbu = layout.dbu
+    tc = layout.cell(top_cell) if top_cell else layout.top_cells()[0]
+    if flatten:
+        tc.flatten(-1, True)
+    l2n = kdb.LayoutToNetlist(kdb.RecursiveShapeIterator(layout, tc, []))
+    layers = {}
+    for name, (ln, dt) in tech["LAYER_MAP"].items():
+        li = layout.find_layer(ln, dt)
+        layers[name] = l2n.make_layer(li, name) if li is not None else l2n.make_layer(name)
+    tech["connect"](kdb, l2n, layers)
     l2n.extract_netlist()
     netlist = l2n.netlist()
     netlist.combine_devices()
@@ -114,11 +178,13 @@ def _build_l2n(gds_path, top_cell=None):
     return l2n, netlist, layers, dbu
 
 
-def net_geometry_rc(l2n, net, layers, dbu):
+def net_geometry_rc(l2n, net, layers, dbu, tech=None):
     """(C_farad, R_ohm) of one net from its own per-layer geometry (the wire only --
     a parent-owned routing net's shapes exclude the cell interior)."""
+    tech = tech or TECHS["sky130"]
+    rsh, rvia, carea, cfringe = tech["RSH"], tech["RVIA"], tech["CAREA"], tech["CFRINGE"]
     c_fF = r_ohm = 0.0
-    for lname in ROUTING_LAYERS:
+    for lname in tech["ROUTING"]:
         reg = l2n.shapes_of_net(net, layers[lname])
         a = p = 0.0
         for poly in reg.each():
@@ -126,18 +192,19 @@ def net_geometry_rc(l2n, net, layers, dbu):
         area, perim = a * dbu * dbu, p * dbu
         if area <= 0:
             continue
-        c_fF += CAREA[lname] * area + CFRINGE[lname] * perim
+        c_fF += carea[lname] * area + cfringe[lname] * perim
         avg_w = 2 * area / perim if perim > 0 else 0.0
         if avg_w > 0:
-            r_ohm += RSH[lname] * (perim / (2 * avg_w))      # ~ n_squares
-    for vname in VIA_LAYERS:
-        r_ohm += RVIA[vname] * l2n.shapes_of_net(net, layers[vname]).count()
+            r_ohm += rsh[lname] * (perim / (2 * avg_w))      # ~ n_squares
+    for vname in tech["VIA"]:
+        r_ohm += rvia[vname] * l2n.shapes_of_net(net, layers[vname]).count()
     return c_fF * 1e-15, r_ohm
 
 
-def extract_net_rc(gds_path, top_cell=None, skip=DEFAULT_SKIP) -> list:
+def extract_net_rc(gds_path, top_cell=None, skip=DEFAULT_SKIP, tech=None) -> list:
     """FULL extraction (every net, cell-internal + routing). Returns [NetRC]."""
-    l2n, netlist, layers, dbu = _build_l2n(gds_path, top_cell)
+    tech = tech or TECHS["sky130"]
+    l2n, netlist, layers, dbu = _build_l2n(gds_path, top_cell, tech)
     out, skip = [], set(skip)
     circuits = list(netlist.each_circuit())
     multi = len(circuits) > 1
@@ -146,7 +213,7 @@ def extract_net_rc(gds_path, top_cell=None, skip=DEFAULT_SKIP) -> list:
             nm = net.expanded_name()
             if nm in skip:
                 continue
-            c, r = net_geometry_rc(l2n, net, layers, dbu)
+            c, r = net_geometry_rc(l2n, net, layers, dbu, tech)
             out.append(NetRC(f"{circuit.name}/{nm}" if multi else nm, c, r))
     return out
 
@@ -175,12 +242,13 @@ def _classify_pins(net):
     return drv, recvs, ports
 
 
-def extract_routing_rc(gds_path, model_cells=(), top_cell=None, skip=DEFAULT_SKIP):
+def extract_routing_rc(gds_path, model_cells=(), top_cell=None, skip=DEFAULT_SKIP, tech=None):
     """ROUTING-ONLY extraction. Cell-internal nets are dropped (a "cell" = a
     circuit that contains devices, or whose name is in `model_cells`); inter-cell
     routing nets are kept with their wire R-C + a driver/receiver pin map. The
     kept nets are wire-only by construction (parent-owned). Returns [route dict]."""
-    l2n, netlist, layers, dbu = _build_l2n(gds_path, top_cell)
+    tech = tech or TECHS["sky130"]
+    l2n, netlist, layers, dbu = _build_l2n(gds_path, top_cell, tech)
     mc, skip = set(model_cells or ()), set(skip)
 
     def opaque(circ):                               # a behavioral-model cell (or a device cell)
@@ -197,7 +265,7 @@ def extract_routing_rc(gds_path, model_cells=(), top_cell=None, skip=DEFAULT_SKI
             drv, recvs, ports = _classify_pins(net)
             if drv is None and not recvs and not ports:
                 continue                            # dangling
-            c, r = net_geometry_rc(l2n, net, layers, dbu)
+            c, r = net_geometry_rc(l2n, net, layers, dbu, tech)
             routes.append({"net": f"{circuit.name}/{nm}",   # qualify -> unique across circuits
                            "circuit": circuit.name, "c": c, "r": r,
                            "driver": drv, "receivers": recvs, "ports": ports})
@@ -247,7 +315,7 @@ def write_routing_spef(routes, path, design="routing") -> int:
 # geometry sidecar hot-spot (hotspot.py) reads for electromigration screening.
 # Additive: net_geometry_rc / the writers above are untouched.
 # ----------------------------------------------------------------------------
-def net_geometry_detail(l2n, net, layers, dbu):
+def net_geometry_detail(l2n, net, layers, dbu, tech=None):
     """Break one net into per-layer metal segments + per-via-layer segments, with
     the WIDTH each carries -- the quantity an EM current-density screen needs
     (Imax = Jlin[layer]*width). Returns ([seg dict], c_farad). Same RSH/RVIA model
@@ -256,8 +324,10 @@ def net_geometry_detail(l2n, net, layers, dbu):
     A metal seg = {layer,width,length,area,r,x1,y1,x2,y2}; a via seg =
     {layer,cuts,r,x1,y1,x2,y2}. Coordinates are the net's per-layer bounding box
     (um) -- enough to place the segment on hot-spot's heat-map."""
+    tech = tech or TECHS["sky130"]
+    rsh, rvia, carea, cfringe = tech["RSH"], tech["RVIA"], tech["CAREA"], tech["CFRINGE"]
     segs, c_fF = [], 0.0
-    for lname in ROUTING_LAYERS:
+    for lname in tech["ROUTING"]:
         reg = l2n.shapes_of_net(net, layers[lname])
         a = p = 0.0
         for poly in reg.each():
@@ -265,23 +335,23 @@ def net_geometry_detail(l2n, net, layers, dbu):
         area, perim = a * dbu * dbu, p * dbu
         if area <= 0:
             continue
-        c_fF += CAREA[lname] * area + CFRINGE[lname] * perim
+        c_fF += carea[lname] * area + cfringe[lname] * perim
         avg_w = 2 * area / perim if perim > 0 else 0.0
         if avg_w <= 0:
             continue
         bb = reg.bbox()
         segs.append({"layer": lname, "width": round(avg_w, 4),
                      "length": round(area / avg_w, 4), "area": round(area, 4),
-                     "r": round(RSH[lname] * (perim / (2 * avg_w)), 4),
+                     "r": round(rsh[lname] * (perim / (2 * avg_w)), 4),
                      "x1": round(bb.left * dbu, 3), "y1": round(bb.bottom * dbu, 3),
                      "x2": round(bb.right * dbu, 3), "y2": round(bb.top * dbu, 3)})
-    for vname in VIA_LAYERS:
+    for vname in tech["VIA"]:
         reg = l2n.shapes_of_net(net, layers[vname])
         n = reg.count()
         if n <= 0:
             continue
         bb = reg.bbox()
-        segs.append({"layer": vname, "cuts": n, "r": round(RVIA[vname] * n, 4),
+        segs.append({"layer": vname, "cuts": n, "r": round(rvia[vname] * n, 4),
                      "x1": round((bb.left + bb.right) / 2 * dbu, 3),
                      "y1": round((bb.bottom + bb.top) / 2 * dbu, 3),
                      "x2": round((bb.left + bb.right) / 2 * dbu, 3),
@@ -289,9 +359,10 @@ def net_geometry_detail(l2n, net, layers, dbu):
     return segs, c_fF * 1e-15
 
 
-def extract_detail_rc(gds_path, top_cell=None, skip=DEFAULT_SKIP) -> list:
+def extract_detail_rc(gds_path, top_cell=None, skip=DEFAULT_SKIP, tech=None, flatten=False) -> list:
     """Per-net EM detail for every net. Returns [{"net","c","segs":[...]}]."""
-    l2n, netlist, layers, dbu = _build_l2n(gds_path, top_cell)
+    tech = tech or TECHS["sky130"]
+    l2n, netlist, layers, dbu = _build_l2n(gds_path, top_cell, tech, flatten)
     out, skip = [], set(skip)
     circuits = list(netlist.each_circuit())
     multi = len(circuits) > 1
@@ -300,7 +371,7 @@ def extract_detail_rc(gds_path, top_cell=None, skip=DEFAULT_SKIP) -> list:
             nm = net.expanded_name()
             if nm in skip:
                 continue
-            segs, c = net_geometry_detail(l2n, net, layers, dbu)
+            segs, c = net_geometry_detail(l2n, net, layers, dbu, tech)
             if not segs:
                 continue
             out.append({"net": f"{circuit.name}/{nm}" if multi else nm,
@@ -475,8 +546,24 @@ def _self_test_detail() -> int:
         print(f"SELF-TEST FAIL (detail): via {via}"); return 1
     if len(json.load(open(p + ".json"))["segments"]) != 3:
         print("SELF-TEST FAIL (detail): sidecar segment count"); return 1
+    # every tech is internally consistent: each routing/via layer has R & C
+    # constants and a GDS layer-map entry (catches an IHP-port typo without klayout)
+    for name, t in TECHS.items():
+        for lyr in t["ROUTING"]:
+            if not (lyr in t["RSH"] and lyr in t["CAREA"] and lyr in t["CFRINGE"]
+                    and lyr in t["LAYER_MAP"]):
+                print(f"SELF-TEST FAIL (tech {name}): routing layer {lyr} missing a constant")
+                return 1
+        for v in t["VIA"]:
+            if not (v in t["RVIA"] and v in t["LAYER_MAP"]):
+                print(f"SELF-TEST FAIL (tech {name}): via {v} missing a constant"); return 1
+        if not callable(t["connect"]):
+            print(f"SELF-TEST FAIL (tech {name}): no connect fn"); return 1
     print("self-test OK (detail): distributed EM SPEF sums to 1.81ohm in spef.py AND "
-          "aligns with the geometry sidecar -> hot-spot neck met1 0.5um Imax_avg 0.395mA")
+          "aligns with the geometry sidecar; techs {%s} consistent (sky130 4+4 layers, "
+          "ihp-sg13g2 %d metals + %d vias)"
+          % (", ".join(TECHS), len(TECHS["ihp-sg13g2"]["ROUTING"]),
+             len(TECHS["ihp-sg13g2"]["VIA"])))
     return 0
 
 
@@ -493,6 +580,12 @@ def main(argv=None):
     ap.add_argument("gds", nargs="?", help="input GDSII")
     ap.add_argument("-o", "--output", help="output SPEF (default <gds>.spef)")
     ap.add_argument("--top", help="top cell (auto-detect if omitted)")
+    ap.add_argument("--pdk", default="sky130", choices=list(TECHS),
+                    help="PDK tech (layer map + R/C + connectivity). sky130 does "
+                         "device recognition; ihp-sg13g2 is routing/EM connectivity.")
+    ap.add_argument("--flatten", action="store_true",
+                    help="flatten the top cell's hierarchy before extraction (one flat "
+                         "net set for a single cell, e.g. an IO pad)")
     ap.add_argument("--routing-only", action="store_true",
                     help="emit routing-only SPEF (cell-internal nets dropped) + *CONN + .json")
     ap.add_argument("--detail", action="store_true",
@@ -509,22 +602,24 @@ def main(argv=None):
     if not a.gds:
         ap.error("a GDS file is required (or use --self-test)")
     design = os.path.splitext(os.path.basename(a.gds))[0]
+    tech = TECHS[a.pdk]
     if a.detail:
         out = a.output or (os.path.splitext(a.gds)[0] + ".em.spef")
-        n = write_detail_spef(extract_detail_rc(a.gds, top_cell=a.top), out, design=design)
-        print(f"klayout2spef: wrote {n} nets (distributed EM SPEF) -> {out} (+ {out}.json)")
+        nets = extract_detail_rc(a.gds, top_cell=a.top, tech=tech, flatten=a.flatten)
+        n = write_detail_spef(nets, out, design=design)
+        print(f"klayout2spef[{a.pdk}]: wrote {n} nets (distributed EM SPEF) -> {out} (+ {out}.json)")
         print(f"  now:  hotspot.py check {out} --harness <stim>   |   hotspot.py heatmap {out} -o em.svg")
         return 0
     if a.routing_only:
         out = a.output or (os.path.splitext(a.gds)[0] + ".routing.spef")
         routes = extract_routing_rc(a.gds, model_cells=_load_model_cells(a.model_cells),
-                                    top_cell=a.top)
+                                    top_cell=a.top, tech=tech)
         n = write_routing_spef(routes, out, design=design)
-        print(f"klayout2spef: wrote {n} routing nets -> {out} (+ {out}.json)")
+        print(f"klayout2spef[{a.pdk}]: wrote {n} routing nets -> {out} (+ {out}.json)")
         return 0
     out = a.output or (os.path.splitext(a.gds)[0] + ".spef")
-    n = write_spef(extract_net_rc(a.gds, top_cell=a.top), out, design=design)
-    print(f"klayout2spef: wrote {n} nets -> {out}")
+    n = write_spef(extract_net_rc(a.gds, top_cell=a.top, tech=tech), out, design=design)
+    print(f"klayout2spef[{a.pdk}]: wrote {n} nets -> {out}")
     return 0
 
 
