@@ -140,48 +140,73 @@ hotspot.py heatmap gpio.em.spef -o gpio.em.svg
 EM screen is **SPEF-in / SPEF-out and tool-agnostic** — it also runs on OpenRCX,
 magic, or a commercial extractor's SPEF once a matching sidecar is supplied.
 
-## Real result: IHP `sg13g2_IOPadOut30mA`, extracted on clevo-lx
+## Real result: IHP `sg13g2_IOPadOut30mA`, simulated (clevo-lx klayout + Xyce)
 
-Not a hand-authored stand-in — the actual IHP Open-PDK 30 mA output pad, run
-end-to-end with klayout on **clevo-lx** (klayout 0.30.9 venv):
+The actual IHP Open-PDK 30 mA output pad, end-to-end — extracted with klayout on
+**clevo-lx** (klayout 0.30.9 venv), then **simulated in Xyce** so the per-segment
+currents come from a transient, not a hand-assigned budget:
 
 ```sh
-# clevo-lx: extract the real pad GDS with the IHP tech
+# 1. extract the real pad GDS with the IHP tech (clevo-lx)
 klayout2spef.py --pdk ihp-sg13g2 --detail --flatten \
-    --top sg13g2_IOPadOut30mA \
-    IHP-Open-PDK/.../sg13g2_io/gds/sg13g2_io.gds -o iopad30.em.spef
+    --top sg13g2_IOPadOut30mA sg13g2_io.gds -o iopad30.em.spef
 # -> 17 nets, 105 per-layer/via segments (Metal1..TopMetal2, Via1..TopVia2)
 
-# name the nets from their GDS text labels + a 30 mA rated-drive budget
-python3 test/iopad30_ihp_annotate.py
-# screen the real geometry against the real IHP LEF limits (no transient needed)
-hotspot.py heatmap test/iopad30_ihp.em.spef --em-rules rules/ihp_sg13g2.em.json \
-    --net-currents test/iopad30_ihp.currents.json -o test/iopad30_ihp.em.svg
+# 2. name nets from GDS text labels; build a driver testbench + a simulatable-R SPEF
+python3 test/iopad30_ihp_annotate.py     # pad/iovdd/iovss/drv_o_* via l2n.probe_net
+python3 test/iopad30_ihp_tb.py           # push-pull driver + supplies + load; .sim.spef
+
+# 3. SIMULATE in Xyce (WSL) -> per-segment currents -> EM screen + heat-map
+hotspot.py heatmap test/iopad30_ihp.sim.spef --geom test/iopad30_ihp.em.spef.json \
+    --em-rules rules/ihp_sg13g2.em.json --sim xyce --harness test/iopad30_ihp.harness.sp \
+    -o test/iopad30_ihp.xyce.svg --csv test/iopad30_ihp.xyce.csv
 ```
 
-The port (`klayout2spef.py --pdk ihp-sg13g2`) is a routing/EM connectivity tech:
-metal + via stack, **no device recognition** — the diffusion is left unconnected
-so a FET's source/drain stay separate metal nets, giving correct top-level routing
-nets. Net names (pad / iovdd / iovss / vdd / vss / drv_o_*) are recovered by
-probing the pad's GDS text labels with `l2n.probe_net`. The current is the pad's
-**30 mA rating** applied to the output + IO-supply nets (`--net-currents` — how EM
-sign-off consumes a power analysis); everything else — geometry and limits — is
-real foundry data.
+The port (`--pdk ihp-sg13g2`) is a routing/EM connectivity tech (metal+via stack,
+**no device recognition** — diffusion left unconnected so a FET's S/D stay separate
+metal nets). The **testbench** (`iopad30_ihp_tb.py`) wires a transistor push-pull
+(Xyce-native MOS — IHP's PSP103 needs OpenVAF, absent here) across the extracted net
+endpoints so `iovdd → drv_o_p → pad` is the pull-up path and `pad → drv_o_n → iovss`
+the pull-down; a pulsed input toggles the output into a load, and Xyce solves the
+current in every wire segment.
 
-Result (`test/iopad30_ihp.em.*`): **30 of 105 segments over the real IHP EM
-limit.** The hot-spots are exactly where a real IO EM check flags them —
+**Two things the simulation forced us to get right:**
 
-| segment | layer | width | worst |
-|---------|-------|-------|-------|
-| `drv_o_n:1` / `drv_o_p:1` | Metal1 | **0.16 µm** | **188× / 187×** |
-| `iovdd:1` | Metal1 | 0.17 µm | 175× |
-| `iovdd_esd:1` | Metal1 | 0.54 µm | 56× |
-| `pad:1` | Metal1 | 0.76 µm | 39× |
-| `iovdd:8` | Via1 | 2 cut | 37× |
-| `pad:3–5` | Metal3–5 | 2.88 µm | 5.2× |
-| `iovss:1–3` (bus) | Metal3–5 | 19.3 µm | 0.78× — safe (grey) |
+- *Time-weighted current reduction.* Xyce's adaptive timestep makes a plain sample
+  mean skew the average; hot-spot integrates avg/rms **trapezoidally over time**
+  (sample-mean is the uniform-step fallback). Xyce and ngspice then agree on the
+  synthetic case (20.6 vs 20.5 mA avg) instead of 7 vs 20.
+- *Simulatable R.* klayout's analytic R (`RSH·perim²/4area` metal, `RVIA·cuts` via)
+  is right for the lumped EM *width* but hugely over-estimates a solvable network —
+  a supply net's perimeter inflates and parallel via cuts should **divide** R, not
+  multiply. Segments hit **17 kΩ** and starved the driver to µA. The testbench emits
+  a `.sim.spef` with a geometry-realistic R (`RSH·span/width`, `RVIA/cuts`); the EM
+  *widths* still come from the geometry sidecar, unchanged.
 
-— the transistor output funnelled onto minimum-width (0.16 µm) Metal1 and the
-under-sized 2-cut supply vias, while the wide 14–19 µm top-metal straps carry the
-30 mA comfortably. The heat-map (`test/iopad30_ihp.em.svg`) renders the pad in grey
-with those hot-spots in colour.
+Result (`test/iopad30_ihp.xyce.*`): **9 of 105 segments over the real IHP EM limit**,
+and the distribution is one only a simulation gives —
+
+| segment | layer | width | I_avg | worst |
+|---------|-------|-------|-------|-------|
+| `drv_o_p:1` | Metal1 | **0.16 µm** | 4.7 mA | **29.4×** |
+| `iovdd:1` | Metal1 | 0.17 µm | 4.7 mA | 27.5× |
+| `drv_o_p:2` | Metal2 | 0.22 µm | 4.7 mA | 10.7× |
+| `iovdd:8` | Via1 | 2 cut | 4.7 mA | 5.9× |
+| `pad:1` | Metal1 | 0.76 µm | 4.5 mA | 5.9× |
+| `drv_o_n:1` (pull-down) | Metal1 | 0.16 µm | 0.25 mA | 1.6× |
+| `pad:3–5` | Metal3–5 | 2.88 µm | 4.5 mA | 0.77× — safe |
+
+The **pull-up** path (iovdd → drv_o_p → pad) carries the driver's DC into the load
+and its thin Metal1 lights up (29×); the **pull-down** `drv_o_n` only sinks
+cap-discharge current and stays cool (1.6×) — an asymmetry a fixed budget can't
+show. Honest caveat: the geometry-realistic R still over-estimates the scattered
+supply nets, so the driver delivers ~5 mA (below the 30 mA rating); a real
+field-solver RCX would push more current and more segments over. IHP's LEF specifies
+only the DC/average limit, so rms/peak are left unscreened. The heat-map
+(`test/iopad30_ihp.xyce.svg`) renders the pad grey with the pull-up hot-spots in
+colour.
+
+**This is the point of hot-spot**, and it scales past pads: extract a design's
+parasitics, drive it with a real stimulus, simulate (bfit-accelerated for large
+circuits), and screen every wire segment's simulated current density against the
+foundry's limits.

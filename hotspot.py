@@ -357,16 +357,26 @@ def instrument(segments, nets, harness="", va=False, title="hot-spot EM deck"):
 # ---------------------------------------------------------------------------
 # current reduction + risk
 # ---------------------------------------------------------------------------
-def reduce_current(series):
-    """(avg, rms, peak) of a current waveform, amps. avg = |mean| (net DC / mass
-    transport), rms = sqrt(mean(i^2)) (self-heat), peak = max|i| (short pulse)."""
+def reduce_current(series, time=None):
+    """(avg, rms, peak) of a current waveform, amps. avg = |time-average| (net DC /
+    mass transport), rms = sqrt(time-average(i^2)) (self-heat), peak = max|i|.
+    TIME-WEIGHTED (trapezoidal over `time`) -- essential for adaptive-timestep
+    engines like Xyce, where a plain sample mean over-weights the dense edges.
+    Falls back to the sample mean when no time base is given (uniform step)."""
     if not series:
         return (0.0, 0.0, 0.0)
     n = len(series)
-    mean = sum(series) / n
-    rms = math.sqrt(sum(x * x for x in series) / n)
     peak = max(abs(x) for x in series)
-    return (abs(mean), rms, peak)
+    if time and len(time) == n and time[-1] > time[0]:
+        T = time[-1] - time[0]
+        area = area2 = 0.0
+        for k in range(1, n):
+            dt = time[k] - time[k - 1]
+            area += 0.5 * (series[k] + series[k - 1]) * dt          # ∫ i dt
+            area2 += 0.5 * (series[k] ** 2 + series[k - 1] ** 2) * dt  # ∫ i² dt
+        return (abs(area / T), math.sqrt(max(area2 / T, 0.0)), peak)
+    mean = sum(series) / n
+    return (abs(mean), math.sqrt(sum(x * x for x in series) / n), peak)
 
 
 def risk(seg, avg, rms, peak, rules=EM_RULES):
@@ -387,19 +397,36 @@ def risk(seg, avg, rms, peak, rules=EM_RULES):
 # simulate (via bfit's engine-neutral drivers) and pull ammeter currents
 # ---------------------------------------------------------------------------
 def simulate_currents(deck, ammeters, sim="ngspice"):
-    """Run `deck` on `sim` (bfit driver) and return {VI<tag>: (avg,rms,peak)}.
-    Branch current of an ammeter V-source appears as i(vi<tag>) in the rawfile."""
-    import bfit
-    drv = bfit.DRIVERS[sim]()
-    # ask the driver to save every ammeter branch current
-    sigs = None
+    """Run `deck` on `sim` and return {VI<tag>: (avg,rms,peak)}. Branch current of
+    an ammeter V-source is i(vi<tag>) in the rawfile."""
     if sim == "xyce":
-        # Xyce needs explicit I(...) prints; append them before the driver runs
-        prints = " ".join(f"I({v})" for v in ammeters)
-        deck = deck.rstrip() + "\n.print tran " + prints + "\n"
-    data = drv.run(deck, signals=sigs)
+        data = _run_xyce(deck, ammeters)                 # direct: keep the I() prints
+    else:
+        import bfit                                       # ngspice: `write` saves all vectors
+        data = bfit.DRIVERS[sim]().run(deck)
     lk = {k.lower(): v for k, v in data.items()}
-    return {v: reduce_current(_pick_current(lk, v)) for v in ammeters}
+    t = lk.get("time")
+    return {v: reduce_current(_pick_current(lk, v), t) for v in ammeters}
+
+
+def _run_xyce(deck, ammeters):
+    """Drive Xyce directly (NOT bfit's run(), whose strip_output() would delete our
+    `.print`). Emits `.print tran I(VI...)` for every ammeter and parses the .prn.
+    Xyce is a Linux ELF here, so this must run under WSL."""
+    import bfit, os, tempfile, subprocess
+    drv = bfit.DRIVERS["xyce"]()
+    prints = " ".join(f"I({v})" for v in ammeters)
+    full = deck.rstrip() + "\n.print tran format=gnuplot " + prints + "\n.end\n"
+    d = tempfile.mkdtemp(prefix="hs_xyce_")
+    cir = os.path.join(d, "c.cir")
+    open(cir, "w").write(full)
+    r = subprocess.run([drv.binary, cir], cwd=d, env=drv.env,
+                       capture_output=True, text=True, timeout=900)
+    prn = cir + ".prn"
+    if not os.path.exists(prn):
+        raise RuntimeError("xyce: no .prn produced.\n--- Xyce output ---\n"
+                           + (r.stdout or r.stderr or "")[-1500:])
+    return bfit._parse_prn(prn)
 
 
 def _pick_current(lk, vname):
@@ -598,7 +625,8 @@ def _currents_from_raw(path, ammeters):
         from drivers_ngspice import _parse_ngspice_raw
         data = _parse_ngspice_raw(path)
     lk = {k.lower(): v for k, v in data.items()}
-    return {v: reduce_current(_pick_current(lk, v)) for v in ammeters}
+    t = lk.get("time")
+    return {v: reduce_current(_pick_current(lk, v), t) for v in ammeters}
 
 
 def main(argv=None):
@@ -761,6 +789,12 @@ def _self_test():
     avg, rms, peak = reduce_current(sq)
     assert abs(avg - 2e-3) < 1e-9 and abs(peak - 4e-3) < 1e-12
     assert abs(rms - 4e-3 / math.sqrt(2)) < 1e-6
+    # time-weighted (trapezoidal) reduction is correct under NON-uniform timesteps
+    # (adaptive engines like Xyce). i(t)=t on [0,2] -> true time-average 1.0; a plain
+    # sample mean over clustered samples is skewed (0.575).
+    ti = [0.0, 0.1, 0.2, 2.0]; ii = [0.0, 0.1, 0.2, 2.0]
+    assert abs(reduce_current(ii, ti)[0] - 1.0) < 1e-9 and reduce_current(ii, ti)[2] == 2.0
+    assert abs(reduce_current(ii)[0] - 0.575) < 1e-9      # sample-mean (no time base): skewed
     # 7. report + heatmap render (synthetic currents: neck hot, rail cool)
     currents = {}
     for v, s in ammeters.items():

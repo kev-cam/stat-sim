@@ -1,0 +1,152 @@
+#!/usr/bin/env python3
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+"""Generate a Xyce testbench that drives the REAL extracted IHP 30mA-pad parasitics.
+
+The point of hot-spot is that per-segment EM currents come out of a SPICE transient,
+not a hand-assigned budget. So this builds an output-driver testbench around the
+extracted wires: a transistor push-pull (Xyce-native MOS -- IHP's PSP103 needs
+OSDI/OpenVAF, absent here) sources current from iovdd, through the driver, out the
+pad metal into an external load, and back through iovss. Every one of those nets is
+the actual extracted parasitic chain, so Xyce solves the current in each segment.
+
+The extraction split the driver-output nets (drv_o_p / drv_o_n) from the pad and
+supplies at the transistor gaps (no device recognition), so we reconnect them
+through the modelled FETs -- putting iovdd -> drv_o_p -> pad and pad -> drv_o_n ->
+iovss in the pull-up / pull-down paths. Each net is a linear per-layer chain
+(Metal1..TopMetal2); a series chain carries the same current at either end, so which
+endpoint we drive doesn't change the per-segment EM result.
+
+Run (under WSL, Xyce is a Linux binary):
+    python3 test/iopad30_ihp_tb.py                # writes test/iopad30_ihp.harness.sp
+    python3 hotspot.py check   test/iopad30_ihp.em.spef --geom test/iopad30_ihp.em.spef.json \\
+        --em-rules rules/ihp_sg13g2.em.json --sim xyce --harness test/iopad30_ihp.harness.sp
+"""
+import os, sys, re, math
+from collections import Counter
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.dirname(HERE))          # import hotspot + klayout2spef from repo root
+import hotspot
+import klayout2spef as k2s
+
+SPEF = os.path.join(HERE, "iopad30_ihp.em.spef")   # extracted (analytic R -- good for EM width)
+SIMSPEF = os.path.join(HERE, "iopad30_ihp.sim.spef")  # same nets, SIMULATABLE R
+GEOM = SPEF + ".json"
+OUT = os.path.join(HERE, "iopad30_ihp.harness.sp")
+IOVDD, VDD = 3.3, 1.2                               # IO supply / core supply (V)
+
+# --- realistic per-segment R for SIMULATION ---------------------------------
+# klayout2spef's analytic R (RSH*perim^2/4area for metal, RVIA*cuts for vias) is
+# right for the lumped EM *width*, but for a solvable network it hugely
+# over-estimates: a multi-shape power net inflates the perimeter, and parallel via
+# cuts should DIVIDE R, not multiply. Recompute from geometry: metal =
+# RSH*(bbox-span/width), via = RVIA/cuts. This only sets the sim's wire R (small,
+# realistic, so the driver current isn't starved) -- the EM limits still come from
+# the geometry width, unchanged. (This R model belongs in klayout2spef eventually.)
+_geom = hotspot.load_geom(GEOM)
+
+
+def _real_r(g):
+    lyr = g.get("layer", "")
+    if lyr in k2s.IHP_RSH:                           # metal: RSH * squares(span/width)
+        span = math.hypot(float(g.get("x2", 0)) - float(g.get("x1", 0)),
+                          float(g.get("y2", 0)) - float(g.get("y1", 0)))
+        w = float(g.get("width", 0)) or 0.1
+        return k2s.IHP_RSH[lyr] * max(span / w, 1.0)
+    if lyr in k2s.IHP_RVIA:                           # via: parallel cuts
+        return k2s.IHP_RVIA[lyr] / max(int(g.get("cuts", 1)), 1)
+    return 1.0
+
+
+def write_sim_spef():
+    """Rewrite only the *RES resistances of the extracted SPEF with realistic
+    simulation R; nodes/caps/NAME_MAP untouched, so the geometry sidecar still
+    aligns and the topology is identical."""
+    lines = open(SPEF).read().splitlines()
+    idname = {}
+    for ln in lines:
+        m = re.match(r"^(\*\d+)\s+(\S+)\s*$", ln)
+        if m:
+            idname[m.group(1)] = m.group(2)
+    out, cur, sec = [], None, None
+    for ln in lines:
+        s = ln.strip()
+        if s.startswith("*D_NET"):
+            cur = idname.get(s.split()[1], s.split()[1]); sec = None; out.append(ln); continue
+        if s.upper().startswith("*RES"): sec = "res"; out.append(ln); continue
+        if s.startswith(("*CAP", "*CONN", "*END")): sec = None; out.append(ln); continue
+        t = s.split()
+        if sec == "res" and cur and len(t) >= 4 and t[0].isdigit():
+            g = _geom.get((cur, t[0]))
+            if g:
+                t[-1] = f"{_real_r(g):.6g}"
+                out.append(" ".join(t)); continue
+        out.append(ln)
+    open(SIMSPEF, "w").write("\n".join(out) + "\n")
+
+
+write_sim_spef()
+nets = hotspot.parse_spef_segments(open(SPEF).read())
+sp = hotspot.spice_node
+
+
+def far(net):
+    """The far endpoint node of a net's linear parasitic chain (the node that isn't
+    the driver-side root). Endpoints appear once in the segment node list."""
+    c = Counter()
+    for s in nets[net]["segs"]:
+        c[s.n1] += 1; c[s.n2] += 1
+    ends = [n for n, k in c.items() if k == 1]
+    other = [e for e in ends if e != net] or ends
+    return sp(other[0])
+
+
+driven = {"iovdd", "iovss", "drv_o_p", "drv_o_n", "pad", "vdd", "vss"}
+L = [
+    "* hot-spot Xyce testbench -- real IHP sg13g2_IOPadOut30mA output driver",
+    "* generated by test/iopad30_ihp_tb.py; drives the extracted parasitics so the",
+    "* per-segment EM currents come from the transient (not an assigned budget).",
+    "",
+    "* --- IO + core supplies (feed the extracted supply-net roots) ---",
+    f"Viovdd {sp('iovdd')} 0 {IOVDD}",
+    f"Viovss {sp('iovss')} 0 0",
+    f"Vvdd {sp('vdd')} 0 {VDD}",
+    f"Vvss {sp('vss')} 0 0",
+    "",
+    "* --- output push-pull driver (Xyce-native MOS, sized to ~30 mA into the load).",
+    "*     Moderate W + soft input edges keep Xyce's timestep from collapsing. ---",
+    ".model PDRV PMOS (LEVEL=1 VTO=-0.7 KP=50u LAMBDA=0.05)",
+    ".model NDRV NMOS (LEVEL=1 VTO=0.7 KP=120u LAMBDA=0.05)",
+    f"Mpu {sp('drv_o_p')} din {far('iovdd')} {far('iovdd')} PDRV W=800u L=0.45u",
+    f"Mpd {sp('drv_o_n')} din {far('iovss')} {far('iovss')} NDRV W=400u L=0.45u",
+    "* metal junctions: driver drains -> pad (the split the extractor made at the FETs).",
+    "* 1 ohm (not milli-ohm) -- a sub-ohm junction makes a fs-scale RC with the wire",
+    "* caps and forces Xyce into pathologically tiny timesteps.",
+    f"Rjp {far('drv_o_p')} {sp('pad')} 1",
+    f"Rjn {far('drv_o_n')} {sp('pad')} 1",
+    "",
+    "* --- core-side input toggling the output (100 MHz, soft 1 ns edges) ---",
+    "Vin din 0 PULSE(0 3.3 0 1n 1n 4n 10n)",
+    "",
+    "* --- external load on the bond pad (drives ~30 mA when high) ---",
+    f"Rload {far('pad')} 0 110",
+    f"Cload {far('pad')} 0 1p",
+    "",
+    "* --- keep undriven extracted nets from floating (ESD ring, guard, taps) ---",
+]
+for net in nets:
+    if net not in driven:
+        L.append(f"Rbl_{sp(net)} {sp(net)} 0 1g")
+L += [
+    "",
+    "* bound the .prn cadence (fixed 40p output) + loosen/cap the integrator so a",
+    "* switching edge can't collapse the timestep or write a huge file.",
+    ".options OUTPUT INITIAL_INTERVAL=40p",
+    ".options TIMEINT method=trap reltol=1e-3 abstol=1e-7 delmax=100p",
+    ".tran 40p 20n",                                     # 2 periods of the 10n input
+    "",
+]
+
+open(OUT, "w").write("\n".join(L) + "\n")
+print(f"wrote {OUT}: driver push-pull + supplies + load over {len(nets)} extracted nets "
+      f"(driven: {', '.join(sorted(driven))})")
