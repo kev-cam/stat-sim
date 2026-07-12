@@ -206,7 +206,15 @@ only the DC/average limit, so rms/peak are left unscreened. The heat-map
 (`test/iopad30_ihp.xyce.svg`) renders the pad grey with the pull-up hot-spots in
 colour.
 
+**The heat-map is the real layout, recolored** — not an SVG redraw.
+`klayout2spef --em-layout --csv <sim> --rename <names>` takes each segment's
+`worst` from the sim and moves that net's actual metal polygons onto a risk-tier
+GDS layer (`EM_ok` grey … `EM_crit` magenta), writing `test/iopad30_ihp.em.gds` +
+a klayout `.lyp`. Open them in klayout and the pad lights up where EM is worst
+(`test/render_em_poly.py` renders those tiers to `test/iopad30_ihp.em.svg` for a
+quick look). Tiers here: 3 crit, 2 high, 2 over on the pull-up output path; 50 ok.
+
 **This is the point of hot-spot**, and it scales past pads: extract a design's
 parasitics, drive it with a real stimulus, simulate (bfit-accelerated for large
-circuits), and screen every wire segment's simulated current density against the
-foundry's limits.
+circuits), screen every wire segment's simulated current density against the
+foundry's limits, and paint the result back onto the layout.

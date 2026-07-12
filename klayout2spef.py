@@ -426,6 +426,90 @@ def write_detail_spef(nets, path, design="detail") -> int:
 
 
 # ----------------------------------------------------------------------------
+# EM layout heat-map: recolor the REAL layout by moving each segment's polygons to
+# a per-risk-tier GDS layer (open in klayout with the .lyp). NOT an SVG redraw --
+# klayout renders the actual pad shapes; segments just change layer by I/Imax tier.
+# ----------------------------------------------------------------------------
+EM_TIERS = [   # (worst < thr, name, gds_layer, RGB). grey (within limit) -> hot colour
+    (0.5,  "EM_ok",    200, (0x56, 0x5b, 0x61)),   # grey: within limit, recedes
+    (1.0,  "EM_watch", 201, (0xb0, 0xa0, 0x30)),   # approaching the limit
+    (3.0,  "EM_over",  202, (0xe0, 0x5a, 0x1a)),   # over (orange)
+    (10.0, "EM_high",  203, (0xd0, 0x20, 0x3a)),   # red
+    (1e18, "EM_crit",  204, (0xd1, 0x3b, 0xbf)),   # magenta: many x over
+]
+
+
+def _em_tier(worst):
+    for thr, nm, ly, rgb in EM_TIERS:
+        if worst < thr:
+            return nm, ly, rgb
+    return EM_TIERS[-1][1], EM_TIERS[-1][2], EM_TIERS[-1][3]
+
+
+def _write_em_lyp(path):
+    """KLayout layer-properties colouring the EM risk tiers."""
+    rows = []
+    for thr, nm, ly, (r, g, b) in EM_TIERS:
+        c = "#%02x%02x%02x" % (r, g, b)
+        rows.append(f'  <properties><frame-color>{c}</frame-color><fill-color>{c}</fill-color>'
+                    f'<dither-pattern>I5</dither-pattern><valid>true</valid><visible>true</visible>'
+                    f'<transparent>false</transparent><width>1</width><marked>false</marked>'
+                    f'<xfill>false</xfill><animation>0</animation><name>{nm} ({ly}/0)</name>'
+                    f'<source>{ly}/0@1</source></properties>')
+    open(path, "w").write('<?xml version="1.0" encoding="utf-8"?>\n<layer-properties>\n'
+                          + "\n".join(rows) + "\n</layer-properties>\n")
+
+
+def emit_em_layout(gds_path, csv_path, out_gds, top_cell=None, tech=None, rename=None,
+                   out_lyp=None, out_poly=None, flatten=True) -> dict:
+    """Recolor the layout by EM risk: copy every net's per-layer metal shapes to a
+    risk-TIER GDS layer chosen from that segment's `worst` I/Imax in `csv_path`
+    (columns net,layer,worst). Writes out_gds (+ out_lyp klayout colours, + out_poly
+    per-tier polygon hulls for a quick viewer). `rename` maps extracted net names to
+    the CSV's names. Returns a per-tier segment count."""
+    import klayout.db as kdb
+    import csv as _csv
+    tech = tech or TECHS["sky130"]
+    ren = rename or {}
+    worst = {(r["net"], r["layer"]): float(r["worst"])
+             for r in _csv.DictReader(open(csv_path))}
+    l2n, netlist, layers, dbu = _build_l2n(gds_path, top_cell, tech, flatten)
+    out = kdb.Layout(); out.dbu = dbu
+    top = out.create_cell(top_cell or "EM_MAP")
+    tlyr = {ly: out.layer(ly, 0) for _, _, ly, _ in EM_TIERS}
+    counts, polys = {}, {}
+    for circuit in netlist.each_circuit():
+        for net in circuit.each_net():
+            raw = net.expanded_name()
+            nm = ren.get(raw, raw.replace("$", "n"))
+            for lname in tech["ROUTING"]:
+                reg = l2n.shapes_of_net(net, layers[lname])
+                if reg.is_empty():
+                    continue
+                w = worst.get((nm, lname))
+                if w is None:
+                    continue
+                tname, ly, rgb = _em_tier(w)
+                top.shapes(tlyr[ly]).insert(reg)
+                counts[tname] = counts.get(tname, 0) + 1
+                if out_poly is not None:
+                    hulls = [[[round(pt.x * dbu, 3), round(pt.y * dbu, 3)]
+                              for pt in p.each_point_hull()]
+                             for p in reg.merged().each()]
+                    hulls = [h for h in hulls if len(h) >= 3]
+                    if hulls:
+                        d = polys.setdefault(tname, {"rgb": "#%02x%02x%02x" % rgb, "polys": []})
+                        d["polys"] += hulls
+    out.write(out_gds)
+    if out_lyp:
+        _write_em_lyp(out_lyp)
+    if out_poly is not None:
+        import json
+        json.dump(polys, open(out_poly, "w"))
+    return counts
+
+
+# ----------------------------------------------------------------------------
 # Half 2: SPEF writer  (the exact dialect spef.py parses; pure, self-tested)
 # ----------------------------------------------------------------------------
 def write_spef(nets, path, design="extracted") -> int:
@@ -595,6 +679,11 @@ def main(argv=None):
     ap.add_argument("--detail", action="store_true",
                     help="emit DISTRIBUTED EM SPEF (per-layer/via *RES segments) + a "
                          "geometry sidecar .json for hot-spot electromigration screening")
+    ap.add_argument("--em-layout", action="store_true",
+                    help="recolor the LAYOUT by EM risk -> a GDS with each segment's "
+                         "polygons on a risk-tier layer + a .lyp (open in klayout)")
+    ap.add_argument("--csv", help="EM results CSV (net,layer,worst) from hotspot heatmap")
+    ap.add_argument("--rename", help="JSON map {extracted-net: csv-net} for --em-layout")
     ap.add_argument("--model-cells",
                     help="file of cell names to treat as opaque (one per line); "
                          "default = any circuit containing devices")
@@ -607,6 +696,20 @@ def main(argv=None):
         ap.error("a GDS file is required (or use --self-test)")
     design = os.path.splitext(os.path.basename(a.gds))[0]
     tech = TECHS[a.pdk]
+    if a.em_layout:
+        import json
+        if not a.csv:
+            ap.error("--em-layout needs --csv (the EM results from hotspot heatmap)")
+        ren = json.load(open(a.rename)) if a.rename else {}
+        out = a.output or (os.path.splitext(a.gds)[0] + ".em.gds")
+        lyp = os.path.splitext(out)[0] + ".lyp"
+        poly = os.path.splitext(out)[0] + ".poly.json"
+        counts = emit_em_layout(a.gds, a.csv, out, top_cell=a.top, tech=tech, rename=ren,
+                                out_lyp=lyp, out_poly=poly, flatten=a.flatten)
+        print(f"klayout2spef[{a.pdk}]: EM heat-map layout -> {out} (+ {os.path.basename(lyp)}); "
+              f"tiers {counts}")
+        print(f"  open:  klayout {out} -l {lyp}")
+        return 0
     if a.detail:
         out = a.output or (os.path.splitext(a.gds)[0] + ".em.spef")
         nets = extract_detail_rc(a.gds, top_cell=a.top, tech=tech, flatten=a.flatten)

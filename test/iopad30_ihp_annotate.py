@@ -39,4 +39,7 @@ DRIVE = {"pad": 30e-3, "iovdd": 30e-3, "iovdd_esd": 30e-3, "iovss": 30e-3,
          "iovss_gr": 30e-3, "drv_o_p": 30e-3, "drv_o_n": 30e-3,
          "vdd": 3e-3, "vss": 3e-3, "c2p_in": 0.5e-3, "guard": 1e-3}
 json.dump({k: {"avg": v} for k, v in DRIVE.items()}, open(CURR, "w"), indent=1)
-print(f"annotated {len(gj['segments'])} segments; renamed nets; wrote {os.path.basename(CURR)}")
+# the name map, for klayout2spef --em-layout (extracted $-name -> role name)
+json.dump(RENAME, open(os.path.join(HERE, "iopad30_ihp.rename.json"), "w"), indent=1)
+print(f"annotated {len(gj['segments'])} segments; renamed nets; wrote {os.path.basename(CURR)} "
+      f"+ iopad30_ihp.rename.json")
