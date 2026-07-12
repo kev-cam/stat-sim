@@ -318,6 +318,11 @@ the via array 32×, the met2 route 15×, the wide met3 pad metal 5.6×, and the 
 rails ~2.5–2.8× — while the thin control signal stays green. The heat-map
 (`test/iopad_em.em.svg`) shows exactly where on the pad the metal is at risk.
 
+**Real end-to-end on an IHP pad** — extract (klayout) → simulate a driver into the
+pad (Xyce) → screen → recolor the layout by EM risk: step-by-step copy-paste guide
+in **[`test/HOWTO_em_iopad.md`](test/HOWTO_em_iopad.md)** (the actual
+`sg13g2_IOPadOut30mA`; committed outputs `test/iopad30_ihp.*`).
+
 ## CDC detection test case
 
 `test/cdc_latch_tb.vhd` is a runnable end-to-end CDC demo. A regular 4-state
