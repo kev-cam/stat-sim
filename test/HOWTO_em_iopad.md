@@ -86,9 +86,13 @@ heat-map**, rendered by klayout, not an SVG redraw:
     --rename test/iopad30_ihp.rename.json "$GDS" -o test/iopad30_ihp.em.gds
 # -> test/iopad30_ihp.em.gds + .em.lyp (+ .em.poly.json)
 
-klayout test/iopad30_ihp.em.gds -l test/iopad30_ihp.em.lyp     # open the heat-map
-python3 test/render_em_poly.py                                  # or a quick SVG view
+klayout test/iopad30_ihp.em.gds -l test/iopad30_ihp.em.lyp     # open the heat-map interactively
+python3 test/render_em_png.py                                   # klayout render -> test/iopad30_ihp.em.png
+python3 test/render_em_poly.py                                  # or a quick SVG view (no klayout)
 ```
+
+`render_em_png.py` uses klayout's own headless renderer (`klayout.lay.LayoutView`,
+no display needed) — the committed `test/iopad30_ihp.em.png` is that image.
 
 Tier layers: `EM_ok` 200 (grey) · `EM_watch` 201 · `EM_over` 202 · `EM_high` 203 ·
 `EM_crit` 204 (magenta). The pad lights up magenta on the thin driver-output metal
