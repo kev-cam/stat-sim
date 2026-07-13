@@ -9,7 +9,9 @@ A="$A --sim xyce --harness test/iopad30_ihp.harness.sp"
 R=test/iopad30_ihp.xyce.report
 : > "$R"
 echo "== xyce transient -> heatmap + csv ==" >> "$R"
-python3 hotspot.py heatmap $A -o test/iopad30_ihp.xyce.svg --csv test/iopad30_ihp.xyce.csv >> "$R" 2>&1
+# the built-in -o SVG is a rough per-net line sketch (mangles real multi-shape nets)
+# -> throwaway; the CSV is the product (feeds klayout2spef --em-layout, the real map).
+python3 hotspot.py heatmap $A -o /tmp/iopad30_raw.svg --csv test/iopad30_ihp.xyce.csv >> "$R" 2>&1
 echo "heatmap rc=$?" >> "$R"
 python3 - >> "$R" 2>&1 <<'PY'
 import csv

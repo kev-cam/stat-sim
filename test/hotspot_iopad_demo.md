@@ -159,7 +159,7 @@ python3 test/iopad30_ihp_tb.py           # push-pull driver + supplies + load; .
 # 3. SIMULATE in Xyce (WSL) -> per-segment currents -> EM screen + heat-map
 hotspot.py heatmap test/iopad30_ihp.sim.spef --geom test/iopad30_ihp.em.spef.json \
     --em-rules rules/ihp_sg13g2.em.json --sim xyce --harness test/iopad30_ihp.harness.sp \
-    -o test/iopad30_ihp.xyce.svg --csv test/iopad30_ihp.xyce.csv
+    --csv test/iopad30_ihp.xyce.csv -o /tmp/raw.svg   # the CSV feeds the layout recolor (step 4)
 ```
 
 The port (`--pdk ihp-sg13g2`) is a routing/EM connectivity tech (metal+via stack,
@@ -202,9 +202,7 @@ cap-discharge current and stays cool (1.6×) — an asymmetry a fixed budget can
 show. Honest caveat: the geometry-realistic R still over-estimates the scattered
 supply nets, so the driver delivers ~5 mA (below the 30 mA rating); a real
 field-solver RCX would push more current and more segments over. IHP's LEF specifies
-only the DC/average limit, so rms/peak are left unscreened. The heat-map
-(`test/iopad30_ihp.xyce.svg`) renders the pad grey with the pull-up hot-spots in
-colour.
+only the DC/average limit, so rms/peak are left unscreened.
 
 **The heat-map is the real layout, recolored** — not an SVG redraw.
 `klayout2spef --em-layout --csv <sim> --rename <names>` takes each segment's

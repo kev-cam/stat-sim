@@ -70,7 +70,10 @@ python3 hotspot.py check test/iopad30_ihp.sim.spef --geom test/iopad30_ihp.em.sp
 `--sim xyce` runs Xyce in WSL; `--em-rules rules/ihp_sg13g2.em.json` are the **real
 IHP limits** extracted from the PDK LEF's `DCCURRENTDENSITY` (or read a LEF live with
 `--lef .../sg13g2_tech.lef`). The `check` prints ranked EM alerts (exit nonzero if any
-segment is over); `heatmap` (in the wrapper) writes `test/iopad30_ihp.xyce.{svg,csv}`.
+segment is over); `heatmap` writes the per-segment `test/iopad30_ihp.xyce.csv` that
+feeds the layout recolor in step 4. (hot-spot's built-in `-o` SVG is a rough per-net
+line sketch that mangles real multi-shape nets — the real heat-map is step 4's
+klayout recolor, `test/iopad30_ihp.em.{png,svg,gds}`.)
 
 Expected: **9 / 105 segments over** — the pull-up output path (`iovdd → drv_o_p →
 pad`) on 0.16 µm Metal1 at ~29×, the pull-down `drv_o_n` cool at 1.6×.
