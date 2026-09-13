@@ -120,7 +120,20 @@ def taps_for_net(text: str, net: str, fanout_cins, mode: str = "lump") -> list:
         [("wire", c_wire, r_wire)] + [("load", Cin, 0.0) per receiver].
     mode="rc": pull the wire R-C into the driver->receiver PATH --
         [("rc", c_wire, r_wire, "a", "b")] + [("load", Cin, 0.0, "b") per receiver]
-        (a = near/driver node, b = far/receiver node; statsim_pl_rc straddles them)."""
+        (a = near/driver node, b = far/receiver node; statsim_pl_rc straddles them).
+    mode="tree": the SPEF's RC tree itself, one pl_rc per resistor and each
+        receiver on its own node (net_rc_tree / rc_tree_plan / vhdl_rc_tree)."""
+    if mode == "tree":
+        # the SPEF's own RC tree as the node model: ("rc", C_far, R, near, far) per
+        # resistor away from the driver, ("load", Cin, 0.0, node) per receiver on
+        # its own node -- fanout_cins may be [(pin, cin)...] or plain cins (then
+        # the receivers are taken from *CONN in order)
+        tree = net_rc_tree(text, net)
+        if fanout_cins and not isinstance(fanout_cins[0], tuple):
+            fanout_cins = list(zip(tree["conn"]["receivers"], fanout_cins))
+        plan = rc_tree_plan(tree, list(fanout_cins))
+        return ([("rc", c, r, a, b) for a, b, r, c in plan["elements"]]
+                + [("load", rv["cin"], 0.0, rv["node"]) for rv in plan["receivers"]])
     c_wire, r_wire = net_load(text, net)
     if mode == "rc":
         return ([("rc", c_wire, r_wire, "a", "b")]
@@ -186,6 +199,116 @@ def rc_path_for_net(text: str, net: str, receivers) -> dict:
                        "flight": rc_delay_flight(r_wire, c_wire, cin)}
                       for (p, cin) in receivers],
     }
+
+
+# --- the SPEF RC tree as a node model (statsim_pl_rc per segment) ---------------
+def net_rc_tree(text: str, net: str) -> dict:
+    """The RC topology of one net as the SPEF wrote it: {"nodes": [name...],
+    "caps": {node: C_F}, "res": [(n1, n2, R_ohm)...], "conn": *CONN of the net}.
+    Node names are the SPEF's (pin names `inst:pin`, port names, internal
+    `net:k`), with the name map applied; a ground cap goes to its node, a
+    coupling cap is split half to each end (the usual decoupling)."""
+    tu = cu = ru = 1.0
+    namemap, cur, section = {}, None, None
+    caps, res, nodes = {}, [], []
+    def nm(tok):
+        if tok.startswith("*") and tok.split(":")[0] in namemap:            # *12 or *12:3
+            head, sep, tail = tok.partition(":")
+            return namemap[head] + (sep + tail if sep else "")
+        return tok
+    for raw in text.splitlines():
+        ln = raw.strip()
+        if not ln or ln.startswith("//"):
+            continue
+        if ln.startswith("*T_UNIT"): tu = _scale(ln); continue
+        if ln.startswith("*C_UNIT"): cu = _scale(ln); continue
+        if ln.startswith("*R_UNIT"): ru = _scale(ln); continue
+        if ln.startswith("*D_NET"):
+            cur = nm(ln.split()[1]); section = None; continue
+        if ln.startswith("*END"):
+            if cur == net:
+                break
+            cur = None; section = None; continue
+        if cur is None and re.match(r"\*\d+\s", ln):
+            t = ln.split(); namemap[t[0]] = t[1]; continue
+        if cur != net:
+            continue
+        if ln.startswith("*CAP"): section = "cap"; continue
+        if ln.startswith("*RES"): section = "res"; continue
+        if ln.startswith("*CONN") or ln.startswith("*PORTS"): section = None; continue
+        t = ln.split()
+        if section == "cap":
+            if len(t) == 3:
+                n = nm(t[1]); caps[n] = caps.get(n, 0.0) + float(t[2]) * cu
+                if n not in nodes: nodes.append(n)
+            elif len(t) >= 4:
+                for n in (nm(t[1]), nm(t[2])):
+                    caps[n] = caps.get(n, 0.0) + 0.5 * float(t[3]) * cu
+                    if n not in nodes: nodes.append(n)
+        elif section == "res" and len(t) >= 4:
+            a, b = nm(t[1]), nm(t[2]); res.append((a, b, float(t[3]) * ru))
+            for n in (a, b):
+                if n not in nodes: nodes.append(n)
+    return {"net": net, "nodes": nodes, "caps": caps, "res": res, "conn": net_conn(text).get(net, {"driver": None, "receivers": [], "ports": []})}
+
+
+def rc_tree_plan(tree: dict, receivers, driver: str = None) -> dict:
+    """The node model of a net from its RC tree: one statsim_pl_rc per resistor,
+    oriented away from the driver, the far node's ground cap as the element's C
+    (ALPHA 1: the cap sits at that node), the receivers' Cin as load taps on
+    their own nodes; per receiver the Elmore delay through the tree.
+    `receivers` = [(pin, cin_F)...]; `driver` = the driving pin/port (default:
+    the *CONN driver, else the net's own node)."""
+    root = driver or tree["conn"].get("driver") or tree["net"]
+    adj = {}
+    for a, b, r in tree["res"]:
+        adj.setdefault(a, []).append((b, r)); adj.setdefault(b, []).append((a, r))
+    if root not in adj:                        # a lumped net (one node, or the pin has no resistor)
+        root = tree["net"] if tree["net"] in adj else (tree["nodes"][0] if tree["nodes"] else root)
+    # breadth-first from the root: parent, series R, subtree caps
+    order, parent, rpar = [root], {root: None}, {root: 0.0}
+    for n in order:
+        for m, r in adj.get(n, []):
+            if m not in parent:
+                parent[m] = n; rpar[m] = r; order.append(m)
+    cin = {}
+    for pin, c in receivers:
+        cin[pin] = cin.get(pin, 0.0) + c
+    cap = {n: tree["caps"].get(n, 0.0) + cin.get(n, 0.0) for n in order}
+    sub = dict(cap)                            # capacitance below each node, including its own
+    for n in reversed(order):
+        if parent[n] is not None:
+            sub[parent[n]] += sub[n]
+    elmore = {root: 0.0}
+    for n in order[1:]:
+        elmore[n] = elmore[parent[n]] + rpar[n] * sub[n]
+    elements = [(parent[n], n, rpar[n], tree["caps"].get(n, 0.0)) for n in order[1:]]
+    stray = [pin for pin, _ in receivers if pin not in parent]     # a receiver the tree does not reach: tap it at the root
+    return {"net": tree["net"], "root": root, "nodes": order, "elements": elements,
+            "root_cap": tree["caps"].get(root, 0.0),
+            "receivers": [{"pin": pin, "node": pin if pin in parent else root, "cin": c, "elmore": elmore.get(pin, 0.0)} for pin, c in receivers],
+            "stray": stray}
+
+
+def vhdl_rc_tree(plan: dict, prefix: str = "w") -> str:
+    """A VHDL fragment instantiating the node model: one resolved_pl signal per
+    tree node (the root is the net's own signal, `prefix` names the rest), a
+    statsim_pl_rc(C, R, ALPHA=>1.0) per element, the root's own cap as a
+    PL_WIRE tap; receivers connect to their node's signal (the binder wires
+    each receiver's port to plan['receivers'][k]['node'])."""
+    sig = {plan["root"]: plan["net"]}
+    for k, n in enumerate(plan["nodes"][1:], 1):
+        sig[n] = "%s_%s_%d" % (prefix, re.sub(r"[^A-Za-z0-9_]", "_", plan["net"]), k)
+    out = ["-- statsim SPEF node model of net %s: %d nodes, %d RC elements" % (plan["net"], len(plan["nodes"]), len(plan["elements"]))]
+    for n in plan["nodes"][1:]:
+        out.append("signal %s : resolved_pl := PL_FLOAT;" % sig[n])
+    if plan["root_cap"] > 0:
+        out.append("%s <= PL_WIRE(%.6e, 0.0);   -- the root node's own wire cap" % (sig[plan["root"]], plan["root_cap"]))
+    for i, (a, b, r, c) in enumerate(plan["elements"]):
+        out.append("%s_rc%d : entity statsim.statsim_pl_rc generic map (C => %.6e, R => %.6e, ALPHA => 1.0) port map (a => %s, b => %s);" % (
+            re.sub(r"[^A-Za-z0-9_]", "_", plan["net"]), i, c, r, sig[a], sig[b]))
+    out.append("-- receivers: " + ", ".join("%s on %s (Elmore %.2f ps)" % (r["pin"], sig[r["node"]], r["elmore"] * 1e12) for r in plan["receivers"]))
+    return "\n".join(out)
 
 
 def net_delays(text: str) -> dict:
@@ -268,9 +391,46 @@ def _self_test() -> int:
         print(f"SELF-TEST FAIL: rc taps {rc}"); return 1
     if abs(rc_delay_flight(350.0, 12e-15, 6e-15, 0.5) - LN2 * 350.0 * 12e-15) > 1e-18:
         print("SELF-TEST FAIL: rc_delay_flight"); return 1
+    # --- the RC tree as a node model ---
+    tree_spef = """\
+*C_UNIT 1 FF
+*R_UNIT 1 OHM
+*NAME_MAP
+*1 dnet
+*D_NET *1 9.0
+*CONN
+*I drv:Y O
+*I ra:A I
+*I rb:A I
+*CAP
+1 drv:Y 1.0
+2 *1:1 4.0
+3 ra:A 2.0
+4 rb:A 2.0
+*RES
+1 drv:Y *1:1 100.0
+2 *1:1 ra:A 50.0
+3 *1:1 rb:A 300.0
+*END
+"""
+    tr = net_rc_tree(tree_spef, "dnet")
+    if len(tr["res"]) != 3 or abs(tr["caps"]["dnet:1"] - 4e-15) > 1e-20:
+        print(f"SELF-TEST FAIL: net_rc_tree {tr}"); return 1
+    plan = rc_tree_plan(tr, [("ra:A", 2e-15), ("rb:A", 2e-15)])
+    # Elmore to ra: 100*(4+2+2+2+2)fF + 50*(2+2)fF = 1.2e-12 + 0.2e-12; to rb: 1.2e-12 + 300*4fF = 2.4e-12
+    ea = next(r["elmore"] for r in plan["receivers"] if r["pin"] == "ra:A"); eb = next(r["elmore"] for r in plan["receivers"] if r["pin"] == "rb:A")
+    if plan["root"] != "drv:Y" or len(plan["elements"]) != 3 or abs(ea - 1.4e-12) > 1e-18 or abs(eb - 2.4e-12) > 1e-18:
+        print(f"SELF-TEST FAIL: rc_tree_plan root={plan['root']} elements={plan['elements']} ea={ea:g} eb={eb:g}"); return 1
+    tt_ = taps_for_net(tree_spef, "dnet", [2e-15, 2e-15], mode="tree")
+    if sum(1 for t in tt_ if t[0] == "rc") != 3 or [t[3] for t in tt_ if t[0] == "load"] != ["ra:A", "rb:A"]:
+        print(f"SELF-TEST FAIL: tree taps {tt_}"); return 1
+    v = vhdl_rc_tree(plan)
+    if v.count("statsim_pl_rc") != 3 or "signal w_dnet_1 : resolved_pl" not in v:
+        print(f"SELF-TEST FAIL: vhdl_rc_tree\n{v}"); return 1
     print(f"self-test OK: sync_d C=12fF R=350ohm -> delay {d18*1e12:.2f}ps(3 fo) "
           f"-> {d20*1e12:.2f}ps(4 fo); *CONN driver={cn['driver']} "
-          f"recv={len(cn['receivers'])}; rc flight={rc_delay_flight(350.0,12e-15,6e-15)*1e12:.2f}ps")
+          f"recv={len(cn['receivers'])}; rc flight={rc_delay_flight(350.0,12e-15,6e-15)*1e12:.2f}ps; "
+          f"tree dnet: Elmore ra {ea*1e12:.2f} ps, rb {eb*1e12:.2f} ps over {len(plan['elements'])} pl_rc")
     return 0
 
 
