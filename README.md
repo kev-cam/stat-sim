@@ -392,9 +392,16 @@ and 18 outputs go wrong. OpenROAD's timer on the same routed design
 with a 3.33 ns arrival -- the same flops, the same clock. With the OpenRCX SPEF
 as lumped wire taps the top of the list is unchanged and the deeper flops
 (`_297_`..`_299_`) fail earlier (2.0 instead of 1.2 ns). `--spef-mode tree` binds each
-receiver to its own node of the SPEF's RC tree (one `statsim_pl_rc` per
-resistor, 651 on gcd; `test/sweep_gcd_tree.log`): the same envelope, the
-deeper flops caught at 1.6 ns. Not done yet: the hold side.
+receiver to its own node of the SPEF's RC tree, one `statsim_pl_rc` per
+resistor above `--r-min` (30 ohm by default: the pieces below it are merged
+away, gcd 820 -> 140 elements, the ALU 21k -> 3100; `test/sweep_gcd_tree.log`).
+The cell delay carries the switching input's transition (estimated from its
+node's driver conductance and load, `KAPPA` 0.4 as layopt's drive fit): without
+it the load-only delay matched the timer on gcd's short paths but was three
+times optimistic on the ALU's 30-stage carry chain (`test/sweep_alu_noslew.log`:
+outputs wrong from 2.5 ns against the timer's 7.3); with it gcd is caught at
+3.5 ns and clean at 4.0 against the timer's 3.33 (`test/sweep_gcd_tree_slew.log`).
+Not done yet: the hold side.
 
 ## Forward-compatible with the second patent (DFX / defect coverage)
 
