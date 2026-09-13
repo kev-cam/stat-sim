@@ -1,0 +1,12 @@
+  period flops w/px  outputs off   first hazards / mismatches
+   4.00 ns          0            0   
+   3.00 ns          0            0   
+   2.50 ns          0           14     outputs first off: br_dest[16], br_dest[17], br_dest[18], br_dest[21], br_dest[23], br_dest[24]
+   2.00 ns          0           85     outputs first off: br_dest[0], br_dest[11], br_dest[12], br_dest[13], br_dest[14], br_dest[15]
+   1.60 ns          1           97   px first at: _6992_  outputs first off: br_dest[10], br_dest[1], br_dest[2], br_dest[4], rs_data[111], rs_data[35]
+   1.20 ns         87          152   px first at: _6963_, _6965_, _6966_, _6967_, _6968_, _6969_ ...  outputs first off: br_is_mret, br_is_trap, br_trap_cause[3], br_valid, rs_data[100], rs_data[101]
+   1.00 ns        144          152   px first at: _6964_, _6971_, _6972_, _6973_, _6975_, _6976_ ...
+critical endpoints (the flops whose D is first caught moving, slowest period first): _6992_ @ 1.6 ns, _6963_ @ 1.2 ns, _6974_ @ 1.2 ns, _6977_ @ 1.2 ns, _6980_ @ 1.2 ns, _6981_ @ 1.2 ns, _6982_ @ 1.2 ns, _6983_ @ 1.2 ns
+EXIT 0
+
+[exited with code 0]

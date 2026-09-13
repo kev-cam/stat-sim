@@ -195,7 +195,7 @@ def comb_entity(t, spec, out_pin, func):
     return """
 entity sc_%(t)s%(suffix)s is
   generic ( R_RISE : real := %(rr).1f; R_FALL : real := %(rf).1f; T0_RISE : real := %(tr).4e; T0_FALL : real := %(tf).4e;
-            KAPPA : real := 0.0 );     -- the input transition's share in the delay; 0 matches the timer on gcd, 0.4 (layopt drive.py) overshoots with the max-over-inputs estimate
+            KAPPA : real := 0.4 );     -- the switching input's transition's share in the delay (layopt drive.py: 0.41 rise / 0.38 fall)
   port ( %(ports)s );
 end entity;
 
@@ -217,12 +217,7 @@ begin
     -- the switching input's transition, from its node's driver conductance and load
     -- (LN9 * (R_driver + rwire) * cload, the same estimate the driver uses for its edge)
     tsl := 0.0;
-    for i in 0 to %(nm1)d loop                    -- the slowest input's transition (the switching one is among them)
-      g := ins(i).gdrv;
-      if g = g and g >= G_EPS then              -- an undriven node (or garbage at time 0) has no transition
-        tsl := maximum(tsl, LN9 * (1.0 / g + clamp0(ins(i).rwire)) * clamp0(ins(i).cload));
-      end if;
-    end loop;
+%(slew_of_switching)s
     if tsl > 2.0e-9 then tsl := 2.0e-9; end if;
     p0 := 0.0; p1 := 0.0;
     for v in 0 to %(last)d loop
@@ -241,7 +236,8 @@ begin
 end architecture;
 """ % {"t": t, "suffix": "" if len(spec["outputs"]) == 1 else "_" + out_pin, "rr": d["r_rise"], "rf": d["r_fall"], "tr": d["t0_rise"], "tf": d["t0_fall"],
        "ports": ports, "last": (1 << n) - 1, "tt": ", ".join(str(b) for b in tt), "sens": ", ".join(used), "nm1": n - 1,
-       "insv": ", ".join(used) if n > 1 else "0 => " + used[0], "o": out_pin}
+       "insv": ", ".join(used) if n > 1 else "0 => " + used[0], "o": out_pin,
+       "slew_of_switching": "\n".join("    if %s'event then g := %s.gdrv; if g = g and g >= G_EPS then tsl := maximum(tsl, LN9 * (1.0 / g + clamp0(%s.rwire)) * clamp0(%s.cload)); end if; end if;" % (p, p, p, p) for p in used)}
 
 
 def const_entity(t, out_pin, one):

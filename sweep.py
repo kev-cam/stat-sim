@@ -26,7 +26,7 @@ STATSIM = os.path.join(os.path.dirname(os.path.abspath(__file__)), "build")
 
 def run(outdir, top, period_ns, cycles, seed=1):
     work = "--work=dut:%s" % os.path.abspath(os.path.join(outdir, "dut"))
-    base = [NVC, "--std=2040", "-L", NVCLIB, "-L", STATSIM, work]
+    base = [NVC, "--std=2040", "-M", "512m", "-L", NVCLIB, "-L", STATSIM, work]
     trace = os.path.abspath(os.path.join(outdir, "trace_%g.txt" % period_ns))
     r = subprocess.run(base + ["-e", "%s_tb" % top, "-gPERIOD=%gns" % period_ns, "-gSEED=%d" % seed, "-gCYCLES=%d" % cycles, "-gTRACE=%s" % trace,
                                 "-r", "--stop-time=%dus" % max(1, int(period_ns * cycles * 1.5e-3) + 1)],
@@ -47,7 +47,9 @@ def main():
     outs = [ln.strip() for ln in open(os.path.join(outdir, "outputs.txt")) if ln.strip()]
     # analyse once
     work = "--work=dut:%s" % os.path.abspath(os.path.join(outdir, "dut"))
-    subprocess.run([NVC, "--std=2040", "-L", NVCLIB, "-L", STATSIM, work, "-a"] + [os.path.join(outdir, f) for f in ("cells.vhd", "top.vhd", "tb.vhd")], check=True, capture_output=True)
+    r = subprocess.run([NVC, "--std=2040", "-M", "512m", "-L", NVCLIB, "-L", STATSIM, work, "-a"] + [os.path.join(outdir, f) for f in ("cells.vhd", "top.vhd", "tb.vhd")], capture_output=True, text=True)
+    if r.returncode != 0:
+        raise SystemExit("nvc analysis failed:\n" + (r.stdout + r.stderr)[-1500:])
     ref = None
     first_px = {}; first_mismatch = {}
     print("%8s %10s %12s   %s" % ("period", "flops w/px", "outputs off", "first hazards / mismatches"))
