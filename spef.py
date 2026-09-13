@@ -252,16 +252,38 @@ def net_rc_tree(text: str, net: str) -> dict:
     return {"net": net, "nodes": nodes, "caps": caps, "res": res, "conn": net_conn(text).get(net, {"driver": None, "receivers": [], "ports": []})}
 
 
-def rc_tree_plan(tree: dict, receivers, driver: str = None) -> dict:
+def rc_tree_plan(tree: dict, receivers, driver: str = None, r_min: float = 0.0) -> dict:
     """The node model of a net from its RC tree: one statsim_pl_rc per resistor,
     oriented away from the driver, the far node's ground cap as the element's C
     (ALPHA 1: the cap sits at that node), the receivers' Cin as load taps on
     their own nodes; per receiver the Elmore delay through the tree.
     `receivers` = [(pin, cin_F)...]; `driver` = the driving pin/port (default:
-    the *CONN driver, else the net's own node)."""
+    the *CONN driver, else the net's own node).  `r_min`: a resistor below it
+    is merged away (its far node folded into the near one, caps summed) unless
+    a receiver sits on the far node -- an extraction writes a resistor per
+    wire piece, tens per net, most of them a few ohms; a design of 4000 nets
+    then carries 20k elements the simulator cannot afford, and the Elmore
+    error of dropping a 5 ohm piece is femtoseconds."""
     root = driver or tree["conn"].get("driver") or tree["net"]
+    res, caps = list(tree["res"]), dict(tree["caps"])
+    if r_min > 0:
+        keep = {root} | {pin for pin, _ in receivers}
+        merged = True
+        while merged:
+            merged = False
+            for k, (a, b, r) in enumerate(res):
+                if r >= r_min:
+                    continue
+                gone, into = (b, a) if b not in keep else ((a, b) if a not in keep else (None, None))
+                if gone is None:
+                    continue
+                caps[into] = caps.get(into, 0.0) + caps.pop(gone, 0.0)
+                res = [(into if x == gone else x, into if y == gone else y, rr) for j, (x, y, rr) in enumerate(res) if j != k]
+                res = [(x, y, rr) for x, y, rr in res if x != y]
+                merged = True
+                break
     adj = {}
-    for a, b, r in tree["res"]:
+    for a, b, r in res:
         adj.setdefault(a, []).append((b, r)); adj.setdefault(b, []).append((a, r))
     if root not in adj:                        # a lumped net (one node, or the pin has no resistor)
         root = tree["net"] if tree["net"] in adj else (tree["nodes"][0] if tree["nodes"] else root)
@@ -274,7 +296,7 @@ def rc_tree_plan(tree: dict, receivers, driver: str = None) -> dict:
     cin = {}
     for pin, c in receivers:
         cin[pin] = cin.get(pin, 0.0) + c
-    cap = {n: tree["caps"].get(n, 0.0) + cin.get(n, 0.0) for n in order}
+    cap = {n: caps.get(n, 0.0) + cin.get(n, 0.0) for n in order}
     sub = dict(cap)                            # capacitance below each node, including its own
     for n in reversed(order):
         if parent[n] is not None:
@@ -282,10 +304,10 @@ def rc_tree_plan(tree: dict, receivers, driver: str = None) -> dict:
     elmore = {root: 0.0}
     for n in order[1:]:
         elmore[n] = elmore[parent[n]] + rpar[n] * sub[n]
-    elements = [(parent[n], n, rpar[n], tree["caps"].get(n, 0.0)) for n in order[1:]]
+    elements = [(parent[n], n, rpar[n], caps.get(n, 0.0)) for n in order[1:]]
     stray = [pin for pin, _ in receivers if pin not in parent]     # a receiver the tree does not reach: tap it at the root
     return {"net": tree["net"], "root": root, "nodes": order, "elements": elements,
-            "root_cap": tree["caps"].get(root, 0.0),
+            "root_cap": caps.get(root, 0.0),
             "receivers": [{"pin": pin, "node": pin if pin in parent else root, "cin": c, "elmore": elmore.get(pin, 0.0)} for pin, c in receivers],
             "stray": stray}
 

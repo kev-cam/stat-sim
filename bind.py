@@ -271,7 +271,7 @@ end architecture;
 """
 
 
-def emit(ports, insts, assigns, cells, top, outdir, spef_text=None, spef_mode="tree", dff_spec=None):
+def emit(ports, insts, assigns, cells, top, outdir, spef_text=None, spef_mode="tree", dff_spec=None, r_min=30.0):
     os.makedirs(outdir, exist_ok=True)
     dff = dff_spec or {"tsetup": 90e-12, "tcq": 110e-12, "r_drive": 1500.0}
     # --- cell entities ---
@@ -313,7 +313,7 @@ def emit(ports, insts, assigns, cells, top, outdir, spef_text=None, spef_mode="t
             if not tree["res"]:
                 continue
             recv = [(r, 0.0) for r in conn_all[n]["receivers"]]
-            plan = spefmod.rc_tree_plan(tree, recv)
+            plan = spefmod.rc_tree_plan(tree, recv, r_min=r_min)
             sig = {plan["root"]: net(n)}
             for k, nd in enumerate(plan["nodes"][1:], 1):
                 sig[nd] = "w_%s_%d" % (vid(n), k)
@@ -443,9 +443,10 @@ def main():
     out = a[a.index("-o") + 1] if "-o" in a else "build/" + top
     spef_text = open(a[a.index("--spef") + 1]).read() if "--spef" in a else None
     mode = a[a.index("--spef-mode") + 1] if "--spef-mode" in a else "tree"
+    r_min = float(a[a.index("--r-min") + 1]) if "--r-min" in a else 30.0     # tree mode: resistors below this (ohm) are merged away (gcd: 820 -> 140 elements, the ALU 21k -> ~1k)
     ports, insts, assigns = read_netlist(src, top)
     cells = liberty_cells(lib, sorted({c for c, _, _ in insts}))
-    n_nets, n_inst, n_ff, n_loads, n_wires = emit(ports, insts, assigns, cells, top, out, spef_text, mode)
+    n_nets, n_inst, n_ff, n_loads, n_wires = emit(ports, insts, assigns, cells, top, out, spef_text, mode, r_min=r_min)
     print("bind: %s -> %s: %d instances (%d flops, %d cell types), %d nets, %d load taps, %d wire taps" % (src, out, n_inst, n_ff, len(cells), n_nets, n_loads, n_wires))
 
 
