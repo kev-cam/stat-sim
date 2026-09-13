@@ -363,6 +363,38 @@ Verilog→VHDL *instantiation* boundary doesn't yet propagate port values (pure
 Verilog and pure VHDL both simulate; only cross-language port binding is the gap —
 a toolchain item). Use the `.vhd` driver to run the demo today.
 
+## Finding the critical paths by raising the clock (`bind.py`, `sweep.py`)
+
+A gate netlist (Yosys or OpenROAD `write_verilog`) is bound to prob_load cell
+models generated from the Liberty -- each combinational cell type an entity
+evaluating its function as a truth table on the inputs' probability
+simplexes, driving its output with the Liberty-fitted drive resistance of the
+edge and the on-the-fly load delay; the flops as the metastable `sky130_dfxtp`
+(an enable flop as a mux in front); a `statsim_pl_load` tap per receiver pin
+(the Liberty's pin capacitance) and, with a SPEF, the wiring as taps. The
+generated testbench has a clock `PERIOD` generic, random vectors on the primary
+inputs after each rising edge, and a probe that writes per cycle each flop's
+D-node `px` at the capture edge and every output. `sweep.py` runs it at a list
+of periods with the same vectors and reports, against the slowest run, the
+first period at which each flop's D is caught moving and each output differs:
+those flops are the ends of the critical paths, found by simulation alone.
+
+```sh
+python3 bind.py gcd_pnr.v --top gcd --lib sky130_fd_sc_hd__tt_025C_1v80.lib [--spef gcd.spef --spef-mode lump] -o build/gcd
+python3 sweep.py build/gcd --top gcd --periods 8,6,5,4.5,4,3.5,3,2.5,2,1.6,1.2
+```
+
+gcd (222 cells, 35 flops) at tt, 300 cycles a period, 4 s a run
+(`test/sweep_gcd.log`, `test/sweep_gcd_spef.log`): clean down to 3.5 ns; at
+3.0 ns 32 flops' D nodes are caught moving, first among them `_265_`..`_272_`,
+and 18 outputs go wrong. OpenROAD's timer on the same routed design
+(`test/sweep_gcd_sta_ends.rpt`) puts its worst endpoints at `_267_`..`_279_`
+with a 3.33 ns arrival -- the same flops, the same clock. With the OpenRCX SPEF
+as lumped wire taps the top of the list is unchanged and the deeper flops
+(`_297_`..`_299_`) fail earlier (2.0 instead of 1.2 ns). Not done yet: binding
+each receiver to its own node of the SPEF tree (spef.py has the plan;
+`--spef-mode tree` still lumps), and the hold side.
+
 ## Forward-compatible with the second patent (DFX / defect coverage)
 
 US20230334213A1 (defect simulation, hierarchical binning) is a later layer, but
