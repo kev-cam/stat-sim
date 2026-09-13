@@ -294,6 +294,34 @@ def emit(ports, insts, assigns, cells, top, outdir, spef_text=None, spef_mode="t
             pin_ports.append((n, d, net(n)))
     for a, b in assigns:
         net(a); net(b)
+    # the SPEF trees: a receiver pin's node signal (mode "tree"), the wiring as pl_rc elements
+    node_of = {}                       # (inst, pin) -> node signal
+    tree_decls, tree_insts = [], []
+    if spef_text and spef_mode == "tree":
+        conn_all = spefmod.net_conn(spef_text)
+        for n in list({pins[p] for _, _, pins in insts for p in pins} | {n for n, _, _ in pin_ports}):
+            if n not in conn_all or n in ("1'b0", "1'b1", "1'h0", "1'h1"):
+                continue
+            tree = spefmod.net_rc_tree(spef_text, n)
+            if not tree["res"]:
+                continue
+            recv = [(r, 0.0) for r in conn_all[n]["receivers"]]
+            plan = spefmod.rc_tree_plan(tree, recv)
+            sig = {plan["root"]: net(n)}
+            for k, nd in enumerate(plan["nodes"][1:], 1):
+                sig[nd] = "w_%s_%d" % (vid(n), k)
+                tree_decls.append("  signal %s : resolved_pl := PL_FLOAT;" % sig[nd])
+            if plan["root_cap"] > 0:
+                tree_insts.append("  wr_%s : entity statsim.statsim_pl_wire generic map (C => %.4e, R => 0.0) port map (n => %s);" % (vid(n), plan["root_cap"], sig[plan["root"]]))
+            for i, (a, b, r, c) in enumerate(plan["elements"]):
+                tree_insts.append("  wt_%s_%d : entity statsim.statsim_pl_rc generic map (C => %.4e, R => %.4e, ALPHA => 1.0) port map (a => %s, b => %s);" % (vid(n), i, c, r, sig[a], sig[b]))
+            for rv in plan["receivers"]:
+                ip = rv["pin"].rsplit(":", 1)
+                if len(ip) == 2:
+                    node_of[(ip[0], ip[1])] = sig[rv["node"]]
+    def pin_net(inst, p, n):
+        """the signal a cell's input pin connects to: its SPEF-tree node when there is one"""
+        return node_of.get((inst, p), net(n))
     lines = [HDR, "library work;", "", "entity %s_dut is" % top, "  port ("]
     # every port inout: the load taps and the wire taps hang on the port's net (a tap's port is inout)
     lines.append(";\n".join("    %s : inout resolved_pl := PL_FLOAT" % s for n, d, s in pin_ports))
@@ -310,14 +338,16 @@ def emit(ports, insts, assigns, cells, top, outdir, spef_text=None, spef_mode="t
             if "DE" in pins:
                 msig = "m_" + vid(inst)
                 body.append("  signal %s : resolved_pl := PL_FLOAT;" % msig)
-                body.append("  %s_mux : entity work.sc_enmux port map (D => %s, DE => %s, Q => %s, M => %s);" % (iv, net(dnet), net(pins["DE"]), net(qnet), msig))
-                loads.append((net(pins["DE"]), spec["cin"].get("DE", 2e-15)))
+                body.append("  %s_mux : entity work.sc_enmux port map (D => %s, DE => %s, Q => %s, M => %s);" % (iv, pin_net(inst, "D", dnet), pin_net(inst, "DE", pins["DE"]), net(qnet), msig))
+                loads.append((pin_net(inst, "DE", pins["DE"]), spec["cin"].get("DE", 2e-15)))
                 dsig = msig
             else:
                 dsig = net(dnet)
+            if "DE" not in pins:
+                dsig = pin_net(inst, "D", dnet)
             body.append("  %s : entity statsim.sky130_dfxtp generic map (TSETUP => %d ps, TCQ0 => %d ps, R_DRIVE => %.1f, SEED => %d) port map (d => %s, clk => %s, q => %s);" % (
-                iv, int(dff["tsetup"] * 1e12), int(dff["tcq"] * 1e12), spec["drive"].get("Q", {}).get("r_rise", dff["r_drive"]), 1 + len(flops), dsig, net(ck), net(qnet)))
-            loads.append((net(dnet), spec["cin"].get("D", 2e-15))); loads.append((net(ck), spec["cin"].get("CLK", 2e-15)))
+                iv, int(dff["tsetup"] * 1e12), int(dff["tcq"] * 1e12), spec["drive"].get("Q", {}).get("r_rise", dff["r_drive"]), 1 + len(flops), dsig, pin_net(inst, "CLK", ck), net(qnet)))
+            loads.append((pin_net(inst, "D", dnet), spec["cin"].get("D", 2e-15))); loads.append((pin_net(inst, "CLK", ck), spec["cin"].get("CLK", 2e-15)))
             flops.append((inst, dsig, net(qnet)))
             continue
         for o in spec["outputs"]:
@@ -328,11 +358,11 @@ def emit(ports, insts, assigns, cells, top, outdir, spef_text=None, spef_mode="t
                 body.append("  %s_%s : entity work.sc_%s_%s port map (%s => %s);" % (iv, o, cell, o, o, net(pins[o])))
                 continue
             used = [p for p in spec["inputs"] if re.search(r"\b%s\b" % re.escape(p), f)] or spec["inputs"]
-            pm = ", ".join("%s => %s" % (p, net(pins[p]) if p in pins else "PL_0") for p in used) + ", %s => %s" % (o, net(pins[o]))
+            pm = ", ".join("%s => %s" % (p, pin_net(inst, p, pins[p]) if p in pins else "PL_0") for p in used) + ", %s => %s" % (o, net(pins[o]))
             body.append("  %s%s : entity work.sc_%s%s port map (%s);" % (iv, "" if len(spec["outputs"]) == 1 else "_" + o, cell, "" if len(spec["outputs"]) == 1 else "_" + o, pm))
         for p in spec["inputs"]:
             if p in pins and pins[p] not in ("1'b0", "1'b1", "1'h0", "1'h1"):
-                loads.append((net(pins[p]), spec["cin"][p]))
+                loads.append((pin_net(inst, p, pins[p]), spec["cin"][p]))
     for a, b in assigns:
         body.append("  %s <= %s;" % (net(a), net(b)))
     decls = ["  signal %s : resolved_pl := PL_FLOAT;" % s for n, s in sorted(nets.items()) if s not in port_sigs]
@@ -340,23 +370,17 @@ def emit(ports, insts, assigns, cells, top, outdir, spef_text=None, spef_mode="t
     wires = []
     if spef_text:
         conn = spefmod.net_conn(spef_text)
+        lumped = spefmod.net_loads(spef_text)          # parsed once: per-net lookups re-parse the whole file
         for n, s in nets.items():
             if n not in conn:
                 continue
             if spef_mode == "tree":
-                tree = spefmod.net_rc_tree(spef_text, n)
-                plan = spefmod.rc_tree_plan(tree, [])
-                if plan["elements"]:
-                    frag = spefmod.vhdl_rc_tree(plan, prefix="w")
-                    # the fragment names the root by the net name: rename to our signal; receivers stay on the root
-                    # node here (the taps above sit on the net signal); only the wiring's C and R are added
-                    wires.append("  -- SPEF tree of %s: %d elements (receivers on the root; per-node binding is the next step)" % (n, len(plan["elements"])))
-                    ctot = sum(c for _, _, _, c in plan["elements"]) + plan["root_cap"]; rtot = sum(r for _, _, r, _ in plan["elements"])
-                    wires.append("  w%d : entity statsim.statsim_pl_wire generic map (C => %.4e, R => %.4e) port map (n => %s);" % (len(wires), ctot, rtot, s))
+                continue                             # done above: the tree's nodes, elements and receiver binding
             else:
-                c, r = spefmod.net_load(spef_text, n)
+                c, r = lumped.get(n, (0.0, 0.0))
                 wires.append("  w%d : entity statsim.statsim_pl_wire generic map (C => %.4e, R => %.4e) port map (n => %s);" % (len(wires), c, r, s))
-    lines += decls + [l for l in body if l.startswith("  signal")] + ["begin"] + [l for l in body if not l.startswith("  signal")] + taps + wires + ["end architecture;", ""]
+    wires = tree_insts + wires
+    lines += decls + tree_decls + [l for l in body if l.startswith("  signal")] + ["begin"] + [l for l in body if not l.startswith("  signal")] + taps + wires + ["end architecture;", ""]
     open(os.path.join(outdir, "top.vhd"), "w").write("\n".join(lines))
     # --- testbench ---
     ins = [(n, s) for n, d, s in pin_ports if d == "input"]

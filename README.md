@@ -391,9 +391,10 @@ and 18 outputs go wrong. OpenROAD's timer on the same routed design
 (`test/sweep_gcd_sta_ends.rpt`) puts its worst endpoints at `_267_`..`_279_`
 with a 3.33 ns arrival -- the same flops, the same clock. With the OpenRCX SPEF
 as lumped wire taps the top of the list is unchanged and the deeper flops
-(`_297_`..`_299_`) fail earlier (2.0 instead of 1.2 ns). Not done yet: binding
-each receiver to its own node of the SPEF tree (spef.py has the plan;
-`--spef-mode tree` still lumps), and the hold side.
+(`_297_`..`_299_`) fail earlier (2.0 instead of 1.2 ns). `--spef-mode tree` binds each
+receiver to its own node of the SPEF's RC tree (one `statsim_pl_rc` per
+resistor, 651 on gcd; `test/sweep_gcd_tree.log`): the same envelope, the
+deeper flops caught at 1.6 ns. Not done yet: the hold side.
 
 ## Forward-compatible with the second patent (DFX / defect coverage)
 
