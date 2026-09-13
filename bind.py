@@ -54,7 +54,7 @@ def read_netlist(path, top):
     ports = {}                       # name -> (dir, width)
     for d, decl in re.findall(r"\b(input|output|inout)\s+([^;]+);", body):
         rng = re.match(r"\s*\[(\d+):(\d+)\]\s*(.*)", decl, re.S)
-        width = 1
+        width = 0                                   # 0: a scalar; a declared range, even [0:0], is a vector (its bits are name[k])
         if rng:
             width = abs(int(rng.group(1)) - int(rng.group(2))) + 1; decl = rng.group(3)
         for name in re.findall(r"\\\S+|[A-Za-z_][\w$.]*", decl):
@@ -194,7 +194,8 @@ def comb_entity(t, spec, out_pin, func):
     ports = "; ".join("%s : in resolved_pl" % p for p in used) + "; %s : inout resolved_pl := PL_FLOAT" % out_pin
     return """
 entity sc_%(t)s%(suffix)s is
-  generic ( R_RISE : real := %(rr).1f; R_FALL : real := %(rf).1f; T0_RISE : real := %(tr).4e; T0_FALL : real := %(tf).4e );
+  generic ( R_RISE : real := %(rr).1f; R_FALL : real := %(rf).1f; T0_RISE : real := %(tr).4e; T0_FALL : real := %(tf).4e;
+            KAPPA : real := 0.0 );     -- the input transition's share in the delay; 0 matches the timer on gcd, 0.4 (layopt drive.py) overshoots with the max-over-inputs estimate
   port ( %(ports)s );
 end entity;
 
@@ -209,10 +210,20 @@ architecture pl of sc_%(t)s%(suffix)s is
 begin
   process (%(sens)s)
     variable ins : prob_load_vector(0 to %(nm1)d);
-    variable p0, p1, px, pr, r, t0 : real;
+    variable p0, p1, px, pr, r, t0, tsl, g : real;
     variable td : time;
   begin
     ins := (%(insv)s);
+    -- the switching input's transition, from its node's driver conductance and load
+    -- (LN9 * (R_driver + rwire) * cload, the same estimate the driver uses for its edge)
+    tsl := 0.0;
+    for i in 0 to %(nm1)d loop                    -- the slowest input's transition (the switching one is among them)
+      g := ins(i).gdrv;
+      if g = g and g >= G_EPS then              -- an undriven node (or garbage at time 0) has no transition
+        tsl := maximum(tsl, LN9 * (1.0 / g + clamp0(ins(i).rwire)) * clamp0(ins(i).cload));
+      end if;
+    end loop;
+    if tsl > 2.0e-9 then tsl := 2.0e-9; end if;
     p0 := 0.0; p1 := 0.0;
     for v in 0 to %(last)d loop
       pr := 1.0;
@@ -224,7 +235,7 @@ begin
     px := 1.0 - p0 - p1;
     if px < 0.0 then px := 0.0; end if;
     if p1 >= %(o)s.p1 then r := R_RISE; t0 := T0_RISE; else r := R_FALL; t0 := T0_FALL; end if;
-    td := integer(maximum(t0 + LN2 * (r + clamp0(%(o)s.rwire)) * clamp0(%(o)s.cload), TPD_FLOOR) * 1.0e15) * 1 fs;
+    td := integer(maximum(t0 + KAPPA * tsl + LN2 * (r + clamp0(%(o)s.rwire)) * clamp0(%(o)s.cload), TPD_FLOOR) * 1.0e15) * 1 fs;
     %(o)s <= transport (p0, p1, px, 1.0 / r, 0.0, 0.0) after td;
   end process;
 end architecture;
@@ -289,7 +300,7 @@ def emit(ports, insts, assigns, cells, top, outdir, spef_text=None, spef_mode="t
         return nets[n]
     pin_ports = []
     for p, (d, w) in ports.items():
-        for b in (range(w) if w > 1 else [None]):
+        for b in (range(w) if w >= 1 else [None]):
             n = p if b is None else "%s[%d]" % (p, b)
             pin_ports.append((n, d, net(n)))
     for a, b in assigns:
