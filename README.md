@@ -432,7 +432,12 @@ SDC's input delay after the edge (`INPUT_DELAY`, 400 ps): moving them a
 picosecond after it had them racing the clock tree into the flops with short
 paths. gcd so timed (`test/sweep_gcd_nldm.log`): clean at 4.0 ns, its
 endpoints caught at 3.75, against the timer's 3.33 ns arrival plus 90 ps of
-setup. Not done yet: the hold side; the ALU with the tables is running.
+setup. Cost of the table-timed cells: a cell schedules an output event only when
+its value changes (with an event per input event the whole fan-out cone was
+re-timed at every toggle: 100 s a cycle on the ALU); so timed, the ALU
+elaborates in 5.5 minutes a period (the tables are constants of 4000
+instances; nvc needs `-H 2g`) and simulates at 5.5 s a cycle, gcd in 22 s a
+period. Not done yet: the hold side; the ALU with the tables is running.
 
 ## Forward-compatible with the second patent (DFX / defect coverage)
 
