@@ -39,7 +39,7 @@ import spef as spefmod                                         # noqa: E402
 
 LN2 = 0.6931471805599453
 POWER_PINS = {"VPWR", "VGND", "VPB", "VNB", "VDD", "VSS"}
-KAPPA = 0.4          # the switching input's transition's share in a cell's delay (--kappa)
+KAPPA = 0.2          # the switching input's transition's share in a cell's delay (--kappa)
 
 
 # --- the netlist -----------------------------------------------------------------
