@@ -30,7 +30,7 @@ def run(outdir, top, period_ns, cycles, seed=1):
     work = "--work=dut:%s" % os.path.abspath(os.path.join(outdir, "dut"))
     base = [NVC, "--std=2040", "-M", "512m", "-H", "2g", "-L", NVCLIB, "-L", STATSIM, work]
     trace = os.path.abspath(os.path.join(outdir, "trace_%g.txt" % period_ns))
-    r = subprocess.run(base + ["-e", "%s_tb" % top, "-gPERIOD=%gns" % period_ns, "-gSEED=%d" % seed, "-gCYCLES=%d" % cycles, "-gTRACE=%s" % trace, "-gSTIM=%s" % STIM,
+    r = subprocess.run(base + ["-e", "%s_tb" % top, "-gPERIOD=%gns" % period_ns, "-gSEED=%d" % seed, "-gCYCLES=%d" % cycles, "-gTRACE=%s" % trace, "-gVECTORS=%s" % STIM,
                                 "-r", "--stop-time=%dus" % max(1, int(period_ns * cycles * 1.5e-3) + 1)],
                        capture_output=True, text=True, cwd=outdir, timeout=TIMEOUT)
     if not os.path.exists(trace):

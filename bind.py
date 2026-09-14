@@ -525,7 +525,7 @@ def emit(ports, insts, assigns, cells, top, outdir, spef_text=None, spef_mode="t
     tb = [HDR, "library work;", "use std.textio.all;", "", "entity %s_tb is" % top,
           "  generic ( PERIOD : time := 4 ns; SEED : integer := 1; CYCLES : integer := 300; RESET_CYCLES : integer := 4; TRACE : string := \"trace.txt\";",
           "            INPUT_DELAY : time := 400 ps;   -- the inputs change this long after the clock edge (the SDC's input external delay): before the clock tree has delivered the edge to the flops, a change would race it",
-          "            STIM : string := \"random\" );   -- random: every input bit random each cycle; alt: the data bits all 0 / all 1 alternately with three random bits flipped (a carry chain sees its full length)", "end entity;", "",
+          "            VECTORS : string := \"random\" );   -- random: every input bit random each cycle; alt: the data bits all 0 / all 1 alternately with three random bits flipped (a carry chain sees its full length)", "end entity;", "",
           "architecture sim of %s_tb is" % top, "  signal clk_v : bit := '0';", "  signal cycle : integer := 0;"]
     tb += ["  signal %s : resolved_pl := PL_0;" % s for n, s in ins] + ["  signal %s : resolved_pl := PL_FLOAT;" % s for n, s in outs]
     tb += ["begin", "  clk_v <= not clk_v after PERIOD / 2;"]
@@ -541,7 +541,7 @@ def emit(ports, insts, assigns, cells, top, outdir, spef_text=None, spef_mode="t
             tb.append("      if cycle < RESET_CYCLES then %s <= %s after INPUT_DELAY; else %s <= %s after INPUT_DELAY; end if;" % (s, "PL_0" if n.lower().endswith("_n") or n.lower() == "resetn" else "PL_1", s, "PL_1" if n.lower().endswith("_n") or n.lower() == "resetn" else "PL_0"))
         else:
             tb.append("      uniform(s1, s2, u); k := k + 1;")
-            tb.append("      if STIM = \"alt\" then if base xor (k = f1 or k = f2 or k = f3) then %s <= PL_1 after INPUT_DELAY; else %s <= PL_0 after INPUT_DELAY; end if;" % (s, s))
+            tb.append("      if VECTORS = \"alt\" then if base xor (k = f1 or k = f2 or k = f3) then %s <= PL_1 after INPUT_DELAY; else %s <= PL_0 after INPUT_DELAY; end if;" % (s, s))
             tb.append("      elsif u < 0.5 then %s <= PL_0 after INPUT_DELAY; else %s <= PL_1 after INPUT_DELAY; end if;" % (s, s))
     tb += ["    end if;", "  end process;", "",
            "  probe : process (clk_v)", "    file f : text open write_mode is TRACE;", "    variable l : line;"]
