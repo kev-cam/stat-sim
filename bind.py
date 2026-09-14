@@ -39,7 +39,8 @@ import spef as spefmod                                         # noqa: E402
 
 LN2 = 0.6931471805599453
 POWER_PINS = {"VPWR", "VGND", "VPB", "VNB", "VDD", "VSS"}
-KAPPA = 0.2          # the switching input's transition's share in a cell's delay (--kappa)
+KAPPA = 0.2          # the switching input's transition's share in a cell's delay (--kappa; the fitted model only)
+NLDM = True          # cells timed from the Liberty's delay/transition tables (--fitted for the R-and-share model instead)
 
 
 # --- the netlist -----------------------------------------------------------------
@@ -139,6 +140,8 @@ def liberty_cells(lib_path, types):
         outputs = [p for p, pin in c.pins.items() if pin.direction == "output"]
         cin = {p: c.pins[p].capacitance_fF * 1e-15 for p in inputs}
         drv = {}
+        arcs = {o: [{"pin": a.related_pin, "slews": a.slews, "loads": a.loads, "rise": a.rise, "fall": a.fall, "rise_tr": a.rise_tr, "fall_tr": a.fall_tr}
+                    for a in c.pins[o].arcs if a.rise_tr and a.fall_tr] for o in outputs}
         for o in outputs:
             rr, rf, tr, tf = [], [], [], []
             for arc in c.pins[o].arcs:
@@ -156,7 +159,7 @@ def liberty_cells(lib_path, types):
             body = ff[2]
             ns = re.search(r'next_state\s*:\s*"([^"]*)"', body); ck = re.search(r'clocked_on\s*:\s*"([^"]*)"', body)
             seq = {"iq": ff[0], "next_state": ns.group(1) if ns else "D", "clocked_on": ck.group(1) if ck else "CLK"}
-        out[t] = {"inputs": inputs, "outputs": outputs, "cin": cin, "drive": drv, "funcs": funcs, "seq": seq}
+        out[t] = {"inputs": inputs, "outputs": outputs, "cin": cin, "drive": drv, "funcs": funcs, "seq": seq, "arcs": arcs}
     return out
 
 
@@ -186,7 +189,110 @@ def vid(name):
     return re.sub(r"__+", "_", s)
 
 
+def _vec(xs):
+    return "(" + ", ".join("%.6e" % x for x in xs) + ")" if len(xs) > 1 else "(0 => %.6e)" % xs[0]
+
+
+def nldm_entity(t, spec, out_pin, func):
+    """A cell entity timed from the Liberty's own tables: for the switching input
+    and the output edge, the delay and the output transition interpolated on
+    (input transition, load) -- the input transition read off the input node
+    (LN9 * (1/gdrv + rwire) * cload, which is what the driver below publishes),
+    the output's gdrv set to LN9 * cload / transition so the next stage reads
+    this stage's transition the same way.  What a timer computes, at event time."""
+    ins = [p for p in spec["inputs"]]
+    used = [p for p in ins if re.search(r"\b%s\b" % re.escape(p), func)] or ins
+    tt = truth_table(func, used)
+    n = len(used)
+    arcs = {a["pin"]: a for a in spec["arcs"].get(out_pin, [])}
+    if not all(p in arcs for p in used):
+        return None
+    consts, cases = [], []
+    for k, p in enumerate(used):
+        a = arcs[p]; ns, nl = len(a["slews"]), len(a["loads"])
+        consts.append("  constant SL_%s : real_vector := %s;" % (p, _vec([x * 1e-12 for x in a["slews"]])))
+        consts.append("  constant LD_%s : real_vector := %s;" % (p, _vec([x * 1e-15 for x in a["loads"]])))
+        for e in ("rise", "fall"):
+            consts.append("  constant D_%s_%s : real_vector := %s;" % (p, e[0].upper(), _vec([v * 1e-12 for row in a[e] for v in row])))
+            consts.append("  constant T_%s_%s : real_vector := %s;" % (p, e[0].upper(), _vec([v * 1e-12 for row in a[e + "_tr"] for v in row])))
+        cases.append("""      if %(p)s'event then
+        g := %(p)s.gdrv; tin := 0.0;
+        if g = g and g >= G_EPS then tin := LN9 * (1.0 / g + clamp0(%(p)s.rwire)) * clamp0(%(p)s.cload); end if;
+        if rising then
+          td_s := interp2(D_%(p)s_R, SL_%(p)s, LD_%(p)s, %(nl)d, tin, cl); tr_s := interp2(T_%(p)s_R, SL_%(p)s, LD_%(p)s, %(nl)d, tin, cl);
+        else
+          td_s := interp2(D_%(p)s_F, SL_%(p)s, LD_%(p)s, %(nl)d, tin, cl); tr_s := interp2(T_%(p)s_F, SL_%(p)s, LD_%(p)s, %(nl)d, tin, cl);
+        end if;
+        found := true;
+      end if;""" % {"p": p, "nl": nl})
+    ports = "; ".join("%s : in resolved_pl" % p for p in used) + "; %s : inout resolved_pl := PL_FLOAT" % out_pin
+    return """
+entity sc_%(t)s%(suffix)s is
+  port ( %(ports)s );
+end entity;
+
+architecture nldm of sc_%(t)s%(suffix)s is
+  type tt_t is array (0 to %(last)d) of integer;
+  constant TT : tt_t := (%(tt)s);
+%(consts)s
+  function clamp0 (x : real) return real is
+  begin
+    if x /= x or x < 0.0 then return 0.0; end if;
+    return x;
+  end function;
+  -- bilinear interpolation on a Liberty table (rows: input transition, columns: load), clamped to the table
+  function interp2 (tab, sl, ld : real_vector; nl : integer; x, y : real) return real is
+    variable i, j : integer; variable fx, fy, a, b : real;
+  begin
+    i := sl'left; while i < sl'right - 1 and x > sl(i + 1) loop i := i + 1; end loop;
+    j := ld'left; while j < ld'right - 1 and y > ld(j + 1) loop j := j + 1; end loop;
+    fx := (x - sl(i)) / (sl(i + 1) - sl(i)); if fx < 0.0 then fx := 0.0; end if;
+    fy := (y - ld(j)) / (ld(j + 1) - ld(j)); if fy < 0.0 then fy := 0.0; end if;
+    a := tab(i * nl + j) + fy * (tab(i * nl + j + 1) - tab(i * nl + j));
+    b := tab((i + 1) * nl + j) + fy * (tab((i + 1) * nl + j + 1) - tab((i + 1) * nl + j));
+    return a + fx * (b - a);
+  end function;
+begin
+  process (%(sens)s)
+    variable ins : prob_load_vector(0 to %(nm1)d);
+    variable p0, p1, px, pr, g, tin, cl, td_s, tr_s, gout : real;
+    variable rising, found : boolean;
+    variable td : time;
+  begin
+    ins := (%(insv)s);
+    p0 := 0.0; p1 := 0.0;
+    for v in 0 to %(last)d loop
+      pr := 1.0;
+      for i in 0 to %(nm1)d loop
+        if ((v / (2 ** i)) mod 2) = 1 then pr := pr * ins(i).p1; else pr := pr * ins(i).p0; end if;
+      end loop;
+      if TT(v) = 1 then p1 := p1 + pr; else p0 := p0 + pr; end if;
+    end loop;
+    px := 1.0 - p0 - p1;
+    if px < 0.0 then px := 0.0; end if;
+    rising := p1 >= %(o)s.p1;
+    cl := clamp0(%(o)s.cload);
+    td_s := 0.0; tr_s := 0.0; found := false;
+%(cases)s
+    if not found then                       -- no input event (a load change): the first table, its fastest input
+%(fallback)s
+    end if;
+    td := integer(maximum(td_s + LN2 * clamp0(%(o)s.rwire) * cl, TPD_FLOOR) * 1.0e15) * 1 fs;
+    if tr_s > 1.0e-13 and cl > 0.0 then gout := LN9 * cl / tr_s; else gout := G_STRONG; end if;
+    %(o)s <= transport (p0, p1, px, gout, 0.0, 0.0) after td;
+  end process;
+end architecture;
+""" % {"t": t, "suffix": "" if len(spec["outputs"]) == 1 else "_" + out_pin, "ports": ports, "last": (1 << n) - 1, "tt": ", ".join(str(b) for b in tt),
+       "consts": "\n".join(consts), "sens": ", ".join(used), "nm1": n - 1, "insv": ", ".join(used) if n > 1 else "0 => " + used[0], "o": out_pin,
+       "cases": "\n".join(cases),
+       "fallback": "      if rising then td_s := interp2(D_%(p)s_R, SL_%(p)s, LD_%(p)s, %(nl)d, 0.0, cl); tr_s := interp2(T_%(p)s_R, SL_%(p)s, LD_%(p)s, %(nl)d, 0.0, cl);\n      else td_s := interp2(D_%(p)s_F, SL_%(p)s, LD_%(p)s, %(nl)d, 0.0, cl); tr_s := interp2(T_%(p)s_F, SL_%(p)s, LD_%(p)s, %(nl)d, 0.0, cl); end if;" % {"p": used[0], "nl": len(arcs[used[0]]["loads"])}}
+
+
 def comb_entity(t, spec, out_pin, func):
+    if NLDM:
+        e = nldm_entity(t, spec, out_pin, func)
+        if e is not None:
+            return e
     ins = [p for p in spec["inputs"]]
     used = [p for p in ins if re.search(r"\b%s\b" % re.escape(p), func)] or ins
     tt = truth_table(func, used)
@@ -408,7 +514,8 @@ def emit(ports, insts, assigns, cells, top, outdir, spef_text=None, spef_mode="t
     clk = next((s for n, s in ins if n.lower() in ("clk", "clock", "core_clock")), None)
     rst = [s for n, s in ins if n.lower() in ("reset", "rst", "rst_n", "resetn")]
     tb = [HDR, "library work;", "use std.textio.all;", "", "entity %s_tb is" % top,
-          "  generic ( PERIOD : time := 4 ns; SEED : integer := 1; CYCLES : integer := 300; RESET_CYCLES : integer := 4; TRACE : string := \"trace.txt\" );", "end entity;", "",
+          "  generic ( PERIOD : time := 4 ns; SEED : integer := 1; CYCLES : integer := 300; RESET_CYCLES : integer := 4; TRACE : string := \"trace.txt\";",
+          "            INPUT_DELAY : time := 400 ps );   -- the inputs change this long after the clock edge (the SDC's input external delay): before the clock tree has delivered the edge to the flops, a change would race it", "end entity;", "",
           "architecture sim of %s_tb is" % top, "  signal clk_v : bit := '0';", "  signal cycle : integer := 0;"]
     tb += ["  signal %s : resolved_pl := PL_0;" % s for n, s in ins] + ["  signal %s : resolved_pl := PL_FLOAT;" % s for n, s in outs]
     tb += ["begin", "  clk_v <= not clk_v after PERIOD / 2;"]
@@ -420,9 +527,9 @@ def emit(ports, insts, assigns, cells, top, outdir, spef_text=None, spef_mode="t
         if s == clk:
             continue
         if s in rst:
-            tb.append("      if cycle < RESET_CYCLES then %s <= %s after 1 ps; else %s <= %s after 1 ps; end if;" % (s, "PL_0" if n.lower().endswith("_n") or n.lower() == "resetn" else "PL_1", s, "PL_1" if n.lower().endswith("_n") or n.lower() == "resetn" else "PL_0"))
+            tb.append("      if cycle < RESET_CYCLES then %s <= %s after INPUT_DELAY; else %s <= %s after INPUT_DELAY; end if;" % (s, "PL_0" if n.lower().endswith("_n") or n.lower() == "resetn" else "PL_1", s, "PL_1" if n.lower().endswith("_n") or n.lower() == "resetn" else "PL_0"))
         else:
-            tb.append("      uniform(s1, s2, u); if u < 0.5 then %s <= PL_0 after 1 ps; else %s <= PL_1 after 1 ps; end if;" % (s, s))
+            tb.append("      uniform(s1, s2, u); if u < 0.5 then %s <= PL_0 after INPUT_DELAY; else %s <= PL_1 after INPUT_DELAY; end if;" % (s, s))
     tb += ["    end if;", "  end process;", "",
            "  probe : process (clk_v)", "    file f : text open write_mode is TRACE;", "    variable l : line;"]
     # the flops' D nodes inside the dut, by external name -- declared here, after the dut
@@ -455,8 +562,9 @@ def main():
     spef_text = open(a[a.index("--spef") + 1]).read() if "--spef" in a else None
     mode = a[a.index("--spef-mode") + 1] if "--spef-mode" in a else "tree"
     r_min = float(a[a.index("--r-min") + 1]) if "--r-min" in a else 30.0     # tree mode: resistors below this (ohm) are merged away (gcd: 820 -> 140 elements, the ALU 21k -> ~1k)
-    global KAPPA
+    global KAPPA, NLDM
     KAPPA = float(a[a.index("--kappa") + 1]) if "--kappa" in a else KAPPA
+    NLDM = "--fitted" not in a
     ports, insts, assigns = read_netlist(src, top)
     cells = liberty_cells(lib, sorted({c for c, _, _ in insts}))
     n_nets, n_inst, n_ff, n_loads, n_wires = emit(ports, insts, assigns, cells, top, out, spef_text, mode, r_min=r_min)

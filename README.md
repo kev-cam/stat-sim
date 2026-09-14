@@ -417,8 +417,22 @@ what it does not do is put them at the timer's period: with the transition
 share at 0.4 the ALU's adder path is caught at 10 ns where the timer has
 7.3 + setup, and gcd's at 3.75 against 3.4. The transition estimate from a
 node's driver conductance and load is crude, and 30 stages of it compound; the
-share is a calibration knob (`--kappa`), and 0.2 is being tried.
-Not done yet: the hold side.
+share is a calibration knob (`--kappa`; at 0.2 gcd is caught at 3.25 ns,
+`test/sweep_gcd_k02.log`, but the ALU's adder register is still caught at 10 ns,
+`test/sweep_alu_k02.log`).
+
+So the cells are now timed the way a timer times them, at event time: each
+combinational cell carries its Liberty delay and transition tables per input
+and output edge, interpolates them on (input transition, load) for the
+switching input, and publishes its output transition in the node's `gdrv`
+(`LN9 * cload / transition`) so the next stage reads it back as its input
+transition -- an NLDM evaluation inside the prob_load discipline, no fitted R
+(`--fitted` keeps the R-and-share model). The testbench moves the inputs the
+SDC's input delay after the edge (`INPUT_DELAY`, 400 ps): moving them a
+picosecond after it had them racing the clock tree into the flops with short
+paths. gcd so timed (`test/sweep_gcd_nldm.log`): clean at 4.0 ns, its
+endpoints caught at 3.75, against the timer's 3.33 ns arrival plus 90 ps of
+setup. Not done yet: the hold side; the ALU with the tables is running.
 
 ## Forward-compatible with the second patent (DFX / defect coverage)
 
