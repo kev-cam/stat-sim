@@ -373,6 +373,11 @@ def emit(ports, insts, assigns, cells, top, outdir, spef_text=None, spef_mode="t
     for a, b in assigns:
         body.append("  %s <= %s;" % (net(a), net(b)))
     decls = ["  signal %s : resolved_pl := PL_FLOAT;" % s for n, s in sorted(nets.items()) if s not in port_sigs]
+    # a metastable-capture counter per flop: its Q holds PL_X for the Exp(tau) plateau after a
+    # setup violation; a process on Q counts the entries (the testbench reads the counters)
+    for k, (i, d, q) in enumerate(flops):
+        decls.append("  signal hz_%d : integer := 0;" % k)
+        body.append("  hzp_%d : process (%s) begin if %s.px > 0.5 then hz_%d <= hz_%d + 1; end if; end process;" % (k, q, q, k, k))
     taps = ["  l%d : entity statsim.statsim_pl_load generic map (CIN => %.4e) port map (n => %s);" % (k, c, s) for k, (s, c) in enumerate(loads)]
     wires = []
     if spef_text:
@@ -416,14 +421,12 @@ def emit(ports, insts, assigns, cells, top, outdir, spef_text=None, spef_mode="t
     # instance in elaboration order (an alias of an external name in the architecture's
     # declarative part would be elaborated before the instance exists)
     for k, (i, d, q) in enumerate(flops):
-        if d not in port_sigs:
-            tb.append("    alias fd_%d is << signal .%s_tb.dut.%s : resolved_pl >>;" % (k, top, d))
+        tb.append("    alias hz_%d is << signal .%s_tb.dut.hz_%d : integer >>;" % (k, top, k))
     tb += ["  begin",
            "    if clk_v'event and clk_v = '1' then", "      write(l, cycle); write(l, string'(\" \"));"]
-    tb.append("      -- flops: 1 when the D node is not at a rail at the capture edge (%s)" % " ".join(i for i, _, _ in flops))
+    tb.append("      -- flops: metastable captures so far, one count per flop (%s)" % " ".join(i for i, _, _ in flops))
     for k, (i, d, q) in enumerate(flops):
-        ref = d if d in port_sigs else "fd_%d" % k
-        tb.append("      if %s.px > 0.5 then write(l, string'(\"1\")); else write(l, string'(\"0\")); end if;" % ref)
+        tb.append("      write(l, hz_%d); write(l, string'(\",\"));" % k)
     tb.append("      write(l, string'(\" \"));")
     tb.append("      -- outputs (%s)" % " ".join(n for n, _ in outs))
     for n, s in outs:

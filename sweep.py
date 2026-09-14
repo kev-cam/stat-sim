@@ -34,7 +34,11 @@ def run(outdir, top, period_ns, cycles, seed=1):
     if not os.path.exists(trace):
         raise RuntimeError("no trace for %g ns: %s" % (period_ns, (r.stdout + r.stderr)[-500:]))
     rows = [ln.split() for ln in open(trace) if ln.strip()]
-    return {int(c): (f, o) for c, f, o in rows if len(o) > 0} if rows and len(rows[0]) == 3 else {int(r[0]): (r[1], "") for r in rows}
+    out = {}
+    for r in rows:
+        c = int(r[0]); counts = [int(x) for x in r[1].strip(",").split(",")] if len(r) > 1 and r[1] else []
+        out[c] = (counts, r[2] if len(r) > 2 else "")
+    return out
 
 
 def main():
@@ -52,18 +56,22 @@ def main():
         raise SystemExit("nvc analysis failed:\n" + (r.stdout + r.stderr)[-1500:])
     ref = None
     first_px = {}; first_mismatch = {}
-    print("%8s %10s %12s   %s" % ("period", "flops w/px", "outputs off", "first hazards / mismatches"))
+    print("%8s %10s %12s   %s" % ("period", "flops meta", "outputs off", "first metastable captures / mismatches"))
     for per in sorted(periods, reverse=True):
         tr = run(outdir, top, per, cycles)
         if ref is None:
             ref = tr
         px_flops = {}; bad_outs = {}
-        for c, (f, o) in tr.items():
+        last = None
+        for c in sorted(tr):
+            f, o = tr[c]
+            if c >= warm and last is not None:
+                for k, (a, b) in enumerate(zip(f, last)):
+                    if a > b:                  # a metastable capture happened in this cycle
+                        px_flops[k] = px_flops.get(k, 0) + (a - b)
+            last = f
             if c < warm:
                 continue                       # reset and the first vectors: nodes still floating
-            for k, ch in enumerate(f):
-                if ch == "1":
-                    px_flops[k] = px_flops.get(k, 0) + 1
             if c in ref:
                 fo = ref[c][1]
                 for k, (x, y) in enumerate(zip(o, fo)):
@@ -76,13 +84,13 @@ def main():
         new_px = [flops[k] for k in px_flops if first_px[flops[k]] == per]
         new_bad = [outs[k] for k in bad_outs if first_mismatch[outs[k]] == per]
         print("%7.2f ns %10d %12d   %s%s" % (per, len(px_flops), len(bad_outs),
-              ("px first at: " + ", ".join(sorted(new_px)[:6]) + (" ..." if len(new_px) > 6 else "")) if new_px else "",
+              ("metastable first at: " + ", ".join(sorted(new_px)[:6]) + (" ..." if len(new_px) > 6 else "")) if new_px else "",
               ("  outputs first off: " + ", ".join(sorted(new_bad)[:6])) if new_bad else ""))
     if first_px:
         worst = sorted(first_px.items(), key=lambda kv: -kv[1])[:8]
-        print("critical endpoints (the flops whose D is first caught moving, slowest period first): %s" % ", ".join("%s @ %g ns" % kv for kv in worst))
+        print("critical endpoints (the flops first caught metastable, slowest period first): %s" % ", ".join("%s @ %g ns" % kv for kv in worst))
     else:
-        print("no flop showed px down to %g ns" % min(periods))
+        print("no flop was caught metastable down to %g ns" % min(periods))
 
 
 if __name__ == "__main__":
