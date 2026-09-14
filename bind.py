@@ -306,10 +306,13 @@ def emit(ports, insts, assigns, cells, top, outdir, spef_text=None, spef_mode="t
     tree_decls, tree_insts = [], []
     if spef_text and spef_mode == "tree":
         conn_all = spefmod.net_conn(spef_text)
+        trees_all = spefmod.net_rc_trees(spef_text)         # one pass over the SPEF
         for n in list({pins[p] for _, _, pins in insts for p in pins} | {n for n, _, _ in pin_ports}):
             if n not in conn_all or n in ("1'b0", "1'b1", "1'h0", "1'h1"):
                 continue
-            tree = spefmod.net_rc_tree(spef_text, n)
+            tree = trees_all.get(n)
+            if tree is None:
+                continue
             if not tree["res"]:
                 continue
             recv = [(r, 0.0) for r in conn_all[n]["receivers"]]

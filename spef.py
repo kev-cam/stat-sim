@@ -202,15 +202,16 @@ def rc_path_for_net(text: str, net: str, receivers) -> dict:
 
 
 # --- the SPEF RC tree as a node model (statsim_pl_rc per segment) ---------------
-def net_rc_tree(text: str, net: str) -> dict:
-    """The RC topology of one net as the SPEF wrote it: {"nodes": [name...],
-    "caps": {node: C_F}, "res": [(n1, n2, R_ohm)...], "conn": *CONN of the net}.
-    Node names are the SPEF's (pin names `inst:pin`, port names, internal
-    `net:k`), with the name map applied; a ground cap goes to its node, a
-    coupling cap is split half to each end (the usual decoupling)."""
+def net_rc_trees(text: str) -> dict:
+    """The RC topology of every net as the SPEF wrote it, in one pass:
+    {net: {"net", "nodes": [name...], "caps": {node: C_F}, "res": [(n1, n2, R_ohm)...],
+    "conn": *CONN of the net}}.  Node names are the SPEF's (pin names `inst:pin`,
+    port names, internal `net:k`), with the name map applied; a ground cap goes
+    to its node, a coupling cap is split half to each end (the usual decoupling)."""
     tu = cu = ru = 1.0
     namemap, cur, section = {}, None, None
-    caps, res, nodes = {}, [], []
+    conn = net_conn(text)
+    trees = {}
     def nm(tok):
         if tok.startswith("*") and tok.split(":")[0] in namemap:            # *12 or *12:3
             head, sep, tail = tok.partition(":")
@@ -224,19 +225,19 @@ def net_rc_tree(text: str, net: str) -> dict:
         if ln.startswith("*C_UNIT"): cu = _scale(ln); continue
         if ln.startswith("*R_UNIT"): ru = _scale(ln); continue
         if ln.startswith("*D_NET"):
-            cur = nm(ln.split()[1]); section = None; continue
+            cur = nm(ln.split()[1]); section = None
+            trees[cur] = {"net": cur, "nodes": [], "caps": {}, "res": [], "conn": conn.get(cur, {"driver": None, "receivers": [], "ports": []})}
+            continue
         if ln.startswith("*END"):
-            if cur == net:
-                break
             cur = None; section = None; continue
         if cur is None and re.match(r"\*\d+\s", ln):
             t = ln.split(); namemap[t[0]] = t[1]; continue
-        if cur != net:
+        if cur is None:
             continue
         if ln.startswith("*CAP"): section = "cap"; continue
         if ln.startswith("*RES"): section = "res"; continue
         if ln.startswith("*CONN") or ln.startswith("*PORTS"): section = None; continue
-        t = ln.split()
+        t = ln.split(); tr = trees[cur]; caps, nodes = tr["caps"], tr["nodes"]
         if section == "cap":
             if len(t) == 3:
                 n = nm(t[1]); caps[n] = caps.get(n, 0.0) + float(t[2]) * cu
@@ -246,10 +247,15 @@ def net_rc_tree(text: str, net: str) -> dict:
                     caps[n] = caps.get(n, 0.0) + 0.5 * float(t[3]) * cu
                     if n not in nodes: nodes.append(n)
         elif section == "res" and len(t) >= 4:
-            a, b = nm(t[1]), nm(t[2]); res.append((a, b, float(t[3]) * ru))
+            a, b = nm(t[1]), nm(t[2]); tr["res"].append((a, b, float(t[3]) * ru))
             for n in (a, b):
                 if n not in nodes: nodes.append(n)
-    return {"net": net, "nodes": nodes, "caps": caps, "res": res, "conn": net_conn(text).get(net, {"driver": None, "receivers": [], "ports": []})}
+    return trees
+
+
+def net_rc_tree(text: str, net: str) -> dict:
+    """One net's RC tree (see net_rc_trees; for many nets call that once)."""
+    return net_rc_trees(text).get(net, {"net": net, "nodes": [], "caps": {}, "res": [], "conn": net_conn(text).get(net, {"driver": None, "receivers": [], "ports": []})})
 
 
 def rc_tree_plan(tree: dict, receivers, driver: str = None, r_min: float = 0.0) -> dict:
