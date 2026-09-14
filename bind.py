@@ -259,10 +259,14 @@ end entity;
 architecture pl of sc_enmux is
 begin
   process (D, DE, Q)
-    variable p0, p1, px : real;
+    variable p0, p1, px, q0, q1 : real;
   begin
-    p1 := D.p1 * DE.p1 + Q.p1 * DE.p0;
-    p0 := D.p0 * DE.p1 + Q.p0 * DE.p0;
+    -- a hold flop whose Q is still invalid (power-up, before any enable) holds 0:
+    -- otherwise the X feeds back through the mux and the flop never leaves it
+    q0 := Q.p0; q1 := Q.p1;
+    if Q.px > 0.5 or (q0 + q1) < 0.5 then q0 := 1.0; q1 := 0.0; end if;
+    p1 := D.p1 * DE.p1 + q1 * DE.p0;
+    p0 := D.p0 * DE.p1 + q0 * DE.p0;
     px := 1.0 - p0 - p1;
     if px < 0.0 then px := 0.0; end if;
     M <= transport (p0, p1, px, G_STRONG, 0.0, 0.0) after 1 ps;
