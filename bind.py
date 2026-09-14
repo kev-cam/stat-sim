@@ -256,7 +256,9 @@ begin
   process (%(sens)s)
     variable ins : prob_load_vector(0 to %(nm1)d);
     variable p0, p1, px, pr, g, tin, cl, td_s, tr_s, gout : real;
+    variable l0, l1, lx : real := -1.0;
     variable rising, found : boolean;
+    variable started : boolean := false;
     variable td : time;
   begin
     ins := (%(insv)s);
@@ -270,6 +272,12 @@ begin
     end loop;
     px := 1.0 - p0 - p1;
     if px < 0.0 then px := 0.0; end if;
+    -- no change of the output's value: no event (each event would otherwise re-time
+    -- the whole fan-out cone, and a design-wide storm follows every input toggle)
+    if abs(p0 - l0) < 1.0e-9 and abs(p1 - l1) < 1.0e-9 and abs(px - lx) < 1.0e-9 and started then
+      null;
+    else
+    started := true; l0 := p0; l1 := p1; lx := px;
     rising := p1 >= %(o)s.p1;
     cl := clamp0(%(o)s.cload);
     td_s := 0.0; tr_s := 0.0; found := false;
@@ -280,6 +288,7 @@ begin
     td := integer(maximum(td_s + LN2 * clamp0(%(o)s.rwire) * cl, TPD_FLOOR) * 1.0e15) * 1 fs;
     if tr_s > 1.0e-13 and cl > 0.0 then gout := LN9 * cl / tr_s; else gout := G_STRONG; end if;
     %(o)s <= transport (p0, p1, px, gout, 0.0, 0.0) after td;
+    end if;
   end process;
 end architecture;
 """ % {"t": t, "suffix": "" if len(spec["outputs"]) == 1 else "_" + out_pin, "ports": ports, "last": (1 << n) - 1, "tt": ", ".join(str(b) for b in tt),
