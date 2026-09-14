@@ -23,13 +23,14 @@ NVC = os.environ.get("NVC", "/usr/local/src/nvc/build/bin/nvc")
 NVCLIB = os.environ.get("NVCLIB", "/usr/local/src/nvc/build/lib")
 STATSIM = os.path.join(os.path.dirname(os.path.abspath(__file__)), "build")
 TIMEOUT = 3600            # seconds per run (--timeout)
+STIM = "random"           # the testbench's vector mode (--stim random|alt)
 
 
 def run(outdir, top, period_ns, cycles, seed=1):
     work = "--work=dut:%s" % os.path.abspath(os.path.join(outdir, "dut"))
     base = [NVC, "--std=2040", "-M", "512m", "-H", "2g", "-L", NVCLIB, "-L", STATSIM, work]
     trace = os.path.abspath(os.path.join(outdir, "trace_%g.txt" % period_ns))
-    r = subprocess.run(base + ["-e", "%s_tb" % top, "-gPERIOD=%gns" % period_ns, "-gSEED=%d" % seed, "-gCYCLES=%d" % cycles, "-gTRACE=%s" % trace,
+    r = subprocess.run(base + ["-e", "%s_tb" % top, "-gPERIOD=%gns" % period_ns, "-gSEED=%d" % seed, "-gCYCLES=%d" % cycles, "-gTRACE=%s" % trace, "-gSTIM=%s" % STIM,
                                 "-r", "--stop-time=%dus" % max(1, int(period_ns * cycles * 1.5e-3) + 1)],
                        capture_output=True, text=True, cwd=outdir, timeout=TIMEOUT)
     if not os.path.exists(trace):
@@ -48,8 +49,9 @@ def main():
     periods = [float(x) for x in (a[a.index("--periods") + 1] if "--periods" in a else "8,6,5,4.5,4,3.5,3,2.5,2,1.6,1.2").split(",")]
     cycles = int(a[a.index("--cycles") + 1]) if "--cycles" in a else 300
     warm = int(a[a.index("--warm") + 1]) if "--warm" in a else 8
-    global TIMEOUT
+    global TIMEOUT, STIM
     TIMEOUT = int(a[a.index("--timeout") + 1]) if "--timeout" in a else TIMEOUT
+    STIM = a[a.index("--stim") + 1] if "--stim" in a else STIM
     flops = [ln.split()[0] for ln in open(os.path.join(outdir, "flops.txt")) if ln.strip()]
     outs = [ln.strip() for ln in open(os.path.join(outdir, "outputs.txt")) if ln.strip()]
     # analyse once

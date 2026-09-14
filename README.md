@@ -437,7 +437,15 @@ its value changes (with an event per input event the whole fan-out cone was
 re-timed at every toggle: 100 s a cycle on the ALU); so timed, the ALU
 elaborates in 5.5 minutes a period (the tables are constants of 4000
 instances; nvc needs `-H 2g`) and simulates at 5.5 s a cycle, gcd in 22 s a
-period. Not done yet: the hold side; the ALU with the tables is running.
+period. The ALU so timed, 100 random cycles a period
+(`test/sweep_alu_nldm_random.log`): no flop caught and no output wrong down to
+4 ns, where the timer's static worst path is 7.3 ns. That is the difference
+between a simulation and a timer: the sweep finds the critical paths the
+vectors *exercise*, and random operands rarely send a carry the length of a
+32-bit adder. The testbench therefore has a second vector mode (`--stim alt`:
+the data bits all 0 and all 1 on alternate cycles with three random bits
+flipped, so carry chains see their full length); the ALU with it is running.
+Not done yet: the hold side.
 
 ## Forward-compatible with the second patent (DFX / defect coverage)
 
