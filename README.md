@@ -444,7 +444,10 @@ between a simulation and a timer: the sweep finds the critical paths the
 vectors *exercise*, and random operands rarely send a carry the length of a
 32-bit adder. The testbench therefore has a second vector mode (`--stim alt`:
 the data bits all 0 and all 1 on alternate cycles with three random bits
-flipped, so carry chains see their full length); the ALU with it is running.
+flipped, so carry chains see their full length); the ALU with it is running. The
+fitted model with the same random vectors and the corrected testbench agrees
+with the table-timed cells: nothing caught down to 4 ns
+(`test/sweep_alu_fit_random.log`).
 Not done yet: the hold side.
 
 ## Forward-compatible with the second patent (DFX / defect coverage)
