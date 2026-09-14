@@ -399,9 +399,13 @@ The cell delay carries the switching input's transition (estimated from its
 node's driver conductance and load, `KAPPA` 0.4 as layopt's drive fit): without
 it the load-only delay matched the timer on gcd's short paths but was three
 times optimistic on the ALU's 30-stage carry chain (`test/sweep_alu_noslew.log`:
-outputs wrong from 2.5 ns against the timer's 7.3); with it gcd is caught at
-3.5 ns and clean at 4.0 against the timer's 3.33 (`test/sweep_gcd_tree_slew.log`).
-Not done yet: the hold side.
+outputs wrong from 2.5 ns against the timer's 7.3); with it gcd's endpoints are
+caught at 3.75 ns and clean at 4.0 against the timer's 3.33 ns arrival plus
+90 ps of setup (`test/sweep_gcd_tree_slew.log`). The probe counts metastable
+captures directly: a process on each flop's Q counts its PL_X plateaus, so a
+setup violation at that flop is seen at that flop, not a cycle later through
+its fan-out (`_297_`, gcd's ready flop, is caught at every period: the three
+captures at reset release). Not done yet: the hold side.
 
 ## Forward-compatible with the second patent (DFX / defect coverage)
 
