@@ -39,6 +39,7 @@ import spef as spefmod                                         # noqa: E402
 
 LN2 = 0.6931471805599453
 POWER_PINS = {"VPWR", "VGND", "VPB", "VNB", "VDD", "VSS"}
+KAPPA = 0.4          # the switching input's transition's share in a cell's delay (--kappa)
 
 
 # --- the netlist -----------------------------------------------------------------
@@ -195,7 +196,7 @@ def comb_entity(t, spec, out_pin, func):
     return """
 entity sc_%(t)s%(suffix)s is
   generic ( R_RISE : real := %(rr).1f; R_FALL : real := %(rf).1f; T0_RISE : real := %(tr).4e; T0_FALL : real := %(tf).4e;
-            KAPPA : real := 0.4 );     -- the switching input's transition's share in the delay (layopt drive.py: 0.41 rise / 0.38 fall)
+            KAPPA : real := %(kappa).2f );     -- the switching input's transition's share in the delay (layopt drive.py: 0.41 rise / 0.38 fall)
   port ( %(ports)s );
 end entity;
 
@@ -236,7 +237,7 @@ begin
 end architecture;
 """ % {"t": t, "suffix": "" if len(spec["outputs"]) == 1 else "_" + out_pin, "rr": d["r_rise"], "rf": d["r_fall"], "tr": d["t0_rise"], "tf": d["t0_fall"],
        "ports": ports, "last": (1 << n) - 1, "tt": ", ".join(str(b) for b in tt), "sens": ", ".join(used), "nm1": n - 1,
-       "insv": ", ".join(used) if n > 1 else "0 => " + used[0], "o": out_pin,
+       "insv": ", ".join(used) if n > 1 else "0 => " + used[0], "o": out_pin, "kappa": KAPPA,
        "slew_of_switching": "\n".join("    if %s'event then g := %s.gdrv; if g = g and g >= G_EPS then tsl := maximum(tsl, LN9 * (1.0 / g + clamp0(%s.rwire)) * clamp0(%s.cload)); end if; end if;" % (p, p, p, p) for p in used)}
 
 
@@ -454,6 +455,8 @@ def main():
     spef_text = open(a[a.index("--spef") + 1]).read() if "--spef" in a else None
     mode = a[a.index("--spef-mode") + 1] if "--spef-mode" in a else "tree"
     r_min = float(a[a.index("--r-min") + 1]) if "--r-min" in a else 30.0     # tree mode: resistors below this (ohm) are merged away (gcd: 820 -> 140 elements, the ALU 21k -> ~1k)
+    global KAPPA
+    KAPPA = float(a[a.index("--kappa") + 1]) if "--kappa" in a else KAPPA
     ports, insts, assigns = read_netlist(src, top)
     cells = liberty_cells(lib, sorted({c for c, _, _ in insts}))
     n_nets, n_inst, n_ff, n_loads, n_wires = emit(ports, insts, assigns, cells, top, out, spef_text, mode, r_min=r_min)

@@ -405,7 +405,20 @@ caught at 3.75 ns and clean at 4.0 against the timer's 3.33 ns arrival plus
 captures directly: a process on each flop's Q counts its PL_X plateaus, so a
 setup violation at that flop is seen at that flop, not a cycle later through
 its fan-out (`_297_`, gcd's ready flop, is caught at every period: the three
-captures at reset release). Not done yet: the hold side.
+captures at reset release).
+
+The ALU (4036 cells, 188 flops, reduced trees, `--kappa 0.4`;
+`test/sweep_alu_tree_counters.log`, 200 cycles a period, about ten minutes a
+run): 85 flops are caught metastable on some cycles at every period from 10 ns
+down -- the result register (enable `net44`/`net45`) and the input-ready flops
+-- and the timer's worst endpoint `_7065_` is among them; the outputs go wrong
+from 3 ns. So the sweep names the same endpoints as the timer on both designs;
+what it does not do is put them at the timer's period: with the transition
+share at 0.4 the ALU's adder path is caught at 10 ns where the timer has
+7.3 + setup, and gcd's at 3.75 against 3.4. The transition estimate from a
+node's driver conductance and load is crude, and 30 stages of it compound; the
+share is a calibration knob (`--kappa`), and 0.2 is being tried.
+Not done yet: the hold side.
 
 ## Forward-compatible with the second patent (DFX / defect coverage)
 
