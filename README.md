@@ -447,8 +447,13 @@ the data bits all 0 and all 1 on alternate cycles with three random bits
 flipped, so carry chains see their full length); the ALU with it is running. The
 fitted model with the same random vectors and the corrected testbench agrees
 with the table-timed cells: nothing caught down to 4 ns
-(`test/sweep_alu_fit_random.log`).
-Not done yet: the hold side.
+(`test/sweep_alu_fit_random.log`), and the alternating vectors change nothing
+either (`test/sweep_alu_nldm_alt.log`): the ALU's long paths sit behind its
+operation field and its valid/ready protocol, which a generic testbench does
+not drive -- data bits all 0 or all 1 select no add. The sweep is only as good
+as its vectors; for a design with a protocol the stimulus has to be the
+design's own (the async translation will come with one). Not done yet: the
+hold side.
 
 ## Forward-compatible with the second patent (DFX / defect coverage)
 
