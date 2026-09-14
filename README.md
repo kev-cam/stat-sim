@@ -452,8 +452,10 @@ either (`test/sweep_alu_nldm_alt.log`): the ALU's long paths sit behind its
 operation field and its valid/ready protocol, which a generic testbench does
 not drive -- data bits all 0 or all 1 select no add. The sweep is only as good
 as its vectors; for a design with a protocol the stimulus has to be the
-design's own (the async translation will come with one). Not done yet: the
-hold side.
+design's own (the async translation will come with one). What the alternating
+vectors do exercise fails at 2 ns (`test/sweep_alu_nldm_alt_low.log`: two flops
+caught, four outputs wrong), so the model is judging; it is the paths it is
+shown. Not done yet: the hold side.
 
 ## Forward-compatible with the second patent (DFX / defect coverage)
 
