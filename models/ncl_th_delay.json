@@ -1,0 +1,21 @@
+{
+  "_doc": "NCL TH-cell delay probability models for stat-sim, extracted from transistor-level Vt-mismatch Monte-Carlo (SG13G2 PSP103, N=200/level) in mylex nulex/asic/chr/mc/RESULTS.md. Each cell: mu_ps = characterized mean set-arc delay per kvt (mismatch scale), sd_ps = MC std-dev. The transferable mismatch model is sigma_frac(kvt)=sd/mu; it is ~linear in kvt (zero-mean per-device Vt adds spread, not bias). arc = the input the single-cell MC triggered (weight-2 'a' for th34w2); composed designs may exercise other arcs (mu differs; sigma_frac transfers).",
+  "kvt": [1, 2, 3, 4],
+  "cells": {
+    "th12":   {"kind":"comb", "arc":"a-rise", "mu_ps":[180.5,181.5,183.1,185.4], "sd_ps":[5.7,11.8,18.8,27.2]},
+    "th13":   {"kind":"comb", "arc":"a-rise", "mu_ps":[221.1,221.8,223.3,225.7], "sd_ps":[8.1,16.7,26.2,37.8]},
+    "th14":   {"kind":"comb", "arc":"a-rise", "mu_ps":[278.1,280.2,283.5,288.3], "sd_ps":[12.1,24.7,38.7,55.2]},
+    "th22":   {"kind":"hyst", "arc":"set",    "mu_ps":[356.0,358.0,361.0,366.0], "sd_ps":[12.0,24.0,38.0,54.0]},
+    "th23":   {"kind":"hyst", "arc":"a-set",  "mu_ps":[272.9,273.5,274.5,276.1], "sd_ps":[5.3,10.7,16.3,22.3]},
+    "th33":   {"kind":"hyst", "arc":"set",    "mu_ps":[353.8,354.5,356.3,359.3], "sd_ps":[7.6,15.3,23.5,32.6]},
+    "th34w2": {"kind":"hyst", "arc":"a-set(w2)", "mu_ps":[316.5,316.6,317.3,318.4], "sd_ps":[6.1,12.3,18.6,25.3]}
+  },
+  "ground_truth_nclfa": {
+    "_doc": "Real transistor MC of the composed full adder (aH->sH weight-1 arc, 1 gate), for validating stat-sim 1-gate composition.",
+    "arc":"aH-rise(w1)", "mu_ps":[397.0,398.6,400.8,403.8], "sd_ps":[8.7,17.6,26.9,36.8]
+  },
+  "ground_truth_nclfa4": {
+    "_doc": "Real transistor MC of the 4-bit ripple adder's coH (4-deep th23 carry chain, worst-case ripple A=1111,B=0000,Cin=1; 240 devices), for validating stat-sim MULTI-GATE composition + the 1/sqrt(N) averaging law.",
+    "path":"[th23]*4", "mu_ps":[1365.6,1367.6,1371.2,1376.7], "sd_ps":[14.3,28.7,43.3,58.3]
+  }
+}
