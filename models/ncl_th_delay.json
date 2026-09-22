@@ -17,5 +17,14 @@
   "ground_truth_nclfa4": {
     "_doc": "Real transistor MC of the 4-bit ripple adder's coH (4-deep th23 carry chain, worst-case ripple A=1111,B=0000,Cin=1; 240 devices), for validating stat-sim MULTI-GATE composition + the 1/sqrt(N) averaging law.",
     "path":"[th23]*4", "mu_ps":[1365.6,1367.6,1371.2,1376.7], "sd_ps":[14.3,28.7,43.3,58.3]
+  },
+  "arcs": {
+    "_doc": "PER-ARC characterization (isolated single-cell MC at 2 fF fanout load). Shows sigma_frac is arc-INDEPENDENT (transfers, ~matches the cell model) while mu is arc- AND slew-dependent. mu@fast = mu at a sharp 0.2ns primary-input edge.",
+    "th34w2_w1": {"arc":"weight-1 (b,c,d rise; 3-series B.C.D branch)", "mu_ps":[332.8,333.3,334.5,336.5], "sd_ps":[6.69,13.51,20.55,27.96]},
+    "th23_cin":  {"arc":"carry-in (a held high, c rises last; A.C branch)",  "mu_ps":[245.3,245.5,246.0,246.8], "sd_ps":[4.60,9.21,13.92,18.79]}
+  },
+  "slew_delay_th23_cin": {
+    "_doc": "th23 carry arc delay (c->y, nominal) vs input-edge slew (12-108% ps), 2 fF load. Delay IS strongly slew-dependent. NOTE: this does NOT explain the ripple's in-chain per-stage (~373ps vs isolated 245ps): the measured th23 carry OUTPUT slew at 2fF is only ~143ps (fast), so slew degradation is ruled out. The residual is an IN-CONTEXT effect (real-cell RC load + NCL dual-rail completion + coincident DATA arrival) that needs in-context timing, not a single isolated arc. sigma_frac (reliability) still composes; absolute mu is the open item.",
+    "in_slew_ps":[40,160,400,800,1200], "delay_ps":[204,245,328,445,543], "th23_out_slew_ps_at_2fF":143
   }
 }
