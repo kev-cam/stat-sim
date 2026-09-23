@@ -57,3 +57,11 @@ duty α and Vdd. Result: the 3828-DFF clock floor (108 pJ/cyc) dwarfs the delay-
 cheap on wide 32-bit datapaths) → **crossover α*≈2.9 > 1, so bundled-data async wins at every
 activity level** (−13% at α=1, −68% at α=0.1) — opposite of the narrow add8 ripple (α*≈0.5).
 Interactive operating-map artifact: https://claude.ai/code/artifact/1c104c1f-27d6-4f4d-b296-c9cf3c890f15
+
+## Three-backend operating map (static / async / QAL)
+`vortex_three_backend.py` adds the QAL curve (QAL_PLAN §6: activity-independent
+2(RC/T)/η·CΔV²/η) to the static/async models. Result: static is beaten everywhere (clock floor +
+full CV², no recovery); **async owns the dark-silicon tail (duty < α*≈18%), QAL owns the busy
+regime (duty > α*)** — the Mylex per-block partition. α* slides down with QAL swing (ΔV²). Energy/
+cycle only; QAL's generator tax / ~2× area / +2N latency are separate axes; QAL coefficients are
+illustrative pending the A3-gated A-track. Artifact: https://claude.ai/code/artifact/7108af61-f898-4823-8148-274774ad322e
