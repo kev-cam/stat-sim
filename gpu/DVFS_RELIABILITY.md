@@ -50,3 +50,10 @@ robustness lever (supply + mismatch tolerance). Deployment target: compute run d
   σ_frac(Vdd) needs the proper per-device Vt-mismatch MC (`mc/ gen_mc.py` callback-DELVTO flow) re-run at
   0.6 V — an ad-hoc instance/global `DELVTO` was silently ignored (PyMS callback-param plumbing). The
   graceful-degradation conclusion holds across the whole ×1–3 range, so it is robust to the exact value.
+
+## Whole-Vortex sync-vs-async operating map
+`vortex_sync_async.py` computes the whole-cluster energy/cycle for sync vs bundled-data across
+duty α and Vdd. Result: the 3828-DFF clock floor (108 pJ/cyc) dwarfs the delay-line tax (38 pJ,
+cheap on wide 32-bit datapaths) → **crossover α*≈2.9 > 1, so bundled-data async wins at every
+activity level** (−13% at α=1, −68% at α=0.1) — opposite of the narrow add8 ripple (α*≈0.5).
+Interactive operating-map artifact: https://claude.ai/code/artifact/1c104c1f-27d6-4f4d-b296-c9cf3c890f15
