@@ -84,6 +84,7 @@ static float pctile(const unsigned int *hist, long long total, double q, float h
 int main(int argc, char **argv) {
     long long L = (argc > 1) ? atoll(argv[1]) : 8000LL;   // lanes per batch (arr+znet each N_NETS*L*4B)
     int nbatch = (argc > 2) ? atoi(argv[2]) : 1;          // independent MC batches per corner
+    float sfrac_scale = (argc > 3) ? atof(argv[3]) : 1.0f;// amplify sigma_frac (low-Vdd near-threshold)
     int block = 256; long long grid = (L + block - 1) / block;
     if (block & (block - 1)) { fprintf(stderr, "block not pow2\n"); return 2; }
     int *d_out,*d_nin,*d_in0,*d_in1,*d_in2,*d_end; float *d_mu,*d_sd,*d_arr,*d_znet; double *d_sum,*d_sq; unsigned int *d_hist;
@@ -97,15 +98,16 @@ int main(int argc, char **argv) {
     CUDA_CHECK(cudaMalloc(&d_sum, sizeof(double))); CUDA_CHECK(cudaMalloc(&d_sq, sizeof(double)));
     CUDA_CHECK(cudaMalloc(&d_hist, NB*sizeof(unsigned int)));
     long long total = L * (long long)nbatch;
-    printf("Vortex SSTA on GPU (INSTANCES x CORNERS): %d cells, %d nets, %d endpoints, rho0=%.2f | %lld lanes x %d batches = %lld instances/corner, %d corners (arr+znet %.2f GB)\n",
-           N_CELLS, N_NETS, N_END, RHO0, L, nbatch, total, NKVT, 2 * arrbytes / 1e9);
-    printf("\n  kvt | sigma_frac | GPU mean |  GPU sd | clk@99%% | clk@99.9%% | fmax@99.9%% | vs numpy(mean,sd)\n");
+    printf("Vortex SSTA on GPU (INSTANCES x CORNERS): %d cells, %d nets, %d endpoints, rho0=%.2f, sigma_frac x%.2f | %lld lanes x %d batches = %lld inst/corner, %d corners (arr+znet %.2f GB)\n",
+           N_CELLS, N_NETS, N_END, RHO0, sfrac_scale, L, nbatch, total, NKVT, 2 * arrbytes / 1e9);
+    printf("\n  kvt | eff sigma_frac | GPU mean |  GPU sd | clk@99.9%% | (p99.9-mean)/mean | vs numpy@x1\n");
     bool allpass = true; float p999_worst = 0; int kvt_worst = 0;
     for (int ki = 0; ki < NKVT; ki++) {
-        for (int c = 0; c < N_CELLS; c++) { mu_k[c] = GATE_MU[CELL_TID[c]*NKVT + ki]; sd_k[c] = SIGMA_FRAC[ki]*mu_k[c]; }
+        for (int c = 0; c < N_CELLS; c++) { mu_k[c] = GATE_MU[CELL_TID[c]*NKVT + ki]; sd_k[c] = SIGMA_FRAC[ki]*sfrac_scale*mu_k[c]; }
         CUDA_CHECK(cudaMemcpy(d_mu, mu_k, N_CELLS*sizeof(float), cudaMemcpyHostToDevice));
         CUDA_CHECK(cudaMemcpy(d_sd, sd_k, N_CELLS*sizeof(float), cudaMemcpyHostToDevice));
-        float hlo = REF_MEAN[ki] - 5.f*REF_SD[ki], hhi = REF_MEAN[ki] + 8.f*REF_SD[ki], hbin = (hhi - hlo) / NB;
+        float w = REF_SD[ki] * (sfrac_scale > 1.f ? sfrac_scale : 1.f);
+        float hlo = REF_MEAN[ki] - 5.f*w, hhi = REF_MEAN[ki] + 10.f*w, hbin = (hhi - hlo) / NB;
         CUDA_CHECK(cudaMemcpyToSymbol(HLO, &hlo, sizeof(float))); CUDA_CHECK(cudaMemcpyToSymbol(HBIN, &hbin, sizeof(float)));
         CUDA_CHECK(cudaMemset(d_sum, 0, sizeof(double))); CUDA_CHECK(cudaMemset(d_sq, 0, sizeof(double)));
         CUDA_CHECK(cudaMemset(d_hist, 0, NB*sizeof(unsigned int)));
@@ -125,15 +127,19 @@ int main(int argc, char **argv) {
         double mean = sum / total, sd = sqrt(sq / total - mean * mean);
         float p99 = pctile(hist, total, 0.99, hlo, hbin), p999 = pctile(hist, total, 0.999, hlo, hbin);
         double e_mean = fabs(mean - REF_MEAN[ki]) / REF_MEAN[ki] * 100, e_sd = fabs(sd - REF_SD[ki]) / REF_SD[ki] * 100;
-        if (e_mean > 0.5 || e_sd > 5.0) allpass = false;
+        if (sfrac_scale == 1.0f && (e_mean > 0.5 || e_sd > 5.0)) allpass = false;   // numpy ref is scale=1
+        double ymargin = (p999 - mean) / mean * 100;                                // yield tail (relative)
         if (p999 > p999_worst) { p999_worst = p999; kvt_worst = KVT_LIST[ki]; }
-        printf("   %d  |   %5.2f%%   | %8.1f | %6.1f | %7.1f | %8.1f  |  %.3f GHz | (%.1f,%.1f) %.2f%%/%.1f%%\n",
-               KVT_LIST[ki], SIGMA_FRAC[ki]*100, mean, sd, p99, p999, 1000.0/p999, REF_MEAN[ki], REF_SD[ki], e_mean, e_sd);
+        char vsn[32]; if (sfrac_scale == 1.0f) snprintf(vsn, 32, "%.2f%%/%.1f%%", e_mean, e_sd); else snprintf(vsn, 32, "(proj)");
+        printf("   %d  |     %5.2f%%     | %8.1f | %6.1f | %8.1f  |     %5.2f%%       | %s\n",
+               KVT_LIST[ki], SIGMA_FRAC[ki]*sfrac_scale*100, mean, sd, p999, ymargin, vsn);
     }
-    printf("\n  SIGN-OFF across all %d corners: worst = kvt %d, clock @ 99.9%% yield = %.1f ps -> fmax = %.3f GHz\n",
-           NKVT, kvt_worst, p999_worst, 1000.0/p999_worst);
-    printf("  -> %s\n", allpass
-           ? "PROVEN on GPU: instances x corners yield sweep reproduces the numpy reference at every corner."
-           : "CHECK: a corner disagrees with the numpy reference.");
+    printf("\n  SIGN-OFF across all %d corners (sigma_frac x%.2f): worst = kvt %d, clk@99.9%% yield = %.1f ps -> fmax = %.3f GHz\n",
+           NKVT, sfrac_scale, kvt_worst, p999_worst, 1000.0/p999_worst);
+    if (sfrac_scale == 1.0f)
+        printf("  -> %s\n", allpass ? "PROVEN on GPU: reproduces the numpy reference at every corner (scale=1 baseline)."
+                                    : "CHECK: a corner disagrees with the numpy reference.");
+    else
+        printf("  -> LOW-Vdd PROJECTION: sigma_frac amplified x%.2f (near-threshold); watch the yield-margin growth.\n", sfrac_scale);
     return 0;
 }
