@@ -1,0 +1,36 @@
+* QAL A2 depth-3 chain dV=1.20 
+.hdl "/usr/local/share/xyce/verilog-a/psp103/psp103.va"
+.include "/usr/local/src/kestrel/sim/models/sg13g2_psp103_tt.lib"
+.include "sg13lv_compat.sp"
+.OPTIONS TIMEINT METHOD=TRAP RELTOL=1e-5 ABSTOL=1e-13 CHGTOL=1e-16
+VIN IN 0 1.2
+VR0 RAIL0 0 PWL(0 0 1n 0 2n 1.2 4n 1.2 5n 0)
+VR1 RAIL1 0 PWL(0 0 2n 0 3n 1.2 5n 1.2 6n 0)
+VR2 RAIL2 0 PWL(0 0 3n 0 4n 1.2 6n 1.2 7n 0)
+X0 RAIL0 IN NS0 0 sg13_lv_nmos w=0.74u l=0.13u
+Vs0 NS0 N0 0
+Cw0 N0 0 1f
+BP0 P0 0 V={-V(RAIL0)*I(VR0)}
+X1 RAIL1 N0 NS1 0 sg13_lv_nmos w=0.74u l=0.13u
+Vs1 NS1 N1 0
+Cw1 N1 0 1f
+BP1 P1 0 V={-V(RAIL1)*I(VR1)}
+X2 RAIL2 N1 NS2 0 sg13_lv_nmos w=0.74u l=0.13u
+Vs2 NS2 N2 0
+CL2 N2 0 10f
+BP2 P2 0 V={-V(RAIL2)*I(VR2)}
+.IC V(N0)=0 V(N1)=0 V(N2)=0
+.tran 0.5p 8n UIC
+.measure tran VPK0 MAX V(N0) FROM=2n TO=4n
+.measure tran CAP0 FIND V(N0) AT=3n
+.measure tran QF0 INTEGRAL I(Vs0) FROM=1n TO=4n
+.measure tran EH0 INTEGRAL V(P0) FROM=1n TO=5n
+.measure tran VPK1 MAX V(N1) FROM=3n TO=5n
+.measure tran CAP1 FIND V(N1) AT=4n
+.measure tran QF1 INTEGRAL I(Vs1) FROM=2n TO=5n
+.measure tran EH1 INTEGRAL V(P1) FROM=2n TO=6n
+.measure tran VPK2 MAX V(N2) FROM=4n TO=6n
+.measure tran CAP2 FIND V(N2) AT=5n
+.measure tran QF2 INTEGRAL I(Vs2) FROM=3n TO=6n
+.measure tran EH2 INTEGRAL V(P2) FROM=3n TO=7n
+.end

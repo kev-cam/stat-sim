@@ -16,7 +16,7 @@ that rule is what A1 measures on real silicon.
 |------|----------|---------|--------|
 | **A0** | does the RTL→wave transform compute the right answer? | SHA-256 σ0 (XOR-depth-2), functional | ✅ **PASS** |
 | **A1** | does adiabatic recovery work on a real device, and what is `RC/T`? | ramped rail → SG13G2 nMOS → C_L, Xyce | ✅ **A1b PASS** |
-| A2 | how does the swing-vs-margin coefficient `k(ΔV)` behave down a chain? | stage chain | pending A1 |
+| **A2** | how does the swing-vs-margin coefficient `k(ΔV)` behave down a chain? | depth-3/8 chain, Xyce | ✅ **increment 1** |
 | **A3** | **GO/NO-GO**: does Vt-mismatch MC hold yield across the chain vs ΔV & k? | mismatch MC (the fixed cell-MC callback flow) | gated on A1/A2 |
 | A4–A6 | window / thermal-in-loop / feedback loops | — | nothing above A3 is worth building until A3 reports |
 
@@ -65,6 +65,51 @@ dependent: ~0.11 @500ps, 0.056 @1ns, 0.033 @2ns, 0.017 @5ns — slower ramp, dee
 
 Reproduce: `python3 qal_a1b.py` prints the committed record; `python3 qal_a1b.py --run <compat.sp>`
 regenerates the decks and re-runs against a live Xyce. Example deck: `qal_a1b_example.cir`.
+
+## A2 — `qal_a2.py` (chain k(ΔV): does single-rail smooth-ramp cascade?)
+
+Increment 1. Designed and adversarially verified as two workflows (a 5-agent design panel → a
+hardened Xyce spec; a 4-agent refute panel that re-read the raw files and corrected the writeup).
+The cell here is the **single-rail source-follower negative control** — deliberately *not* the
+plan's flying-cap forward-transfer stage (A1f/B5). It exists to quantify *why* non-restoring
+single-rail fails, i.e. to size the restoration boundary. Depth-3 chain (+depth-8 record), data-1,
+T=1ns ramp / H=2ns hold / DLY=1ns phasing, on SG13G2/PSP103 tt. A1b is the anchor (same framework).
+
+**k(ΔV), per-hop node level (bulk):**
+
+| ΔV | N0 | N1 | N2 | usable hops |
+|--:|--:|--:|--:|--:|
+| **1.20** | 0.831 | 0.442 | 0.025 | ~2 (drop ≈0.39V/hop) |
+| 0.60 | 0.206 | 0.064 | 0.002 | 0 (hop-0 marginal) |
+| 0.50 | 0.114 | 0.049 | 0.001 | 0 |
+| 0.45 | 0.084 | 0.042 | 0.001 | 0 |
+| 0.40 | 0.070 | 0.037 | 0.001 | 0 |
+
+- **Binding bound = amplitude (bound 3), not charge (bound 1).** The killer is *topological*:
+  a source follower gives V_out = V_gate − Vt(Vsb), no positive fixed point, plus near-threshold
+  starvation. Confirmed twice — the A1d DC probe clamps (offset 0.145→0.356V, incremental gain
+  ~0.83), and the transient chain adds a ~0.10V/hop finite-settling shortfall on top. Charge
+  attenuation never binds (its ratio is just noise once the level collapses). **dV_min ≈ 0.6V**
+  for one marginal hop, ~1.2V (≈3Vt) for ~2 hops.
+- **Scope:** it's the single-rail *non-restoring source-follower* cell on *bulk* that fails — not
+  nMOS-pass as a class, not QAL in general. A drain-fed bootstrapped / full-rail-gate or dual-rail
+  cell passes levels without this clamp — that is exactly what B5 supplies. **This is the
+  quantitative motivation for the restoration boundary.**
+- **Body-effect isolation probe** (ΔV=1.2, b=bulk 0.83/0.44/0.03 vs b=source 1.10/0.94/0.46):
+  the body effect *compounds* the loss (isolates ~0.27V of the hop-0 drop) but is **not** the root —
+  the Vsb=0 chain still decays (1.10→0.94→0.46). Direction for the north star is sound (FD-SOI helps
+  QAL cascade), but only the **~0.27V delta** transfers, not the magnitudes: tying a bulk device's
+  body to source is an *optimistic* bound (over-states junction C, keeps bulk DIBL, misses the
+  back-gate). A quantitative FD-SOI number needs a real 22FDX/PSP card — **an A3 prerequisite**.
+- **Energy per hop is quarantined** — a schedule artifact (stage-1 recovers only 58% because its
+  gate collapses under the forward-order un-compute before its rail recovers; the un-compute wave
+  must recede from the *front*). Not carried into A3; clean per-hop energy awaits ordered un-compute.
+
+Reproduce: `python3 qal_a2.py` prints the record; `chain_deck(N, ΔV, bsrc=)` regenerates decks.
+
+**A2 → A3 handoff:** the chain fails on amplitude (a Vt clamp), so the A3 GO/NO-GO (σ(Vt) mismatch)
+must run on a **restored/dual-rail** cell and on a **real FDX card**, not this bulk source-follower —
+the bulk body-effect-dominated numbers would bias the yield verdict.
 
 ## Measurement discipline
 
