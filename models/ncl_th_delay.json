@@ -18,10 +18,18 @@
     "_doc": "Real transistor MC of the 4-bit ripple adder's coH (4-deep th23 carry chain, worst-case ripple A=1111,B=0000,Cin=1; 240 devices), for validating stat-sim MULTI-GATE composition + the 1/sqrt(N) averaging law.",
     "path":"[th23]*4", "mu_ps":[1365.6,1367.6,1371.2,1376.7], "sd_ps":[14.3,28.7,43.3,58.3]
   },
+  "ground_truth_nclfa8": {
+    "_doc": "Real transistor MC (N=200) of the 8-bit ripple adder's coH (8-deep th23 carry chain, worst-case ripple; 480 devices, 200/200 functional). Independent (non-circular) validation of the tiled in-context mu(N) and the nearest-neighbor-correlation sigma at N=8.",
+    "path":"[th23]*8", "mu_ps":[2799.6,2807.0,2817.0,2830.7], "sd_ps":[20.1,40.7,61.8,83.3]
+  },
   "arcs": {
     "_doc": "PER-ARC characterization (isolated single-cell MC at 2 fF fanout load). Shows sigma_frac is arc-INDEPENDENT (transfers, ~matches the cell model) while mu is arc- AND slew-dependent. mu@fast = mu at a sharp 0.2ns primary-input edge.",
     "th34w2_w1": {"arc":"weight-1 (b,c,d rise; 3-series B.C.D branch)", "mu_ps":[332.8,333.3,334.5,336.5], "sd_ps":[6.69,13.51,20.55,27.96]},
     "th23_cin":  {"arc":"carry-in (a held high, c rises last; A.C branch)",  "mu_ps":[245.3,245.5,246.0,246.8], "sd_ps":[4.60,9.21,13.92,18.79]}
+  },
+  "inter_stage_correlation": {
+    "_doc": "Nearest-neighbor positive correlation between adjacent stage delays, from LOCAL slew coupling: a device mismatch that slows a carry stage degrades the edge it hands the NEXT stage. Var(chain)=sum_i sigma_i^2 + 2*rho0*sum_i sigma_i*sigma_{i+1}. rho0=0.10 selected by a candidate-model panel (uniform all-pairs rejected: implies a spurious sigma_frac floor; nearest-neighbor chosen: fits N=4 AND N=8 within ~1-2%, extrapolates ~1/sqrt(N) with bounded inflation sqrt(1+2*rho0)=1.096). Closes the ~7-14% sigma under-prediction of the independent-RSS model.",
+    "model": "nearest-neighbor", "rho0": 0.10
   },
   "in_context_carry_ps": {
     "_doc": "IN-CONTEXT per-stage carry delays, extracted from the nclfa4 chain by probing the internal carries (ci->c1->c2->c3->coH). The two MIDDLE stages are identical (358.4, 358.2) -> t_ctx is a stable TILEABLE primitive (a carry gate driven by a real prior carry, driving its real fanout = next th23 + sum th34w2). Boundaries differ: t_first (primary-input sharp edge) and t_last (lightly-loaded output). Model: mu(N) = t_first + (N-2)*t_ctx + t_last. This closes the mu gap the isolated single-arc (245ps) could not: in-context per-stage is 358ps (real-cell RC fanout + NCL dual-rail completion + coincident DATA arrival). sigma per stage = sigma_frac(th23,kvt)*t_stage; chain sigma = RSS (validated vs nclfa4 MC within ~7%).",

@@ -4,6 +4,13 @@ A **standalone tool that generates Verilog-AMS models** carrying *silicon
 variability*, aimed at **finding clock-domain-crossing (CDC) bugs** by
 simulation rather than by structural lint alone.
 
+> **Two tiers.** This README covers the **metastability/CDC** tier (`genmodel.py`
+> — flip-flop metastability probability waveforms). For the **delay-variability**
+> tier — MC-characterize cells once, then predict a *composed* design's timing and
+> reliability by propagating per-cell probability models (scales to designs
+> transistor-MC can't reach) — see **[`DELAY.md`](DELAY.md)**
+> (`statsim_delay.py` + `models/ncl_th_delay.json`).
+
 The premise: a CDC bug is a *metastability* event. When a signal launched in
 clock domain A is sampled by a flip-flop in domain B whose clock is
 asynchronous, the data edge can land inside B's setup/hold aperture. B's flop
