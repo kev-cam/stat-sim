@@ -122,7 +122,7 @@ def main(netpath):
     print("  cells: %s" % dict(Counter(c["type"] for c in cells.values())))
     print("  start points (DFF.Q + PI): %d ; end points (DFF.D + PO): %d\n"
           % (len(start_nets), len(end_nets)))
-    print("=== ALU register-to-register critical path (cell-level SSTA) ===")
+    print("=== register-to-register critical path (cell-level SSTA) ===")
     print(" kvt |  crit mu (ns) | logic depth | crit sd (ps) | sigma_frac | worst mu+3sd (ns)")
     depth1 = None
     for kvt in mj["kvt"]:
@@ -139,7 +139,7 @@ def main(netpath):
               % (kvt, mu_ps / 1000, depth, sd_ps, sd_ps / mu_ps * 100, (mu_ps + 3 * sd_ps) / 1000))
     print("\n  critical path is %d gate-stages deep. mu is approximate (per-gate in-context" % depth1)
     print("  timing not fully characterized); sigma_frac + relative timing yield are the robust")
-    print("  outputs. This is a cell-level SSTA of a ~24k-TH-cell Vortex ALU with NO SPICE.")
+    print("  outputs. Cell-level SSTA of the synthesized async design with NO SPICE.")
 
 
 if __name__ == "__main__":
