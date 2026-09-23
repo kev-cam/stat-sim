@@ -5,7 +5,7 @@ metadata:
   node_type: memory
   type: project
   originSessionId: 4921ad0c-f17b-4b84-986a-5917c9ebd2a6
-  modified: 2026-09-23T08:08:47.239Z
+  modified: 2026-09-23T16:53:11.436Z
 ---
 
 ★ THE GOAL behind the async-power + GPU-sim work (user, 2026-09-23): **can we build an
@@ -58,8 +58,14 @@ node — you pay in FREQUENCY (18× slower at 0.6V, recovered by GPGPU paralleli
 bundled-data delay line self-times to the actual (mismatch-inflated) delay → it PROVIDES the guardband
 automatically, which is also the robustness lever for the drooping PV supply.
 
-**HONESTY:** σ_frac(0.6V) not rigorously measured — the ad-hoc DELVTO perturbation was silently ignored
-(PyMS callback needs the proper gen_mc.py wiring [[pyms_callback_params]] / [[feedback_pyms_setparams]],
-NOT a plain instance or global .param). Used a σ_frac-SCALE sweep (×1-3) spanning the physically-expected
-near-threshold amplification (lit. ~2-4×) instead — answer holds across the range. Rigorous σ_frac(Vdd)
-via mc/ gen_mc.py at 0.6V is the clean follow-up.
+**★ σ_frac(0.6V) NOW MEASURED (2026-09-23, after fixing the callback regression [[pyms_callback_params]]):**
+inverter per-stage Vt-mismatch MC (DELVTO~AGAUSS, PSP103, fixed Xyce): σ_frac **2.24%@1.2V → 11.33%@0.6V
+= 5.06× near-threshold amplification** (mean stage delay 40.5ps→812.7ps). HIGHER than the ×1-3 proxy I'd
+assumed (I under-bracketed). RE-RAN the whole-Vortex yield at the measured ×5: worst corner kvt4 eff
+σ_frac 40.4% → yield-margin **9.45%**, clk@99.9% **26.1 ns (+24% guardband vs the ×1 nominal 21.0 ns)** —
+STILL NO CLIFF, degrades continuously (self-averaging holds at σ_frac 40%). So the graceful-degradation
+conclusion HOLDS at the real amplification: voltage-scaling to 0.6V stays timing-reliable, cost is
+frequency (guardband + the 18× raw slowdown), NOT yield; the bundled-data delay line self-times to supply
+the +24% guardband automatically. (Getting here required the callback-regression fix — the ad-hoc DELVTO
+had been silently ignored; the working path is device-card DELVTO=AGAUSS + .SAMPLING useExpr +
+PYMS_CALLBACK_PARAMS=DELVTO on the PyMS-fixed Xyce with a non-stale device-shell cache.)
