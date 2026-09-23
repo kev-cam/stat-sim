@@ -15,7 +15,11 @@ come from A2/A4/C5. static/async coefficients are transistor-anchored (add8, SG1
 Energy-per-cycle only: QAL's generator tax, ~2x area, and 2N-phase latency are separate axes.
 """
 F, D, Edl = 107.9, 453.9, 37.6          # clock floor, dynamic, delay-line (pJ) -- add8-anchored
-RCT, ETA = 0.05, 0.5                     # QAL illustrative (QAL_PLAN sec.6 defaults)
+# QAL RC/T now ANCHORED by A1b (qal/qal_a1b, SG13G2 nMOS + 10fF, ΔV=0.6V): measured
+# R_on·C_L ~= 60-85 ps, so RC/T = 0.056 at a 1 ns stage ramp (E fell to 3.4% of C·ΔV²
+# at 5 ns -> adiabatic recovery confirmed on silicon). 0.05 was the right order; keep it
+# as the 1 ns operating point. RC/T is ramp-time dependent (0.11 @500ps ... 0.017 @5ns).
+RCT, ETA = 0.056, 0.5                    # RC/T A1b-measured @1ns ramp; eta = QAL_PLAN sec.6
 
 def static(a): return F + D*a
 def asyncbd(a): return (D + Edl)*a
@@ -31,7 +35,7 @@ for sv in (1.0, 0.7, 0.5, 0.3):
     q = qal(sv); acrit = q/(D+Edl)
     print("    dV/Vdd=%.1f -> QAL=%6.1f pJ | a_crit(async/QAL)=%.1f%%  (< a_crit: async; > a_crit: QAL)"
           % (sv, q, acrit*100))
-print("  (dV/Vdd=1.0 gives a_crit=18.5%% ~ QAL_PLAN's ~20%% illustration; lower swing pushes it down)")
+print("  (dV/Vdd=1.0 gives a_crit=20.7%% ~ QAL_PLAN's ~20%% illustration; lower swing pushes it down)")
 
 print("\n  ENERGY per cycle vs duty (dV/Vdd=1.0), and the winning backend:")
 print("   alpha | static | async  |  QAL  | winner")
@@ -44,7 +48,7 @@ print("""
 READ-OUT
   * STATIC is dominated everywhere: its clock floor (108 pJ) alone exceeds QAL, and async
     beats it at every duty -- static pays a floor AND full CV^2 with no recovery.
-  * ASYNC wins the DARK-SILICON tail (duty < a_crit ~= 18% at full swing): energy -> 0 as
+  * ASYNC wins the DARK-SILICON tail (duty < a_crit ~= 21% at full swing): energy -> 0 as
     activity -> 0, because there is no clock and nothing switches.
   * QAL wins the BUSY regime (duty > a_crit): activity-independent adiabatic energy, so at
     100% duty it pays ~0.2*(dV/Vdd)^2 of the switching energy while static/async pay it all.

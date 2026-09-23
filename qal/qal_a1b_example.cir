@@ -1,0 +1,13 @@
+* QAL A1b energy sweep T=1000ps
+.hdl "/usr/local/share/xyce/verilog-a/psp103/psp103.va"
+.include "/usr/local/src/kestrel/sim/models/sg13g2_psp103_tt.lib"
+.include "sg13lv_compat.sp"
+Vg g 0 1.2
+Xsw rail g n 0 sg13_lv_nmos w=0.74u l=0.13u
+Cl n 0 10f
+Vrail rail 0 PWL(0 0 1n 0 2n 0.6 4n 0.6 5n 0 7n 0)
+Bp p 0 V={-V(rail)*I(Vrail)}
+.tran 0.025p 7n
+.measure tran Ecyc INTEGRAL V(p) FROM=1n TO=7n
+.measure tran Vpk MAX V(n)
+.end
