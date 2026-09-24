@@ -280,6 +280,39 @@ CMOS **NAND2** (universal → any function) on SG13G2, powered by a ramping powe
   bookkeeping-contaminated (the fixed-well second supply port, w=1.12µm parasitics, incomplete recovery)
   — the trend is adiabatic (E_diss falls with T) but the magnitude is taken from A1b, not these numbers.
 
+## System level — `qal_sigma0_system.py` — σ0 datapath, baseline-QAL vs CMOS
+
+Designed + adversarially fairness-checked as a workflow (energy comparisons are easy to rig). The result
+is a **band across accounting regimes, not a hero number**. Structure (A0): σ0 = 61 XOR2, depth 2; the
+QAL wave adds 32 balancing buffers (N_g=93). Grounded in the anchor (E_clk=0.0282 pJ/DFF, E_logic=0.0076
+pJ/cell, t_XOR2=84 ps), A1b (resistive RC/T), and A1f (inductive π/Q).
+
+**The honest bottom line:** σ0's intrinsic *compute* is only ~0.29 pJ, so the entire apparent QAL win is
+**eliminating the 0.9–1.8 pJ clock/FF floor + the 4× low-swing term — not the adiabatic gates.**
+
+| regime | CMOS | QAL-ind | ratio | what it really is |
+|--|--:|--:|--:|--|
+| A naive/rigged (64FF, 1.2V, free gen) | 2.09 pJ | 0.016 | ~130× | unfair (double-reg + swing gift + free generator) |
+| B fair-marginal (32FF, 1.2V, all QAL overhead) | 1.19 pJ | 0.016 | ~73× | ~90% no-clock + swing |
+| C iso-swing (both 0.6V, 32FF) | 0.30 pJ | 0.016 | ~18× | mostly no-clock |
+| **D iso-swing logic-only (0FF both)** | 0.072 pJ | 0.016 | **~4.5×** | the pure adiabatic question |
+
+- **Regime D is the real adiabatic-logic question:** net of clock and swing, the inductive-resonant edge
+  is only **~3–4.5× — and for a block this small the freeze+generator (~15 fJ) dwarf the 1.7 fJ hop**, so
+  it's parity-to-loss unless the resonator/generator are **shared across a much larger datapath**.
+  **Resistive-settle *loses* at matched swing** (α=0.5 busy → it pays the ramp every cycle; the adiabatic
+  factor doesn't beat CMOS's activity discount, and it's parity-to-slower).
+- **Throughput:** CMOS 3.6 GHz (0.45 GHz near-Vt at 0.6V); QAL-inductive up to 12.5 GHz (**the only variant
+  that can win both axes — magnetics-gated**); QAL-resistive 3.3 GHz (buys energy by going slow, can't be
+  adiabatic at CMOS speed).
+- **Provenance:** the adiabatic hop terms are measured single-stage-ideal (A1b/A1f); the generator, freeze,
+  buffers, chain-compounding and reset are **modeled, not yet measured** — the QAL system number is a
+  **projection pending Track C**, not a measurement. The A2 per-hop energy stays quarantined.
+
+**One line:** if σ0 is pipelined per-cycle the paper win is ~60–130×, but that's a *no-clock + swing*
+story; the true iso-swing adiabatic-logic advantage is ~3–4× (inductive, magnetics-gated) or a loss
+(resistive). Clock/generator accounting and the 4× swing — not the adiabatic gates — decide the number.
+
 ## Measurement discipline
 
 Per `QAL_PLAN §7` and `feedback_no_self_baseline`: everything in Track A runs against an
