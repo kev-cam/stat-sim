@@ -254,6 +254,32 @@ Matched pair (both w=10µm), differential readout after freeze:
 yield(differential margin) vs σ(Vt) and swing — the GO/NO-GO — on a real 22FDX/PSP card (bulk SG13G2
 over-states body-effect/feedthrough).
 
+## Adiabatic NAND2 — `qal_nand_adiabatic.py` — "any gate, settle not switch"
+
+Validates the QAL *baseline* (not the aggressive non-restoring variant): a **real static logic gate**
+computes by *settling* to its answer on a ramping supply, not by hard-switching. Vehicle: a static
+CMOS **NAND2** (universal → any function) on SG13G2, powered by a ramping power-clock.
+
+**Truth table** (Y at the supply hold, Vdd=1.2, T=1ns ramp) — the gate settles to the correct value:
+
+| A | B | Y | NAND |
+|--|--|--:|--|
+| 0 | 0 | 1.200 | 1 ✓ |
+| 0 | 1 | 1.200 | 1 ✓ |
+| 1 | 0 | 1.200 | 1 ✓ |
+| 1 | 1 | 0.000 | 0 ✓ |
+
+- **Confirms: any gate, no gate-type limit, no dual-rail for completeness.** A real gate settles to its
+  logic value as the supply ramps — the "settle, don't switch" saving.
+- **Recovery/hold:** the pMOS-only pull-up can't pull Y below |Vtp| on the reset ramp — but that's not a
+  logic failure: the output settles onto the *following* gate's input cap, which **holds the value**
+  during the valid window, and the next stage captures it before reset. Clean adiabatic *recovery* wants
+  a cross-coupled / dual-rail latch (ECRL/PFAL) or forward transfer.
+- **Energy:** the clean settle-not-switch saving is the **A1b RC/T primitive** (→3.4% of ½CV² at a slow
+  ramp); a gate's pull-up is just that Ron. The NAND's *direct* full-cycle energy here is
+  bookkeeping-contaminated (the fixed-well second supply port, w=1.12µm parasitics, incomplete recovery)
+  — the trend is adiabatic (E_diss falls with T) but the magnitude is taken from A1b, not these numbers.
+
 ## Measurement discipline
 
 Per `QAL_PLAN §7` and `feedback_no_self_baseline`: everything in Track A runs against an
