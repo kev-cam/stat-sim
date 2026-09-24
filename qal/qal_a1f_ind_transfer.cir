@@ -1,0 +1,15 @@
+* QAL inductive resonant transfer C1->C2, R=100 ohm, L=1.0 uH
+.OPTIONS TIMEINT METHOD=GEAR RELTOL=1e-8 ABSTOL=1e-16 CHGTOL=1e-18
+.param dV=0.6 CL=10f
+C1 A 0 {CL}
+C2 B 0 {CL}
+L1 A M 1.0u
+Rsw M B 100
+Bloss LOSS 0 V={ I(L1)*I(L1)*100 }
+.IC V(A)={dV} V(B)=0
+.tran 0.05p 1n UIC
+.measure tran VBPK  MAX V(B)
+.measure tran VAMIN MIN V(A)
+.measure tran TVBPK WHEN V(B)=V(A) FALL=1
+.measure tran ELOSS INTEGRAL V(LOSS) FROM=0 TO=1n
+.end

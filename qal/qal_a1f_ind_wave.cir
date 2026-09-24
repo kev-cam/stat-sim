@@ -1,0 +1,11 @@
+* LC transfer waveform to quantify peak flatness (fixed-time vs ZCS question)
+.OPTIONS TIMEINT METHOD=GEAR RELTOL=1e-9 ABSTOL=1e-17 CHGTOL=1e-19
+.param dV=0.6 CL=10f R=100
+C1 A 0 {CL}
+C2 B 0 {CL}
+L1 A M 1u
+Rsw M B {R}
+.IC V(A)={dV} V(B)=0
+.tran 0.02p 300p UIC
+.print tran format=csv V(B) V(A) I(L1)
+.end

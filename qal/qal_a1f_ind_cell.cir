@@ -1,0 +1,26 @@
+* QAL inductive forward-transfer cell: transfer + freeze + flycap top-up
+.OPTIONS TIMEINT METHOD=GEAR RELTOL=1e-8 ABSTOL=1e-16 CHGTOL=1e-18
+.param dV=0.6 CL=10f CFT=4f R=100 THALF=222p
+C1 A 0 {CL}
+C2 B 0 {CL}
+* inductor path A -> L -> R -> [freeze switch] -> B, switch ON only [0,THALF]
+L1 A M 1u
+Rsw M N {R}
+VGI GI 0 PWL(0 1 {THALF} 1 {THALF+2p} 0)
+Sind N B GI 0 IND
+.model IND VSWITCH RON=1 ROFF=1e9 VON=0.5 VOFF=0.4
+Bloss LOSS 0 V={ I(L1)*I(L1)*{R} }
+* flycap pre-charged to dV, tops up B after the freeze (t>250p)
+Cft P 0 {CFT}
+VGT GT 0 PWL(0 0 250p 0 253p 1 350p 1 353p 0)
+Sft P SW GT 0 TSW
+.model TSW VSWITCH RON=100 ROFF=1e9 VON=0.5 VOFF=0.4
+Vqt SW B 0
+.IC V(A)={dV} V(B)=0 V(P)={dV}
+.tran 0.05p 500p UIC
+.measure tran VB_frozen FIND V(B) AT=240p
+.measure tran VA_frozen FIND V(A) AT=240p
+.measure tran VB_final  FIND V(B) AT=450p
+.measure tran ELOSS     INTEGRAL V(LOSS) FROM=0 TO={THALF}
+.measure tran QTOPUP    INTEGRAL I(Vqt)  FROM=250p TO=450p
+.end

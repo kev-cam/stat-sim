@@ -146,6 +146,40 @@ _actual_ receiver C_L (not a stiff rail), a **smooth** gate, a TX-tracking loss 
 across the crossing + independent RON and W_on sweeps, per-run energy-balance guard — measuring the
 tracking loss the static model omits. Commit to one topology and one C_eff before quoting a number.
 
+## A1f (inductive) — `qal_a1f_inductive.py` — the *actual* forward-transfer mechanism
+
+**Framing correction (from the user's actual scheme):** the capacitive A1f above is the **negative
+result** — a passive cap-to-cap transfer can't beat the ½CΔV² floor (it moves only half the voltage,
+wastes half the energy; at the "free" crossing it transfers ~nil, QDEL<0). The real mechanism uses an
+**inductor** as the primary stage-to-stage transfer element (resonant LC), carrying charge *and* data
+forward, with **flycaps only topping up the I²R loss** at the rail extremes.
+
+Measured (Xyce, ideal L, CL=10fF each, dV=0.6V, C_eff=5fF; capacitive floor ½C_eff·dV² = 0.900 fJ):
+
+| R (Ω) | Q | V(B) peak | E_loss | vs floor |
+|--:|--:|--:|--:|--:|
+| 50 | 283 | 0.598 | 0.044 fJ | **4.9%** |
+| 100 | 141 | 0.597 | 0.086 fJ | 9.5% |
+| 1000 | 14 | 0.568 | 0.568 fJ | 63% |
+
+- The inductor moves the **full** charge/data pattern (V(A)→0, V(B)→dV — not the capacitive half-swing)
+  with loss **~I²R ∝ 1/Q**; at Q=283 that's **20× below the capacitive floor** (~97.6% efficient).
+  Energy balance conserves to 0.1%. Full cell (freeze switch at T_half + flycap top-up): per-cycle
+  input = the **0.020 fJ I²R loss only**, ~46× below the 0.9 fJ floor.
+- **Freeze-timing (fixed-time vs zero-cross detection):** V(B) peaks at the current zero-crossing and
+  is quadratically flat — within 1% of peak over **±14 ps**, 2% over ±20 ps. But the penalty is
+  **asymmetric**: opening *late* droops gently; opening *early* interrupts I(L) and dumps ½L·I²
+  (10 ps early ≈ the whole transfer loss). **Verdict:** fixed-time disconnect works if biased slightly
+  *late* and L/C is tuned (±10% L → ±11 ps, inside the window); a passive series diode is ruled out at
+  low swing (0.3–0.7 V drop vs 0.6 V rail); active ZCS buys robustness at a comparator/stage. Lean
+  fixed-time-late-biased, flycap absorbs the droop; escalate to ZCS only if L/C variation eats the window.
+- Lever is **Q = √(L/C_eff)/R**; realistic on-chip L~nH → fast 7–70 ps transfers but lower Q, so
+  inductor quality vs speed is the real tension ("needs magnetics").
+
+**Not yet shown:** realistic on-chip L (nH, real R) efficiency; the return/reset path (re-arm A); a
+multi-stage chain (does the wave propagate, does loss compound); explicit data-carrying; dual-rail;
+device switches + Vt; the Track-C generator driving it.
+
 ## Measurement discipline
 
 Per `QAL_PLAN §7` and `feedback_no_self_baseline`: everything in Track A runs against an
