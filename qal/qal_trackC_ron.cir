@@ -1,0 +1,11 @@
+* SG13G2 nMOS switch on-resistance at the operating point (Vgs=1.2, small Vds)
+.hdl "/usr/local/share/xyce/verilog-a/psp103/psp103.va"
+.include "/usr/local/src/kestrel/sim/models/sg13g2_psp103_tt.lib"
+.include "sg13lv_compat.sp"
+Vg g 0 1.2
+Vd d 0 0.05
+X1 d g 0 0 sg13_lv_nmos w=10u l=0.13u
+.op
+.print dc format=csv I(Vd)
+.dc Vd 0.02 0.1 0.02
+.end

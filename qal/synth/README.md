@@ -64,8 +64,14 @@ gate-only view is the pessimistic bound. Leakage is negligible at 130 nm (1.7 µ
 
 **Net:** for SHA-256, QAL buys **throughput on the streaming/mining workload** (1.5–2×, register-tax
 elimination) — exactly the independent-lane GPU-batched case the north star targets — while single-block
-latency stays CMOS-favored, and the energy verdict hinges on the clock-elimination vs the dual-rail ×2,
-i.e. on the **Track-C generator/recharge efficiency** (the load-bearing unbuilt piece; only single-stage
-hops are measured — A1b/A1f/two-bank). Next to harden it: replace the projected QAL power with a
-measured Track-C generator number, and a coarser (realistic) pipeline depth for the regular streaming
-baseline than the level-by-level bound used here.
+latency stays CMOS-favored, and the energy verdict hinges on the clock-elimination vs the dual-rail ×2.
+
+**★ Track-C delivery now MEASURED (`../qal_trackC.py`), not projected:** the SG13G2 switch Ron is **60 Ω**
+(w=10µm, measured), so the inductive per-hop delivery loss is **6.8% (wide w=40µm, Q≈32) to 13.6% (real
+w=10µm, Q≈11)** by clean energy balance — *not* the 2.5% an ideal projection assumed (which needed Q=126 /
+Ron≈10 Ω, unphysical here). This caps the QAL gate-energy advantage at **~3.7–7.4×** (α/e_floor), not the
+~15–25× the optimistic projection suggested. **The throughput / register-tax-elimination win is
+unaffected** — only the energy ceiling comes down. So the honest headline: QAL's SHA-256 value is
+**streaming throughput (1.5–2×) + a bounded ~4–7× energy edge (Q-gated by real devices)**, on the
+mining/independent-lane workload; single-block stays CMOS-favored. Remaining hardening: the full
+recharge-loop steady-state (2nd-order), and a coarser realistic regular pipeline baseline.

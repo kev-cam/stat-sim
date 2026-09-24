@@ -1,0 +1,13 @@
+.OPTIONS TIMEINT METHOD=GEAR RELTOL=1e-7 ABSTOL=1e-16 CHGTOL=1e-18
+.param dV=0.6 C=80f RON=60 TAU=5p
+C1 A 0 {C}
+C2 B 0 {C}
+Lab A xab 25n
+Rlab xab mab 10
+Cmab mab 0 2f
+Bsw mab B I={ (0.5*(1+tanh((TIME-8p)/TAU))/RON)*(V(mab)-V(B)) }
+.IC V(A)={dV} V(B)=0 V(mab)={dV}
+.tran 0.05p 130p UIC
+.measure tran VBPK MAX V(B)
+.measure tran VAMIN MIN V(A) FROM=50p TO=130p
+.end
