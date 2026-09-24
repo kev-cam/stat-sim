@@ -59,24 +59,25 @@ over [0,T_half], NOT the full ring-down -- an early sweep integrated ring-down a
    hop is a LINEAR system, so V(B)pk ~ dV exactly and T_half is AMPLITUDE/DATA-INDEPENDENT -- the freeze
    instant does not move with the signal value (bears on dual-rail, below).
 
-DUAL-RAIL -- do we need it? (reasoned from these results + QAL_PLAN's 3-way axis)
- * PER-BIT TIMING: NOT a reason. The hop is linear -> T_half data-independent (measured), so single-rail
-   does not modulate per-bit freeze timing.
- * LOGIC COMPLETENESS: the deciding reason. A non-restoring ephemeral wave has NO gain -> cannot invert.
-   Non-monotone functions -- XOR, which the sigma0 vehicle is built from -- need BOTH polarities. Dual-rail
-   carries true+complement so any function is routable; single-rail non-restoring does monotone logic only,
-   UNLESS the k-block restoration boundary (B5) supplies inversion (then single-rail within a block).
- * GENERATOR LOAD: favors dual-rail. Exactly one of each pair switches -> constant aggregate load on the
-   shared resonant generator -> stable resonant frequency -> fixed-time freeze holds across all data.
-   Single-rail load ~ #(1s) -> shifts the shared resonance (aggregate, not per-bit) -> pushes to
-   dummy-loading or active ZCS.
- * POWER TAP: dual-rail only -- measured (qal_a1f.py): single-rail hands forward 100% data-modulated
-   charge; the dual-rail differential-SUM tap is flat (0%, mismatch-limited).
- VERDICT: dual-rail is the natural/likely-required choice for QAL logic -- primarily for XOR/non-monotone
- completeness in a non-restoring wave, plus constant generator load and the differential power tap. Cost
- ~2x area vs single-rail ~1.2x. Single-rail is viable only for monotone logic, or with restoring
- boundaries (inversion) + dummy-loading. For the XOR-heavy sigma0 vehicle: use dual-rail. (QAL_PLAN keeps
- it a measured 3-way axis: dual / single+dummy-load / single+per-stage-top-up.)
+DUAL-RAIL -- do we need it? CORRECTED (an earlier version wrongly called completeness "the deciding
+reason" -- that over-generalized the aggressive non-restoring variant to all of QAL):
+ * NOT for completeness -- IF a stage is a REAL static logic gate that SETTLES adiabatically. Drive the
+   gate's output node with a RAMPING supply so the gate's own pull-up/pull-down settles to the logic value
+   over time T, dissipating ~(RC/T)*CV^2 instead of switching's 1/2*CV^2 (settle-not-switch = the A1b
+   adiabatic factor / the 1/Q resonant loss, applied to a GATE not just a transferred value). A real gate
+   has gain + both polarities, so gate TYPE IS UNRESTRICTED (XOR fine) and NO dual-rail is needed for
+   logic completeness. This is the QAL baseline.
+ * The "no gain -> cannot invert -> need dual-rail" limit applies ONLY to the AGGRESSIVE non-restoring
+   pass-transistor / residual-charge variant (QAL_PLAN's lowest-energy scheme that deliberately removes
+   the restoring device layer + biases near threshold). A separate, harder regime -- not the baseline.
+ * PER-BIT TIMING: not a dual-rail reason (the resonant hop is linear -> T_half data-independent, measured).
+ * Where dual-rail still HELPS (secondary, OPTIONAL): constant generator load (exactly one of each pair
+   switches -> stable shared-resonance -> fixed-time freeze holds) and the differential-SUM power tap
+   (measured qal_a1f.py: single-rail 100% data-modulated forward charge, dual 0% mismatch-limited).
+ VERDICT: dual-rail is OPTIONAL for QAL built from adiabatically-settling logic gates -- choose it for the
+ generator-load / power-tap wins, NOT for completeness. It is REQUIRED only in the aggressive non-restoring
+ residual-charge variant (or use restoring boundaries there). QAL_PLAN's 3-way rail axis (dual /
+ single+dummy-load / single+top-up) is the cost/robustness tradeoff, not a completeness gate.
 
 NOT YET SHOWN (next): realistic on-chip L (nH, real R) efficiency; the RETURN/reset path (A must be
 re-armed for the next cycle); a multi-stage CHAIN (does the wave propagate + does loss compound);

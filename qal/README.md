@@ -181,11 +181,14 @@ Measured (Xyce, ideal L, CL=10fF each, dV=0.6V, C_eff=5fF; capacitive floor ½C_
   (4×, L=2 nH) → 4.8% @ R=10Ω. QAL can be **faster *and* lower-energy than CMOS** — nH L buys the speed,
   low R buys the Q. The resonant hop is linear, so **T_half is amplitude/data-independent** (freeze
   instant doesn't move with signal value).
-- **Dual-rail?** Yes for QAL logic, chiefly for **completeness**: a non-restoring wave has no gain → can't
-  invert → non-monotone functions (XOR, i.e. the σ0 vehicle) need both polarities. Dual-rail also gives a
-  **constant generator load** (stable shared resonance → fixed-time freeze holds) and the data-independent
-  **differential-sum power tap** (single-rail is 100% data-modulated; dual-rail 0%). Single-rail is viable
-  only for monotone logic or with restoring boundaries (inversion) + dummy-loading. Cost ~2× vs ~1.2× area.
+- **Dual-rail? Optional, not required (corrected).** If a stage is a *real static logic gate that settles
+  adiabatically* — drive its output node with a ramping supply so the gate's own pull-up/pull-down settles
+  to the answer (dissipating ~(RC/T)·CV² instead of ½CV², the settle-not-switch saving) — then **gate type
+  is unrestricted (XOR fine) and no dual-rail is needed for completeness**. The "no gain → can't invert"
+  limit applies *only* to the aggressive non-restoring pass-transistor / residual-charge variant (the
+  plan's lowest-energy scheme that removes the restoring device layer). Dual-rail still *helps*
+  (optional) for **constant generator load** and the **differential-sum power tap** (single-rail 100%
+  data-modulated, dual 0%) — choose it for those, not for completeness.
 
 **Not yet shown:** realistic on-chip L (nH, real R) efficiency; the return/reset path (re-arm A); a
 multi-stage chain (does the wave propagate, does loss compound); explicit data-carrying; dual-rail;
