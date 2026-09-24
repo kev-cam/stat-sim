@@ -1,0 +1,13 @@
+* single-rail flying cap dump onto C2; QDEL depends on data (V_node)
+.OPTIONS TIMEINT METHOD=TRAP RELTOL=1e-6 ABSTOL=1e-14 CHGTOL=1e-16
+.param CL=10f CFLY=10f RON=50 TX=1n TEDGE=1p
+Cfly P 0 {CFLY}
+Vt P SWI 0
+Bsw SWI MID I={ (max(0,min(1,(TIME-TX)/TEDGE))/RON)*(V(SWI)-V(MID)) }
+Vsw MID N2 0
+C2 N2 0 {CL}
+.IC V(P)=0.0 V(N2)=0
+.tran 0.05p 1.6n UIC
+.measure tran QDEL INTEGRAL I(Vsw) FROM=1n TO=1.5n
+.measure tran VN2  FIND V(N2) AT=1.5n
+.end

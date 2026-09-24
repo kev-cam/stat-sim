@@ -1,0 +1,18 @@
+* A1f STEP0 -- B2 hard charge-share, validate energy taps (expect eta_rel=1/3, Vfin=0.300V)
+.OPTIONS TIMEINT METHOD=TRAP RELTOL=1e-6 ABSTOL=1e-14 CHGTOL=1e-16
+.param dV=0.6 CL=10f RON=50 TX=1n TEDGE=1p
+C1 N1 0 {CL}
+Vt1 N1 SWI 0
+Bsw SWI MID I={ (max(0,min(1,(TIME-TX)/TEDGE))/RON)*(V(SWI)-V(MID)) }
+Vsw MID N2 0
+C2 N2 0 {CL}
+Brel REL 0 V={ V(N1)*I(Vt1) }
+Bdel DEL 0 V={ V(N2)*I(Vsw) }
+Bsl  SL  0 V={ (V(SWI)-V(N2))*I(Vsw) }
+.IC V(N1)={dV} V(N2)=0
+.tran 0.025p 1.6n UIC
+.measure tran VFIN   FIND V(N2) AT=1.5n
+.measure tran E_REL  INTEGRAL V(REL) FROM=1n TO=1.5n
+.measure tran E_DEL  INTEGRAL V(DEL) FROM=1n TO=1.5n
+.measure tran E_SW   INTEGRAL V(SL)  FROM=1n TO=1.5n
+.end

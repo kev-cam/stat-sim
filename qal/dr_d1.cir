@@ -1,0 +1,16 @@
+* dual-rail differential-sum tap: two flying caps (true+false) dump onto shared C2
+.OPTIONS TIMEINT METHOD=TRAP RELTOL=1e-6 ABSTOL=1e-14 CHGTOL=1e-16
+.param CL=10f CFLY=10f RON=50 TX=1n TEDGE=1p
+Cflt PT 0 {CFLY}
+Cflf PF 0 {CFLY}
+Vtt PT SWT 0
+Vtf PF SWF 0
+Bswt SWT MID I={ (max(0,min(1,(TIME-TX)/TEDGE))/RON)*(V(SWT)-V(MID)) }
+Bswf SWF MID I={ (max(0,min(1,(TIME-TX)/TEDGE))/RON)*(V(SWF)-V(MID)) }
+Vsw MID N2 0
+C2 N2 0 {CL}
+.IC V(PT)=0.6 V(PF)=0.0 V(N2)=0
+.tran 0.05p 1.6n UIC
+.measure tran QDEL INTEGRAL I(Vsw) FROM=1n TO=1.5n
+.measure tran VN2  FIND V(N2) AT=1.5n
+.end

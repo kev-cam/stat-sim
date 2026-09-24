@@ -111,6 +111,41 @@ Reproduce: `python3 qal_a2.py` prints the record; `chain_deck(N, ΔV, bsrc=)` re
 must run on a **restored/dual-rail** cell and on a **real FDX card**, not this bulk source-follower —
 the bulk body-effect-dominated numbers would bias the yield verdict.
 
+## A1f — `qal_a1f.py` (flying-cap forward-transfer cell — the patentable core)
+
+Increment 1. Designed + adversarially verified as two workflows (the verify pass was harsh and
+corrected several over-claims — see the file docstring). Ideal-source Track-A study (behavioral
+switch, ideal linear caps). **Honest scope: this establishes the charge-share floor and dual-rail's
+data-signature suppression; it does _not_ yet demonstrate forward-transfer efficiency.**
+
+**Has shown (verified):**
+- **Tap validation** (`b2_share.cir`): direct charge-share gives V=0.300V, E_REL=1.350 / E_DEL=0.450 /
+  E_SW=0.900 fJ, η_rel=1/3, **balance = 0.0000 fJ** — every energy tap is exact.
+- **No single-shot energy free lunch (any topology):** an abrupt flying-cap transfer costs
+  **E_SW = ½·C_eff·dV²**, and this is **RON-independent** (0.900 fJ = ½·5fF·0.6² to 6 digits at
+  RON=50; C_eff = C1‖C2 = 5fF). A parallel single flying-cap dump _is_ hard charge-share:
+  level k = R/(1+R), delivered/**released efficiency = R/(1+2R)** (= 1/3 at R=1). Note `[R/(1+R)]²`
+  is a level² figure, **not** efficiency; the genuine efficiency ceiling→1 needs **ZVS / resonant /
+  stepwise**, not a stiffer/slower passive dump.
+- **Data-signature is a _dual-rail encoding_ property** (not a flying-cap one): single-rail tap is
+  **100% data-modulated** (3.0 / 0.0 fC), dual-rail differential-sum is **0.00%** (2.0 / 2.0 fC).
+  Flatness is complementary-code symmetry and **survives nonlinear C(V)**; it's a **mismatch-limited
+  floor** (ΔC/C = x% → spread x%; ~0.1–few % for SG13G2 10fF caps, 30–200× below single-rail).
+- **Crossing slack and data-signature are orthogonal.** A conservative **~112–158 ps** redistribution-
+  timing tolerance (RON-independent term only) at a 1 ns ramp.
+
+**Not yet shown (increment 2):** the **ZVS/crossing benefit itself** (the pulsed-switch sim was
+numerically fragile — the claim currently rests on the STEP0 endpoint + algebra); the **finite-RON
+tracking loss** `E_track ≈ (C_eff·dV/dt)²·RON·W_on` — invisible to ½CdV², doesn't vanish at the
+crossing, and is the **real gate** (an RON·W_on ceiling) for any efficiency claim; therefore no
+total-loss / efficiency number, and no "recovery runs with the data" energy demonstration; the series
+(Marx/Dickson) level-boost; and the dual-rail leak under Pelgrom mismatch MC.
+
+**Increment-2 recipe** (in the docstring): a real coupled cell — finite source R, flying cap, an
+_actual_ receiver C_L (not a stiff rail), a **smooth** gate, a TX-tracking loss window, `.STEP` of TX
+across the crossing + independent RON and W_on sweeps, per-run energy-balance guard — measuring the
+tracking loss the static model omits. Commit to one topology and one C_eff before quoting a number.
+
 ## Measurement discipline
 
 Per `QAL_PLAN §7` and `feedback_no_self_baseline`: everything in Track A runs against an
