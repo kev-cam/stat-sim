@@ -282,36 +282,40 @@ CMOS **NAND2** (universal → any function) on SG13G2, powered by a ramping powe
 
 ## System level — `qal_sigma0_system.py` — σ0 datapath, baseline-QAL vs CMOS
 
-Designed + adversarially fairness-checked as a workflow (energy comparisons are easy to rig). The result
-is a **band across accounting regimes, not a hero number**. Structure (A0): σ0 = 61 XOR2, depth 2; the
-QAL wave adds 32 balancing buffers (N_g=93). Grounded in the anchor (E_clk=0.0282 pJ/DFF, E_logic=0.0076
-pJ/cell, t_XOR2=84 ps), A1b (resistive RC/T), and A1f (inductive π/Q).
+**v2 — redone for the bank / switched-inductor architecture** (inter-bank inductors move power+data
+bank→bank, ZCS, L layout-tuned to a fixed T_half; a small phase/antiphase resonator drives the switch
+gates with recovered energy; flycaps top up the per-hop loss — *no* separate power resonator). Structure
+(A0): σ0 = 61 XOR2, depth 2 → 2 gate-banks, 2 inter-bank transfers. Grounded in the anchor, A1b
+(resistive RC/T), A1f (inductive π/Q). Result is a **band, not a hero number.**
 
-**The honest bottom line:** σ0's intrinsic *compute* is only ~0.29 pJ, so the entire apparent QAL win is
-**eliminating the 0.9–1.8 pJ clock/FF floor + the 4× low-swing term — not the adiabatic gates.**
+**The honest bottom line:** the inter-bank inductor recovers the **rail/supply** energy (the
+clock-elimination win). But the **gate logic still settles *resistively* through its own Ron** — so the
+gate-level adiabatic saving is **RC-limited and speed-traded**, not the inductive hop. σ0's intrinsic
+compute is ~0.29 pJ; the big QAL win is eliminating the clock floor + the 4× swing — **not** a gate miracle.
 
-| regime | CMOS | QAL-ind | ratio | what it really is |
+| regime | CMOS | QAL-fast | ratio | what it really is |
 |--|--:|--:|--:|--|
-| A naive/rigged (64FF, 1.2V, free gen) | 2.09 pJ | 0.016 | ~130× | unfair (double-reg + swing gift + free generator) |
-| B fair-marginal (32FF, 1.2V, all QAL overhead) | 1.19 pJ | 0.016 | ~73× | ~90% no-clock + swing |
-| C iso-swing (both 0.6V, 32FF) | 0.30 pJ | 0.016 | ~18× | mostly no-clock |
-| **D iso-swing logic-only (0FF both)** | 0.072 pJ | 0.016 | **~4.5×** | the pure adiabatic question |
+| A naive/rigged (64FF, 1.2V) | 2.09 pJ | 0.015 | ~136× | unfair |
+| B fair-marginal (32FF, 1.2V) | 1.19 pJ | 0.015 | ~77× | ~90% no-clock + swing |
+| C iso-swing (32FF, 0.6V) | 0.30 pJ | 0.015 | ~19× | mostly no-clock (rail recovery) |
+| **D iso-swing logic-only (0FF, 0.6V)** | 0.072 pJ | 0.015 | **~4.7×** | pure gate adiabatic, **RC-limited** |
+| D vs QAL-*slow* (deep-adiabatic) | 0.072 pJ | 0.004 | ~17× | but only at **1.7 GHz** (speed-energy trade) |
 
-- **Regime D is the real adiabatic-logic question:** net of clock and swing, the inductive-resonant edge
-  is only **~3–4.5× — and for a block this small the freeze+generator (~15 fJ) dwarf the 1.7 fJ hop**, so
-  it's parity-to-loss unless the resonator/generator are **shared across a much larger datapath**.
-  **Resistive-settle *loses* at matched swing** (α=0.5 busy → it pays the ramp every cycle; the adiabatic
-  factor doesn't beat CMOS's activity discount, and it's parity-to-slower).
-- **Throughput:** CMOS 3.6 GHz (0.45 GHz near-Vt at 0.6V); QAL-inductive up to 12.5 GHz (**the only variant
-  that can win both axes — magnetics-gated**); QAL-resistive 3.3 GHz (buys energy by going slow, can't be
-  adiabatic at CMOS speed).
-- **Provenance:** the adiabatic hop terms are measured single-stage-ideal (A1b/A1f); the generator, freeze,
-  buffers, chain-compounding and reset are **modeled, not yet measured** — the QAL system number is a
-  **projection pending Track C**, not a measurement. The A2 per-hop energy stays quarantined.
+- **Regime D correction:** at gate-RC-limited speed (~7 GHz, T≈3·RC_g) the gates barely settle and pay
+  ~resistive-hard, so the pure gate-level edge is only **~4.7×** — landing at ~the v1 number but for the
+  *right* reason (v1 wrongly modeled gates as inductive hops + carried phantom generator/freeze overhead;
+  v2 removes that overhead via the bank arch + resonant switch drive, and the resistive gate-settle floor
+  replaces it). The gate breakdown @36ps: rail 0.72 fJ + **gate 14.6 fJ (resistive, dominant)** + switch
+  0.04 fJ. Slowing to T≫RC_g gets ~17× but at 1.7 GHz (slower than CMOS) — the adiabatic speed-energy trade.
+- **What actually wins:** the clock/rail recovery (regimes A/B/C, ~19–136×, dominantly no-clock + swing),
+  which the inter-bank inductor delivers by recovering the supply energy CMOS dumps as clock power.
+- **Provenance:** hop/settle terms measured single-stage-ideal (A1b/A1f); bank C, resonator Q, chain,
+  reset are **modeled** — a **projection pending Track C**. A2 per-hop energy stays quarantined.
 
-**One line:** if σ0 is pipelined per-cycle the paper win is ~60–130×, but that's a *no-clock + swing*
-story; the true iso-swing adiabatic-logic advantage is ~3–4× (inductive, magnetics-gated) or a loss
-(resistive). Clock/generator accounting and the 4× swing — not the adiabatic gates — decide the number.
+**One line:** the bank/switched-inductor architecture is cleaner (no separate generator, resonant switch
+drive), but the **gate logic is still RC-limited**, so the pure iso-swing adiabatic edge is ~5× at speed
+(~17× slowed). The headline ~19–136× is a **clock-elimination + swing** story the inductor enables — not
+a gate-level miracle.
 
 ## Measurement discipline
 

@@ -1,76 +1,87 @@
 #!/usr/bin/env python3
-"""QAL system-level: SHA-256 sigma0 datapath -- baseline-QAL vs CMOS energy & throughput.
-Designed + adversarially fairness-checked as a workflow. The whole point is a FAIR comparison; the
-result is a BAND across accounting regimes, NOT a hero number. Honest bottom line up front:
+"""QAL system-level (v2): SHA-256 sigma0 datapath, baseline-QAL vs CMOS -- REDONE for the
+bank / switched-inductor architecture (user-specified), replacing the v1 "separate generator +
+32 per-gate freezes" model. Designed + fairness-checked as a workflow; corrected twice by the user.
 
-  sigma0's intrinsic COMPUTE is only ~0.29 pJ. So the entire apparent QAL win is eliminating the
-  0.9-1.8 pJ CLOCK/FF floor + the 4x low-SWING term -- NOT the adiabatic gates. Net of swing and clock,
-  the true iso-swing adiabatic-logic advantage is ~3-4x (inductive-resonant, magnetics-gated) or a LOSS
-  (resistive-settle). Clock/generator accounting + swing decide the number.
+ARCHITECTURE (as specified):
+ * BANKS of gates, each with its own Vdd rail. An inter-bank SWITCHED INDUCTOR transfers the rail
+   charge (POWER) forward bank->bank, cycling zero-current->zero-current (ZCS, one LC half-cycle);
+   the data advances through the logic in lockstep. NO separate power resonator -- the inductor IS the
+   power delivery. L is layout-tuned so T_half=pi*sqrt(L*C_bank) = a fixed switch time; balancing the
+   bank capacitance keeps every bank on that one period (within the +/-14ps freeze window, A1f).
+ * A small PHASE/ANTIPHASE RESONATOR drives the inductor-switch GATES (2-phase, complementary), so the
+   switch-control (gate-drive) energy is RECOVERED, not dumped as a per-cycle clock tax. Its period sets
+   the fixed T_half.
+ * Flycaps top up the per-hop I^2R loss (the only net energy input; not additive overhead).
 
-STRUCTURE (A0): sigma0 = ROTR7^ROTR18^SHR3, 32b; rotates/shifts FREE. N_xor2=61 (depth 2). QAL phased
-wave also needs N_buf=32 balancing buffers -> N_g=93 switched nodes (charged to QAL, never CMOS).
-alpha=0.5 (uniformly busy -> activity-independence is NOT a QAL lever here; QAL pays every cycle).
+*** THE KEY HONEST CORRECTION (v1 -> v2), and why last-turn's "15-40x" was too rosy: the inductor
+recovers the RAIL/SUPPLY energy efficiently (pi/Q) -- that is the clock-elimination win. But the GATE
+LOGIC still SETTLES RESISTIVELY, charging its output through the gate's own on-resistance as the rail
+ramps: loss = ~2*(RC_g/T)*(1/2 C_g dV^2), adiabatic ONLY for T>>RC_g. With RC_g~12ps (2fF, few-kohm),
+the gates need T>~3*RC_g~36ps just to SETTLE, and full adiabatic needs T>~150ps (SLOWER than CMOS's
+84ps). So the gate-level saving is SPEED-ENERGY-TRADED, not free -- the inductor's fast low-loss is for
+the POWER RAIL, not the gate logic. Net: the big QAL win is CLOCK/RAIL RECOVERY + swing (regimes A/B/C);
+the pure gate-level adiabatic edge (regime D) is ~4-5x at gate-RC-limited speed, ~17x only if slowed.
 
-GROUNDED (SG13G2/PSP103, this campaign): E_clk=0.0282 pJ/DFF (anchor); E_logic=0.0076 pJ/cell (anchor);
-t_inv=42ps, t_XOR2=84ps, t_reg=108ps (anchor); adiabatic RESISTIVE loss 2*(RC/T)*C*dV^2, adiabatic only
-for T>>RC (A1b); adiabatic INDUCTIVE loss = 2*(pi/Q)*(1/2 C dV^2), pi/Q=2.5% measured at Q=126 (A1f).
-C_g=2 fF datapath node (NOT A1b's 10 fF char cap). Vdd=1.2, dV=0.6.
-PROVENANCE: adiabatic hop terms MEASURED single-stage-ideal (A1b/A1f); generator/freeze/buffers/
-chain-compounding/return-reset are MODELED, not-yet-measured (Track C). The QAL system number is a
-PROJECTION pending Track C, not a measurement. A2 per-hop energy is QUARANTINED (excluded).
+STRUCTURE (A0): 61 XOR2, depth 2 -> 2 gate-banks (2 XOR levels), N_bank_bd=2 inter-bank transfers.
+GROUNDED: E_clk=0.0282pJ/DFF, E_logic=0.0076pJ/cell, k=1.25, t_XOR2=84ps (anchor); pi/Q=2.5% inductive
+rail transfer (A1f); resistive gate settle 2*(RC/T)*C*dV^2 (A1b); C_g=2fF, RC_g~12ps.
+PROVENANCE: hop/settle terms measured single-stage-ideal (A1b/A1f); bank C, resonator Q, chain, reset
+MODELED -> PROJECTION pending Track C. A2 per-hop energy quarantined.
 """
 # ---- shared ----
-N_XOR2, N_BUF, N_G, DEPTH = 61, 32, 93, 2
-C_g, Vdd, dV, alpha = 2e-15, 1.2, 0.6, 0.5
+N_XOR2, DEPTH, N_BANK_BD = 61, 2, 2
+C_g, RC_g, C_bank = 2e-15, 12e-12, 80e-15
+Vdd, dV, alpha = 1.2, 0.6, 0.5
 E_clk, E_logic, k_size = 0.0282e-12, 0.0076e-12, 1.25
 t_XOR2, t_reg = 84e-12, 108e-12
-def half_cvv(C, V): return 0.5*C*V*V
+piQ = 0.025            # inductive rail-transfer loss fraction (A1f, good L / R<=10ohm)
+Q_res = 0.05           # phase/antiphase switch-drive resonator loss fraction (modeled)
+def halfCV2(C,V): return 0.5*C*V*V
 
 # ---- CMOS ----
-def cmos_energy(n_ff, V):
-    swing2 = (V/Vdd)**2                      # switching + clock both scale ~V^2 (clock tree caps)
-    E_switch = alpha*N_XOR2*E_logic*k_size*swing2
-    E_clock  = n_ff*E_clk*swing2
-    return E_switch, E_clock, E_switch+E_clock
+def cmos(n_ff, V):
+    s=(V/Vdd)**2
+    Esw=alpha*N_XOR2*E_logic*k_size*s
+    Eck=n_ff*E_clk*s
+    return Esw+Eck
 def cmos_fmax(V):
-    # delay ~ Vdd/(Vdd-Vt)^2 ; slowdown vs 1.2V grows sharply near Vt. nominal at 1.2 -> 3.62 GHz.
-    Vt=0.4; slow=(V/(V-Vt)**2)/(Vdd/(Vdd-Vt)**2)   # >1 at low V (near-Vt = slower)
+    Vt=0.4; slow=(V/(V-Vt)**2)/(Vdd/(Vdd-Vt)**2)
     return 1.0/((DEPTH*t_XOR2+t_reg)*slow)
 
-# ---- QAL resistive-settle (adiabatic ramp; NO clock) ----
-def qal_resistive(T_ramp, RC=14e-12, eta_gen=0.8):
-    E_adia = N_G*2*(RC/T_ramp)*C_g*dV*dV
-    E_gen  = N_G*(1-eta_gen)*half_cvv(C_g,dV)     # generator inefficiency
-    return E_adia+E_gen, 1.0/(2*T_ramp)           # charge+recover cadence
-
-# ---- QAL inductive-resonant (LC hop + freeze; NO clock) ----
-def qal_inductive(piQ=0.025, T_half=20e-12, n_freeze=32, E_freeze=0.3e-15, E_gen=5e-15):
-    E_hop = N_G*2*piQ*half_cvv(C_g,dV)
-    return E_hop + n_freeze*E_freeze + E_gen, 1.0/(4*T_half)   # ~2*T_half + reset + depth-2 => ~12.5 GHz
+# ---- QAL (bank / switched-inductor) ----
+def qal(T):
+    E_rail = N_BANK_BD*piQ*halfCV2(C_bank,dV)              # inter-bank inductor recovers rail to pi/Q
+    f_adia = min(2*RC_g/T, 1.0)                            # gate settles RESISTIVELY; adiabatic iff T>>RC_g
+    E_gate = N_XOR2*f_adia*halfCV2(C_g,dV)                 # the speed-energy-traded term (dominant)
+    E_sw   = N_BANK_BD*Q_res*halfCV2(C_g,dV)               # phase/antiphase resonant switch drive (recovered)
+    return E_rail+E_gate+E_sw
+def qal_fmax(T): return 1.0/(DEPTH*2*T)
 
 if __name__=="__main__":
     p=lambda J: J*1e12
-    print("="*78); print("QAL sigma0 datapath vs CMOS -- FAIR energy(pJ)/throughput(GHz) band"); print("="*78)
-    csw12,cck12,ct12_64 = cmos_energy(64,1.2)
-    _,_,ct12_32 = cmos_energy(32,1.2); _,_,ct12_0 = cmos_energy(0,1.2)
-    _,_,ct06_32 = cmos_energy(32,0.6); csw06,_,ct06_0 = cmos_energy(0,0.6)
-    Er,fr = qal_resistive(150e-12); Ei,fi = qal_inductive()
-    print("  CMOS: E_switch(1.2V)=%.3f pJ (intrinsic compute), E_clk/FF=%.4f pJ"%(p(csw12),p(E_clk)))
-    print("        E_total: 0FF=%.2f  32FF=%.2f  64FF=%.2f pJ (1.2V) | fmax=%.2f GHz"%(p(ct12_0),p(ct12_32),p(ct12_64),cmos_fmax(1.2)/1e9))
-    print("        low-swing 0.6V: 0FF=%.3f 32FF=%.3f pJ | fmax=%.2f GHz"%(p(ct06_0),p(ct06_32),cmos_fmax(0.6)/1e9))
-    print("  QAL resistive-settle: E=%.3f pJ @ %.1f GHz (adiabatic needs T>>RC -> SLOWER)"%(p(Er),fr/1e9))
-    print("  QAL inductive-reson.: E=%.3f pJ @ %.1f GHz (freeze+gen dominate the 1.7fJ hop)"%(p(Ei),fi/1e9))
-    print("-"*78)
-    print("  FOUR ACCOUNTING REGIMES (ratio = CMOS/QAL-inductive):")
-    print("   A NAIVE/RIGGED  (CMOS 64FF 1.2V vs QAL low-swing free-gen): %.2f / %.3f = %.0fx  [UNFAIR]"%(p(ct12_64),p(Ei),ct12_64/Ei))
-    print("   B FAIR MARGINAL (CMOS 32FF 1.2V, all QAL overhead charged): %.2f / %.3f = %.0fx  (~90%% no-clock+swing)"%(p(ct12_32),p(Ei),ct12_32/Ei))
-    print("   C ISO-SWING     (both 0.6V, 32FF):                          %.3f / %.3f = %.0fx  (mostly no-clock)"%(p(ct06_32),p(Ei),ct06_32/Ei))
-    print("   D ISO-SWING LOGIC-ONLY (0FF both, the pure adiabatic Q):    %.4f / %.3f = %.1fx  PARITY-to-LOSS (small block)"%(p(ct06_0),p(Ei),ct06_0/Ei))
-    print("-"*78)
-    print("  HONEST SUMMARY: paper win ~60-130x is a NO-CLOCK + 4x-SWING story. True iso-swing")
-    print("  adiabatic-logic edge = ~3-4x (inductive, magnetics-gated) or a LOSS (resistive).")
-    print("  fmax: CMOS 3.6GHz (1.0-1.8 @0.6V); QAL-inductive up to 12.5GHz (faster+lower, magnetics-gated);")
-    print("  QAL-resistive 3.3GHz (parity-to-slower -- buys energy by going slow).")
-    print("  Inductive-resonant is the only variant worth building for sigma0, and only if the resonator/")
-    print("  generator are SHARED across a much larger datapath. QAL system number = PROJECTION pending Track C.")
+    T_fast=36e-12   # gate-RC-limited (T~3*RC_g, gates just settle) -> fastest valid
+    T_slow=150e-12  # deep-adiabatic (T>>RC_g) -> lowest gate energy, but slow
+    Ef,Es=qal(T_fast),qal(T_slow)
+    print("="*80); print("QAL sigma0 vs CMOS (v2: bank/switched-inductor arch) -- fair energy/throughput"); print("="*80)
+    print("  CMOS: 64FF=%.2f 32FF=%.2f 0FF=%.3f pJ @1.2V (%.2f GHz); 0FF@0.6V=%.3f pJ (%.2f GHz)"%(
+        p(cmos(64,1.2)),p(cmos(32,1.2)),p(cmos(0,1.2)),cmos_fmax(1.2)/1e9,p(cmos(0,0.6)),cmos_fmax(0.6)/1e9))
+    print("  QAL breakdown @T=%dps: rail=%.2f gate=%.2f sw=%.3f fJ (gate = RESISTIVE settle, dominant)"%(
+        T_fast*1e12, p(N_BANK_BD*piQ*halfCV2(C_bank,dV))*1e3, p(N_XOR2*min(2*RC_g/T_fast,1)*halfCV2(C_g,dV))*1e3, p(N_BANK_BD*Q_res*halfCV2(C_g,dV))*1e3))
+    print("  QAL fast (T=36ps, gate-RC-limited): %.3f pJ @ %.1f GHz"%(p(Ef),qal_fmax(T_fast)/1e9))
+    print("  QAL slow (T=150ps, deep-adiabatic):  %.3f pJ @ %.1f GHz"%(p(Es),qal_fmax(T_slow)/1e9))
+    print("-"*80)
+    print("  FOUR REGIMES (ratio = CMOS / QAL-fast):")
+    print("   A naive/rigged (64FF 1.2V):        %.2f / %.3f = %.0fx  [unfair]"%(p(cmos(64,1.2)),p(Ef),cmos(64,1.2)/Ef))
+    print("   B fair-marginal (32FF 1.2V):       %.2f / %.3f = %.0fx  (~90%% no-clock+swing)"%(p(cmos(32,1.2)),p(Ef),cmos(32,1.2)/Ef))
+    print("   C iso-swing (32FF 0.6V):           %.3f / %.3f = %.0fx  (mostly no-clock)"%(p(cmos(32,0.6)),p(Ef),cmos(32,0.6)/Ef))
+    print("   D iso-swing LOGIC-ONLY (0FF 0.6V): %.3f / %.3f = %.1fx  (pure gate adiabatic, RC-limited)"%(p(cmos(0,0.6)),p(Ef),cmos(0,0.6)/Ef))
+    print("     ... same regime D vs QAL-SLOW:   %.3f / %.3f = %.1fx  (deep-adiabatic, but %.1f GHz -- slower)"%(p(cmos(0,0.6)),p(Es),cmos(0,0.6)/Es,qal_fmax(T_slow)/1e9))
+    print("-"*80)
+    print("  CORRECTED VERDICT: the inter-bank inductor recovers the RAIL/supply energy (the clock-")
+    print("  elimination win) -- that drives regimes A/B/C (~19-135x, dominantly no-clock + swing).")
+    print("  The GATE logic settles RESISTIVELY (RC_g-limited) -> the pure gate-level adiabatic edge")
+    print("  (regime D) is only ~4-5x at gate-RC-limited speed, ~17x if slowed (speed-energy trade).")
+    print("  v1's separate generator + 32 freezes were removed (bank arch + resonant switch drive), but")
+    print("  the resistive gate-settle floor replaces them -> regime D lands ~same ~5x, for the correct")
+    print("  reason. The architecture is cleaner; the gate-level miracle isn't there. PROJECTION (Track C).")
