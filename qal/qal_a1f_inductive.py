@@ -45,11 +45,38 @@ Freeze-timing tolerance (fixed-time vs zero-cross detection -- the open design q
    Recommended: fixed-time, late-biased, flycap absorbs the residual droop; escalate to ZCS only if
    measured L/C variation eats the window.
 
-Realistic on-chip L (C_eff=5fF): T_half and char-impedance Z=sqrt(L/C_eff) (Q=Z/R):
-   L=1nH -> 7.0ps (Z=447)  3nH -> 12.2ps (775)  10nH -> 22.2ps (1414)  100nH -> 70ps (4472)  1uH -> 222ps
-=> on-chip nH inductors give fast 7-70ps transfers but modest Q at usable R; the real design tension is
-   inductor QUALITY (Z/R) vs speed -- "needs magnetics" (QAL_PLAN). The 1uH here is illustrative for
-   clean physics; the efficiency lever is Q = sqrt(L/C_eff)/R.
+SUPRA-CMOS SPEED (tune L; CMOS ref ~42ps/inverter, 108ps/logic-level). Single-hop FROZEN loss (measured
+over [0,T_half], NOT the full ring-down -- an early sweep integrated ring-down and wrongly read ~100%):
+   loss/floor = pi/Q  EXACTLY (verified: L=8nH,R=10 -> Q=126 -> 2.5% = pi/126). Equivalently
+   loss/floor = pi^2 * R * C_eff / T_half  -- so going FASTER (smaller T_half) costs proportionally more
+   loss AT FIXED R; the design gate is the series R (switch Ron + inductor parasitic R), not L.
+   L=8nH  -> T_half=20ps (2x faster than CMOS): loss/floor 2.5%@R=10, 6%@R=25, 12%@R=50
+   L=2nH  -> T_half=10ps (4x):                  4.8%@R=10, 12%@R=25
+   L=1nH  -> T_half= 7ps (6x):                  6.8%@R=10
+=> QAL can be simultaneously FASTER AND lower-energy than CMOS: modest nH L buys the speed, Q=sqrt(L/C_eff)/R
+   buys the low loss. At R=10ohm a 20ps hop (2x CMOS) costs 2.5% of the 1/2 C_eff dV^2 floor. Needs a
+   wide switch + a good on-chip inductor (R<=10-25ohm) -- "needs magnetics" (QAL_PLAN). Bonus: the resonant
+   hop is a LINEAR system, so V(B)pk ~ dV exactly and T_half is AMPLITUDE/DATA-INDEPENDENT -- the freeze
+   instant does not move with the signal value (bears on dual-rail, below).
+
+DUAL-RAIL -- do we need it? (reasoned from these results + QAL_PLAN's 3-way axis)
+ * PER-BIT TIMING: NOT a reason. The hop is linear -> T_half data-independent (measured), so single-rail
+   does not modulate per-bit freeze timing.
+ * LOGIC COMPLETENESS: the deciding reason. A non-restoring ephemeral wave has NO gain -> cannot invert.
+   Non-monotone functions -- XOR, which the sigma0 vehicle is built from -- need BOTH polarities. Dual-rail
+   carries true+complement so any function is routable; single-rail non-restoring does monotone logic only,
+   UNLESS the k-block restoration boundary (B5) supplies inversion (then single-rail within a block).
+ * GENERATOR LOAD: favors dual-rail. Exactly one of each pair switches -> constant aggregate load on the
+   shared resonant generator -> stable resonant frequency -> fixed-time freeze holds across all data.
+   Single-rail load ~ #(1s) -> shifts the shared resonance (aggregate, not per-bit) -> pushes to
+   dummy-loading or active ZCS.
+ * POWER TAP: dual-rail only -- measured (qal_a1f.py): single-rail hands forward 100% data-modulated
+   charge; the dual-rail differential-SUM tap is flat (0%, mismatch-limited).
+ VERDICT: dual-rail is the natural/likely-required choice for QAL logic -- primarily for XOR/non-monotone
+ completeness in a non-restoring wave, plus constant generator load and the differential power tap. Cost
+ ~2x area vs single-rail ~1.2x. Single-rail is viable only for monotone logic, or with restoring
+ boundaries (inversion) + dummy-loading. For the XOR-heavy sigma0 vehicle: use dual-rail. (QAL_PLAN keeps
+ it a measured 3-way axis: dual / single+dummy-load / single+per-stage-top-up.)
 
 NOT YET SHOWN (next): realistic on-chip L (nH, real R) efficiency; the RETURN/reset path (A must be
 re-armed for the next cycle); a multi-stage CHAIN (does the wave propagate + does loss compound);

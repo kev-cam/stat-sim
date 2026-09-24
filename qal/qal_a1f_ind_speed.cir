@@ -1,0 +1,13 @@
+* single-hop frozen transfer, L=32nH R=50
+.OPTIONS TIMEINT METHOD=GEAR RELTOL=1e-9 ABSTOL=1e-17 CHGTOL=1e-19
+.param dV=0.6 CL=10f
+C1 A 0 {CL}
+C2 B 0 {CL}
+L1 A M 32n
+Rsw M B 50
+Bloss LOSS 0 V={ I(L1)*I(L1)*50 }
+.IC V(A)={dV} V(B)=0
+.tran 0.01987p 47.6860p UIC
+.measure tran VBPK MAX V(B)
+.measure tran ELOSS INTEGRAL V(LOSS) FROM=0 TO=39.7384p
+.end

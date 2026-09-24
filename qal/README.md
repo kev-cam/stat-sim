@@ -175,6 +175,17 @@ Measured (Xyce, ideal L, CL=10fF each, dV=0.6V, C_eff=5fF; capacitive floor ½C_
   fixed-time-late-biased, flycap absorbs the droop; escalate to ZCS only if L/C variation eats the window.
 - Lever is **Q = √(L/C_eff)/R**; realistic on-chip L~nH → fast 7–70 ps transfers but lower Q, so
   inductor quality vs speed is the real tension ("needs magnetics").
+- **Supra-CMOS speed:** single-hop frozen loss is **loss/floor = π/Q = π²·R·C_eff/T_half** (an early
+  sweep wrongly read ~100% by integrating the full ring-down instead of the frozen half-cycle). So a
+  20 ps hop (**2× faster than CMOS's ~42 ps**) with L=8 nH costs just **2.5% @ R=10Ω** (6% @ 25Ω); 10 ps
+  (4×, L=2 nH) → 4.8% @ R=10Ω. QAL can be **faster *and* lower-energy than CMOS** — nH L buys the speed,
+  low R buys the Q. The resonant hop is linear, so **T_half is amplitude/data-independent** (freeze
+  instant doesn't move with signal value).
+- **Dual-rail?** Yes for QAL logic, chiefly for **completeness**: a non-restoring wave has no gain → can't
+  invert → non-monotone functions (XOR, i.e. the σ0 vehicle) need both polarities. Dual-rail also gives a
+  **constant generator load** (stable shared resonance → fixed-time freeze holds) and the data-independent
+  **differential-sum power tap** (single-rail is 100% data-modulated; dual-rail 0%). Single-rail is viable
+  only for monotone logic or with restoring boundaries (inversion) + dummy-loading. Cost ~2× vs ~1.2× area.
 
 **Not yet shown:** realistic on-chip L (nH, real R) efficiency; the return/reset path (re-arm A); a
 multi-stage chain (does the wave propagate, does loss compound); explicit data-carrying; dual-rail;
