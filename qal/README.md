@@ -218,6 +218,39 @@ L+R+freeze-switch resonant transfer, phased forward so the charge/data pattern t
 interval k); dual-rail; real data patterns; device switches + Vt + charge injection; the Track-C
 generator supplying the top-up; and reconciling the restore interval k with A2's k(ΔV).
 
+## A1f (dual-rail, device switches) — `qal_a1f_dualrail.py` — the A3 precursor
+
+Differential pair (T,F)→(T',F') via two inductors, each gated by a real **SG13G2 nMOS freeze switch** —
+bringing in Ron, Vt, and gate feedthrough (what the A3 σ(Vt) MC needs).
+
+*Numerical note:* PSP103 + inductor + UIC at fast speed (L=16 nH) **aborts** (timestep collapse at
+~0.01 ps; ideal-switch runs converge fine at that speed, so it's the compact device in the resonant
+loop). Converges by slowing to L=1µH (222 ps hop) + series damping + junction caps — so this run is the
+*device-physics* run; the *speed* result stands on the ideal-switch runs.
+
+Matched pair (both w=10µm), differential readout after freeze:
+
+| case | Tp | Fp | DIFF (signal) | SUM (common-mode) |
+|--|--:|--:|--:|--:|
+| data=1 | 0.547 | 0.337 | **+0.365** | 0.239 |
+| data=0 | 0.337 | 0.547 | **−0.365** | 0.239 |
+
+- **The differential carries the data** (±0.365, sign flips with data) — the pattern transferred forward
+  through real device switches.
+- **Gate feedthrough is common-mode:** the wide device's Cgs couples the 1.2 V gate onto both rails
+  (~0.12 V/rail, SUM=0.239), but SUM is *identical* for data=1 and data=0 → **rejected in the
+  differential readout**. This is the concrete dual-rail payoff against a real device non-ideality, and
+  it exposes the tradeoff: wide device = low Ron (high Q) *but* large feedthrough (Cgs~C_L); the
+  differential cancellation is what makes the wide device usable.
+- **Mismatch → A3 hook:** a 10% switch asymmetry (X_F 9µm vs 10µm) shifts DIFF by **+2.5 mV** and SUM by
+  −2.5 mV — the asymmetry converts the common-mode feedthrough into a *differential* offset. That's the
+  noise-margin erosion **A3's σ(Vt) Monte-Carlo quantifies**, on this exact cell; the PyMS DELVTO callback
+  flow drives it.
+
+**Next (A3):** swap the geometry-mismatch stand-in for the real DELVTO Vt-mismatch callback, run the MC →
+yield(differential margin) vs σ(Vt) and swing — the GO/NO-GO — on a real 22FDX/PSP card (bulk SG13G2
+over-states body-effect/feedthrough).
+
 ## Measurement discipline
 
 Per `QAL_PLAN §7` and `feedback_no_self_baseline`: everything in Track A runs against an

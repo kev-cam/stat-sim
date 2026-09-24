@@ -1,0 +1,28 @@
+* dual-rail device hop, freeze at T_half, differential readout drz1
+.hdl "/usr/local/share/xyce/verilog-a/psp103/psp103.va"
+.include "/usr/local/src/kestrel/sim/models/sg13g2_psp103_tt.lib"
+.include "sg13lv_compat.sp"
+.OPTIONS TIMEINT METHOD=GEAR RELTOL=1e-7 ABSTOL=1e-15 CHGTOL=1e-17
+.param dV=0.6 CL=10f L=1u VDDH=1.2 TH=222p
+VG gate 0 PWL(0 0 2p {VDDH} {TH} {VDDH} {TH+2p} 0)
+L_T T mt {L}
+Rdt mt dt 50
+X_T dt gate Tp 0 sg13_lv_nmos w=10u l=0.13u
+C_T T 0 {CL}
+C_Tp Tp 0 {CL}
+Cmt mt 0 1f
+L_F F mf {L}
+Rdf mf df 50
+X_F df gate Fp 0 sg13_lv_nmos w=10u l=0.13u
+C_F F 0 {CL}
+C_Fp Fp 0 {CL}
+Cmf mf 0 1f
+Bdiff DIFF 0 V={ V(Tp)-V(Fp) }
+Bsum  SUM  0 V={ V(Tp)+V(Fp) }
+.IC V(T)={dV} V(F)=0 V(Tp)=0 V(Fp)=0 V(mt)={dV} V(mf)=0 V(dt)={dV} V(df)=0
+.tran 0.1p 0.5n UIC
+.measure tran VTP  MAX V(Tp)
+.measure tran VFP  MAX V(Fp)
+.measure tran DIFFF FIND V(DIFF) AT=0.4n
+.measure tran SUMF  FIND V(SUM)  AT=0.4n
+.end
