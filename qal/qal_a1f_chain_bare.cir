@@ -1,0 +1,49 @@
+* QAL A1f inductive chain, 6 stages
+.OPTIONS TIMEINT METHOD=GEAR RELTOL=1e-9 ABSTOL=1e-17 CHGTOL=1e-19
+.param dV=0.6
+C0 n0 0 10f
+C1 n1 0 10f
+C2 n2 0 10f
+C3 n3 0 10f
+C4 n4 0 10f
+C5 n5 0 10f
+L0 n0 m0 1u
+R0 m0 k0 100
+S0 k0 n1 g0 0 IND
+VG0 g0 0 PWL(0 0 0.1000n 0 0.1020n 1 0.3220n 1 0.3240n 0)
+Bl0 p0 0 V={ I(L0)*I(L0)*100 }
+L1 n1 m1 1u
+R1 m1 k1 100
+S1 k1 n2 g1 0 IND
+VG1 g1 0 PWL(0 0 0.3220n 0 0.3240n 1 0.5440n 1 0.5460n 0)
+Bl1 p1 0 V={ I(L1)*I(L1)*100 }
+L2 n2 m2 1u
+R2 m2 k2 100
+S2 k2 n3 g2 0 IND
+VG2 g2 0 PWL(0 0 0.5440n 0 0.5460n 1 0.7660n 1 0.7680n 0)
+Bl2 p2 0 V={ I(L2)*I(L2)*100 }
+L3 n3 m3 1u
+R3 m3 k3 100
+S3 k3 n4 g3 0 IND
+VG3 g3 0 PWL(0 0 0.7660n 0 0.7680n 1 0.9880n 1 0.9900n 0)
+Bl3 p3 0 V={ I(L3)*I(L3)*100 }
+L4 n4 m4 1u
+R4 m4 k4 100
+S4 k4 n5 g4 0 IND
+VG4 g4 0 PWL(0 0 0.9880n 0 0.9900n 1 1.2100n 1 1.2120n 0)
+Bl4 p4 0 V={ I(L4)*I(L4)*100 }
+.model IND VSWITCH RON=1 ROFF=1e9 VON=0.5 VOFF=0.4
+.IC V(n0)={dV} V(n1)=0 V(n2)=0 V(n3)=0 V(n4)=0 V(n5)=0
+.tran 0.05p 1.510n UIC
+.measure tran VPK0 MAX V(n0)
+.measure tran VPK1 MAX V(n1)
+.measure tran VPK2 MAX V(n2)
+.measure tran VPK3 MAX V(n3)
+.measure tran VPK4 MAX V(n4)
+.measure tran VPK5 MAX V(n5)
+.measure tran EL0 INTEGRAL V(p0) FROM=0 TO=1.510n
+.measure tran EL1 INTEGRAL V(p1) FROM=0 TO=1.510n
+.measure tran EL2 INTEGRAL V(p2) FROM=0 TO=1.510n
+.measure tran EL3 INTEGRAL V(p3) FROM=0 TO=1.510n
+.measure tran EL4 INTEGRAL V(p4) FROM=0 TO=1.510n
+.end

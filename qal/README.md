@@ -180,6 +180,33 @@ Measured (Xyce, ideal L, CL=10fF each, dV=0.6V, C_eff=5fF; capacitive floor ½C_
 multi-stage chain (does the wave propagate, does loss compound); explicit data-carrying; dual-rail;
 device switches + Vt; the Track-C generator driving it.
 
+## A1f (inductive chain) — `qal_a1f_chain.py` — "it's a wave" + repairs A2
+
+Does the inductive transfer *cascade*? Six stages (C_L=10fF each), stage 0 = dV; each hop is an
+L+R+freeze-switch resonant transfer, phased forward so the charge/data pattern travels as a front.
+
+| stage | bare (no top-up) | with per-stage top-up |
+|--|--:|--:|
+| n0 | 0.6000 (src) | 0.6000 |
+| n1 | 0.5966 | 0.6000 |
+| n3 | 0.5900 | 0.6000 |
+| n5 | 0.5834 | 0.6000 |
+
+- **The wave propagates** at a uniform **−0.56%/hop** I²R droop (97.2% of dV still at stage 5;
+  ~95% at depth 8) — vs A2's capacitive source-follower at **−65%/hop, dead by hop 2**. This is the
+  mechanism A2's cell lacked.
+- **Traveling front, not fan-out:** final V is ~0.003 V on n0–n4 (they *emptied* as charge passed
+  forward) and 0.583 V only on n5 (holds the delivered data).
+- **Energy conserves** (the decisive free-energy check): 1.800 fJ initial = 1.702 fJ final + 0.097 fJ
+  total I²R loss (0.06%). Five-hop loss 0.097 fJ vs 4.5 fJ for five capacitive dumps — **46× less**.
+- **Per-stage rail top-up arrests the droop entirely** — every stage holds full 0.6000 V, so the wave
+  propagates lossless-in-level to arbitrary depth; the per-cycle input is just the I²R loss, supplied
+  by the generator. This is exactly the restore/re-inject role of the k-block boundary (B5).
+
+**Not yet shown:** realistic on-chip L (nH/real R → lower Q, larger droop/hop → shorter restore
+interval k); dual-rail; real data patterns; device switches + Vt + charge injection; the Track-C
+generator supplying the top-up; and reconciling the restore interval k with A2's k(ΔV).
+
 ## Measurement discipline
 
 Per `QAL_PLAN §7` and `feedback_no_self_baseline`: everything in Track A runs against an

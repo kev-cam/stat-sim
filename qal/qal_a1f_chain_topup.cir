@@ -1,0 +1,60 @@
+* QAL A1f inductive chain WITH per-stage rail top-up
+.OPTIONS TIMEINT METHOD=GEAR RELTOL=1e-9 ABSTOL=1e-17 CHGTOL=1e-19
+.param dV=0.6
+VTOP top 0 {dV}
+C0 n0 0 10f
+C1 n1 0 10f
+C2 n2 0 10f
+C3 n3 0 10f
+C4 n4 0 10f
+C5 n5 0 10f
+L0 n0 m0 1u
+R0 m0 k0 100
+S0 k0 n1 g0 0 IND
+VG0 g0 0 PWL(0 0 0.1000n 0 0.1020n 1 0.3220n 1 0.3240n 0)
+Bl0 p0 0 V={ I(L0)*I(L0)*100 }
+L1 n1 m1 1u
+R1 m1 k1 100
+S1 k1 n2 g1 0 IND
+VG1 g1 0 PWL(0 0 0.3820n 0 0.3840n 1 0.6040n 1 0.6060n 0)
+Bl1 p1 0 V={ I(L1)*I(L1)*100 }
+L2 n2 m2 1u
+R2 m2 k2 100
+S2 k2 n3 g2 0 IND
+VG2 g2 0 PWL(0 0 0.6640n 0 0.6660n 1 0.8860n 1 0.8880n 0)
+Bl2 p2 0 V={ I(L2)*I(L2)*100 }
+L3 n3 m3 1u
+R3 m3 k3 100
+S3 k3 n4 g3 0 IND
+VG3 g3 0 PWL(0 0 0.9460n 0 0.9480n 1 1.1680n 1 1.1700n 0)
+Bl3 p3 0 V={ I(L3)*I(L3)*100 }
+L4 n4 m4 1u
+R4 m4 k4 100
+S4 k4 n5 g4 0 IND
+VG4 g4 0 PWL(0 0 1.2280n 0 1.2300n 1 1.4500n 1 1.4520n 0)
+Bl4 p4 0 V={ I(L4)*I(L4)*100 }
+Rt1 top tt1 200
+St1 tt1 n1 gt1 0 IND
+VGt1 gt1 0 PWL(0 0 0.3220n 0 0.3240n 1 0.3820n 1 0.3840n 0)
+Rt2 top tt2 200
+St2 tt2 n2 gt2 0 IND
+VGt2 gt2 0 PWL(0 0 0.6040n 0 0.6060n 1 0.6640n 1 0.6660n 0)
+Rt3 top tt3 200
+St3 tt3 n3 gt3 0 IND
+VGt3 gt3 0 PWL(0 0 0.8860n 0 0.8880n 1 0.9460n 1 0.9480n 0)
+Rt4 top tt4 200
+St4 tt4 n4 gt4 0 IND
+VGt4 gt4 0 PWL(0 0 1.1680n 0 1.1700n 1 1.2280n 1 1.2300n 0)
+Rt5 top tt5 200
+St5 tt5 n5 gt5 0 IND
+VGt5 gt5 0 PWL(0 0 1.4500n 0 1.4520n 1 1.5100n 1 1.5120n 0)
+.model IND VSWITCH RON=1 ROFF=1e9 VON=0.5 VOFF=0.4
+.IC V(n0)={dV} V(n1)=0 V(n2)=0 V(n3)=0 V(n4)=0 V(n5)=0
+.tran 0.05p 1.810n UIC
+.measure tran VPK0 MAX V(n0)
+.measure tran VPK1 MAX V(n1)
+.measure tran VPK2 MAX V(n2)
+.measure tran VPK3 MAX V(n3)
+.measure tran VPK4 MAX V(n4)
+.measure tran VPK5 MAX V(n5)
+.end
