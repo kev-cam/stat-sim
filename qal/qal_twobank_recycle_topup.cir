@@ -1,0 +1,23 @@
+* two-bank recycle + flycap top-up: realistic switch Ron=50 + inductor series R=20 (damps ring)
+.OPTIONS TIMEINT METHOD=GEAR RELTOL=1e-6 ABSTOL=1e-15 CHGTOL=1e-17
+.param dV=0.6 Cbank=80f RON=50 RL=20 TAU=5p FLY=1
+CA A 0 {Cbank}
+CB B 0 {Cbank}
+Lab A xab 25n
+Rlab xab mab {RL}
+Cmab mab 0 2f
+Bswab mab B I={ (0.5*(1+tanh((TIME-8p)/TAU))/RON)*(V(mab)-V(B)) }
+Blab La 0 V={ ((V(mab)-V(B))^2)*(0.5*(1+tanh((TIME-8p)/TAU))/RON) + RL*I(Lab)*I(Lab) }
+Cfly P 0 15f
+Ltop P xtop 112n
+Rltop xtop mtop {RL}
+Cmtop mtop 0 2f
+Bswtop mtop B I={ {FLY}*(0.5*(1+tanh((TIME-8p)/TAU))/RON)*(V(mtop)-V(B)) }
+Bltop Lt 0 V={ {FLY}*(((V(mtop)-V(B))^2)*(0.5*(1+tanh((TIME-8p)/TAU))/RON) + RL*I(Ltop)*I(Ltop)) }
+.IC V(A)={dV} V(B)=0 V(mab)={dV} V(P)={dV} V(mtop)={dV}
+.tran 0.05p 120p UIC
+.measure tran VBPK MAX V(B)
+.measure tran VAMIN MIN V(A)
+.measure tran ELAB INTEGRAL V(La) FROM=0 TO=115p
+.measure tran ELTOP INTEGRAL V(Lt) FROM=0 TO=115p
+.end

@@ -352,6 +352,31 @@ beat** (no activity discount), so **E_QAL/E_CMOS = 2·f_adia = 4/τ** — anchor
 throughput win lands exactly on the GPU-batched independent-lane workloads the north star targets.
 Projection pending Track C (the high-Q resonant generator is the load-bearing unbuilt piece).
 
+## Two-bank recycle + flycap top-up — `qal_twobank.py` — the actual power mechanism
+
+First sim of the real bank/switched-inductor architecture (not the single A1f hop). Bank A (charged,
+holds data) recycles its rail charge to bank B via the inter-bank inductor; B's flycap (pre-charged from
+the rail) dumps into B through a *separate* inductor *simultaneously*. Realistic switches (Ron=50) **and
+realistic inductor series-R (RL=20)** — the latter damps the fast L–Cjunction parasitic ring that made
+the ideal-switch case abort at the resonant peak (per your directive; the damping *is* the loss).
+
+| | V(B) peak | loss |
+|--|--:|--:|
+| recycle only | 0.556 V (−44 mV) | 0.485 fJ |
+| **recycle + flycap top-up (Cfly=15fF)** | **0.600 V (full ΔV)** | 0.405 + 0.020 = 0.425 fJ |
+
+- The flycap top-up **exactly compensates the recycle loss** → B lands at full ΔV, so the wave doesn't
+  decay. A drains to ~0 (recycled forward). Loss ~0.42 fJ/hop ≈ 3% of the 14.4 fJ bank energy (Q-set by
+  Ron+RL). This is the "flycaps add energy to compensate loss" mechanism, demonstrated with real damping.
+  *(A cosmetic post-peak tail abort remains with the behavioral switch; peak+energies captured pre-abort;
+  the SG13G2 device would fully regularize.)*
+- **Dual-rail is NEEDED here — for the power delivery, not completeness.** The fixed top-up covers the
+  loss for *this* bank charge; a single-rail bank draws a **data-dependent** charge (measured 100%
+  modulation), so a fixed top-up would over/under-compensate and the wave amplitude would wander with the
+  data. Dual-rail's constant differential sum (0% spread) makes the per-bank charge data-independent, so
+  one fixed top-up sustains a uniform wave. So the recycle+topup architecture drives the dual-rail
+  requirement, even though a settling logic gate alone doesn't need it.
+
 ## Measurement discipline
 
 Per `QAL_PLAN §7` and `feedback_no_self_baseline`: everything in Track A runs against an
