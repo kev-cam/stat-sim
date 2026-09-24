@@ -41,7 +41,31 @@ parallel (bitcoin mining; `ldx/fpga/rtl/sha256/bitcoin_miner.vhdl`), i.e. indepe
 the GPU-batched north-star workload. So the fair comparison must report **two regimes**: single-block
 (latency; CMOS-favored on speed) and streaming/parallel (throughput; QAL 1.5–3× + the energy Pareto).
 
-Remaining steps: (1) levelize the netlist → bank structure (depth = bank count); (2) QAL speed +
-power on the streaming regime vs this baseline; (3) power-vs-speed Pareto for both; (4) the energy
-tail contingent on the flycap recharge / dual-rail overhead (Track C). Everything stays a projection
-on the QAL side until the Track-C generator/recharge is measured.
+## QAL vs regular — result (`qal_sha256_compare.py`)
+
+Netlist stats measured: **logic depth D = 60 levels** (per-level 0.263 ns; path = ripple-adder carry
+chains + K/W muxes), 7942 combinational cells + 1325 DFF. The QAL side applies the fairness-verified
+crossover map + two-bank recycle/topup to this netlist (projection pending Track C).
+
+**Two regimes, and they split cleanly:**
+
+- **Single-block hash (latency-bound):** the a..h state and the W-ring feed back every round, so the
+  QAL wave's latency (D banks × beat) ≥ the regular cycle — **CMOS wins single-stream; QAL does not
+  speed one hash.**
+- **Streaming / mining (throughput; independent blocks = the north-star GPU-batched lanes):** QAL runs
+  **~1.5–2× higher hash throughput** than a regular design pipelined to the same gate-RC limit —
+  *purely* by eliminating the pipeline register/clock tax (t_reg). This is the real QAL win here.
+
+**Energy (per round-op, QAL/regular, gate-level iso-swing, incl. dual-rail ×2):** dual-rail doubling +
+no activity discount make QAL **~2.7× costlier at max speed** (τ≈3); QAL is gate-energy-cheaper only
+when **slowed** (τ>~8 → 0.5–0.9×). **But** a deeply-pipelined regular pays a large clock/FF tax that
+QAL's inductive recycle eliminates — so on **total** power (clock included) QAL wins even at speed; the
+gate-only view is the pessimistic bound. Leakage is negligible at 130 nm (1.7 µW measured).
+
+**Net:** for SHA-256, QAL buys **throughput on the streaming/mining workload** (1.5–2×, register-tax
+elimination) — exactly the independent-lane GPU-batched case the north star targets — while single-block
+latency stays CMOS-favored, and the energy verdict hinges on the clock-elimination vs the dual-rail ×2,
+i.e. on the **Track-C generator/recharge efficiency** (the load-bearing unbuilt piece; only single-stage
+hops are measured — A1b/A1f/two-bank). Next to harden it: replace the projected QAL power with a
+measured Track-C generator number, and a coarser (realistic) pipeline depth for the regular streaming
+baseline than the level-by-level bound used here.
