@@ -317,6 +317,41 @@ drive), but the **gate logic is still RC-limited**, so the pure iso-swing adiaba
 (~17× slowed). The headline ~19–136× is a **clock-elimination + swing** story the inductor enables — not
 a gate-level miracle.
 
+## Gate-level crossover map — `qal_crossover_map.py`
+
+Sweeps the gate time-constant RC_g and the operating ramp T; everything **normalizes on τ = T/RC_g**
+(RC_g only rescales the Hz/fJ axes). Designed + fairness-checked as a workflow — it caught an
+apples-to-oranges bug (comparing QAL's output-only ½C_g·dV² to CMOS's *full cell* energy). The fair
+comparison is cell-to-cell: CMOS pays α·E_cell (only toggling cells), QAL pays f_adia·E_cell **every
+beat** (no activity discount), so **E_QAL/E_CMOS = 2·f_adia = 4/τ** — anchor- and swing-independent.
+
+| τ = T/RC_g | E_QAL/E_CMOS | speed (cons/aggr) | note |
+|--:|--:|--:|--|
+| **3** (speed ceiling) | **1.33×** (hotter) | **1.5× / 3.0×** faster | fastest, but 33% *more* gate energy |
+| **4** (energy break-even) | 1.00× | — | parity |
+| 6 | 0.67× (1.5× cooler) | — | cheaper, 2× slower than ceiling |
+| 16 | 0.25× (4× cooler) | — | cheaper, 5× slower |
+| 32 | 0.12× (8× cooler)* | — | deep-adiabatic (*floor-capped) |
+
+**Two non-coincident crossovers → faster *OR* cheaper, not both at one T:**
+- **Speed:** QAL runs **1.5× (conservative) to 3.0× (aggressive, double-banked) faster** than CMOS —
+  *device-independent* — purely by shedding the register/clock tax (t_reg = k_reg·RC_g). Set k_reg→0 and
+  QAL loses (0.33×): **register-elimination is the whole lever.** ⚠️ This holds **only for streaming /
+  independent-lane workloads** (bulk hashing, 61-wide σ0 across blocks, **GPU-batched MC/defect/SIMT lanes
+  — exactly the north-star GPGPU workload**). For **latency-bound serial recurrences** (single-stream SHA
+  W[t], a..h round feedback) it **inverts** — QAL's multi-phase latency ≥ CMOS's cycle, CMOS wins.
+- **Energy:** QAL is cheaper **only by slowing below its own speed ceiling** (τ>4): 1.5× cooler at τ=6,
+  4× at τ=16, up to a **floor-capped ~3–9.5×** (Q-dependent; the energy-recovering resonant generator is
+  *unbuilt* — as-built η≈1/3). Leakage adds a minimum at T*, beyond which QAL gets *worse*. Plus a
+  stackable ~4× low-swing lever (raced separately vs near-Vt CMOS).
+- **Both-win window is razor-thin:** conservative 4<τ<4.5 (≤12.5% faster *and* ≤11% cooler); aggressive
+  4<τ<9 (up to 2.25× faster while still cooler).
+
+**One line:** QAL buys **throughput** (1.5–3×, register-tax elimination, streaming only) *or* **energy**
+(up to ~3–9.5×, by running slow) — not both at once, and neither for a latency-bound recurrence. The
+throughput win lands exactly on the GPU-batched independent-lane workloads the north star targets.
+Projection pending Track C (the high-Q resonant generator is the load-bearing unbuilt piece).
+
 ## Measurement discipline
 
 Per `QAL_PLAN §7` and `feedback_no_self_baseline`: everything in Track A runs against an
