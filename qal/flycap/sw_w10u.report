@@ -1,0 +1,92 @@
+==============================================================================
+DECK sw_w10u.cir   window 4e-09s..6.4e-09s   period 4e-10s
+  dV=0.6 Thop=100ps Tperiod=400ps nper=16 nwarm=10 window 4000p..6400p (12 ops)
+  CB=80f CFLY=15f CS=2p LAB=25n LT=80n RRC=1k RTL=10k
+  WSW=10u WDRV=2u/1u WGATE=1u  driver supply rp..rn swing 3V  pattern=d0  lane=YES
+  MEASURED DILEMMA: on a 5-tier stack at dV=0.6 V, a supply is BALANCED only
+==============================================================================
+
+[G1] SOURCE EXCLUSIVITY  PASS
+     20 voltage sources; 5 are NOT 0 V ammeters:
+       VRP rp 0 1.5
+       VRN rn 0 -1.5
+       VCKAB ckab drvn PULSE({VCKH} 0 0 10p 10p 90p 200p)
+       VCKTA ckta drvn PULSE({VCKH} 0 200p 10p 10p 90p 400p)
+       VCKTB cktb drvn PULSE({VCKH} 0 0 10p 10p 90p 400p)
+     EAMM (energy injected by the 0 V ammeters) = 4.7530e-33 J  (must be 0)
+
+[G2] NO TRUNCATION  PASS
+     exit=0  last TIME row=6.4e-09  latest measure point=6.4e-09s  FAILED measures=0
+
+[G3] METER VALIDATION  PASS
+     ERAIL=2.760717e-12 J  QRAIL=9.202390e-13 C  E/Q=3.000000 V (must be 3.000000; err 0.0000%)
+     ERP=1.380359e-12  ERN=1.380359e-12  (equal => series stack, one charge serves all)
+
+[G4] ENERGY BALANCE   E_in = sum(E_diss) + dE_stored   PASS
+     E_rail  (the ONLY real supply)   = +2.760717e-12 J
+     E_phaseclk (PWL driver inputs)   = +3.185511e-13 J  <- declared line item
+     E_in TOTAL                       = +3.079268e-12 J
+     --- NOT our lane (subtracted) ---
+       ETL    = +4.319363e-13 J
+       ERSER  = +6.494822e-16 J
+     --- OUR ONE LANE ---
+       ELAB   = +1.105226e-15 J
+       ELTA   = +7.514642e-17 J
+       ELTB   = +5.886300e-17 J
+       ERCA   = +6.027882e-15 J
+       ERCB   = +4.736559e-15 J
+       EBLD   = +1.559351e-16 J
+       ESWAB  = +1.185573e-14 J
+       ESWTA  = +3.026127e-15 J
+       ESWTB  = +3.990772e-15 J
+       EGA    = +2.573563e-15 J
+       EGB    = +1.543892e-15 J
+       EDRV   = +2.328868e-12 J
+       EVMID  = +1.347262e-15 J
+     sum lane = +2.365365e-12   sum other = +4.325858e-13
+     E_stored @t0 = +1.868906e-12   @t1 = +1.868148e-12   dE = -7.581729e-16
+     RESIDUAL, clock counted as a separate input = +2.820755e-13 J = +9.160% of E_in
+     RESIDUAL, rail only as input                = -3.647557e-14 J = -1.321% of E_rail
+     (tolerance 2%; the clock node connects ONLY to driver input gates, so
+      its energy exits through the driver supply and is already in EDRV)
+     EDRV (both supply leads, correct) = +2.328868e-12
+     EDRV (two-terminal form, WRONG)  = +2.329453e-12   <- differ because the
+      gate coupling caps are a third current path out of the driver domain
+
+[G5] STARTUP SEPARATED
+     warm-up rail draw 0..t0 = 4.601661e-12 J  (EXCLUDED)
+     measured-window draw    = 2.760717e-12 J
+
+[G6] PERIODIC STEADY STATE
+     last-3 net-per-op spread = 0.869%  (need <2%)
+     worst state-vector drift = 20.265% on V(mab)  (need <1%)
+     ENERGY-weighted periodicity: dE_stored = -7.5817e-16 J over 12 ops
+       = -0.0632 fJ/op = -0.0275% of the per-op rail draw  <- the test that
+         actually bounds the number (a 2 fF parasitic node drifting 20%%
+         relatively moves <1e-18 J and cannot affect any fJ figure)
+     PASS
+
+------------------------------------------------------------------------------
+MEASURED RAIL DRAW, 12 ops in window:
+  total rail draw / op                        =   230.060 fJ
+  minus stand-in lanes + stack R (metered)    =    36.049 fJ
+  => OUR ONE QAL LANE, rail cost per op       =   194.011 fJ  <== the number
+  (cross-check: sum of the lane's own metered dissipators =   197.114 fJ/op)
+  BREAKDOWN of the lane (fJ/op, %% of lane):
+    switch gate drive                    194.185   98.51%
+    switch devices (all terminals)         1.573    0.80%
+    gate settle (real logic gates)         0.343    0.17%
+    inductive transfer (inter-bank)        0.092    0.05%
+    inductive top-up (flycap->bank)        0.011    0.01%
+    FLYCAP RECHARGE from tier rail         0.897    0.46%
+    bank DC bleed (metering artefact)      0.013    0.01%
+  phase-clock PWL injection (outside rails)   =    26.546 fJ/op
+  bank A max       (rel tier gnd) = +0.7724 V
+  bank A min       (rel tier gnd) = +0.4080 V
+  bank B max       (rel tier gnd) = +0.7124 V
+  bank B min       (rel tier gnd) = +0.4097 V
+  SWAB gate max    (rel tier gnd) = +1.7747 V
+  SWAB gate min    (rel tier gnd) = +0.6302 V
+  tier voltages min/max over window: 0.5984-0.6070 0.5984-0.6070 0.5983-0.6064 0.5916-0.5979 0.5943-0.6005
+GATES: G1=PASS G2=PASS G3=PASS G4=PASS G6=PASS
+------------------------------------------------------------------------------

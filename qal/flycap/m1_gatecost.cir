@@ -1,0 +1,94 @@
+* ============================================================================
+* STATUS: this deck HUNG -- Xyce made no progress in >5 min and was killed. It drives
+* a 3.0 V swing onto 1.2 V-rated SG13G2 gates; PSP103 gate tunnelling at 2.5x rating
+* makes it numerically stiff. The question it was written to answer (is the 3.0 V gate
+* cost capacitive or over-rating excess?) was answered instead from the loop decks:
+* 3.0 V direct 325.93 fJ/op vs 1.2 V direct 27.03 fJ/op = 12.06x for a 2.5x swing,
+* where pure C*V^2 predicts 6.25x. Kept as the record of a failed attempt.
+* DIAGNOSTIC: what does ONE switch-gate drive event actually cost, and is the
+* cost capacitive or is it gate TUNNELING from over-driving a 1.2 V oxide?
+*
+* Six copies of the same experiment: a real CMOS inverter driving the gate of a
+* real SG13G2 nMOS pass switch, clocked at 5 GHz (the QAL hop rate).  The only
+* differences are the DRIVER SUPPLY SWING (3.0 V vs 1.2 V) and the SWITCH WIDTH.
+* Each copy has its own metered supply, so E and Q per copy are directly
+* comparable.  Q/(swing) gives the effective node capacitance; if E/Q does NOT
+* equal the swing, or if Q scales faster than W, the loss is not capacitive.
+*
+* The pass switch has its source/drain held at a fixed tier-like level (+0.3 V /
+* -0.3 V) so the gate really is driving a realistic load.
+* ============================================================================
+.hdl "/usr/local/share/xyce/verilog-a/psp103/psp103.va"
+.include "/usr/local/src/kestrel/sim/models/sg13g2_psp103_tt.lib"
+.include "/usr/local/src/stat-sim/qal/sg13lv_compat.sp"
+.OPTIONS TIMEINT METHOD=GEAR RELTOL=1e-4 ABSTOL=1e-14
+
+.subckt INVQ vdd vss vin vout bp bn wp=2u wn=1u
+XP vout vin vdd bp sg13_lv_pmos w={wp} l=0.13u
+XN vout vin vss bn sg13_lv_nmos w={wn} l=0.13u
+.ends
+
+* fixed tier-like terminals for the pass switch
+VTOPP tp 0 0.3
+VBOTT bt 0 -0.3
+
+* ---------------- A: 3.0 V driver swing, switch w=10u ----------------
+VSA ap 0 1.5
+VSAN an 0 -1.5
+VCA cka an PULSE(3.0 0 0 10p 10p 90p 200p)
+XDA ap an cka ga ap an INVQ
+XSA tp ga bt bt sg13_lv_nmos w=10u l=0.13u
+
+* ---------------- B: 1.2 V driver swing, switch w=10u ----------------
+VSB bp2 0 0.9
+VSBN bn2 0 -0.3
+VCB ckb bn2 PULSE(1.2 0 0 10p 10p 90p 200p)
+XDB bp2 bn2 ckb gb bp2 bn2 INVQ
+XSB tp gb bt bt sg13_lv_nmos w=10u l=0.13u
+
+* ---------------- C: 1.2 V driver swing, switch w=2u ----------------
+VSC cp 0 0.9
+VSCN cn 0 -0.3
+VCC ckc cn PULSE(1.2 0 0 10p 10p 90p 200p)
+XDC cp cn ckc gc cp cn INVQ wp=0.5u wn=0.25u
+XSC tp gc bt bt sg13_lv_nmos w=2u l=0.13u
+
+* ---------------- D: 3.0 V driver swing, switch w=2u ----------------
+VSD dp 0 1.5
+VSDN dn 0 -1.5
+VCD ckd dn PULSE(3.0 0 0 10p 10p 90p 200p)
+XDD dp dn ckd gd dp dn INVQ wp=0.5u wn=0.25u
+XSD tp gd bt bt sg13_lv_nmos w=2u l=0.13u
+
+* ---------------- E: 1.2 V driver, NO switch (driver self-load only) -------
+VSE ep 0 0.9
+VSEN en 0 -0.3
+VCE cke en PULSE(1.2 0 0 10p 10p 90p 200p)
+XDE ep en cke ge ep en INVQ
+RGE ge en 1e12
+
+* ---------------- F: 3.0 V driver, NO switch (driver self-load only) -------
+VSF fp 0 1.5
+VSFN fn 0 -1.5
+VCF ckf fn PULSE(3.0 0 0 10p 10p 90p 200p)
+XDF fp fn ckf gf fp fn INVQ
+RGF gf fn 1e12
+
+.tran 0.2p 1200p 0 1p
+* 9 clock cycles inside the window (200p period), integrate 200p..1800p = 8 cycles
+.measure tran EA INTEGRAL {-V(ap)*I(VSA)-V(an)*I(VSAN)} FROM=200p TO=1000p
+.measure tran QA INTEGRAL {-I(VSA)} FROM=200p TO=1000p
+.measure tran EB INTEGRAL {-V(bp2)*I(VSB)-V(bn2)*I(VSBN)} FROM=200p TO=1000p
+.measure tran QB INTEGRAL {-I(VSB)} FROM=200p TO=1000p
+.measure tran EC INTEGRAL {-V(cp)*I(VSC)-V(cn)*I(VSCN)} FROM=200p TO=1000p
+.measure tran QC INTEGRAL {-I(VSC)} FROM=200p TO=1000p
+.measure tran ED INTEGRAL {-V(dp)*I(VSD)-V(dn)*I(VSDN)} FROM=200p TO=1000p
+.measure tran QD INTEGRAL {-I(VSD)} FROM=200p TO=1000p
+.measure tran EE INTEGRAL {-V(ep)*I(VSE)-V(en)*I(VSEN)} FROM=200p TO=1000p
+.measure tran QE INTEGRAL {-I(VSE)} FROM=200p TO=1000p
+.measure tran EF INTEGRAL {-V(fp)*I(VSF)-V(fn)*I(VSFN)} FROM=200p TO=1000p
+.measure tran QF INTEGRAL {-I(VSF)} FROM=200p TO=1000p
+* DC gate leakage check: average current with the gate held HIGH the whole time
+.measure tran IGA AVG {I(VSA)} FROM=1005p TO=1085p
+.measure tran IGB AVG {I(VSB)} FROM=1005p TO=1085p
+.end

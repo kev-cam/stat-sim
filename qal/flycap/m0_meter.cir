@@ -1,0 +1,43 @@
+* ============================================================================
+* GATE 3 -- METER VALIDATION BEFORE PHYSICS.
+* For a CONSTANT rail the identity E_rail = Vrail * Q_rail is EXACT. Integrate
+* both -V*I (energy) and -I (charge) over the SAME window; assert E/Q = Vrail.
+* If this fails the instrumentation is wrong and no physical conclusion may be
+* drawn from any run that uses the same metering.
+*
+* TRAP FOUND AND AVOIDED HERE (see m0dbg.cir): if a NODE name collides with a
+* DEVICE name (node "vpa" + source "VPA"), then inside a B-source expression
+* V(vpa) silently resolves to I(VPA) instead of the node voltage -- the deck
+* runs, prints no warning, and the energy integral comes out as -I^2 (off by
+* ~1.5e4 here). .print resolved it correctly, the B-source did not. So:
+*   (a) never name a node the same as a device, and
+*   (b) meter with .measure tran ... INTEGRAL {expr}, which resolved correctly.
+*
+* Two independent loads so the metered current is both linear and nonlinear:
+*   A: pulsed current sink off the rail (analytic Q = Ipk*duty*window)
+*   B: real SG13G2 nMOS repeatedly charging a 300 fF cap off the same rail
+* ============================================================================
+.hdl "/usr/local/share/xyce/verilog-a/psp103/psp103.va"
+.include "/usr/local/src/kestrel/sim/models/sg13g2_psp103_tt.lib"
+.include "/usr/local/src/stat-sim/qal/sg13lv_compat.sp"
+.OPTIONS TIMEINT METHOD=GEAR RELTOL=1e-6 ABSTOL=1e-15 CHGTOL=1e-17
+
+.param VR=1.5
+
+* ---------- A: linear/analytic check ----------
+VPA rlA 0 {VR}
+IA rlA 0 PULSE(0 100u 100p 1p 1p 400p 1000p)
+
+* ---------- B: real-device nonlinear check ----------
+VPB rlB 0 {VR}
+XSW rlB gt nb 0 sg13_lv_nmos w=10u l=0.13u
+CB nb 0 300f
+RB nb 0 20k
+VG gt 0 PULSE(0 1.2 100p 20p 20p 400p 1000p)
+
+.tran 0.5p 10000p
+.measure tran EA INTEGRAL {-V(rlA)*I(VPA)} FROM=50p TO=9950p
+.measure tran QA INTEGRAL {-I(VPA)}        FROM=50p TO=9950p
+.measure tran EB INTEGRAL {-V(rlB)*I(VPB)} FROM=50p TO=9950p
+.measure tran QB INTEGRAL {-I(VPB)}        FROM=50p TO=9950p
+.end

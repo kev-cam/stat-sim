@@ -1,0 +1,15 @@
+* debug the energy-integrand B-source
+.OPTIONS TIMEINT METHOD=GEAR RELTOL=1e-6 ABSTOL=1e-15
+.param VR=1.5
+VPA vpa 0 {VR}
+IA vpa 0 PULSE(0 100u 100p 1p 1p 400p 1000p)
+BEA pea 0 V={-V(vpa)*I(VPA)}
+BQA pqa 0 V={-I(VPA)}
+BE2 pe2 0 V={ {VR} * (-I(VPA)) }
+.tran 0.5p 3000p
+.print tran V(vpa) I(VPA) V(pea) V(pqa) V(pe2)
+.measure tran EA INTEGRAL V(pea) FROM=50p TO=2950p
+.measure tran QA INTEGRAL V(pqa) FROM=50p TO=2950p
+.measure tran E2 INTEGRAL V(pe2) FROM=50p TO=2950p
+.measure tran EXPR1 INTEGRAL {-V(vpa)*I(VPA)} FROM=50p TO=2950p
+.end
