@@ -1,4 +1,13 @@
 #!/usr/bin/env python3
+"""*** RETRACTED -- see qal/flycap/RETRACTION.md ***
+The headline "TRUE QAL ENERGY PER OP = 1.966 fJ/hop" below is NOT a measurement. It rests on
+qal_fc_perm.cir, whose per-tier load is five IDEAL CURRENT SOURCES (I1..I5, lines 25-29):
+that deck contains no banks, no switches, no gates, no flycaps and no hop. It computes
+E_rail = V_span*Q for a series RC string -- exact, but true BY CONSTRUCTION of 3.0/0.6 = 5.
+The 5:1 series-tier result IS worth keeping, but as a TOPOLOGICAL IDENTITY, not an empirical
+efficiency. Do not quote the fJ/hop figure. The "correction" of qal_twobank.py:15 from 0.425
+to 1.96 fJ/hop is likewise not established here -- treat twobank as OPEN, not superseded.
+"""
 """FLYCAP RECHARGE from the +-1.5 V rails -- closes the gap flagged at qal_twobank.py:31
 ("Rail->flycap recharge efficiency deferred per user") and at qal_a1f_chain_topup.cir:4, where the
 top-up came from "VTOP top 0 {dV}", an IDEAL 0.6 V source. Until now NO deck had ever traced a joule

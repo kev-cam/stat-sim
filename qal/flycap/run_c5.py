@@ -1,4 +1,19 @@
 #!/usr/bin/env python3
+"""*** RETRACTED -- see qal/flycap/RETRACTION.md ***
+The "193.755 fJ/op" headline is a CLOCK BUFFER, not QAL: it equals EDRV/20 = 193.804 fJ/op,
+the gate-driver domain's own supply draw, to 0.025%. The QAL mechanism is the 2.95 fJ/op
+remainder (1.5% of the figure). Three further disqualifiers, all re-verified:
+ * 99.0% of the lane energy arrives via the switch-gate coupling caps, only 1.0% via the
+   flycaps -- so "all the energy goes through the flying caps" measures at one percent here;
+   flycap A even runs backwards.
+ * The closure gates CANNOT FAIL: EDRV (a supply INPUT) is in LANE_DISS, so G4 restates KCL;
+   and line ~203 takes min(|resid|, |resid_norail|), i.e. it picks whichever accounting
+   flatters. The "E_rail is the ONLY real supply" print is false -- ECK = 26.5 fJ/op comes
+   from ideal PULSE sources and is excluded (honest input total: 220.3 fJ/op).
+ * Wrong operating point (0.366 V pk-pk on a 0.600 V target, 0.407 V pedestal) and NOT
+   settled (per-op values alternate even/odd; RDC*CCP = 6 ns vs a 9.6 ns run).
+Drivers also run at 3.0 V = 2.5x the SG13G2 1.2 V oxide rating.
+"""
 """Run a C5 closed-loop deck under Xyce and apply the SIX CLOSURE GATES.
 
 Usage:  run_c5.py <deck.cir> [--no-run] [--brief]
