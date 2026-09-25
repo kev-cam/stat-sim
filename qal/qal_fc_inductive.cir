@@ -1,0 +1,52 @@
+* CANDIDATE 2: INDUCTIVE / ZCS rail->flycap recharge.  THE POINT OF THIS DECK:
+* a resonant one-shot from a FIXED rail is NOT a level converter -- it is a reflection doubler.
+* V_C(t) = Vr - (Vr-V0)cos(wt)  =>  peaks at 2*Vr - V0 = 2.449 V, NOT at dV=0.6.
+* ZCS happens AT that peak, so the lossless switching point and the wanted voltage are different points.
+* Copy A: full half-cycle (shows the overshoot + where ZCS actually is).
+* Copy B: chopped at dV=0.6 with NO freewheel path (shows the inductive kick / where the energy goes).
+* Realistic: real SG13G2 pMOS switch + inductor series R=10 (per Track-C), never an ideal switch.
+.hdl "/usr/local/share/xyce/verilog-a/psp103/psp103.va"
+.include "/usr/local/src/kestrel/sim/models/sg13g2_psp103_tt.lib"
+.include "/usr/local/src/stat-sim/qal/sg13lv_compat.sp"
+.OPTIONS TIMEINT METHOD=GEAR RELTOL=1e-6 ABSTOL=1e-15 CHGTOL=1e-17
+.param dV=0.6 CF=15f VR=1.5 DROOP=0.049 LT=112n RLS=10
+.param VP0={dV-DROOP}
+
+* ================= Copy A: full resonant half-cycle, ZCS at the peak =================
+VRA raila 0 {VR}
+XPA raila ga xa raila sg13_lv_pmos w=30u l=0.13u
+VGA ga 0 PWL(0 {VR} 2p 0 900p 0)
+LA xa ya {LT}
+RA ya PA {RLS}
+CFA PA 0 {CF}
+CQA qa 0 1e-15
+BQA 0 qa I={ I(VRA) }
+
+* ================= Copy B: same LC but gate CHOPPED when V(PB) should be ~dV ==========
+* chop time from the analytic arc: wt = acos((Vr-dV)/(Vr-V0)) = 0.3228 rad -> t = 13.2 ps.
+* At that instant I(L) = 110 uA analytically, i.e. 0.68 fJ still stored in L -- MORE than the
+* 0.425 fJ the hop needs. With no freewheel that energy is dumped, not delivered.
+VRB railb 0 {VR}
+XPB railb gb xb railb sg13_lv_pmos w=30u l=0.13u
+VGB gb 0 PWL(0 {VR} 2p 0 13.2p 0 15.2p {VR} 900p {VR})
+LB xb yb {LT}
+RB yb PB {RLS}
+CFB PB 0 {CF}
+CQB qb 0 1e-15
+BQB 0 qb I={ I(VRB) }
+
+.IC V(PA)={VP0} V(PB)={VP0} V(xa)={VR} V(xb)={VR}
+.tran 0.05p 900p UIC
+
+.measure tran VA_PEAK  MAX V(PA)
+.measure tran TA_PEAK  WHEN V(PA)=2.0 RISE=1
+.measure tran QA_AT_DV FIND V(qa) WHEN V(PA)=0.6 RISE=1
+.measure tran TA_AT_DV WHEN V(PA)=0.6 RISE=1
+.measure tran QA_END   FIND V(qa) AT=899p
+.measure tran IA_PEAK  MAX I(LA)
+
+.measure tran VB_PEAK  MAX V(PB)
+.measure tran VB_END   FIND V(PB) AT=899p
+.measure tran QB_END   FIND V(qb) AT=899p
+.measure tran IB_PEAK  MAX I(LB)
+.end

@@ -1,0 +1,78 @@
+* RECHARGE-SWITCH SIZING: the term that actually dominates the flycap recharge.
+* The Track-C 60 ohm / w=10u figure sizes the TRANSFER switch (speed-critical). The RECHARGE
+* switch is NOT on the critical path, so it can be small and slow. Measure Cpar(W) and Cgg(W),
+* and confirm the N=5 series stack still self-terminates at 0.600 V/cap with a tiny switch.
+* Copies W1/W2/W3/W4: w = 0.5u / 2u / 8u / 30u, cold start, 5 ns window.
+* Copy E: w=2u with a TWO-STEP rail (1.5 -> 1.555 V at 3 ns) so the second event is a
+*   SMALL-SWING recharge like real steady state (string top moves ~0.11 V, not 1.5 V).
+.hdl "/usr/local/share/xyce/verilog-a/psp103/psp103.va"
+.include "/usr/local/src/kestrel/sim/models/sg13g2_psp103_tt.lib"
+.include "/usr/local/src/stat-sim/qal/sg13lv_compat.sp"
+.OPTIONS TIMEINT METHOD=GEAR RELTOL=1e-6 ABSTOL=1e-16
+.param dV=0.6 CF=150f VR=1.5
+
+.subckt STK5 vp vn top CFV=150f
+C1 vn s1 {CFV}
+C2 s1 s2 {CFV}
+C3 s2 s3 {CFV}
+C4 s3 s4 {CFV}
+C5 s4 top {CFV}
+R1 s1 0 1e12
+R2 s2 0 1e12
+R3 s3 0 1e12
+R4 s4 0 1e12
+.ends
+
+* ---------------- w = 0.5u ----------------
+VP1 vp1 0 {VR}
+VN1 vn1 0 {-VR}
+X1 vp1 vn1 t1 STK5
+XW1 t1 g1 vp1 vp1 sg13_lv_pmos w=0.5u l=0.13u
+VG1 g1 0 PWL(0 {VR} 2p 0 1500p 0)
+FA1 0 qa1 VP1 1.0
+CA1 qa1 0 1e-15
+RA1 qa1 0 1e15
+FG1 0 qg1 VG1 1.0
+CG1 qg1 0 1e-15
+RG1 qg1 0 1e15
+
+* ---------------- w = 2u ----------------
+VP2 vp2 0 {VR}
+VN2 vn2 0 {-VR}
+X2 vp2 vn2 t2 STK5
+XW2 t2 g2 vp2 vp2 sg13_lv_pmos w=2u l=0.13u
+VG2 g2 0 PWL(0 {VR} 2p 0 1500p 0)
+FA2 0 qa2 VP2 1.0
+CA2 qa2 0 1e-15
+RA2 qa2 0 1e15
+FG2 0 qg2 VG2 1.0
+CG2 qg2 0 1e-15
+RG2 qg2 0 1e15
+
+* ---------------- w = 30u ----------------
+VP4 vp4 0 {VR}
+VN4 vn4 0 {-VR}
+X4 vp4 vn4 t4 STK5
+XW4 t4 g4 vp4 vp4 sg13_lv_pmos w=30u l=0.13u
+VG4 g4 0 PWL(0 {VR} 2p 0 1500p 0)
+FA4 0 qa4 VP4 1.0
+CA4 qa4 0 1e-15
+RA4 qa4 0 1e15
+FG4 0 qg4 VG4 1.0
+CG4 qg4 0 1e-15
+RG4 qg4 0 1e15
+
+.tran 0.5p 1500p UIC
+
+.measure tran W1_Q FIND V(qa1) AT=1450p
+.measure tran W1_G FIND V(qg1) AT=1450p
+.measure tran W1_T FIND V(t1)  AT=1450p
+.measure tran W2_Q FIND V(qa2) AT=1450p
+.measure tran W2_G FIND V(qg2) AT=1450p
+.measure tran W2_T FIND V(t2)  AT=1450p
+.measure tran W4_Q FIND V(qa4) AT=1450p
+.measure tran W4_G FIND V(qg4) AT=1450p
+.measure tran W4_T FIND V(t4)  AT=1450p
+
+* E: charge BEFORE the rail step (cold-start part) and AFTER (small-swing part)
+.end

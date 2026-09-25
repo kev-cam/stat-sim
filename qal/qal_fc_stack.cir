@@ -1,0 +1,99 @@
+* FLYCAP RECHARGE -- structural measurements with REAL SG13G2 pMOS switches.
+* No .IC on floating strings (that silently failed before): every copy starts from the natural
+* zero state and charges to its SELF-TERMINATING endpoint, which is what we want to verify.
+* Energy from a DC rail is the exact identity E = Vrail*Q, so we integrate CHARGE via F-sources
+* (CCCS) into 1e-15 F caps => V(q*) reads charge in fC.  Every integrator node has a 1e15 shunt.
+*
+* A  : single 150 fF flycap + w=30u pMOS, 0 -> +1.5 V rail. Q_total.
+* A2 : IDENTICAL switch, NO flycap. Q_parasitic (switch junction/overlap + gate feedthrough).
+*      => Q_flycap = Q_A - Q_A2 isolates the device overhead the old behavioral decks never had.
+* AG : gate-charge integrator on A's gate driver => the GATE-DRIVE energy per switching event.
+* B  : N=5 series stack of 150 fF caps across +-1.5 V. Must SELF-TERMINATE at 0.600 V per cap
+*      (3.0 V span / 5 = 0.6 exactly) with NO chop timing.
+* C  : N=5 stack with +-20% CAPACITANCE spread -- does series charging equalize the cap VOLTAGES?
+.hdl "/usr/local/share/xyce/verilog-a/psp103/psp103.va"
+.include "/usr/local/src/kestrel/sim/models/sg13g2_psp103_tt.lib"
+.include "/usr/local/src/stat-sim/qal/sg13lv_compat.sp"
+.OPTIONS TIMEINT METHOD=GEAR RELTOL=1e-6 ABSTOL=1e-16
+.param dV=0.6 CF=150f VR=1.5
+
+* ============ A: flycap + real switch ============
+VRA raila 0 {VR}
+XPA PA ga raila raila sg13_lv_pmos w=30u l=0.13u
+VGA ga 0 PWL(0 {VR} 2p 0 2000p 0)
+CFA PA 0 {CF}
+FQA 0 qa VRA 1.0
+CQA qa 0 1e-15
+RQA qa 0 1e15
+* gate-drive charge (same source, integrated separately)
+FQG 0 qg VGA 1.0
+CQG qg 0 1e-15
+RQG qg 0 1e15
+
+* ============ A2: same switch, NO flycap -> pure device parasitic ============
+VRD raild 0 {VR}
+XPD PD gd raild raild sg13_lv_pmos w=30u l=0.13u
+VGD gd 0 PWL(0 {VR} 2p 0 2000p 0)
+RPD PD 0 1e12
+FQD 0 qd VRD 1.0
+CQD qd 0 1e-15
+RQD qd 0 1e15
+
+* ============ B: N=5 series stack, EQUAL caps (exact-ratio, self-terminating) ============
+VPB vpb 0 {VR}
+VNB vnb 0 {-VR}
+CB1 vnb b1 {CF}
+CB2 b1  b2 {CF}
+CB3 b2  b3 {CF}
+CB4 b3  b4 {CF}
+CB5 b4  b5 {CF}
+XPB b5 gb vpb vpb sg13_lv_pmos w=30u l=0.13u
+VGB gb 0 PWL(0 {VR} 2p 0 2000p 0)
+RB1 b1 0 1e12
+RB2 b2 0 1e12
+RB3 b3 0 1e12
+RB4 b4 0 1e12
+FQB 0 qb VPB 1.0
+CQB qb 0 1e-15
+RQB qb 0 1e15
+
+* ============ C: N=5 stack, +-20% capacitance spread (imbalance risk) ============
+VPC vpc 0 {VR}
+VNC vnc 0 {-VR}
+CC1 vnc c1 {CF*0.8}
+CC2 c1  c2 {CF*0.9}
+CC3 c2  c3 {CF}
+CC4 c3  c4 {CF*1.1}
+CC5 c4  c5 {CF*1.2}
+XPC c5 gc vpc vpc sg13_lv_pmos w=30u l=0.13u
+VGC gc 0 PWL(0 {VR} 2p 0 2000p 0)
+RC1 c1 0 1e12
+RC2 c2 0 1e12
+RC3 c3 0 1e12
+RC4 c4 0 1e12
+FQC 0 qc VPC 1.0
+CQC qc 0 1e-15
+RQC qc 0 1e15
+
+.tran 0.05p 2000p UIC
+
+.measure tran A_VP    FIND V(PA) AT=1990p
+.measure tran A_Q     FIND V(qa) AT=1990p
+.measure tran AG_Q    FIND V(qg) AT=1990p
+.measure tran D_Q     FIND V(qd) AT=1990p
+.measure tran D_VP    FIND V(PD) AT=1990p
+
+.measure tran B_Q     FIND V(qb) AT=1990p
+.measure tran B_N1 FIND V(b1) AT=1990p
+.measure tran B_N2 FIND V(b2) AT=1990p
+.measure tran B_N3 FIND V(b3) AT=1990p
+.measure tran B_N4 FIND V(b4) AT=1990p
+.measure tran B_N5 FIND V(b5) AT=1990p
+
+.measure tran C_Q     FIND V(qc) AT=1990p
+.measure tran C_N1 FIND V(c1) AT=1990p
+.measure tran C_N2 FIND V(c2) AT=1990p
+.measure tran C_N3 FIND V(c3) AT=1990p
+.measure tran C_N4 FIND V(c4) AT=1990p
+.measure tran C_N5 FIND V(c5) AT=1990p
+.end

@@ -1,0 +1,39 @@
+* CANDIDATE 5 at the CORRECT bias: permanently-connected 5-tier stack, every tier at 0.600 V.
+* No UIC (the .IC on a floating cap string silently fails) -- a weak 10 Mohm divider sets the DC
+* operating point and Xyce solves it; divider current is 3.0/50M = 60 nA vs the 32.7 uA tier load
+* (0.18%), so it biases without supplying the load.
+* Claim under test: rail charge == tier-load charge (ONE charge serves all 5 tiers in series), so
+*   E_rail = Vspan*Q  and  E_delivered = (sum of tier V)*Q = Vspan*Q  -> level mismatch identically 0.
+.OPTIONS TIMEINT METHOD=GEAR RELTOL=1e-8 ABSTOL=1e-18
+.param CF=300f VR=1.5 IL=32.7u RS=5 RB=10meg
+
+VP vp 0 {VR}
+VN vn 0 {-VR}
+RSER vp t5 {RS}
+C1 vn t1 {CF}
+C2 t1 t2 {CF}
+C3 t2 t3 {CF}
+C4 t3 t4 {CF}
+C5 t4 t5 {CF}
+* weak bias divider: 5 equal legs across the rails pin each tier node 0.6 V apart
+RB1 vn t1 {RB}
+RB2 t1 t2 {RB}
+RB3 t2 t3 {RB}
+RB4 t3 t4 {RB}
+RB5 t4 t5 {RB}
+* per-tier bank top-up load, drawn ACROSS each tier cap
+I1 t1 vn {IL}
+I2 t2 t1 {IL}
+I3 t3 t2 {IL}
+I4 t4 t3 {IL}
+I5 t5 t4 {IL}
+
+.tran 1p 10000p
+.measure tran T1 FIND V(t1) AT=9990p
+.measure tran T2 FIND V(t2) AT=9990p
+.measure tran T3 FIND V(t3) AT=9990p
+.measure tran T4 FIND V(t4) AT=9990p
+.measure tran T5 FIND V(t5) AT=9990p
+.measure tran IRAIL AVG I(VP)
+.measure tran IRMAX MAX I(VP)
+.end
