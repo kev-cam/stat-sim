@@ -1,0 +1,20 @@
+Sense-FET front end: V = I*R/K,  R <= t_resolve/C_sense  =>  V = I*t_res/(K*C)
+MEASURED inputs: I_thr=13.7165 uA (safe ceiling/4), I_ceiling=54.8659 uA, I_peak=3.8378 mA, I_floor=1.5579 nA
+Comparator floors: untrimmed 3s (W=5u/L=1u) = 6.64 mV ; auto-zeroed kT/C(20fF) 3s = 1.37 mV
+
+     K    C(fF)    R(ohm)    V@thr(mV)   V@ceil(mV)   V@peak(mV)  vs 6.64mV
+    10       10      8000       10.973       43.893       3070.2         OK
+    10       20      4000        5.487       21.946       1535.1 auto-zero only
+    20       10      8000        5.487       21.946       1535.1 auto-zero only
+    20       20      4000        2.743       10.973        767.6 auto-zero only
+    30       10      8000        3.658       14.631       1023.4 auto-zero only
+    30       20      4000        1.829        7.315        511.7 auto-zero only
+    50       10      8000        2.195        8.779        614.0 auto-zero only
+    50       20      4000        1.097        4.389        307.0      FAILS
+   100       10      8000        1.097        4.389        307.0      FAILS
+   100       20      4000        0.549        2.195        153.5      FAILS
+  1000       10      8000        0.110        0.439         30.7      FAILS
+  1000       20      4000        0.055        0.219         15.4      FAILS
+
+Leakage is NOT the constraint: I_thr/I_floor = 8804 x
+Dynamic range the sense node must span (peak/thr) = 280 x

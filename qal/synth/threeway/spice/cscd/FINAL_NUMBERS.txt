@@ -1,0 +1,49 @@
+==============================================================================
+MEASURED SUPPLY-CURRENT SIGNATURE -- CMOS sha_slice, 56 SG13G2 stdcells,
+406 PSP103 transistors, Vdd=1.20 V, 25 C, Xyce + PyMS Verilog-A
+==============================================================================
+
+(1) QUIESCENT FLOOR -- DC operating point (no time integration)
+    all-zero vector   I_q = 1.557948 nA   [iddq_golden_w0.cir.prn]
+    all-ones  vector  I_q = 1.631862 nA   [iddq_allones.cir.prn]   (+4.7%)
+    V4 vector         I_q = 1.721610 nA   [iddq_bridge_v4.cir.prn] (+10.5%)
+    liberty prediction for the same 56-cell mix = 6.868 nA -> PSP103 is 4.4x LOWER
+    Vdd sensitivity (all-zero): 1.391 nA @1.08 V -> 1.756 nA @1.32 V = 1.26x over +0.24 V
+      (liberty says ~2.9x per +0.30 V -- the device sim is far less Vdd-sensitive)
+
+(2) SINGLE-GATE PULSE (one sg13g2_inv_1 toggling, 1 net switches)
+    peak          = 159.04 uA
+    FWHM          = 28.5 ps
+    charge        = 3.184 fC  (energy 3.821 fJ)
+    peak / block quiescent = 102080 : 1
+    q/FWHM = 111.6 uA vs measured peak 159.0 uA -> peak is 1.43x the charge/width estimate
+    decay after peak: 50%% @+19 ps, 10%% @+36 ps, 1%% @+60 ps, 0.1%% @+76 ps
+
+(3) BLOCK-LEVEL SIGNATURE vs DATA
+    vector                  togs  Ipeak(mA)    Qdyn(fC)       E(fJ)
+    V1_repeat_HD0              0     0.0000       0.000        0.00
+    V2_single_gate             1     0.1590       3.184        3.82
+    V3_setup_b_FF             23     1.3289     242.688      291.23
+    V4_carry_ripple_HD1       16     0.1941     181.589      217.91
+    V5_HD24                   23     2.2235     369.241      443.09
+    V6_HD48                   34     3.8378     478.819      574.58
+    V7_repeat_HD0              0     0.0014       0.600        0.72
+    AT IDENTICAL ACTIVITY (23 toggles): charge 242.7 vs 369.2 fC = 52.1% apart
+                                        peak   1.329 vs 2.224 mA = 67.3% apart
+    charge per toggle spans 3.18 .. 16.05 fC = 5.0x
+
+(4) SETTLING -- the block does NOT return to the leakage floor
+    measured 1/dt law over dt = 1..99 ns after a 48-bit transition:
+      dt=   1 ns  I= 3.191e-06 A  I*dt=3.191e-06 A.ns    2048.4 x DC floor
+      dt=   2 ns  I= 1.327e-06 A  I*dt=2.655e-06 A.ns     852.0 x DC floor
+      dt=   5 ns  I= 5.394e-07 A  I*dt=2.697e-06 A.ns     346.2 x DC floor
+      dt=  10 ns  I= 2.828e-07 A  I*dt=2.828e-06 A.ns     181.5 x DC floor
+      dt=  20 ns  I= 1.442e-07 A  I*dt=2.884e-06 A.ns      92.6 x DC floor
+      dt=  50 ns  I= 6.225e-08 A  I*dt=3.112e-06 A.ns      40.0 x DC floor
+      dt=  99 ns  I= 3.009e-08 A  I*dt=2.979e-06 A.ns      19.3 x DC floor
+    I_tail(dt) ~ 3.0 uA.ns / dt[ns]  -> reaches 1.558 nA at dt ~ 1.9 us  [EXTRAPOLATED 1 decade]
+    CAUSE (measured): high-impedance series-stack nodes inside the cells.
+      X_38_:NET1 (nor2 PMOS stack) sits at 1.44111 V -- 0.24 V ABOVE the 1.2 V rail --
+      at +150 ps and is still at 1.41998 V at +3 ns (~6 mV/ns).
+      Every cell-output net and every primary output is at a rail by then.
+    timestep-invariant: delmax=1 ps vs 5 ps agree to 0.5% -> physical, not integration error

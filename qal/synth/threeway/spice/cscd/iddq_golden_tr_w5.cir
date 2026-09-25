@@ -1,0 +1,139 @@
+* IDDQ static: CMOS sha_slice -- golden V5_HD24
+.hdl "/usr/local/share/xyce/verilog-a/psp103/psp103.va"
+.include "/usr/local/src/kestrel/sim/models/sg13g2_psp103_tt.lib"
+.include "/usr/local/src/stat-sim/qal/sg13lv_compat.sp"
+.include "/usr/local/src/IHP-Open-PDK/ihp-sg13g2/libs.ref/sg13g2_stdcell/spice/sg13g2_stdcell.spice"
+VDD vdd 0 1.2
+VSS vss 0 0
+Va_0 a_0 0 0
+Va_1 a_1 0 0
+Va_2 a_2 0 0
+Va_3 a_3 0 0
+Va_4 a_4 0 0
+Va_5 a_5 0 1.2
+Va_6 a_6 0 0
+Va_7 a_7 0 1.2
+Vb_0 b_0 0 0
+Vb_1 b_1 0 1.2
+Vb_2 b_2 0 0
+Vb_3 b_3 0 1.2
+Vb_4 b_4 0 1.2
+Vb_5 b_5 0 1.2
+Vb_6 b_6 0 1.2
+Vb_7 b_7 0 0
+Vc_0 c_0 0 1.2
+Vc_1 c_1 0 1.2
+Vc_2 c_2 0 1.2
+Vc_3 c_3 0 1.2
+Vc_4 c_4 0 0
+Vc_5 c_5 0 1.2
+Vc_6 c_6 0 1.2
+Vc_7 c_7 0 0
+Ve_0 e_0 0 0
+Ve_1 e_1 0 1.2
+Ve_2 e_2 0 0
+Ve_3 e_3 0 1.2
+Ve_4 e_4 0 1.2
+Ve_5 e_5 0 1.2
+Ve_6 e_6 0 0
+Ve_7 e_7 0 1.2
+Vf_0 f_0 0 1.2
+Vf_1 f_1 0 1.2
+Vf_2 f_2 0 0
+Vf_3 f_3 0 1.2
+Vf_4 f_4 0 1.2
+Vf_5 f_5 0 0
+Vf_6 f_6 0 0
+Vf_7 f_7 0 1.2
+Vg_0 g_0 0 0
+Vg_1 g_1 0 0
+Vg_2 g_2 0 1.2
+Vg_3 g_3 0 0
+Vg_4 g_4 0 1.2
+Vg_5 g_5 0 0
+Vg_6 g_6 0 0
+Vg_7 g_7 0 1.2
+X_32_ _13_ c_1 vdd vss sg13g2_inv_1
+X_33_ _14_ c_3 vdd vss sg13g2_inv_1
+X_34_ _15_ c_5 vdd vss sg13g2_inv_1
+X_35_ _16_ b_0 a_0 vdd vss sg13g2_nand2_1
+X_36_ _17_ b_0 a_0 c_0 vdd vss sg13g2_o21ai_1
+X_37_ maj_0 _16_ _17_ vdd vss sg13g2_nand2_1
+X_38_ _18_ b_1 a_1 vdd vss sg13g2_nor2_1
+X_39_ _19_ b_1 a_1 vdd vss sg13g2_nand2_1
+X_40_ maj_1 _13_ _18_ _19_ vdd vss sg13g2_o21ai_1
+X_41_ _20_ b_2 a_2 vdd vss sg13g2_or2_1
+X_42_ _21_ b_2 a_2 vdd vss sg13g2_and2_1
+X_43_ maj_2 c_2 _20_ _21_ vdd vss sg13g2_a21o_1
+X_44_ _22_ b_3 a_3 vdd vss sg13g2_nor2_1
+X_45_ _23_ b_3 a_3 vdd vss sg13g2_nand2_1
+X_46_ maj_3 _14_ _22_ _23_ vdd vss sg13g2_o21ai_1
+X_47_ _24_ b_4 a_4 vdd vss sg13g2_or2_1
+X_48_ _25_ b_4 a_4 vdd vss sg13g2_and2_1
+X_49_ maj_4 c_4 _24_ _25_ vdd vss sg13g2_a21o_1
+X_50_ _26_ b_5 a_5 vdd vss sg13g2_nor2_1
+X_51_ _27_ b_5 a_5 vdd vss sg13g2_nand2_1
+X_52_ maj_5 _15_ _26_ _27_ vdd vss sg13g2_o21ai_1
+X_53_ _28_ a_6 b_6 vdd vss sg13g2_or2_1
+X_54_ _29_ a_6 b_6 vdd vss sg13g2_and2_1
+X_55_ maj_6 c_6 _28_ _29_ vdd vss sg13g2_a21o_1
+X_56_ _30_ a_7 b_7 vdd vss sg13g2_nor2_1
+X_57_ _31_ a_7 b_7 c_7 vdd vss sg13g2_a21oi_1
+X_58_ maj_7 _30_ _31_ vdd vss sg13g2_nor2_1
+X_59_ ch_0 g_0 f_0 e_0 vdd vss sg13g2_mux2_1
+X_60_ ch_1 g_1 f_1 e_1 vdd vss sg13g2_mux2_1
+X_61_ ch_2 g_2 f_2 e_2 vdd vss sg13g2_mux2_1
+X_62_ ch_3 g_3 f_3 e_3 vdd vss sg13g2_mux2_1
+X_63_ ch_4 g_4 f_4 e_4 vdd vss sg13g2_mux2_1
+X_64_ ch_5 g_5 f_5 e_5 vdd vss sg13g2_mux2_1
+X_65_ ch_6 g_6 f_6 e_6 vdd vss sg13g2_mux2_1
+X_66_ ch_7 g_7 f_7 e_7 vdd vss sg13g2_mux2_1
+X_67_ _00_ _18_ _19_ vdd vss sg13g2_nor2b_1
+X_68_ sum_1 _16_ _00_ vdd vss sg13g2_xnor2_1
+X_69_ _01_ _16_ _18_ _19_ vdd vss sg13g2_o21ai_1
+X_70_ _02_ b_2 a_2 vdd vss sg13g2_xnor2_1
+X_71_ sum_2 _01_ _02_ vdd vss sg13g2_xnor2_1
+X_72_ _03_ _20_ _01_ _21_ vdd vss sg13g2_a21oi_1
+X_73_ _04_ _22_ _23_ vdd vss sg13g2_nor2b_1
+X_74_ sum_3 _03_ _04_ vdd vss sg13g2_xnor2_1
+X_75_ _05_ b_4 a_4 vdd vss sg13g2_xnor2_1
+X_76_ _06_ _23_ _03_ _22_ vdd vss sg13g2_a21oi_1
+X_77_ sum_4 _05_ _06_ vdd vss sg13g2_xnor2_1
+X_78_ _07_ _24_ _06_ _25_ vdd vss sg13g2_a21oi_1
+X_79_ _08_ _26_ _27_ vdd vss sg13g2_nor2b_1
+X_80_ sum_5 _07_ _08_ vdd vss sg13g2_xnor2_1
+X_81_ _09_ a_6 b_6 vdd vss sg13g2_xnor2_1
+X_82_ _10_ _27_ _07_ _26_ vdd vss sg13g2_a21oi_1
+X_83_ sum_6 _09_ _10_ vdd vss sg13g2_xnor2_1
+X_84_ _11_ _28_ _10_ _29_ vdd vss sg13g2_a21oi_1
+X_85_ _12_ a_7 b_7 vdd vss sg13g2_xor2_1
+X_86_ sum_7 _11_ _12_ vdd vss sg13g2_xnor2_1
+X_87_ sum_0 b_0 a_0 vdd vss sg13g2_xor2_1
+CLmaj_0 maj_0 0 2f
+CLmaj_1 maj_1 0 2f
+CLmaj_2 maj_2 0 2f
+CLmaj_3 maj_3 0 2f
+CLmaj_4 maj_4 0 2f
+CLmaj_5 maj_5 0 2f
+CLmaj_6 maj_6 0 2f
+CLmaj_7 maj_7 0 2f
+CLch_0 ch_0 0 2f
+CLch_1 ch_1 0 2f
+CLch_2 ch_2 0 2f
+CLch_3 ch_3 0 2f
+CLch_4 ch_4 0 2f
+CLch_5 ch_5 0 2f
+CLch_6 ch_6 0 2f
+CLch_7 ch_7 0 2f
+CLsum_0 sum_0 0 2f
+CLsum_1 sum_1 0 2f
+CLsum_2 sum_2 0 2f
+CLsum_3 sum_3 0 2f
+CLsum_4 sum_4 0 2f
+CLsum_5 sum_5 0 2f
+CLsum_6 sum_6 0 2f
+CLsum_7 sum_7 0 2f
+.tran 10p 6n uic
+.print tran format=noindex I(VDD) V(_16_) V(_17_) V(maj_0) V(sum_1)
+.measure tran IQ AVG I(VDD) from=4n to=6n
+.end
