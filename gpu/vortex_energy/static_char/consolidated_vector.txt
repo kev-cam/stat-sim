@@ -1,0 +1,81 @@
+================================================================================================================================
+PER-ISLAND STATIC VECTOR  (Vortex 'mini': 1 cluster / 1 core / 4 warps / 4 threads; rtlmeter descriptor.yaml configurations.mini)
+================================================================================================================================
+island                     comb     seq   mem     mux  mux%     D   W_eff seq_frac  cyc_fr cut_bits
+---------------------------------------------------------------------------------------------------
+WHOLE CHIP               291608   35004    90  126649 43.4%   148    1970    10.7%    7.7%     1183
+CORE (whole)             227335   22161    60   72293 31.8%   148    1536     8.9%    9.7%     1928
+  execute (whole)        182473   14862    28   44597 24.4%   148    1233     7.5%    5.2%     3764
+    alu_unit              45704    2408     0    4485  9.8%    46     994     5.0%    6.0%        -
+      alu_int              4145     247     0    1544 37.2%    19     218     5.6%    0.0%        -
+      muldiv              40421    1809     0    1826  4.5%    46     879     4.3%    7.8%        -
+    fpu_unit (fpnew)     126333    8732    25   33623 26.6%   148     854     6.5%    6.0%        -
+    lsu_unit               5259    2051     1    2874 54.6%    28     188    28.1%    1.2%        -
+    sfu_unit               5167    1667     2    3612 69.9%    24     215    24.4%    4.9%        -
+  issue                   16777    4240     6    8839 52.7%    21     799    20.2%   17.5%     2997
+  schedule                 5740     189     5    3544 61.7%    32     179     3.2%   38.6%        -
+  fetch                    1700      68     0    1156 68.0%    21      81     3.8%    1.5%        -
+  decode                   1021       0     1      92  9.0%    21      49     0.0%    0.0%        -
+  commit                   3196     160     1    2751 86.1%    13     246     4.8%    1.9%     1091
+  lmem_unit                6917    2042     4    6274 90.7%    17     407    22.8%    2.1%      948
+  mem_coalescer            4371     232     0    2475 56.6%    21     208     5.0%   84.5%      739
+DCACHE                    38516    8233    24   30429 79.0%    27    1427    17.6%    5.0%     1924
+ICACHE                     2706    1290     6    1011 37.4%    27     100    32.3%    7.8%     1254
+SOCKET mem_arb            18058    3315     0   17997 99.7%    10    1806    15.5%    0.3%     1845
+L2                         4909       0     0    4906 99.9%    10     491     0.0%    0.0%     1241
+L3 (bypassed at NC=1)         7       0     0       6 85.7%     2       4     0.0%    0.0%     1241
+
+================================================================================================================================
+DERIVED: bundled-data DELAY-LINE tax, Edl/Elog = K/W_eff   (the whole point: W_eff is 35-75x larger than the ASSUMED 24)
+================================================================================================================================
+island                   W_eff     vs sha K=3.2 (as-is)  K=7.5 (2ph) K=15.1 (4ph)
+--------------------------------------------------------------------------------
+sha_slice (the toy)       10.5       1.0x        30.5%        71.4%       143.8%
+WHOLE CHIP                1970       188x        0.16%        0.38%        0.77%
+CORE (whole)              1536       146x        0.21%        0.49%        0.98%
+  execute (whole)         1233       117x        0.26%        0.61%        1.22%
+    alu_unit               994        95x        0.32%        0.75%        1.52%
+      alu_int              218        21x        1.47%        3.44%        6.92%
+      muldiv               879        84x        0.36%        0.85%        1.72%
+    fpu_unit (fpnew)       854        81x        0.37%        0.88%        1.77%
+    lsu_unit               188        18x        1.70%        3.99%        8.04%
+    sfu_unit               215        21x        1.49%        3.48%        7.01%
+  issue                    799        76x        0.40%        0.94%        1.89%
+  schedule                 179        17x        1.78%        4.18%        8.42%
+  fetch                     81         8x        3.95%        9.26%       18.65%
+  decode                    49         5x        6.58%       15.43%       31.06%
+  commit                   246        23x        1.30%        3.05%        6.14%
+  lmem_unit                407        39x        0.79%        1.84%        3.71%
+  mem_coalescer            208        20x        1.54%        3.60%        7.25%
+DCACHE                    1427       136x        0.22%        0.53%        1.06%
+ICACHE                     100        10x        3.19%        7.48%       15.07%
+SOCKET mem_arb            1806       172x        0.18%        0.42%        0.84%
+L2                         491        47x        0.65%        1.53%        3.08%
+L3 (bypassed at NC=1)        4         0x       91.43%      214.29%      431.43%
+
+================================================================================================================================
+DERIVED: clock floor vs delay-line tax -- the crossover the model computes
+  F    = E_clk * N_dff                      (sync clock floor, pJ/cycle, activity-independent)
+  Elog = E_cell * N_comb ; Edl = (K/W)*Elog (bundled-data delay-line tax, pJ per op)
+  alpha* = F / Edl : below this activity the sync clock floor exceeds the async delay line
+================================================================================================================================
+island                 F (pJ/cyc)  Elog (pJ)   Edl(4ph)       alpha*
+----------------------------------------------------------------------
+WHOLE CHIP                 987.11    2216.22     16.984 >1 (bd wins at ALL activity)
+CORE (whole)               624.94    1727.75     16.984 >1 (bd wins at ALL activity)
+  execute (whole)          419.11    1386.79     16.984 >1 (bd wins at ALL activity)
+    alu_unit                67.91     347.35      5.279 >1 (bd wins at ALL activity)
+      alu_int                6.97      31.50      2.180 >1 (bd wins at ALL activity)
+      muldiv                51.01     307.20      5.279 >1 (bd wins at ALL activity)
+    fpu_unit (fpnew)       246.24     960.13     16.984 >1 (bd wins at ALL activity)
+    lsu_unit                57.84      39.97      3.213 >1 (bd wins at ALL activity)
+    sfu_unit                47.01      39.27      2.754 >1 (bd wins at ALL activity)
+  issue                    119.57     127.51      2.410 >1 (bd wins at ALL activity)
+  schedule                   5.33      43.62      3.672 >1 (bd wins at ALL activity)
+  fetch                      1.92      12.92      2.410         0.80
+  commit                     4.51      24.29      1.492 >1 (bd wins at ALL activity)
+  lmem_unit                 57.58      52.57      1.951 >1 (bd wins at ALL activity)
+  mem_coalescer              6.54      33.22      2.410 >1 (bd wins at ALL activity)
+DCACHE                     232.17     292.72      3.099 >1 (bd wins at ALL activity)
+ICACHE                      36.38      20.57      3.099 >1 (bd wins at ALL activity)
+SOCKET mem_arb              93.48     137.24      1.148 >1 (bd wins at ALL activity)

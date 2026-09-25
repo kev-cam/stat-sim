@@ -1,0 +1,37 @@
+=== P4  whole chip = 1 island
+    islands=1   crossing net bits=1183   converter tax @124.7 fJ/bit = 147.5 pJ per full round trip
+        <EXT>                  <-> CHIP                     1183 bits
+
+=== P1  core | dcache | icache | mem_arb | l2 | l3  (6 islands)
+    islands=7   crossing net bits=7693   converter tax @124.7 fJ/bit = 959.3 pJ per full round trip
+        CORE                   <-> GLUE                     1542 bits
+        L2                     <-> L3                       1139 bits
+        L2                     <-> SOCKET_MEM_ARB           1138 bits
+        DCACHE                 <-> SOCKET_MEM_ARB           1137 bits
+        <EXT>                  <-> L3                       1136 bits
+        ICACHE                 <-> SOCKET_MEM_ARB           1131 bits
+        CORE                   <-> DCACHE                    315 bits
+        CORE                   <-> ICACHE                     73 bits
+
+=== P2  P1 with core split into pipeline blocks
+    islands=16   crossing net bits=12898   converter tax @124.7 fJ/bit = 1608.4 pJ per full round trip
+        CORE.execute           <-> CORE.issue               1897 bits
+        L2                     <-> L3                       1139 bits
+        L2                     <-> SOCKET_MEM_ARB           1138 bits
+        DCACHE                 <-> SOCKET_MEM_ARB           1137 bits
+        <EXT>                  <-> L3                       1136 bits
+        ICACHE                 <-> SOCKET_MEM_ARB           1131 bits
+        CORE.commit            <-> CORE.execute              782 bits
+        CORE.issue             <-> GLUE                      554 bits
+
+=== P3  P2 with execute split into ALU/FPU/LSU/SFU
+    islands=20   crossing net bits=12985   converter tax @124.7 fJ/bit = 1619.2 pJ per full round trip
+        L2                     <-> L3                       1139 bits
+        L2                     <-> SOCKET_MEM_ARB           1138 bits
+        DCACHE                 <-> SOCKET_MEM_ARB           1137 bits
+        <EXT>                  <-> L3                       1136 bits
+        ICACHE                 <-> SOCKET_MEM_ARB           1131 bits
+        CORE.issue             <-> GLUE                      554 bits
+        CORE.issue             <-> EX.alu_unit               475 bits
+        CORE.issue             <-> EX.fpu_unit               475 bits
+

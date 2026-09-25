@@ -1,0 +1,57 @@
+### ISLAND CUT WIDTH (net bits touched by >1 island), depth=7
+island                                                      cut_bits
+---------------------------------------------------------------------
+clusters.cluster.sockets.socket.cores.core.execute              3764
+clusters.cluster.sockets.socket.cores.core.issue                2997
+clusters.cluster.sockets.socket.dcache.mem_arb.req_arb          2275
+clusters.cluster.sockets.socket.icache.mem_arb.req_arb          2261
+clusters.cluster.sockets.socket.dcache.caches.cache_wrap        1924
+clusters.cluster.sockets.socket.mem_arb.req_arb                 1845
+clusters.cluster                                                1613
+clusters.cluster.sockets.socket.mem_arb.rsp_switch              1563
+clusters.cluster.sockets.socket.icache.caches.cache_wrap        1254
+clusters.cluster.l2cache                                        1241
+l3cache                                                         1241
+clusters.cluster.l2cache.cache_bypass.mem_req_buf               1234
+l3cache.cache_bypass.mem_req_buf                                1231
+l3cache.cache_bypass                                            1230
+clusters.cluster.l2cache.cache_bypass                           1230
+<EXTERNAL_PINS>                                                 1183
+clusters.cluster.sockets.socket.dcache                          1153
+clusters.cluster.sockets.socket.cores.core.commit               1091
+l3cache.cache_bypass.core_rsp_buf                               1046
+clusters.cluster.l2cache.cache_bypass.core_rsp_buf              1046
+clusters.cluster.sockets.socket.cores.core.lmem_unit             948
+clusters.cluster.sockets.socket.cores.core                       902
+clusters.cluster.sockets.socket.cores.core.mem_coalescer         739
+clusters.cluster.sockets.socket.cores.core.branch_ctl_if         668
+
+### LARGEST ISLAND-PAIR CUTS (shared net bits)
+island A                                 island B                                     bits
+------------------------------------------------------------------------------------------
+luster.sockets.socket.cores.core.execute .cluster.sockets.socket.cores.core.issue     1897
+clusters.cluster.sockets.socket.dcache   .sockets.socket.dcache.caches.cache_wrap     1145
+.sockets.socket.dcache.caches.cache_wrap er.sockets.socket.dcache.mem_arb.req_arb     1135
+.sockets.socket.icache.caches.cache_wrap er.sockets.socket.icache.mem_arb.req_arb     1129
+cluster.sockets.socket.cores.core.commit luster.sockets.socket.cores.core.execute      782
+clusters.cluster.l2cache                 clusters.cluster.l2cache.cache_bypass         625
+l3cache                                  l3cache.cache_bypass                          625
+<EXTERNAL_PINS>                          l3cache.cache_bypass.mem_req_buf              614
+cluster.l2cache.cache_bypass.mem_req_buf l3cache                                       614
+l3cache.cache_bypass                     l3cache.cache_bypass.mem_req_buf              611
+clusters.cluster.l2cache.cache_bypass    cluster.l2cache.cache_bypass.mem_req_buf      611
+er.sockets.socket.dcache.mem_arb.req_arb s.cluster.sockets.socket.mem_arb.req_arb      609
+er.sockets.socket.icache.mem_arb.req_arb s.cluster.sockets.socket.mem_arb.req_arb      609
+clusters.cluster.l2cache                 s.cluster.sockets.socket.mem_arb.req_arb      606
+clusters.cluster                         .cluster.sockets.socket.cores.core.issue      554
+er.sockets.socket.dcache.mem_arb.req_arb luster.sockets.socket.mem_arb.rsp_switch      522
+er.sockets.socket.icache.mem_arb.req_arb luster.sockets.socket.mem_arb.rsp_switch      519
+luster.l2cache.cache_bypass.core_rsp_buf luster.sockets.socket.mem_arb.rsp_switch      516
+<EXTERNAL_PINS>                          l3cache.cache_bypass.core_rsp_buf             515
+luster.l2cache.cache_bypass.core_rsp_buf l3cache.cache_bypass.core_rsp_buf             515
+clusters.cluster.sockets.socket.dcache   er.sockets.socket.dcache.mem_arb.req_arb      515
+luster.sockets.socket.cores.core.execute ster.sockets.socket.cores.core.lmem_unit      430
+ster.sockets.socket.cores.core.lmem_unit .sockets.socket.cores.core.mem_coalescer      422
+clusters.cluster                         luster.sockets.socket.cores.core.execute      396
+er.sockets.socket.cores.core.lsu_adapter .sockets.socket.cores.core.mem_coalescer      317
+er.sockets.socket.cores.core.lsu_adapter .sockets.socket.dcache.cache_arb.req_arb      315

@@ -1,0 +1,150 @@
+### flattened cells in Vortex: 326702
+### cells with a $flatten hierarchy path: 280674 ; needing net-name fallback: 46028
+### unattributed after fallback: 0 (0.00%)
+== WHOLE CHIP
+   comb=291608  seq=35004  mem=90  mux=126649  (43.4% of comb)  seq_frac=10.7%
+   logic depth D=148   comb-loop cells=0   reg graph=CYCLIC -> QDI-pipeline ILLEGAL, desync only (regs in cycles=2694, max reg-to-reg stage=790)
+   bank population: L0:24912 L1:19273 L2:14641 L3:12231 L4:10917 L5:11429 L6:10989 L7:16186 L8:16620 L9:13773 L10:13303 L11:8516 L12:7371 L13:5939  ... L142:80 L143:60 L144:32 L145:8 L146:4 L147:4
+   QAL bank fill: N<=4 8 cells (0.00%, FATAL 6-9x) | 4<N<32 116 (0.04%) | N>=32 291484 (99.96%, 25-37% tax)
+   mix: {'$_MUX_': 126649, '$_AND_': 78786, '$_OR_': 48369, '$_XOR_': 28727, '$_DFFE_PP_': 22613, '$_NOT_': 9077, '$_DFFE_PN0P_': 8247, '$_DFFE_PN_': 2152}
+
+== CORE (whole)
+   comb=227335  seq=22161  mem=60  mux=72293   (31.8% of comb)  seq_frac=8.9%
+   logic depth D=148   comb-loop cells=0   reg graph=CYCLIC -> QDI-pipeline ILLEGAL, desync only (regs in cycles=2149, max reg-to-reg stage=577)
+   bank population: L0:15219 L1:10067 L2:9090 L3:7898 L4:8688 L5:10166 L6:7609 L7:9975 L8:10257 L9:7748 L10:8634 L11:6302 L12:5962 L13:5548  ... L142:80 L143:60 L144:32 L145:8 L146:4 L147:4
+   QAL bank fill: N<=4 8 cells (0.00%, FATAL 6-9x) | 4<N<32 116 (0.05%) | N>=32 227211 (99.95%, 25-37% tax)
+   mix: {'$_AND_': 75640, '$_MUX_': 72293, '$_OR_': 44996, '$_XOR_': 26456, '$_DFFE_PP_': 10182, '$_DFFE_PN0P_': 8247, '$_NOT_': 7950, '$_DFFE_PN_': 2152}
+
+==   core.execute (whole)
+   comb=182473  seq=14862  mem=28  mux=44597   (24.4% of comb)  seq_frac=7.5%
+   logic depth D=148   comb-loop cells=0   reg graph=CYCLIC -> QDI-pipeline ILLEGAL, desync only (regs in cycles=776, max reg-to-reg stage=182)
+   bank population: L0:13224 L1:8552 L2:7848 L3:5167 L4:6314 L5:7771 L6:5796 L7:6921 L8:7311 L9:4879 L10:5571 L11:3856 L12:3478 L13:3726  ... L142:80 L143:60 L144:32 L145:8 L146:4 L147:4
+   QAL bank fill: N<=4 8 cells (0.00%, FATAL 6-9x) | 4<N<32 116 (0.06%) | N>=32 182349 (99.93%, 25-37% tax)
+   mix: {'$_AND_': 65747, '$_MUX_': 44597, '$_OR_': 40243, '$_XOR_': 25343, '$_DFFE_PN0P_': 8247, '$_NOT_': 6543, '$_DFFE_PP_': 4975, '$_DFFE_PN_': 1292}
+
+==     execute.alu_unit
+   comb=45704   seq=2408   mem=0   mux=4485    (9.8% of comb)  seq_frac=5.0%
+   logic depth D=46   comb-loop cells=0   reg graph=CYCLIC -> QDI-pipeline ILLEGAL, desync only (regs in cycles=144, max reg-to-reg stage=69)
+   bank population: L0:6107 L1:4308 L2:3860 L3:2304 L4:3276 L5:3346 L6:2084 L7:2736 L8:2469 L9:1496 L10:1831 L11:1729 L12:902 L13:1138  ... L40:44 L41:44 L42:20 L43:20 L44:4 L45:4
+   QAL bank fill: N<=4 8 cells (0.02%, FATAL 6-9x) | 4<N<32 40 (0.09%) | N>=32 45656 (99.89%, 25-37% tax)
+   mix: {'$_AND_': 19525, '$_XOR_': 13694, '$_OR_': 7183, '$_MUX_': 4485, '$_DFFE_PP_': 2083, '$_NOT_': 817, '$_DFFE_PN_': 174, '$_SDFFE_PP0P_': 142}
+
+==       alu_unit.alu_int
+   comb=4145    seq=247    mem=0   mux=1544    (37.2% of comb)  seq_frac=5.6%
+   logic depth D=19   comb-loop cells=0   reg graph=FEED-FORWARD -> QDI pipeline legal (regs in cycles=0, max reg-to-reg stage=1)
+   bank population: L0:887 L1:603 L2:420 L3:450 L4:322 L5:318 L6:166 L7:171 L8:152 L9:180 L10:156 L11:108 L12:60 L13:48  ... L13:48 L14:48 L15:24 L16:24 L17:4 L18:4
+   QAL bank fill: N<=4 8 cells (0.19%, FATAL 6-9x) | 4<N<32 48 (1.16%) | N>=32 4089 (98.65%, 25-37% tax)
+   mix: {'$_MUX_': 1544, '$_AND_': 1169, '$_OR_': 869, '$_XOR_': 414, '$_DFFE_PP_': 246, '$_NOT_': 149, '$_SDFFE_PP0P_': 1}
+
+==       alu_unit.muldiv
+   comb=40421   seq=1809   mem=0   mux=1826    (4.5% of comb)  seq_frac=4.3%
+   logic depth D=46   comb-loop cells=0   reg graph=CYCLIC -> QDI-pipeline ILLEGAL, desync only (regs in cycles=141, max reg-to-reg stage=67)
+   bank population: L0:5214 L1:3689 L2:3434 L3:1841 L4:2729 L5:2831 L6:1837 L7:2442 L8:2201 L9:1188 L10:1554 L11:1540 L12:817 L13:1090  ... L40:44 L41:44 L42:20 L43:20 L44:4 L45:4
+   QAL bank fill: N<=4 8 cells (0.02%, FATAL 6-9x) | 4<N<32 40 (0.10%) | N>=32 40373 (99.88%, 25-37% tax)
+   mix: {'$_AND_': 18344, '$_XOR_': 13280, '$_OR_': 6309, '$_MUX_': 1826, '$_DFFE_PP_': 1663, '$_NOT_': 662, '$_SDFFE_PP0P_': 139, '$_SDFF_PP1_': 5}
+
+==     execute.fpu_unit (fpnew)
+   comb=126333  seq=8732   mem=25  mux=33623   (26.6% of comb)  seq_frac=6.5%
+   logic depth D=148   comb-loop cells=0   reg graph=CYCLIC -> QDI-pipeline ILLEGAL, desync only (regs in cycles=521, max reg-to-reg stage=184)
+   bank population: L0:5064 L1:2852 L2:3090 L3:2110 L4:2171 L5:3475 L6:2781 L7:3706 L8:4450 L9:3131 L10:3566 L11:1965 L12:2416 L13:2452  ... L142:80 L143:60 L144:32 L145:8 L146:4 L147:4
+   QAL bank fill: N<=4 8 cells (0.01%, FATAL 6-9x) | 4<N<32 116 (0.09%) | N>=32 126209 (99.90%, 25-37% tax)
+   mix: {'$_AND_': 44222, '$_MUX_': 33623, '$_OR_': 31743, '$_XOR_': 11296, '$_DFFE_PN0P_': 8247, '$_NOT_': 5449, '$_DFFE_PP_': 268, '$_DFFE_PN_': 135}
+
+==     execute.lsu_unit
+   comb=5259    seq=2051   mem=1   mux=2874    (54.6% of comb)  seq_frac=28.1%
+   logic depth D=28   comb-loop cells=0   reg graph=CYCLIC -> QDI-pipeline ILLEGAL, desync only (regs in cycles=25, max reg-to-reg stage=25)
+   bank population: L0:999 L1:576 L2:346 L3:509 L4:734 L5:492 L6:421 L7:181 L8:123 L9:105 L10:92 L11:89 L12:105 L13:79  ... L22:12 L23:8 L24:8 L25:4 L26:4 L27:4
+   QAL bank fill: N<=4 12 cells (0.23%, FATAL 6-9x) | 4<N<32 80 (1.52%) | N>=32 5167 (98.25%, 25-37% tax)
+   mix: {'$_MUX_': 2874, '$_DFFE_PP_': 1388, '$_AND_': 1184, '$_OR_': 808, '$_DFFE_PN_': 633, '$_XOR_': 260, '$_NOT_': 133, '$_DFF_P_': 16}
+
+==     execute.sfu_unit
+   comb=5167    seq=1667   mem=2   mux=3612    (69.9% of comb)  seq_frac=24.4%
+   logic depth D=24   comb-loop cells=0   reg graph=CYCLIC -> QDI-pipeline ILLEGAL, desync only (regs in cycles=82, max reg-to-reg stage=25)
+   bank population: L0:1046 L1:814 L2:552 L3:244 L4:133 L5:458 L6:510 L7:298 L8:269 L9:147 L10:82 L11:73 L12:55 L13:57  ... L18:44 L19:52 L20:32 L21:32 L22:32 L23:20
+   QAL bank fill: N<=4 0 cells (0.00%, FATAL 6-9x) | 4<N<32 20 (0.39%) | N>=32 5147 (99.61%, 25-37% tax)
+   mix: {'$_MUX_': 3612, '$_DFFE_PP_': 1236, '$_AND_': 815, '$_OR_': 504, '$_DFFE_PN_': 350, '$_NOT_': 144, '$_XOR_': 92, '$_DFF_P_': 40}
+
+==   core.issue
+   comb=16777   seq=4240   mem=6   mux=8839    (52.7% of comb)  seq_frac=20.2%
+   logic depth D=21   comb-loop cells=0   reg graph=CYCLIC -> QDI-pipeline ILLEGAL, desync only (regs in cycles=742, max reg-to-reg stage=59)
+   bank population: L0:870 L1:642 L2:1498 L3:1683 L4:1632 L5:1628 L6:215 L7:867 L8:947 L9:982 L10:998 L11:817 L12:782 L13:681  ... L15:414 L16:403 L17:396 L18:390 L19:259 L20:1
+   QAL bank fill: N<=4 1 cells (0.01%, FATAL 6-9x) | 4<N<32 0 (0.00%) | N>=32 16776 (99.99%, 25-37% tax)
+   mix: {'$_MUX_': 8839, '$_AND_': 5167, '$_DFFE_PP_': 3484, '$_OR_': 2043, '$_NOT_': 525, '$_SDFFE_PP0P_': 417, '$_SDFF_PP0_': 298, '$_XOR_': 203}
+
+==   core.schedule
+   comb=5740    seq=189    mem=5   mux=3544    (61.7% of comb)  seq_frac=3.2%
+   logic depth D=32   comb-loop cells=0   reg graph=CYCLIC -> QDI-pipeline ILLEGAL, desync only (regs in cycles=73, max reg-to-reg stage=14)
+   bank population: L0:381 L1:201 L2:304 L3:182 L4:187 L5:284 L6:313 L7:66 L8:204 L9:107 L10:189 L11:129 L12:240 L13:129  ... L26:124 L27:124 L28:124 L29:124 L30:124 L31:108
+   QAL bank fill: N<=4 0 cells (0.00%, FATAL 6-9x) | 4<N<32 0 (0.00%) | N>=32 5740 (100.00%, 25-37% tax)
+   mix: {'$_MUX_': 3544, '$_AND_': 1109, '$_OR_': 682, '$_NOT_': 238, '$_XOR_': 167, '$_DFFE_PP_': 76, '$_SDFF_PP0_': 49, '$_DFF_P_': 45}
+
+==   core.fetch
+   comb=1700    seq=68     mem=0   mux=1156    (68.0% of comb)  seq_frac=3.8%
+   logic depth D=21   comb-loop cells=0   reg graph=CYCLIC -> QDI-pipeline ILLEGAL, desync only (regs in cycles=1, max reg-to-reg stage=3)
+   bank population: L0:58 L1:19 L2:13 L3:15 L4:19 L5:19 L6:13 L7:6 L8:2 L9:2 L10:3 L11:68 L12:82 L13:98  ... L15:147 L16:169 L17:213 L18:278 L19:248 L20:108
+   QAL bank fill: N<=4 7 cells (0.41%, FATAL 6-9x) | 4<N<32 104 (6.12%) | N>=32 1589 (93.47%, 25-37% tax)
+   mix: {'$_MUX_': 1156, '$_AND_': 359, '$_NOT_': 137, '$_XOR_': 41, '$_DFFE_PP_': 33, '$_DFFE_PN_': 33, '$_OR_': 7, '$_SDFF_PP0_': 1}
+
+==   core.decode
+   comb=1021    seq=0      mem=1   mux=92      (9.0% of comb)  seq_frac=0.0%
+   logic depth D=21   comb-loop cells=0   reg graph=FEED-FORWARD -> QDI pipeline legal (regs in cycles=0, max reg-to-reg stage=0)
+   bank population: L0:47 L1:72 L2:58 L3:56 L4:61 L5:123 L6:103 L7:116 L8:107 L9:85 L10:49 L11:37 L12:35 L13:22  ... L15:15 L16:14 L17:3 L18:1 L19:1 L20:1
+   QAL bank fill: N<=4 6 cells (0.59%, FATAL 6-9x) | 4<N<32 66 (6.46%) | N>=32 949 (92.95%, 25-37% tax)
+   mix: {'$_OR_': 498, '$_AND_': 344, '$_MUX_': 92, '$_NOT_': 83, '$_XOR_': 4, '$mem_v2': 1}
+
+==   core.commit
+   comb=3196    seq=160    mem=1   mux=2751    (86.1% of comb)  seq_frac=4.8%
+   logic depth D=13   comb-loop cells=0   reg graph=CYCLIC -> QDI-pipeline ILLEGAL, desync only (regs in cycles=3, max reg-to-reg stage=5)
+   bank population: L0:59 L1:84 L2:65 L3:61 L4:48 L5:42 L6:19 L7:710 L8:708 L9:692 L10:421 L11:145 L12:142
+   QAL bank fill: N<=4 0 cells (0.00%, FATAL 6-9x) | 4<N<32 19 (0.59%) | N>=32 3177 (99.41%, 25-37% tax)
+   mix: {'$_MUX_': 2751, '$_AND_': 258, '$_DFFE_PP_': 148, '$_OR_': 98, '$_XOR_': 56, '$_NOT_': 33, '$_SDFFE_PP0P_': 7, '$_SDFFE_PP1P_': 4}
+
+==   core.lmem_unit
+   comb=6917    seq=2042   mem=4   mux=6274    (90.7% of comb)  seq_frac=22.8%
+   logic depth D=17   comb-loop cells=0   reg graph=CYCLIC -> QDI-pipeline ILLEGAL, desync only (regs in cycles=42, max reg-to-reg stage=36)
+   bank population: L0:598 L1:78 L2:64 L3:54 L4:63 L5:179 L6:576 L7:767 L8:555 L9:512 L10:932 L11:795 L12:697 L13:469  ... L11:795 L12:697 L13:469 L14:221 L15:205 L16:152
+   QAL bank fill: N<=4 0 cells (0.00%, FATAL 6-9x) | 4<N<32 0 (0.00%) | N>=32 6917 (100.00%, 25-37% tax)
+   mix: {'$_MUX_': 6274, '$_DFFE_PP_': 1105, '$_DFFE_PN_': 827, '$_AND_': 246, '$_OR_': 198, '$_NOT_': 147, '$_DFF_P_': 53, '$_XOR_': 52}
+
+==   core.mem_coalescer
+   comb=4371    seq=232    mem=0   mux=2475    (56.6% of comb)  seq_frac=5.0%
+   logic depth D=21   comb-loop cells=0   reg graph=CYCLIC -> QDI-pipeline ILLEGAL, desync only (regs in cycles=196, max reg-to-reg stage=16)
+   bank population: L0:530 L1:563 L2:210 L3:240 L4:399 L5:399 L6:240 L7:157 L8:196 L9:180 L10:265 L11:208 L12:178 L13:157  ... L15:148 L16:46 L17:36 L18:36 L19:28 L20:3
+   QAL bank fill: N<=4 3 cells (0.07%, FATAL 6-9x) | 4<N<32 28 (0.64%) | N>=32 4340 (99.29%, 25-37% tax)
+   mix: {'$_MUX_': 2475, '$_AND_': 1118, '$_OR_': 571, '$_DFFE_PP_': 215, '$_XOR_': 124, '$_NOT_': 83, '$_SDFFE_PP0P_': 8, '$_DFF_P_': 4}
+
+== DCACHE
+   comb=38516   seq=8233   mem=24  mux=30429   (79.0% of comb)  seq_frac=17.6%
+   logic depth D=27   comb-loop cells=0   reg graph=CYCLIC -> QDI-pipeline ILLEGAL, desync only (regs in cycles=411, max reg-to-reg stage=177)
+   bank population: L0:6108 L1:5812 L2:2278 L3:1825 L4:1990 L5:1406 L6:1731 L7:4217 L8:3839 L9:3128 L10:2689 L11:1558 L12:797 L13:217  ... L21:42 L22:9 L23:5 L24:9 L25:4 L26:4
+   QAL bank fill: N<=4 8 cells (0.02%, FATAL 6-9x) | 4<N<32 23 (0.06%) | N>=32 38485 (99.92%, 25-37% tax)
+   mix: {'$_MUX_': 30429, '$_DFFE_PP_': 7917, '$_AND_': 2737, '$_OR_': 2680, '$_XOR_': 1786, '$_NOT_': 884, '$_DFF_P_': 128, '$_SDFF_PP0_': 112}
+
+== ICACHE
+   comb=2706    seq=1290   mem=6   mux=1011    (37.4% of comb)  seq_frac=32.3%
+   logic depth D=27   comb-loop cells=0   reg graph=CYCLIC -> QDI-pipeline ILLEGAL, desync only (regs in cycles=101, max reg-to-reg stage=57)
+   bank population: L0:928 L1:474 L2:230 L3:122 L4:70 L5:81 L6:73 L7:117 L8:94 L9:76 L10:64 L11:48 L12:43 L13:52  ... L21:11 L22:3 L23:1 L24:2 L25:1 L26:1
+   QAL bank fill: N<=4 8 cells (0.30%, FATAL 6-9x) | 4<N<32 129 (4.77%) | N>=32 2569 (94.94%, 25-37% tax)
+   mix: {'$_DFFE_PP_': 1210, '$_MUX_': 1011, '$_OR_': 642, '$_XOR_': 479, '$_AND_': 355, '$_NOT_': 219, '$_DFF_P_': 32, '$_SDFF_PP0_': 28}
+
+== SOCKET mem_arb
+   comb=18058   seq=3315   mem=0   mux=17997   (99.7% of comb)  seq_frac=15.5%
+   logic depth D=10   comb-loop cells=0   reg graph=CYCLIC -> QDI-pipeline ILLEGAL, desync only (regs in cycles=9, max reg-to-reg stage=3)
+   bank population: L0:3310 L1:3306 L2:3266 L3:2175 L4:624 L5:1229 L6:1221 L7:1189 L8:1125 L9:613
+   QAL bank fill: N<=4 0 cells (0.00%, FATAL 6-9x) | 4<N<32 0 (0.00%) | N>=32 18058 (100.00%, 25-37% tax)
+   mix: {'$_MUX_': 17997, '$_DFFE_PP_': 3304, '$_OR_': 23, '$_AND_': 22, '$_NOT_': 10, '$_DFF_P_': 6, '$_XOR_': 6, '$_SDFFE_PP0P_': 3}
+
+== L2
+   comb=4909    seq=0      mem=0   mux=4906    (99.9% of comb)  seq_frac=0.0%
+   logic depth D=10   comb-loop cells=0   reg graph=FEED-FORWARD -> QDI pipeline legal (regs in cycles=0, max reg-to-reg stage=0)
+   bank population: L0:613 L1:613 L2:611 L3:610 L4:582 L5:582 L6:550 L7:547 L8:102 L9:99
+   QAL bank fill: N<=4 0 cells (0.00%, FATAL 6-9x) | 4<N<32 0 (0.00%) | N>=32 4909 (100.00%, 25-37% tax)
+   mix: {'$_MUX_': 4906, '$_AND_': 3}
+
+== L3
+   comb=7       seq=0      mem=0   mux=6       (85.7% of comb)  seq_frac=0.0%
+   logic depth D=2   comb-loop cells=0   reg graph=FEED-FORWARD -> QDI pipeline legal (regs in cycles=0, max reg-to-reg stage=0)
+   bank population: L0:4 L1:3
+   QAL bank fill: N<=4 7 cells (100.00%, FATAL 6-9x) | 4<N<32 0 (0.00%) | N>=32 0 (0.00%, 25-37% tax)
+   mix: {'$_MUX_': 6, '$_AND_': 1}
+

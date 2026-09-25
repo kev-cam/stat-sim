@@ -1,0 +1,14 @@
+read_verilog -sv vortex_mini_synth.v
+hierarchy -check -top Vortex
+proc
+opt_expr; opt_clean
+memory_collect
+opt -full
+techmap
+opt -full
+simplemap
+opt_clean
+flatten
+opt_clean -purge
+tee -o stat_flat.txt stat -top Vortex
+write_json vortex_flat.json
