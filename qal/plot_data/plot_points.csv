@@ -1,0 +1,15 @@
+scope,implementation,operating_point,energy_fJ,delay_ps,speed_GHz,power_uW,basis,functionally_valid,source,note
+gate,CMOS,"inverter, 1.2 V full swing, 2 fF",10.0831,34.81,28.7274,289.661,measured,yes,cmos_inv_match.cir,one full hi+lo cycle
+gate,Async QDI,"th22 C-element, DATA->NULL, 3 fF",44.62,356.0,2.809,125.3371,measured,yes,th22_dnd.cir,energy when it FIRES; 1 of 4 DIMS minterms does (alpha=0.25)
+gate,QAL,"dV 0.6 V, L 100 nH",0.4878,220.81,4.5288,2.209,measured,NO,qal_hop_corrected.json,"bank rail 0.373 V, gate settles to 0.1298 V = 34.8%; PARTIAL transfer, bank A retains 0.197 V"
+gate,QAL,"dV 0.6 V, L 400 nH",0.5338,392.28,2.5492,1.3607,measured,NO,qal_hop_corrected.json,"bank rail 0.373 V, gate settles to 0.1298 V = 34.8%"
+gate,QAL,"dV 0.8 V, L 100 nH",0.7431,222.05,4.5035,3.3465,measured,NO,qal_hop_corrected.json,"bank rail 0.469 V, gate settles to 0.3619 V = 77.1%; PARTIAL transfer, bank A retains 0.305 V"
+gate,QAL,"dV 0.8 V, L 400 nH",0.8803,396.68,2.5209,2.2192,measured,NO,qal_hop_corrected.json,"bank rail 0.469 V, gate settles to 0.3619 V = 77.1%"
+gate,QAL,"dV 1.0 V, L 100 nH",1.0382,225.38,4.437,4.6063,measured,yes,qal_hop_corrected.json,"bank rail 0.583 V, gate settles to 0.5829 V = 100.0%; PARTIAL transfer, bank A retains 0.414 V"
+gate,QAL,"dV 1.0 V, L 400 nH",1.3031,400.41,2.4974,3.2544,measured,yes,qal_hop_corrected.json,"bank rail 0.583 V, gate settles to 0.5829 V = 100.0%"
+gate,QAL,"dV 1.2 V, L 100 nH",1.4033,227.06,4.4041,6.1803,measured,yes,qal_hop_corrected.json,"bank rail 0.718 V, gate settles to 0.7179 V = 100.0%; PARTIAL transfer, bank A retains 0.534 V"
+gate,QAL,"dV 1.2 V, L 400 nH",1.9003,404.78,2.4705,4.6947,measured,yes,qal_hop_corrected.json,"bank rail 0.718 V, gate settles to 0.7179 V = 100.0%"
+block,CMOS,"56 stdcells, real-VCD activity alpha=0.476",232.0,928.0,1.0776,250.0,measured,yes,work/sha_slice.cmos.v,
+block,Bundled-data,same datapath + 27-29 inv matched delay line,550.0,1206.0,0.8292,456.0531,composed,yes,async_power_anchor,range 450-750 fJ; delay line 31-50% of it
+block,Async QDI-DIMS,"524 TH cells, activity-corrected alpha=0.25",7230.0,3921.0,0.255,1843.9174,composed,yes,measured cell models + stat-sim SSTA,"logic only, no completion detection; direct-threshold (Fant) form would be ~96 cells / ~2.0-2.7 pJ"
+block,QAL,"dV 1.0 V, 10 levels",136.8,4004.0,0.2498,34.1658,projection,yes,1.303 fJ/gate x 105 gates; depth 10 x 400.4 ps,COMPOSED PROJECTION

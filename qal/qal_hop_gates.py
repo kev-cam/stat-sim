@@ -13,6 +13,14 @@ Replaces the failed buck-pulse attempt (qal_bank_gates.py). Two errors are fixed
     current ramps far faster, and the freewheel decays far slower at low V_bank -> the current
     never reaches zero -> overshoot then collapse). And '.measure WHEN I(L)=0 CROSS=2' returned
     -4.4 ms, feeding a negative time into the disconnect PWL.
+    A THIRD error, found by a time-resolved trace: the transmission gate was on the SENDING side
+    (bka-switch-sw-L-R-bkb), so opening it left the INDUCTOR STILL TIED TO THE RECEIVING BANK. L and
+    C_bank then formed a tank and the bank RANG rather than holding -- at dV=0.6/L=400 nH the bank
+    swung 0.550 -> 0.169 -> 0.466 V with a ~500 ps period after the disconnect. Every fixed-time
+    sample (the settling percentages AND V_Bend, hence E_stored and E_hop) was therefore reading an
+    arbitrary phase of a ringing waveform. The switch now sits on the RECEIVING side
+    (bka-L-R-sw-switch-bkb) so opening it ISOLATES the bank, and V_Bend is sampled just after the
+    disconnect instead of at the end of the window.
     The analytic LC half-cycle t_half = pi*sqrt(L*C_series) was TRIED and FOUND WRONG: it is
     36% early (158.5 ps predicted vs 214.84 ps measured at L=100 nH, read off I(LT) from a
     probe run with the switch held on). Opening there gave a non-monotonic mess across L --
@@ -131,9 +139,9 @@ def probe_zero(fn, l_nh, c_eff_ff):
         'VHI vhi 0 %g' % VGH,
         'VGT  gt  0 PWL(0 0 48p 0 50p %g %gp %g)' % (VGH, tend*2, VGH),
         'VGTP gtp 0 PWL(0 %g 48p %g 50p 0 %gp 0)' % (VGH, VGH, tend*2),
-        'XSWN bka gt  sw 0   sg13_lv_nmos w=%gu l=0.13u' % WSW,
-        'XSWP bka gtp sw vhi sg13_lv_pmos w=%gu l=0.13u' % (2*WSW),
-        'LT sw mid {LT}', 'RT mid bkb {RS}',
+        'XSWN sw gt  bkb 0   sg13_lv_nmos w=%gu l=0.13u' % WSW,
+        'XSWP sw gtp bkb vhi sg13_lv_pmos w=%gu l=0.13u' % (2*WSW),
+        'LT bka mid {LT}', 'RT mid sw {RS}',
     ] + bank("bkb") + [
         '.ic V(bka)=%g V(bkb)=0' % DV,
         '.print tran I(LT) V(bkb) V(bka)',
@@ -176,10 +184,10 @@ def hop_deck(fn, l_nh, c_eff_ff, t_half_ps):
             % (t0-2, t0, VGH, t0+t_half_ps, VGH, t0+t_half_ps+2),
         'VGTP gtp 0 PWL(0 %g %gp %g %gp 0 %gp 0 %gp %g)'
             % (VGH, t0-2, VGH, t0, t0+t_half_ps, t0+t_half_ps+2, VGH),
-        'XSWN bka gt  sw 0   sg13_lv_nmos w=%gu l=0.13u' % WSW,
-        'XSWP bka gtp sw vhi sg13_lv_pmos w=%gu l=0.13u' % (2*WSW),
+        'XSWN sw gt  bkb 0   sg13_lv_nmos w=%gu l=0.13u' % WSW,
+        'XSWP sw gtp bkb vhi sg13_lv_pmos w=%gu l=0.13u' % (2*WSW),
         'Bpg pg 0 V={ -V(gt)*I(VGT) - V(gtp)*I(VGTP) }',
-        'LT sw mid {LT}', 'RT mid bkb {RS}',
+        'LT bka mid {LT}', 'RT mid sw {RS}',
     ] + bank("bkb") + [
         # energy leaving A and entering B, by direct integration at both ports
         'BpA pa 0 V={  V(bka)*I(LT) }',
