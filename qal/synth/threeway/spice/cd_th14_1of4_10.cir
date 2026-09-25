@@ -1,0 +1,22 @@
+* nominal energy: th14  fire=A  CL=10fF
+.hdl "/usr/local/share/xyce/verilog-a/psp103/psp103.va"
+.include "/usr/local/src/kestrel/sim/models/sg13g2_psp103_tt.lib"
+.include "/usr/local/src/ldx/asic/cells/th22.sp"
+.include "/usr/local/src/ldx/asic/cells/th_gates.sp"
+.include "/usr/local/src/mylex/nulex/lib/th_cells_sg13g2.sp"
+VDD vdd 0 1.2
+VSS vss 0 0
+VA a 0 PWL(0 0 1.9n 0 2n 1.2 5.9n 1.2 6n 0 12n 0)
+VB b 0 0
+VC c 0 0
+VD d 0 0
+X1 a b c d y vdd vss th14
+CL y 0 10f
+.tran 2p 12n
+.print tran V(y)
+.measure tran QOP INTEG I(VDD) from=1.9n to=10n
+.measure tran EOP PARAM {-1.2*QOP}
+.measure tran YMAX MAX V(y) from=1.9n to=10n
+.measure tran YEND FIND V(y) AT=9.9n
+.measure tran TD TRIG V(a) VAL=0.6 RISE=1 TARG V(y) VAL=0.6 RISE=1
+.end

@@ -1,0 +1,23 @@
+* bfit macromodel for cell 'th22' (stdcell2bfit: per-FET gate-programmed conductances)
+* inputs=A,B,Y  output=None  rails=VDD/VSS  (4 NMOS, 4 PMOS)
+.subckt th22 A B Y VDD VSS PARAMS: vthr=0.4 vsup=3.3 ron=1000 gm0=1e-9 rfloat=1e9 cin=2f cint=0.5f
+Cin_A A VSS {cin}
+Cin_B B VSS {cin}
+Cin_Y Y VSS {cin}
+BMPA N1 VDD I={ (IF((vsup-V(A))>vthr,((vsup-V(A)-vthr)/(vsup-vthr))*((vsup-V(A)-vthr)/(vsup-vthr))/ron,0)+gm0)*(V(N1)-V(VDD)) }
+BMPB X N1 I={ (IF((vsup-V(B))>vthr,((vsup-V(B)-vthr)/(vsup-vthr))*((vsup-V(B)-vthr)/(vsup-vthr))/ron,0)+gm0)*(V(X)-V(N1)) }
+BMNA N2 VSS I={ (IF(V(A)>vthr,((V(A)-vthr)/(vsup-vthr))*((V(A)-vthr)/(vsup-vthr))/ron,0)+gm0)*(V(N2)-V(VSS)) }
+BMNB X N2 I={ (IF(V(B)>vthr,((V(B)-vthr)/(vsup-vthr))*((V(B)-vthr)/(vsup-vthr))/ron,0)+gm0)*(V(X)-V(N2)) }
+BMPY Y VDD I={ (IF((vsup-V(X))>vthr,((vsup-V(X)-vthr)/(vsup-vthr))*((vsup-V(X)-vthr)/(vsup-vthr))/ron,0)+gm0)*(V(Y)-V(VDD)) }
+BMNY Y VSS I={ (IF(V(X)>vthr,((V(X)-vthr)/(vsup-vthr))*((V(X)-vthr)/(vsup-vthr))/ron,0)+gm0)*(V(Y)-V(VSS)) }
+BMPK X VDD I={ (IF((vsup-V(Y))>vthr,((vsup-V(Y)-vthr)/(vsup-vthr))*((vsup-V(Y)-vthr)/(vsup-vthr))/ron,0)+gm0)*(V(X)-V(VDD)) }
+BMNK X VSS I={ (IF(V(Y)>vthr,((V(Y)-vthr)/(vsup-vthr))*((V(Y)-vthr)/(vsup-vthr))/ron,0)+gm0)*(V(X)-V(VSS)) }
+Rf_N1 N1 VSS {rfloat}
+Cn_N1 N1 VSS {cint}
+Rf_N2 N2 VSS {rfloat}
+Cn_N2 N2 VSS {cint}
+Rf_X X VSS {rfloat}
+Cn_X X VSS {cint}
+Rf_Y Y VSS {rfloat}
+Cn_Y Y VSS {cint}
+.ends

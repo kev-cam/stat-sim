@@ -1,0 +1,13 @@
+.include "th22_bfit.sub"
+VDD vdd 0 1.2
+VSS vss 0 0
+VA a 0 PULSE(0 1.2 1n 0.15n 0.15n 1.7n 4n)
+VB b 0 PULSE(0 1.2 1n 0.15n 0.15n 1.7n 4n)
+X1 a b y vdd vss th22 PARAMS: vsup=1.2 ron=2500 cin=2f cint=1.5f
+CL y 0 3f
+.tran 2p 12n
+.measure tran QVDD INTEG I(VDD) from=4n to=8n
+.measure tran EVDD PARAM {1.2*QVDD}
+.measure tran YMAX MAX V(y) from=4n to=8n
+.measure tran TD50 TRIG V(a) VAL=0.6 RISE=1 TARG V(y) VAL=0.6 RISE=1
+.end
