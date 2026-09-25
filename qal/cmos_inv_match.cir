@@ -1,0 +1,17 @@
+* MATCHED CMOS reference: the SAME inverter as the QAL bank gates (wp=1.12u wn=0.74u, 2fF load)
+* switching full rail-to-rail at 1.2 V. One op = a complete high+low cycle.
+.hdl "/usr/local/share/xyce/verilog-a/psp103/psp103.va"
+.include "/usr/local/src/kestrel/sim/models/sg13g2_psp103_tt.lib"
+.include "/usr/local/src/stat-sim/qal/sg13lv_compat.sp"
+.OPTIONS TIMEINT METHOD=GEAR RELTOL=1e-6 ABSTOL=1e-15 CHGTOL=1e-17
+VDD vdd 0 1.2
+VIN in 0 PULSE(0 1.2 1n 0.05n 0.05n 1.95n 4n)
+XP o in vdd vdd sg13_lv_pmos w=1.12u l=0.13u
+XN o in 0 0 sg13_lv_nmos w=0.74u l=0.13u
+CL o 0 2f
+.tran 0.5p 12n
+.measure tran QOP INTEG I(VDD) FROM=4n TO=8n
+.measure tran EOP PARAM {-1.2*QOP}
+.measure tran OMAX MAX V(o) FROM=4n TO=8n
+.measure tran OMIN MIN V(o) FROM=4n TO=8n
+.end
