@@ -45,7 +45,7 @@ def sweep():
           % (hg.MGATE, hg.WP, hg.WN, hg.CLOAD, hg.WSW, hg.RS))
     print("KEY COLUMN is E_gates/E_stored = the MEASURED f_adia; it must FALL with dV\n")
     print("   dV  ovdrv | C_eff  E_stor |    L   t_ZCS  V_Bend |  E_outA  E_path  E_gates | "
-          "f_adia  path%")
+          "f_adia  path%   E_swgate")
     print("  (V)   (V)  |  (fF)   (fJ)  | (nH)   (ps)    (V)   |   (fJ)    (fJ)     (fJ)  |   (x)    (%)")
     for dv in DVS:
         hg.DV = dv                                    # re-run everything at this swing
@@ -86,8 +86,9 @@ def sweep():
             fad    = egat/e_full if e_full else 0.0
             pathp  = 100.0*epath/eo if eo else 0.0
             print("  %4.2f  %5.2f | %6.2f %6.2f | %4g %7.1f %6.3f | %7.3f %7.3f %8.3f | "
-                  "%6.3f %6.1f"
-                  % (dv, dv-VT_EST, c_eff, e_full, l_nh, tz, vend, eo, epath, egat, fad, pathp))
+                  "%6.3f %6.1f %8.2f"
+                  % (dv, dv-VT_EST, c_eff, e_full, l_nh, tz, vend, eo, epath, egat, fad, pathp,
+                     gg.get("EGT",0.0)*1e15))
             out.append({"dV": dv, "overdrive_V": round(dv-VT_EST,3),
                         "C_eff_fF": round(c_eff,3), "E_stored_full_fJ": round(e_full,4),
                         "L_nH": l_nh, "t_zcs_ps": round(tz,2),
@@ -95,6 +96,7 @@ def sweep():
                         "E_outA_fJ": round(eo,4), "E_inB_fJ": round(ei,4),
                         "E_path_fJ": round(epath,4), "E_gates_fJ": round(egat,4),
                         "E_stored_at_Vend_fJ": round(est,4),
+                        "E_switch_gate_fJ": round(gg.get("EGT",0.0)*1e15,4),
                         "f_adia_measured": round(fad,4),
                         "path_loss_pct": round(pathp,2),
                         "Ipk_uA": round(gg.get("IPK",0)*1e6,3)})

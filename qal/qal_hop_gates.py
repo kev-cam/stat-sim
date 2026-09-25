@@ -58,7 +58,13 @@ SHIM  = "/usr/local/src/stat-sim/qal/sg13lv_compat.sp"
 
 DV    = 0.6           # V, bank swing (the wave amplitude)
 RS    = 10.0          # ohm, inductor series resistance
-WSW   = 20.0          # um, transfer switch width (Ron ~30 ohm)
+WSW   = 20.0          # um, transfer switch width (Ron ~30 ohm); pMOS is 2x for matched conductance
+VGH   = 1.5           # V, switch gate drive taken from the +1.5 V rail that already exists.
+                      # FIX: the old deck used a lone nMOS pass transistor with a FIXED 1.2 V gate, so
+                      # its overdrive vanished as the bank approached 1.2 V -> Ron exploded and the
+                      # measured path loss rose 11.1% -> 44.6% across the dV sweep, inflating the
+                      # high-swing points. A CMOS transmission gate (nMOS passes lows, pMOS passes
+                      # highs) conducts across the whole 0..dV range at every swing.
 WP, WN = 1.12, 0.74   # um, the standard devices used by every other anchor
 MGATE = 8             # static inverters on the receiving bank
 CLOAD = 2.0           # fF load per gate output
@@ -122,8 +128,11 @@ def probe_zero(fn, l_nh, c_eff_ff):
     L = head() + [
         '.param LT=%gn RS=%g CA=%gf' % (l_nh, RS, ca),
         'CA bka 0 {CA}',
-        'VGT gt 0 PWL(0 0 48p 0 50p 1.2 %gp 1.2)' % (tend*2),
-        'XSW bka gt sw 0 sg13_lv_nmos w=%gu l=0.13u' % WSW,
+        'VHI vhi 0 %g' % VGH,
+        'VGT  gt  0 PWL(0 0 48p 0 50p %g %gp %g)' % (VGH, tend*2, VGH),
+        'VGTP gtp 0 PWL(0 %g 48p %g 50p 0 %gp 0)' % (VGH, VGH, tend*2),
+        'XSWN bka gt  sw 0   sg13_lv_nmos w=%gu l=0.13u' % WSW,
+        'XSWP bka gtp sw vhi sg13_lv_pmos w=%gu l=0.13u' % (2*WSW),
         'LT sw mid {LT}', 'RT mid bkb {RS}',
     ] + bank("bkb") + [
         '.ic V(bka)=%g V(bkb)=0' % DV,
@@ -162,9 +171,14 @@ def hop_deck(fn, l_nh, c_eff_ff, t_half_ps):
         # NOT counted as delivered energy -- only the integrated flow through L is measured)
         'CA bka 0 {CA}',
         # transfer switch: nMOS, ON from t0, OPENED at the analytic current zero t0+t_half (ZCS)
-        'VGT gt 0 PWL(0 0 %gp 0 %gp 1.2 %gp 1.2 %gp 0)'
-            % (t0-2, t0, t0+t_half_ps, t0+t_half_ps+2),
-        'XSW bka gt sw 0 sg13_lv_nmos w=%gu l=0.13u' % WSW,
+        'VHI vhi 0 %g' % VGH,
+        'VGT  gt  0 PWL(0 0 %gp 0 %gp %g %gp %g %gp 0)'
+            % (t0-2, t0, VGH, t0+t_half_ps, VGH, t0+t_half_ps+2),
+        'VGTP gtp 0 PWL(0 %g %gp %g %gp 0 %gp 0 %gp %g)'
+            % (VGH, t0-2, VGH, t0, t0+t_half_ps, t0+t_half_ps+2, VGH),
+        'XSWN bka gt  sw 0   sg13_lv_nmos w=%gu l=0.13u' % WSW,
+        'XSWP bka gtp sw vhi sg13_lv_pmos w=%gu l=0.13u' % (2*WSW),
+        'Bpg pg 0 V={ -V(gt)*I(VGT) - V(gtp)*I(VGTP) }',
         'LT sw mid {LT}', 'RT mid bkb {RS}',
     ] + bank("bkb") + [
         # energy leaving A and entering B, by direct integration at both ports
@@ -181,9 +195,10 @@ def hop_deck(fn, l_nh, c_eff_ff, t_half_ps):
         '.measure tran VAEND FIND V(bka) AT=%gp' % (tend-5),
         '.measure tran IPK   MAX I(LT) FROM=0 TO=%gp' % tend,
         '.measure tran IZ    FIND I(LT) AT=%gp' % (t0+t_half_ps),
+        '.measure tran EGT   INTEGRAL V(pg) FROM=0 TO=%gp' % tend,
         '.end']
     return run(fn, "\n".join(L)+"\n",
-               ("EOUTA","EINB","QTR","VBPK","VBEND","VAEND","IPK","IZ"))
+               ("EOUTA","EINB","QTR","VBPK","VBEND","VAEND","IPK","IZ","EGT"))
 
 def main():
     print("QAL bank-to-bank HOP with %d REAL static gates on the receiving bank" % MGATE)
