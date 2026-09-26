@@ -1,14 +1,17 @@
-* behavioural 8-cell bank hop dV=1 L=277.8nH
+* behavioural 8-cell bank hop dV=1 L=277.8nH -- v3 NONLINEAR bank C(V)
 .hdl "/usr/local/src/stat-sim/qal/va/qal_gate.va"
 .hdl "/usr/local/src/stat-sim/qal/va/qal_hop.va"
+.hdl "/usr/local/src/stat-sim/qal/va/qal_bankcap.va"
 .model qm qal_gate TOPO=0 RON_N=2.5e3 RON_P=6229 VTN=0.35 VTP=0.50 NSS=1.85
 + VREF=1.2 CY=2f CIN=2f CX=0.1f CW=0.1f GM0=1e-12 ESCALE=1e15
 .model hm qal_hop RON=15 VON=0.6 VTAU=0.15 CJ=0 GM0=1e-12 ESCALE=1e15
-CAP bka 0 35.979f
-CBB bkb 0 28f
+.model bca qal_bankcap C0=2.32e-14 CT=1.2964e-14 VK=0.372 WV=0.0478225 CP=7.1315e-14 VA=0.4278 VB=0.493 WP=0.0119 GM0=1e-12
+.model bcb qal_bankcap C0=2.32e-14 CT=1.823e-15 VK=0.15 WV=0.0478225 CP=7.2378e-14 VA=0.4141 VB=0.4588 WP=0.01 GM0=1e-12
+YQAL_BANKCAP XCA bka 0 bca
+YQAL_BANKCAP XCB bkb 0 bcb
 LT bka mid 277.8n
 RT mid sw 10
-VCT ctl 0 PWL(0 -1.2 48p -1.2 50p 1.2 277.601p 1.2 279.601p -1.2)
+VCT ctl 0 PWL(0 -1.2 48p -1.2 50p 1.2 276.789p 1.2 278.789p -1.2)
 YQAL_HOP XSW sw bkb ctl 0 edsw 0 hm
 VI0 in0 0 1
 YQAL_GATE XG0 in0 in0 o0 bkb 0 ed0 er0 eq0 0 qm
@@ -27,16 +30,20 @@ YQAL_GATE XG6 in6 in6 o6 bkb 0 ed6 er6 eq6 0 qm
 VI7 in7 0 0
 YQAL_GATE XG7 in7 in7 o7 bkb 0 ed7 er7 eq7 0 qm
 BSED sed 0 V={V(ed0)+V(ed1)+V(ed2)+V(ed3)+V(ed4)+V(ed5)+V(ed6)+V(ed7)}
-BSTB stb 0 V={ 0.5*2.8e-14*V(bkb)*V(bkb)*1e15 + 0.5*2e-15*V(o0)*V(o0)*1e15+0.5*2e-15*V(o1)*V(o1)*1e15+0.5*2e-15*V(o2)*V(o2)*1e15+0.5*2e-15*V(o3)*V(o3)*1e15+0.5*2e-15*V(o4)*V(o4)*1e15+0.5*2e-15*V(o5)*V(o5)*1e15+0.5*2e-15*V(o6)*V(o6)*1e15+0.5*2e-15*V(o7)*V(o7)*1e15 }
+BSTBG stbg 0 V={ 0.5*2e-15*V(o0)*V(o0)*1e15+0.5*2e-15*V(o1)*V(o1)*1e15+0.5*2e-15*V(o2)*V(o2)*1e15+0.5*2e-15*V(o3)*V(o3)*1e15+0.5*2e-15*V(o4)*V(o4)*1e15+0.5*2e-15*V(o5)*V(o5)*1e15+0.5*2e-15*V(o6)*V(o6)*1e15+0.5*2e-15*V(o7)*V(o7)*1e15 }
+BPA pa 0 V={ V(bka)*I(LT) }
+CIA eia 0 1
+BIA 0 eia I={ V(pa) }
 .ic V(bka)=1 V(bkb)=0
-.tran 0.1p 777.601p UIC
-.measure tran VBPK  MAX V(bkb) FROM=50p TO=777.601p
-.measure tran VBEND FIND V(bkb) AT=772.601p
-.measure tran VAEND FIND V(bka) AT=772.601p
-.measure tran IPK   MAX I(LT) FROM=0 TO=777.601p
-.measure tran ESTB  FIND V(stb) AT=772.601p
-.measure tran EDGAT FIND V(sed) AT=772.601p
-.measure tran EDSW  FIND V(edsw) AT=772.601p
-.measure tran O0END FIND V(o0)  AT=772.601p
-.measure tran O1END FIND V(o1)  AT=772.601p
+.tran 0.1p 776.789p UIC
+.measure tran VBPK  MAX V(bkb) FROM=50p TO=776.789p
+.measure tran VBEND FIND V(bkb) AT=771.789p
+.measure tran VAEND FIND V(bka) AT=771.789p
+.measure tran IPK   MAX I(LT) FROM=0 TO=776.789p
+.measure tran ESTBG FIND V(stbg) AT=771.789p
+.measure tran EDGAT FIND V(sed) AT=771.789p
+.measure tran EDSW  FIND V(edsw) AT=771.789p
+.measure tran EOUTAD FIND V(eia) AT=771.789p
+.measure tran O0END FIND V(o0)  AT=771.789p
+.measure tran O1END FIND V(o1)  AT=771.789p
 .end

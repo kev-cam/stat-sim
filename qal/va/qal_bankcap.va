@@ -1,0 +1,109 @@
+// ===========================================================================
+// qal_bankcap.va -- behavioral NONLINEAR bank capacitance C(V) for the QAL hop.
+//
+// WHY THIS EXISTS (residuals.json v2 elimination result, stat-sim 6525035).
+//   The v2 subthreshold-tail round closed the cliff SHAPE but moved the bank hop
+//   by only -0.5% E / 0.0 ps t, PINNING the -72% E_hop / -33.5% t_zcs residual
+//   on the bank PLANT, not on conduction: the deck's LINEAR 36 fF bank sails to
+//   VBpk 0.939 V where silicon peaks at 0.611 V. Silicon's gate bank capacitance
+//   is strongly NONLINEAR -- it knees hard at the 0.4-0.5 V device threshold
+//   (qal_hop_gates.py:30-31, the calibration curve). A linear cap cannot absorb
+//   the charge silicon absorbs near threshold, so the model bank overshoots and
+//   the hop rings faster (too-small effective C in pi*sqrt(LC)).
+//
+// WHAT IT IS -- A CONSERVED CHARGE, NOT A C(V) MULTIPLIER. The classic
+//   V-dependent-capacitor bug is to write I = C(V)*dV/dt: that element is NON
+//   conservative and injects/removes spurious energy over a cycle. This element
+//   defines a CHARGE STATE  Q(V)  and contributes  I(p,n) <+ ddt(Q(V)) , so the
+//   stored energy is the exact path integral  E = int V dQ  and a closed V-cycle
+//   returns EXACTLY zero net energy (verified: probe_runs/cc_bankcap.cir). This
+//   is the only correct way to code a nonlinear reactance in Verilog-A.
+//
+// THE CHARGE MODEL (a linear parasitic floor + a smooth softplus turn-on above
+//   the threshold knee -- MIRRORS the conduction fix's softplus, same knee width
+//   W = NSS*PHIT, so both the conduction and the charge turn on over the same
+//   thermal scale):
+//       C_inc(V) = C0 + CT * sigmoid((V - VK)/W)          [incremental C]
+//       Q(V)     = C0*V + CT*W * softplus((V - VK)/W)      [what is coded]
+//   with softplus(z) = ln(1 + exp(z)),  sigmoid = softplus' .  dQ/dV = C_inc(V)
+//   by construction, and C0 is the data-independent C_quiet floor.
+//
+// DERIVATION OF THE FORM FROM THE MEASURED E_stored(V) (get the math right):
+//   in the adiabatic slow-ramp limit the bank sits AT the rail, so
+//       E(V) = int_0^V v dQ = int_0^V v*C_inc(v) dv   =>   dE/dV = V*C_inc(V),
+//   i.e.  C_inc(V) = (1/V) dE/dV .  The measured dV=1.0 slow-ramp E_stored(V)
+//   (qal_hop_gates.py calib(), regenerated fine 2026-09-26,
+//   probe_runs/cv_tr_dv100.cir.prn) differentiates to a C_inc that sits ~23 fF
+//   below threshold, spikes to ~78 fF at the 0.45 V inversion knee, and settles
+//   to ~36 fF above -- a floor + turn-on, which is exactly this form.
+//
+// FIT DISCIPLINE. Parameters are fit ONLY against the STATIC slow-ramp
+//   calibration curve (characterization, NOT the hop). The hop is a holdout.
+//   The fit target is the MEASURED CHARGE Q(V)=int -I(VS) dt (the element IS a
+//   charge state, and the hop transfer is set by the charge), with CT
+//   CONSTRAINED so Q(dV) matches the measured operating-point charge EXACTLY and
+//   (C0, VK) fitting the shape (cv3/fit_q.py). Fit on the dV=1.0 curve ONLY,
+//   holdouts at dV=0.6/0.8/1.2:
+//     * DECK-B floor (this cap sits in parallel with the 8 behavioural cells,
+//       which already carry ~8 fC above VTP=0.5 -- MEASURED, probe_runs/cv_bh_*,
+//       so the cap owns Q_tr(V) - Q_cells(V)):  C0=24.08 CT=5.23 VK=0.253
+//     * FULL bank (bank A is a bare cap with NO cells -> owns the whole C(V)):
+//       C0=23.63 CT=18.19 VK=0.320
+//   W = NSS*PHIT = 1.85*0.02585 = 0.047823 V, carried over from the conduction
+//   fit (NOT refit).  C0 matches the measured C_quiet floor (23.22 fF,
+//   qal_split_differential.json) to ~1 fF -- a physical anchor, not a free knob.
+//   rms relative charge error ~7% on the fit curve, Q(dV) EXACT (0.0%), E(1.0)
+//   +2.1% composed; the one large residual is the sharp inversion PEAK at 0.45 V
+//   (measured C_inc spikes to ~78 fF then settles to ~36) that a MONOTONE
+//   softplus cannot reproduce -> localized -24% Q / -37% E at V=0.5, within a
+//   few % elsewhere. Reported, not hidden (README |4.6, residuals.json v3).
+//
+// XYCE/PyMS RULES (see qal_gate.va header; all measured):
+//   * ddt() ALONE in its contribution (mixing => silent charge-only rewrite).
+//   * one module per .va file.
+//   * overflow-safe softplus:  softplus(z) = max(z,0) + ln(1+exp(-|z|)) , the exp
+//     argument always <= 0 -> PyMS lowers limexp to a bare exp with no overflow.
+//   * .tran ... UIC mandatory; GM0 leak floor DC-anchors the node.
+//   * never `gmin`/`vt` as parameter names.
+// ===========================================================================
+`include "disciplines.vams"
+
+module qal_bankcap(p, n);
+    inout p, n;
+    electrical p, n;
+
+    parameter real C0  = 24.084e-15;  // linear parasitic floor (C_quiet-like) [F] -- deck-B default
+    parameter real CT  = 5.231e-15;   // softplus PLATEAU-step magnitude [F] -- deck-B default
+    parameter real VK  = 0.25307;     // plateau knee voltage [V] -- deck-B default
+    parameter real WV  = 0.047823;    // knee width = NSS*PHIT [V] (NOT refit)
+    // OPTIONAL inversion-PEAK bump (default OFF -> pure floor+step). The MEASURED
+    // C_inc(V) spikes to ~78 fF at the 0.40-0.50 V inversion knee then settles to
+    // ~36 fF -- a PEAK a monotone softplus cannot reproduce. The bump is a
+    // difference of two softplus turn-ons => a smooth top-hat in C_inc between VA
+    // and VB, still a pure charge state (conservative):
+    //   Q_bump = CP*WP*( softplus((V-VA)/WP) - softplus((V-VB)/WP) )
+    parameter real CP  = 0.0;         // bump incremental-C magnitude [F]
+    parameter real VA  = 0.40;        // bump rising edge [V]
+    parameter real VB  = 0.50;        // bump falling edge [V]
+    parameter real WP  = 0.03;        // bump edge width [V]
+    parameter real GM0 = 1e-12;       // DC anchor / leak [S] (NOT 'gmin')
+
+    real vpn, z, sp, za, spa, zb, spb, q;
+
+    analog begin
+        vpn = V(p,n);
+        // overflow-safe softplus of (vpn-VK)/WV
+        z  = (vpn - VK)/WV;
+        sp = (z > 0.0 ? z : 0.0) + ln(1.0 + limexp(-(z > 0.0 ? z : -z)));
+        // inversion-peak bump = softplus(A) - softplus(B) (top-hat in C_inc)
+        za  = (vpn - VA)/WP;
+        spa = (za > 0.0 ? za : 0.0) + ln(1.0 + limexp(-(za > 0.0 ? za : -za)));
+        zb  = (vpn - VB)/WP;
+        spb = (zb > 0.0 ? zb : 0.0) + ln(1.0 + limexp(-(zb > 0.0 ? zb : -zb)));
+        // CHARGE state: floor + plateau-step + inversion-peak bump.
+        // dQ/dV = C0 + CT*sigmoid((V-VK)/WV) + CP*(sig((V-VA)/WP)-sig((V-VB)/WP)).
+        q  = C0*vpn + CT*WV*sp + CP*WP*(spa - spb);
+        I(p,n) <+ ddt(q);
+        I(p,n) <+ GM0*vpn;
+    end
+endmodule

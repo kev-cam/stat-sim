@@ -1,0 +1,15 @@
+* charge-conservation, tight tol + finer step: energy residue must shrink (=> numerical)
+.hdl "/usr/local/src/stat-sim/qal/va/qal_bankcap.va"
+.OPTIONS TIMEINT METHOD=GEAR RELTOL=1e-10 ABSTOL=1e-18 CHGTOL=1e-20
+.model bc qal_bankcap C0=23.48e-15 CT=7.38e-15 VK=0.296 WV=0.047823 GM0=1e-12
+VS p 0 PWL(0 0 1n 1.2 2n 1.2 3n 0 4n 0)
+YQAL_BANKCAP XC p 0 bc
+BPW pw 0 V={ V(p)*I(VS) }
+CINT eint 0 1
+BINT 0 eint I={ V(pw) }
+BQ  qd 0 V={ I(VS) }
+CQ  eq 0 1
+BQI 0 eq I={ V(qd) }
+.print tran V(p) V(eint) V(eq)
+.tran 0.2p 4n UIC
+.end

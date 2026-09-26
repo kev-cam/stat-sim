@@ -1,0 +1,35 @@
+* cv3 bh slow-ramp calibration dv=0.8
+.hdl "/usr/local/src/stat-sim/qal/va/qal_gate.va"
+.OPTIONS TIMEINT METHOD=GEAR RELTOL=1e-6 ABSTOL=1e-15 CHGTOL=1e-17
+VS bk 0 PWL(0 0 20000p 0.8)
+.model qm qal_gate TOPO=0 RON_N=2.5e3 RON_P=6229 VTN=0.35 VTP=0.50 NSS=1.85
++ VREF=1.2 CY=2f CIN=2f CX=0.1f CW=0.1f GM0=1e-12 ESCALE=1e15
+VI0 in0 0 0.8
+YQAL_GATE XG0 in0 in0 o0 bk 0 ed0 er0 eq0 0 qm
+VI1 in1 0 0
+YQAL_GATE XG1 in1 in1 o1 bk 0 ed1 er1 eq1 0 qm
+VI2 in2 0 0.8
+YQAL_GATE XG2 in2 in2 o2 bk 0 ed2 er2 eq2 0 qm
+VI3 in3 0 0
+YQAL_GATE XG3 in3 in3 o3 bk 0 ed3 er3 eq3 0 qm
+VI4 in4 0 0.8
+YQAL_GATE XG4 in4 in4 o4 bk 0 ed4 er4 eq4 0 qm
+VI5 in5 0 0
+YQAL_GATE XG5 in5 in5 o5 bk 0 ed5 er5 eq5 0 qm
+VI6 in6 0 0.8
+YQAL_GATE XG6 in6 in6 o6 bk 0 ed6 er6 eq6 0 qm
+VI7 in7 0 0
+YQAL_GATE XG7 in7 in7 o7 bk 0 ed7 er7 eq7 0 qm
+Bp p 0 V={ -V(bk)*I(VS) }
+Bq q 0 V={ -I(VS) }
+.print tran V(bk) V(p) V(q)
+.tran 5p 20400p UIC
+.measure tran E134 INTEGRAL V(p) FROM=0 TO=3340p
+.measure tran E266 INTEGRAL V(p) FROM=0 TO=6660p
+.measure tran E400 INTEGRAL V(p) FROM=0 TO=10000p
+.measure tran E534 INTEGRAL V(p) FROM=0 TO=13340p
+.measure tran E666 INTEGRAL V(p) FROM=0 TO=16660p
+.measure tran E734 INTEGRAL V(p) FROM=0 TO=18340p
+.measure tran E800 INTEGRAL V(p) FROM=0 TO=20000p
+.measure tran QTOT INTEGRAL V(q) FROM=0 TO=20000p
+.end

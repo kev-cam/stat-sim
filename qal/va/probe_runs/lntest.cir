@@ -1,0 +1,10 @@
+* lntest
+.hdl "/usr/local/src/stat-sim/qal/va/probe_runs/lntest.va"
+.model lm lntest K=0.0478 R=6229
+VP p 0 0.3
+YLNTEST X1 p 0 lm
+RL p 0 1e12
+.op
+.print tran I(VP)
+.tran 1p 10p
+.end

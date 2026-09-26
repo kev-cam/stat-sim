@@ -1,0 +1,12 @@
+* conservation, RELTOL=1e-8, step=0.25p
+.hdl "/usr/local/src/stat-sim/qal/va/qal_bankcap.va"
+.OPTIONS TIMEINT METHOD=GEAR RELTOL=1e-8 ABSTOL=1e-16 CHGTOL=1e-18
+.model bc qal_bankcap C0=23.48e-15 CT=7.38e-15 VK=0.296 WV=0.047823 GM0=1e-12
+VS p 0 PWL(0 0 1n 1.2 2n 1.2 3n 0 4n 0)
+YQAL_BANKCAP XC p 0 bc
+BPW pw 0 V={ V(p)*I(VS) }
+CINT eint 0 1
+BINT 0 eint I={ V(pw) }
+.print tran V(p) V(eint)
+.tran 0.25p 4n UIC
+.end

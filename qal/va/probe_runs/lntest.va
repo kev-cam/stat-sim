@@ -1,0 +1,14 @@
+`include "disciplines.vams"
+module lntest(p,n);
+  inout p,n; electrical p,n;
+  parameter real K=0.0478; parameter real R=6229;
+  real ov, t, g;
+  analog begin
+    ov = V(p,n) - 0.5;
+    t = ov; if (t<0.0) t=-t;
+    if (ov<0.0) ov=0.0;
+    ov = ov + K*ln(1.0 + limexp(-t/K));
+    g = ov/(1.2*R);
+    I(p,n) <+ g*V(p,n);
+  end
+endmodule
