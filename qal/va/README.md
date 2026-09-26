@@ -181,8 +181,11 @@ Xyce is the only live engine lane — per-engine reporting a la
 * **T1 closure: PASS** — worst residual **0.223 %** at T=5 ns at the deck's
   default tolerances (≤0.173 % for T≤2 ns; v1 was 0.184 %). MEASURED to be
   solver tolerance, not bookkeeping: with `RELTOL=1e-6 ABSTOL=1e-13` the T=5 ns
-  residual is **6.5e-8 (0.0000065 %)**; step-halving alone (TR/400) does not
-  move it (0.219 %). The identity is exact.
+  residual is **6.5e-7 (0.000065 %)** (`probe_runs/probe_T5000_tight.cir.mt0`:
+  `ECLOSE = -2.646e-6` fJ on `ERAIL = 4.0948` fJ; a 10× transcription error —
+  6.5e-8 — stood here until the skeptic re-run caught it; still ~3000× under
+  the bar); step-halving alone (TR/400) does not move it (0.219 %). The
+  identity is exact.
 * **T4(b) stall, RE-ANCHORED (see §4 header): PASS on the corrected check.**
   At pc=0 arrival the model reads **0.5199 V vs silicon 0.5139 V (+6 mV)**.
   Droop at matched offsets after pc=0 (TR=1 ns): model 0.4777/0.4539/0.4250/
@@ -191,8 +194,10 @@ Xyce is the only live engine lane — per-engine reporting a la
   faster (~41 mV/e-fold = the cliff-fitted NSS=1.85, where silicon's
   stall-droop slope reads n≈1.0 — recorded in §7 as the linear-Vds tail
   limitation). The `Y@end` column above is NOT T-dependence: those values
-  (0.4706/0.4247/0.3890/0.3452 at 0.4/0.8/1.6/4 ns after pc=0) lie on the one
-  log-t droop curve — same corrected T-independence silicon shows.
+  (0.4706/0.4247/0.3890/0.3452 at 0.4/0.8/1.6/4 ns after pc=0) collapse onto
+  the log-t droop curve to **~±17 mV** (vs the TR=1 ns curve: +17 mV at
+  +0.4 ns, match at +0.8 ns, −9 mV at +4 ns — approximately universal, not
+  exactly) — same corrected T-independence silicon shows.
 * **The central requirement, unchanged** (T=1 ns `.mt0`, post-tail): V(er)
   rises to **11.4579 fJ** at the top of the ramp (`EUPRMP`) and falls to
   **7.0393 fJ** at the end — the rail-current integral ran NEGATIVE on the
@@ -525,7 +530,8 @@ the `eq` integrator on `qal_gate.va`, where both routes exist: **10.2243 fJ vs
   1.7× silicon's rate (the cliff-fitted NSS=1.85 vs silicon's stall-droop
   slope n≈1.0). The v1 "0.4996–0.5058 V, T-independent" PASS is superseded:
   both silicon and the model droop log-t after pc=0; only the pc=0-arrival
-  value and the one-universal-curve property are anchored.
+  value and the approximately-universal-curve property (±17 mV band, §4.1)
+  are anchored.
 * **T4(c) is NO-GO on seeds** (3.47 % vs < 2 %), and the reference it is being
   compared against may be the wrong one (§4.3).
 * **T5 not fully run.** The X boundary appears and the dual-rail truth table is
