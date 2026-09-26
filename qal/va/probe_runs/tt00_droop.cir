@@ -1,0 +1,26 @@
+* SG13G2 transistor NAND2 stall DROOP probe -- extends qal_nand_tt_00.cir with a
+* 0.8n hold at pc=0 so the stall anchor gains a time axis (the committed deck
+* ends AT pc=0, so "~0.5V" carries zero information about post-arrival droop).
+.hdl "/usr/local/share/xyce/verilog-a/psp103/psp103.va"
+.include "/usr/local/src/kestrel/sim/models/sg13g2_psp103_tt.lib"
+.include "/usr/local/src/stat-sim/qal/sg13lv_compat.sp"
+.OPTIONS TIMEINT METHOD=GEAR RELTOL=1e-6 ABSTOL=1e-13 CHGTOL=1e-15
+.param Vdd=1.2 CL=10f TR=1n H=1n
+Vnw nw 0 1.2
+VPC pc 0 PWL(0 0 {TR} {Vdd} {TR+H} {Vdd} {2*TR+H} 0 {2*TR+H+4n} 0)
+VA a 0 0
+VB b 0 0
+XP1 Y a pc nw sg13_lv_pmos w=1.12u l=0.13u
+XP2 Y b pc nw sg13_lv_pmos w=1.12u l=0.13u
+XN1 Y a x 0 sg13_lv_nmos w=0.74u l=0.13u
+XN2 x b 0 0 sg13_lv_nmos w=0.74u l=0.13u
+CL Y 0 {CL}
+Cx x 0 0.1f
+.tran 0.5p {2*TR+H+4n}
+.measure tran Y30 FIND V(Y) AT=3.0n
+.measure tran Y32 FIND V(Y) AT=3.2n
+.measure tran Y34 FIND V(Y) AT=3.4n
+.measure tran Y38 FIND V(Y) AT=3.8n
+.measure tran Y50 FIND V(Y) AT=5.0n
+.measure tran Y70 FIND V(Y) AT=7.0n
+.end

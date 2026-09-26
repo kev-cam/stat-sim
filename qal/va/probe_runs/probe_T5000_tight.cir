@@ -42,17 +42,15 @@
 * ===========================================================================
 .hdl "/usr/local/src/stat-sim/qal/va/qal_gate.va"
 
-.param TR=20p
+.param TR=5000p
 .param VDD=1.2 CYF=10e-15 ESC=1e15
 .param H='2*TR' TEND='5*TR' TMEAS='4.8*TR' THOLD='2*TR'
 
 * VTP=0.50 FITTED against the T0 stall anchor (qal_nand_adiabatic.py:21-25,
-* "Y stalls ~0.5V at pc=0" -- anchor read AT pc=0 arrival; both silicon and the
-* cell then droop log-t, see README |4.1 re-anchor).
+* "Y stalls ~0.5V at pc=0"); the corrected cell stalls at exactly VTP at all T.
 * RON_P=6229 FITTED at T=1ns only against the A1b law (run_a1b_law.py).
-* NSS=1.85 FITTED (softplus subthreshold slope) on the run_cliff.py anchors.
 * RON_N/VTN/CY/CIN remain UNFIT SEEDS.
-.model qm qal_gate TOPO=1 RON_N=2.5e3 RON_P=6229 VTN=0.35 VTP=0.50 NSS=1.85
+.model qm qal_gate TOPO=1 RON_N=2.5e3 RON_P=6229 VTN=0.35 VTP=0.50
 + VREF=1.2 CY=10f CIN=2f CX=0.1f CW=0.1f GM0=1e-12 ESCALE=1e15
 
 * power-clock: 0 -> VDD over TR, hold 2*TR, -> 0 over TR, then a tail at 0
@@ -73,6 +71,7 @@ BECLO eclo 0 V={ V(ed) + V(est) - V(er) }
 * total energy DRAWN from the rail = net + returned
 BEDRW edrw 0 V={ V(er) + V(eq) }
 
+.OPTIONS TIMEINT RELTOL=1e-6 ABSTOL=1e-13
 .tran {TR/200} {TEND} UIC
 
 .measure tran YSET   FIND V(y)    AT={THOLD}

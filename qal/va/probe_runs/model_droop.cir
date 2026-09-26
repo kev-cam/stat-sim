@@ -1,0 +1,18 @@
+* qal_gate stall droop trajectory at matched offsets after pc=0 (TR=1n)
+.hdl "/usr/local/src/stat-sim/qal/va/qal_gate.va"
+.param TR=1000p
+.param VDD=1.2
+.model qm qal_gate TOPO=1 RON_N=2.5e3 RON_P=6229 VTN=0.35 VTP=0.50 NSS=1.85
++ VREF=1.2 CY=10f CIN=2f CX=0.1f CW=0.1f GM0=1e-12 ESCALE=1e15
+VPC pc 0 PWL(0 0 {TR} {VDD} {3*TR} {VDD} {4*TR} 0 {8*TR} 0)
+VA a 0 0
+VB b 0 {VDD}
+YQAL_GATE X1 a b y pc 0 ed er eq 0 qm
+.tran 5p 8n UIC
+.measure tran Y40 FIND V(y) AT=4.0n
+.measure tran Y42 FIND V(y) AT=4.2n
+.measure tran Y44 FIND V(y) AT=4.4n
+.measure tran Y48 FIND V(y) AT=4.8n
+.measure tran Y60 FIND V(y) AT=6.0n
+.measure tran Y80 FIND V(y) AT=8.0n
+.end

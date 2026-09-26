@@ -9,13 +9,12 @@ V_B_end = 0.37251 / 0.46688 / 0.58291 / 0.7179 V for dV = 0.6/0.8/1.0/1.2 at
 L=400 nH (qal_hop_corrected.json rows). So the apples-to-apples probe is: ramp
 the rail 0 -> V_RAIL over a hop-like 400 ps, hold, and read V(y)/V_RAIL.
 
-EXPECTED QUALITATIVE SHAPE: with the corrected source reference and the fitted
-VTP=0.50, conduction requires rail > VTP -- settling collapses for rails that
-cannot clear it (0.373, 0.467) and completes for rails above it with margin.
-KNOWN SHARPNESS CAVEAT, report it, do not hide it: the cell has NO subthreshold
-conduction (hard overdrive clamp + linear GM0=1e-12 leak), so below the cliff it
-settles to ~0%% where silicon shows 34.8%%/77.1%% -- the transistor's partial
-settling IS subthreshold current, which is a disclosed non-feature (README |7).
+2026-09-26, SUBTHRESHOLD TAIL LANDED: the two below-cliff rows of this probe are
+now THE FIT TARGETS for NSS (softplus slope factor; equal-weight pp-LSQ ->
+NSS=1.85). Post-fit the cliff GRADES: 29.8%%/87.7%% vs 34.8%%/77.1%% (-5.0/+10.6
+pp) -- the graded edge is SHALLOWER than silicon's between the two rails, no
+single n closes both (residuals.json v2, README |4.5). The dV=1.0/1.2 rows stay
+holdouts (99.9%%/100.0%%).
 """
 import os, re, subprocess, sys, time
 
@@ -29,7 +28,7 @@ ANCHOR = [(0.6, 0.37251, 34.8), (0.8, 0.46688, 77.1),
 
 DECK = """* qal_gate cliff probe: INV settling on a rail that peaks at %(vr)gV
 .hdl "%(here)s/qal_gate.va"
-.model qm qal_gate TOPO=0 RON_N=2.5e3 RON_P=6229 VTN=0.35 VTP=0.50
+.model qm qal_gate TOPO=0 RON_N=2.5e3 RON_P=6229 VTN=0.35 VTP=0.50 NSS=1.85
 + VREF=1.2 CY=2f CIN=2f CX=0.1f CW=0.1f GM0=1e-12 ESCALE=1e15
 * hop-like ramp: 0 -> VR over 400 ps (the L=400nH half-cycle), then hold
 VPC pc 0 PWL(0 0 400p %(vr)g 2n %(vr)g)

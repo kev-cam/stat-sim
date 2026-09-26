@@ -66,8 +66,10 @@ def head(t_half_ps=None, tend_ps=2400.0):
     L = ["* behavioural 8-cell bank hop dV=%g L=%gnH" % (DV, L_NH),
          '.hdl "%s/qal_gate.va"' % HERE,
          '.hdl "%s/qal_hop.va"' % HERE,
-         # VTP=0.50 fitted (stall anchor); RON_P=6229 fitted (A1b law @1ns)
-         ".model qm qal_gate TOPO=0 RON_N=2.5e3 RON_P=6229 VTN=0.35 VTP=0.50",
+         # VTP=0.50 fitted (stall anchor); RON_P=6229 fitted (A1b law @1ns);
+         # NSS=1.85 fitted (cliff) -- hop measured INSENSITIVE to it (E_hop
+         # -0.5%, t_zcs 0.0ps): the -72% is C(V), not conduction (README |4.6)
+         ".model qm qal_gate TOPO=0 RON_N=2.5e3 RON_P=6229 VTN=0.35 VTP=0.50 NSS=1.85",
          "+ VREF=1.2 CY=2f CIN=2f CX=0.1f CW=0.1f GM0=1e-12 ESCALE=1e15",
          ".model hm qal_hop RON=%g VON=0.6 VTAU=0.15 CJ=0 GM0=1e-12 ESCALE=1e15" % RON,
          "CAP bka 0 %gf" % (CA_F * 1e15),

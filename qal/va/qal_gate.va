@@ -121,6 +121,20 @@ module qal_gate(a, b, y, pc, gnd, ed, er, eq, eg);
                                         // VTP at every T, so VTP is read directly off the T0 stall
                                         // anchor qal_nand_adiabatic.py:21-25 ("Y stalls ~0.5V at
                                         // pc=0", SG13G2 pMOS w=1.12u). Was 0.35 (seed).
+    parameter real NSS    = 1.85;       // FITTED 2026-09-26: subthreshold slope factor n, equal-weight
+                                        // pp-LSQ over the two below-cliff settle anchors (34.8% @rail
+                                        // 0.37251, 77.1% @0.46688; qal_hop_corrected.json L=400 rows).
+                                        // The third stated target, nc law @5ns=0.034, is INSENSITIVE
+                                        // to NSS (0.0243 flat over NSS 1.5-2.0, MEASURED: the pinned
+                                        // gate keeps the device in strong inversion). Trajectory:
+                                        // s@.3725/s@.4669 = 14.6/77.6 @1.5, 27.4/86.7 @1.8,
+                                        // 29.8/87.8 @1.85, 34.4/89.6 @1.95 -- no single n closes both
+                                        // (model's graded edge shallower than silicon's); relative-err
+                                        // LSQ would pick ~1.95, band 1.85-1.95. Above the ~1.3-1.6
+                                        // textbook expectation: the linear-Vds factor in I=g*Vds
+                                        // under-represents silicon's saturated subthreshold current,
+                                        // and the fit trades slope for it.
+    parameter real PHIT   = 0.02585;    // thermal voltage kT/q at 300 K [V] -- physical constant, NOT a fit knob
     parameter real VREF   = 1.2;        // overdrive normaliser (nominal full swing) [V]
     parameter real CY     = 10e-15;     // FIT output node cap (self+load); with RON_P this IS the RC
     parameter real CIN    = 2e-15;      // FIT input cap presented to the driving stage
@@ -137,6 +151,7 @@ module qal_gate(a, b, y, pc, gnd, ed, er, eq, eg);
 
     real kinv, knand, knor;
     real vtn_e, vtp_e;
+    real nvt, tng, tnb, tnx, tpy, tpw, tpb, tpwy;
     real vs_y, vs_w, vs_wy, vsn_x;
     real ovn_a_g, ovn_b_g, ovn_a_x, ovp_a_y, ovp_a_w, ovp_b_y, ovp_b_wy;
     real gn_a_g, gn_b_g, gn_a_x, gp_a_y, gp_a_w, gp_b_y, gp_b_wy;
@@ -155,14 +170,42 @@ module qal_gate(a, b, y, pc, gnd, ed, er, eq, eg);
         vtp_e = VTP + DELVTO;
 
         // ---- gate-programmed overdrives, each referenced to ITS OWN source --
+        // SUBTHRESHOLD TAIL (2026-09-26, fitted -- see NSS): the hard
+        // `if (ov<0) ov=0` clamp is replaced by a SOFTPLUS effective overdrive
+        //     ov_eff = n*vT * ln(1 + limexp(ov/(n*vT)))
+        // -- linear in ov above threshold (ov_eff -> ov, so the fitted RON_P is
+        // reproduced UNCHANGED in strong inversion: the conduction
+        // normalisation stays 1/(VREF*RON_*), no new K), exponential below
+        // (weak inversion: ov_eff -> n*vT*limexp(ov/(n*vT))), C-infinity at the
+        // knee. This is the physics: weak-inversion current is the exponential
+        // tail of the same channel. Coded in the overflow-safe split form
+        //     ov_eff = max(ov,0) + n*vT*ln(1 + limexp(-|ov|/(n*vT)))
+        // (identically the same function; the exp argument is always <= 0, so
+        // no overflow even at solver-iteration excursions -- PyMS lowers limexp
+        // to a bare std::exp, ginac_emitter.py:418) using only the
+        // clamp-pattern statements the emitter is proven to compile.
+        // WHY (residuals.json v1, all three MEASURED): silicon burns 8.9 fJ of
+        // near/sub-threshold clamping in the 342 ps bank hop (E_hop -72%),
+        // grades the functional cliff where the clamp steps hard (34.8%/77.1%
+        // below-cliff settling vs 0%/0%), and falls sub-1/T at long T.
+        nvt = NSS*PHIT;
         // nMOS (source = gnd for the parallel legs and the NAND lower device)
-        ovn_a_g = V(a,gnd) - vtn_e;   if (ovn_a_g < 0.0) ovn_a_g = 0.0;
-        ovn_b_g = V(b,gnd) - vtn_e;   if (ovn_b_g < 0.0) ovn_b_g = 0.0;
+        ovn_a_g = V(a,gnd) - vtn_e;
+        tng = ovn_a_g;   if (tng < 0.0) tng = -tng;
+        if (ovn_a_g < 0.0) ovn_a_g = 0.0;
+        ovn_a_g = ovn_a_g + nvt*ln(1.0 + limexp(-tng/nvt));
+        ovn_b_g = V(b,gnd) - vtn_e;
+        tnb = ovn_b_g;   if (tnb < 0.0) tnb = -tnb;
+        if (ovn_b_g < 0.0) ovn_b_g = 0.0;
+        ovn_b_g = ovn_b_g + nvt*ln(1.0 + limexp(-tnb/nvt));
         // NAND2 series upper device (y->x): an nMOS source is its LOWER-potential
         // terminal -- x while discharging, but y if the branch ever reverses.
         // Smooth min, same tanh device as the pMOS side below.
         vsn_x   = V(x,gnd) + V(y,x)*0.5*(1.0 - tanh(V(y,x)/VSM));
-        ovn_a_x = V(a,gnd) - vsn_x - vtn_e;   if (ovn_a_x < 0.0) ovn_a_x = 0.0;
+        ovn_a_x = V(a,gnd) - vsn_x - vtn_e;
+        tnx = ovn_a_x;   if (tnx < 0.0) tnx = -tnx;
+        if (ovn_a_x < 0.0) ovn_a_x = 0.0;
+        ovn_a_x = ovn_a_x + nvt*ln(1.0 + limexp(-tnx/nvt));
         // pMOS -- THE QAL LINE, CORRECTED: source is the HIGHER of the ramping
         // rail and the device's own drain (smooth max, knee VSM). While the rail
         // is up the source is V(pc) and the overdrive collapses as the rail
@@ -174,10 +217,22 @@ module qal_gate(a, b, y, pc, gnd, ed, er, eq, eg);
         vs_y  = V(y,gnd) + V(pc,y)*0.5*(1.0 + tanh(V(pc,y)/VSM));
         vs_w  = V(w,gnd) + V(pc,w)*0.5*(1.0 + tanh(V(pc,w)/VSM));
         vs_wy = V(y,gnd) + V(w,y) *0.5*(1.0 + tanh(V(w,y) /VSM));
-        ovp_a_y  = vs_y  - V(a,gnd) - vtp_e;   if (ovp_a_y  < 0.0) ovp_a_y  = 0.0;
-        ovp_a_w  = vs_w  - V(a,gnd) - vtp_e;   if (ovp_a_w  < 0.0) ovp_a_w  = 0.0;
-        ovp_b_y  = vs_y  - V(b,gnd) - vtp_e;   if (ovp_b_y  < 0.0) ovp_b_y  = 0.0;
-        ovp_b_wy = vs_wy - V(b,gnd) - vtp_e;   if (ovp_b_wy < 0.0) ovp_b_wy = 0.0;
+        ovp_a_y  = vs_y  - V(a,gnd) - vtp_e;
+        tpy = ovp_a_y;   if (tpy < 0.0) tpy = -tpy;
+        if (ovp_a_y  < 0.0) ovp_a_y  = 0.0;
+        ovp_a_y  = ovp_a_y  + nvt*ln(1.0 + limexp(-tpy/nvt));
+        ovp_a_w  = vs_w  - V(a,gnd) - vtp_e;
+        tpw = ovp_a_w;   if (tpw < 0.0) tpw = -tpw;
+        if (ovp_a_w  < 0.0) ovp_a_w  = 0.0;
+        ovp_a_w  = ovp_a_w  + nvt*ln(1.0 + limexp(-tpw/nvt));
+        ovp_b_y  = vs_y  - V(b,gnd) - vtp_e;
+        tpb = ovp_b_y;   if (tpb < 0.0) tpb = -tpb;
+        if (ovp_b_y  < 0.0) ovp_b_y  = 0.0;
+        ovp_b_y  = ovp_b_y  + nvt*ln(1.0 + limexp(-tpb/nvt));
+        ovp_b_wy = vs_wy - V(b,gnd) - vtp_e;
+        tpwy = ovp_b_wy; if (tpwy < 0.0) tpwy = -tpwy;
+        if (ovp_b_wy < 0.0) ovp_b_wy = 0.0;
+        ovp_b_wy = ovp_b_wy + nvt*ln(1.0 + limexp(-tpwy/nvt));
 
         gn_a_g  = ovn_a_g /(VREF*RON_N);
         gn_b_g  = ovn_b_g /(VREF*RON_N);

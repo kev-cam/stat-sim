@@ -41,7 +41,9 @@ DECK = """* qal_gate A1b-law probe, NON-COLLAPSING pull-up (gate pinned -1.2V) T
 .param H='2*TR' TEND='5*TR' TMEAS='4.8*TR' THOLD='2*TR'
 * VTP=0.50 is the T4(b)-fitted stall; irrelevant here (overdrive pinned on).
 * RON_P: fitted at T=1ns against A1b E/(C*dV^2)=0.113, holdouts elsewhere.
-.model qm qal_gate TOPO=1 RON_N=2.5e3 RON_P=%(ronp)g VTN=0.35 VTP=0.50
+* NSS=1.85 (fitted, cliff): also irrelevant here -- overdrive >= 0.7V keeps the
+* softplus in its linear region; this grid measured BIT-IDENTICAL pre/post tail.
+.model qm qal_gate TOPO=1 RON_N=2.5e3 RON_P=%(ronp)g VTN=0.35 VTP=0.50 NSS=1.85
 + VREF=1.2 CY=10f CIN=2f CX=0.1f CW=0.1f GM0=1e-12 ESCALE=1e15
 VPC pc 0 PWL(0 0 {TR} {VDD} {TR+H} {VDD} {2*TR+H} 0 {TEND} 0)
 * THE NON-COLLAPSING LINE: leg-a gate at -1.2V -> overdrive >= 0.7V always
