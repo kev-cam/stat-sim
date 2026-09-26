@@ -81,7 +81,17 @@ e_tog_comb = E_COMB_CYC / TOG_COMB_PHYS                    # fJ / gate-output to
 e_ff = E_SEQ_CYC / N_FF_A                                  # fJ/flop/cycle @ alpha_ff
 E0_FF = FLOP_CLKFRAC * e_ff                                # clock-pin floor fJ/f/cyc
 S_FF = (e_ff - E0_FF) / ALPHA_FF_A                         # data slope fJ per unit a
-E_TREE = E_CLK_CYC / N_FF_A                                # fJ/flop/cycle
+E_TREE_ANCHOR = E_CLK_CYC / N_FF_A                         # 44.334 fJ/flop/cyc, single-anchor
+# PINNED 2026-09-26 by 4 additional placed+CTS blocks (commit 160 / schedule 186 / icache 1288 /
+# execA 3704 flops; evidence mylex probes/layopt/evidence/*_cmos, fit etree_scaling.log):
+# the anchor at 188 flops was measuring a FIXED CTS TRUNK FLOOR (~8 pJ/cyc, byte-identical skeleton
+# across all three small blocks), not a per-flop cost -- linear extrapolation REFUTED. Large-N:
+# E_tree/flop = 18.19 + 0.193*(area_per_flop_um2 - 98.9) over the measured shape range; the chip's
+# comb/flop ratio (8.33) sits near execA's (9.68), so central 27.7, band [18.2, 29.8], N*logN guard
+# 37.9. E0_FF unchanged: measured flat 58.80-59.07 across 23x N (0.45% spread).
+E_TREE       = 27.7                                        # fJ/flop/cycle, MEASURED central
+E_TREE_BAND  = (18.2, 29.8)                                # measured shape ends
+E_TREE_GUARD = 37.9                                        # N*logN worst-point extrapolation
 PHYS_OVH = 9.146656 / 6.518550                             # 1.403 (log lines 74-76)
 
 # (b) RTL-net-alpha -> gate-activity multiplier band --------------------------
@@ -204,7 +214,7 @@ def mod_inputs(name, k):
     return a, busy, nbits, note
 
 def compose(name, k, static=None, alpha=None, busy=None, nbits=None, ncyc=None,
-            alpha_ff=None, mix=None):
+            alpha_ff=None, mix=None, etree=E_TREE):
     """Energy of one module for one kernel. Returns dict of fJ totals."""
     s = static if static is not None else MODS[name]["static"]
     ncyc = ncyc if ncyc is not None else NC[k]
@@ -227,8 +237,8 @@ def compose(name, k, static=None, alpha=None, busy=None, nbits=None, ncyc=None,
     e_data_hi = nseq * aff_hi * S_FF * ncyc
     e_floor_ug = nseq * E0_FF * ncyc
     e_floor_g  = nseq * E0_FF * busy
-    e_tree_ug = nseq * E_TREE * ncyc
-    e_tree_g  = nseq * E_TREE * busy
+    e_tree_ug = nseq * etree * ncyc
+    e_tree_g  = nseq * etree * busy
     tw = ncyc * T_CLK
     e_leak = (ncomb * PHYS_CELL_INFL * LEAK_COMB[1] + nseq * LEAK_DFF
               + SRAM_BITS.get(name, 0) * LEAK_SRAM_BIT) * tw * 1e15
@@ -295,8 +305,9 @@ say("                %.1f measured comb-net toggles/cycle (phys VCD, 4921 comb c
 say("  E0_ff       = %7.3f fJ / flop / cycle  (clock-pin floor, %.3f%% of seq @ alpha_ff=%.4f)"
     % (E0_FF, 100 * FLOP_CLKFRAC, ALPHA_FF_A))
 say("  S_ff        = %7.3f fJ / flop / unit-alpha (data term slope)" % S_FF)
-say("  E_tree      = %7.3f fJ / flop / cycle  (53 CTS cells / 188 flops; ASSUMED linear in flops)"
-    % E_TREE)
+say("  E_tree      = %7.3f fJ / flop / cycle  PINNED by 5 placed blocks (band %.1f-%.1f, guard %.1f;"
+    % (E_TREE, E_TREE_BAND[0], E_TREE_BAND[1], E_TREE_GUARD))
+say("                anchor's 44.334 was a small-N trunk-floor artifact -- linear extrapolation refuted)")
 say("  phys ovh    = x%.3f over synth-only -- INCLUDED (coefficients are physical-netlist)"
     % PHYS_OVH)
 say("  C_comb_ALU  = x%.3f transistor/liberty comb correction (power-weighted, anchor mix)"
@@ -333,7 +344,8 @@ say("""
 (e) INSTRUMENT CHECK -- composer over the ALU's OWN census + OWN measured activity""")
 chk = compose("ANCHOR", "hello", static=dict(comb=N_GEN_COMB_A, seq=188, mix=MIX_ALU),
               alpha=ALPHA_RTL_A, busy=int(rtl["cycles"]), nbits=rtl["nbits"],
-              ncyc=rtl["cycles"], alpha_ff=ALPHA_FF_A, mix=MIX_ALU)
+              ncyc=rtl["cycles"], alpha_ff=ALPHA_FF_A, mix=MIX_ALU,
+              etree=E_TREE_ANCHOR)  # the anchor's own 188-flop tree IS the trunk-floor regime
 pj_cyc = chk["lib_ungated"] / rtl["cycles"] / 1e3
 pj_op = pj_cyc * (2149.5 / NOPS_ANCHOR)
 say("  composed (liberty, ungated): %.3f pJ/cycle -> %.3f pJ/op   TARGET 43.447 / 46.671"
