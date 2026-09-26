@@ -1,5 +1,5 @@
 ============================================================================================================
-EVENT-DRIVEN ENERGY COMPOSITION -- whole Vortex (mini), kernels hello/saxpy/sgemm
+EVENT-DRIVEN ENERGY COMPOSITION -- whole Vortex (mini), kernels hello/saxpy/sgemm/fpsat_fma/fpsat_div
 ============================================================================================================
 
 (a) CALIBRATED COEFFICIENTS (anchor = placed+CTS nulex alu_top, SG13G2, 4.75 ns, real VCD;
@@ -49,6 +49,8 @@ kernel      cycles |  lib-ungated    lib-gated corr-ungated   corr-gated |    co
 hello        40896 |    150.25 uJ     33.15 uJ    138.04 uJ     31.85 uJ |   31.32-   33.12 uJ |   8.847e-09
 saxpy      3846785 |  14327.49 uJ   6084.27 uJ  13322.34 uJ   5846.75 uJ | 5748.91- 6077.30 uJ |   1.624e-06
 sgemm      4186487 |  15624.79 uJ   7176.13 uJ  14551.31 uJ   6889.42 uJ | 6777.79- 7120.00 uJ |   1.914e-06
+fpsat_fma    1612524 |   6030.29 uJ   2521.41 uJ   5625.73 uJ   2443.61 uJ | 2395.96- 2510.73 uJ |   6.788e-07
+fpsat_div    1385575 |   5217.79 uJ   1474.19 uJ   4900.36 uJ   1505.39 uJ | 1449.90- 1552.75 uJ |   4.182e-07
 
 hello   corrected-gated split: comb   8.4%  seq-data  3.3%  clk-floor  30.5%  tree  57.7%  leak  0.0%   (+SRAM access bound 0.30-0.99 uJ)
 hello   ungated->gated saves 76.9% of corrected total; avg power (corr-gated) 164.0 mW @ 211 MHz
@@ -56,6 +58,10 @@ saxpy   corrected-gated split: comb   8.5%  seq-data  3.3%  clk-floor  30.5%  tr
 saxpy   ungated->gated saves 56.1% of corrected total; avg power (corr-gated) 320.0 mW @ 211 MHz
 sgemm   corrected-gated split: comb   8.3%  seq-data  3.4%  clk-floor  30.6%  tree  57.8%  leak  0.0%   (+SRAM access bound 59.05-196.61 uJ)
 sgemm   ungated->gated saves 52.7% of corrected total; avg power (corr-gated) 346.4 mW @ 211 MHz
+fpsat_fma corrected-gated split: comb   9.9%  seq-data  3.6%  clk-floor  29.9%  tree  56.6%  leak  0.0%   (+SRAM access bound 23.10-76.90 uJ)
+fpsat_fma ungated->gated saves 56.6% of corrected total; avg power (corr-gated) 319.0 mW @ 211 MHz
+fpsat_div corrected-gated split: comb  18.8%  seq-data  4.5%  clk-floor  26.5%  tree  50.2%  leak  0.0%   (+SRAM access bound 11.36-37.83 uJ)
+fpsat_div ungated->gated saves 69.3% of corrected total; avg power (corr-gated) 228.7 mW @ 211 MHz
 
 PER-MODULE TABLE, per kernel: top 15 leaves by corrected-gated energy
 (E in nJ; split %% of module corr-gated: C=comb S=seq-data F=clk-floor T=tree L=leak;
@@ -111,23 +117,57 @@ commit             71839.3   1.0% |  64833.7  67103.0- 81411.6 | 34/ 6/21/40/ 0 
 mem_arb            64935.7   0.9% |  68543.0  64201.1- 67657.8 |  6/ 4/31/59/ 0 |   343.51   0.045 | 0.0015
 schedule           64324.4   0.9% |  67154.2  63034.8- 66924.6 | 10/ 1/31/58/ 0 |    20.00   0.768 | 0.0079
 fetch              40650.5   0.6% |  36098.9  37674.2- 48951.4 | 37/ 5/20/38/ 0 |    11.07   0.877 | 0.0626
+--- fpsat_fma (1612524 cycles) ----------------------------------------------------------------------
+module            corrE nJ  share |   lib nJ            band nJ |  C/ S/ F/ T/ L | pJ/busycyc   duty2 | alpha
+fpu_unit         1477866.2  60.5% | 1530866.1 1448017.4-1500379.0 | 10/ 2/30/57/ 0 |   937.05   0.978 | 0.0208
+issue             741240.0  30.3% | 763914.7 730055.5-773127.8 |  8/ 6/30/56/ 0 |   462.69   0.994 | 0.0599
+core__glue         61562.7   2.5% |  64258.4  60465.6- 61890.6 |  9/ 2/31/58/ 0 |    38.87   0.982 | 0.0190
+icache             46832.2   1.9% |  51041.9  46742.2- 46832.2 |  1/ 2/34/64/ 0 |   124.18   0.234 | 0.0030
+commit             43798.0   1.8% |  38113.5  40444.9- 50574.8 | 39/ 7/19/36/ 0 |    27.59   0.985 | 0.0966
+mem_coalescer      39994.4   1.6% |  41213.3  39071.1- 43135.5 | 12/ 2/30/56/ 0 |    25.25   0.982 | 0.0190
+schedule           16046.0   0.7% |  16753.1  15724.8- 16693.6 | 10/ 1/31/58/ 0 |    20.00   0.497 | 0.0051
+fetch               9119.3   0.4% |   8936.4   8737.6- 10184.1 | 21/ 3/26/50/ 0 |     8.42   0.672 | 0.0208
+decode              1468.4   0.1% |    825.9   1180.8-  2046.1 | 100/ 0/ 0/ 0/ 0 |     1.64   0.556 | 0.0247
+muldiv              1375.4   0.1% |   1413.5   1344.6-  1473.8 | 11/ 2/29/55/ 4 |   203.40   0.004 | 0.0001
+sfu_unit            1089.9   0.0% |    730.2   1002.0-  1096.3 | 41/44/ 5/ 9/ 1 |  1129.48   0.001 | 0.0016
+alu_unit__glue       831.5   0.0% |    889.0    826.3-   831.5 |  3/ 3/32/61/ 0 |    35.41   0.015 | 0.0004
+whole_chip__glue     741.7   0.0% |    817.1    741.5-   741.7 |  0/ 0/35/65/ 0 |     0.47   0.979 | 0.0003
+execute__glue        626.1   0.0% |    672.8    623.1-   626.1 |  2/ 3/33/62/ 0 |     0.40   0.978 | 0.0260
+alu_int              361.9   0.0% |    324.6    338.9-   398.4 | 32/ 6/21/39/ 1 |    38.69   0.006 | 0.0005
+--- fpsat_div (1385575 cycles) ----------------------------------------------------------------------
+module            corrE nJ  share |   lib nJ            band nJ |  C/ S/ F/ T/ L | pJ/busycyc   duty2 | alpha
+fpu_unit         1211165.8  80.5% | 1162764.9 1158941.8-1250554.5 | 22/ 5/25/48/ 0 |  1119.87   0.781 | 0.0423
+issue             197203.6  13.1% | 209681.4 195577.5-201839.6 |  4/ 3/32/60/ 0 |   430.85   0.330 | 0.0101
+core__glue         38707.3   2.6% |  42044.0  38514.4- 38764.9 |  3/ 1/34/63/ 0 |    35.64   0.784 | 0.0039
+mem_coalescer      24611.2   1.6% |  26630.3  24448.9- 25163.5 |  3/ 1/33/63/ 0 |    22.66   0.784 | 0.0039
+icache             12248.9   0.8% |  13358.5  12226.8- 12248.9 |  1/ 1/34/64/ 0 |   124.11   0.071 | 0.0009
+commit              8519.6   0.6% |   7490.8   7892.8-  9786.4 | 38/ 6/19/37/ 0 |    26.73   0.230 | 0.0210
+schedule            3708.4   0.2% |   3690.7   3572.4-  3982.5 | 19/ 2/27/52/ 0 |    22.41   0.119 | 0.0025
+muldiv              3264.7   0.2% |   2961.4   3065.6-  3900.6 | 31/ 4/22/41/ 1 |   268.11   0.009 | 0.0005
+fetch               1850.2   0.1% |   1738.4   1747.3-  2137.1 | 28/ 4/23/44/ 0 |     9.42   0.142 | 0.0065
+alu_unit__glue       832.0   0.1% |    872.3    823.5-   832.0 |  5/ 5/31/58/ 0 |    36.99   0.016 | 0.0008
+dcache               572.5   0.0% |    602.9    567.9-   572.5 |  4/ 3/28/52/13 |   968.78   0.000 | 0.0000
+alu_int              555.1   0.0% |    461.0    508.2-   629.6 | 43/ 8/17/31/ 1 |    48.45   0.008 | 0.0012
+whole_chip__glue     509.1   0.0% |    561.2    509.1-   509.1 |  0/ 0/35/65/ 0 |     0.47   0.783 | 0.0001
+decode               452.5   0.0% |    254.8    364.0-   630.3 | 100/ 0/ 0/ 0/ 0 |     2.40   0.136 | 0.0088
+execute__glue        412.6   0.0% |    452.2    412.1-   412.6 |  1/ 1/34/65/ 0 |     0.38   0.783 | 0.0048
 
 SELECTION-RULE DISCRIMINANTS per leaf (MEASURED static + dynamic evidence -> favoured binding)
 module              comb    seq   SCC | duty2* wwburst meanidl | verdict tags (hard gates first)
-alu_int             4145    247     0 |  0.379     5.5     7.5 | FF-reg-graph->QDI-composable
-muldiv             40421   1809   269 |  0.528    24.0     3.6 | reg-CYCLES(269)->no pure QDI; kernel-swing duty 0.30-0.80; QAL-bank-rich(100%>=32)
-fpu_unit          126333   8732   679 |  0.235     2.9     8.5 | reg-CYCLES(679)->no pure QDI; SRAM(25)->sync interface; QAL-bank-rich(100%>=32)
-lsu_unit            5259   2051    27 |  0.649    11.9     3.6 | reg-CYCLES(27)->no pure QDI; SRAM(1)->sync interface; kernel-swing duty 0.17-0.65
+alu_int             4145    247     0 |  0.379     5.5     7.5 | FF-reg-graph->QDI-composable; kernel-swing duty 0.01-0.38
+muldiv             40421   1809   269 |  0.528    24.0     3.6 | reg-CYCLES(269)->no pure QDI; kernel-swing duty 0.00-0.80; QAL-bank-rich(100%>=32)
+fpu_unit          126333   8732   679 |  0.235     2.9     8.5 | reg-CYCLES(679)->no pure QDI; SRAM(25)->sync interface; kernel-swing duty 0.00-0.98; QAL-bank-rich(100%>=32)
+lsu_unit            5259   2051    27 |  0.649    11.9     3.6 | reg-CYCLES(27)->no pure QDI; SRAM(1)->sync interface; kernel-swing duty 0.00-0.65
 sfu_unit            5167   1667    83 |  0.000     4.2  6255.1 | reg-CYCLES(83)->no pure QDI; SRAM(2)->sync interface; dark->power-gate+sync
-issue              16777   4240   746 |  0.949   619.5     3.7 | reg-CYCLES(746)->no pure QDI; SRAM(6)->sync interface
-schedule            5740    189    73 |  0.768    17.6     2.6 | reg-CYCLES(73)->no pure QDI; SRAM(5)->sync interface
-fetch               1700     68     2 |  0.877   290.9     4.8 | reg-CYCLES(2)->no pure QDI
-decode              1021      0     0 |  0.641     9.0     2.5 | SRAM(1)->sync interface
-commit              3196    160     3 |  0.694    15.1     3.3 | reg-CYCLES(3)->no pure QDI; SRAM(1)->sync interface; kernel-swing duty 0.48-0.81
-lmem_unit           6917   2042    55 |  0.528     7.1     4.2 | reg-CYCLES(55)->no pure QDI; SRAM(4)->sync interface; kernel-swing duty 0.13-0.53
+issue              16777   4240   746 |  0.949   619.5     3.7 | reg-CYCLES(746)->no pure QDI; SRAM(6)->sync interface; kernel-swing duty 0.33-0.99
+schedule            5740    189    73 |  0.768    17.6     2.6 | reg-CYCLES(73)->no pure QDI; SRAM(5)->sync interface; kernel-swing duty 0.12-0.77
+fetch               1700     68     2 |  0.877   290.9     4.8 | reg-CYCLES(2)->no pure QDI; kernel-swing duty 0.14-0.88
+decode              1021      0     0 |  0.641     9.0     2.5 | SRAM(1)->sync interface; kernel-swing duty 0.14-0.64
+commit              3196    160     3 |  0.694    15.1     3.3 | reg-CYCLES(3)->no pure QDI; SRAM(1)->sync interface; kernel-swing duty 0.23-0.98
+lmem_unit           6917   2042    55 |  0.528     7.1     4.2 | reg-CYCLES(55)->no pure QDI; SRAM(4)->sync interface; kernel-swing duty 0.00-0.53
 mem_coalescer       4371    232   201 |    n/a       -       - | reg-CYCLES(201)->no pure QDI
-dcache             38516   8233   576 |  0.476     4.4     2.6 | reg-CYCLES(576)->no pure QDI; SRAM(24)->sync interface; kernel-swing duty 0.16-0.53; QAL-bank-rich(100%>=32)
-icache              2706   1290   148 |  0.698    19.5     2.8 | reg-CYCLES(148)->no pure QDI; SRAM(6)->sync interface
+dcache             38516   8233   576 |  0.476     4.4     2.6 | reg-CYCLES(576)->no pure QDI; SRAM(24)->sync interface; kernel-swing duty 0.00-0.53; QAL-bank-rich(100%>=32)
+icache              2706   1290   148 |  0.698    19.5     2.8 | reg-CYCLES(148)->no pure QDI; SRAM(6)->sync interface; kernel-swing duty 0.07-0.70
 mem_arb            18058   3315    10 |  0.045     8.7    79.2 | reg-CYCLES(10)->no pure QDI; arbitration->sync
 l2                  4909      0     0 |  0.033     8.0    80.1 | comb-only (no clock terms; MUX fabric)
 l3                     7      0     0 |  0.033     8.0    80.1 | comb-only (no clock terms; MUX fabric)

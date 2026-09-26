@@ -41,7 +41,9 @@ NOPS_ANCHOR = 2001.0
 pm = json.load(open(D + "/permodule.json"))
 MODS = pm["modules"]
 NC = {k: v["ncycles"] for k, v in pm["_meta"]["kernels"].items()}
-KERNELS = ["hello", "saxpy", "sgemm"]
+BASE_KERNELS = ["hello", "saxpy", "sgemm"]
+NEW_KERNELS = ["fpsat_fma", "fpsat_div"]   # 2026-09-25 FP-saturation runs
+KERNELS = BASE_KERNELS + NEW_KERNELS
 
 pw = {d["name"].lstrip("\\"): d for d in json.load(open(AL + "/inst_power.json"))}
 typ = json.load(open(D + "/calib/netclass_phys.json"))["typ"]
@@ -280,7 +282,7 @@ def say(s=""):
     print(s); OUTTXT.append(s)
 
 say("=" * 108)
-say("EVENT-DRIVEN ENERGY COMPOSITION -- whole Vortex (mini), kernels hello/saxpy/sgemm")
+say("EVENT-DRIVEN ENERGY COMPOSITION -- whole Vortex (mini), kernels " + "/".join(KERNELS))
 say("=" * 108)
 say("""
 (a) CALIBRATED COEFFICIENTS (anchor = placed+CTS nulex alu_top, SG13G2, 4.75 ns, real VCD;

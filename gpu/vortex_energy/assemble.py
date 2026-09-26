@@ -314,7 +314,9 @@ def ww_burst(bhist, maxburst):
         num += r * r * n; den += r * n
     return round(num / den, 2) if den else 0.0
 
-KERNELS = ["hello", "saxpy", "sgemm"]
+BASE_KERNELS = ["hello", "saxpy", "sgemm"]          # the original 3 (checks pinned)
+NEW_KERNELS = ["fpsat_fma", "fpsat_div"]            # 2026-09-25 FP-saturation runs
+KERNELS = BASE_KERNELS + NEW_KERNELS
 ACT, NC = {}, {}
 for k in KERNELS:
     NC[k], ACT[k] = load_act(os.path.join(ACT_DIR, k + ".tsv"))
@@ -416,23 +418,25 @@ print("SANITY CHECKS")
 print("=" * 100)
 ok_all = True
 
-# (1) chip totals reproduce known duty/alpha
-EXP = dict(hello=(0.307, 0.0042), saxpy=(0.643, 0.0080), sgemm=(0.793, 0.0094))
+# (1) chip totals reproduce known duty/alpha (BASE pinned to campaign facts;
+#     NEW pinned to the kernel agent's independently-computed rep_fpsat.txt)
+EXP = dict(hello=(0.307, 0.0042), saxpy=(0.643, 0.0080), sgemm=(0.793, 0.0094),
+           fpsat_fma=(0.979, 0.01245), fpsat_div=(0.783, 0.01841))
 for k in KERNELS:
     d = modules["whole_chip"]["dynamic"][k]
     duty, alpha = d["duty2"], d["alpha"]
     e = EXP[k]
     ok = abs(duty - e[0]) < 0.0006 and abs(alpha - e[1]) < 0.00006
     ok_all &= ok
-    print("[%s] chip %-5s: duty2=%.4f (expect %.3f)  alpha=%.5f (expect %.4f)  ncycles=%d"
+    print("[%s] chip %-9s: duty2=%.4f (expect %.3f)  alpha=%.5f (expect %.5f)  ncycles=%d"
           % ("OK" if ok else "FAIL", k, duty, e[0], alpha, e[1], NC[k]))
 
-# (2) work-weighted burst vs quoted 10.3/13.4/31.0
+# (2) work-weighted burst vs quoted 10.3/13.4/31.0 (BASE only; NEW informational)
 EXP_WW = dict(hello=10.3, saxpy=13.4, sgemm=31.0)
 for k in KERNELS:
     ww = modules["whole_chip"]["dynamic"][k]["work_weighted_burst2"]
-    print("[note] chip %-5s work-weighted burst (capped-midpoint bins) = %.2f  (campaign quote %.1f)"
-          % (k, ww, EXP_WW[k]))
+    q = ("(campaign quote %.1f)" % EXP_WW[k]) if k in EXP_WW else "(new kernel, no prior quote)"
+    print("[note] chip %-9s work-weighted burst (capped-midpoint bins) = %.2f  %s" % (k, ww, q))
 
 # (3) cell totals
 s = static["whole_chip"]
@@ -453,21 +457,30 @@ for cls in ("comb", "seq", "mem"):
           % ("OK" if ok else "FAIL", cls, tot, static["whole_chip"][cls],
              modules["whole_chip__glue"]["static"][cls]))
 
-# (5) FPU duty by kernel (the headline block)
-fd = [modules["fpu_unit"]["dynamic"][k]["duty2"] for k in KERNELS]
+# (5) FPU duty by kernel (the headline block); NEW kernels pinned to rep_fpsat.txt
+fd = [modules["fpu_unit"]["dynamic"][k]["duty2"] for k in BASE_KERNELS]
 ok = abs(fd[0] - 0.000) < 0.001 and abs(fd[1] - 0.032) < 0.001 and abs(fd[2] - 0.235) < 0.001
 ok_all &= ok
 print("[%s] fpu_unit duty2 h/s/g = %.3f/%.3f/%.3f (expect .000/.032/.235)"
       % ("OK" if ok else "FAIL", *fd))
+fn = [modules["fpu_unit"]["dynamic"][k]["duty2"] for k in NEW_KERNELS]
+ok = abs(fn[0] - 0.9781) < 0.001 and abs(fn[1] - 0.7806) < 0.001
+ok_all &= ok
+print("[%s] fpu_unit duty2 fpsat_fma/fpsat_div = %.4f/%.4f (expect .9781/.7806 per rep_fpsat.txt)"
+      % ("OK" if ok else "FAIL", *fn))
 
-# (6) the 63-of-431 dark-silicon fact
+# (6) the 63-of-431 dark-silicon fact (pinned over the BASE 3 kernels, as quoted)
 big_scopes = [p for p in ACT["hello"] if int(ACT["hello"][p][2]) >= 500]
 never = [p for p in big_scopes
-         if all(int(ACT[k][p][14]) / NC[k] < 0.001 for k in KERNELS if p in ACT[k])]
-print("[%s] scopes >=500 bits: %d, never duty2>=0.001 in any kernel: %d (expect 431 / 63)"
+         if all(int(ACT[k][p][14]) / NC[k] < 0.001 for k in BASE_KERNELS if p in ACT[k])]
+print("[%s] scopes >=500 bits: %d, never duty2>=0.001 in base 3 kernels: %d (expect 431 / 63)"
       % ("OK" if (len(big_scopes) == 431 and len(never) == 63) else "FAIL",
          len(big_scopes), len(never)))
 ok_all &= (len(big_scopes) == 431 and len(never) == 63)
+never5 = [p for p in big_scopes
+          if all(int(ACT[k][p][14]) / NC[k] < 0.001 for k in KERNELS if p in ACT[k])]
+print("[note] with fpsat_fma+fpsat_div added, never-active >=500-bit scopes: %d (was 63)"
+      % len(never5))
 
 # (7) join failures
 print("[note] join failures: %d" % len(join_failures))
