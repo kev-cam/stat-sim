@@ -1,0 +1,152 @@
+// ===========================================================================
+// qal_gate_dr.va -- behavioral QAL gate, DUAL-RAIL ECRL (recovering) variant.
+//
+// SEPARATE FILE from qal_gate.va because PyMS registers only the FIRST module in
+// a .va file (MEASURED 2026-09-24: a two-module probe registered module 1 and
+// left module 2 unbound -> "Unrecognized parameter B for device YMM_TWO!X2").
+// So "variant" cannot be a parameter on one module: the Y-device port list is
+// positional and (yt,yf) replaces y.
+//
+// STRUCTURE -- mirrors the transistor reference generator qal_ecrl_gate.py:56-64
+// exactly, so the two can be compared device-for-device:
+//     pMOS cross-coupled recovery pair:  pc -> yt gated by yf
+//                                        pc -> yf gated by yt
+//     N-tree on yt : an || bn  (parallel)  -> yt held low when a*b = 0
+//     N-tree on yf : a  &  b   (series)    -> yf held low when a*b = 1
+// => yt = a AND b, yf = NAND(a,b). Both polarities come out of one cell, which
+// is the point of dual rail: OR2/NOR2 are the same cell with complemented
+// inputs (De Morgan), no extra stage.
+//
+// pMOS bulk is tied to pc in the reference (qal_ecrl_gate.py:57-58, "bulk=pc"),
+// so there is exactly ONE supply port and the energy balance closes on it. That
+// is the whole reason this structure was chosen as the recovering reference:
+// qal_nand_tt_11.cir:6 has a SECOND fixed-well port (Vnw) left out of its
+// pc-only integral, which is why qal_nand_adiabatic.py:27-34 calls its own
+// absolute energies CONTAMINATED. This cell likewise has one supply port.
+//
+// WHY DUAL RAIL IS HERE AT ALL -- two different reasons, do not conflate them:
+//  * NOT needed for logic completeness. qal_a1f_inductive.py:68 / :77-78 and
+//    qal_nand_adiabatic.py:18-19,36-37 (user-corrected): a real static gate
+//    SETTLES and has gain, so gate TYPE is unrestricted and single-ended is
+//    complete. qal_gate.va covers that case.
+//  * REQUIRED for the POWER-DELIVERY mechanism. qal_twobank.py:24-32: the fixed
+//    Cfly top-up only lands every bank at dV if the per-bank charge is
+//    DATA-INDEPENDENT (measured single-rail 100 % modulated vs dual-rail 0 %,
+//    qal_a1f_inductive.py:76). Dual rail makes the draw constant because exactly
+//    one of yt/yf charges each beat, whatever the data.
+//    That data-independence is a property this model must be TESTED for, not
+//    asserted -- it is validation test T4(c), a GO/NO-GO, and the probe
+//    qal_gate_dr_probe.cir measures it over all four input patterns.
+//
+// KNOWN LIMIT OF THIS STRUCTURE, PREDICTED BY THE MODEL AND NOT YET CHECKED
+// AGAINST TRANSISTORS: the cross-coupled pull-up of yt is gated by yf, which is
+// near 0 while the rail is high, so its overdrive is V(pc) - V(yf) - VTP and it
+// still COLLAPSES when the rail falls below |Vtp|. So ECRL here is predicted to
+// strand charge at ~|Vtp| just as the single-ended cell does, i.e. cross-coupling
+// fixes the LOGIC (both polarities, restoring) but does NOT by itself buy
+// complete recovery. MEASURED in this session on qal_gate.va: a pull-up whose
+// overdrive cannot collapse recovers 96.6 % and strands ~0 V, while the
+// rail-referenced one recovers 65.4 % and strands 0.499 V at T=5 ns. Whether the
+// real ECRL AND2 behaves as predicted is exactly what qal_ecrl_gate.py is for --
+// and IT HAS NOT PRODUCED NUMBERS YET (see README.md), so the recovered-fraction
+// of this variant has NO transistor nominal to be fitted against. Do not quote it.
+//
+// Energy accounting, PyMS rules, and deck requirements: identical to
+// qal_gate.va -- see that file's header. Every ddt() alone in its contribution;
+// UIC mandatory; GM0/VTHR names, never `gmin`/`vt`.
+// ===========================================================================
+`include "disciplines.vams"
+
+module dr_all(a, an, b, bn, yt, yf, pc, gnd, ed, er, eq, eg);
+    inout a, an, b, bn, yt, yf, pc, gnd, ed, er, eq, eg;
+    electrical a, an, b, bn, yt, yf, pc, gnd, ed, er, eq, eg;
+    electrical s1;                      // series node of the yf pull-down (a & b)
+
+    parameter real RON_N  = 2.5e3;      // FIT nMOS leg on-resistance at full overdrive
+    parameter real RON_P  = 5.0e3;      // FIT pMOS cross-coupled leg on-resistance
+    parameter real VTN    = 0.35;       // FIT
+    parameter real VTP    = 0.35;       // FIT |Vtp| -- sets the recovery stall
+    parameter real VREF   = 1.2;        // overdrive normaliser
+    parameter real CY     = 10e-15;     // FIT per-rail output cap (self+load)
+    parameter real CIN    = 2e-15;      // FIT input cap per input node
+    parameter real CS     = 0.1e-15;    // series-node cap (convergence)
+    parameter real GM0    = 1e-12;      // leak / DC anchor  (NOT 'gmin')
+    parameter real ESCALE = 1e15;       // 1e15 -> monitors read fJ
+    parameter real GLK_E  = 1e-12;      // integrator-node DC anchor
+    parameter real DELVTO = 0.0;        // per-instance Vt offset for mismatch MC (T9)
+
+    real vtn_e, vtp_e;
+    real ovp_t, ovp_f, ovn_an, ovn_bn, ovn_a_s1, ovn_b;
+    real gp_t, gp_f, gn_an, gn_bn, gn_a_s1, gn_b;
+    real ip_t, ip_f, in_an, in_bn, in_a, in_b;
+    real il_t, il_f, il_s;
+    real i_pc, pdiss, prail, pret;
+
+    analog begin
+        vtn_e = VTN + DELVTO;
+        vtp_e = VTP + DELVTO;
+
+        // ---- cross-coupled pull-ups: each gated by the OPPOSITE output, and
+        // each referenced to the INSTANTANEOUS rail (the QAL line).
+        ovp_t = V(pc,yf) - vtp_e;    if (ovp_t < 0.0) ovp_t = 0.0;
+        ovp_f = V(pc,yt) - vtp_e;    if (ovp_f < 0.0) ovp_f = 0.0;
+
+        // ---- N-tree on yt: an || bn (both sources at gnd)
+        ovn_an = V(an,gnd) - vtn_e;  if (ovn_an < 0.0) ovn_an = 0.0;
+        ovn_bn = V(bn,gnd) - vtn_e;  if (ovn_bn < 0.0) ovn_bn = 0.0;
+        // ---- N-tree on yf: a & b in series (upper source = s1, lower = gnd)
+        ovn_a_s1 = V(a,s1)  - vtn_e; if (ovn_a_s1 < 0.0) ovn_a_s1 = 0.0;
+        ovn_b    = V(b,gnd) - vtn_e; if (ovn_b    < 0.0) ovn_b    = 0.0;
+
+        gp_t    = ovp_t   /(VREF*RON_P);
+        gp_f    = ovp_f   /(VREF*RON_P);
+        gn_an   = ovn_an  /(VREF*RON_N);
+        gn_bn   = ovn_bn  /(VREF*RON_N);
+        gn_a_s1 = ovn_a_s1/(VREF*RON_N);
+        gn_b    = ovn_b   /(VREF*RON_N);
+
+        ip_t  = gp_t*V(pc,yt);
+        ip_f  = gp_f*V(pc,yf);
+        in_an = gn_an*V(yt,gnd);
+        in_bn = gn_bn*V(yt,gnd);
+        in_a  = gn_a_s1*V(yf,s1);
+        in_b  = gn_b*V(s1,gnd);
+        il_t  = GM0*V(yt,gnd);
+        il_f  = GM0*V(yf,gnd);
+        il_s  = GM0*V(s1,gnd);
+
+        I(pc,yt)  <+ ip_t;
+        I(pc,yf)  <+ ip_f;
+        I(yt,gnd) <+ in_an + in_bn + il_t;
+        I(yf,s1)  <+ in_a;
+        I(s1,gnd) <+ in_b + il_s;
+        I(yf,gnd) <+ il_f;
+
+        // ---- capacitances: EACH ddt ALONE in its own contribution -----------
+        I(yt,gnd) <+ ddt(CY*V(yt,gnd));
+        I(yf,gnd) <+ ddt(CY*V(yf,gnd));
+        I(s1,gnd) <+ ddt(CS*V(s1,gnd));
+        I(a,gnd)  <+ ddt(CIN*V(a,gnd));
+        I(an,gnd) <+ ddt(CIN*V(an,gnd));
+        I(b,gnd)  <+ ddt(CIN*V(b,gnd));
+        I(bn,gnd) <+ ddt(CIN*V(bn,gnd));
+
+        // ================= ENERGY: current integrals, not formulas ==========
+        i_pc  = ip_t + ip_f;
+        pdiss = ip_t*V(pc,yt) + ip_f*V(pc,yf)
+              + (in_an + in_bn)*V(yt,gnd) + in_a*V(yf,s1) + in_b*V(s1,gnd)
+              + il_t*V(yt,gnd) + il_f*V(yf,gnd) + il_s*V(s1,gnd);
+        prail = V(pc,gnd)*i_pc;
+        pret  = -prail;   if (pret < 0.0) pret = 0.0;
+
+        I(ed,eg) <+ ddt(1.0*V(ed,eg));
+        I(ed,eg) <+ -ESCALE*pdiss;
+        I(ed,eg) <+ GLK_E*V(ed,eg);
+        I(er,eg) <+ ddt(1.0*V(er,eg));
+        I(er,eg) <+ -ESCALE*prail;
+        I(er,eg) <+ GLK_E*V(er,eg);
+        I(eq,eg) <+ ddt(1.0*V(eq,eg));
+        I(eq,eg) <+ -ESCALE*pret;
+        I(eq,eg) <+ GLK_E*V(eq,eg);
+    end
+endmodule

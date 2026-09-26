@@ -1,0 +1,85 @@
+* ===========================================================================
+* qal_gate_probe.cir -- exercise ONE qal_gate over a power-clock ramp.
+*
+* PURPOSE: measure the settle-loss-vs-ramp-time curve of the behavioural QAL
+* cell so it can be held against the A1b MEASURED transistor law
+* (/usr/local/src/stat-sim/qal/qal_a1b.py:44-46).
+*
+* SWEEP MECHANISM: this deck is ONE ramp time, set by .param TR on the line
+* below. run_probe.sh rewrites that single line to walk the A1b T grid
+* (20/50/100/200/500/1000/2000/5000 ps) and collects the .mt0 files -- the same
+* generate-a-deck-per-T pattern as qal_a1b.py:49-63. Xyce .STEP is NOT used
+* because the transient stop time itself scales with TR.
+*
+* OPERATING POINT: TOPO=1 (NAND2) with a=0, b=Vdd. That turns on EXACTLY ONE
+* pull-up leg (leg a: overdrive V(pc)-0-VTP) and leaves leg b off
+* (V(pc)-Vdd-VTP < 0) and the whole series pull-down off (a=0). So the cell is a
+* single on-conductance charging CY from the ramping rail -- the cleanest
+* possible analogue of the A1b primitive, which is a single nMOS switch charging
+* C_L=10fF from a ramping rail (qal_a1b_example.cir:5-8).
+*
+* COMPARABILITY -- READ THIS BEFORE QUOTING ANYTHING:
+*  - A1b ran dV=0.6 V on a BARE nMOS pass switch; this runs dV=1.2 V on a gate
+*    pull-up. Absolute fJ are therefore NOT comparable. The comparable quantity
+*    is the NORMALISED loss E/(C*dV^2) versus T, i.e. the SHAPE of the law
+*    (1/T fall-off, and saturation toward 1.0 as T -> RC).
+*  - the A1b reference deck at the GATE with ALL supply ports counted does not
+*    exist (it is new-reference-deck #1 in the design). qal_nand_tt_11.cir
+*    integrates only the pc port and leaves the fixed-well Vnw port uncounted,
+*    which is why qal_nand_adiabatic.py:27-34 calls its own absolute energies
+*    CONTAMINATED. This cell has no second supply port, so its balance closes --
+*    but that means it is not yet CALIBRATED to a gate-level transistor nominal.
+*  - RON_*/CY/VT* are UNFIT SEEDS. Numbers from this deck validate MECHANISM
+*    (the accounting closes; charge comes back; the X boundary appears), not
+*    magnitude.
+*
+* MANDATORY DECK RULES (both measured, see README.md):
+*  - UIC on .tran. Without it the DCOP has ddt inactive and solves the
+*    integrator node to Rleak*ESCALE*pdiss (a predecessor probe read 5e23).
+*  - source names must differ from node names: VPC/VA/VB drive pc/a/b. With a
+*    source named the same as its node, Xyce silently returned the source
+*    CURRENT for V(node) (bfit session, measured).
+* ===========================================================================
+.hdl "/usr/local/src/stat-sim/qal/va/qal_gate.va"
+
+.param TR=2000p
+.param VDD=1.2 CYF=10e-15 ESC=1e15
+.param H='2*TR' TEND='5*TR' TMEAS='4.8*TR' THOLD='2*TR'
+
+.model qm qal_gate TOPO=1 RON_N=2.5e3 RON_P=5.0e3 VTN=0.35 VTP=0.35
++ VREF=1.2 CY=10f CIN=2f CX=0.1f CW=0.1f GM0=1e-12 ESCALE=1e15
+
+* power-clock: 0 -> VDD over TR, hold 2*TR, -> 0 over TR, then a tail at 0
+VPC pc 0 PWL(0 0 {TR} {VDD} {TR+H} {VDD} {2*TR+H} 0 {TEND} 0)
+* inputs held valid by the previous stage: a=0 -> pull-up leg a on, leg b off
+VA a 0 0
+VB b 0 {VDD}
+
+YQAL_GATE X1 a b y pc 0 ed er eq 0 qm
+
+* ---- live closure identity (validation test T1), in fJ ---------------------
+* stranded reactive energy still on CY (a QAL gate does NOT return to its
+* initial state, so this term cannot be assumed zero the way qal_a1b.py:10-15
+* assumes it for a full cycle on a passive network)
+BEST  est  0 V={ 0.5*CYF*V(y)*V(y)*ESC }
+* E_rail_net should equal E_diss + stranded.  ECLOSE is the residual, in fJ.
+BECLO eclo 0 V={ V(ed) + V(est) - V(er) }
+* total energy DRAWN from the rail = net + returned
+BEDRW edrw 0 V={ V(er) + V(eq) }
+
+.tran {TR/200} {TEND} UIC
+
+.measure tran YSET   FIND V(y)    AT={THOLD}
+.measure tran YEND   FIND V(y)    AT={TMEAS}
+.measure tran EDISS  FIND V(ed)   AT={TMEAS}
+.measure tran ERAIL  FIND V(er)   AT={TMEAS}
+.measure tran ERET   FIND V(eq)   AT={TMEAS}
+.measure tran EDRAWN FIND V(edrw) AT={TMEAS}
+.measure tran ESTORE FIND V(est)  AT={TMEAS}
+.measure tran ECLOSE FIND V(eclo) AT={TMEAS}
+.measure tran EUPRMP FIND V(er)   AT={TR+H}
+.measure tran YPK    MAX  V(y)
+
+* (.print suppressed by run_probe.py)
+
+.end

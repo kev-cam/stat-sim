@@ -1,0 +1,42 @@
+* behavioural 8-cell bank hop dV=1 L=277.8nH
+.hdl "/usr/local/src/stat-sim/qal/va/qal_gate.va"
+.hdl "/usr/local/src/stat-sim/qal/va/qal_hop.va"
+.model qm qal_gate TOPO=0 RON_N=2.5e3 RON_P=6229 VTN=0.35 VTP=0.50
++ VREF=1.2 CY=2f CIN=2f CX=0.1f CW=0.1f GM0=1e-12 ESCALE=1e15
+.model hm qal_hop RON=15 VON=0.6 VTAU=0.15 CJ=0 GM0=1e-12 ESCALE=1e15
+CAP bka 0 35.979f
+CBB bkb 0 28f
+LT bka mid 277.8n
+RT mid sw 10
+VCT ctl 0 PWL(0 -1.2 48p -1.2 50p 1.2 277.601p 1.2 279.601p -1.2)
+YQAL_HOP XSW sw bkb ctl 0 edsw 0 hm
+VI0 in0 0 1
+YQAL_GATE XG0 in0 in0 o0 bkb 0 ed0 er0 eq0 0 qm
+VI1 in1 0 0
+YQAL_GATE XG1 in1 in1 o1 bkb 0 ed1 er1 eq1 0 qm
+VI2 in2 0 1
+YQAL_GATE XG2 in2 in2 o2 bkb 0 ed2 er2 eq2 0 qm
+VI3 in3 0 0
+YQAL_GATE XG3 in3 in3 o3 bkb 0 ed3 er3 eq3 0 qm
+VI4 in4 0 1
+YQAL_GATE XG4 in4 in4 o4 bkb 0 ed4 er4 eq4 0 qm
+VI5 in5 0 0
+YQAL_GATE XG5 in5 in5 o5 bkb 0 ed5 er5 eq5 0 qm
+VI6 in6 0 1
+YQAL_GATE XG6 in6 in6 o6 bkb 0 ed6 er6 eq6 0 qm
+VI7 in7 0 0
+YQAL_GATE XG7 in7 in7 o7 bkb 0 ed7 er7 eq7 0 qm
+BSED sed 0 V={V(ed0)+V(ed1)+V(ed2)+V(ed3)+V(ed4)+V(ed5)+V(ed6)+V(ed7)}
+BSTB stb 0 V={ 0.5*2.8e-14*V(bkb)*V(bkb)*1e15 + 0.5*2e-15*V(o0)*V(o0)*1e15+0.5*2e-15*V(o1)*V(o1)*1e15+0.5*2e-15*V(o2)*V(o2)*1e15+0.5*2e-15*V(o3)*V(o3)*1e15+0.5*2e-15*V(o4)*V(o4)*1e15+0.5*2e-15*V(o5)*V(o5)*1e15+0.5*2e-15*V(o6)*V(o6)*1e15+0.5*2e-15*V(o7)*V(o7)*1e15 }
+.ic V(bka)=1 V(bkb)=0
+.tran 0.1p 777.601p UIC
+.measure tran VBPK  MAX V(bkb) FROM=50p TO=777.601p
+.measure tran VBEND FIND V(bkb) AT=772.601p
+.measure tran VAEND FIND V(bka) AT=772.601p
+.measure tran IPK   MAX I(LT) FROM=0 TO=777.601p
+.measure tran ESTB  FIND V(stb) AT=772.601p
+.measure tran EDGAT FIND V(sed) AT=772.601p
+.measure tran EDSW  FIND V(edsw) AT=772.601p
+.measure tran O0END FIND V(o0)  AT=772.601p
+.measure tran O1END FIND V(o1)  AT=772.601p
+.end

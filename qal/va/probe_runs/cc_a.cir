@@ -1,0 +1,60 @@
+* ===========================================================================
+* qal_gate_dr_probe.cir -- dual-rail ECRL cell: logic check + the T4(c) GO/NO-GO.
+*
+* T4(c) is the test that decides whether the whole QAL power-delivery story
+* stands: qal_twobank.py:24-32 says a FIXED Cfly top-up only lands every bank at
+* dV if the per-bank charge is DATA-INDEPENDENT. Measured on transistors,
+* single-rail draw is 100 % data-modulated and dual-rail 0 %
+* (qal_a1f_inductive.py:76). So the fitted dual-rail cell must draw the same rail
+* charge for EVERY input pattern, to within 2 %. If it does not, the fixed top-up
+* is invalid. This is a GO/NO-GO, not a tolerance.
+*
+* Patterns are selected by .param AV / BV (0 or 1); the complements are derived,
+* so the deck always presents a legal dual-rail input. run_dr_probe.py walks all
+* four and compares EDRAWN across them.
+*
+* Expected logic (matches the transistor reference qal_ecrl_gate.py:59-64):
+*     yt = a AND b ,  yf = NAND(a,b)   evaluated at the rail hold.
+*
+* Deck rules as in qal_gate_probe.cir: absolute .hdl path, UIC mandatory,
+* source names distinct from node names, no '$' comments on .measure lines
+* (MEASURED: a trailing '$' comment makes Xyce reject the .measure outright).
+* ===========================================================================
+.hdl "/usr/local/src/stat-sim/qal/va/probe_runs/cc_a.va"
+
+.param TR=1000p
+.param AV=1 BV=1
+.param VDD=1.2 CYF=10e-15 ESC=1e15
+.param ANV={1-AV} BNV={1-BV}
+.param H={2*TR} TEND={5*TR} TMEAS={4.8*TR} THOLD={2*TR}
+
+.model qmd cc_a RON_N=2.5e3 RON_P=5.0e3 VTN=0.35 VTP=0.35
++ VREF=1.2 CY=10f CIN=2f CS=0.1f GM0=1e-12 ESCALE=1e15
+
+VPC pc 0 PWL(0 0 {TR} {VDD} {TR+H} {VDD} {2*TR+H} 0 {TEND} 0)
+VA  a  0 {AV*VDD}
+VAN an 0 {ANV*VDD}
+VB  b  0 {BV*VDD}
+VBN bn 0 {BNV*VDD}
+
+YCC_A X1 a an b bn yt yf pc 0 ed er eq 0 qmd
+
+* live closure identity: stranded charge now sits on BOTH output rails
+BEST  est  0 V={ 0.5*CYF*(V(yt)*V(yt) + V(yf)*V(yf))*ESC }
+BECLO eclo 0 V={ V(ed) + V(est) - V(er) }
+BEDRW edrw 0 V={ V(er) + V(eq) }
+
+.tran {TR/200} {TEND} UIC
+
+.measure tran YTSET  FIND V(yt)   AT={THOLD}
+.measure tran YFSET  FIND V(yf)   AT={THOLD}
+.measure tran YTEND  FIND V(yt)   AT={TMEAS}
+.measure tran YFEND  FIND V(yf)   AT={TMEAS}
+.measure tran EDISS  FIND V(ed)   AT={TMEAS}
+.measure tran ERAIL  FIND V(er)   AT={TMEAS}
+.measure tran ERET   FIND V(eq)   AT={TMEAS}
+.measure tran EDRAWN FIND V(edrw) AT={TMEAS}
+.measure tran ESTORE FIND V(est)  AT={TMEAS}
+.measure tran ECLOSE FIND V(eclo) AT={TMEAS}
+
+.end

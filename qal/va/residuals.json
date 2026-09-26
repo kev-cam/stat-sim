@@ -1,0 +1,49 @@
+{
+  "tier": "T1",
+  "date": "2026-09-26",
+  "models": {
+    "qal_gate.va (single-ended settling cell, INV/NAND2/NOR2)": {
+      "verdict": "FIX-FIRST: usable ONLY for per-gate settle terms inside the recorded window; hop energy/timing stay T0-sourced",
+      "fit_provenance": "two 1-D reads against single T0 anchors (NOT bfit runs): VTP=0.50 from the transistor stall anchor (qal_nand_adiabatic.py:21-25); RON_P=6229 at T=1ns only against A1b measured E/(C*dV^2)=0.113. All other rows are holdouts. Skeptic re-ran probe grid 2026-09-26, bit-exact.",
+      "entries": [
+        {"feature": "settle_law E_cyc/(C*dV^2), non-collapsing config", "operating_point": "T=200ps", "T0_anchor": 0.327, "T1_value": 0.3953, "err_pct": 21, "kind": "holdout", "T0_source_file": "qal_a1b.py measured column"},
+        {"feature": "settle_law E_cyc/(C*dV^2)", "operating_point": "T=500ps", "T0_anchor": 0.179, "T1_value": 0.2017, "err_pct": 13, "kind": "holdout", "T0_source_file": "qal_a1b.py"},
+        {"feature": "settle_law E_cyc/(C*dV^2)", "operating_point": "T=1ns", "T0_anchor": 0.113, "T1_value": 0.1107, "err_pct": -2, "kind": "fitted", "T0_source_file": "qal_a1b.py"},
+        {"feature": "settle_law E_cyc/(C*dV^2)", "operating_point": "T=2ns", "T0_anchor": 0.066, "T1_value": 0.0584, "err_pct": -11, "kind": "holdout", "T0_source_file": "qal_a1b.py"},
+        {"feature": "settle_law E_cyc/(C*dV^2)", "operating_point": "T=5ns", "T0_anchor": 0.034, "T1_value": 0.0243, "err_pct": -29, "kind": "holdout", "T0_source_file": "qal_a1b.py", "note": "SHAPE error: model falls clean ~1/T, silicon sub-1/T (missing subthreshold physics); irreducible by one scale parameter"},
+        {"feature": "stall_voltage Y@end", "operating_point": "all T (500ps-5ns)", "T0_anchor": "~0.50 V (Y stalls ~0.5V at pc=0)", "T1_value": "0.4996-0.5058 V, T-independent", "kind": "fitted (VTP)", "T0_source_file": "qal_nand_adiabatic.py:21-25", "note": "PASS at 50 mV bar; pre-source-reference-fix this was an artifact"},
+        {"feature": "functional_cliff location", "operating_point": "400ps hop-like ramp, achieved bank rails 0.3725/0.4669/0.5829/0.7179 V", "T0_anchor": "34.8%/77.1%/100%/100% settle", "T1_value": "0%/0%/100%/100%", "kind": "holdout", "T0_source_file": "run_cliff.py vs T0 hop decks", "note": "cliff LOCATION exactly right (collapse iff rail < VTP=0.50); SHAPE is a hard step where silicon grades -- below-cliff partial settling IS subthreshold conduction, absent from the cell"}
+      ],
+      "validity_window": "T in 500ps-2ns: +/-13% on settle-law energy; degrades to +21% @200ps, -29% @5ns; dV=1.2 single-ended, gate-pinned (non-collapsing) configuration",
+      "energy_provenance": "supply-current integral only (three ddt-on-1F-node integrators fed by i*v of solved branch currents, qal_gate.va:222-251); recovery = the integral running NEGATIVE on the down-ramp; independent rectified integrator agrees to <=0.16%; closure <=0.2%; grep-verified no f_adia / recovery coefficient anywhere"
+    },
+    "qal_hop.va (transfer switch)": {
+      "verdict": "SHIP narrowly: cap-to-cap transfer only",
+      "entries": [
+        {"feature": "per-hop delivery loss", "operating_point": "10x span of series R", "T0_anchor": "measured delivery-loss table", "T1_value": "matches to 0.14 pp worst", "kind": "holdout", "T0_source_file": "qal_hop_corrected.json / T6"}
+      ]
+    },
+    "composed 8-cell bank hop (run_bankhop.py)": {
+      "verdict": "QUANTITATIVE FAIL -- recorded so T2 does NOT source these from T1. Bank-hop energy AND timing at the dV=1.0 design point stay T0-sourced (qal_hop_corrected.json / qal_isocurrent.json).",
+      "entries": [
+        {"feature": "t_zcs", "operating_point": "dV=1.0, L=277.8nH, 8 gates", "T0_anchor": 342.0e-12, "T1_value": 227.6e-12, "unit": "s", "err_pct": -33.5, "kind": "holdout", "T0_source_file": "qal_isocurrent.json dV=1.0 row (regenerated + confirmed bit-exact this session)"},
+        {"feature": "I_peak", "operating_point": "same", "T0_anchor": 195.2e-6, "T1_value": 236.9e-6, "unit": "A", "err_pct": 21, "kind": "holdout"},
+        {"feature": "V_B_end", "operating_point": "same", "T0_anchor": 0.5763, "T1_value": 0.9073, "unit": "V", "err_pct": 57, "kind": "holdout"},
+        {"feature": "E_hop", "operating_point": "same", "T0_anchor": 10.74e-15, "T1_value": 3.02e-15, "unit": "J", "err_pct": -72, "kind": "holdout", "note": "root cause MEASURED on the transistor run: silicon bank peaks at 0.611 V absorbing ~34 fC and burns 8.9 fJ of near/sub-threshold clamping INSIDE the gates during the 342ps event; model books close, so not bookkeeping. Missing physics = subthreshold conduction + nonlinear bank C(V)."}
+      ]
+    },
+    "qal_gate_dr.va (dual-rail ECRL)": {
+      "verdict": "REJECT in current form -- quarantined. eq-port undefined-behaviour defect unexplained AND recovered-fraction anchor never produced (qal_ecrl_gate.py has no numbers): two independent disqualifiers. Source-reference fix applied, convergence re-verified (probe_runs/dr_fixcheck.cir.mt0), magnitudes unusable."
+    }
+  },
+  "speedup_measured": {"bank_hop_8gate": "x26 (0.5s vs 12.95s identical transistor deck; overhead-dominated at this scale)", "probe_runs": "0.22-0.38s vs 12-13s transistor"},
+  "not_captured": [
+    "SUBTHRESHOLD CONDUCTION -- the single most expensive omission, measured three independent ways (hop energy -72% / 3.6x, step-vs-graded cliff, -29% @5ns settle-law tail). Next model-form change; all of README section 4 must be re-validated when it lands.",
+    "nonlinear bank C(V) (knees at device threshold; linear CBANK sails to 0.907V where silicon peaks 0.611V); no pMOS parasitic cap to the rail (10-30% of CL per qal_nand_adiabatic.py:32)",
+    "recovering GENERATOR unbuilt (as-built eta~1/3 per qal_crossover_map.py:33) -- quote as separate explicit line in every QAL block total; wp-scaling of switch parasitics (~1.96 fF/um) lives in that deck-side term",
+    "ZCD: switch timing deck-owned; behavioural zero ~228ps vs silicon 342ps -- hop TIMING stays T0-sourced",
+    "CIN unconstrained (no stage-drives-stage deck); RON_N/VTN unfitted; only INV/NAND2/NOR2 exist",
+    "ESCALE 13-decade matrix-scaling hazard beyond ~8 gates unresolved",
+    "VACASK/ngspice/OpenVAF not installed -- Xyce/PyMS is the only live lane"
+  ]
+}

@@ -1,0 +1,26 @@
+* qal_gate A1b-law probe, NON-COLLAPSING pull-up (gate pinned -1.2V) T=500p
+.hdl "/usr/local/src/stat-sim/qal/va/qal_gate.va"
+.param TR=500p
+.param VDD=1.2 CYF=10e-15 ESC=1e15
+.param H='2*TR' TEND='5*TR' TMEAS='4.8*TR' THOLD='2*TR'
+* VTP=0.50 is the T4(b)-fitted stall; irrelevant here (overdrive pinned on).
+* RON_P: fitted at T=1ns against A1b E/(C*dV^2)=0.113, holdouts elsewhere.
+.model qm qal_gate TOPO=1 RON_N=2.5e3 RON_P=6229 VTN=0.35 VTP=0.50
++ VREF=1.2 CY=10f CIN=2f CX=0.1f CW=0.1f GM0=1e-12 ESCALE=1e15
+VPC pc 0 PWL(0 0 {TR} {VDD} {TR+H} {VDD} {2*TR+H} 0 {TEND} 0)
+* THE NON-COLLAPSING LINE: leg-a gate at -1.2V -> overdrive >= 0.7V always
+VA a 0 -1.2
+VB b 0 {VDD}
+YQAL_GATE X1 a b y pc 0 ed er eq 0 qm
+BEST  est  0 V={ 0.5*CYF*V(y)*V(y)*ESC }
+BECLO eclo 0 V={ V(ed) + V(est) - V(er) }
+BEDRW edrw 0 V={ V(er) + V(eq) }
+.tran {TR/200} {TEND} UIC
+.measure tran YSET   FIND V(y)    AT={THOLD}
+.measure tran YEND   FIND V(y)    AT={TMEAS}
+.measure tran EDISS  FIND V(ed)   AT={TMEAS}
+.measure tran ERAIL  FIND V(er)   AT={TMEAS}
+.measure tran ERET   FIND V(eq)   AT={TMEAS}
+.measure tran EDRAWN FIND V(edrw) AT={TMEAS}
+.measure tran ECLOSE FIND V(eclo) AT={TMEAS}
+.end

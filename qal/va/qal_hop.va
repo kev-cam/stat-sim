@@ -1,0 +1,76 @@
+// ===========================================================================
+// qal_hop.va -- QAL bank-to-bank transfer SWITCH + its loss integrator.
+//
+// This is Module 2 of the QAL behavioural set. It models ONLY the switch
+// conductance, its parasitic capacitance, and the I^2R energy it dissipates.
+//
+// WHAT IS DELIBERATELY *NOT* IN HERE: the inductor L, the damping resistance,
+// the flycaps, and the rails. They stay NETLIST elements. Two reasons, and the
+// first one is not a preference:
+//   1. FORCED. A Verilog-A inductor does not compile under Xyce .hdl/PyMS and
+//      fails SILENTLY-WRONG: a predecessor probe (valind.va) produced a GiNaC
+//      build error ("ginac.cpp:127: 'p' was not declared in this scope"), Xyce
+//      CONTINUED, and the device sat dead while the netlist-inductor reference
+//      rang normally. The build failure appears as a traceback in the log, not
+//      as a netlist error, so a careless run reads as success.
+//   2. CORRECT ANYWAY. It keeps the architecture -- L value, beat phasing,
+//      top-up sizing -- in the deck, which is where every existing QAL reference
+//      deck already expresses it (qal_trackC_hop.cir:5-8,
+//      qal_twobank_recycle_topup.cir:6-16, qal_a1f_ind_cell.cir:7-11) and where a
+//      synthesised block can emit it per hop. The per-hop delivery loss is then
+//      Q-limited and EMERGES from RON + R_L rather than being a coefficient.
+//
+// THE FREEZE IS CONTROL-VOLTAGE DRIVEN, NOT TIME DRIVEN. The reference decks use
+// tanh((TIME - 8p)/TAU) with TAU=5p (qal_trackC_hop.cir:2,8). Here the same tanh
+// soft switch is driven by V(ctl) instead, so the DECK owns the freeze phasing.
+// That matters because qal_a1f_inductive.py:34-46 shows freeze timing is a real
+// design variable (opening early traps 1/2 L I^2; late is gentle), so it must stay
+// where it can be phased rather than being hidden inside the cell. @(cross()) is
+// not an option regardless: the OpenVAF build rejects cross() and PyMS
+// parses-then-ignores it (bfit.py:247-249).
+//
+// PARAMETERS TO FIT
+//   RON   switch on-resistance. MEASURED nominal 60 ohm at w=10u
+//         (qal_trackC.py:31 / qal_trackC_ron.cir, a .dc on a real sg13_lv_nmos at
+//         Vgs=1.2), scaling ~1/W: ~15 at w=40u, ~150 at w=4u.
+//   VON   control threshold; VTAU control softness (volts, the tanh knee)
+//   CJ    junction/parasitic capacitance per terminal (Cmab = 2f in the decks)
+//   GM0   leak / DC anchor  (NOT 'gmin' -- reserved as an Xyce .param name)
+//
+// ENERGY: one integrator node, same ddt-on-a-1F-node mechanism as qal_gate.va
+// (PyMS has no idt()). V(ed) = ESCALE * integral(i*v) dt, so at ESCALE=1e15 it
+// reads fJ directly and a block total is a sum of per-instance current integrals.
+// Only a dissipation integrator is needed here: a switch stores nothing but CJ.
+// ===========================================================================
+`include "disciplines.vams"
+
+module qal_hop(p, q, ctl, gnd, ed, eg);
+    inout p, q, ctl, gnd, ed, eg;
+    electrical p, q, ctl, gnd, ed, eg;
+
+    parameter real RON    = 60.0;       // FIT [ohm] -- measured 60 at w=10u
+    parameter real VON    = 0.6;        // control threshold [V]
+    parameter real VTAU   = 0.15;       // control softness [V] (the tanh knee)
+    parameter real CJ     = 2e-15;      // junction/parasitic cap per terminal [F]
+    parameter real GM0    = 1e-12;      // leak / DC anchor [S]
+    parameter real ESCALE = 1e15;       // 1e15 -> V(ed) reads fJ
+    parameter real GLK_E  = 1e-12;      // integrator-node DC anchor
+
+    real g, isw;
+
+    analog begin
+        // soft conductance switch: closed for V(ctl) >> VON, open for << VON
+        g   = 0.5*(1.0 + tanh((V(ctl,gnd) - VON)/VTAU))/RON + GM0;
+        isw = g*V(p,q);
+        I(p,q) <+ isw;
+
+        // each ddt ALONE in its own contribution (PyMS folds mixed statements)
+        I(p,gnd) <+ ddt(CJ*V(p,gnd));
+        I(q,gnd) <+ ddt(CJ*V(q,gnd));
+
+        // the real per-hop I^2R loss, as a current integral
+        I(ed,eg) <+ ddt(1.0*V(ed,eg));
+        I(ed,eg) <+ -ESCALE*(isw*V(p,q));
+        I(ed,eg) <+ GLK_E*V(ed,eg);
+    end
+endmodule

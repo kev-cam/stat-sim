@@ -1,0 +1,217 @@
+// ===========================================================================
+// qal_gate.va -- behavioral QAL (quasi-adiabatic logic) settling gate.
+//
+// SINGLE-ENDED variant. The dual-rail recovering variant is qal_gate_dr.va --
+// it is a SEPARATE FILE because PyMS registers only the FIRST module in a .va
+// (MEASURED 2026-09-24: a two-module file registered module 1 and left module 2
+//  unbound -> "Unrecognized parameter B for device YMM_TWO!X2").
+//
+// WHAT THIS IS
+//   A CONSERVATIVE (charge-conserving) macromodel: every element is a real
+//   branch between real electrical nodes, and the power-clock `pc` is a real
+//   electrical PORT carrying real current. Because of that, three properties
+//   are STRUCTURAL -- they emerge from the solve, they are not coded:
+//
+//   1. Settle loss scaling with ramp time. A series on-conductance charging CY
+//      from a node ramping dV in time T dissipates \int i^2 R with i ~ CY dV/T,
+//      i.e. E ~ (R*CY/T) * CY dV^2 -- the 1/T adiabatic law. No fitted constant.
+//   2. Charge RETURNED to the rail. When V(pc) falls below V(y) the pull-up
+//      branch current REVERSES and charge physically flows back out the pc
+//      port. This is exactly what a full-swing / VCD / Liberty / alpha*C*V^2
+//      model cannot express, which is the whole reason QAL needs this cell
+//      instead of stat-sim.
+//   3. The un-settled (X) boundary. When T is not >> R*CY the output simply
+//      never reaches dV and the loss saturates at the hard-switch value. The
+//      model cannot silently certify an over-clocked QAL block.
+//
+// THE ONE THING MODELLED EXPLICITLY (it does not emerge):
+//   RAIL-REFERENCED PULL-UP OVERDRIVE. In a CMOS cell the pMOS source sits on a
+//   fixed supply; in a QAL cell it sits on the RAMPING rail, so the pull-up
+//   overdrive is V(pc) - V(gate) - VTP and it collapses as the rail comes down.
+//   That is the measured incomplete-recovery / Vt-stall effect of
+//   /usr/local/src/stat-sim/qal/qal_nand_adiabatic.py:21-25 ("the pMOS-only
+//   pull-up cannot pull Y back below |Vtp| on the DOWN ramp (Y stalls ~0.5V at
+//   pc=0)"). Compare /usr/local/src/sv2ghdl/bfit/tools/stdcell2bfit.py:63-65,
+//   whose CMOS form is PMOS "((vsup-V(gate))/vsup)/ron+gmin": substituting
+//   vsup -> V(pc) is what turns a CMOS behavioural cell into a QAL cell.
+//
+// ENERGY (a current integral, never a formula). Three integrator nodes:
+//   ed : E_dissipated  = ESCALE * \int (sum over EVERY branch of i*v) dt  [rises only]
+//   er : E_rail_net    = ESCALE * \int V(pc,gnd)*i_pc dt   [FALLS when charge returns]
+//   eq : E_returned    = ESCALE * \int max(0, -V(pc,gnd)*i_pc) dt        [rises only]
+//   => E_drawn = V(er) + V(eq);  recovered fraction = V(eq)/(V(er)+V(eq)).
+//   eq exists so recovery is a PER-INSTANCE number rather than a two-timestamp
+//   subtraction: in a real block different gates return charge at different
+//   instants, so a single global up-ramp/down-ramp split is wrong at block level.
+//
+//   CLOSURE IDENTITY (self-check, no SPICE needed -- validation test T1):
+//       E_rail_net  ==  E_diss + [stored reactive energy now - at start]
+//   and for a QAL beat the stored term is the STRANDED charge the Vt stall
+//   leaves on CY, = 1/2*CY*V(y)^2 (+ the negligible CX/CW terms). A QAL gate
+//   does NOT return to its initial state, so unlike qal_a1b.py:10-15 the stored
+//   term must be carried explicitly rather than assumed zero. Carrying it is
+//   what turns the identity into a TEST: two independent integrators that must
+//   agree, so a bookkeeping error cannot hide.
+//
+//   Block-level total is then a SUM OF CURRENT INTEGRALS, in the netlist:
+//       Btot etot 0 V={ V(x1:ed)+V(x2:ed)+ ... +V(hop1:ed) }
+//
+// TOPOLOGY. TOPO selects the cell function with PURE ARITHMETIC weights
+// (Lagrange, no parameter-valued if/else -- so nothing depends on whether PyMS
+// resolves parameter conditionals at codegen or at runtime):
+//       TOPO=0  INV   : 1 pMOS pc->y, 1 nMOS y->gnd, gate a (input b ignored)
+//       TOPO=1  NAND2 : pMOS a||b (pc->y);  nMOS a,b in SERIES (y->x->gnd)
+//       TOPO=2  NOR2  : pMOS a,b in SERIES (pc->w->y);  nMOS a||b (y->gnd)
+// Every branch of all three topologies is present; the two unselected sets are
+// multiplied by exactly 0. Each device's overdrive is referenced to ITS OWN
+// source node, which is what reproduces the series-stack and stall behaviour.
+//
+// PARAMETERS ARE UNFIT SEEDS, NOT SILICON. RON_*/CY/VT* below are placeholders
+// chosen only to put R*CY in the neighbourhood of the A1b-extracted RC ~ 60-85 ps
+// (qal_a1b.py:33-34). They have NOT been through bfit. Do not quote energies
+// from this cell as QAL cell energies until T1-T7 in README.md pass.
+//
+// XYCE/PyMS RULES OBEYED HERE (all measured, see README.md):
+//   * every ddt() ALONE in its contribution -- a statement mixing ddt with a
+//     non-ddt term is silently rewritten as a pure charge contribution
+//     (ginac_emitter.py:1271-1288) and gives a silently wrong answer.
+//   * no idt()/idtmod() (absent from PyMS), no $abstime, no @(cross()),
+//     no $strobe (parsed then SKIPPED, ginac_emitter.py:1159-1163) -- energy is
+//     therefore exposed as electrical NODES, not printed.
+//   * no inductor here: a Verilog-A inductor does not compile under PyMS and the
+//     device goes SILENTLY DEAD. L / damping R / flycaps stay netlist elements.
+//   * parameter names GM0 / VTHR-style, never `gmin` or `vt` (reserved as Xyce
+//     .param names).
+//   * the deck MUST use .tran ... UIC (or .IC on ed/er/eq): with ddt inactive at
+//     the DCOP the operating point starts the integrator at Rleak*ESCALE*pdiss.
+// ===========================================================================
+`include "disciplines.vams"
+
+module nd0(a, b, y, pc, gnd, ed, er, eq, eg);
+    inout a, b, y, pc, gnd, ed, er, eq, eg;
+    electrical a, b, y, pc, gnd, ed, er, eq, eg;
+    electrical x;                       // nMOS series-stack node (NAND2)
+    electrical w;                       // pMOS series-stack node (NOR2)
+
+    // ---- function select ---------------------------------------------------
+    parameter real TOPO   = 1.0;        // 0=INV, 1=NAND2, 2=NOR2
+
+    // ---- parameters to FIT (bfit) ------------------------------------------
+    parameter real RON_N  = 2.5e3;      // FIT nMOS leg on-resistance at full overdrive [ohm]
+    parameter real RON_P  = 5.0e3;      // FIT pMOS leg on-resistance at full overdrive [ohm]
+    parameter real VTN    = 0.35;       // FIT nMOS threshold [V]
+    parameter real VTP    = 0.35;       // FIT |Vtp| -- LOAD-BEARING: sets the recovery stall
+    parameter real VREF   = 1.2;        // overdrive normaliser (nominal full swing) [V]
+    parameter real CY     = 10e-15;     // FIT output node cap (self+load); with RON_P this IS the RC
+    parameter real CIN    = 2e-15;      // FIT input cap presented to the driving stage
+    parameter real CX     = 0.1e-15;    // stack-node cap (convergence) -- cf qal_nand_tt_11.cir:15
+    parameter real CW     = 0.1e-15;    // pMOS stack-node cap (convergence)
+    parameter real GM0    = 1e-12;      // leak / DC anchor conductance [S]  (NOT 'gmin')
+    parameter real ESCALE = 1e15;       // monitor scaling: 1e15 -> V(ed) reads fJ
+    parameter real GLK_E  = 1e-12;      // integrator-node DC anchor (tau = 1/GLK_E s, negligible)
+    parameter real PSCL   = 1e-9;       // smoothing width [W] of the returned-power rectifier
+
+    // ---- per-instance mismatch hook (T9: .SAMPLING + AGAUSS) ---------------
+    parameter real DELVTO = 0.0;        // Vt offset applied to BOTH polarities [V]
+
+    real kinv, knand, knor;
+    real vtn_e, vtp_e;
+    real ovn_a_g, ovn_b_g, ovn_a_x, ovp_a_pc, ovp_b_pc, ovp_b_w;
+    real gn_a_g, gn_b_g, gn_a_x, gp_a_pc, gp_b_pc, gp_b_w;
+    real ip_ay, ip_by, ip_aw, ip_wy;
+    real in_ag, in_bg, in_ayx, in_xg;
+    real il_y, il_x, il_w;
+    real i_pc, pdiss, prail, pret;
+
+    analog begin
+        // ---- topology weights: pure arithmetic, exactly one is 1 -----------
+        kinv  = 0.5*(TOPO - 1.0)*(TOPO - 2.0);
+        knand = -TOPO*(TOPO - 2.0);
+        knor  = 0.5*TOPO*(TOPO - 1.0);
+
+        vtn_e = VTN + DELVTO;
+        vtp_e = VTP + DELVTO;
+
+        // ---- gate-programmed overdrives, each referenced to ITS OWN source --
+        // nMOS (source = gnd, or = x for the upper device of the NAND series)
+        ovn_a_g = V(a,gnd) - vtn_e;   if (ovn_a_g < 0.0) ovn_a_g = 0.0;
+        ovn_b_g = V(b,gnd) - vtn_e;   if (ovn_b_g < 0.0) ovn_b_g = 0.0;
+        ovn_a_x = V(a,x)   - vtn_e;   if (ovn_a_x < 0.0) ovn_a_x = 0.0;
+        // pMOS -- THE QAL LINE: source is the RAMPING RAIL, so the overdrive is
+        // referenced to V(pc) instantaneously and collapses as the rail falls.
+        ovp_a_pc = V(pc,a) - vtp_e;   if (ovp_a_pc < 0.0) ovp_a_pc = 0.0;
+        ovp_b_pc = V(pc,b) - vtp_e;   if (ovp_b_pc < 0.0) ovp_b_pc = 0.0;
+        ovp_b_w  = V(w,b)  - vtp_e;   if (ovp_b_w  < 0.0) ovp_b_w  = 0.0;
+
+        gn_a_g  = ovn_a_g /(VREF*RON_N);
+        gn_b_g  = ovn_b_g /(VREF*RON_N);
+        gn_a_x  = ovn_a_x /(VREF*RON_N);
+        gp_a_pc = ovp_a_pc/(VREF*RON_P);
+        gp_b_pc = ovp_b_pc/(VREF*RON_P);
+        gp_b_w  = ovp_b_w /(VREF*RON_P);
+
+        // ---- branch currents (kept as VARS: reused by the energy integrals) -
+        // pull-up network, source = pc
+        ip_ay = (kinv + knand)*gp_a_pc*V(pc,y);     // INV + NAND2 parallel leg a
+        ip_by = knand*gp_b_pc*V(pc,y);              // NAND2 parallel leg b
+        ip_aw = knor*gp_a_pc*V(pc,w);               // NOR2 series upper (pc->w)
+        ip_wy = knor*gp_b_w *V(w,y);                // NOR2 series lower (w->y)
+        // pull-down network, sink = gnd
+        in_ag  = (kinv + knor)*gn_a_g*V(y,gnd);     // INV + NOR2 parallel leg a
+        in_bg  = knor*gn_b_g*V(y,gnd);              // NOR2 parallel leg b
+        in_ayx = knand*gn_a_x*V(y,x);               // NAND2 series upper (y->x)
+        in_xg  = knand*gn_b_g*V(x,gnd);             // NAND2 series lower (x->gnd)
+        // DC anchors / leak floor -- independent of the topology weights so the
+        // unselected internal node can never float.
+        il_y = GM0*V(y,gnd);
+        il_x = GM0*V(x,gnd);
+        il_w = GM0*V(w,gnd);
+
+        I(pc,y)  <+ ip_ay + ip_by;
+        I(pc,w)  <+ ip_aw;
+        I(w,y)   <+ ip_wy;
+        I(y,gnd) <+ in_ag + in_bg + il_y;
+        I(y,x)   <+ in_ayx;
+        I(x,gnd) <+ in_xg + il_x;
+        I(w,gnd) <+ il_w;
+
+
+        // ---- capacitances: EACH ddt ALONE in its own contribution ----------
+        I(y,gnd) <+ ddt(CY*V(y,gnd));
+        I(x,gnd) <+ ddt(CX*V(x,gnd));
+        I(w,gnd) <+ ddt(CW*V(w,gnd));
+        I(a,gnd) <+ ddt(CIN*V(a,gnd));
+        I(b,gnd) <+ ddt(CIN*V(b,gnd));
+
+        // ================= ENERGY: current integrals, not formulas ==========
+        // total CONDUCTION current leaving the rail port
+        i_pc  = ip_ay + ip_by + ip_aw;
+        // i*v over EVERY dissipative branch in the cell
+        pdiss = (ip_ay + ip_by)*V(pc,y) + ip_aw*V(pc,w) + ip_wy*V(w,y)
+              + (in_ag + in_bg)*V(y,gnd) + in_ayx*V(y,x) + in_xg*V(x,gnd)
+              + il_y*V(y,gnd) + il_x*V(x,gnd) + il_w*V(w,gnd);
+        // v*i AT THE RAIL PORT -- goes NEGATIVE when charge flows back out
+        prail = V(pc,gnd)*i_pc;
+        // returned-power-only rectifier, SMOOTH. A hard "if (pret<0) pret=0" clamp
+        // has a discontinuous derivative exactly at prail=0 -- which is where t=0
+        // sits -- and MEASURED 2026-09-24 it made the dual-rail cell abort with
+        // "Maximum number of failures at time 0" (the single-ended cell survived it
+        // by luck). tanh is the same soft-switch device the reference decks already
+        // use (qal_trackC_hop.cir:8) and is supported by PyMS (ginac_emitter.py:42).
+        // pret -> |prail| for prail << -PSCL, -> 0 for prail >> PSCL, exactly 0 at 0.
+        pret  = -prail*0.5*(1.0 - tanh(prail/PSCL));
+
+        // ddt-on-a-1F-node integrator (PyMS has no idt()). KCL at ed:
+        //   ddt(V(ed,eg)) - ESCALE*pdiss + GLK_E*V(ed,eg) = 0
+        //   => V(ed,eg) = ESCALE * \int pdiss dt
+        I(ed,eg) <+ ddt(1.0*V(ed,eg));
+        I(ed,eg) <+ -ESCALE*pdiss;
+        I(ed,eg) <+ GLK_E*V(ed,eg);
+        I(er,eg) <+ ddt(1.0*V(er,eg));
+        I(er,eg) <+ -ESCALE*prail;
+        I(er,eg) <+ GLK_E*V(er,eg);
+        I(eq,eg) <+ ddt(1.0*V(eq,eg));
+        I(eq,eg) <+ -ESCALE*pret;
+        I(eq,eg) <+ GLK_E*V(eq,eg);
+    end
+endmodule

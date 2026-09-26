@@ -1,0 +1,59 @@
+* ===========================================================================
+* qal_hop_probe.cir -- one inductive bank-to-bank hop through qal_hop, against
+* the MEASURED per-hop delivery loss of qal_trackC.py:32.
+*
+* This is a direct re-build of the transistor/B-source reference deck
+* qal_trackC_hop.cir with ONE substitution: its time-driven behavioural switch
+*     Bsw mab B I={ (0.5*(1+tanh((TIME-8p)/TAU))/RON)*(V(mab)-V(B)) }
+* is replaced by the qal_hop Verilog-A cell driven by a control ramp, so the
+* freeze phasing lives in this deck (VCTL) rather than inside the model.
+* L, the damping R, and the bank caps stay netlist elements -- a Verilog-A
+* inductor does not compile under PyMS (see qal_hop.va).
+*
+* MEASURED TARGET (qal_trackC.py:32), loss per hop vs total series R, where
+* loss = 1/2 C (dV^2 - VAmin^2 - VBpk^2) / (1/2 C dV^2) = 1 - (VAmin^2+VBpk^2)/dV^2:
+*     R(ohm)  Q     loss/hop
+*       15   31.6     6.8%
+*       30   19.8     9.2%
+*       60   11.3    13.6%     (REAL SG13G2 w=10u)
+*       90    7.9    17.4%
+*      150    4.9    24.0%
+* T6 wants these reproduced within 2 percentage points ABSOLUTE.
+*
+* AMBIGUITY IN THE REFERENCE, STATED NOT HIDDEN: qal_trackC.py:10-11 says the loss
+* is plotted against "total series R (Ron + inductor R~10)", but the reference deck
+* qal_trackC_hop.cir:2,6 sets RON=60 AND Rlab=10 (total 70) while the table's row
+* for the real w=10u device is labelled R=60. So it is not certain whether the
+* table's R column is Ron alone or Ron+RL. run_hop_probe.py sweeps the TOTAL series
+* resistance (setting RON = R - RL) and says so; if the reference meant Ron alone,
+* every modelled point shifts by the one 10-ohm step.
+*
+* Deck rules: absolute .hdl path, UIC, source names distinct from node names,
+* no '$' comments on .measure lines.
+* ===========================================================================
+.hdl "/usr/local/src/stat-sim/qal/va/qal_hop.va"
+
+.OPTIONS TIMEINT METHOD=GEAR RELTOL=1e-7 ABSTOL=1e-16 CHGTOL=1e-18
+
+.param DV=0.6 CB=80f LH=25n RL=10 RONSW=30
+
+.model hm qal_hop RON={RONSW} VON=0.6 VTAU=0.15 CJ=2f GM0=1e-12 ESCALE=1e15
+
+C1 a 0 {CB}
+C2 b 0 {CB}
+Lab  a   xab {LH}
+Rlab xab mab {RL}
+Cmab mab 0 2f
+
+* the freeze switch: closed from ~8ps (same instant as the reference deck's tanh)
+VCTL ctl 0 PWL(0 0 6p 0 10p 1.2 200p 1.2)
+YQAL_HOP H1 mab b ctl 0 ed 0 hm
+
+.IC V(a)={DV} V(b)=0 V(mab)={DV}
+.tran 0.05p 130p UIC
+
+.measure tran VBPK  MAX V(b)
+.measure tran VAMIN MIN V(a) FROM=50p TO=130p
+.measure tran ESWL  FIND V(ed) AT=130p
+
+.end
