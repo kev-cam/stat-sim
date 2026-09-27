@@ -1,0 +1,19 @@
+{
+ "_doc": "GATE B pre-registration, written BEFORE any metered hop run exists. The inference under test (v3, qal/va/README.md:483-487 and residuals.json): the iso-current dV=1.0/L=277.8nH hop delivers ~35 fC from bank A while the static slow-ramp bank holds only ~22 fC at the 0.611 V peak; the ~13 fC gap is claimed to be the CELLS' DISSIPATIVE gate current during the 342 ps transient (~8.28 fJ burned inside the gates). That claim is an INFERENCE from elimination + a static charge bound; this measurement confirms or refutes it by metering the cells' supply/ground/input ports separately from the transfer path.",
+ "committed_references": {
+  "row": "qal_isocurrent.json dV=1.0: L=277.8nH t_zcs=342.0ps Ipk=195.19uA V_A_end=0.04853 V_B_end=0.57632 E_hop=10.7416 fJ C_eff=35.979 fF",
+  "iso1000_h.cir.mt0": "EOUTA=17.928 EINB=16.262 fJ (INTEGRAL-measure, known 11-44% under-report risk), QTR=33.823 fC, VBPK=0.61134",
+  "static_from_cv_tr_dv100_prn_trapz": "Q(0.5763)=20.630 fC, Q(0.611)=21.908 fC, Q(1.0)=35.979 fC, E(0.5763)=7.143 fJ, E(1.0)=19.220 fJ",
+  "derived_reference_gap": "Q_delivered_exact = C_A*(1.0-0.04853) = 34.233 fC; gap vs static Q(V_B_end) = 34.233-20.630 = 13.60 fC (the '~13 fC'); README's 8.28 fJ burn arithmetic (15.63-7.35) actually uses the L=400 companion row EINB; the iso row's own integral-based burn estimate is EINB-E_static(V_end) = 16.262-7.143 = 9.12 fJ. The pre-stated energy band is centred on the README's stated 8.28 fJ."
+ },
+ "pre_stated_tolerance": {
+  "T1_charge": "CONFIRM the charge half iff the CELLS' dynamic excess charge -- charge into the cells' supply port over the whole hop event minus the metered slow-ramp static supply-port charge at the same final bank voltage -- is within +/-25% of 13 fC: [9.75, 16.25] fC.",
+  "T2_energy": "CONFIRM the energy half iff the CELLS' dissipated energy -- (supply-port + input-port energy into the cells during the hop) minus (the same-port metered slow-ramp values at the same final voltage) -- is within +/-25% of 8.28 fJ: [6.21, 10.35] fJ.",
+  "T3_closure": "Books must close: metered total charge within 5% of the exact bank-A bookkeeping C_A*(V_Ai-V_Af), and metered total energy within 5% of E_outA_exact = 0.5*C_A*(V_Ai^2-V_Af^2). If closure fails the run is an instrument failure, not a verdict.",
+  "verdict_rule": "CONFIRMED = T1 AND T2 (with T3). PARTIAL = exactly one of T1/T2 (with T3). REFUTED = neither, or the excess charge is shown to land predominantly (>50%) outside the cells (switch/path), with the ledger saying where it actually goes."
+ },
+ "instrument_check_gate": "The metered slow ramp (0V-source ammeters + 1F-cap integrators inserted) must FIRST reproduce the committed calibration: QTOT within 1% of 35.979 fC; E_stored checkpoints within 3% of the committed curve (0.337/1.278/5.562/9.217/13.745/16.386/19.232 fJ at V=0.167..1.0); the metered probe's I(LT) zero within +/-5 ps of 342.0; and the metered hop's headline observables (VBPK, VBEND, VAEND, IPK) within 1% of the committed iso1000_h.cir.mt0. Only then does the hop ledger count.",
+ "method_notes": "All charges/energies by the 1F-cap integrator technique (B-source current into a 1F cap; node voltage IS the integral), NOT '.measure INTEGRAL' (committed under-report trap, qal_isocurrent.py:36-37). Phases: P1 switch-close edge (48-55ps), P2 rail traverse (55-392ps), P3 switch-open edge (392-399ps), P4 isolated hold (399-887ps). Decomposition: per-group (4 hi-in / 4 lo-in cells) supply+ground+input ports; switch/path absorption = integral(I(LT)) - integral(I(into bkb)); gates-present-but-gate-pinned variant (pMOS gates at 1.2V, nMOS gates at 0V, same drive timing) gives the cells' displacement-only floor.",
+ "environment": "PYMS_VAE_CACHE=<agent-private dir seeded with a copy of vae_PSP103VA_581a8f0df871ea72.so>; PYMS_DIR=/usr/local/share/xyce/PyMS; Xyce=/usr/local/src/xyce-build/src/Xyce; deck sources identical to qal_hop_gates.py head().",
+ "date": "2026-09-26"
+}

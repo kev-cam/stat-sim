@@ -1,0 +1,151 @@
+{
+ "_doc": "GATE B RESULT: metered T0 characterization of the committed iso-current hop (dV=1.0, L=277.8nH, switch open at 50+342=392ps as committed). Cells' ports metered (ground returns + inputs; supply derived by block neutrality, validated against direct supply meters to 0.001 fC on the slow ramp). Verdict against gateb/PRE_REGISTERED.json.",
+ "instrument_checks_MEASURED": {
+  "slow_ramp_vs_committed_curve": "Q within +0.04%, E within +/-0.11% at every committed checkpoint; QTOT 35.983 vs 35.979 fC (+0.01%)",
+  "probe_zero_abs_ps": {
+   "metered": 341.34,
+   "committed": 342.0
+  },
+  "hop_headline_vs_iso1000_mt0": {
+   "VBPK": [
+    0.61132,
+    0.61134
+   ],
+   "VBEND": [
+    0.5763,
+    0.57632
+   ],
+   "VAEND": [
+    0.04752,
+    0.04853
+   ],
+   "IPK_uA": [
+    195.19,
+    195.19
+   ],
+   "QTR_fC": [
+    33.799,
+    33.823
+   ],
+   "EOUTA_fJ": [
+    17.924,
+    17.928
+   ],
+   "EINB_fJ": [
+    16.248,
+    16.262
+   ]
+  },
+  "closure_T3": "Q_L integrator 34.268 fC vs exact CA bookkeeping 34.270 fC (0.006%); E_outA integrator 17.948 vs exact 17.949 fJ"
+ },
+ "hop_ledger_fC_fJ_MEASURED": {
+  "phases": "A=turn-on edge(48-55ps), B=traverse(55-392ps), C=turn-off edge(392-399ps), D=hold(399-887ps); cumulative at A/B/C/D",
+  "Q_through_L": [
+   0.015,
+   33.309,
+   32.577,
+   34.268
+  ],
+  "Q_into_cells_total": [
+   8.289,
+   17.194,
+   18.413,
+   20.683
+  ],
+  "Q_into_cells_HI_group": [
+   4.867,
+   7.354,
+   7.819,
+   7.525
+  ],
+  "Q_into_cells_LO_group": [
+   3.422,
+   9.84,
+   10.594,
+   13.158
+  ],
+  "Q_cells_to_ground": [
+   3.968,
+   10.702,
+   11.292,
+   13.269
+  ],
+  "Q_cells_out_via_inputs": [
+   4.321,
+   6.492,
+   7.121,
+   7.414
+  ],
+  "Q_switch_path_absorbed_per_phase": {
+   "turn_on_edge": -8.274,
+   "traverse": 24.389,
+   "turn_off_edge": -1.951,
+   "hold_ring": -0.579,
+   "net": 13.585
+  },
+  "E_supply_into_cells": [
+   1.576,
+   6.116,
+   6.832,
+   8.178
+  ],
+  "E_inputs_into_cells": [
+   -2.741,
+   -3.077,
+   -3.289,
+   -3.144
+  ],
+  "E_R_burn": [
+   0.0,
+   0.057,
+   0.058,
+   0.146
+  ],
+  "E_gate_drives_net_egt": [
+   -14.702,
+   -22.786,
+   -6.129,
+   -6.005
+  ],
+  "E_body_rail_net_ehi": [
+   44.01,
+   31.198,
+   -8.165,
+   -7.765
+  ]
+ },
+ "static_references_from_metered_slow_ramp_MEASURED": {
+  "Q_sup_static_at_Vend_0.5763": 20.633,
+  "E_sup_static_at_Vend": 7.143,
+  "E_inputs_static_at_Vend": -3.144,
+  "Q_gnd_static_at_Vend": 13.233,
+  "Q_sup_static_at_Vbpk_0.611": 21.912
+ },
+ "derived_DERIVED": {
+  "cells_dynamic_excess_charge_fC": 0.05,
+  "cells_conducted_excess_to_ground_fC": 0.035,
+  "cells_dissipated_energy_fJ": 1.035,
+  "switch_path_net_absorption_fC": 13.585,
+  "E_hop_this_run_fJ": 10.806,
+  "E_hop_committed_fine_curve_fJ": 10.804,
+  "E_hop_decomposition_fJ": {
+   "R_series": 0.146,
+   "cells_burn": 1.035,
+   "switch_related_incl_rail_export_and_state_change": 9.625,
+   "stored_static_at_Vend": 7.143,
+   "E_outA_exact": 17.949
+  }
+ },
+ "pinned_variant_MEASURED": {
+  "note": "all cell channels pinned OFF, same drive/timing: displacement-only floor",
+  "Q_into_cells_fC": 15.631,
+  "VBEND": 0.6315,
+  "VBPK": 0.6315,
+  "reading": "~3/4 of the cells' quasi-static intake is off-state displacement; the rest is channel-mediated CL/channel charge -- STORED, not burned. Even with zero cell conduction the bank peaks at 0.63, not the behavioural model's 0.97: the switch dominates either way."
+ },
+ "verdict": "REFUTED against the pre-registered bands: cells' dynamic excess charge = 0.05 fC (band [9.75,16.25]); cells' dissipated energy = 1.04 fJ (band [6.21,10.35]); closure T3 PASS. The ~13 fC gap is the TRANSFER SWITCH's own dynamic charge, not the cells': the 60um transmission gate injects 8.27 fC into the bank at turn-ON (drive feedthrough/channel formation -- visible in the COMMITTED trace as V(bkb)=0.117V at t=50ps before any inductor current), absorbs 24.39 fC of the through-flow during the rail traverse (pMOS channel charge grows as its Vsg rises with the bank; overlap/junction displacement into gt/gtp/vhi), and returns ~2.5 fC at turn-off/ring: net 13.59 fC of the 34.27 fC through-L never reaches the cells. The cells receive 20.68 fC = the static Q(V_end)=20.63 fC + 0.05; crowbar bounded at 0.035 fC. Gate burn is 1.04 fJ, not 8.28: the hop loss is switch-dominated (9.6 of 10.8 fJ).",
+ "what_the_charge_bound_missed": "It compared charge through the INDUCTOR against the static bank curve, assuming everything through L reaches the bank node; the transmission gate between them carries channel+overlap+junction charge of the same order as the whole bank's charge. Also the 22 fC bound was taken at V_B_peak; the end-state comparison point is Q(0.5763)=20.63 fC.",
+ "model_consequence": "v3's suggested next step (heavier CY / stronger cell conduction) is also contradicted: the fix belongs in qal_hop.va (the switch), which today carries NO charge (CJ=0, pure conductance). It needs the transmission gate's drive-feedthrough + channel/overlap charge (tens of fF scale, ~55 fF effective during the traverse). This reproduces silicon's VBpk: model bank absorbs ~34 fC -> 0.97 V; silicon bank absorbs 20.7 fC -> 0.58-0.61 V.",
+ "committed_row_quirk_found": "qal_hop_gates.py probe_zero() returns the ABSOLUTE crossing time (342.0 includes T0=50ps) but hop_deck() reuses it as a duration after T0: every committed hop opens the switch 50ps past the true zero, with I(LT) = -100uA flowing (IZ in the committed mt0). Internally consistent across all committed rows, but 't_zcs' is not zero-current switching.",
+ "date": "2026-09-26"
+}

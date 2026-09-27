@@ -1,0 +1,79 @@
+.hdl "/usr/local/share/xyce/verilog-a/psp103/psp103.va"
+.include "/usr/local/src/kestrel/sim/models/sg13g2_psp103_tt.lib"
+.include "/usr/local/src/stat-sim/qal/sg13lv_compat.sp"
+.OPTIONS TIMEINT METHOD=GEAR RELTOL=1e-6 ABSTOL=1e-15 CHGTOL=1e-17
+VS bkb 0 PWL(0 0 20000p 1)
+VMGH gnh 0 0
+VMGL gnl 0 0
+VI0 in0 0 1
+XP0 o0 in0 bkb bkb sg13_lv_pmos w=1.12u l=0.13u
+XN0 o0 in0 gnh gnh sg13_lv_nmos w=0.74u l=0.13u
+CL0 o0 gnh 2f
+VI1 in1 0 0
+XP1 o1 in1 bkb bkb sg13_lv_pmos w=1.12u l=0.13u
+XN1 o1 in1 gnl gnl sg13_lv_nmos w=0.74u l=0.13u
+CL1 o1 gnl 2f
+VI2 in2 0 1
+XP2 o2 in2 bkb bkb sg13_lv_pmos w=1.12u l=0.13u
+XN2 o2 in2 gnh gnh sg13_lv_nmos w=0.74u l=0.13u
+CL2 o2 gnh 2f
+VI3 in3 0 0
+XP3 o3 in3 bkb bkb sg13_lv_pmos w=1.12u l=0.13u
+XN3 o3 in3 gnl gnl sg13_lv_nmos w=0.74u l=0.13u
+CL3 o3 gnl 2f
+VI4 in4 0 1
+XP4 o4 in4 bkb bkb sg13_lv_pmos w=1.12u l=0.13u
+XN4 o4 in4 gnh gnh sg13_lv_nmos w=0.74u l=0.13u
+CL4 o4 gnh 2f
+VI5 in5 0 0
+XP5 o5 in5 bkb bkb sg13_lv_pmos w=1.12u l=0.13u
+XN5 o5 in5 gnl gnl sg13_lv_nmos w=0.74u l=0.13u
+CL5 o5 gnl 2f
+VI6 in6 0 1
+XP6 o6 in6 bkb bkb sg13_lv_pmos w=1.12u l=0.13u
+XN6 o6 in6 gnh gnh sg13_lv_nmos w=0.74u l=0.13u
+CL6 o6 gnh 2f
+VI7 in7 0 0
+XP7 o7 in7 bkb bkb sg13_lv_pmos w=1.12u l=0.13u
+XN7 o7 in7 gnl gnl sg13_lv_nmos w=0.74u l=0.13u
+CL7 o7 gnl 2f
+CXqsh xqsh 0 1
+BXqsh 0 xqsh I={ I(VMGH)+I(VI0)+I(VI2)+I(VI4)+I(VI6) }
+RXqsh xqsh 0 0.01
+CXqsl xqsl 0 1
+BXqsl 0 xqsl I={ I(VMGL)+I(VI1)+I(VI3)+I(VI5)+I(VI7) }
+RXqsl xqsl 0 0.01
+CXesh xesh 0 1
+BXesh 0 xesh I={ V(bkb)*(I(VMGH)+I(VI0)+I(VI2)+I(VI4)+I(VI6)) }
+RXesh xesh 0 0.01
+CXesl xesl 0 1
+BXesl 0 xesl I={ V(bkb)*(I(VMGL)+I(VI1)+I(VI3)+I(VI5)+I(VI7)) }
+RXesl xesl 0 0.01
+CXqgh xqgh 0 1
+BXqgh 0 xqgh I={ I(VMGH) }
+RXqgh xqgh 0 0.01
+CXqgl xqgl 0 1
+BXqgl 0 xqgl I={ I(VMGL) }
+RXqgl xqgl 0 0.01
+CXqih xqih 0 1
+BXqih 0 xqih I={ -(I(VI0)+I(VI2)+I(VI4)+I(VI6)) }
+RXqih xqih 0 0.01
+CXeih xeih 0 1
+BXeih 0 xeih I={ -(V(in0)*I(VI0)+V(in2)*I(VI2)+V(in4)*I(VI4)+V(in6)*I(VI6)) }
+RXeih xeih 0 0.01
+CXqil xqil 0 1
+BXqil 0 xqil I={ -(I(VI1)+I(VI3)+I(VI5)+I(VI7)) }
+RXqil xqil 0 0.01
+Bp p 0 V={ -V(bkb)*I(VS) }
+Bq q 0 V={ -I(VS) }
+.tran 5p 20400p
+.measure tran E167 INTEGRAL V(p) FROM=0 TO=3340p
+.measure tran E333 INTEGRAL V(p) FROM=0 TO=6660p
+.measure tran E500 INTEGRAL V(p) FROM=0 TO=10000p
+.measure tran E667 INTEGRAL V(p) FROM=0 TO=13340p
+.measure tran E833 INTEGRAL V(p) FROM=0 TO=16660p
+.measure tran E917 INTEGRAL V(p) FROM=0 TO=18340p
+.measure tran E1000 INTEGRAL V(p) FROM=0 TO=20000p
+.measure tran QTOT INTEGRAL V(q) FROM=0 TO=20000p
+.print tran V(bkb) V(xqsh) V(xqsl) V(xesh) V(xesl) V(xqgh) V(xqgl) V(xqih) V(xeih) V(xqil) V(o0) V(o1)
+.end
