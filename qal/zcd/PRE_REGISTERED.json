@@ -1,0 +1,31 @@
+{
+ "_doc": "TRACK 3 pre-registration, written BEFORE any ZCD comparator run exists. Goal: replace the ASSUMED 30-300 fJ/bank/hop zero-current-detector energy in the QAL admission test with a MEASURED number from a real comparator simulated in SG13G2/PSP103 at T0, and restate the admission.",
+ "admission_rule_carried": "N_min = (39.6 + E_ZCD)/(h - 0.0361), h = 0.867 fJ generic basis (SELECTION-RULE.md:148-161). Denominator = 0.8309 fJ.",
+ "pre_stated_bands_fJ_to_N_min": {
+  "E_ZCD=0": 47.66,
+  "E_ZCD<=1.94": "N_min <= 50 (working threshold): the whole 50-400 UNDECIDABLE band collapses to ADMIT-at-working-threshold. Judged unreachable for an armed analog comparator burning bias current across a >=100 ps window; stated so it cannot be moved later.",
+  "E_ZCD<=12.75": "N_min <= 63: the alu_top@fpsat_fma min-bank-63 block (POLYSYNTH.md:120) flips UNDECIDABLE -> bank-criterion PASS",
+  "E_ZCD<=85.0": "N_min <= 150 (confident threshold)",
+  "E_ZCD>=292.8": "N_min >= 400: everything in the old band stays/becomes excluded",
+  "E_ZCD=30_old_low_edge": 83.8,
+  "E_ZCD=300_old_high_edge": 408.7
+ },
+ "signal_facts_MEASURED_from_committed_hop": {
+  "source": "gateb/gb_hop.cir.prn (instrument-checked run, RESULTS.json closure 0.006%)",
+  "true_zero_abs_ps": 340.16,
+  "dI_dt_at_zero_uA_per_ps": -2.075,
+  "sense_element": "the EXISTING 10-ohm series R (RT mid-sw): differential slope 20.7 uV/ps, peak signal I_pk*R = 1.95 mV, zero crossing exactly at I=0",
+  "common_mode_at_zero_V": 0.578,
+  "tg_drop_artifact": "V(SW)-V(BKB) = +0.62 mV residual AT I=0 (switch displacement current) -> sensing across the TG carries a ~30 ps-equivalent systematic; sense across RT instead",
+  "t_zcs_data_spread_ps": "61.6 ps / 16.9% (carried from the campaign record); a fixed detector delay is compensable, spread is not"
+ },
+ "instrument_check_gate": "gb_calib.cir.mt0 reproduced digit-identical to gateb committed (QTOT 35.979 fC); probe zero 341.34 ps abs = gateb metered value. PASSED before any ZCD deck was written.",
+ "acceptance_pre_stated": {
+  "A1_hop_integrity": "with the comparator's input devices attached to mid/sw, the hop must stay committed: V_B_end within 2% of 0.5763, I_pk within 1% of 195.19 uA, same-run I(LT) zero within +/-5 ps of the unloaded deck's zero. FAIL -> the ZCD loading broke the thing it instruments; redesign, do not report.",
+  "A2_energy": "E_det = (1.2V-rail integral by the 1F-cap technique) + (arm-drive net energy, egt convention) per arm-detect-reset cycle, integrated over the WHOLE cycle including re-arm; ideal-PWL arm recovery flagged and a no-recovery bound also reported. Disarmed leakage reported separately as pW, not folded in.",
+  "A3_delay": "fixed delay from same-run true I(LT)=0 to V(zout) rising through 0.6 V; ANY fixed value acceptable (calibratable) PROVIDED the output edge is monotonic full-swing; the delay must TRACK the zero: verified on at least one shifted-t_zcs variant, tracking error < ~10 ps preferred, reported either way.",
+  "A4_offset": "sweep a series input-referred offset source; report Vos at which fire time shifts by 20 ps from the Vos=0 fire time. EXPECTED from the measured slope: ~0.41 mV at the 10-ohm sense -- pre-stating that an untrimmed pair (sigma_os ~ 5-15 mV) will MISS +/-20 ps by an order of magnitude at this sense impedance; if so, that is the first-class finding and the deliverable quantifies the needed sense element / trim instead of forcing a pass."
+ },
+ "environment": "PYMS_VAE_CACHE=<scratchpad>/vae_cache_zcd (private, seeded from gateb cache); PYMS_DIR=/usr/local/share/xyce/PyMS; Xyce=/usr/local/src/xyce-build/src/Xyce; devices sg13_lv via sg13lv_compat.sp; PSP103 via .hdl psp103.va + sg13g2_psp103_tt.lib.",
+ "date": "2026-09-27"
+}

@@ -377,6 +377,54 @@ the ideal-switch case abort at the resonant peak (per your directive; the dampin
   one fixed top-up sustains a uniform wave. So the recycle+topup architecture drives the dual-rail
   requirement, even though a settling logic gate alone doesn't need it.
 
+## Switch sweep — `swsweep/` — the hop's energy lever is the SWITCH (2026-09-27, skeptic-verified)
+
+Of the committed hop's E_hop 10.81 fJ (dV=1.0 iso-current row), series R burns 0.15 fJ, the
+cells 1.04 fJ, and **~9.6 fJ is switch-related** — so the transfer switch was swept at T0
+(TG total width 7.5–120 µm, nMOS-only, 2:1 TG, ±1 µm park device; TRUE-ZCS protocol,
+probe-then-hop per design; pre-registered, `PRE_REGISTERED_SWEEP.json` + `AMENDMENT.md`;
+skeptic recomputed all 14 rows from raw mt0s, 0 mismatches, and re-ran two points — tg15p
+bit-identical). MEASURED results:
+
+- **No interior W-optimum in range**: E_hop_open falls monotonically 11.31 → 10.66 → 9.6 →
+  8.4 → 7.5 fJ from 120 to 7.5 µm (conduction loss never bites at iso-current, ~0.05 fJ flat).
+  The shrink is stopped by rail-drain completeness (VA_open; 7.5 µm FAILS) and, below ~30 µm,
+  by post-open ring — a **1 µm parking nMOS** with its own control phase is REQUIRED there.
+- **Constrained optimum tg15p** (TG 5/10 µm + 1 µm park, 16 µm total vs the committed 60):
+  E_hop_open **8.38 fJ = −21.6%** vs the ring-robust 10.69 fJ anchor, and **8.4% faster**
+  (true zero 266.8 vs 291.3 ps — the zero moves earlier as the switch shrinks; energy and
+  speed improve together). Per-gate-settle **1.048 fJ/gate** (conservative tg30p 1.195).
+  **Three qualifiers travel with that number**: delivered at VBEND 0.676 not the committed
+  0.576 (one-sided completeness reading; by the pre-registered two-sided band the strict
+  optimum is tg60 and 1.343 fJ/gate stands as the committed-swing anchor — iso-swing retune
+  NOT measured); cells burn 1.70 fJ at that swing (swing physics, inside the total);
+  ideal-rails bookkeeping (tg15p imports +7.9 fJ/hop park drive-rail energy — the same
+  convention forgives the committed design's −14.5 fJ export).
+- **nMOS-only FAILS at every width** (rail never drains — source-follower stall, feedthrough
+  pump, post-open droop; its low E numbers are artifacts), as does the 2:1 reduced-pMOS TG.
+- **Committed-record corrections (amendment A2)**: the committed t_zcs=342.0 ps = true zero
+  291.3 ps + a **+50 ps late-open artifact**, benign only at 60 µm whose own ~55 fF parks the
+  interrupted-current ring (the convention does not transfer to smaller switches; the tg15p
+  park restores graceful +50 ps behavior, −0.9% E_hop). Ring-robust anchor restatement:
+  E_hop **10.69 fJ** (vs 10.81 D-snapshot), 1.336 fJ/gate.
+
+## Zero-current detector — `zcd/` — per-hop analog ZCS REFUTED (2026-09-27, skeptic-verified)
+
+The QAL admission carried the ZCD at an ASSUMED 30–300 fJ/bank/hop; a real one was designed
+and measured (3-stage armed comparator, SG13G2/PSP103, 1.2 V rail, pre-registered bands).
+Result: the 74 µV/ps zero-crossing signal **defeats the simple continuous-comparator class**
+— at ~120 µA armed bias (144.3 fJ/cycle cheapest full arm-detect-reset) it NEVER fires on the
+true held-closed zero within 878 ps (GBW-limited, gm/C ≈ 2.5e10 /s; delay ≥ 538 ps vs the
+342 ps beat); its only fires lock on the switch-OPENING transient ~431 ps late (200.5 fJ),
+useless for ZCS. Admission restated: **N_min ≥ 221** (≈289 at the fired configuration) — the
+old 50–400 UNDECIDABLE band resolves **upward: every block in it is NOT ADMITTED**, none
+improves. Surviving alternative: per-bank calibrated predictive timer (abandons per-hop
+tracking; the 61.6 ps data-dependent spread becomes a level/settling-margin cost — modest
+mistiming is energetically cheap per the committed record's own +50 ps openings). Switch–ZCD
+coupling (skeptic, measured): the tg15p optimum steepens the sensing signal 5.1× (−376 µV/ps),
+relaxing the ±20 ps offset need to ±7.5 mV (marginal, no longer hopeless) — the delay
+refutation stands. Full record: `zcd/README.md`, `zcd/RESULTS.json`.
+
 ## Measurement discipline
 
 Per `QAL_PLAN §7` and `feedback_no_self_baseline`: everything in Track A runs against an

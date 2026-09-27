@@ -1,0 +1,23 @@
+{
+ "_doc": "TRACK 2 pre-registration, written BEFORE any sweep run. Question: the gateb ledger showed the committed 60um TG (wn=20/wp=40) is switch-dominated: of E_hop 10.81 fJ at the committed dV=1.0 iso-current row, ~9.6 fJ is switch-related vs 0.15 fJ series-R and 1.04 fJ cells. Switch charge terms scale ~W, conduction loss ~1/W, so an optimum W exists and 60um is suspected far above it. This sweep measures E_hop(switch design) at T0 with the gateb metering harness, per-design probe-then-hop (the zero moves with the switch).",
+ "designs": {
+  "tg_sweep_total_um": [7.5, 15, 30, 60],
+  "tg_ratio": "1:2 n:p (wn = total/3, wp = 2*total/3); tg60 = the committed wn=20/wp=40 baseline",
+  "alternatives": ["nMOS-only wn in {10, 20, 40} with the existing 1.5V gate rail (honest headroom check vs Vt~0.5: gate 1.5V, bank-B peak ~0.61V -> Vgs ~0.89V at peak; verdict by V_B_end, not by argument)", "reduced-pMOS TG wn=10/wp=5 (2:1 n:p, total 15)"]
+ },
+ "fixed": "dV=1.0, L=277.8nH, RS=10, CA=35.979fF bank A, 8 metered inverters (4 hi/4 lo) as bank B, drive edges 2ps, T0=50ps; deck sources/options identical to gateb/qal_hop_meter.py head().",
+ "protocol": "calib once (instrument check) -> per design: probe (find I(LT) zero duration after switch close) -> hop with switch opened at T0+that duration -> full per-phase ledger from 1F-cap integrators. .measure INTEGRAL only emitted for comparison, never used for the ledger.",
+ "instrument_gates": {
+  "G1_calib": "QTOT within 1% of 35.979 fC; E checkpoints within 3% of committed 0.337/1.278/5.562/9.217/13.745/16.386/19.232 fJ at V=0.167..1.0 (same gate as gateb PRE_REGISTERED).",
+  "G2_baseline_repro": "tg60 hop at t_half=342.0 (as committed) must reproduce the gateb/committed headlines within 1%: VBPK 0.61132, VBEND 0.5763, VAEND 0.04752, IPK 195.19uA, QTR 33.80 fC; and the per-phase switch ledger within 0.3 fC per phase of RESULTS.json (turn-on -8.274, traverse +24.389, turn-off -1.951, net 13.585 fC). This validates the adapted (parameterized-switch) harness end to end before any new design is trusted.",
+  "G3_closure_per_design": "Q: |qlt_D - CA*(1.0-VAEND)| <= 1% of the latter; E: |ea_D - 0.5*CA*(1-VAEND^2)| <= 1%. A design failing closure is an instrument failure for that run, not a data point."
+ },
+ "constraints_and_canaries": {
+  "completeness": "V_B_end within 2% of the committed 0.57632: [0.56479, 0.58785]. A design outside the band FAILS the transfer-completeness constraint and is reported as a failure, not silently dropped; it cannot be the optimum.",
+  "cells_canary": "cells_burn = (EBK_D + EIH_D) - (E_sup_static(V_B_end) + E_in_static(V_B_end)) from the calib static curve, expected ~1.04 fJ. Flag if outside [0.88, 1.20] fJ (+/-15%); investigate before trusting that row."
+ },
+ "metrics_per_design": ["t_zcs_ps (probe zero, duration after close)", "IZ at open (uA, should be near 0)", "V_B_end, V_B_pk, V_A_end", "E_outA_exact = 0.5*CA*(1-VAEND^2)", "E_hop = E_outA_exact - E_sup_static(V_B_end)  [gateb arithmetic, comparable to committed 10.806 fJ]", "E_R = er_D", "cells_burn", "switch_related = E_hop - E_R - cells_burn", "per-phase switch charge: dQ_lt - dQ_bk per phase A/B/C/D"],
+ "selection_rule": "OPTIMUM = the design with minimum E_hop among those passing G3 + completeness. Report per-gate-settle = E_hop_opt/8 against the committed 1.343 fJ/gate. t_zcs reported for every design; speed consequence stated alongside energy.",
+ "environment": "PYMS_VAE_CACHE=/tmp/claude-1001/-usr-local-src/4921ad0c-f17b-4b84-986a-5917c9ebd2a6/scratchpad/vae_cache_track2 (private, seeded from the gateb cache); PYMS_DIR=/usr/local/share/xyce/PyMS; Xyce=/usr/local/src/xyce-build/src/Xyce; workdir=/usr/local/src/stat-sim/qal/swsweep.",
+ "date": "2026-09-27"
+}

@@ -1,0 +1,77 @@
+{
+ "_doc": "TRACK 3 RESULT: a real zero-current detector was designed and simulated in SG13G2/PSP103 at T0 against the committed iso-current hop (dV=1.0, L=277.8 nH). VERDICT: at this operating point the mV-scale/74-uV-per-ps signal DEFEATS every simple continuous comparator tried (11 iterations, final architecture fully debugged); the only measured fires lock on the switch-OPENING transient, ~431 ps late; against the true held-closed zero the detector does not fire within 878 ps at ~120 uA of armed bias. The measured full-cycle energy of even this non-functional detector is ~144 fJ/hop. The 50-400 UNDECIDABLE band does not collapse downward -- it resolves UPWARD (N_min >= ~221 on the measured-energy basis) and the per-hop-ZCS assumption itself is REFUTED for this class. Verdicts against zcd/PRE_REGISTERED.json.",
+ "instrument_checks_MEASURED": {
+  "gateb_calib_rerun_in_private_cache": "gb_calib.cir.mt0 digit-identical to the gateb committed run (QTOT 3.597902e-14 = 35.979 fC); probe zero 341.34 ps abs = gateb metered value exactly",
+  "integrator_vs_dense_trapz": "1F-technique integrator (CSCALE=1e-4, I0-corrected) vs 0.25-0.5 ps-grid trapezoid of I(VZC): agree to 0.02-0.03% on every run",
+  "integrator_defect_found_and_corrected": "the campaign integrator subtracts the t=0 DC-op current for the whole run (readout = integral of (I - I_DC0); leak = I_DC0*t_run regardless of C). Harmless in gateb (nA idle), fatal at uA-scale idle. Corrected exactly with +I_DC0*t_end and cross-validated by trapz. Applies to any future deck whose DC state draws standing current."
+ },
+ "signal_MEASURED_from_committed_hop": {
+  "true_zero_abs_ps": 340.16,
+  "dI_dt_at_zero_uA_per_ps": -2.075,
+  "sense_options": {
+   "RT_10ohm": "slope 20.7 uV/ps, peak 1.95 mV; 20 ps <-> 0.41 mV offset",
+   "composite_mid_to_bkb_RT_plus_TG": "slope 74 uV/ps (TG Ron 40-80 ohm near zero), crossing +8.27 ps after true I=0 (TG displacement artifact +0.62 mV at I=0, fixed/calibratable); 20 ps <-> 1.48 mV",
+   "added_150ohm_always_in": "slope ~330 uV/ps; hop cost MEASURED: Ipk 188.4 vs 195.2 uA (-3.5%), zero -0.5 ps",
+   "added_150ohm_switched_bypass_2x20um": "REJECTED, MEASURED: the bypass devices' own gate/channel charge grossly perturbs the hop (Ipk 128.2 uA = -34%, zero 409 vs 340 ps) -- at these scales any added switch on the transfer path costs charge comparable to the whole 36 fF bank (the gateb switch lesson, re-measured)"
+  }
+ },
+ "final_design": {
+  "topology": "armed-per-hop 3-stage continuous comparator, 1.2 V rail, 28 devices: 2x fully-differential clamped stages (pMOS pair 2u, tail 4u armb-gated, loads 2x0.74u nMOS diode + 0.74u cross-coupled, armb-gated 0.74u park followers, eq-released equalizer) -> 5T mirror stage (pair 2u, tail 4u, mirror 0.74u, zy1 parked low, zy kept high by idle keeper 0.5u) -> skewed inverter (n 0.74u / p 4u) + 2 fF. Two-phase arming: tails at 200 ps with equalizers held (auto-zero), equalizers released at 300 ps; inputs sense mid->bkb.",
+  "netlist": "zcd/zh_native.cir (in-hop, native sense) and zcd/za_mp0000.cir (replay); generator qal_zcd.py comparator()",
+  "iteration_ledger": "v1 slew-railed loads + 55 uA idle (keeper vs floating-mirror fight); v2 same + integrator pedestal found; v3 always-on stage1 + clamp parking (inter-hop slam 0.15-0.25 mA, ~80 fJ/hop -> rejected); v4 composite sense + sizes; v5 park-and-arm both stages; v6 keeper removed, zy1 clamp (mirror over-biased by clamp injection); v7 3-stage symmetric; v8 equalizers (park skew 12-36 mV killed); v9 clamps released when armed (always-on clamps had crushed gain to 0.34); v10 two-phase auto-zero arming (single-edge arm kicked outputs -180 mV); v11 GBW-balanced loads (0.9/1.0 cc ratio had bought gain 10 at tau ~600 ps)."
+ },
+ "measured_matrix": {
+  "in_hop_native_sense_held_closed": {
+   "file": "zh_native.cir",
+   "hop_integrity_A1": "PASS: Ipk 195.14 vs 195.19 uA committed (0.03%); same-run I(LT) zero 339.42 ps vs 340.16 unloaded (-0.74 ps back-action)",
+   "fire": "NONE by 878 ps (armed 200-820)",
+   "E_cycle_net_fJ": 144.8,
+   "E_rail_fJ": 140.9,
+   "E_arm_net_fJ": 3.98
+  },
+  "in_hop_150ohm_always_in_held_closed": {
+   "file": "zh_mp0000.cir",
+   "hop": "Ipk 188.4 uA (-3.5%, the sense R), zero 339.66 ps",
+   "fire": "NONE by 878 ps; delay > 538 ps MEASURED; internal trajectory (zx flip ~430-440, zw flip ~610, zy 0.92 at 820 vs ~0.78 trip) extrapolates fire ~1000+ ps = ~2 hop-beats late; the LC's SECOND zero (~620 ps) arrives before the detector resolves the first",
+   "E_cycle_net_fJ": 144.3
+  },
+  "replay_with_committed_392ps_opening": {
+   "fires": {"native": {"t_fire_ps": 779.1, "delay_ps": 430.6}, "150ohm": {"t_fire_ps": 773.5, "delay_ps": 431.7}},
+   "reading": "sense-size-independent fire time = the detector locks on the switch-OPENING transient (a ~100 mV-scale signal), not the current zero. Useless for ZCS (the opening is the event it was supposed to CAUSE).",
+   "E_cycle_net_fJ": 200.5
+  },
+  "offset_sweep_MEASURED_fired_config": {
+   "vos_mV_vs_fire_ps": {"-2": 771.35, "-1": 772.44, "0": 773.54, "+1": 774.64, "+2": 775.74},
+   "sensitivity": "1.10 ps/mV, linear; 20 ps at ~±18 mV -- a property of the opening-transient detection (steep mV/ps signal)",
+   "true_zero_requirement": "±20 ps needs input-referred error <= ±1.48 mV (150 ohm) / ±0.41 mV (10 ohm); the design's own measured internal systematics were 3-17 mV-equivalent (park skew, arm kick, Miller feedthrough, preload) before nominal-mismatch offset (sigma ~5-15 mV untrimmed) is even counted: INFEASIBLE for this class"
+  },
+  "bias_and_speed_ledger": {
+   "armed_current_uA": "~120 (both diff stages + mirror), parked standby 33.3 uA (40 uW)",
+   "burn_rate": "~0.23 fJ/ps of armed window at 1.2 V",
+   "stage_lag_measured_ps": "stage1 ~120, stage2 ~170 (input-crossing to split-flip)",
+   "gbw_per_stage": "gm/C ~ 2.5e10 /s: gain and settling trade one-for-one; a linear cascade resolving 74 uV/ps to a rail edge within ~50 ps needs ~10x bias (~mA) -> ~580 fJ/hop DERIVED, above the entire old band"
+  }
+ },
+ "acceptance_vs_PRE_REGISTERED": {
+  "A1_hop_integrity": "PASS (native attachment: Ipk 0.03%, zero shift -0.74 ps < 5 ps)",
+  "A2_energy_instrument": "PASS (integrator I0-corrected vs trapz 0.03%; arm-driver net metered, ideal-PWL recovery flagged)",
+  "A3_delay": "FAIL as a zero-tracker: no fire within 878 ps against the held-closed zero; the only fires are opening-transient-locked at ~431 ps. Not calibratable-as-tracking; tracking variant (hopall) moot and not run for that reason",
+  "A4_offset": "the pre-stated prediction (simple pair misses ±20 ps at the native slope by an order of magnitude) CONFIRMED and superseded: the class fails on delay before offset even binds"
+ },
+ "admission_restated": {
+  "rule": "N_min = (39.6 + E_ZCD)/(0.867 - 0.0361) [SELECTION-RULE.md:148-161]",
+  "pre_stated_bands": "E=0 -> 47.7; <=1.94 -> 50 (working); <=12.75 -> 63 (fpsat block); <=85.0 -> 150 (confident); >=292.8 -> 400",
+  "measured_basis": "E_ZCD >= 144.3 fJ (cheapest MEASURED full arm-detect-reset cycle, and it does not even fire in-window; the fired configuration cost 200.5 fJ)",
+  "N_min_at_144.3": 221.3,
+  "N_min_at_200.5": 288.9,
+  "rider": "energy is not the binding constraint: NO functional per-hop zero-current detection was achieved at ANY energy in the old 30-300 fJ band at this operating point. The admission's E_ZCD parameter presumed a feasible detector; per-hop analog ZCS tracking is REFUTED for simple continuous comparators at 0.13um/1.2V against this signal. The practical alternative (calibrated predictive timer, e.g. DLL per bank) abandons per-hop tracking and leaves the 61.6 ps data-dependent t_zcs spread uncorrected -- note the committed record itself opens every hop 50 ps late at I=-100 uA with E_hop still 10.74 fJ (ring-back returns the charge), so modest mistiming is energetically cheap; the spread's real cost is level/settling margin, not switch loss. Scoping THAT timer is new work.",
+  "verdict_changes": {
+   "sha_slice_banks": "bush 0/10 levels at N_min 221 (best 4-level-span prefix bank = 92 < 221); QAL arm goes UNDECIDABLE-shaded -> EXCLUDED; final pick stays SYNC (was already SYNC on energy, 11.7x)",
+   "alu_top_bush": "bush covers 25/37 levels (98.2% of gates) at N_min 221 but the whole block's best min-bank is 8 -> tail still unbankable; QAL arm EXCLUDED (numerically unchanged conclusion, no longer ZCD-band-dependent)",
+   "alu_top_at_fpsat_fma_minbank_63": "UNDECIDABLE (min-bank 63 inside old 84-409 band) -> EXCLUDED: 63 < 221; would have needed E_ZCD <= 12.75 fJ, an order below the measured floor of a NON-functional detector",
+   "summary": "every block the campaign had in the 50-400 UNDECIDABLE band resolves to NOT ADMITTED; no block's verdict improves"
+  }
+ },
+ "environment": "PYMS_VAE_CACHE=<scratchpad>/vae_cache_zcd (private, instrument-checked); Xyce=/usr/local/src/xyce-build/src/Xyce; PSP103 via .hdl + sg13g2_psp103_tt.lib; sg13_lv shim. TRAP for future decks: PYMS compiles one .so per distinct device W (~2.5 min each); the shim silently drops m=.",
+ "date": "2026-09-27"
+}
