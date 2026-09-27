@@ -1,0 +1,80 @@
+{
+ "_doc": "PRE-REGISTERED acceptance for the GATE-CHARGE RECOVERY round (M1 resonant / M2 stepwise / M3 lower-VGH) on the tg15p QAL transfer switch. Written BEFORE any recovery deck was generated or run. Anchors are USED, not re-derived. The admission threshold is handed down by the campaign and is NOT mine to move.",
+
+ "handed_down_threshold_DO_NOT_MOVE": {
+  "E_timer_per_bank_per_hop_fJ_max": 12.75,
+  "gate_charge_recovery_min_pct": [71, 74],
+  "per_gate_scaling_rider_min_pct": 96.7,
+  "source": "orchestrator brief + threeway_gals_campaign.md:258 + qal/zcd/restate_admission.py",
+  "arithmetic_I_RECONSTRUCTED_and_will_report_against": {
+   "N_min_formula": "N_min = (39.6 + E_timer_per_bank_per_hop)/(0.867 - 0.0361) = (39.6 + E)/0.8309",
+   "fpu_min_bank_63": "N_min <= 63  <=>  E <= 63*0.8309 - 39.6 = 12.747 fJ  -> the 12.75 fJ line, CONFIRMED to 3 digits",
+   "conventional_reference_CV2": "Q_gate_total * VGH = 29.0 fC * 1.5 V = 43.5 fJ/bank/hop (MEASURED charge, committed sw_tg15p_z.cir.mt0)",
+   "71_pct": "(1-eta)*43.5 <= 12.75  ->  eta >= 70.69%  (zero shared-overhead-per-bank)",
+   "74_pct": "(1-eta)*43.5 <= 12.75 - 1.40  ->  eta >= 73.9%  (1.40 fJ/bank of shared resonator/line overhead, i.e. B>=8 sharing)",
+   "96.7_pct_rider": "switch scales per gate: a 63-gate bank needs 63/8 = 7.875x the tg15p switch (tg15p meters 8 cells) -> CV2_conv = 342.6 fJ; (1-eta)*342.6 <= 11.35 -> eta >= 96.69%. Reproduces the handed-down 96.7% EXACTLY, so this is the rider's intended reading."
+  }
+ },
+
+ "anchors_used_not_rederived": {
+  "ideal_drive_row_sw_tg15p_z": {"E_hop_open_fJ": 8.3828171771408, "VBEND": 0.6758936, "VBPK": 0.7374377, "VA_open": 0.09778203952305342, "cells_burn_fJ": 1.6954746104994207, "t_zcs_true_ps": 266.76, "IPK_uA": 194.3655},
+  "real_drive_row_tl_hop_v2_n7_c25": {"E_hop_open_fJ": 8.10914, "VBEND": 0.68463, "VA_open": 0.10782, "cells_burn_fJ": 1.92709, "width_50_ps": 269.8418, "gt_edges_20_80_ps": [30.53816, 16.32404], "E_timer_D_fJ": 399.84214, "taps_fJ": {"gt": 118.04088, "gtp": 109.79661, "pk": 75.00454}, "line_fJ": 97.00011, "trigger_fJ": 5.41006},
+  "gate_charge_MEASURED_fC": {"Q_gt_close": 10.498, "Q_gtp_open": 16.389, "Q_pk_close_DERIVED": 2.1, "total": 29.0, "C_gate_aggregate_fF_DERIVED": 19.33, "provenance": "swsweep/sw_tg15p_z.cir.mt0: QGT_A-QGT_Z = 1.049816e-14; QGTP_C-QGTP_B = 1.385691e-14-(-2.521694e-15) = 1.6379e-14; park DERIVED by width scaling 2.1 fC/um from the 5um nMOS"},
+  "ideal_recycling_floor_fJ": {"value": 3.56, "provenance": "EGT_D - EGT_Z = 2.606267e-14 - 2.250000e-14 = 3.563 fJ, committed sw_tg15p_z.cir.mt0 -- the net energy ideal PWL sources EXPORT into the circuit over one full gate cycle"},
+  "hop_beat_ps": 534, "conduction_window_ps": 267
+ },
+
+ "instrument_gates": {
+  "G0_postprocessing": "My own analyzer, run on the COMMITTED swsweep/sw_tg15p_z.cir.prn, must reproduce E_hop_open = 8.3828 fJ, cells_burn = 1.6955 fJ, VBEND = 0.67589 to 4 decimals before any recovery deck is generated.",
+  "G1_ideal_rerun": "A fresh re-run of the committed sw_tg15p_z.cir in MY directory with MY PYMS_VAE_CACHE must land within 0.1% of the committed E_hop_open / VBEND / cells / Q_gt / Q_gtp / EGT-floor.",
+  "G2_real_drive_rerun": "A fresh re-run of the committed real-drive timer row (tl_hop v2, N=7, CTRIM=25 fF, 27C) must land within 0.5% on E_hop_open (8.109), 0.2% on VBEND (0.68463) and 1% on E_timer_D (399.84) with its tap split (118.0/109.8/75.0) and line (97.0)/trigger (5.41).",
+  "G3_text_patch": "Every recovery deck is a TEXT PATCH of the committed swsweep/sw_tg15p_z.cir: the ONLY removed lines are VGT/VGTP/VPK and the drive-integrator B-sources that reference them; the ONLY additions are the drive network, its integrators, and .print columns. The patch script prints the removed lines for every deck.",
+  "G4_ledger_closure": "Every recovery row must close its drive ledger to <= 1% of E_drive: sum(net energy out of every DC source in the drive network) + sum(stored-energy deficit of every tank) - (energy accounted as loss) = 0. A row that does not close is reported as NOT MEASURED."
+ },
+
+ "completeness_band_hard_gates": {
+  "VBEND": "within 2% of the ideal-drive 0.6758936 -> [0.66238, 0.68941]. (The committed real-drive row sits at 0.68463 = +1.3%, inside.) A row outside is INVALID, not a result.",
+  "VA_open": "<= 0.0978 + 0.05 = 0.1478 (rail must drain)",
+  "cells_settled": "all 8 metered cells at their rail at tD: even-index outputs <= 0.03*V(bkb), odd-index >= 0.97*V(bkb)",
+  "E_hop_open": "must stay within +-5% of the real-drive reference 8.109 fJ. A scheme that 'saves gate energy' by degrading the transfer has saved nothing; BOTH numbers booked every row.",
+  "cut_order": "pMOS (gtp) cuts EARLY-or-with; nMOS (gt) cuts at the tuned zero; PARK (pk) closes AFTER the nMOS cut. Order is checked on the MEASURED crossings every row; a row with pk-before-gt-cut or gtp-after-gt-cut by more than 5 ps is INVALID (the v1 / v2a failures).",
+  "tD_fixed": "All hop metrics taken at the committed absolute checkpoints (tC = t_open+7 ps, tD = 811.755 ps) regardless of deck tend, so rows stay digit-comparable to the committed record."
+ },
+
+ "architectural_budget_PRE_STATED": {
+  "T_edge_max_ps": 133,
+  "derivation": "hop beat 534 ps - conduction window 267 ps = 267 ps of non-conducting time, split between the rise and the fall -> each gate edge <= 133 ps. DERIVED from measured anchors.",
+  "rule": "A recovery row needing a longer edge is still reported but marked BUDGET-VIOLATING and cannot be claimed as an admission."
+ },
+
+ "recovery_definition": {
+  "eta": "eta = 1 - E_drive_net_per_hop / CV2_conv, with CV2_conv = Q_gate_total_MEASURED * VGH (43.5 fJ at VGH=1.5).",
+  "E_drive_net_per_hop": "net energy out of EVERY DC source feeding the drive network over one full gate cycle, PLUS the stored-energy deficit of every tank (so a tank that quietly drains is charged, not credited), PLUS the CONVENTIONAL gate cost (Q_sw*V per full gate cycle, metered per switch) of every auxiliary switch the mechanism introduces -- step switches, freeze switches, clamps. The recursion is counted at the conventional rate, never at the ideal-source rate; a clearly-labelled 'if the aux switches were themselves recovered' sensitivity may be reported alongside but never as the headline.",
+  "tank_losses": "inside the numerator's cost, per the brief."
+ },
+
+ "falsifiable_predictions_PRE_STATED": {
+  "P1_M3_alone_cannot_clear": "CV2 scales as VGH^2, so reaching 12.75 fJ from 43.5 fJ by voltage alone needs VGH <= 1.5*sqrt(12.75/43.5) = 0.81 V -- below the 1.0 V bank + Vt the switch must pass. PREDICTION: M3 alone FAILS; it is measured as a multiplier on M1/M2 and for its completeness cliff. Falsified if a VGH <= 0.81 V row passes all completeness gates.",
+  "P2_rider_unreachable": "The ideal-PWL floor is 3.56 fJ of genuinely exported energy per gate cycle, so eta_max = 1 - 3.56/43.5 = 91.8% for ANY drive mechanism at VGH=1.5. PREDICTION: the 96.7% per-gate-scaling rider is UNREACHABLE at SG13G2 regardless of mechanism. Falsified if the measured floor drops below 1.44 fJ at slow edges.",
+  "P3_M2_stepwise_fails": "residual/CV2 = 1/n + 2*alpha*tau*n^2/T_edge, where tau = R_on*C_gate of a unit sg13_lv device (TO BE MEASURED, estimated ~3 ps) and alpha ~ 3 settling time constants. Savings saturate as 1-1/n while the step-switch recursion grows as n^2 (count n, size n). With T_edge = 133 ps this gives n_opt ~ 2 and eta <= ~10%. PREDICTION: M2 FAILS, and fails WORSE at larger n. Falsified by any measured n with eta >= 71%.",
+  "P4_M1_switched_fails": "Any per-edge freeze/clamp switch carries overhead 2*sqrt(2.47*n_sw*tau/T_edge) at its optimal size, which is B-INVARIANT (switch width and hence its gate charge scale with B exactly as the load does). With tau ~3 ps, T_edge 133 ps, n_sw = 2 gate cycles/beat this is ~0.64 -> eta ~ 36%. PREDICTION: switched-resonant FAILS.",
+  "P5_M1_free_running_passes_on_energy": "An UNSWITCHED (free-running) resonant network has no per-edge switch at all: loss/CV2 per full cycle = (pi/4)*omega*R*C = (pi/4)/Q with Q = omega*L/R. eta >= 70.7% then needs Q >= 2.68 -- NOT the brief's ~11, because the brief's pi/Q is quoted per (1/2)CV^2 per transition while this topology's coefficient is pi/4 of that. PREDICTION: free-running resonant CLEARS the energy line with large margin, and the binding objections move to (i) the waveform (does a sine hold a 267 ps conduction window and meet the cut order) and (ii) the inductor (L = 1/(omega^2*C), 381 nH for one bank, /B when shared). Falsified if the measured loss on the real nonlinear MOS gate exceeds the linear-RC law by more than 2x, or if no phase set meets the cut order.",
+  "P6_required_Q_restated": "I will report required Q from MY measured loss law, not from the brief's assumed coefficient, and will state the on-chip inductor Q as an ASSUMPTION (this deck does not measure a metal inductor)."
+ },
+
+ "verdict_rules": {
+  "per_mechanism": "PASS iff measured eta >= 70.7% (zero shared overhead) with every completeness gate PASS and T_edge <= 133 ps; CONDITIONAL PASS iff eta >= 70.7% but a named component is ASSUMED (e.g. inductor Q); FAIL otherwise, with the best achieved eta and its full ledger.",
+  "negative_result_is_first_class": "If no mechanism clears 71%, the round reports that plainly with the best achieved ledger and CLOSES the QAL-at-SG13G2 question rather than leaving it open.",
+  "no_sum_of_pieces": "Every auxiliary device the mechanism needs is counted in the same ledger as the saving it enables. A recovery number quoted without its aux-switch cost is not reported."
+ },
+
+ "sim_discipline": {
+  "PYMS_VAE_CACHE": "/tmp/claude-1001/-usr-local-src/4921ad0c-f17b-4b84-986a-5917c9ebd2a6/scratchpad/vae_cache_recov (OWN cache, this agent only)",
+  "models": "sg13_lv via qal/sg13lv_compat.sp; PSP103 via .hdl + sg13g2_psp103_tt.lib; corners (if any) ONLY via instance-level DTA through qal/timer/sg13lv_dta.sp GDTA",
+  "metering": "INTEG I(Vsrc) + PARAM via the harness 1F-integrator instrument ONLY; '.measure INTEGRAL V(<B-source>)' is the documented 11-44% under-report trap and is not used",
+  "reserved": "vt / gmin not touched; unique .va module names; runs < 4 min"
+ },
+
+ "date": "2026-09-27",
+ "written_before_first_recovery_deck": true
+}

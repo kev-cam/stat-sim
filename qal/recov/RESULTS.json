@@ -1,0 +1,604 @@
+{
+ "SUPERSEDED_2026_09_27_report_round": {
+  "verdict": "The admission_table below reads fpu-min-bank-63 ADMITTED at E_timer 5.273 fJ. That does NOT stand. 5.273 fJ omits the park pulse driver, which this round booked from an IDEAL PWL source at Q_pk*VGH = 2.403 fJ.",
+  "park_driver_MEASURED_fJ": [
+   15.4789,
+   16.0021,
+   15.0177
+  ],
+  "park_driver_note": "ONE minimum sg13g2_inv_1, zero junction capacitance (sg13lv_compat drops ad/as/pd/ps), free ideal input, no delay chain, phase assumed free -> a LOWER BOUND. Robust to input edge (15.48 @0.5ps vs 15.02 @130ps) and to the window (0.3% over 400 ps). Brackets inside the campaign FO1@1.5V 9.87 and as-built 19.33 fJ/stage.",
+  "headroom_for_the_park_driver_fJ": 9.7727,
+  "E_timer_complete_MEASURED_fJ": 17.911,
+  "eta_pct": 58.81,
+  "N_min": 69.22,
+  "fpu_min_bank_63": "EXCLUDED",
+  "even_the_cheapest_campaign_stage": "FO1 6.316 fJ @1.2V -> 9.869 @1.5V -> E 12.843 fJ -> N_min 63.12 -> still EXCLUDED",
+  "exact_line_fJ": 12.7467,
+  "level_error": "eta is LOAD-referenced (vs Q_gate*VGH = 43.481 fJ); E_timer is DRIVER-referenced. \"E<=12.75 fJ i.e. eta>=71-74%\" is NOT an equivalence -- the campaign as-built ratio is 7.0x (302.8 fJ driver for 43.5 fJ load). eta>=71% was cleared; E<=12.7467 fJ was not.",
+  "what_survives": "the resonant gt/gtp pair alone: 2.974 fJ net, ledger closed to 1e-12, re-metered by a trapezoid path that never touches the 1F instrument (0.19%), transfer intact (EA_C -0.22%), all five gates PASS at the PRE-REGISTERED checkpoint tD=811.755 ps (this round used 556.8 ps -- procedural breach, immaterial to the verdict, and it widens the claimed adv window: adv=12 passes at the correct checkpoint).",
+  "still_unpaid_anywhere": "sustaining amplifier (break-even eta_amp 35.1% at zero DC bias, 44.6% with the 2.71 fJ worst-case bias -- NOT the 27.7% this round quoted, which was computed against the park-free 5.273 fJ); the taps DC bias (Q_net 0.62/1.18 fC per cycle, a free-running LC cannot source net DC charge); the park phase generation; and the VHI 1.5 V pMOS-bulk rail at 4.31-4.49 fJ/hop, which appears in no committed ledger at all.",
+  "open_door": "a RESONANT PARK TAP, unmeasured. At ~1.5 fJ E = 4.474 fJ, N_min 53.04, ADMITTED -- but the park must HOLD a DC level through the hold phase then cut, the one waveform a resonator is worst at.",
+  "evidence": "/usr/local/src/stat-sim/qal/recov/skeptic/SKEPTIC_RESULTS.json"
+ },
+ "_doc": "GATE-CHARGE RECOVERY round (M1 resonant / M2 stepwise / M3 lower VGH) on the committed tg15p QAL transfer switch. Every row is a TEXT PATCH of swsweep/sw_tg15p_z.cir. Acceptance pre-registered in PRE_REGISTERED.json BEFORE the first recovery deck (mtimes in README).",
+ "reference": {
+  "CV2_conv_PRE_STATED_fJ": 43.481,
+  "CV2_conv_MEASURED_rectified_fJ": 53.27,
+  "ideal_PWL_floor_fJ": 3.522,
+  "eta_max_from_ideal_floor_pct": 91.89991030565075,
+  "E_admit_max_fJ": 12.747,
+  "note": "eta is quoted against the PRE-STATED 43.481 fJ so the handed-down threshold is not moved. The rectified charge integral shows a real conventional driver must move 35.5 fC/hop (53.27 fJ) because Miller re-supply while the switch conducts is charge the 29.0 fC one-way figure omits; using 53.27 would RAISE every eta, so 43.481 is the conservative choice. N_min is computed from E_drive directly, so no verdict depends on the denominator."
+ },
+ "tau_TG_ps_MEASURED": 1.884099474586787,
+ "device_scaling_MEASURED": {
+  "Ron_x_W_n": 553.6745808996128,
+  "Cg_per_W_n": 1.5206569693151952,
+  "Ron_x_W_p": 1792.2463389123836,
+  "Cg_per_W_p": 1.9923720200136068
+ },
+ "device_scaling_note": "Ron*W and Cgate/W are size-invariant over 0.74-10 um (measured), so tau = Ron*Cgate is a single device constant: 1.884 ps for a 1:2 CMOS TG.",
+ "loss_laws": {
+  "m1a_adiabatic_edges_te133": {
+   "rows_R_E": [
+    [
+     25.0,
+     4.180626
+    ],
+    [
+     200.0,
+     5.195625
+    ],
+    [
+     560.0,
+     7.244496
+    ],
+    [
+     1000.0,
+     9.595103
+    ]
+   ],
+   "slope_fJ_per_ohm": 0.005553186093895344,
+   "intercept_fJ": 4.075853205599203,
+   "fit": "E = 4.0759 + 0.0055532*R",
+   "R_for_admission_ohm": 1561.4723958077059,
+   "linear_RC_predicted_slope": 0.00702,
+   "measured_over_predicted": 0.7910521501275418
+  },
+  "m1d_harmonic_nh5": {
+   "rows_R_E": [
+    [
+     25.0,
+     5.615074
+    ],
+    [
+     200.0,
+     8.038847
+    ]
+   ],
+   "slope_fJ_per_ohm": 0.013850131428571432,
+   "intercept_fJ": 5.268820714285714,
+   "fit": "E = 5.2688 + 0.01385*R",
+   "R_for_admission_ohm": 539.9356189709184,
+   "Q_required_for_admission": 6.961962081182745,
+   "note": "steeper than the raised-cosine law because harmonic content raises dv/dt, hence I^2R.  Q here is the LUMPED equivalent of a multi-mode network, not a per-harmonic Q."
+  }
+ },
+ "inductor": {
+  "C_net_per_bank_fF_MEASURED": 22.609333333333336,
+  "beat_ps": 580.0,
+  "L1_nH_vs_B": {
+   "1": 376.88,
+   "8": 47.11,
+   "16": 23.56,
+   "64": 5.89,
+   "256": 1.47
+  },
+  "L3_nH_vs_B": {
+   "8": 5.235,
+   "64": 0.654,
+   "256": 0.164
+  },
+  "L5_nH_vs_B": {
+   "8": 1.884,
+   "64": 0.236,
+   "256": 0.059
+  },
+  "modes_needed": "3 (fundamental + 3rd + 5th) for the nh=5 waveform",
+  "taps_needed": "gt and gtp are anti-phase (a centre-tapped/differential pair is ONE structure) plus a ~12-24 ps phase ADVANCE on the gtp tap to satisfy the pMOS-cuts-early rule -> a poly-phase tap or a small passive shifter, not a second network.",
+  "inductor_count": "3-4 TOTAL for the whole chip, shared by ALL B banks (same order as the sigma0 arch already assumes for the rail).",
+  "B_invariance_PROVEN_algebraically": "with B banks on one network the shared series R is R/B while C is B*C_net, so Q = 1/(omega*C_net*R) is B-INVARIANT; sharing buys a REALISABLE L (377 nH at B=1 -> 1.5 nH at B=256) without making Q harder.  This is what divides the per-bank tap cost by B and is the architectural prize.",
+  "ASSUMED_not_measured": "the inductor is IDEAL in every deck; its ESR is folded into the swept series R.  No metal inductor Q is measured here."
+ },
+ "m1c_switched_resonant": {
+  "rows": {
+   "m1c_te133_w074": {
+    "wfn": 0.74,
+    "wfp": 1.12,
+    "freeze_gate_fJ": 35.57,
+    "clamp_gate_fJ": 18.239,
+    "R_TG_ohm": 462.4,
+    "E_drive_total_fJ": 73.788883,
+    "eta_pct": -69.705691,
+    "N_min": 136.465138,
+    "completeness": "VBEND FAIL / E_hop FAIL / order FAIL"
+   },
+   "m1c_te133_w500": {
+    "wfn": 5.0,
+    "wfp": 10.0,
+    "freeze_gate_fJ": 301.201,
+    "clamp_gate_fJ": 19.649,
+    "R_TG_ohm": 68.4,
+    "E_drive_total_fJ": 389.727933,
+    "eta_pct": -796.328086,
+    "N_min": 516.702291,
+    "completeness": "VBEND FAIL / E_hop FAIL / order FAIL"
+   }
+  },
+  "freeze_cost_times_R_fJ_ohm": 18531.0,
+  "analytic_optimum": {
+   "R_opt_ohm": 1827.0,
+   "E_drive_no_clamps_fJ": 24.36,
+   "E_drive_with_minwidth_clamps_fJ": 28.06,
+   "eta_pct": 35.5,
+   "N_min": 81.4,
+   "R_opt_exceeds_cut_order_limit": true,
+   "E_at_the_560ohm_order_limit_fJ": 43.97
+  },
+  "verdict": "FAIL.  The freeze switch is a B-INVARIANT recursion: its width must track the load it drives, so its gate charge tracks too and the per-bank cost does NOT amortise over B.  The cost-optimal R also exceeds the measured cut-order limit, so the optimum is not even reachable."
+ },
+ "m2_stepwise": {
+  "rows": {
+   "m2_n2": {
+    "n": 2,
+    "ts_ps": 66.5,
+    "E_drive_total_fJ": 121.97584,
+    "rails_fJ": 60.1,
+    "tank_deficit_fJ": 2.45,
+    "step_switch_gates_fJ": 56.99,
+    "park_fJ": 2.42,
+    "eta_pct": -180.529985,
+    "N_min": 194.458828,
+    "completeness": "VBEND FAIL / VA FAIL / E_hop FAIL / order FAIL"
+   },
+   "m2_n4": {
+    "n": 4,
+    "ts_ps": 33.2,
+    "E_drive_total_fJ": 183.357496,
+    "rails_fJ": 71.95,
+    "tank_deficit_fJ": 3.93,
+    "step_switch_gates_fJ": 105.09,
+    "park_fJ": 2.39,
+    "eta_pct": -321.700522,
+    "N_min": 268.332526,
+    "completeness": "VBEND FAIL / VA PASS / E_hop FAIL / order FAIL"
+   }
+  },
+  "analytic_best_case": {
+   "n": 2,
+   "E_drive_fJ": 39.0,
+   "step_switch_gates_fJ": 14.86,
+   "ideal_1_over_n_residual_fJ": 21.74,
+   "park_fJ": 2.39,
+   "eta_pct": 10.3,
+   "N_min": 94.6,
+   "assumptions": "minimum-width (0.15/0.30 um) step switches, ideal tanks with no droop, no hold-switch Miller traffic -- i.e. strictly better than anything buildable."
+  },
+  "scaling_law": "residual/CV2 = 1/n + 2*alpha*tau*n^2/T_edge : the saving saturates as 1-1/n while the step-switch recursion grows as n^2 (count n, size n, because t_step = T_edge/n forces W ~ n).  With the MEASURED tau = 1.884 ps and T_edge <= 133 ps the optimum is n ~ 2 and the best possible recovery is ~10%.",
+  "verdict": "FAIL, and fails WORSE at larger n -- exactly as pre-registered (P3)."
+ },
+ "m3_lower_VGH": {
+  "rows": {
+   "VGH=1.05": {
+    "Q_total_fC": 28.414,
+    "CV2_conv_fJ": 29.84,
+    "VBEND": 0.615233,
+    "VA_open": 0.174892,
+    "E_hop_open_fJ": 9.428682,
+    "N_min_if_conventional": 83.6,
+    "completeness": "VBEND FAIL / VA FAIL / E_hop FAIL / cells PASS"
+   },
+   "VGH=1.20": {
+    "Q_total_fC": 30.872,
+    "CV2_conv_fJ": 37.05,
+    "VBEND": 0.643634,
+    "VA_open": 0.126729,
+    "E_hop_open_fJ": 9.035338,
+    "N_min_if_conventional": 92.2,
+    "completeness": "VBEND FAIL / VA PASS / E_hop FAIL / cells PASS"
+   },
+   "VGH=1.35": {
+    "Q_total_fC": 33.121,
+    "CV2_conv_fJ": 44.71,
+    "VBEND": 0.667077,
+    "VA_open": 0.101132,
+    "E_hop_open_fJ": 8.578759,
+    "N_min_if_conventional": 101.5,
+    "completeness": "VBEND PASS / VA PASS / E_hop FAIL / cells PASS"
+   },
+   "VGH=1.50": {
+    "Q_total_fC": 35.516,
+    "CV2_conv_fJ": 53.27,
+    "VBEND": 0.675425,
+    "VA_open": 0.096073,
+    "E_hop_open_fJ": 8.392744,
+    "N_min_if_conventional": 111.8,
+    "completeness": "VBEND PASS / VA PASS / E_hop PASS / cells PASS"
+   }
+  },
+  "verdict": "P1 CONFIRMED.  CV2 scales ~V^1.86 (measured), so reaching 12.747 fJ by voltage alone needs VGH ~ 0.81 V, but completeness already fails at 1.20 V (VBEND out of band) and E_hop leaves its +-5% band at 1.35 V.  M3 alone ADMITS NOTHING.  Its honest role is a x0.84 MULTIPLIER at VGH=1.35 bought for a +5.8% E_hop penalty -- and that penalty is a real cost on the same ledger, so the multiplier is close to free-standing zero."
+ },
+ "admission_table": [
+  {
+   "mechanism": "committed as-built stdcell tap (B=8)",
+   "E_fJ": 315.6,
+   "eta_pct": -625.83,
+   "N_min": 427.5,
+   "sha_bush": "0/10",
+   "sha_gates_pct": 0.0,
+   "alu_bush": "13/37",
+   "alu_gates_pct": 75.7,
+   "fpu63": "EXCLUDED",
+   "completeness": "PASS",
+   "note": "the 28dcece row"
+  },
+  {
+   "mechanism": "conventional CMOS tap, gate charge only",
+   "E_fJ": 43.481,
+   "eta_pct": 0.0,
+   "N_min": 100.0,
+   "sha_bush": "0/10",
+   "sha_gates_pct": 0.0,
+   "alu_bush": "27/37",
+   "alu_gates_pct": 99.2,
+   "fpu63": "EXCLUDED",
+   "completeness": "n/a",
+   "note": "pre-stated reference"
+  },
+  {
+   "mechanism": "M3 VGH=1.35 (lowest VBEND-passing)",
+   "E_fJ": 44.71,
+   "eta_pct": -2.83,
+   "N_min": 101.5,
+   "sha_bush": "0/10",
+   "sha_gates_pct": 0.0,
+   "alu_bush": "27/37",
+   "alu_gates_pct": 99.2,
+   "fpu63": "EXCLUDED",
+   "completeness": "E_hop FAIL (+5.8%)",
+   "note": ""
+  },
+  {
+   "mechanism": "M2 stepwise n=2 MEASURED",
+   "E_fJ": 121.976,
+   "eta_pct": -180.53,
+   "N_min": 194.5,
+   "sha_bush": "0/10",
+   "sha_gates_pct": 0.0,
+   "alu_bush": "26/37",
+   "alu_gates_pct": 98.9,
+   "fpu63": "EXCLUDED",
+   "completeness": "VBEND FAIL / VA FAIL / E_hop FAIL / order FAIL",
+   "note": ""
+  },
+  {
+   "mechanism": "M2 stepwise n=4 MEASURED",
+   "E_fJ": 183.357,
+   "eta_pct": -321.7,
+   "N_min": 268.3,
+   "sha_bush": "0/10",
+   "sha_gates_pct": 0.0,
+   "alu_bush": "24/37",
+   "alu_gates_pct": 97.4,
+   "fpu63": "EXCLUDED",
+   "completeness": "VBEND FAIL / VA PASS / E_hop FAIL / order FAIL",
+   "note": ""
+  },
+  {
+   "mechanism": "M2 analytic best case (min-width, ideal tanks)",
+   "E_fJ": 38.995,
+   "eta_pct": 10.32,
+   "N_min": 94.6,
+   "sha_bush": "0/10",
+   "sha_gates_pct": 0.0,
+   "alu_bush": "28/37",
+   "alu_gates_pct": 99.5,
+   "fpu63": "EXCLUDED",
+   "completeness": "n/a",
+   "note": "strictly better than buildable"
+  },
+  {
+   "mechanism": "M1-C switched resonant, freeze 0.74/1.12 um MEASURED",
+   "E_fJ": 73.789,
+   "eta_pct": -69.7,
+   "N_min": 136.5,
+   "sha_bush": "0/10",
+   "sha_gates_pct": 0.0,
+   "alu_bush": "27/37",
+   "alu_gates_pct": 99.2,
+   "fpu63": "EXCLUDED",
+   "completeness": "VBEND FAIL / E_hop FAIL / order FAIL",
+   "note": ""
+  },
+  {
+   "mechanism": "M1-C analytic optimum (best possible switched)",
+   "E_fJ": 28.062,
+   "eta_pct": 35.46,
+   "N_min": 81.4,
+   "sha_bush": "4/10",
+   "sha_gates_pct": 87.6,
+   "alu_bush": "28/37",
+   "alu_gates_pct": 99.5,
+   "fpu63": "EXCLUDED",
+   "completeness": "n/a",
+   "note": "R_opt violates the cut-order limit"
+  },
+  {
+   "mechanism": "M1-A adiabatic edges te=100 RS=25",
+   "E_fJ": 4.237,
+   "eta_pct": 90.26,
+   "N_min": 52.8,
+   "sha_bush": "4/10",
+   "sha_gates_pct": 87.6,
+   "alu_bush": "29/37",
+   "alu_gates_pct": 99.6,
+   "fpu63": "ADMIT",
+   "completeness": "VBEND PASS / VA PASS / E_hop PASS / cells PASS / order PASS",
+   "note": "resonator IDEAL, no freeze switch counted"
+  },
+  {
+   "mechanism": "M1-A adiabatic edges te=133 RS=1000",
+   "E_fJ": 9.595,
+   "eta_pct": 77.93,
+   "N_min": 59.2,
+   "sha_bush": "4/10",
+   "sha_gates_pct": 87.6,
+   "alu_bush": "29/37",
+   "alu_gates_pct": 99.6,
+   "fpu63": "ADMIT",
+   "completeness": "VBEND PASS / VA PASS / E_hop PASS / cells PASS / order FAIL",
+   "note": "resonator IDEAL, no freeze switch counted"
+  },
+  {
+   "mechanism": "M1-A adiabatic edges te=133 RS=200",
+   "E_fJ": 5.196,
+   "eta_pct": 88.05,
+   "N_min": 53.9,
+   "sha_bush": "4/10",
+   "sha_gates_pct": 87.6,
+   "alu_bush": "29/37",
+   "alu_gates_pct": 99.6,
+   "fpu63": "ADMIT",
+   "completeness": "VBEND PASS / VA PASS / E_hop PASS / cells PASS / order PASS",
+   "note": "resonator IDEAL, no freeze switch counted"
+  },
+  {
+   "mechanism": "M1-A adiabatic edges te=133 RS=25",
+   "E_fJ": 4.181,
+   "eta_pct": 90.39,
+   "N_min": 52.7,
+   "sha_bush": "4/10",
+   "sha_gates_pct": 87.6,
+   "alu_bush": "29/37",
+   "alu_gates_pct": 99.6,
+   "fpu63": "ADMIT",
+   "completeness": "VBEND PASS / VA PASS / E_hop PASS / cells PASS / order PASS",
+   "note": "resonator IDEAL, no freeze switch counted"
+  },
+  {
+   "mechanism": "M1-A adiabatic edges te=133 RS=560",
+   "E_fJ": 7.244,
+   "eta_pct": 83.34,
+   "N_min": 56.4,
+   "sha_bush": "4/10",
+   "sha_gates_pct": 87.6,
+   "alu_bush": "29/37",
+   "alu_gates_pct": 99.6,
+   "fpu63": "ADMIT",
+   "completeness": "VBEND PASS / VA PASS / E_hop PASS / cells PASS / order PASS",
+   "note": "resonator IDEAL, no freeze switch counted"
+  },
+  {
+   "mechanism": "M1-A adiabatic edges te=30 RS=25",
+   "E_fJ": 4.707,
+   "eta_pct": 89.18,
+   "N_min": 53.3,
+   "sha_bush": "4/10",
+   "sha_gates_pct": 87.6,
+   "alu_bush": "29/37",
+   "alu_gates_pct": 99.6,
+   "fpu63": "ADMIT",
+   "completeness": "VBEND PASS / VA PASS / E_hop PASS / cells PASS / order PASS",
+   "note": "resonator IDEAL, no freeze switch counted"
+  },
+  {
+   "mechanism": "M1-A adiabatic edges te=60 RS=25",
+   "E_fJ": 4.387,
+   "eta_pct": 89.91,
+   "N_min": 52.9,
+   "sha_bush": "4/10",
+   "sha_gates_pct": 87.6,
+   "alu_bush": "29/37",
+   "alu_gates_pct": 99.6,
+   "fpu63": "ADMIT",
+   "completeness": "VBEND PASS / VA PASS / E_hop PASS / cells PASS / order PASS",
+   "note": "resonator IDEAL, no freeze switch counted"
+  },
+  {
+   "mechanism": "m1b_plain (free-running, NO per-edge switch)",
+   "E_fJ": 4.573,
+   "eta_pct": 89.48,
+   "N_min": 53.2,
+   "sha_bush": "4/10",
+   "sha_gates_pct": 87.6,
+   "alu_bush": "29/37",
+   "alu_gates_pct": 99.6,
+   "fpu63": "ADMIT",
+   "completeness": "VBEND FAIL / VA FAIL / E_hop FAIL / cells FAIL / order PASS",
+   "note": "pMOS-nMOS -5.5 ps, park-nMOS +68.6 ps"
+  },
+  {
+   "mechanism": "m1b_thctr (free-running, NO per-edge switch)",
+   "E_fJ": 6.16,
+   "eta_pct": 85.83,
+   "N_min": 55.1,
+   "sha_bush": "4/10",
+   "sha_gates_pct": 87.6,
+   "alu_bush": "29/37",
+   "alu_gates_pct": 99.6,
+   "fpu63": "ADMIT",
+   "completeness": "VBEND FAIL / VA FAIL / E_hop PASS / cells PASS / order FAIL",
+   "note": "pMOS-nMOS +6.8 ps, park-nMOS +14.9 ps"
+  },
+  {
+   "mechanism": "m1b_thctr200 (free-running, NO per-edge switch)",
+   "E_fJ": 7.221,
+   "eta_pct": 83.39,
+   "N_min": 56.3,
+   "sha_bush": "4/10",
+   "sha_gates_pct": 87.6,
+   "alu_bush": "29/37",
+   "alu_gates_pct": 99.6,
+   "fpu63": "ADMIT",
+   "completeness": "VBEND FAIL / VA FAIL / E_hop PASS / cells PASS / order FAIL",
+   "note": "pMOS-nMOS +8.0 ps, park-nMOS +13.3 ps"
+  },
+  {
+   "mechanism": "m1b_thctr_a20 (free-running, NO per-edge switch)",
+   "E_fJ": 4.705,
+   "eta_pct": 89.18,
+   "N_min": 53.3,
+   "sha_bush": "4/10",
+   "sha_gates_pct": 87.6,
+   "alu_bush": "29/37",
+   "alu_gates_pct": 99.6,
+   "fpu63": "ADMIT",
+   "completeness": "VBEND FAIL / VA FAIL / E_hop PASS / cells PASS / order FAIL",
+   "note": "pMOS-nMOS +27.5 ps, park-nMOS +10.4 ps"
+  },
+  {
+   "mechanism": "m1d_h3 (free-running, NO per-edge switch)",
+   "E_fJ": 5.616,
+   "eta_pct": 87.08,
+   "N_min": 54.4,
+   "sha_bush": "4/10",
+   "sha_gates_pct": 87.6,
+   "alu_bush": "29/37",
+   "alu_gates_pct": 99.6,
+   "fpu63": "ADMIT",
+   "completeness": "VBEND PASS / VA PASS / E_hop FAIL / cells PASS / order FAIL",
+   "note": "pMOS-nMOS +11.3 ps, park-nMOS +44.0 ps"
+  },
+  {
+   "mechanism": "m1d_h5 (free-running, NO per-edge switch)",
+   "E_fJ": 5.615,
+   "eta_pct": 87.09,
+   "N_min": 54.4,
+   "sha_bush": "4/10",
+   "sha_gates_pct": 87.6,
+   "alu_bush": "29/37",
+   "alu_gates_pct": 99.6,
+   "fpu63": "ADMIT",
+   "completeness": "VBEND PASS / VA PASS / E_hop FAIL / cells PASS / order FAIL",
+   "note": "pMOS-nMOS +9.0 ps, park-nMOS +28.7 ps"
+  },
+  {
+   "mechanism": "m1d_h5b580 (free-running, NO per-edge switch)",
+   "E_fJ": 5.306,
+   "eta_pct": 87.8,
+   "N_min": 54.0,
+   "sha_bush": "4/10",
+   "sha_gates_pct": 87.6,
+   "alu_bush": "29/37",
+   "alu_gates_pct": 99.6,
+   "fpu63": "ADMIT",
+   "completeness": "VBEND PASS / VA PASS / E_hop PASS / cells PASS / order FAIL",
+   "note": "pMOS-nMOS +7.4 ps, park-nMOS +30.4 ps"
+  },
+  {
+   "mechanism": "m1d_h5b580_adv12 (free-running, NO per-edge switch)",
+   "E_fJ": 5.087,
+   "eta_pct": 88.3,
+   "N_min": 53.8,
+   "sha_bush": "4/10",
+   "sha_gates_pct": 87.6,
+   "alu_bush": "29/37",
+   "alu_gates_pct": 99.6,
+   "fpu63": "ADMIT",
+   "completeness": "VBEND FAIL / VA PASS / E_hop PASS / cells PASS / order PASS",
+   "note": "pMOS-nMOS -0.9 ps, park-nMOS +33.2 ps"
+  },
+  {
+   "mechanism": "m1d_h5b580_adv24 (free-running, NO per-edge switch)",
+   "E_fJ": 4.631,
+   "eta_pct": 89.35,
+   "N_min": 53.2,
+   "sha_bush": "4/10",
+   "sha_gates_pct": 87.6,
+   "alu_bush": "29/37",
+   "alu_gates_pct": 99.6,
+   "fpu63": "ADMIT",
+   "completeness": "VBEND FAIL / VA PASS / E_hop FAIL / cells PASS / order PASS",
+   "note": "pMOS-nMOS -11.2 ps, park-nMOS +34.2 ps"
+  },
+  {
+   "mechanism": "m1d_h5b580_adv6 (free-running, NO per-edge switch)",
+   "E_fJ": 5.273,
+   "eta_pct": 87.87,
+   "N_min": 54.0,
+   "sha_bush": "4/10",
+   "sha_gates_pct": 87.6,
+   "alu_bush": "29/37",
+   "alu_gates_pct": 99.6,
+   "fpu63": "ADMIT",
+   "completeness": "VBEND PASS / VA PASS / E_hop PASS / cells PASS / order PASS",
+   "note": "pMOS-nMOS +3.2 ps, park-nMOS +31.8 ps"
+  },
+  {
+   "mechanism": "m1d_h5b580_adv8 (free-running, NO per-edge switch)",
+   "E_fJ": 5.225,
+   "eta_pct": 87.98,
+   "N_min": 53.9,
+   "sha_bush": "4/10",
+   "sha_gates_pct": 87.6,
+   "alu_bush": "29/37",
+   "alu_gates_pct": 99.6,
+   "fpu63": "ADMIT",
+   "completeness": "VBEND PASS / VA PASS / E_hop PASS / cells PASS / order PASS",
+   "note": "pMOS-nMOS +1.9 ps, park-nMOS +32.3 ps"
+  },
+  {
+   "mechanism": "m1d_h5r200 (free-running, NO per-edge switch)",
+   "E_fJ": 8.039,
+   "eta_pct": 81.51,
+   "N_min": 57.3,
+   "sha_bush": "4/10",
+   "sha_gates_pct": 87.6,
+   "alu_bush": "29/37",
+   "alu_gates_pct": 99.6,
+   "fpu63": "ADMIT",
+   "completeness": "VBEND PASS / VA PASS / E_hop FAIL / cells PASS / order FAIL",
+   "note": "pMOS-nMOS +9.4 ps, park-nMOS +26.8 ps"
+  },
+  {
+   "mechanism": "ideal-PWL floor (no mechanism can beat this)",
+   "E_fJ": 3.522,
+   "eta_pct": 91.9,
+   "N_min": 51.9,
+   "sha_bush": "4/10",
+   "sha_gates_pct": 87.6,
+   "alu_bush": "29/37",
+   "alu_gates_pct": 99.6,
+   "fpu63": "ADMIT",
+   "completeness": "PASS",
+   "note": "EGT_D-EGT_Z"
+  }
+ ],
+ "sustaining_amplifier_sensitivity": {
+  "best_row": "m1d_h5b580_adv6",
+  "E_drive_fJ": 5.273,
+  "park_conventional_fJ": 2.403,
+  "resonant_part_fJ": 2.87,
+  "eta_amp_min_for_admission": 0.2774,
+  "note": "a free-running resonant network needs a sustaining amplifier to replenish its loss; only the RESONANT part of the ledger passes through it.  Admission survives any sustaining efficiency above this figure."
+ }
+}
