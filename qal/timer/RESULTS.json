@@ -1,0 +1,209 @@
+{
+ "_doc": "Q1 (tapped-line timer, real drives on the tg15p hop) + Q3 N-spread. All MEASURED, SG13G2/PSP103 tt, committed instrument (swsweep harness text-patched). Acceptance pre-registered in PRE_REGISTERED.json.",
+ "instrument": {
+  "G0_postprocessing_repro": {
+   "E_hop_open_fJ": 8.382817,
+   "cells_burn_fJ": 1.695475,
+   "committed": [
+    8.3828171771408,
+    1.6954746104994207
+   ],
+   "verdict": "PASS to the digit"
+  },
+  "G1_line_anchor_1p2V": {
+   "per_stage_ps": 42.67,
+   "e_per_stage_fJ": [
+    6.316,
+    6.415
+   ],
+   "anchor": "42-45 ps / ~6.3 fJ (async_power_anchor)",
+   "verdict": "PASS"
+  },
+  "temperature_plumbing": {
+   "OPTIONS_DEVICE_TEMP": "INERT (byte-identical zeros 0/27/85C, all .so TR=27) -- REFUTED as a corner mechanism",
+   "model_card_dta": "SILENTLY DROPPED (absent from .so.params __GIVEN__) -- REFUTED",
+   "instance_dta_via_shim_GDTA": "WORKS (Id 321.7->305.0 uA at +58K); shim must not define .param GDTA itself (local def shadows deck's)"
+  }
+ },
+ "line_cal_1p5V": {
+  "t27": {
+   "per_stage_ps": 29.432,
+   "e_per_stage_fJ": 9.895
+  },
+  "t0": {
+   "per_stage_ps": 28.006,
+   "e_per_stage_fJ": 9.875
+  },
+  "t85": {
+   "per_stage_ps": 32.531,
+   "e_per_stage_fJ": 9.978
+  }
+ },
+ "timer_design_v2": {
+  "cells": "trigger inv_1+inv_2; N x inv_1 line + CTRIM cap-DAC (2 nodes); nand2_1 pulse gate; gtp tap inv_1+inv_4 (pMOS cut ~21 ps EARLY, harmless); gt tap inv_1+inv_1+inv_2 (nMOS cut LAST, tuned to the zero); pk tap 7 x inv_1 (lands ~36 ps after the cut)",
+  "v1_failures_recorded": "single-tap order (nMOS first) let the LC ring to -70 uA through the still-on pMOS -> VBEND 0.651 FAIL; fanout<1 drivers burned 508 fJ",
+  "ctrim_sensitivity_ps_per_fF": 2.06,
+  "stage_granularity_ps": 58.9,
+  "achievable_widths": "odd multiples of the stage delay only; CTRIM covers the gap"
+ },
+ "tuned_row_27C_n7_c25": {
+  "width_50_ps": 269.84,
+  "target_unperturbed_zero_ps": 271.46,
+  "I_at_cut_uA": -15.0,
+  "I_at_cut_pct_IPK": 7.7,
+  "note_effective_cut": "~0 uA at the 80% gate point where the nMOS stops conducting",
+  "gt_edges_ps_20_80": [
+   30.5,
+   16.3
+  ],
+  "VBEND": 0.68463,
+  "VBPK": 0.77736,
+  "VA_open": 0.1078,
+  "completeness": "BOTH PASS (VBEND +1.3% of ideal 0.6759; VA drained)",
+  "E_hop_open_fJ": 8.109,
+  "ideal_drive_anchor_fJ": 8.383,
+  "delta_pct": -3.3,
+  "vs_tg60_ring_robust_anchor": "8.11 vs 10.69 fJ = -24%: the tg15p win SURVIVES real edges",
+  "injection_caveat_fC": {
+   "through_L_at_open": [
+    32.05,
+    32.52
+   ],
+   "extra_into_cells_not_through_L": 3.3,
+   "surviving_at_D": 0.6,
+   "meaning": "real drives inject ~3.3 fC into bank B via TG parasitics (booked in E_timer, so no free lunch); +1.3% VBEND and part of the -3.3% E_hop is timer subsidy"
+  },
+  "cells_burn_fJ": 1.927,
+  "E_R_toC_fJ": 0.049
+ },
+ "timer_energy_fJ_per_hop": {
+  "total_D": 399.8,
+  "per_bank_taps": {
+   "gt": 118.0,
+   "gtp": 109.8,
+   "pk": 75.0,
+   "sum": 302.8
+  },
+  "shared_line": 97.0,
+  "trigger": 5.4,
+  "ideal_source_booked_drive_energy_fJ": 3.56,
+  "switch_gate_CV2_floor_fJ": 55.3,
+  "temperature_dependence": {
+   "t0": 417.4,
+   "t27": 419.6,
+   "t85": 426.4
+  }
+ },
+ "admission": {
+  "formula": "N_min = (39.6 + E_timer_per_bank_per_hop)/(0.867-0.0361)",
+  "as_built_stdcell_1p5V": {
+   "B_1": 535,
+   "B_8": 428,
+   "B_inf": 412
+  },
+  "zcd_verdict_was": 221,
+  "floor_at_E0": 48,
+  "at_CV2_floor_taps_65fJ": 126,
+  "verdict": "the hybrid as built (stdcells, 1.5V) is WORSE than the refuted ZCD on per-bank energy; it wins on mechanism (no per-hop comparator, detector amortizes) and has ~5.5x of stdcell tax between 302.8 and the 55 fJ gate-charge floor"
+ },
+ "mistiming_map_real_edges": [
+  {
+   "offset_ps": -30.7,
+   "VBEND_pct": -4.0,
+   "E_hop_pct": 6.4,
+   "row": "n7_c10"
+  },
+  {
+   "offset_ps": -1.6,
+   "VBEND_pct": 1.3,
+   "E_hop_pct": -3.3,
+   "row": "n7_c25 (tuned)"
+  },
+  {
+   "offset_ps": 7.5,
+   "VBEND_pct": 2.4,
+   "E_hop_pct": -5.7,
+   "row": "n9"
+  },
+  {
+   "offset_ps": 65.7,
+   "VBEND_pct": -0.6,
+   "E_hop_pct": -9.6,
+   "row": "n11"
+  }
+ ],
+ "park_edge_effect": {
+  "float_window_ps": [
+   9.0,
+   41.3
+  ],
+  "I_at_park_build_uA": [
+   -23.5,
+   -102.5
+  ],
+  "A_side_ring": "V(bka) pk-pk 0.29 -> 0.71 V, I(L) ring +/-50 -> +/-120 uA (real edges double the corpse-side ring)",
+  "B_side": "V(bkb) ripple after park 2.1 mV (vs 47 mV post-open excursion ideal) -- the delivered rail is quiet",
+  "park_clamp": "identical (Vsw -0.04..0.63 both)"
+ },
+ "tracking": {
+  "probe_zero_ps": {
+   "t0": 264.842,
+   "t27": 265.623,
+   "t85": 267.578
+  },
+  "zero_fractional": {
+   "to_0C": -0.294,
+   "to_85C": 0.736
+  },
+  "loaded_width_ps_n9c0": {
+   "t0": 265.546,
+   "t27": 278.996,
+   "t85": 307.537
+  },
+  "width_fractional": {
+   "to_0C": -4.82,
+   "to_85C": 10.23
+  },
+  "tracking_ratio": {
+   "cold": 16.4,
+   "hot": 13.9
+  },
+  "verdict": "REPLICA FAILS IN MAGNITUDE (pre-registered expectation confirmed): the line is RC-governed, the zero LC-governed. SIGN saves it: heat lengthens the width (late = benign, ~+24 ps at 85C ~ -7% E_hop, VBEND fine), cold shortens it (early = bad, ~-14 ps at 0C ~ -1.8% VBEND ~ -12 mV/hop against the ~120 mV chain budget).",
+  "drift_rate_ps_per_K": 0.46,
+  "cadence": "to hold the +-7.5 ps measured-benign residual the die may drift +-16K between calibrations; +-33K for the +-15 ps pre-registered band. Thermal drift is ms-scale vs ~600 ps hops -> calibration every ~1e6+ hops suffices; the line does NOT track the zero, the SAR loop must."
+ },
+ "n_spread": {
+  "config": "dV=0.8 committed zcs unit, parallel-copy scaling, switch held ON, TON=10ps uniform (offset vs committed 2ps N=8 rows: -2.65 ps uniform)",
+  "full_scale_ps": {
+   "8": 61.61,
+   "32": 63.65,
+   "128": 64.84
+  },
+  "full_scale_pct_of_mean": {
+   "8": 17.1,
+   "32": 17.6,
+   "128": 17.9
+  },
+  "sigma_direct_8_random_words_ps": {
+   "8": 8.74,
+   "32": 4.63,
+   "128": 1.93
+  },
+  "sigma_composed_ps": {
+   "8": 10.65,
+   "32": 5.51,
+   "128": 2.81
+  },
+  "exponents": {
+   "direct": -0.545,
+   "composed": -0.48,
+   "pre_registered_band": [
+    -0.65,
+    -0.35
+   ]
+  },
+  "verdict": "1/sqrt(N) HOLDS for random data; FULL-SCALE spread is N-INVARIANT (~17-18%) -- worst-case data does not average, the shared-timer budget must charge +-32 ps OR the architecture must guarantee near-random data (+-3 sigma at N=128 is +-5.8 ps)",
+  "placement_independence": "3 permutations at k=N/2 byte-identical at every N; t(a) one N-invariant curve (max 2.4 ps deviation)"
+ },
+ "date": "2026-09-27"
+}

@@ -1,0 +1,72 @@
+{
+ "_doc": "Q2 (hybrid timer) + admission half of Q3: SAR calibration loop for the tuned pulse-width generator, measured on the tg15p TRUE-ZCS hop (dV=1.0 iso-current row, L=277.8 nH, 8-gate bank, SG13G2/PSP103 at T0). 15-point open-time sweep DELTA=-80..+80 ps around the committed true zero 266.755 ps; every deck is the committed swsweep harness verbatim with only the open time moved. Private cache vae_cache_sar; decks independent of the Q1 timer agent's.",
+ "instrument_gates_MEASURED": {
+  "extractor": "extract_one() recomputes the committed swsweep tg15p_zcs row from ITS OWN mt0 digit-identical (E_hop_open 8.382817177, VBEND 0.6758936, VA_open 0.09778203952, cells 1.69547461, E_R_toC 0.04954303486; rel 0.0e+00 on all)",
+  "deck_gen": "sar_p000.cir is byte-identical to swsweep/sw_tg15p_z.cir modulo the added .measure lines; fresh run in the private cache reproduces the committed row digit-identical",
+  "task_anchor_crosscheck": "+50 ps row: E_hop -0.91% / VBEND -2.25% vs delta=0 -- reproduces the campaign's stated tg15p late-open sensitivity (-0.9% / -2.2%) from an independent deck generation"
+ },
+ "pre_stated_and_outcomes": {
+  "observable_hypothesis (stated in brief before any run)": "V_bank-after-open vs V_bank-peak reverses sign / is monotone around the optimum",
+  "outcome_sign_reversal": "REFUTED for the literal peak-minus-end signal: VBPK-VBEND is 132->24 mV over -80..+50 and NEVER crosses zero (post-open turn-off feedthrough + park transient always droop bkb below its peak); it is MONOTONE (proportional error signal needing a calibrated setpoint), rolling over past +50",
+  "outcome_replacements_MEASURED": "two observables DO close the SAR loop: (1) ring-quarter sample on the DONOR rail, V(bka)@open+157ps - V(bka)@open: SIGN-REVERSING and monotone over [-80,+65] ps, slope 4.67 mV/ps near zero, crossing at delta=-10.5 ps (fixed design pedestal, trimmable); (2) dithered VBEND comparison (two trials at code+-10 ps): sign-reverses around the measured VBEND maximum at delta=+14 ps, 0.55 mV per ps of code offset at 10 ps dither -- pedestal-free and offset-cancelling but sub-mV near convergence and it samples the live data node",
+  "fpu_flip_threshold (pre-stated, from the carried rule before any run)": "E_timer <= 12.75 fJ/bank/hop flips alu_top@fpsat_fma min-bank-63 back to ADMITTED (63*0.8309-39.6; already in zcd pre-stated bands)"
+ },
+ "sweep_MEASURED": {
+  "file": "sar_sweep.json (15 rows), plot sar_observables.svg",
+  "IZ_slope_uA_per_ps": -2.086,
+  "ring_qtr": {"slope_mV_per_ps_near_zero": 4.67, "pedestal_crossing_ps": -10.5, "monotone_range_ps": [-80, 65], "note": "transduction = interrupted current x sqrt(L/C)~2.78k plus a fixed residual-rail-discharge pedestal (park drains bka through L, tau~2L/(RS+Ron_park)~0.9 ns); probe point is bank A post-open = OFF the data path, free to load"},
+  "VBEND": {"peak_at_delta_ps": 14.0, "curvature_uV_per_ps2": -13.8, "value_at_peak": 0.6785},
+  "E_hop_open_fJ": {"at_true_zero": 8.383, "min": 8.247, "min_at_delta_ps": 25, "at_minus80": 9.924},
+  "three_optima_disagree": "rail-drain completeness VA_open is best at delta=-12..0 (0.097-0.098, = the committed anchor), VBEND peaks at +14 (0.6785), E_hop bottoms at +25 (8.247): the calibration setpoint is a design choice inside a shallow [0,+25] basin; the true zero is the balanced/most-complete-drain choice and costs only +1.3%E/-0.4%VBEND vs the other optima",
+  "mistiming_cost_around_setpoint_14": {"pm7.9ps": "VBEND -0.19% / E +0.93% vs min", "pm22.5ps": "VBEND -1.34% / E +3.0%", "pm31ps": "VBEND -2.15% / E +4.8%"},
+  "probe_safety": "even delta=-80 neither aborts nor un-transfers (VA_open 0.245 worst, outputs settle, park holds) -- SAR probing across the full capture range is safe on a live-designated bank, the trial data is simply invalid"
+ },
+ "sar_loop_design_and_cost": {
+  "loop": "coarse: 6 single-hop trials, binary search on the ring-quarter sample against a trimmed threshold (capture +-64 ps, LSB 2 ps; signal per LSB ~9 mV >> latch offset after one-point trim); fine: 4 dithered-VBEND pairs (8 hops) to lock the VBEND peak; +4 repeat trials as noise margin. 18 trial hops, 14 decisions per calibration event",
+  "trial_hop_energy_fJ": "18 x [8.25..9.92] = 149..179 (MEASURED bounds from the sweep)",
+  "comparator_design_point": "[D] strobed dynamic latch (StrongARM class, ~20 fF internal at 1.2 V) ~30 fJ/decision + 2-4 fF auto-zeroed samplers ~5-10 fJ/trial; kT/C at 4 fF = 1 mV rms vs 9 mV coarse signal. Bandwidth is free by construction: the ring persists ~1 ns and VBEND indefinitely, so even the REFUTED ZCD's own 3-stage comparator (144.83 fJ/cycle MEASURED, >=538 ps late) would FUNCTION here -- its delay refutation does not transfer; we use its measured energy as the comparator CEILING",
+  "E_cal_per_event_pJ": {"design_point": 1.5, "band": [0.7, 4.0], "breakdown": "hops 0.15-0.18 + decisions 0.4 (latch) .. 2.0 (measured-ZCD ceiling) + samplers ~0.15 + SAR logic/register ~0.5-1.5"},
+  "detector_delay_and_energy_amortization": "the two ZCD killers dissolve as claimed: delay is irrelevant (observe-after-the-fact, trials repeat), and detector energy amortizes (4 pJ ceiling per event vs 144.3 fJ EVERY hop for the ZCD = one event costs ~28 ZCD-hops)"
+ },
+ "cadence_and_amortized_overhead": {
+  "drift_model_band": "[D, to reconcile with Q1's tracking measurement] line and hop share rail and RC physics; residual (untracked) drift band 0.1-0.5 ps/K-equivalent and ~2-5 ps per 1% VDD step; the measured +-22..31 ps tolerance basin implies calibration cadence ~1 kHz is comfortable for thermal PVT, 10-100 Hz likely sufficient; supply steps are the cadence driver if untracked",
+  "amortized_per_bank_per_hop_fJ": {"formula": "E_cal*f_cal/(B*R_hop*duty), R_hop=1.87 GHz (534 ps beat)", "full_duty_B8": {"1kHz": 0.00027, "10kHz": 0.0027, "100kHz": 0.027}, "worst_shown": "0.027 fJ = 3.2% of the 0.8309 denominator at the most aggressive cadence -- negligible at any plausible one (<=0.3% at 10 kHz)"},
+  "dark_silicon_rider": "overhead scales 1/duty: at duty 1% and 10 kHz it is 0.27 fJ/hop (33% of denominator) for B=8 -- mitigate by calibrate-on-wake (one event per burst: 4 pJ/(18-hop event) amortized over a >=1e4-hop burst = <0.03 fJ) ; wall-clock drift only matters when about to fire",
+  "verdict": "calibration overhead is NEGLIGIBLE (shown, not assumed) except in the extreme idle-duty corner, where calibrate-on-wake bounds it"
+ },
+ "replica_vs_designated_real_bank": {
+  "replica": "isolation (trials never touch live data; sampler loading free) and calibrate-anytime; COSTS a dedicated 277.8 nH inductor -- the architecture's largest/scarcest component (the sigma0 arch shares ONE switched inductor across banks precisely because of it) [D] -- plus a replica bank+switch; FIDELITY LOSS: inter-inductor and bank-C mismatch transfer as ~+-2-4 ps systematic (t_zero=pi*sqrt(LC): +-1-2% L -> +-1.3-2.7 ps) that the real bank never sees",
+  "designated_real_bank": "zero added area; calibrates the ACTUAL L/C/switch (no transfer error); MEASURED-safe to probe across +-80 ps (no lockup, no un-transfer); costs idle-slot scheduling: 18 hops/event = duty theft 1e-5..1e-4 at 1-10 kHz (0.001-0.01%), trial hops carry invalid data so the wave must skip or replay those beats; the fine (VBEND) sampler touches the live bank node bkb -- a discharged 4 fF sampler droops the held 36 fF bank ~10%, so fine trials must also be idle-slot",
+  "trade_stated": "designated-real wins on area (no second inductor) AND fidelity (removes the replica's 2-4 ps transfer systematic); the replica earns its inductor only if the chain can never be idled ~18 consecutive beats or live-data gating is unacceptable. Either way the DATA spread (61.6 ps/16.9% at N=8, both options calibrate a fixed centered pattern) is untouched -- it is the irreducible term any calibrated timer leaves"
+ },
+ "total_mistiming_budget_vs_measured_cost": {
+  "residual_SAR_ps": 4, "drift_between_cals_ps": "5-10 (band)", "data_spread_ps": "+-22.5 [= 16.9%/2 of 266.8, N=8 basis; whether it shrinks 1/sqrt(N) is Q3's other half, unmeasured here]",
+  "worst_total_around_setpoint": "~[-18,+46] ps",
+  "cost_from_measured_curve": "VBEND worst -2.3% (~16 mV of the ~120 mV threeway budget, 13%); E_hop worst +4.5% vs min (+2.8% vs true-zero); per-hop top-up repairs level wander into a few-% energy ripple (a1f: top-up -> lossless-in-level); chain compounding beyond that remains uncharged, as in the threeway record"
+ },
+ "admission_restated_shared_line": {
+  "rule": "N_min = (39.6 + E_timer)/(0.8309), E_timer = E_line/B + E_tap + E_cal_amort [SELECTION-RULE.md G2, ZCD-measured basis retired by refutation]",
+  "steady_state_sharing": "in the full wave pipeline every bank hops every beat, so ONE beat-length line/ring serves all B banks with per-bank tap buffers: line term literally divides by B; per-op tapped-line reading gives the same per-bank number",
+  "E_line_per_beat_fJ": "[3.2, 44.5] band: 6.35 stages x [0.5 light-FO1 .. 6.35 bd8-anchor MEASURED] fJ/stage (sg13g2_inv_1 42.05 ps/traversal; the add8 anchor's 13x-costlier-than-modeled delay line is why the heavy end is kept) -- Q1 measures the real number",
+  "E_tap_fJ_MEASURED_charges": "pull-up gate charge of the real tg15p switch per hop MEASURED from the committed-harness integrators: Q_gt(close) 10.50 fC + Q_gtp(open) 16.38 fC + park [D ~2.1 fC scaled 1u/5u] = 29.0 fC -> conventional CMOS driver from the 1.5 V rail = 43.5 fJ/bank/hop; ideal-recycling FLOOR = the net gate dissipation with ideal PWL drives, MEASURED egt = 3.56 fJ; 75%-recovery resonant driver = 10.9 [D]. THE BOOKKEEPING HOLE IS THE HEADLINE: every hop deck so far drove these gates for free, and the never-costed tap-driver term is 5x the admission floor's entire numerator margin to fpu",
+  "N_min_scenarios": {
+   "conventional_CV2_tap": "E_timer 43.5-49.1 -> N_min 100-107 (any B): fpu63 EXCLUDED stays, sha bush 0/10 stays, ALU bush improves 25/37->27/37 (98.2->99.2% gates) with no admission flip",
+   "75pct_recovery_tap": "E_timer 10.9-16.5 -> N_min 61-67: fpu63 FLIPS to ADMITTED for B>=24 (heavy line) / B>=2 (light line); sha 4-level prefix (92 gates, 87.6%) re-opens; sha/alu whole blocks still excluded (tail min-banks 7/8)",
+   "recycling_floor_tap": "E_timer 3.6-9.2 -> N_min 52-59: fpu ADMITTED even at B=8 with the heavy line; sha bush 4/10; alu bush 29/37 (99.6%)",
+   "reference": "ZCD-measured 144.3 -> 221 (sha 0/10, alu 25/37); E=0 floor -> 47.7"
+  },
+  "flip_thresholds_exact_fJ": {"N50_working": 1.95, "N63_fpu": 12.75, "N92_sha_4level_prefix": 36.84, "N150_confident": 85.03, "whole_blocks": "sha 7 / alu 8 -> need E<0: NEVER, unchanged at any timer cost"},
+  "pre_stated_flip_answer": "fpu min-bank-63 flips back to ADMITTED iff E_timer <= 12.75 fJ/bank/hop = (with the measured 29.0 fC of tg15p gate charge) tap-driver charge recovery >= 71-74% (line-share dependent, B>=8). Conventional CMOS tap drive (43.5 fJ) does NOT flip it at ANY chain length; the verdict moves from EXCLUDED to UNDECIDABLE-pending-Q1 because the flip line sits INSIDE the honest driver band [3.6, 43.5]",
+  "per_gate_scaling_rider": "SELECTION-RULE's own correction (switch grows with the bank; switch cost is per GATE) puts the tap term in the DENOMINATOR: conventional drive = 5.43 fJ/gate > h-tax 0.8309 -> denominator NEGATIVE, NO N admits at ANY E_timer; even the recycling FLOOR (0.445 fJ/gate) gives N_min ~106-117 and fpu63 then needs >=96.7% recovery. Under this reading gate-drive recovery is existential for QAL admission, not a tuning knob. Reconciling the two readings = Q1's real-drive hop measurement (does 16 um of switch serve only 8 gates?)"
+ },
+ "failures_and_negatives": [
+  "pre-guessed observable (peak-minus-end sign reversal) REFUTED -- replaced by measured alternatives",
+  "the calibrated setpoint is NOT the current zero: VBEND peaks +14 ps, E bottoms +25 ps, rail-drain prefers 0: 'true ZCS' is not the energy optimum of this hop by a small measured margin (1.3%)",
+  "ring observable carries a -10.5 ps design pedestal: single-shot SAR against a zero threshold converges 10.5 ps early unless trimmed (cost: one dithered-VBEND cross-check, included in the event budget)",
+  "dark-silicon corner: calibration overhead is NOT negligible at duty<=1% with wall-clock cadence -- calibrate-on-wake required there",
+  "no matplotlib on host: plot is hand-rolled SVG (sar_observables.svg)",
+  "comparator energy is DERIVED (latch design point), bounded by the MEASURED ZCD-comparator ceiling; not itself simulated here"
+ ],
+ "environment": "PYMS_VAE_CACHE=<scratchpad>/vae_cache_sar (private copy of track2 cache; widths 5/10/1/0.74/1.12 pre-compiled); Xyce /usr/local/src/xyce-build/src/Xyce; PSP103 .hdl + sg13g2_psp103_tt.lib + sg13lv_compat.sp shim; 15 runs, 7-way parallel, all rc=0",
+ "date": "2026-09-27"
+}
