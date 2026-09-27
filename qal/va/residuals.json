@@ -1,82 +1,229 @@
 {
-  "tier": "T1",
-  "version": 3,
-  "date": "2026-09-26",
-  "version_note": "v3 = nonlinear bank C(V) round. NEW element qal_bankcap.va: a CONSERVED CHARGE Q(V)=C0*V+CT*W*softplus((V-VK)/W) [+ optional inversion-PEAK bump CP*WP*(softplus((V-VA)/WP)-softplus((V-VB)/WP))], contributed as I(p,n)<+ddt(Q) so a closed V-cycle returns zero net energy (charge conserved to 1.1e-7 of peak, energy to <0.001% -- the classic V-dependent-cap non-conservation bug is structurally avoided). Fit ONLY to the STATIC slow-ramp calibration Q(V) (regenerated fine this session, cv_tr_dv*/cv_bh_* prn), Q(dV=1.0) matched EXACTLY, C0==measured C_quiet floor (23.2 fF); the hop stays a HOLDOUT. Both banks of run_bankhop replaced (bank A full C(V); bank B parasitic floor+knee, 8 cells add the rest). PRE-COMMITTED hop thresholds (stated before the run): promote iff |err|<=15% on E_hop AND <=10% on t_zcs. RESULT: NOT MET (E_hop -71.7%, t_zcs -33.7%). THE ELIMINATION: nonlinear bank C(V) -- monotone AND peaked, both reproducing the static calibration -- did NOT move the hop (v2 3.0050->v3 3.0428 fJ, t_zcs 227.6->226.8 ps). v2's attribution of the -72% to 'nonlinear bank C(V)' is now RETRACTED BY MEASUREMENT, exactly as v1's 'subthreshold conduction' attribution was retracted by v2. Root cause pinned by elimination + the calibration bound: the static bank holds only 22 fC at 0.611 V while the hop delivers ~35 fC from bank A; the extra ~13 fC is DISSIPATIVE gate current during the 342 ps transient (silicon's 8.28 fJ gate burn), which a lossless charge-conserving C(V) cannot carry. SEPARATE TOOLCHAIN FINDING (independent of C(V), qal_gate.va UNMODIFIED): the current PyMS build DROPS qal_gate.va's softplus subthreshold reassignments (all 7 conductances bind to the hard-clamped overdrive; zero log/exp in the compiled eval.cpp; minimal repros compile, the large cell drops), so the below-threshold rows (cliff, stall droop) currently REVERT TO v1 -- v2's tail is not reproducible in this toolchain. Above-threshold rows (settle law) are bit-identical. v2 rows preserved in superseded_v2.",
-  "models": {
-    "qal_bankcap.va (NEW: nonlinear bank C(V), conserved charge)": {
-      "verdict": "IMPLEMENTED + CHARACTERIZED + CHARGE-CONSERVING, but does NOT close the hop -> nonlinear bank C(V) ELIMINATED as the -72% mechanism. Ship narrowly as the correct nonlinear-reactance form; do NOT use for bank-hop energy (stays T0-sourced).",
-      "form": "Q(V) = C0*V + CT*WV*softplus((V-VK)/WV) + CP*WP*(softplus((V-VA)/WP) - softplus((V-VB)/WP)); I(p,n) <+ ddt(Q). softplus overflow-safe = max(z,0)+ln(1+limexp(-|z|)). dQ/dV = C0 + CT*sigmoid + CP*(sig-sig) = floor + plateau-step + inversion-PEAK top-hat.",
-      "derivation": "C_inc(V) = (1/V) dE/dV from the measured slow-ramp E_stored(V) (adiabatic: E=int V dQ => dE/dV=V*C_inc). Measured C_inc: ~23 fF floor below 0.35 V, SPIKES to ~78 fF at the 0.43-0.49 V inversion knee, settles to ~36 fF plateau.",
-      "fit_provenance": "FIT to the STATIC slow-ramp CHARGE Q(V), dV=1.0 curve ONLY (cv3/fit_peak.py); holdouts dV=0.6/0.8/1.2. CT constrained so Q(dV=1.0) matches the measured operating-point charge EXACTLY; C0 fixed at the measured C_quiet floor 23.2 fF (qal_split_differential.json); WV=NSS*PHIT=0.047823 V carried from the conduction fit (NOT refit); CP/VA/VB/WP fit the inversion peak. Params -- bank A (full, no cells): C0=23.200 CT=12.964 VK=0.3720 CP=71.315 VA=0.4278 VB=0.4930 WP=0.0119 fF/V; deck B (floor, cells add the rest): C0=23.200 CT=1.823 VK=0.1500 CP=72.378 VA=0.4141 VB=0.4588 WP=0.0100. rms rel-Q 2.3%/3.8%; E(1.0) -0.9%. The one large residual is V=0.5 (-12% Q / -19% E composed): the sharp inversion PEAK is only approximately captured by the top-hat.",
-      "charge_conservation": "closed 0->1.2->0 V cycle, probe_runs/cc_bankcap.cir (floor form) + cc_bankcap_peak.cir (peak active): Q_net/Q_peak = 1.4e-7 (floor) / 1.1e-7 (peak) -- DEFINITIVE, the element is a pure state function of V so it is conservative by construction. Energy net (deck V*i 1F-integrator) 0.0023%/0.0006% of E_peak -- the residue is the monitor's product-integration error at the ramp corners, not the element (charge is exact). No f_adia, no recovery coefficient.",
-      "entries": [
-        {"feature": "static E_stored(V), composed deckB-cap + 8 cells vs measured slow-ramp", "operating_point": "dV=1.0 calibration (FIT curve)", "T0_anchor": "E=0.337/1.278/5.562/9.217/13.745/16.386/19.232 fJ at V=0.167/0.333/0.5/0.667/0.833/0.917/1.0", "T1_value": "0.332/1.361/4.510/9.860/13.986/16.416/19.058 fJ", "err": "-1.5/+6.5/-18.9/+7.0/+1.8/+0.2/-0.9 %", "kind": "FITTED (charge Q(V), Q(1.0) exact)", "T0_source_file": "probe_runs/cv_tr_dv100.cir.prn (regenerated fine this session); cells share probe_runs/cv_bh_dv100.cir.prn", "note": "Q(1.0) matched EXACTLY (0.0%); worst residual at V=0.5 is the sharp inversion peak a smooth softplus/top-hat under-fills"},
-        {"feature": "static Q(V) endpoint charge", "operating_point": "dV=0.6/0.8/1.0/1.2 (1.0 FIT, rest HOLDOUT)", "T0_anchor": "C_eff = 33.94/35.00/35.98/36.80 fF (Q(dV) = 20.4/28.0/35.98/44.2 fC)", "T1_value": "Q(dV=1.0) composed matches to +0.0% (fit); holdout endpoints within a few %", "kind": "FITTED at dV=1.0, holdouts elsewhere", "T0_source_file": "qal_dv_sweep.json C_eff + cv_tr_dv* prn"},
-        {"feature": "static E_stored(V) holdout curves, per-checkpoint worst errors (skeptic's independent integration)", "operating_point": "dV=1.2 / 0.8 / 0.6 (ALL HOLDOUT)", "T1_value": "dV=1.2 within +/-6.6%; dV=0.8 worst +14.5% at V=0.266; dV=0.6 worst +18.8% below the knee", "kind": "HOLDOUT", "T0_source_file": "probe_runs/cv_tr_dv{120,080,060}.cir.prn", "note": "skeptic's corrected figures (implementer's message understated dV=0.8 as +9.5% and dV=0.6 as +/-16%); absolute magnitudes ~0.1 fJ. Below-knee absolute charges are small, so relative errors there are large but energetically minor."}
-      ]
+ "tier": "T1",
+ "version": 3,
+ "date": "2026-09-26",
+ "version_note": "v3 = nonlinear bank C(V) round. NEW element qal_bankcap.va: a CONSERVED CHARGE Q(V)=C0*V+CT*W*softplus((V-VK)/W) [+ optional inversion-PEAK bump CP*WP*(softplus((V-VA)/WP)-softplus((V-VB)/WP))], contributed as I(p,n)<+ddt(Q) so a closed V-cycle returns zero net energy (charge conserved to 1.1e-7 of peak, energy to <0.001% -- the classic V-dependent-cap non-conservation bug is structurally avoided). Fit ONLY to the STATIC slow-ramp calibration Q(V) (regenerated fine this session, cv_tr_dv*/cv_bh_* prn), Q(dV=1.0) matched EXACTLY, C0==measured C_quiet floor (23.2 fF); the hop stays a HOLDOUT. Both banks of run_bankhop replaced (bank A full C(V); bank B parasitic floor+knee, 8 cells add the rest). PRE-COMMITTED hop thresholds (stated before the run): promote iff |err|<=15% on E_hop AND <=10% on t_zcs. RESULT: NOT MET (E_hop -71.7%, t_zcs -33.7%). THE ELIMINATION: nonlinear bank C(V) -- monotone AND peaked, both reproducing the static calibration -- did NOT move the hop (v2 3.0050->v3 3.0428 fJ, t_zcs 227.6->226.8 ps). v2's attribution of the -72% to 'nonlinear bank C(V)' is now RETRACTED BY MEASUREMENT, exactly as v1's 'subthreshold conduction' attribution was retracted by v2. Root cause pinned by elimination + the calibration bound: the static bank holds only 22 fC at 0.611 V while the hop delivers ~35 fC from bank A; the extra ~13 fC is DISSIPATIVE gate current during the 342 ps transient (silicon's 8.28 fJ gate burn), which a lossless charge-conserving C(V) cannot carry. SEPARATE TOOLCHAIN FINDING (independent of C(V), qal_gate.va UNMODIFIED): the current PyMS build DROPS qal_gate.va's softplus subthreshold reassignments (all 7 conductances bind to the hard-clamped overdrive; zero log/exp in the compiled eval.cpp; minimal repros compile, the large cell drops), so the below-threshold rows (cliff, stall droop) currently REVERT TO v1 -- v2's tail is not reproducible in this toolchain. Above-threshold rows (settle law) are bit-identical. v2 rows preserved in superseded_v2.",
+ "models": {
+  "qal_bankcap.va (NEW: nonlinear bank C(V), conserved charge)": {
+   "verdict": "IMPLEMENTED + CHARACTERIZED + CHARGE-CONSERVING, but does NOT close the hop -> nonlinear bank C(V) ELIMINATED as the -72% mechanism. Ship narrowly as the correct nonlinear-reactance form; do NOT use for bank-hop energy (stays T0-sourced).",
+   "form": "Q(V) = C0*V + CT*WV*softplus((V-VK)/WV) + CP*WP*(softplus((V-VA)/WP) - softplus((V-VB)/WP)); I(p,n) <+ ddt(Q). softplus overflow-safe = max(z,0)+ln(1+limexp(-|z|)). dQ/dV = C0 + CT*sigmoid + CP*(sig-sig) = floor + plateau-step + inversion-PEAK top-hat.",
+   "derivation": "C_inc(V) = (1/V) dE/dV from the measured slow-ramp E_stored(V) (adiabatic: E=int V dQ => dE/dV=V*C_inc). Measured C_inc: ~23 fF floor below 0.35 V, SPIKES to ~78 fF at the 0.43-0.49 V inversion knee, settles to ~36 fF plateau.",
+   "fit_provenance": "FIT to the STATIC slow-ramp CHARGE Q(V), dV=1.0 curve ONLY (cv3/fit_peak.py); holdouts dV=0.6/0.8/1.2. CT constrained so Q(dV=1.0) matches the measured operating-point charge EXACTLY; C0 fixed at the measured C_quiet floor 23.2 fF (qal_split_differential.json); WV=NSS*PHIT=0.047823 V carried from the conduction fit (NOT refit); CP/VA/VB/WP fit the inversion peak. Params -- bank A (full, no cells): C0=23.200 CT=12.964 VK=0.3720 CP=71.315 VA=0.4278 VB=0.4930 WP=0.0119 fF/V; deck B (floor, cells add the rest): C0=23.200 CT=1.823 VK=0.1500 CP=72.378 VA=0.4141 VB=0.4588 WP=0.0100. rms rel-Q 2.3%/3.8%; E(1.0) -0.9%. The one large residual is V=0.5 (-12% Q / -19% E composed): the sharp inversion PEAK is only approximately captured by the top-hat.",
+   "charge_conservation": "closed 0->1.2->0 V cycle, probe_runs/cc_bankcap.cir (floor form) + cc_bankcap_peak.cir (peak active): Q_net/Q_peak = 1.4e-7 (floor) / 1.1e-7 (peak) -- DEFINITIVE, the element is a pure state function of V so it is conservative by construction. Energy net (deck V*i 1F-integrator) 0.0023%/0.0006% of E_peak -- the residue is the monitor's product-integration error at the ramp corners, not the element (charge is exact). No f_adia, no recovery coefficient.",
+   "entries": [
+    {
+     "feature": "static E_stored(V), composed deckB-cap + 8 cells vs measured slow-ramp",
+     "operating_point": "dV=1.0 calibration (FIT curve)",
+     "T0_anchor": "E=0.337/1.278/5.562/9.217/13.745/16.386/19.232 fJ at V=0.167/0.333/0.5/0.667/0.833/0.917/1.0",
+     "T1_value": "0.332/1.361/4.510/9.860/13.986/16.416/19.058 fJ",
+     "err": "-1.5/+6.5/-18.9/+7.0/+1.8/+0.2/-0.9 %",
+     "kind": "FITTED (charge Q(V), Q(1.0) exact)",
+     "T0_source_file": "probe_runs/cv_tr_dv100.cir.prn (regenerated fine this session); cells share probe_runs/cv_bh_dv100.cir.prn",
+     "note": "Q(1.0) matched EXACTLY (0.0%); worst residual at V=0.5 is the sharp inversion peak a smooth softplus/top-hat under-fills"
     },
-    "composed 8-cell bank hop (run_bankhop.py) -- v3 with nonlinear C(V) banks": {
-      "verdict": "QUANTITATIVE FAIL, prize question answered NO against PRE-COMMITTED thresholds (|err|<=15% E_hop AND <=10% t_zcs, stated BEFORE the run): measured -71.7% / -33.7%. Bank-hop energy AND timing at dV=1.0 STAY T0-sourced (qal_hop_corrected.json / qal_isocurrent.json). THE v3 ELIMINATION: nonlinear bank C(V) -- BOTH a monotone softplus AND a peaked form that reproduce the static slow-ramp curve -- did NOT move the hop (E_hop 3.0050->3.0428 fJ, t_zcs 227.6->226.8 ps; monotone form gave 3.0112/225.2, essentially identical). So v2's 'the -72% is nonlinear bank C(V)' is RETRACTED BY MEASUREMENT. The bank still sails to VBpk 0.973 V (silicon 0.611). MECHANISM, pinned by elimination + the calibration bound: the STATIC slow-ramp bank holds only 22 fC at 0.611 V (measured Q(0.611)=22.0 fC, cv_tr_dv100 prn), but the hop delivers ~35 fC from bank A draining 1.0->0.05 V; the extra ~13 fC is DISSIPATIVE gate current during the 342 ps event (silicon burns E_inB-E_stored = 15.63-7.35 = 8.28 fJ inside the gates). A lossless charge-conserving C(V) STORES charge, it cannot dissipate it, so no static C(V) fit to the slow ramp can clamp VBpk. The resonance likewise sees an effective C~36 fF (static plateau) where silicon behaves as ~84 fF over the hop -- the extra effective capacitance IS that dynamic dissipative absorption. NEXT model-form change: heavier gate charge draw during the transient (larger CY / stronger settling conduction on the cells), NOT the bank plant.",
-      "pre_committed_thresholds": "promote hop energy/timing to T1-with-band iff |err| <= 15% on E_hop AND <= 10% on t_zcs (recorded before the v3 hop run). VERDICT: NOT MET (-71.7% E_hop, -33.7% t_zcs).",
-      "shipped_form": "peaked C(V) (captures the inversion peak; better static fit). Monotone-softplus form gives the same hop verdict (elimination robust to fit form).",
-      "entries": [
-        {"feature": "E_hop", "operating_point": "dV=1.0, L=277.8nH, 8 gates", "T0_anchor": 10.7416e-15, "T1_value": 3.0428e-15, "unit": "J", "err_pct": -71.7, "kind": "holdout (PRIZE row)", "note": "v2 3.0050 fJ (-72.0%); nonlinear C(V) moved it +1.3% -- did NOT close"},
-        {"feature": "t_zcs", "operating_point": "same", "T0_anchor": 342.0e-12, "T1_value": 226.8e-12, "unit": "s", "err_pct": -33.7, "kind": "holdout (PRIZE row)", "note": "v2 227.6 ps (-33.5%); C(V) moved it -0.8 ps -- did NOT close. Resonance sees C~36 fF (static) vs silicon's effective ~84 fF"},
-        {"feature": "V_B_peak", "operating_point": "same", "T0_anchor": 0.611, "T1_value": 0.9728, "unit": "V", "err_pct": 59.2, "kind": "holdout (C(V) evidence row)", "note": "v2 0.9389 (+53.7%). The bank STILL sails past the inversion peak (0.43-0.49 V is a thin slice of the 0->0.97 V swing) -- the peak absorbs only ~5 fC, not the ~13 fC silicon dissipates"},
-        {"feature": "I_peak", "operating_point": "same", "T0_anchor": 195.19e-6, "T1_value": 233.71e-6, "unit": "A", "err_pct": 19.7, "kind": "holdout", "note": "v2 +21.4%"},
-        {"feature": "V_B_end", "operating_point": "same", "T0_anchor": 0.57632, "T1_value": 0.9461, "unit": "V", "err_pct": 64.2, "kind": "holdout", "note": "v2 +57.5%"}
-      ],
-      "energy_provenance": "supply-side/port integrals only; E_outA = nonlinear stored-energy drop as bank A drains DV->VAEND (EXACT quadrature of the fitted Q(V), self-consistent with the VA element), cross-checked FIT-INDEPENDENTLY by a 1F-cap integrator of V(bka)*I(LT) (agree to -0.0%: 19.208 vs 19.199 fJ). E_stored_B = nonlinear bank-cap E(VBEND) + cells' stranded 0.5*CY*Voi^2. Closure E_outA - E_stored - E_diss = 0.068 fJ (ring/inductor residue) -> books close, NOT bookkeeping. No f_adia (grep-verified).",
-      "toolchain_caveat": "the v3 hop ran under the REGRESSED PyMS toolchain (qal_gate's subthreshold tail dropped), so strictly v3 = v1-conduction + nonlinear C(V) banks. This cannot rescue the verdict: v2 measured the tail's whole hop effect at -0.5% E / 0.0 ps."
+    {
+     "feature": "static Q(V) endpoint charge",
+     "operating_point": "dV=0.6/0.8/1.0/1.2 (1.0 FIT, rest HOLDOUT)",
+     "T0_anchor": "C_eff = 33.94/35.00/35.98/36.80 fF (Q(dV) = 20.4/28.0/35.98/44.2 fC)",
+     "T1_value": "Q(dV=1.0) composed matches to +0.0% (fit); holdout endpoints within a few %",
+     "kind": "FITTED at dV=1.0, holdouts elsewhere",
+     "T0_source_file": "qal_dv_sweep.json C_eff + cv_tr_dv* prn"
     },
-    "qal_gate.va (single-ended settling cell) -- UNMODIFIED in v3; TOOLCHAIN REGRESSION found": {
-      "verdict": "qal_gate.va was NOT touched in v3. During re-validation the current PyMS build was MEASURED to DROP the softplus subthreshold reassignments (ovX = ovX + nvt*ln(1+limexp(...))): the compiled eval.cpp has ZERO log/exp and all 7 conductances bind to the hard-clamped overdrive (probe_runs build dir inspected). Minimal repros (probe_runs/lntest*.va) compile the SAME pattern correctly, so it is a context/size-dependent emitter bug in the large cell, not a syntax error. CONSEQUENCE: the below-threshold rows REVERT TO v1 -- v2's fitted subthreshold tail is NOT reproducible in this toolchain. This is INDEPENDENT of the C(V) work. Flagged for a PyMS fix (or a code-structure workaround that does not disturb the fit: compute the softplus into a fresh variable rather than self-reassigning after the clamp).",
-      "entries": [
-        {"feature": "functional_cliff shape", "operating_point": "400ps hop-like ramp, rails 0.3725/0.4669/0.5829/0.7179 V", "T0_anchor": "34.8%/77.1%/100%/100% settle", "v2_value": "29.8%/87.7%/99.9%/100.0% (GRADED, tail present)", "T1_value_v3_current_toolchain": "0.0%/0.0%/100.0%/100.0% (HARD STEP -- tail dropped, reverts to v1)", "kind": "REGRESSED by toolchain, NOT by C(V)", "T0_source_file": "run_cliff.py; probe_runs/cliff_dv*.cir.mt0", "note": "cliff LOCATION still exactly right (collapse iff rail cannot clear VTP=0.50); only the below-cliff GRADING is lost with the dropped tail. The C(V) change does not touch this probe (single INV, no bank cap)."},
-        {"feature": "settle law E_cyc/(C*dV^2), non-collapsing (above threshold)", "operating_point": "T=200/500/1000/2000/5000 ps", "T0_anchor": "0.327/0.179/0.113/0.066/0.034", "T1_value": "0.3953/0.2017/0.1107/0.0584/0.0243", "err_pct": "+21/+13/-2(FIT)/-11/-29", "kind": "holdout except T=1ns FIT", "T0_source_file": "run_a1b_law.py; probe_runs/nc_T*.cir.mt0", "note": "BIT-IDENTICAL to v1 AND v2: the pinned gate keeps overdrive >=0.7V (strong inversion), so the dropped tail is irrelevant here -- NO regression. Validity band +-13% over 500ps-2ns; -29%@5ns tail stays open (source unidentified). REPRODUCTION TRAP (skeptic): run_a1b_law.py must be passed the FITTED RON_P=6229 -- the script's default seed (RON_P=5000) gives 0.3421/... which is NOT this row."},
-        {"feature": "stall at pc=0 arrival + droop", "operating_point": "TR=1ns Y-high, matched offsets after pc=0", "T0_anchor": "silicon 0.5139 V at pc=0, drooping 0.4945/0.4821/0.4663/0.4420/0.4227 at +0.2/0.4/0.8/2/4 ns (log-t, n~1.0)", "v2_value": "0.5199 at pc=0, drooping 0.4777/0.4539/0.4250/0.3849/0.3542 (tail-driven)", "T1_value_v3_current_toolchain": "0.5311 at pc=0, settles to 0.5001/0.5000/0.5000/0.5000 -- STALLS AT EXACTLY VTP, T-INDEPENDENT (v1 behavior, tail dropped)", "kind": "REGRESSED by toolchain to v1, NOT by C(V)", "T0_source_file": "probe_runs/model_droop.cir.mt0", "note": "closure T1 PASS 0.184% (v1 number). With no tail the pull-up shuts hard at VTP so silicon's post-arrival droop is not reproduced in this toolchain."},
-        {"feature": "T1 closure + recovery + no-f_adia", "operating_point": "T grid 20ps-5ns", "T0_anchor": "two independent integrators agree; recovery rises with T", "T1_value": "closure worst 0.184% (PASS); recovery 0.0%->56.7%; ERET vs Erail fall agree; no f_adia", "kind": "structural PASS", "T0_source_file": "run_probe.py; probe_runs/probe_T*.cir.mt0", "note": "energy provenance intact (supply-current integrals, recovery = rail integral running negative on the down-ramp). Matches v1 magnitudes (tail-independent above VTP)."}
-      ]
-    },
-    "qal_hop.va (transfer switch)": {
-      "verdict": "SHIP narrowly: cap-to-cap transfer only (unchanged from v1/v2; cell untouched)",
-      "entries": [
-        {"feature": "per-hop delivery loss", "operating_point": "10x span of series R", "T0_anchor": "measured delivery-loss table", "T1_value": "matches to 0.14 pp worst", "kind": "holdout", "T0_source_file": "qal_hop_corrected.json / T6"}
-      ]
-    },
-    "qal_gate_dr.va (dual-rail ECRL)": {
-      "verdict": "REJECT in current form -- quarantined (unchanged; not exercised in v3)"
+    {
+     "feature": "static E_stored(V) holdout curves, per-checkpoint worst errors (skeptic's independent integration)",
+     "operating_point": "dV=1.2 / 0.8 / 0.6 (ALL HOLDOUT)",
+     "T1_value": "dV=1.2 within +/-6.6%; dV=0.8 worst +14.5% at V=0.266; dV=0.6 worst +18.8% below the knee",
+     "kind": "HOLDOUT",
+     "T0_source_file": "probe_runs/cv_tr_dv{120,080,060}.cir.prn",
+     "note": "skeptic's corrected figures (implementer's message understated dV=0.8 as +9.5% and dV=0.6 as +/-16%); absolute magnitudes ~0.1 fJ. Below-knee absolute charges are small, so relative errors there are large but energetically minor."
     }
+   ]
   },
-  "speedup_measured": {"bank_hop_8gate": "x22-26 (v3 hop deck 0.4-0.5s + ~7-11s probe vs 12.95s transistor); slow-ramp C(V) calibration decks 0.3s behavioural vs 12-14s transistor"},
-  "stall_droop_row_touched_by_CV": "NO -- MEASURED: the stall/droop probe is a single INV with no bank cap; the C(V) element is not in that deck, so bank C(V) does not touch the stall droop (the v3 stall reversion is the qal_gate tail-drop, a separate toolchain issue).",
-  "skeptic_verification": "v3 independently re-run end-to-end by the skeptic (own Xyce invocations, own integration code): (1) transistor calibration REGENERATED from scratch -- dV=0.6 checkpoints reproduce the committed curve EXACTLY, dV=1.0 .prn BIT-IDENTICAL to the shipped probe_runs/cv_tr_dv100.cir.prn; (2) cv3/fit_peak.py rerun lands on the IDENTICAL shipped parameters (calibration alone pins them -> the hop was a GENUINE out-of-sample prediction, and it failed); (3) closed-cycle conservation re-integrated: Q_net/Q_peak 1.4e-7/1.1e-7, energy net <0.0024% of peak; (4) hop rerun matches the shipped numbers to 4 decimals, books close (E_outA 19.208 vs fit-independent 19.199, -0.0%); (5) monotone-form variant rebuilt and rerun by the skeptic: E_hop 3.0112 fJ (-72.0%), t_zcs 225.2 ps -- elimination robust to fit form; (6) cliff/settle/stall/T6 re-runs match every row above; qal_gate.va diff vs 6525035 EMPTY; the PyMS tail-drop independently confirmed in the freshly built eval.cpp.",
-  "not_captured": [
-    "NONLINEAR BANK C(V) is now ELIMINATED as the hop -72% mechanism (v3 measurement): implemented, charge-conserving, fit to the static calibration (monotone AND peaked), and the hop did NOT move. The static bank holds 22 fC at 0.611 V; the hop delivers ~35 fC; the ~13 fC gap is DISSIPATIVE gate current (silicon's 8.28 fJ gate burn), which a lossless C(V) structurally cannot carry. Next: the CELLS' dynamic charge draw (heavier CY / stronger settling conduction during the fast transient), not the bank plant.",
-    "TOOLCHAIN: current PyMS drops qal_gate.va's softplus subthreshold reassignments (zero log/exp in compiled eval.cpp; minimal repros compile). Below-threshold rows revert to v1. Blocks reproduction of v2's tail; independent of C(V). Fix PyMS or restructure the softplus assignment (fresh var, no self-reassign after clamp) without disturbing the fit.",
-    "DECK-B REFIT CAVEAT (skeptic): deck-B's C(V) target is Q_tr - Q_cells where the cells' share (probe_runs/cv_bh_dv100.cir.prn) was measured under the REGRESSED toolchain (hard-clamp cells, 0 fC below VTP). Self-consistent for the v3 hop measurement (same toolchain), but REFIT deck-B once the PyMS emitter bug is fixed.",
-    "NEXT-MECHANISM STATUS: 'the CELLS' dynamic charge draw during the transient' is an INFERENCE from elimination + the static charge bound (13 fC deficit), NOT yet a measurement. Before any further T1 hop round: characterize the cells' charge draw at hop timescale (a T0 measurement) to confirm or refute it.",
-    "SHARP INVERSION PEAK: measured C_inc spikes to ~78 fF at 0.43-0.49 V; the smooth top-hat under-fills it (-12% Q / -19% E at V=0.5). Even fully captured it is a thin slice of the 0->0.97 V hop swing (~5 fC) and does not clamp the overshoot.",
-    "LONG-T SETTLE TAIL (-29% @5ns) SOURCE UNKNOWN (unchanged from v2; source unidentified, candidates PSP103 gate/junction leakage floor -- unverified).",
-    "recovering GENERATOR unbuilt (as-built eta~1/3) -- quote as a separate explicit line in every QAL block total.",
-    "CIN unconstrained; RON_N/VTN unfitted; only INV/NAND2/NOR2 exist.",
-    "VACASK/ngspice/OpenVAF not installed -- Xyce/PyMS is the only live lane."
-  ],
-  "superseded_v2": {
-    "date": "2026-09-26 (subthreshold-tail round, same day)",
-    "note": "v2 = subthreshold tail (softplus, NSS=1.85 fitted). v2 attributed the hop -72% to nonlinear bank C(V) BY ELIMINATION of conduction; v3 RETRACTS that too (C(V) implemented, hop did not move). v2's tail rows (cliff 29.8%/87.7%, stall log-t droop) are NOT reproducible in the current toolchain (softplus dropped) -- see the qal_gate.va toolchain entry.",
-    "bank_hop": {"t_zcs_ps": 227.6, "Ipk_uA": 237.0, "V_A_end": 0.0910, "V_B_end": 0.9079, "V_B_peak": 0.9389, "E_hop_fJ": 3.0050, "per_gate_fJ": 0.3756, "err_E_hop_pct": -72.0, "root_cause_note": "v2: '-72% is nonlinear bank C(V), not conduction' -- v3 retracts: C(V) contributes ~0%; the residual is dynamic dissipative gate current."},
-    "cliff": "29.8%/87.7%/99.9%/100.0% (GRADED, tail present) -- not reproducible in current toolchain",
-    "stall": "0.5199 V at pc=0, log-t droop to 0.3542 at +4ns (tail-driven) -- not reproducible in current toolchain",
-    "settle_law": "0.3953/0.2017/0.1107/0.0584/0.0243 (bit-identical in v3, tail-independent above VTP)",
-    "closure": "worst 0.223% at default tol; 6.5e-7 at tight tol"
+  "composed 8-cell bank hop (run_bankhop.py) -- v3 with nonlinear C(V) banks": {
+   "verdict": "QUANTITATIVE FAIL, prize question answered NO against PRE-COMMITTED thresholds (|err|<=15% E_hop AND <=10% t_zcs, stated BEFORE the run): measured -71.7% / -33.7%. Bank-hop energy AND timing at dV=1.0 STAY T0-sourced (qal_hop_corrected.json / qal_isocurrent.json). THE v3 ELIMINATION: nonlinear bank C(V) -- BOTH a monotone softplus AND a peaked form that reproduce the static slow-ramp curve -- did NOT move the hop (E_hop 3.0050->3.0428 fJ, t_zcs 227.6->226.8 ps; monotone form gave 3.0112/225.2, essentially identical). So v2's 'the -72% is nonlinear bank C(V)' is RETRACTED BY MEASUREMENT. The bank still sails to VBpk 0.973 V (silicon 0.611). MECHANISM, pinned by elimination + the calibration bound: the STATIC slow-ramp bank holds only 22 fC at 0.611 V (measured Q(0.611)=22.0 fC, cv_tr_dv100 prn), but the hop delivers ~35 fC from bank A draining 1.0->0.05 V; the extra ~13 fC is DISSIPATIVE gate current during the 342 ps event (silicon burns E_inB-E_stored = 15.63-7.35 = 8.28 fJ inside the gates). A lossless charge-conserving C(V) STORES charge, it cannot dissipate it, so no static C(V) fit to the slow ramp can clamp VBpk. The resonance likewise sees an effective C~36 fF (static plateau) where silicon behaves as ~84 fF over the hop -- the extra effective capacitance IS that dynamic dissipative absorption. NEXT model-form change: heavier gate charge draw during the transient (larger CY / stronger settling conduction on the cells), NOT the bank plant.",
+   "pre_committed_thresholds": "promote hop energy/timing to T1-with-band iff |err| <= 15% on E_hop AND <= 10% on t_zcs (recorded before the v3 hop run). VERDICT: NOT MET (-71.7% E_hop, -33.7% t_zcs).",
+   "shipped_form": "peaked C(V) (captures the inversion peak; better static fit). Monotone-softplus form gives the same hop verdict (elimination robust to fit form).",
+   "entries": [
+    {
+     "feature": "E_hop",
+     "operating_point": "dV=1.0, L=277.8nH, 8 gates",
+     "T0_anchor": 1.07416e-14,
+     "T1_value": 3.0428e-15,
+     "unit": "J",
+     "err_pct": -71.7,
+     "kind": "holdout (PRIZE row)",
+     "note": "v2 3.0050 fJ (-72.0%); nonlinear C(V) moved it +1.3% -- did NOT close"
+    },
+    {
+     "feature": "t_zcs",
+     "operating_point": "same",
+     "T0_anchor": 3.42e-10,
+     "T1_value": 2.268e-10,
+     "unit": "s",
+     "err_pct": -33.7,
+     "kind": "holdout (PRIZE row)",
+     "note": "v2 227.6 ps (-33.5%); C(V) moved it -0.8 ps -- did NOT close. Resonance sees C~36 fF (static) vs silicon's effective ~84 fF"
+    },
+    {
+     "feature": "V_B_peak",
+     "operating_point": "same",
+     "T0_anchor": 0.611,
+     "T1_value": 0.9728,
+     "unit": "V",
+     "err_pct": 59.2,
+     "kind": "holdout (C(V) evidence row)",
+     "note": "v2 0.9389 (+53.7%). The bank STILL sails past the inversion peak (0.43-0.49 V is a thin slice of the 0->0.97 V swing) -- the peak absorbs only ~5 fC, not the ~13 fC silicon dissipates"
+    },
+    {
+     "feature": "I_peak",
+     "operating_point": "same",
+     "T0_anchor": 0.00019519,
+     "T1_value": 0.00023371,
+     "unit": "A",
+     "err_pct": 19.7,
+     "kind": "holdout",
+     "note": "v2 +21.4%"
+    },
+    {
+     "feature": "V_B_end",
+     "operating_point": "same",
+     "T0_anchor": 0.57632,
+     "T1_value": 0.9461,
+     "unit": "V",
+     "err_pct": 64.2,
+     "kind": "holdout",
+     "note": "v2 +57.5%"
+    }
+   ],
+   "energy_provenance": "supply-side/port integrals only; E_outA = nonlinear stored-energy drop as bank A drains DV->VAEND (EXACT quadrature of the fitted Q(V), self-consistent with the VA element), cross-checked FIT-INDEPENDENTLY by a 1F-cap integrator of V(bka)*I(LT) (agree to -0.0%: 19.208 vs 19.199 fJ). E_stored_B = nonlinear bank-cap E(VBEND) + cells' stranded 0.5*CY*Voi^2. Closure E_outA - E_stored - E_diss = 0.068 fJ (ring/inductor residue) -> books close, NOT bookkeeping. No f_adia (grep-verified).",
+   "toolchain_caveat": "the v3 hop ran under the REGRESSED PyMS toolchain (qal_gate's subthreshold tail dropped), so strictly v3 = v1-conduction + nonlinear C(V) banks. This cannot rescue the verdict: v2 measured the tail's whole hop effect at -0.5% E / 0.0 ps."
   },
-  "superseded_v1": {
-    "date": "2026-09-26 (pre-tail, same day)",
-    "note": "v1 = hard-clamp cell, no tail. The CURRENT toolchain compiles qal_gate.va as v1 (tail dropped). v1 attributed the hop -72% to 'subthreshold conduction + nonlinear bank C(V)'; v2 split off conduction (~0.5%); v3 eliminates C(V) (~0%).",
-    "bank_hop": {"t_zcs_ps": 227.6, "Ipk_uA": 236.9, "E_hop_fJ": 3.0203, "err_E_hop_pct": -71.9},
-    "cliff": "0%/0%/100%/100% (hard step)",
-    "stall": "0.4996-0.5058 V, T-independent (exactly VTP)"
+  "qal_gate.va (single-ended settling cell) -- UNMODIFIED in v3; TOOLCHAIN REGRESSION found": {
+   "verdict": "qal_gate.va was NOT touched in v3. During re-validation the current PyMS build was MEASURED to DROP the softplus subthreshold reassignments (ovX = ovX + nvt*ln(1+limexp(...))): the compiled eval.cpp has ZERO log/exp and all 7 conductances bind to the hard-clamped overdrive (probe_runs build dir inspected). Minimal repros (probe_runs/lntest*.va) compile the SAME pattern correctly, so it is a context/size-dependent emitter bug in the large cell, not a syntax error. CONSEQUENCE: the below-threshold rows REVERT TO v1 -- v2's fitted subthreshold tail is NOT reproducible in this toolchain. This is INDEPENDENT of the C(V) work. Flagged for a PyMS fix (or a code-structure workaround that does not disturb the fit: compute the softplus into a fresh variable rather than self-reassigning after the clamp).",
+   "entries": [
+    {
+     "feature": "functional_cliff shape",
+     "operating_point": "400ps hop-like ramp, rails 0.3725/0.4669/0.5829/0.7179 V",
+     "T0_anchor": "34.8%/77.1%/100%/100% settle",
+     "v2_value": "29.8%/87.7%/99.9%/100.0% (GRADED, tail present)",
+     "T1_value_v3_current_toolchain": "0.0%/0.0%/100.0%/100.0% (HARD STEP -- tail dropped, reverts to v1)",
+     "kind": "REGRESSED by toolchain, NOT by C(V)",
+     "T0_source_file": "run_cliff.py; probe_runs/cliff_dv*.cir.mt0",
+     "note": "cliff LOCATION still exactly right (collapse iff rail cannot clear VTP=0.50); only the below-cliff GRADING is lost with the dropped tail. The C(V) change does not touch this probe (single INV, no bank cap)."
+    },
+    {
+     "feature": "settle law E_cyc/(C*dV^2), non-collapsing (above threshold)",
+     "operating_point": "T=200/500/1000/2000/5000 ps",
+     "T0_anchor": "0.327/0.179/0.113/0.066/0.034",
+     "T1_value": "0.3953/0.2017/0.1107/0.0584/0.0243",
+     "err_pct": "+21/+13/-2(FIT)/-11/-29",
+     "kind": "holdout except T=1ns FIT",
+     "T0_source_file": "run_a1b_law.py; probe_runs/nc_T*.cir.mt0",
+     "note": "BIT-IDENTICAL to v1 AND v2: the pinned gate keeps overdrive >=0.7V (strong inversion), so the dropped tail is irrelevant here -- NO regression. Validity band +-13% over 500ps-2ns; -29%@5ns tail stays open (source unidentified). REPRODUCTION TRAP (skeptic): run_a1b_law.py must be passed the FITTED RON_P=6229 -- the script's default seed (RON_P=5000) gives 0.3421/... which is NOT this row."
+    },
+    {
+     "feature": "stall at pc=0 arrival + droop",
+     "operating_point": "TR=1ns Y-high, matched offsets after pc=0",
+     "T0_anchor": "silicon 0.5139 V at pc=0, drooping 0.4945/0.4821/0.4663/0.4420/0.4227 at +0.2/0.4/0.8/2/4 ns (log-t, n~1.0)",
+     "v2_value": "0.5199 at pc=0, drooping 0.4777/0.4539/0.4250/0.3849/0.3542 (tail-driven)",
+     "T1_value_v3_current_toolchain": "0.5311 at pc=0, settles to 0.5001/0.5000/0.5000/0.5000 -- STALLS AT EXACTLY VTP, T-INDEPENDENT (v1 behavior, tail dropped)",
+     "kind": "REGRESSED by toolchain to v1, NOT by C(V)",
+     "T0_source_file": "probe_runs/model_droop.cir.mt0",
+     "note": "closure T1 PASS 0.184% (v1 number). With no tail the pull-up shuts hard at VTP so silicon's post-arrival droop is not reproduced in this toolchain."
+    },
+    {
+     "feature": "T1 closure + recovery + no-f_adia",
+     "operating_point": "T grid 20ps-5ns",
+     "T0_anchor": "two independent integrators agree; recovery rises with T",
+     "T1_value": "closure worst 0.184% (PASS); recovery 0.0%->56.7%; ERET vs Erail fall agree; no f_adia",
+     "kind": "structural PASS",
+     "T0_source_file": "run_probe.py; probe_runs/probe_T*.cir.mt0",
+     "note": "energy provenance intact (supply-current integrals, recovery = rail integral running negative on the down-ramp). Matches v1 magnitudes (tail-independent above VTP)."
+    }
+   ]
+  },
+  "qal_hop.va (transfer switch)": {
+   "verdict": "SHIP narrowly: cap-to-cap transfer only (unchanged from v1/v2; cell untouched)",
+   "entries": [
+    {
+     "feature": "per-hop delivery loss",
+     "operating_point": "10x span of series R",
+     "T0_anchor": "measured delivery-loss table",
+     "T1_value": "matches to 0.14 pp worst",
+     "kind": "holdout",
+     "T0_source_file": "qal_hop_corrected.json / T6"
+    }
+   ]
+  },
+  "qal_gate_dr.va (dual-rail ECRL)": {
+   "verdict": "REJECT in current form -- quarantined (unchanged; not exercised in v3)"
   }
+ },
+ "speedup_measured": {
+  "bank_hop_8gate": "x22-26 (v3 hop deck 0.4-0.5s + ~7-11s probe vs 12.95s transistor); slow-ramp C(V) calibration decks 0.3s behavioural vs 12-14s transistor"
+ },
+ "stall_droop_row_touched_by_CV": "NO -- MEASURED: the stall/droop probe is a single INV with no bank cap; the C(V) element is not in that deck, so bank C(V) does not touch the stall droop (the v3 stall reversion is the qal_gate tail-drop, a separate toolchain issue).",
+ "skeptic_verification": "v3 independently re-run end-to-end by the skeptic (own Xyce invocations, own integration code): (1) transistor calibration REGENERATED from scratch -- dV=0.6 checkpoints reproduce the committed curve EXACTLY, dV=1.0 .prn BIT-IDENTICAL to the shipped probe_runs/cv_tr_dv100.cir.prn; (2) cv3/fit_peak.py rerun lands on the IDENTICAL shipped parameters (calibration alone pins them -> the hop was a GENUINE out-of-sample prediction, and it failed); (3) closed-cycle conservation re-integrated: Q_net/Q_peak 1.4e-7/1.1e-7, energy net <0.0024% of peak; (4) hop rerun matches the shipped numbers to 4 decimals, books close (E_outA 19.208 vs fit-independent 19.199, -0.0%); (5) monotone-form variant rebuilt and rerun by the skeptic: E_hop 3.0112 fJ (-72.0%), t_zcs 225.2 ps -- elimination robust to fit form; (6) cliff/settle/stall/T6 re-runs match every row above; qal_gate.va diff vs 6525035 EMPTY; the PyMS tail-drop independently confirmed in the freshly built eval.cpp.",
+ "not_captured": [
+  "NONLINEAR BANK C(V) is now ELIMINATED as the hop -72% mechanism (v3 measurement): implemented, charge-conserving, fit to the static calibration (monotone AND peaked), and the hop did NOT move. The static bank holds 22 fC at 0.611 V; the hop delivers ~35 fC; the ~13 fC gap is DISSIPATIVE gate current (silicon's 8.28 fJ gate burn), which a lossless C(V) structurally cannot carry. Next: the CELLS' dynamic charge draw (heavier CY / stronger settling conduction during the fast transient), not the bank plant.",
+  "TOOLCHAIN: current PyMS drops qal_gate.va's softplus subthreshold reassignments (zero log/exp in compiled eval.cpp; minimal repros compile). Below-threshold rows revert to v1. Blocks reproduction of v2's tail; independent of C(V). Fix PyMS or restructure the softplus assignment (fresh var, no self-reassign after clamp) without disturbing the fit.",
+  "DECK-B REFIT CAVEAT (skeptic): deck-B's C(V) target is Q_tr - Q_cells where the cells' share (probe_runs/cv_bh_dv100.cir.prn) was measured under the REGRESSED toolchain (hard-clamp cells, 0 fC below VTP). Self-consistent for the v3 hop measurement (same toolchain), but REFIT deck-B once the PyMS emitter bug is fixed.",
+  "NEXT-MECHANISM STATUS: 'the CELLS' dynamic charge draw during the transient' is an INFERENCE from elimination + the static charge bound (13 fC deficit), NOT yet a measurement. Before any further T1 hop round: characterize the cells' charge draw at hop timescale (a T0 measurement) to confirm or refute it.",
+  "SHARP INVERSION PEAK: measured C_inc spikes to ~78 fF at 0.43-0.49 V; the smooth top-hat under-fills it (-12% Q / -19% E at V=0.5). Even fully captured it is a thin slice of the 0->0.97 V hop swing (~5 fC) and does not clamp the overshoot.",
+  "LONG-T SETTLE TAIL (-29% @5ns) SOURCE UNKNOWN (unchanged from v2; source unidentified, candidates PSP103 gate/junction leakage floor -- unverified).",
+  "recovering GENERATOR unbuilt (as-built eta~1/3) -- quote as a separate explicit line in every QAL block total.",
+  "CIN unconstrained; RON_N/VTN unfitted; only INV/NAND2/NOR2 exist.",
+  "VACASK/ngspice/OpenVAF not installed -- Xyce/PyMS is the only live lane."
+ ],
+ "superseded_v2": {
+  "date": "2026-09-26 (subthreshold-tail round, same day)",
+  "note": "v2 = subthreshold tail (softplus, NSS=1.85 fitted). v2 attributed the hop -72% to nonlinear bank C(V) BY ELIMINATION of conduction; v3 RETRACTS that too (C(V) implemented, hop did not move). v2's tail rows (cliff 29.8%/87.7%, stall log-t droop) are NOT reproducible in the current toolchain (softplus dropped) -- see the qal_gate.va toolchain entry.",
+  "bank_hop": {
+   "t_zcs_ps": 227.6,
+   "Ipk_uA": 237.0,
+   "V_A_end": 0.091,
+   "V_B_end": 0.9079,
+   "V_B_peak": 0.9389,
+   "E_hop_fJ": 3.005,
+   "per_gate_fJ": 0.3756,
+   "err_E_hop_pct": -72.0,
+   "root_cause_note": "v2: '-72% is nonlinear bank C(V), not conduction' -- v3 retracts: C(V) contributes ~0%; the residual is dynamic dissipative gate current."
+  },
+  "cliff": "29.8%/87.7%/99.9%/100.0% (GRADED, tail present) -- not reproducible in current toolchain",
+  "stall": "0.5199 V at pc=0, log-t droop to 0.3542 at +4ns (tail-driven) -- not reproducible in current toolchain",
+  "settle_law": "0.3953/0.2017/0.1107/0.0584/0.0243 (bit-identical in v3, tail-independent above VTP)",
+  "closure": "worst 0.223% at default tol; 6.5e-7 at tight tol"
+ },
+ "superseded_v1": {
+  "date": "2026-09-26 (pre-tail, same day)",
+  "note": "v1 = hard-clamp cell, no tail. The CURRENT toolchain compiles qal_gate.va as v1 (tail dropped). v1 attributed the hop -72% to 'subthreshold conduction + nonlinear bank C(V)'; v2 split off conduction (~0.5%); v3 eliminates C(V) (~0%).",
+  "bank_hop": {
+   "t_zcs_ps": 227.6,
+   "Ipk_uA": 236.9,
+   "E_hop_fJ": 3.0203,
+   "err_E_hop_pct": -71.9
+  },
+  "cliff": "0%/0%/100%/100% (hard step)",
+  "stall": "0.4996-0.5058 V, T-independent (exactly VTP)"
+ },
+ "toolchain_fix_2026_09_26": {
+  "what": "The v3 'PyMS build DROPS the softplus reassignments' finding is RETRACTED as an attribution: the emitter never dropped anything. Root cause = Xyce .hdl device-shell cache poisoning: N_DEV_PyMS.C keys the compiled shell on MODULE NAME only (pyms_qal_gate.so) and validated it by mtime ordering against the current deck's .va; a same-named pre-softplus scratchpad copy (v1check/qal_gate.va, 11:47) captured the slot, and the stale shell's baked _va path made every freshly JIT-built vae eval.cpp compile the WRONG file. lntest*.va 'compiled correctly' because they were new module names with no poisoned slot -- the context/size-dependence was an artifact.",
+  "proof": "failing cached builds' params lack NSS/PHIT (pre-softplus param list); strings(stale shell) shows the v1check path and zero NSS; rebuilding v1check/qal_gate.va with the failing params file reproduces the failing ginac.cpp BYTE-IDENTICALLY; the same emitter compiles the real cell correctly under every params context (defaults, full cliff card, +__CALLBACK__, exact failing params); cliff decks under a fresh cache reproduce v2 with the PRE-FIX toolchain (29.81%/87.75%).",
+  "fix": "xyce repo: N_DEV_PyMS.C writes/checks a <so>.src sidecar (va path + content hash), shell reused only on exact match (generator-mtime dependency kept); xyce_device_gen.py keys the vae .so cache on the .va CONTENT, not just path+params (closes the stale-vae-.so-after-equation-edit half of the trap). PyMS synced to /usr/local/share/xyce/PyMS. NOTE: /usr/local/lib/libXyceLib.so requires a root install.sh run; until then use the build tree (LD_LIBRARY_PATH=/usr/local/src/xyce-build/src).",
+  "regression_test": "probe_runs/test_shell_cache_poison.py + softplus_chain{,_v1}.va (and xyce utils/PyMS/vae/tests/test_hdl_cache_va_identity.py): replays the collision; FAILS on the pre-fix toolchain, PASSES post-fix; checks the emitted reassignment chain AND the analytic value K*ln2/(1.2*R)*0.5=2.21628e-6 A.",
+  "reproduction_under_fixed_build": {
+   "cliff": "29.81%/87.75%/99.91%/100.0% (YHOLD 0.1110316/0.4096749/0.5823853/0.7176403 on rails 0.37251/0.46688/0.58291/0.7179) -- matches v2 29.8/87.7/99.9/100.0 to all published digits, cell UNMODIFIED, no workaround",
+   "stall_droop": "Y@pc=0 0.5198618; +0.2/0.4/0.8/2/4ns = 0.4777203/0.4539449/0.4250169/0.3849193/0.3541919 -- matches v2 0.5199/0.4777/0.4539/0.4250/0.3849/0.3542",
+   "anchor_nc_T1000": "EDISS=1.593990 fJ (Ed/CdV^2=0.1107) BIT-IDENTICAL to committed probe_runs/nc_T1000.cir.mt0 (RON_P=6229 explicit -- run_a1b_law.py's default-seed trap avoided)",
+   "anchor_th22_3fF": "cd_th22_both_3.cir EOP=4.466550e-14 J, TD=3.421108e-10 s BIT-IDENTICAL to committed .mt0",
+   "bh_hop": "sub-percent moves only (EDGAT -0.80%, VBPK +0.15%, EOUTAD +0.02%) = the restored tail, consistent with v2's measured -0.5% whole-hop tail effect; hop verdict (C(V) elimination, -72% residual) UNCHANGED"
+  },
+  "deckB_refit": {
+   "why": "committed cv_bh_dv*.prn (13:09) were measured under the poisoned shell -- hard-clamp cells understate the cells' knee charge share",
+   "action": "cv_bh_dv{060,080,100,120} regenerated under the fixed build; cv3/fit_peak.py re-run; bank A (transistor cv_tr, unaffected) byte-identical params",
+   "deckB_params_old": "C0=23.200 CT=1.823 VK=0.1500 CP=72.378 VA=0.4141 VB=0.4588 WP=0.0100 (kept in cv3/cv_fit_peak.json.v3regressed)",
+   "deckB_params_new": "C0=23.200 CT=4.172 VK=0.5427 CP=77.896 VA=0.4482 VB=0.4807 WP=0.0100",
+   "fit_quality": "rms rel-Q deckB 3.8%->2.38%; composed dV=1.0 worst residual was -18.9% at V=0.5, now -5.5% at V=0.167 (V=0.5 now -0.5%); holdouts: dV=0.6 worst +14.4% (was +18.8%), dV=0.8 worst +8.9%, dV=1.2 worst -10.5%"
+  }
+ }
 }

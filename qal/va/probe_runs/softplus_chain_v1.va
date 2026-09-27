@@ -1,0 +1,20 @@
+// softplus_chain_v1.va -- the POISONING variant for test_shell_cache_poison.py:
+// same module name as softplus_chain.va, but the pre-softplus hard-clamp form
+// (what qal_gate.va looked like before a61b562). Compiled from a DIFFERENT
+// directory first, this is the file that used to capture the module-name-keyed
+// device-shell cache slot and silently revert the real cell to the hard clamp.
+// At V(p,n)=0.5 the hard clamp gives ov=0 -> I=0 exactly (vs 2.2164e-6 A for
+// the softplus form) -- the discriminator the test measures.
+`include "disciplines.vams"
+module softplus_chain(p, n);
+  inout p, n; electrical p, n;
+  parameter real K = 0.0478;
+  parameter real R = 6229;
+  real ov, g;
+  analog begin
+    ov = V(p,n) - 0.5;
+    if (ov < 0.0) ov = 0.0;
+    g = ov/(1.2*R);
+    I(p,n) <+ g*V(p,n);
+  end
+endmodule

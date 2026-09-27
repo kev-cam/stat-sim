@@ -21,7 +21,7 @@ Liberty model can produce that column at all.
 
 | File | What it is | Status |
 |---|---|---|
-| `qal_gate.va` | single-ended settling QAL gate; INV / NAND2 / NOR2 via `TOPO`; 3 energy integrators; **softplus subthreshold tail** | **source-reference FIXED + subthreshold tail LANDED 2026-09-26; VTP + RON_P + NSS fitted. ⚠ v3 (2026-09-26): the current PyMS build DROPS the softplus reassignments (compiled `eval.cpp` has zero `log`/`exp`; all 7 conductances bind the hard-clamped overdrive) → cell reverts to the v1 hard-clamp; cliff/stall no longer reproduce v2's tail. UNMODIFIED — a toolchain regression, §4.7.** |
+| `qal_gate.va` | single-ended settling QAL gate; INV / NAND2 / NOR2 via `TOPO`; 3 energy integrators; **softplus subthreshold tail** | **source-reference FIXED + subthreshold tail LANDED 2026-09-26; VTP + RON_P + NSS fitted. ✔ TOOLCHAIN REGRESSION ROOT-CAUSED + FIXED same day (gate A): it was never an emitter drop — Xyce's `.hdl` device-shell cache (module-name-keyed) had been poisoned by a same-named pre-softplus scratchpad copy (`v1check/qal_gate.va`), and the stale shell's baked `_va` path made every fresh `eval.cpp` compile the WRONG file. Fixed in xyce `N_DEV_PyMS.C` (sidecar `.src` path+content-hash identity) + `xyce_device_gen.py` (vae key includes .va content); regression test `probe_runs/test_shell_cache_poison.py`. v2's cliff/stall rows reproduce to all published digits under the fixed build, cell UNMODIFIED — §4.7.** |
 | `qal_bankcap.va` | **NEW v3**: nonlinear bank **C(V)** as a conserved charge `Q(V)` via `ddt(Q)`; floor + softplus plateau-step + optional inversion-peak bump | **implemented, charge-conserving (closed cycle 1.1e-7), fit to the static slow-ramp curve; does NOT close the hop → C(V) ELIMINATED (§4.7)** |
 | `qal_gate_dr.va` | dual-rail ECRL (cross-coupled) variant, `yt = a AND b`, `yf = NAND(a,b)` | **runs, logic correct on all 4 patterns** |
 | `qal_hop.va` | bank-to-bank transfer switch + its I²R loss integrator | **runs, T6 PASSES to 0.14 pp** |
@@ -338,11 +338,13 @@ voltages of the transistor hop (`qal_hop_corrected.json` L=400 rows), settling
 | 1.0 | 0.5829 | 99.9% | 100.0% | holdout |
 | 1.2 | 0.7179 | 100.0% | 100.0% | holdout |
 
-> **v3 note: the graded rows above are NOT reproducible in the current
-> toolchain** — the PyMS build drops the subthreshold tail (§4.7 box), so
-> `run_cliff.py` today reads the v1 hard step 0 %/0 %/100 %/100 %. The cliff
-> LOCATION is unaffected. The table stands as the v2 record pending the
-> emitter fix.
+> **v3 note, CLOSED same day (gate A): the graded rows above REPRODUCE under
+> the fixed toolchain** — measured 29.81 %/87.75 %/99.91 %/100.0 %
+> (YHOLD/RAIL = 0.1110316/0.37251, 0.4096749/0.46688, 0.5823853/0.58291,
+> 0.7176403/0.7179), cell UNMODIFIED, no workaround. The v3 "PyMS drops the
+> tail" reading was a WRONG ATTRIBUTION: the emitter was fine; a module-name
+> collision in the `.hdl` shell cache had silently compiled a stale
+> pre-softplus scratchpad copy (§4.7 box, root cause + fix).
 
 The cliff LOCATION is exactly right (collapse iff the rail cannot clear
 `VTP=0.50`; the usable floor lands at dV≈1.0 as measured), and with the
@@ -509,6 +511,35 @@ plant.**
 > right (collapse iff the rail cannot clear VTP=0.50). Fix: PyMS emitter, or a
 > code-structure workaround that does not disturb the fit (compute the softplus
 > into a **fresh** variable rather than self-reassigning after the clamp).
+>
+> **ROOT-CAUSED + FIXED 2026-09-26 (gate A) — the paragraph above mis-attributed
+> the mechanism.** The emitter never dropped anything. Xyce's `.hdl`
+> device-shell cache (`N_DEV_PyMS.C`) keys the compiled shell on **module name
+> only** (`pyms_qal_gate.so`) and validated it by mtime ordering against the
+> *current* deck's `.va`. At 11:47 a scratchpad **v1check** copy of the
+> pre-softplus cell (same module name, different path) regenerated that shell;
+> every later run of the repo's `qal_gate.va` (mtime 11:14 < 11:47 → "up to
+> date") reused the stale shell, whose **baked `_va` path** made even the
+> freshly JIT-built vae `eval.cpp` compile the v1check file. PROOF: the failing
+> cached builds' params lack `NSS`/`PHIT` (pre-softplus param list); `strings`
+> on the stale shell shows the v1check path and zero `NSS`; rebuilding the
+> v1check `.va` with the failing params reproduces the failing `ginac.cpp`
+> **byte-identically**; the same emitter compiles the real cell correctly under
+> every params context; and the cliff decks under a fresh cache reproduce v2
+> **with the pre-fix toolchain**. That is also why `lntest*.va` "compiled
+> correctly": new module names, no poisoned slot — the "context/size-dependent
+> emitter bug" inference was wrong. FIX (xyce repo): `N_DEV_PyMS.C` records a
+> `<so>.src` sidecar (va path + content hash) and reuses the shell only on an
+> exact match; `xyce_device_gen.py` keys the vae `.so` cache on the `.va`
+> CONTENT (not just path+params — closing the "edit the equations, keep the
+> params, reuse a stale .so" half of the trap). Regression test (fails pre-fix,
+> passes post-fix): `probe_runs/test_shell_cache_poison.py` +
+> `softplus_chain{,_v1}.va`. Anchors under the fixed build: th22\@3fF and
+> nc_T1000 **bit-identical**; cliff + stall droop reproduce v2 to all published
+> digits; bh_hop moves ≤0.8 % (the restored tail, consistent with v2's measured
+> −0.5 % tail effect). Deck-B C(V) refit under the fixed build: see §4.7 fit
+> paragraph (CT 1.823→4.172 fF, VK 0.150→0.543, CP 72.4→77.9 fF; rms rel-Q
+> 3.8 %→2.4 %; superseded params kept in `cv3/cv_fit_peak.json.v3regressed`).
 
 **Speed (v3, measured)**: nonlinear-C(V) hop deck 0.4–0.5 s + ~7–11 s zero probe
 vs 12.95 s transistor; slow-ramp C(V) calibration decks 0.3 s vs 12–14 s.
@@ -677,16 +708,21 @@ the `eq` integrator on `qal_gate.va`, where both routes exist: **10.2243 fJ vs
   building it. Meanwhile bank-level hop energy AND timing stay T0-sourced
   (`qal_hop_corrected.json` / `qal_isocurrent.json`) — an acceptable steady
   state: the T0 hop rows are cheap and already exist.
-* **TOOLCHAIN (found during v3 re-validation, independent of C(V)): the
-  current PyMS build DROPS `qal_gate.va`'s softplus subthreshold
-  reassignments** (§4.7 box; zero `log`/`exp` in the freshly built
-  `eval.cpp`; minimal repros `probe_runs/lntest*.va` compile the same pattern
-  correctly). Below-threshold rows REVERT to v1 — the cliff reads the hard
-  step and the stall pins at VTP — so **v2's graded-cliff and log-t-droop
-  rows are not reproducible until the emitter is fixed** (or the softplus is
-  emitted into a fresh variable, which does not disturb the NSS=1.85 fit).
-  Corollary: deck-B's C(V) share was fit against cells measured under this
-  regressed toolchain — **refit deck-B after the emitter fix**.
+* **TOOLCHAIN — CLOSED 2026-09-26 (gate A).** The v3 "PyMS DROPS the softplus
+  reassignments" finding was a **wrong attribution**: the emitter was fine —
+  Xyce's `.hdl` device-shell cache (module-name-keyed) had been poisoned by a
+  same-named pre-softplus scratchpad copy, and the stale shell compiled the
+  wrong `.va` (full root cause + proof chain in the §4.7 box). Fixed in the
+  xyce repo (`N_DEV_PyMS.C` sidecar identity + `xyce_device_gen.py`
+  content-keyed vae cache), regression-tested
+  (`probe_runs/test_shell_cache_poison.py`, fails pre-fix / passes post-fix).
+  v2's graded-cliff and log-t-droop rows REPRODUCE to all published digits
+  under the fixed build, cell unmodified; th22\@3fF and nc_T1000 anchors
+  bit-identical. Corollary DONE: **deck-B's C(V) share refit** under the
+  fixed build (`cv3/cv_fit_peak.json` regenerated; old fit kept as
+  `.v3regressed`; rms rel-Q 3.8 %→2.4 %, the dV=1.0 V=0.5 composed residual
+  −18.9 %→−0.5 % — the "regressed cells understate the knee charge" defect is
+  gone; hop verdict unchanged, bh_hop moves ≤0.8 %).
 * **Pull-up parasitic capacitance to the rail is NOT modelled.** A `CPC` branch
   was deliberately omitted because its `ddt` current cannot be recovered as a real
   variable for the `prail` integral, which would break the exact closure identity.

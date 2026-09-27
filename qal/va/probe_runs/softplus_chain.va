@@ -1,0 +1,31 @@
+// softplus_chain.va -- regression fixture for the 2026-09-26 "toolchain
+// regression" (v3 stop-verdict, README |4.7): the CURRENT cell form. The
+// self-reassignment softplus chain after the hard clamp is the exact
+// statement pattern qal_gate.va uses for its subthreshold tail:
+//     ov = <overdrive>;
+//     t = ov;  if (t < 0) t = -t;
+//     if (ov < 0) ov = 0;
+//     ov = ov + K*ln(1 + limexp(-t/K));   <- the reassignment that "vanished"
+// The 2026-09-26 failure was NOT an emitter drop: the .hdl device-shell cache
+// (N_DEV_PyMS.C) is keyed by MODULE NAME, so a same-named pre-softplus .va
+// from another directory (scratchpad v1check/) had poisoned pyms_qal_gate.so,
+// and its baked _va path made every fresh vae eval.cpp compile the WRONG
+// file. softplus_chain_v1.va is the poisoning variant; the paired test
+// test_shell_cache_poison.py replays the collision and asserts the chain
+// survives. Analytic reference at V(p,n)=0.5 (ov=0, t=0):
+//     ov_eff = K*ln(2) = 0.033133...  ->  I = ov_eff/(1.2*R)*0.5 = 2.2164e-6 A
+`include "disciplines.vams"
+module softplus_chain(p, n);
+  inout p, n; electrical p, n;
+  parameter real K = 0.0478;
+  parameter real R = 6229;
+  real ov, t, g;
+  analog begin
+    ov = V(p,n) - 0.5;
+    t = ov;  if (t < 0.0) t = -t;
+    if (ov < 0.0) ov = 0.0;
+    ov = ov + K*ln(1.0 + limexp(-t/K));
+    g = ov/(1.2*R);
+    I(p,n) <+ g*V(p,n);
+  end
+endmodule
