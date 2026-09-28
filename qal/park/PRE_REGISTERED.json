@@ -1,0 +1,144 @@
+{
+ "_doc": "TRACK A -- THE RESONANT PARK TAP. Pre-registered acceptance, completeness band, chosen approach and the IDEAL-SOURCE INVENTORY. Written BEFORE the first deck of this round was generated; at the moment of writing this is the ONLY file in qal/park/ (mtime evidence printed in the report). Anchors below are READ FROM COMMITTED ARTIFACTS (qal/recov/skeptic/SKEPTIC_RESULTS.json and sk_best_long.cir.prn) and are USED, NOT RE-DERIVED.",
+ "agent": "track A (resonant park tap)",
+ "date": "2026-09-28",
+ "written_before_first_deck": true,
+
+ "handed_down_acceptance_DO_NOT_MOVE": {
+  "rule": "ADMITTED iff the COMPLETE ledger -- resonant gt/gtp + park tap + EVERY holder/clamp gate + the sustaining amplifier's replenishment loss + any DC bias -- is <= 12.7467 fJ/bank/hop WITH every completeness gate PASS.",
+  "E_max_fJ_per_bank_per_hop": 12.7467,
+  "N_min_formula": "N_min = (39.6 + E)/0.8309, via the COMMITTED UNMODIFIED qal/zcd/restate_admission.py",
+  "block_verdict": "fpu min-bank-63 admits iff N_min <= 63",
+  "headroom_for_the_park_term_fJ": 9.7727,
+  "headroom_derivation": "12.7467 - 2.974 (the surviving resonant gt/gtp pair). The '~1.5 fJ -> E 4.474 -> N_min 53.04' figure in the record is the COMFORTABLE case, NOT the bar.",
+  "NEVER_quote_recovery_percentage": "eta is LOAD-referenced; the admission line is DRIVER-referenced; the campaign's as-built ratio is 7.0x. Quote fJ/bank/hop only."
+ },
+
+ "anchors_used_not_rederived": {
+  "provenance": "qal/recov/skeptic/sk_best_long.cir.prn (committed), row m1d_h5b580_adv6, tend 1000 ps, free-running 5-harmonic taps, beat 580 ps, RS 25 ohm, gtp phase-advanced 6 ps",
+  "resonant_pair_net_fJ_trapezoid_1000ps": 2.9743,
+  "E_gt_trapz_fJ": -2.748930,
+  "E_gtp_trapz_fJ": 5.723200,
+  "E_gt_1F_fJ": -2.7438239,
+  "E_gtp_1F_fJ": 5.7273646,
+  "VBEND_at_tD": 0.684413082,
+  "E_hop_open_at_tD_fJ": 8.130345,
+  "VA_open": 0.091566,
+  "EA_C_fJ": 17.777824,
+  "nmos_cut_ps": 422.150,
+  "pmos_cut_ps": 423.967,
+  "pmos_minus_nmos_ps": 1.817,
+  "park_minus_nmos_ps": 30.767,
+  "t_zero_ps": 413.116637,
+  "t_open_ps": 442.847557,
+  "IPK_uA": 197.979784,
+  "I_at_nmos_cut_uA": -22.1177,
+  "ehi_fJ_unbooked": 4.494259,
+  "E_pk_ideal_1F_fJ": 2.6603741,
+  "real_drive_reference_E_hop_fJ": 8.10914,
+  "park_driver_MEASURED_floor_fJ": [15.0177, 15.4789, 16.0021]
+ },
+
+ "IDEAL_SOURCE_INVENTORY": {
+  "_doc": "EVERY term in the complete ledger still supplied by an ideal source or an assumed efficiency. The campaign's lesson: each such term has, three times, turned out to be the thing that killed the result. Enumerated BEFORE measuring anything.",
+  "IS1_park_driver": {
+   "status": "IDEAL SOURCE -- THIS TRACK",
+   "booked": "2.403 fJ = Q_pk*VGH from an ideal PWL step (recov round); 2.660 fJ by the deck's own 1F integrator",
+   "measured_real_floor": "15.0-15.5 fJ (one minimum sg13g2_inv_1, zero junction cap, free ideal input, no delay chain)",
+   "headroom": 9.7727,
+   "owner": "track A"
+  },
+  "IS2_sustaining_amplifier": {
+   "status": "ASSUMED EFFICIENCY -- NEVER SIMULATED",
+   "booked": "eta_amp >= 35.1% (zero DC bias) to 44.6% (with 2.71 fJ worst-case tap DC bias)",
+   "owner": "track B"
+  },
+  "IS3_the_NETTING_of_the_gt_and_gtp_taps": {
+   "status": "NEW THIS ROUND -- IDEAL-SOURCE BOOKING #3, and the largest unexamined term in the headline itself",
+   "what_is_booked": "The 2.974 fJ headline is the ARITHMETIC SUM of a net EXPORTER (E_gt = -2.749 fJ, Miller-harvested from the swinging sw/bkb nodes) and a net IMPORTER (E_gtp = +5.723 fJ). In the deck these are TWO ELECTRICALLY UNCONNECTED ideal voltage sources -- the skeptic's own audit states 'no gt-gtp conductive path exists in the netlist'. Summing them books a LOSSLESS, BIDIRECTIONAL common tank that returns 100% of the gt tap's harvest to the gtp tap, and that tank has never been built or measured.",
+   "sensitivity": "E_pair(eta_net) = 5.7232 - 2.7489*eta_net. eta_net=1.0 -> 2.974 fJ (the booked headline). eta_net=0.5 -> 4.349 fJ. eta_net=0 -> 5.723 fJ.",
+   "why_it_matters": "the swing is 2.749 fJ = 28.1% of the entire 9.7727 fJ park headroom, and it sits INSIDE the number everybody is treating as measured-and-closed",
+   "note": "this is distinct from IS2. IS2 is the loss of replenishing the tank; IS3 is whether the harvest reaches the tank at all.",
+   "owner": "flagged by track A; not resolvable by track A's decks (it needs the tank/combiner built)"
+  },
+  "IS4_tap_DC_bias_supply_AND_its_reference_levels": {
+   "status": "BOUNDED, NOT MEASURED; and the bias LEVELS themselves are booked at zero",
+   "measured": "Q_net per cycle: gt +0.702 fC, gtp +1.276 fC (my extraction of the committed prn) -- a free-running LC cannot source net DC charge",
+   "bound": "up to 1.978 fC * 1.5 V = 2.97 fJ if referenced to the 1.5 V rail",
+   "second_half_never_stated": "the two taps sit on DC offsets of 0.85 V (gt) and 0.41 V (gtp). NEITHER IS A RAIL. Generating and holding two non-rail references costs area and quiescent power that no deck in this campaign has ever metered."
+  },
+  "IS5_harmonic_synthesis_and_phase_network": {
+   "status": "BOOKED AT ZERO",
+   "what": "each tap is ONE ideal PWL source already containing sum_{k odd<=5} sin(k*theta)/k at exact 1 : 1/3 : 1/5 amplitude ratio and exact relative phase, and the gtp tap carries an independent 6 ps phase ADVANCE. A real network needs a combiner (or a 3-mode resonator with fixed tap ratios) plus a phase path, and all of its loss is currently folded into a single lumped 25 ohm series R that was swept, not built."
+  },
+  "IS6_inductor_Q": {
+   "status": "ASSUMED",
+   "what": "Q >= 7 required by energy, 3.8-6.7 by cut order; L1 = 5.9 nH at B=64 with shared series R <= 8.4 ohm. The inductor is IDEAL in every deck; no metal inductor Q is measured anywhere in the campaign."
+  },
+  "IS7_VHI_pMOS_bulk_rail": {
+   "status": "MEASURED BUT UNBOOKED IN EVERY LEDGER",
+   "measured_fJ_per_hop": 4.494259,
+   "what": "the 1.5 V n-well rail of the transfer pMOS draws 4.494 fJ/hop in the committed best row. It has no home in either the hop ledger or the timer ledger. 4.49 fJ is 35% of the whole 12.7467 fJ budget. Pre-existing campaign omission, re-flagged. This round will re-measure it over a FULL BEAT (the committed figure is read at tend of a single-hop deck) to say whether it is a net cost or a transient that returns."
+  },
+  "IS8_fixed_phase_cannot_retune_per_data_word": {
+   "status": "MEASURED RISK, not an ideal source",
+   "what": "skeptic: a +-2-cell data change moves the pMOS-vs-nMOS ordering margin over 4.9 ps of the 5 ps allowance; the tuned gtp advance is one fixed phase"
+  }
+ },
+
+ "chosen_approach_and_why": {
+  "first": "(d) MERGE / ELIMINATE -- drive the park nMOS gate DIRECTLY from the existing gtp tap. Reason, from reading the committed waveform before building anything: the pMOS transfer gate signal ALREADY has exactly the park's required shape and polarity -- LOW through the transfer (pMOS on), HIGH through the hold (pMOS off). gps runs -0.34 V (hard park off) to +1.16 V (park on) and is above 0.45 V from ~431 ps to ~137 ps of the next beat. The cheapest possible park is no park tap at all: no new mode, no new inductor, no new bias, and -- decisively for the recursion trap -- NO NEW GATE, so there is nothing left to drive.",
+  "why_the_ordering_should_work_for_free": "break-before-make falls out of THRESHOLD ORDERING, not tuning. On the rising gtp edge the pMOS cuts at gtp > V(bkb)-|Vtp| ~ 0.18 V and the park closes at gtp > Vtn ~ 0.45 V, so the pMOS ALWAYS cuts first. On the falling edge the park opens at 0.45 V and the pMOS conducts at 0.18 V, so the park ALWAYS releases first. Both directions are guaranteed by the sign of (Vtn) - (Vbkb - |Vtp|) > 0.",
+  "then_if_it_fails": "(c) SUB-HARMONIC / separate-offset tap on the SAME modes (a third tap, own DC offset, own amplitude -- costs IS4 bias but still no switch), then (a) more harmonics for a flatter top, then (b) resonant pulse + clamp LAST because the clamp is the M1-C/M2 recursion.",
+  "recursion_rule": "ANY device this track adds is charged in the same ledger: its own gate drive at the CONVENTIONAL rate (Q_rect/2 * V per full cycle) unless that gate is itself measured on a tap. A holder whose width must track its load is declared a B-INVARIANT recursion and the row is reported as FAILING regardless of its energy."
+ },
+
+ "cost_accounting_rule_for_the_merged_park": {
+  "primary": "park cost = E_gtp(park merged onto the gtp tap) - E_gtp(baseline, park on the committed ideal PWL), both from the SAME 1F instrument on the SAME deck family at the SAME tend. This captures, exactly and completely, the extra I^2R in the tap resistance AND the extra nonlinear MOS gate dissipation AND any extra net DC charge the park gate draws.",
+  "cross_check_independent": "a 0 V series source VPKM between gtp and the park gate, with its own 1F energy and rectified-charge integrators, gives the energy delivered INTO the park gate node by a path that is not the primary instrument. Additionally the trapezoid reconstruction I_tap = (V(gps)-V(gtp))/RS, which never touches any 1F integrator, is reported for the headline row.",
+  "DC_bias_delta": "Delta Q_net on the gtp tap is reported and charged at the IS4 bound (1.5 V reference).",
+  "no_credit_for_the_gt_tap_export_unless_stated": "rows are reported BOTH as the booked net (eta_net = 1, the campaign's convention) AND with the IS3 sensitivity band."
+ },
+
+ "completeness_gates_UNCHANGED_a_row_that_fails_any_is_INVALID_not_a_result": {
+  "checkpoint": "tD = 811.755 ps ABSOLUTE, regardless of deck tend; tC = t_open + 7 ps",
+  "VBEND": "0.66238 <= V(bkb)(tD) <= 0.68941",
+  "VA_open": "V(bka)(t_open) <= 0.1478",
+  "cells_settled": "all 8: even-index <= 0.03*V(bkb), odd-index >= 0.97*V(bkb) at tD",
+  "E_hop_open": "within +-5% of the real-drive reference 8.10914 fJ -> [7.70368, 8.51460]",
+  "cut_order": "pMOS (gtp) cuts EARLY-or-with the nMOS (allowance +5 ps late); nMOS (gt) cuts at the tuned zero; PARK closes STRICTLY AFTER the nMOS cut (park_minus_nmos > 0). Reported on BOTH the 50% convention and the device-referenced (last-conducting-instant) convention.",
+  "ledger_closure": "every drive ledger must close to <= 1%: E_source - E_Rseries - E_into_gate_node = 0"
+ },
+
+ "NEW_PRE_REGISTERED_HOLD_GATES_for_this_track": {
+  "H1_the_park_actually_holds": "V(sw) <= 0.10 V at EVERY printed sample from park-close to tD. A park that lets sw float back up has not parked.",
+  "H2_the_delivered_rail_does_not_sag": "the droop V(bkb)(tD) - V(bkb)(tC) must be no more negative than the committed ideal-park baseline's same difference by more than 1.0 mV. A park that sags is a COMPLETENESS FAILURE even if the energy looks good.",
+  "H3_the_hold_survives_a_PERIODIC_drive": "with the harmonic taps repeated for >= 2 beats (not flat-lined after one, which is the committed single-hop deck convention and holds the park on forever by artifact), the park must stay closed for the WHOLE remaining beat, i.e. until the next beat's pMOS turn-on, and V(bkb) must not sag more than 1% over that window. The beat-limited hold is the architecture (each beat is a hop); what is forbidden is releasing EARLY.",
+  "H4_no_new_gate": "if the scheme needs any added device, its gate drive is counted (see recursion_rule) and the row is reported with that cost inside the headline, never beside it."
+ },
+
+ "falsifiable_predictions_PRE_STATED": {
+  "PA_P1_merge_ordering_is_free": "Tying the park gate to gtp satisfies the cut order with NO retuning, because park-close (gtp > Vtn = 0.45) necessarily follows pMOS-cut (gtp > Vbkb - |Vtp| ~ 0.18) on the same rising edge, and precedes pMOS-on on the falling edge. PREDICTION: park_minus_nmos > 0 and pmos_minus_nmos <= +5 ps at the committed adv = 6 ps. FALSIFIED if park closes before the nMOS cut, or if the pMOS/park overlap drains the rail (VA_open > 0.1478).",
+  "PA_P2_merge_cost_is_small": "The incremental cost is the added nonlinear gate dissipation of a 1 um nMOS placed on an ALREADY-EXISTING tap. The campaign measured 1.66 fJ as the harmonic surcharge for the 5 um + 10 um transfer pair (15 um of gate), so a 1 um addition should scale to roughly 0.1-0.4 fJ. PREDICTION: Delta E_gtp <= 1.0 fJ. FALSIFIED if Delta E_gtp > 1.0 fJ.",
+  "PA_P3_the_weaker_high_level_still_parks": "The merged park's HIGH level is the gtp peak, 1.16 V, not 1.5 V, so Vgs is ~0.34 V lower and Ron is materially higher. PREDICTION: a 1 um park still holds V(sw) <= 0.10 V because it only has to sink the post-open ring current. FALSIFIED if H1 fails at w = 1 um; the remedy (a wider park, which adds gate cap to the tap) is then measured as a sweep and its cost booked.",
+  "PA_P4_zero_recursion": "The merge adds NO new gate anywhere, so the M1-C / M2 recursion (a holder that itself needs a driver, whose width tracks its load, and which therefore never amortises over B) is structurally absent -- not small, absent. FALSIFIED if any added device turns out to be necessary.",
+  "PA_P5_the_single_hop_deck_convention_flatters_the_hold": "The committed deck's PWL ends at one beat and Xyce holds the last value, so BOTH the committed ideal park (1.5 V forever) and a merged park (1.1014 V forever) are held on by artifact past 580 ps. PREDICTION: under a genuinely PERIODIC drive the merged park releases at the next beat's falling gtp edge (~717 ps) and the pre-registered tD = 811.755 ps lies OUTSIDE the hold window. This is a property of the CHECKPOINT, not of the park, and will be reported as such: gates at tD under the committed single-hop convention, plus the true beat-limited hold window measured separately."
+ },
+
+ "sim_discipline": {
+  "PYMS_VAE_CACHE": "/tmp/claude-1001/-usr-local-src/4921ad0c-f17b-4b84-986a-5917c9ebd2a6/scratchpad/vae_cache_parkA (OWN cache, this agent only)",
+  "base_deck": "/usr/local/src/stat-sim/qal/recov/skeptic/sk_best.cir, itself a committed text patch of qal/swsweep/sw_tg15p_z.cir; every deck in this round is a TEXT PATCH of it and the patch script PRINTS every removed and added line",
+  "models": "sg13_lv via qal/sg13lv_compat.sp (NOTE: it drops ad/as/pd/ps, so junction capacitance is ZERO and every driver number is a LOWER BOUND); PSP103 via .hdl + sg13g2_psp103_tt.lib",
+  "metering": "1F-integrator or INTEG-I(Vsrc)+PARAM forms ONLY. '.measure INTEGRAL V(<B-source>)' under-reports 11-44% and is not used. Every rail/tank that sources or sinks charge gets its own integrator and the ledger must CLOSE.",
+  "cross_check": "the headline row is independently reconstructed by trapezoid integration of I = (V(gps)-V(gtp))/RS from the printed node voltages -- a path that never touches the 1F instrument",
+  "reserved": "vt / gmin not touched; unique .va module names; runs < 4 min; corners ONLY via instance-level DTA",
+  "tend": "1000 ps for every gate-evaluated row (so tD = 811.755 ps is reached and rows are digit-comparable to the committed sk_best_long); 1160 ps (2 beats) for the periodic hold test"
+ },
+
+ "verdict_rules": {
+  "ADMITTED": "complete ledger <= 12.7467 fJ/bank/hop AND every completeness gate PASS AND every hold gate PASS, with the residual ideal-source terms named and their sensitivity bands stated",
+  "CONDITIONAL": "ledger clears the line but a named term is still ideal/assumed -- report the band, never a point claim",
+  "EXCLUDED": "report the best COMPLETE ledger and WHERE THE MONEY WENT. A negative result closes the question and is first-class.",
+  "honesty": "every number labelled MEASURED / DERIVED / ASSUMED"
+ }
+}

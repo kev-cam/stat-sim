@@ -1,0 +1,83 @@
+{
+ "_doc": "TRACK B pre-registration. Written BEFORE any amplifier deck exists. Goal: replace the FREE PARAMETER eta_amp (the sustaining amplifier of the QAL free-running 5-harmonic resonant gate network) with a MEASURED number from a real SG13G2/PSP103 device simulation, and restate the admission.",
+ "date_utc": "2026-09-28T19:59:04Z",
+ "agent": "track B (sustaining amplifier). Track A (park driver) is a different agent; my decks are independent.",
+
+ "step_0_ENUMERATION_of_every_remaining_IDEAL_SOURCE_or_ASSUMED_EFFICIENCY": {
+  "_rule": "the campaign's own lesson: three times a term booked from an ideal source later killed the result (cells' gate burn; the hop's ideal PWL gate drives 3.56 booked / 399.8 real; the park driver 2.403 booked / 15.0-15.5 real). Enumerate BEFORE measuring.",
+  "I1_park_driver": {
+   "status": "KNOWN, track A", "booked_fJ": 2.403, "source": "ideal PWL step, Q_pk*VGH",
+   "cheapest_real_MEASURED_fJ": [15.0177, 15.4789, 16.0021],
+   "headroom_fJ": 9.7727},
+  "I2_sustaining_amplifier": {
+   "status": "KNOWN, MINE", "booked": "a bare efficiency parameter eta_amp; the device has NEVER been simulated",
+   "required_band_pct": [35.1, 44.6]},
+  "I3_tap_DC_bias_supply": {
+   "status": "PARTIALLY KNOWN -- BOUND, NOT MEASURED (SKEPTIC_RESULTS b_recursion_audit)",
+   "fact": "the taps take a NET DC charge per cycle (gt +0.6234 fC, gtp +1.1837 fC). A free-running LC network cannot source net DC. Booked at the ideal sources' instantaneous voltage; referenced to the 1.5 V rail the extra is <= 1.807 fC * 1.5 V = 2.71 fJ.",
+   "my_addition": "this term is STRUCTURAL, not incidental: gt must sit at DC 0.85 V and gtp at DC 0.41 V, a 0.44 V DC DIFFERENCE across what is otherwise a perfectly antiphase differential pair (AC parts are exactly +0.75*h and -0.75*h). An inductor is a DC short, so the two taps CANNOT be the two ends of one differential inductor: the resonant loop must contain a DC-blocking capacitor (extra series loss, lower effective C, lower Q) or the two taps need separate feeds. I will cost this, not assume it."},
+  "I4_the_6_ps_gtp_PHASE_ADVANCE": {
+   "status": "NEWLY FLAGGED BY ME -- candidate THIRD ideal-source term",
+   "fact": "the admitted network row is m1d_h5b580_adv6: the gtp tap is phase-ADVANCED 6 ps (3.72 deg at f0=1.7241 GHz) so the pMOS cuts early-or-with the nMOS. On a PWL source that advance is a free function argument. On a real shared differential tank the two ends are at EXACTLY 180 deg; any deviation needs a real phase-shifting element with real loss, or a second tap point on a distributed network.",
+   "pre_stated_test": "(a) does the cut order still PASS at adv=0 (exact antiphase)? If yes the advance is not load-bearing and costs nothing. If no, the advance is load-bearing and its generator must be costed -> a THIRD ideal-source term. (b) whatever phase the REAL tank+amplifier actually produces is what the completeness gates are evaluated against -- the test is built into the track-B deck."},
+  "I5_tank_series_R_and_Q": {
+   "status": "ASSUMED", "fact": "shared series R <= 8.4 ohm at B=64, L1 = 5.9 nH, Q >= 7 -- all ASSUMED/DERIVED, never measured against a real inductor model. The 3rd and 5th harmonic tanks at 5.17 and 8.62 GHz need their own Q and have never been considered.",
+   "my_treatment": "I will report the Q the measured amplifier can actually SUSTAIN and the R that the measured eta implies, and cross-check against the required Q >= 7 that the CUT ORDER (not energy) sets."},
+  "I6_VHI_1p5V_pMOS_bulk_rail": {
+   "status": "MEASURED BUT UNBOOKED (flagged by the skeptic, still not in any ledger)",
+   "fJ_per_hop": {"committed_ideal_reference": 4.3065, "M1D_best_row": 4.4943},
+   "note": "35% of the entire 12.7467 fJ budget with no home in the hop or timer ledger. NOT an ideal source -- a real rail nobody has charged. I re-flag it; it is not mine to fix but any 'ADMITTED' verdict that omits it is void."},
+  "I7_amplifier_own_bias_and_startup": {
+   "status": "TO BE MEASURED BY ME", "fact": "tail current source gate bias, any reference, any startup circuit, any clock. Counted, not assumed. If it needs a clock, that is reported LOUDLY as a failure of the QAL premise."}
+ },
+
+ "step_1_the_admission_ARITHMETIC_reverse_derived_and_verified": {
+  "rule": "E_ledger = E_res_total/eta_amp + E_park_conventional + E_DCbias <= 12.7467 fJ/bank/hop",
+  "E_res_total_fJ": "2.974 (gt/gtp resonant pair, MEASURED) + E_park_resonant (track A; the campaign's comfortable case assumes 1.5) = 4.474",
+  "check_zero_bias": "4.474 / 12.7467 = 0.35099 -> 35.1 pct. REPRODUCES the stated requirement exactly.",
+  "check_with_bias": "4.474 / (12.7467 - 2.71) = 4.474 / 10.0367 = 0.44577 -> 44.6 pct. REPRODUCES exactly.",
+  "therefore": "eta_amp is DRIVER-REFERENCED: eta_amp = (energy the network DELIVERS INTO THE TAPS) / (energy the amplifier DRAWS FROM ITS SUPPLY). The tank's own R loss and the amplifier's device loss both sit in the DENOMINATOR's excess, i.e. they make eta worse. This is the number I must measure.",
+  "N_min": "reported through the committed unmodified qal/zcd/restate_admission.py"
+ },
+
+ "step_2_definitions_fixed_before_measurement": {
+  "eta_amp_TAP": "B * E_tap_per_bank_per_beat / E_supply_total_per_beat. THE ADMISSION NUMBER.",
+  "eta_amp_CORE": "E_delivered_by_the_active_device_into_the_tank_node / E_supply_total_per_beat. Device-level conversion efficiency. eta_TAP = eta_CORE * (tap loss / total tank loss).",
+  "E_tap": "net energy per beat absorbed by the gt and gtp taps of ONE bank, i.e. the quantity the committed ledger books as 2.974 fJ (skeptic-verified).",
+  "B": "banks sharing one network; record value 64. The network scales R->R/B, C->B*C, L->L/B (Q B-invariant). I simulate the B=1 impedance-scaled equivalent and state the scaling; amplifier device width scales with B so eta is B-invariant to first order -- I will say so explicitly and flag any term that is NOT.",
+  "metering": "1F-integrator (CXe/BXe) or INTEG-I(Vsrc)+PARAM forms ONLY. '.measure INTEGRAL V(<B-source>)' is forbidden (under-reports 11-44 pct). Every rail/tank that sources or sinks charge gets its own integrator and the ledger must CLOSE. Headline row cross-checked by an independent trapezoid reconstruction that never touches the primary instrument."
+ },
+
+ "step_3_ACCEPTANCE_pre_stated": {
+  "B0_instrument_gate": "re-run the committed sk_best.cir unmodified under MY OWN private PYMS_VAE_CACHE and reproduce the headline resonant-pair numbers. FAIL -> stop, the instrument is not trustworthy.",
+  "B1_steady_state": "with NO external clock, the tank amplitude at the gt/gtp taps must hold within +/-2 pct over the last 5 beats of a run of >= 10 beats, starting from a cold (or lightly kicked) tank. Report the amplitude trajectory. Droop or unbounded growth = FAIL of amplitude regulation and must be reported as such.",
+  "B2_waveform_fidelity_and_COMPLETENESS": "the taps produced by the REAL amplifier + REAL tank must still pass every completeness gate of the hop, evaluated at the PRE-REGISTERED checkpoint tD = 811.755 ps: CUT ORDER (pMOS cuts early-or-with nMOS, park closes AFTER the nMOS cut and holds), VBEND in the pre-registered band (real-drive ref 0.6846, ideal 0.6759), VA_open ~ 0.098, all 8 cells settle, E_hop_open at/near 8.109-8.383 fJ. A row failing any gate is INVALID, not a result.",
+  "B3_eta": "eta_amp_TAP MEASURED with a ledger that closes to < 1 pct: E_supply = E_taps + E_tank_R + E_amplifier_device + dE_stored.",
+  "B4_control_cost": "every bias, switch, reference and clock the amplifier needs, COUNTED in fJ/bank/hop, not assumed. If a clock is required, say so loudly.",
+  "B5_Q": "the loaded Q the amplifier actually sustains, cross-checked against the required Q >= 7 that the CUT ORDER sets (large tank R makes the RC-lagged gtp tap cut late -- the v1 failure). Energy alone would allow Q ~ 2.4; the binding constraint is the cut order."
+ },
+
+ "step_4_VERDICT_RULE": {
+  "ADMITTED_iff": "the COMPLETE ledger -- resonant gt/gtp + park tap + every holder/clamp gate + the sustaining amplifier's replenishment loss + any DC bias -- is <= 12.7467 fJ/bank/hop WITH every completeness gate PASS.",
+  "reporting": "fJ/bank/hop ONLY. NEVER a recovery percentage as an admission result (eta is load-referenced, the admission line is driver-referenced; the campaign's as-built ratio is 7.0x).",
+  "labels": "every number labelled MEASURED / DERIVED / ASSUMED. Negative results are first-class."
+ },
+
+ "step_5_PRE_STATED_PREDICTION_so_it_cannot_be_moved_later": {
+  "_why": "an analytic ceiling stated before the first deck, so a later measurement cannot be rationalised.",
+  "class_B_current_biased_cross_coupled_ceiling": "eta_CORE_max = 2*V_amp/(pi*V_DD) for an ideal hard-commutating current-biased cross-coupled pair (V_amp = single-ended AC amplitude). With the REQUIRED V_amp = 0.75 V and V_DD = 1.5 V this is 31.8 pct -- ALREADY BELOW the 35.1-44.6 pct requirement before any real device loss, any tank R loss, or any bias cost is added.",
+  "implication_stated_up_front": "if that ceiling is real, the classic current-biased core CANNOT clear the line at V_DD = 1.5 V, and the only escapes are (i) a tank supply rail near the required swing (V_DD ~ 0.85 V -> ceiling 56 pct), (ii) a tail-less / class-D switching core, or (iii) a lower required swing. I will test (i) and (ii).",
+  "tank_loss_split_prediction": "tap load alone gives loaded Q ~ 10.7 (DERIVED: E_stored ~ 324 fJ at B=64 vs 190 fJ/beat tap loss). Forcing total Q = 7 leaves only ~101 fJ/beat (1.58 fJ/bank) for the tank's own R. Hence eta_TAP <= eta_CORE * 190/291 = 0.65*eta_CORE at Q=7: eta_CORE must exceed 54-69 pct for admission.",
+  "negative_swing_hazard": "gtp must reach -0.34 V. On a bulk NMOS core the drain-substrate junction is then forward-biased by 0.34 V. Flagged before measurement."
+ },
+
+ "environment": {
+  "PYMS_VAE_CACHE": "<scratchpad>/vae_cache_ampB (private to this agent)",
+  "PYMS_DIR": "/usr/local/share/xyce/PyMS",
+  "Xyce": "/usr/local/src/xyce-build/src/Xyce",
+  "devices": "sg13_lv via /usr/local/src/stat-sim/qal/sg13lv_compat.sp -- NOTE it drops ad/as/pd/ps so junction capacitance is ZERO: every amplifier device number here is a LOWER BOUND on cost / an UPPER BOUND on eta.",
+  "models": "PSP103 via .hdl psp103.va + sg13g2_psp103_tt.lib",
+  "corners": "instance-level DTA only (qal/timer/sg13lv_dta.sp); .OPTIONS DEVICE TEMP is INERT against PyMS-compiled PSP103",
+  "base_deck": "/usr/local/src/stat-sim/qal/recov/skeptic/sk_best.cir"
+ }
+}

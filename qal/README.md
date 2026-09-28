@@ -425,6 +425,207 @@ coupling (skeptic, measured): the tg15p optimum steepens the sensing signal 5.1�
 relaxing the ±20 ps offset need to ±7.5 mV (marginal, no longer hopeless) — the delay
 refutation stands. Full record: `zcd/README.md`, `zcd/RESULTS.json`.
 
+## The last door — `park/` + `amp/` — QAL admission at SG13G2 **CLOSES** (2026-09-28, skeptic-verified)
+
+**THE QUESTION IS CLOSED, NOT OPEN.** The standing 17.911 fJ exclusion (`recov/`, af53111)
+rested on ONE ideal-source booking, the park driver, and that booking is now **opened by
+measurement and it does not save the block** — because the *other* ideal-source booking, the
+sustaining amplifier, was simulated for the first time in the same round and it is what
+excludes. Best **complete measured** ledger **23.213 fJ/bank/hop → N_min 75.60 → fpsat_fma
+min-bank-63 FAIL**, against the pre-stated **E ≤ 12.7467 fJ** line. Even the composition of
+**only the two measured terms** — track A's resonant park row and track B's measured amplifier,
+with bias, rails, well-rail and multi-mode all set to zero — is **13.877 fJ → N_min 64.40 →
+FAIL**. Margin 1.8–2.4× before any DERIVED term. Confidence HIGH.
+
+Pre-registrations written before the first deck of each track and verified by hash:
+`park/PRE_REGISTERED.json` (sha256 `735bdf2d…`, mtime 13:01:20) and
+`amp/PRE_REGISTERED_TRACKB.json` (sha256 `cb699a67…`, mtime 13:00:08). All admission
+arithmetic re-run through the **committed unmodified** `zcd/restate_admission.py`
+(sha256 `ab946e0d…`, commit 9cad797, `git diff HEAD` empty), driven as a subprocess.
+
+### Track A — `park/` — the park term is genuinely CLOSED, and it is not the problem
+
+- **(d) NO PARK AT ALL is refuted by measurement.** All five completeness gates PASS and it is
+  the cheapest drive of everything (3.0871 fJ), but the un-parked ring never damps: the
+  delivered rail bleeds **−3.6 mV/ns = −2.1 mV per beat, forever**, vs −0.12 mV/ns with the
+  park (30×). H2 FAILS by 1.81 mV. **The resonant waveform does NOT relax the swsweep park
+  requirement.** The brief's "cheapest possible park is no park" is answered: NO.
+- **(d) MERGE onto the gtp tap FAILS catastrophically and cannot be re-phased.** VBEND 0.077141,
+  VA_open 0.38043, 96.3% of bank A gone before the hop starts; transfer nMOS turns on 8.841 ps
+  **before** the merged park releases (make-before-break). Structural, all measured: conduction
+  window 293.285 ps + required park window 286.715 ps = **580.000 ps = exactly the beat**, so
+  any beat-rate park has **zero timing margin by construction**.
+- **(c) SUB-HARMONIC (f/2) park tap WORKS on energy.** One more chip-wide inductor
+  (L = 4·L1 = 23.6 nH at B=64), **no new gate, no switch, no clamp — zero recursion**. Park-tap
+  cost **0.3436–1.3195 fJ**, and **−0.0398 fJ (a net RECEIVER)** on the narrowed 46%-duty tap,
+  against a 9.7727 fJ headroom and the 15.0–15.5 fJ conventional-driver floor. The gap that
+  collapsed the previous round is gone by **11–44×**.
+- Best rows (pair + park tap, trapezoid, all five gates PASS at the pre-registered **absolute**
+  tD = 811.755 ps): `pa_sub_w2` **3.9702 fJ** (VBEND 0.688560, E_hop 7.98053, H1 settle 70.4 ps,
+  H2 **+1.438 mV better than baseline**) and `pa_subn` **3.5122 fJ** (VBEND 0.688192,
+  H2 +1.010 mV, H1 settle 356.9 ps — a resonant park closes on a 5.7–6.5 mV/ps edge instead of a
+  2 ps step, so it is weak early). Rows `pa_sub_w3`, `pa_subn_w15`, `pa_subn_w2`, `pa_sub_e_w2`
+  are reported **INVALID** — they breach the pre-registered VBEND ceiling 0.68941 even though the
+  direction is favourable. A two-sided gate was not moved.
+- **H3, the most damaging completeness result in the round, and it indicts the COMMITTED design:**
+  on a genuinely *periodic* two-beat drive **no park in this campaign releases in time**, and the
+  committed one **never releases at all** — it is a rising edge that never falls; the bank drains
+  to 0.127 V by tD. The div-2 park is correct for a **two-phase** pipeline only (`pa_subn`'s ON
+  window [430.03, 963.75] fits the required [422.150, 1002.150] with 7.88/38.40 ps margin) — and
+  **that reading is DERIVED**: this fixture has one stage and cannot simulate two.
+- Track A declared its own pre-registered **H1 defective** (the committed baseline fails it,
+  max |V(sw)| 0.76501 V, because the window opens before the park's own pull-down transient),
+  restated it as settle-delay + max-after-settle, and published the raw number for every row.
+  Goalpost moved once, in the open, after the baseline proved it unmeetable. Accepted.
+
+### Track B — `amp/` — the sustaining amplifier is now a DEVICE, and it is what excludes
+
+- **η_amp = 25.44% MEASURED** (skeptic 25.444% on an independent re-run; track B 25.46%), against
+  a required **35.1% (zero bias) to 44.6% (worst-case bias)**. Cross-coupled nMOS pair with a
+  **real** tail nMOS on a DC bias (not an ideal current source — that is the booking this campaign
+  has been burned by three times), single-resonance LC, sg13_lv/PSP103.
+- **In the currency that matters: E_amp = 12.600 fJ/bank/hop** — with the park at zero, the bias at
+  zero and the rails assumed free, **the amplifier alone consumes 98.8% of the entire 12.7467 fJ
+  budget** and leaves 0.15 fJ for everything else.
+- **Where the supply goes (measured, fJ/bank/beat):** delivery 3.5607 (25.4%); **the amplifier's own
+  three transistors 6.8491 (48.7%)** — tail 3.4346, M1 2.2011, M2 1.2135; tank series R 3.6026
+  (25.6%). **The device term is Q-INDEPENDENT** (7.82/7.22/6.88/6.72/6.65 fJ at Q = 8/12/19/30/50),
+  so **no inductor, no tank refinement and no extra resonant mode recovers it.** Even at Q = 50,
+  far beyond any real 1.7 GHz on-chip spiral, η is 33.0% — still under the floor.
+- **NO CLOCK.** The amplifier's only inputs are three DC sources (VA 0.85 V, VB 0.41 V, VBG 0.56 V);
+  it self-oscillates and self-limits at 0.787 V / 579.00 ps off pure DC, settled by beat 3, last-5-beat
+  spread 0.124%. Loaded **Q = 10.70 measured** against the required ≥ 7 that the *cut order* sets —
+  **Q is not the binding constraint; energy is.** The QAL clock-elimination premise SURVIVES.
+- **Track B's own completeness row is INVALID and says so**: a fundamental-only tank makes a sine,
+  not the 5-harmonic waveform (VBEND −0.0541, VA_open −0.356, park closes 509.7 ps *before* the
+  nMOS cut — the v2a park-early failure). η stays valid as an **upper bound** because every extra
+  mode adds a lossy inductor.
+
+### The cross-track ledger — the composition **neither track computed**
+
+Each track passed only by zeroing the other's term: track A's PASS rows assume η_amp ≥ 0.35 and
+track B **measured 0.254**; track B's 12.600 fJ PASS sets the park to zero and track A **proved the
+park cannot be zero**. Amplifier modelled by track B's **own measured marginal** (dD 1.252 for
+dE_sup 3.031, η_marg 0.4131) anchored on the measured E_sup 13.9941 at D 3.5607.
+
+| row | E fJ | N_min | fpsat-63 |
+|---|---|---|---|
+| **[LINE] pre-stated admission** | 12.747 | 63.00 | PASS |
+| [A] track A alone, η_amp ASSUMED 1.0 | 3.512 | 51.90 | PASS |
+| [B] track B alone, park 0, bias 0, rails free | 12.600 | 62.80 | PASS |
+| **[X1] `pa_subn` park + MEASURED amplifier — both measured terms only** | **13.877** | **64.40** | **FAIL** |
+| [X2] + MEASURED tap DC bias 1.169 | 15.046 | 65.80 | FAIL |
+| [X3] + rail generation, switching ×1.11 (DERIVED) | 16.701 | 67.80 | FAIL |
+| **[X4] + VHI 6.5125 MEASURED on this row — best COMPLETE measured row** | **23.213** | **75.60** | **FAIL** |
+| [X5/X6] + multi-mode m = 1.637 (DERIVED) | 25.742 / 30.542 | 78.60 / 84.40 | FAIL |
+
+Per-block verdicts move together: at E ≤ 12.7467 the alu_top bush is 29/37 (99.6% of gates) and
+sha_slice 4/10 (87.6%); at **every** FAIL row the alu bush drops to 28/37 (99.5%), sha_slice
+unchanged. The fpsat min-bank-63 criterion is the binding one and it fails from X1 onward.
+
+**Break-even η_amp for `pa_subn`** (measured 25.44%): **79.0%** with every measured term counted
+(3.1× measured); 34.1% with VHI discarded; 30.3% with VHI *and* rails discarded; **27.6% with the
+ledger stripped to the two terms both tracks agree are real** — the measured amplifier still misses
+by 8%. **The exclusion does not rest on any single term: remove any one of the amplifier, the bias,
+the rails or VHI and the ledger still fails.**
+
+### The ideal-source inventory after this round
+
+The campaign's lesson held again, twice: **the term booked from an ideal source was, again, the
+thing that decided the result.**
+
+- **IS1 park driver — CLOSED as a cost, NOT closed as a class.** The winning tap is still
+  `VPKS pks 0 PWL(…)` + `RPKS pks pk 25` — structurally the same ideal-PWL-through-25 Ω booking as
+  gt/gtp. Track A replaced an ideal PWL *step* with an ideal PWL *sinusoid*; the tap's own draw is
+  measured, the mode behind it is not.
+- **IS2 sustaining amplifier — NOW MEASURED**, and it is the exclusion.
+- **IS3 the gt/gtp NETTING — the round's most valuable find, and it sits INSIDE both headlines.**
+  The 2.974 fJ everyone treats as measured-and-closed is the **arithmetic sum** of a net exporter
+  (E_gt −2.749 fJ, the Miller harvest) and a net importer (E_gtp +5.723 fJ) that are **two
+  electrically unconnected ideal voltage sources** — there is no gt–gtp conductive path in the
+  netlist. Adding them books a lossless bidirectional combining tank that **has never been built,
+  metered or drawn**. E_pair(η_net) = 5.7232 − 2.7489·η_net. Once the amplifier is a real device the
+  same swing costs **6.65 fJ (marginal) to 10.80 fJ (average-η) — 52–85% of the entire budget.**
+- **IS4 tap DC bias — MEASURED** for the first time: Q_net/cycle gt +0.6234 fC, gtp +1.1837 fC,
+  park div-2 tap +0.5134 fC per 1160 ps → **1.169 fJ at-tap**; the old 2.71 fJ bound is recovered
+  exactly if those rails are made by *linear* regulation, i.e. it was the linear-regulator case all
+  along. (Metering trap, caught and corrected: integrating the div-2 tap over one 580 ps *beat*
+  gives 2.26 fC — half a cycle of swing, not a DC component.)
+- **NEW — RAIL GENERATION.** Never costed anywhere in this campaign. The 0.85 V / 0.41 V / 0.30 V
+  levels are assumed free and now multiply the **largest line in the ledger**: **×1.765 linear
+  (+10.8 fJ/bank/hop on the amplifier term alone)** or **×1.11 switching (+1.57 fJ)** — and a
+  switching converter **needs a clock**, reintroducing at the supply exactly what QAL exists to
+  eliminate in the datapath.
+- **NEW — MULTI-MODE SUSTAINER COUNT.** Track B built and measured **one** resonance; the waveform
+  needs f, 3f, 5f, plus track A's f/2 — each its own inductor, own finite Q, own stored energy.
+  m = **1.533–1.691×** (DERIVED from ω·C·A² with measured amplitudes and measured 5.8 fF tap load),
+  worth **+1.3 to +5.6 fJ**. No 3-inductor tank has ever been built by anyone.
+- **NEW — OXIDE OVERVOLTAGE, and it is campaign-wide and PRE-EXISTING.** Tap swings are chosen with
+  no device-rating constraint. Against the **1.5 V** sg13_lv rating: committed baseline **XSWP Vgb
+  1.8393 V**, XSWN Vgb 1.6004 V, XPK Vgd 1.5471 V; track A's **winning** row `pa_subn` **XPK Vgd
+  1.8978 V (27% over)**, its park tap spanning **2.400 V (−0.900 → +1.500, verified directly in the
+  deck's PWL table)**. PSP103 models no breakdown and `sg13lv_compat.sp` zeroes the junctions, so
+  **nothing complains**. Sharpest form: track A used the 1.5 V oxide limit to *reject* the
+  narrow-duty merge and then did not apply it to the row it *accepted*. **No rating-compliant tap
+  has ever been shown to pass the completeness gates**, and both fixes (thick oxide, reduced swing)
+  move energy the wrong way — the swing is what sets the cut order.
+- **NEW — SUB-GROUND TAP STRUCTURE.** Track B *proved* by measurement that a sub-ground tap cannot
+  come from a supply-referenced core (a cross-coupled pair clamps its own drain at the tail node)
+  and needs a DC-block capacitor, an RF choke and a separate rail — for a swing of only −0.34 V.
+  Track A's winning tap is **−0.900 V, 2.6× deeper, and booked at zero devices.** So track A's
+  "adds NO new device anywhere" is correct on *recursion* (nothing's width tracks its load; the
+  M1-C mode has no foothold) but wrong as stated: the winning row needs one f/2 inductor, a
+  DC-block, a choke/bias network, the 0.30 V reference itself, and a fourth sustaining amplifier.
+  **No recursion, but not zero devices either.**
+- **NEW — THE PARK RELEASE (H3 above)** and **VBG bias-reference generation** (booked at gate
+  leakage −0.0025 fJ, which silently assumes a chip-shared reference; a per-bank PVT-tracking
+  reference would be a genuine M1-C recursion and nobody has established which case applies).
+- **IS7 VHI n-well rail — re-measured, still homeless, and WORSE on track A's own winning row.**
+  Independently confirmed from the raw `.prn` (t=0-referenced, full 1000 ps): `pa_base` **4.49426**,
+  `pa_subn` **6.51254 (+44.9%)**, `pa_sub_w2` **5.07659 (+13.0%)** fJ/hop. **The resonant park makes
+  the unbooked term bigger.** It is 35% of the entire budget and any ADMITTED verdict that omits it
+  is void.
+
+### Policing and instrument hazards — read before running anything here
+
+- **NO ROW ANYWHERE IN THIS CAMPAIGN HAS A REAL AMPLIFIER DRIVING A HOP THAT PASSES THE
+  COMPLETENESS GATES.** Track A passes all five only with ideal PWL taps; track B's real amplifier
+  fails them outright. The energy ledger and the completeness ledger have never been satisfied by
+  the same circuit. "The scheme has never been demonstrated end-to-end" is the accurate status.
+- **★ CONCURRENT `PYMS_VAE_CACHE` BUILDS GIVE SILENTLY WRONG PHYSICS.** The skeptic raced two Xyce
+  lanes 2 s apart into one cache; the PSP103 VAE build fell back (`full build failed …; retrying
+  without zero-valued params`) and the contaminated run read **VBEND 0.729279 instead of
+  0.684413 — a 6.6% error, enough to flip a completeness gate — with no error surfaced to the
+  caller.** Serialising on a warm cache reproduced the committed value to the digit. **Every agent
+  gets its own cache, built serially.**
+- **The 1F-integrator idiom has a DC defect that affects existing rows.** The can sits at its
+  DC-operating-point equilibrium, so (a) it carries a **pedestal** that reads as energy — verified
+  directly: `V(XEGTP)` at t=0 is **+12.13 fJ** of phantom energy, `V(XEHI)` **+28.03 fJ** — so every
+  read must be **t=0-referenced**; and (b) if the metered source carries a *steady DC current* the
+  can integrates only the **change** in power and a rail at constant 36 µA reads as **ZERO**. Fix:
+  force every integrator to 0 with `.ic` **and** raise `.print PRECISION` to 17.
+- **E_hop_open is not independent of VBEND** (it tracks 0.5·C_eff·VBEND² with C_eff ≈ 34.7 fF), so
+  the five completeness gates are effectively **four**.
+- 7 of 11 `park/*.prn` predate their own deck (`gen.py` rewrote the decks at 13:28:50 after a
+  duplicate-`CXEPK` fix). The two load-bearing stale rows were re-run and reproduce exactly —
+  benign, but that is luck, not process.
+- **Junction capacitance is ZERO everywhere**: `sg13lv_compat.sp` declares ad/as/pd/ps and then
+  drops them. **Every energy number in this campaign is a LOWER BOUND.**
+
+### What would have to change — PROJECTION, not measurement
+
+Break-even η_amp is **79.0%** with every measured term counted, 3.1× what was measured, and the
+device term is Q-independent so the tank cannot deliver it. 25.44% is **one topology, one agent,
+one day** — it is not a proven lower bound on sustainer efficiency, and a fundamentally better
+sustainer could beat a cross-coupled pair. But the ask is not small, the exclusion survives
+deleting any single term, and the round also *added* uncosted terms (rail generation, multi-mode,
+oxide compliance) faster than it removed one. Candidates that could move it — **all projection**:
+a device node with lower gate capacitance per unit drive; **FD-SOI back-gate** (lower Vt → lower
+VGH → lower CV², and the oxide-overvoltage problem eases); a two-phase pipeline, which the park
+analysis says is **required** in any case. **QAL at SG13G2 is EXCLUDED and the question is closed
+at this node.** Full record: `park/PRE_REGISTERED.json` + `park/RESULTS.json`,
+`amp/PRE_REGISTERED_TRACKB.json` + `amp/RESULTS_TRACKB.json`.
+
 ## Measurement discipline
 
 Per `QAL_PLAN §7` and `feedback_no_self_baseline`: everything in Track A runs against an

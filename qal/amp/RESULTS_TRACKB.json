@@ -1,0 +1,121 @@
+{
+ "_doc": "TRACK B RESULT: the QAL free-running resonant network's SUSTAINING AMPLIFIER, previously a bare efficiency parameter, MEASURED in SG13G2/PSP103. Pre-registration: PRE_REGISTERED_TRACKB.json, written 2026-09-28 13:00:08.736 -0700, sha256 cb699a67c4de0d6ef91d0d9155a403e1de028f89732d8f44224ce69a2a76bf6f, BEFORE the first deck.",
+ "date_utc": "2026-09-28",
+ "cache": "<scratchpad>/vae_cache_ampB (private, seeded from vae_cache_skrecov, instrument-gated)",
+
+ "B0_instrument_gate": {
+  "deck": "b0_long.cir (committed sk_best.cir, .tran extended to 1000 ps)",
+  "E_gt_fJ": {"mine": -2.7560, "skeptic": -2.755948, "delta_pct": 0.002},
+  "E_gtp_fJ": {"mine": 5.6214, "skeptic": 5.625644, "delta_pct": -0.076},
+  "resonant_pair_net_580ps_fJ": {"mine": 2.8603, "skeptic": 2.860322},
+  "resonant_pair_net_1000ps_fJ": {"mine": 2.9743, "skeptic": 2.9743},
+  "VBEND_at_tD_811p755": {"mine": 0.684413, "skeptic": 0.684413},
+  "verdict": "PASS, digit-identical",
+  "INSTRUMENT_DEFECT_FOUND": "the committed 1F-integrator convention (CX 1F + RX 0.01 ohm) leaves the can at its DC-operating-point equilibrium I_dc*0.01. Consequences: (a) a PEDESTAL that reads as energy -- +12.135 fJ of phantom energy sits on xegtp, +0.2359 fJ on xegt, in every committed row; every read must be t=0-referenced. (b) WORSE: if the metered source carries a STEADY DC current the can sits AT equilibrium and integrates only the CHANGE in power -- a rail carrying a constant 36 uA reads as ZERO energy. Track B's decks force every integrator to 0 with .ic and raise .print PRECISION to 17; without both, every amplifier number is wrong."
+ },
+
+ "step0_IDEAL_SOURCE_ENUMERATION_result": {
+  "I1_park_driver": "KNOWN (track A). booked 2.403 ideal / 15.018-16.002 MEASURED real.",
+  "I2_sustaining_amplifier": "WAS the free parameter. NOW MEASURED -- this document.",
+  "I3_tap_DC_bias": "was BOUND at 2.71 fJ. NOW MEASURED at 1.015 fJ/beat/bank at-tap (k=0 DFT of the committed row: 0.85 V x 0.6234 fC + 0.41 V x 1.1837 fC = 0.530 + 0.485). The 2.71 fJ bound is recovered exactly IF the 0.85/0.41 rails are made by LINEAR regulation from 1.5 V -- i.e. the skeptic's bound was the linear-regulator case.",
+  "I4_gtp_6ps_phase_advance": "FLAGGED, NOT CLOSED. On a shared differential tank the two ends are at exactly 180 deg; the committed row's 6 ps advance is a free PWL argument. Whether the cut order survives at adv=0 was not measured here. Track A or a follow-up must close it.",
+  "I5_tank_R_and_Q": "was ASSUMED. NOW MEASURED as a sensitivity: eta vs inductor Q is 14.98/19.96/25.24/29.52/33.02 % at Q_ind = 8/12/19/30/50. Loaded Q at the headline operating point = 10.70 (required >= 7 by the CUT ORDER) -- Q is NOT the binding constraint.",
+  "I6_VHI_1p5V_pMOS_bulk_rail": "re-flagged. 4.4943 fJ/hop MEASURED, still unbooked in any ledger. Not mine to fix; any ADMITTED verdict omitting it is void.",
+  "I7_amplifier_control_cost": "MEASURED: E_VBG = -0.0025 fJ/beat/bank (gate leakage only). NO CLOCK -- see clock_question.",
+  "I8_RAIL_GENERATION_THE_THIRD_ONE": "NEW. The campaign's ledger assumes rails exist at arbitrary voltages for free. The taps need 0.85 V and 0.41 V, and the amplifier's ENTIRE 14.04 fJ/beat is drawn from the 0.85 V rail. Making 0.85 V from the chip's 1.5 V primary costs x1.765 with a linear regulator (+10.8 fJ/bank/hop on the amplifier term ALONE) or ~x1.11 with a switching converter (+1.57 fJ) -- and a switching converter NEEDS A CLOCK, reintroducing at the supply what QAL eliminates in the datapath. This term multiplies the largest line in the ledger and has never been costed.",
+  "I9_sub_ground_gtp_drive": "NEW, STRUCTURAL. gtp must be driven to -0.34 V (0.41 V DC, +-0.75 V). No supply-referenced nMOS core can produce that: a cross-coupled pair clamps its own drain at the tail node. Track B had to add a DC-block capacitor + RF choke + a separate 0.41 V rail to make the excursion possible at all. The ideal PWL source did it for free; real silicon does not.",
+  "I10_amplifier_parasitic_C": "MEASURED. At WX=5 um the cross-coupled devices add ~16 fF to a node whose tap load is 5.8 fF -- the tank is then mostly the amplifier's own parasitics. At the headline WX=0.5 um it is ~4.7 fF of 12.5 fF (37 %). Scales with B, so it never amortises."
+ },
+
+ "design": {
+  "topology": "differential cross-coupled nMOS pair (class-B, real tail device), two single-ended LC branches, DC-block + choke to the isolated gtp tap",
+  "why_cross_coupled": "a PULSED replenisher is a switch, and a switch has a gate that something must drive -- the M1-C / M2 recursion. The campaign's own cheapest REAL gate driver MEASURES 15.0-15.5 fJ, more than the entire 12.7467 fJ budget, so a pulsed replenisher is dead before it is simulated. The cross-coupled pair is the one topology whose 'gate drive' IS the tank, so it has no driver recursion. It was given the best shot and still fails on energy.",
+  "netlist": "VA(0.85)-RP-LP-gts-RGTS(25)-gt ; VA-RN-LN-gtsn-CBLK(200fF)-gps-RGPS(25)-gtp ; gps-LBQ(5uH)-RBQ-VB(0.41) ; XM1(d=gts,g=gtsn) XM2(d=gtsn,g=gts) common source tail ; XMT tail-to-ground, gate on DC VBG. All devices sg13_lv via sg13lv_compat.sp.",
+  "headline_row": "z_t040_v056",
+  "sizing": {"LP_H": 6.8e-7, "LN_H": 6.8e-7, "LBQ_H": 5e-6, "Q_inductor": 19.0,
+             "WX_um": 0.5, "WT_um": 4.0, "VBG_V": 0.56, "CTP_F": 2e-15,
+             "RLOAD_ohm": 274000, "B_equivalent": 1},
+  "B_scaling": "DERIVED: the shared network scales L->L/B, C->B*C, R->R/B (Q B-invariant, as the record states) and the amplifier's device width scales with B, so eta_amp is B-invariant to first order. Simulated at the B=1 impedance-scaled equivalent. NOT measured at B=64."
+ },
+
+ "eta_measured": {
+  "definition": "eta_amp = (energy the network DELIVERS into the taps + the calibrated hop-equivalent load) / (energy the amplifier DRAWS from its DC supplies), per beat per bank. Driver-referenced, as the admission line requires.",
+  "headline_row_as_measured": {"E_sup_fJ": 14.0772, "E_delivered_fJ": 3.5842,
+                               "eta_amp_pct": 25.46},
+  "normalised_to_the_hops_exact_2p974_fJ": {"marginal_eta_pct": 41.31,
+     "E_sup_fJ_per_bank_per_hop": 12.600, "eta_amp_pct": 23.60,
+     "how": "marginal measured across z_t040_v052 -> z_t040_v056: d(delivered)=1.252 fJ for d(E_sup)=3.031 fJ"},
+  "best_eta_row_found_anywhere": {"row": "z_t160_v048", "eta_pct": 39.33,
+     "E_sup_fJ": 18.268, "why_it_is_NOT_the_answer": "it reaches 39 % only by DELIVERING MORE (7.19 fJ), not by costing less -- its E_sup is 30 % WORSE than the headline row. This is exactly why a percentage is not an admission result."},
+  "where_the_supply_energy_goes_fJ_per_beat_per_bank": {
+     "delivered_to_taps_and_hop_equivalent_load": 3.5842,
+     "amplifier_device_dissipation_E_dev": 6.8578,
+     "__of_which_tail_device": 3.4377, "__of_which_M1": 2.2032, "__of_which_M2": 1.2169,
+     "tank_series_R": 3.6051, "stored_energy_change": 0.0366,
+     "share_pct": {"useful": 25.5, "amplifier_devices": 48.7, "tank_R": 25.6}},
+  "eta_vs_inductor_Q": {"Q8": 14.98, "Q12": 19.96, "Q19": 25.24, "Q30": 29.52, "Q50": 33.02,
+     "note": "even at Q_ind = 50 -- far beyond any real 1.7 GHz on-chip spiral -- eta is 33.0 %, still under the 35.1 % floor. E_dev is Q-independent (7.82/7.22/6.88/6.72/6.65 fJ at Q=8..50), so no tank refinement removes it."},
+  "conservatism": "sg13lv_compat.sp drops ad/as/pd/ps, so the amplifier's junction capacitance is ZERO. Every number here is a LOWER BOUND on cost and an UPPER BOUND on eta."
+ },
+
+ "steady_state": {
+  "run": "12 beats (6960 ps) from a cold tank, 2 ps current kick at t=1 ps (measurement stimulus only, in no ledger)",
+  "amplitude_by_beat_gts": [0.6276, 0.7662, 0.7958, 0.7978, 0.7914, 0.7878, 0.7865,
+                            0.7864, 0.7867, 0.7870, 0.7872, 0.7874],
+  "settles_by_beat": 3,
+  "last_5_beat_spread_pct": 0.124,
+  "pre_registered_gate": "+-2 % over the last 5 beats -> PASS",
+  "period_ps": 579.00, "target_ps": 580.00,
+  "amplitude_gts": 0.787, "target": 0.75,
+  "amplitude_gps": 0.930, "target": 0.75, "gps_lo": -0.398, "target_gps_lo": -0.34,
+  "note": "the topology's gps/gts amplitude ratio is fixed near 1.18; the spec wants 1.00. No operating point in the sweep hits both taps on spec -- a real design gap, and the over-swing makes E_sup slightly conservative against the scheme."
+ },
+
+ "own_control_cost": {
+  "E_VBG_fJ_per_beat_per_bank": -0.0025,
+  "what_it_is": "the tail device's gate bias -- a DC voltage on a MOS gate, so only gate leakage",
+  "supply_split_fJ_per_beat": {"E_VA_0p85V": 14.0407, "E_VB_0p41V": 0.0390, "E_VBG": -0.0025},
+  "startup": "self-starting from noise; the 2 ps kick is a simulation convenience, not a circuit",
+  "uncounted_and_flagged": "generation of the 0.85 V and 0.41 V rails themselves -- see I8. This is the largest uncounted term and it multiplies E_VA."
+ },
+
+ "clock_question": {
+  "answer": "NO CLOCK. The only sources in the amplifier are three DC voltage sources (VA, VB, VBG). Grep of the headline deck finds exactly two time-varying sources: the 2 ps measurement kick, and the committed ideal-PWL park VPK, which is track A's term, not the amplifier's.",
+  "so_the_QAL_clock_elimination_premise_SURVIVES": true,
+  "but": "the network free-runs at a frequency set by L and C, so the beat is PVT-dependent and nothing locks it to anything. And I8: a switching regulator for the 0.85 V rail would reintroduce a clock at the supply."
+ },
+
+ "completeness_gates": {
+  "verdict": "the single-resonance (fundamental-only) tank does NOT reproduce the committed 5-harmonic waveform and FAILS the hop gates. Row rp_m005v065 (the measured amplifier waveform replayed into the committed hop): VBEND -0.0541 (band ~0.676-0.685) FAIL; VA_open -0.356 (target ~0.098) FAIL; cut order pMOS-nMOS -243.0 ps, park-nMOS -509.7 ps -> ORDER FAIL (park closes BEFORE the nMOS cut: the v2a park-early failure); cells settle to 0.312 not 0.684 FAIL.",
+  "status": "that row is INVALID as a completeness result, exactly as pre-registered -- fidelity needs the multi-resonant (3-inductor) tank. It does NOT invalidate the eta measurement, which is made against the real tap capacitance at the correct amplitude, frequency and loaded Q.",
+  "why_eta_is_still_an_UPPER_BOUND": "a single-resonance tank is the minimum-loss network that can hold the 580 ps beat against the measured tap capacitance. The 5-harmonic waveform needs resonances at f0, 3f0 and 5f0 -- at least three inductors, each with its own finite Q and its own stored energy. Adding them can only raise the tank loss for the same delivered tap energy. And the dominant term, E_dev = 6.86 fJ/beat, is a property of the active core, not of the tank.",
+  "loaded_Q": 10.70, "required_Q": 7, "Q_gate": "PASS"
+ },
+
+ "ledger_closure": {
+  "closure_pct": -0.046,
+  "independent_cross_check": "trapezoid on the printed I(VA)/I(VB)/I(VBG), never touching the 1F cans: 14.0703 vs 14.0772 fJ/beat, delta -0.049 %",
+  "pre_registered_gate": "< 1 % -> PASS"
+ },
+
+ "verdict": {
+  "eta_amp_MEASURED_pct": 25.46,
+  "eta_amp_normalised_pct": 23.60,
+  "required_pct": [35.1, 44.6],
+  "clears_requirement": false,
+  "shortfall_factor": [1.38, 1.75],
+  "E_amp_fJ_per_bank_per_hop_MEASURED": 12.600,
+  "admission_line_fJ": 12.7467,
+  "the_one_line": "the sustaining amplifier ALONE, with the park set to ZERO, the DC bias set to ZERO and the rails assumed free, costs 12.600 fJ/bank/hop against a 12.7467 fJ budget for the WHOLE ledger -- it consumes 98.8 % of the admission line by itself.",
+  "complete_ledgers_fJ_per_bank_per_hop": {
+   "amp_only_park_zero_bias_zero_rails_free": {"E": 12.600, "N_min": 62.8, "verdict": "0.15 fJ of headroom for everything else"},
+   "amp_plus_measured_DC_bias": {"E": 13.615, "N_min": 64.0, "verdict": "EXCLUDED"},
+   "amp_plus_bias_plus_park_BOOKED_ideal_2p403": {"E": 16.018, "N_min": 66.9, "verdict": "EXCLUDED"},
+   "amp_plus_bias_plus_park_REAL_15p018": {"E": 28.633, "N_min": 82.1, "verdict": "EXCLUDED"},
+   "plus_switching_rail_generation_penalty_1p57": {"E": 30.203, "N_min": 84.0, "verdict": "EXCLUDED"},
+   "plus_the_unbooked_VHI_4p494": {"E": 34.697, "N_min": 89.4, "verdict": "EXCLUDED"}
+  },
+  "N_min_rule": "N_min = (39.6 + E)/0.8309, via the committed unmodified qal/zcd/restate_admission.py; fpsat min-bank-63 block needs N_min <= 63",
+  "closes_the_question": "YES. Both remaining ideal-source terms have now been costed: track A's park driver (15.0-15.5 fJ MEASURED, 1.5x over its own 9.77 fJ headroom) and track B's sustaining amplifier (12.600 fJ MEASURED, 98.8 % of the whole budget). Either alone excludes the block. QAL at SG13G2 on the fpsat min-bank-63 criterion is EXCLUDED, and not marginally."
+ }
+}

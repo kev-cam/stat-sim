@@ -1,0 +1,817 @@
+{
+ "_doc": "TRACK A -- THE RESONANT PARK TAP.  Every number MEASURED unless labelled DERIVED or ASSUMED. Decks are TEXT PATCHES of the committed qal/recov/skeptic/sk_best.cir (gen.py prints every removed/added line). Own PYMS_VAE_CACHE .../vae_cache_parkA built from scratch.  Extractor pk.py WRAPS the committed skeptic extractor qal/recov/skeptic/sk.py, so every completeness metric is computed by already-audited code.",
+ "pre_registration": {
+  "file": "qal/park/PRE_REGISTERED.json",
+  "sha256": "735bdf2df140838652be637488c34319ccce858d9989a71e33f43608d14e7668",
+  "mtime": "2026-09-28 13:01:20.353 -0700",
+  "was_only_file_in_dir_at_that_moment": true,
+  "first_deck_mtime": "2026-09-28 13:07 (gen.py + pa_*.cir)"
+ },
+ "a_instrument_check": {
+  "postprocessing_vs_the_committed_skeptic_audit": {
+   "source": "qal/recov/skeptic/sk_best_long.cir.prn (committed)",
+   "metrics_checked": 22,
+   "worst_delta_pct": 0.0
+  },
+  "fresh_rerun_with_my_own_cache": {
+   "deck": "pa_base.cir, byte-identical to the committed sk_best_long.cir except one added .print column V(mid)",
+   "wall_s": 844,
+   "metrics_checked": 22,
+   "worst_delta_pct": 0.0,
+   "digit_checked": {
+    "E_gt_trapz_fJ": -2.748930324,
+    "E_gtp_trapz_fJ": 5.723199799,
+    "resonant_pair_net_trapz_fJ": 2.9742694747776133,
+    "resonant_pair_net_1F_fJ": 2.98354068,
+    "VBEND_at_tD": 0.684413082054,
+    "E_hop_open_at_tD_fJ": 8.130345108,
+    "VA_open": 0.09156602199,
+    "EA_C_fJ": 17.77782443,
+    "nmos_cut_ps": 422.15,
+    "pmos_cut_ps": 423.967,
+    "t_zero_ps": 413.1166366,
+    "t_open_ps": 442.8475568,
+    "IPK_uA": 197.979784,
+    "I_at_nmos_cut_uA": -22.1177467,
+    "ehi_fJ": 4.4942592,
+    "E_pk_ideal_1F_fJ": 2.6603741,
+    "cells_burn_fJ": 1.664127433,
+    "Q_L_C_fC": 32.10107233,
+    "E_R_toC_fJ": 0.05317131859,
+    "VBPK": 0.725994972,
+    "gt_rise_50_ps": 141.3364965,
+    "gt_fall_50_ps": 438.9635852
+   },
+   "all_five_gates_at_tD_811.755": "PASS",
+   "ledger_closure_pct": [
+    -8.24e-13,
+    -4.19e-13
+   ],
+   "verdict": "PASS to the digit -- 0.000e+00 on all 22 metrics"
+  },
+  "independent_cross_check": "tap energies re-derived by trapezoid integration of I=(V(source)-V(gate))/25 from the printed node voltages, a path that never touches a 1F integrator: agrees with the 1F instrument to 0.19% on E_gt and 0.08% on E_gtp, and the trapezoid ledger E_source - E_Rseries - E_into_gate_node closes to <= 1e-11 % on EVERY row."
+ },
+ "b_what_the_waveform_says_BEFORE_any_deck": {
+  "MEASURED_from_the_committed_prn": {
+   "transfer_nMOS_turns_on_gt_crosses_0.45_rising_ps": 128.865,
+   "transfer_nMOS_device_cut_last_conducting_instant_ps": 422.15,
+   "next_beat_nMOS_turn_on_ps": 708.865,
+   "transfer_conduction_window_ps": 293.285,
+   "park_window_REQUIRED_ps": [
+    422.15,
+    708.865
+   ],
+   "park_window_REQUIRED_width_ps": 286.715,
+   "sum_ps": 580.0,
+   "THE_STRUCTURAL_RESULT": "the required park window is EXACTLY the complement of the conduction window inside the beat.  A beat-rate park signal therefore has ZERO timing margin BY CONSTRUCTION: it must switch precisely at both boundaries.  Margin can only be bought by shortening the conduction window (slower beat / faster hop) or by halving the park's rate.",
+   "gtp_tap_own_ON_window_at_Vtn_0.45_ps": [
+    430.794,
+    717.706
+   ],
+   "gtp_tap_width_ps": 286.912,
+   "gtp_tap_misses_by": "+8.644 ps late at close (harmless, it must be late) and +8.841 ps late at release (FATAL: still conducting 8.84 ps into the next beat's transfer)"
+  },
+  "duty_of_the_5_harmonic_flat_top_shape_above_a_normalised_threshold_x": {
+   "-0.4": "54.09%",
+   "-0.2": "52.00%",
+   "0.0": "50.00%",
+   "+0.2": "48.00%",
+   "+0.4": "45.91%",
+   "+0.6": "43.57%",
+   "+0.8": "28.85%"
+  },
+  "why_a_fundamental_rate_tap_cannot_be_narrowed": "the flat-top harmonic sum is duty-locked near 50% for any sane threshold; reaching the 27.2% duty the single-hop fixture needs requires a normalised threshold x=0.8129, i.e. a tap amplitude of 2.94-5.61 V and a minimum of -4.88 to -9.73 V on a 1.5 V-rated gate oxide.  DERIVED, absurd."
+ },
+ "c_candidates_measured": {
+  "d_ELIMINATE_no_park_at_all": {
+   "deck": "pa_nopark.cir (the patch is ONE removed line: XPK)",
+   "all_five_completeness_gates": "PASS",
+   "E_resonant_total_fJ": 3.087092,
+   "park_cost_fJ": 0.0,
+   "BUT": "the un-parked ring NEVER DAMPS and the delivered rail bleeds.  Measured over a 2500 ps run: max|V(sw)| 0.8382 -> 0.8190 (2 ns, essentially undamped), bank A pk-pk 0.535 -> 0.509, and V(bkb) 0.68155 (811 ps) -> 0.67532 (2500 ps) = -3.6 mV/ns = -2.1 mV per 580 ps beat, versus -0.12 mV/ns with the committed park (30x).",
+   "H2": "FAIL -- droop 2.812 mV worse than the committed baseline against a pre-registered 1.0 mV allowance",
+   "VERDICT": "the park is STILL REQUIRED under the resonant drive.  The swsweep requirement is NOT relaxed by resonant gate drive.  This answers the brief's cheapest-possible-park question with a measurement: NO."
+  },
+  "d_MERGE_park_gate_on_the_existing_gtp_tap": {
+   "deck": "pa_merge.cir (VPK deleted, VPKM gtp pk 0 inserted as a 0 V series meter)",
+   "all_gates": "FAIL (VBEND 0.077141, VA_open 0.38043, cells FAIL, cut order FAIL, IPK 368.6 uA vs 198.0)",
+   "MEASURED_mechanism": "the merged park is ON at t=0 (V(pk)=V(gtp)=1.1014) and does not release until 137.717 ps. It pulls sw to ground through the transfer inductor, so bank A collapses BEFORE the hop: V(bka) 1.0000 (0 ps) -> 0.7965 (20) -> 0.5119 (50) -> 0.2832 (80) -> 0.1712 (100) -> 0.0374 (137.7). 96.3% of bank A is gone by the time the park lets go.",
+   "SECOND_defect_independent_of_the_fixture": "even with a perfect fixture the merge is make-before-break: the transfer nMOS turns on at 128.865 ps, 8.841 ps BEFORE the merged park releases at 137.706 ps.",
+   "PA_P1_FALSIFIED": "my pre-registered break-before-make argument reasoned about the pMOS threshold (gtp < Vbkb-|Vtp| ~ 0.18 V).  That is the wrong device: at the start of a beat bkb is ~0, so the pMOS cannot conduct at all and the transfer is opened by the nMOS (gt), whose threshold sits at the SAME 0.45 V level on a roughly anti-phase tap. Break-before-make is therefore NOT guaranteed by threshold ordering.  Prediction refuted by measurement.",
+   "E_park_gate_node_fJ": 0.41151,
+   "VERDICT": "MERGE FAILS.  The free park does not exist."
+  },
+  "c_SUB_HARMONIC_a_fourth_mode_at_BEAT_over_2": {
+   "why": "the fixture needs the park LOW for 422 ps and HIGH for the rest; no beat-periodic signal can do that (see the structural result above), so the park needs a mode the existing 3-mode network does not have.  The cheapest is one sub-harmonic at f/2 (period 1160 ps): L = 4*L1, i.e. 23.6 nH at B=64, still ONE inductor chip-wide, still shared by every bank, still NO switch and NO new gate anywhere.",
+   "rows": "pa_sub (off 0.45, peak 1.5, 50% duty, Vtn crossing 452 ps), pa_sub_e (crossing 430), pa_subn (off 0.30, peak 1.5, 46% duty, crossing 430), pa_sub2 ({f/2,f} two-mode), plus 0.5/1/1.5/2/3 um park sweeps",
+   "park_tap_cost_fJ_MEASURED": {
+    "1um_50pct_tap": 0.457,
+    "1um_advanced": 0.3436,
+    "2um_50pct_tap": 0.8986,
+    "3um_50pct_tap": 1.3195,
+    "1um_narrowed_tap": -0.0398,
+    "1.5um_narrowed": -0.0241,
+    "2um_narrowed": -0.0163
+   },
+   "the_narrowed_tap_is_a_net_RECEIVER": "E_park = -0.0398 fJ on pa_subn: the park tap, like the gt tap, HARVESTS from the swinging sw node through the park nMOS's own gate-drain overlap.  Trapezoid -0.039758, 1F -0.039290, ledger closes to 1.2e-11 %.",
+   "but_the_park_tap_also_PERTURBS_the_gt_gtp_pair": "adding the park device to a resonant tap changes the sw waveform and hence the Miller coupling into gtp.  d(pair) ranges +0.017 fJ (3 um, 50% tap) to +0.577 fJ (1 um, narrowed tap).  The ledger below is ALWAYS pair + park, never the park alone."
+  }
+ },
+ "d_the_HOLD_test": {
+  "H1_gate_correction": "H1 as pre-registered (V(sw) <= 0.10 V at EVERY sample from park close to tD) is failed by the COMMITTED BASELINE itself (max 0.76501 V), because the window starts before the park's own pull-down transient. That is a defect in MY gate, declared here and restated in two parts, both reported raw for every row: H1a = settling delay (first instant after close from which |V(sw)| stays <= 0.10 V to tD) and H1b = max |V(sw)| after it.  Baseline: 24.0 ps / 0.09859 V.",
+  "H2_baseline_droop_mV": -28.902,
+  "H3_PERIODIC_two_beat_run_THE_DECISIVE_RESULT": {
+   "requirement": "the park must RELEASE before the next transfer begins (708.849 ps measured)",
+   "committed_ideal_park (pa_base_per)": {
+    "release_ps": null,
+    "note": "NEVER releases -- the committed PWL rises to 1.5 V and holds. When the next beat's nMOS turns on the bank drains straight to ground through the still-closed park: V(bkb) 0.6630 (708.9 ps) -> 0.3457 (750) -> 0.1268 (811.755) -> -0.016 (1000).  FAIL."
+   },
+   "merged_gtp_tap (pa_merge_per)": {
+    "release_ps": 717.733,
+    "vs_next_transfer_ps": "+8.875 LATE",
+    "verdict": "FAIL"
+   },
+   "div2_50pct_tap (pa_sub_per)": {
+    "release_ps": 1032.022,
+    "vs_next_transfer_ps": "+323.177 LATE",
+    "verdict": "FAIL single-phase"
+   },
+   "div2_narrowed_tap (pa_subn_per)": {
+    "release_ps": 963.75,
+    "vs_next_transfer_ps": "+254.904 LATE",
+    "verdict": "FAIL single-phase"
+   },
+   "FINDING": "NO park in this campaign -- the committed one INCLUDED, and in its worst form -- releases in time for the next beat.  The park's RELEASE has never been designed or simulated by anyone here; the committed decks all end the park with a rising edge that never falls.  On a genuine two-beat run that costs the whole bank."
+  },
+  "the_TWO_PHASE_reading_DERIVED_not_measured": {
+   "premise": "if alternate pipeline stages hop on alternate beats (cycle 1160 ps per stage, the campaign's own two-phase directive), a stage's bank A is filled by the previous stage one beat earlier, so it holds charge on [-157.85, +128.865] and the stage's park must be ON exactly on [422.150, 1002.150] -- 580 ps, EXACTLY 50% duty at the div-2 rate.  This is an ARCHITECTURAL INFERENCE; this fixture cannot simulate two stages.",
+   "pa_sub  ON window": [
+    452.03,
+    1032.02
+   ],
+   "pa_sub_fit": "29.9 ps of overlap with a charged bank A at the tail",
+   "pa_subn ON window": [
+    430.03,
+    963.75
+   ],
+   "pa_subn_fit": "FITS inside [422.150, 1002.150] with 7.88 ps margin at close and 38.40 ps at release",
+   "verdict": "the narrowed div-2 sub-harmonic park tap is the correct park FOR A TWO-PHASE PIPELINE, with real margin on both edges.  For a single-phase every-beat pipeline no park of any kind fits (see the structural result)."
+  }
+ },
+ "e_rows": {
+  "pa_base": {
+   "VBEND": 0.684413,
+   "VBEND_gate": "PASS",
+   "E_hop_open_fJ": 8.13035,
+   "Ehop_gate": "PASS",
+   "VA_open": 0.09157,
+   "VA_gate": "PASS",
+   "cells_settled": "PASS",
+   "pmos_minus_nmos_ps": 1.817,
+   "nmos_cut_ps": 422.15,
+   "cut_order": "PASS",
+   "ALL5": "PASS",
+   "park_close_dev_ps": 452.517,
+   "park_close_minus_nmos_cut_ps": 30.367,
+   "park_release_dev_ps": null,
+   "park_ON_at_t0": false,
+   "V_pk_range": [
+    0.0,
+    1.5
+   ],
+   "V_pk_at_tD": 1.5,
+   "H1_max_V_sw_raw": 0.76501,
+   "H1_settle_delay_ps": 24.02,
+   "H1_max_abs_V_sw_after_settle": 0.09859,
+   "H2_droop_mV": -28.902,
+   "H2_vs_baseline_mV": 0.0,
+   "E_gt_trapz_fJ": -2.74893,
+   "E_gtp_trapz_fJ": 5.7232,
+   "pair_trapz_fJ": 2.97427,
+   "E_park_trapz_fJ": null,
+   "E_resonant_TOTAL_trapz_fJ": 2.97427,
+   "E_gt_1F_fJ": -2.743824,
+   "E_gtp_1F_fJ": 5.727365,
+   "E_park_1F_fJ": 2.660374,
+   "ledger_closure_pct": [
+    -8.239041019232736e-13,
+    -4.1901066139678777e-13,
+    null
+   ],
+   "ehi_fJ_unbooked": 4.4943,
+   "EA_C_fJ": 17.77782,
+   "IPK_uA": 197.98
+  },
+  "pa_nopark": {
+   "VBEND": 0.681549,
+   "VBEND_gate": "PASS",
+   "E_hop_open_fJ": 8.23602,
+   "Ehop_gate": "PASS",
+   "VA_open": 0.08113,
+   "VA_gate": "PASS",
+   "cells_settled": "PASS",
+   "pmos_minus_nmos_ps": 2.017,
+   "nmos_cut_ps": 422.15,
+   "cut_order": "PASS",
+   "ALL5": "PASS",
+   "park_close_dev_ps": 452.517,
+   "park_close_minus_nmos_cut_ps": 30.367,
+   "park_release_dev_ps": null,
+   "park_ON_at_t0": false,
+   "V_pk_range": [
+    0.0,
+    1.5
+   ],
+   "V_pk_at_tD": 1.5,
+   "H1_max_V_sw_raw": 0.83823,
+   "H1_settle_delay_ps": null,
+   "H1_max_abs_V_sw_after_settle": null,
+   "H2_droop_mV": -31.713,
+   "H2_vs_baseline_mV": -2.812,
+   "E_gt_trapz_fJ": -2.818947,
+   "E_gtp_trapz_fJ": 5.906039,
+   "pair_trapz_fJ": 3.087092,
+   "E_park_trapz_fJ": null,
+   "E_resonant_TOTAL_trapz_fJ": 3.087092,
+   "E_gt_1F_fJ": -2.813913,
+   "E_gtp_1F_fJ": 5.910172,
+   "E_park_1F_fJ": 0.0,
+   "ledger_closure_pct": [
+    -2.993207911030141e-13,
+    6.767315734771827e-13,
+    null
+   ],
+   "ehi_fJ_unbooked": 5.0403,
+   "EA_C_fJ": 17.81195,
+   "IPK_uA": 202.208
+  },
+  "pa_merge": {
+   "VBEND": 0.077141,
+   "VBEND_gate": "FAIL",
+   "E_hop_open_fJ": -150.07678,
+   "Ehop_gate": "FAIL",
+   "VA_open": 0.38043,
+   "VA_gate": "FAIL",
+   "cells_settled": "FAIL",
+   "pmos_minus_nmos_ps": -153.692,
+   "nmos_cut_ps": 448.333,
+   "cut_order": "FAIL",
+   "ALL5": "FAIL",
+   "park_close_dev_ps": 430.801,
+   "park_close_minus_nmos_cut_ps": -17.532,
+   "park_release_dev_ps": null,
+   "park_ON_at_t0": true,
+   "V_pk_range": [
+    -0.3397,
+    1.1595
+   ],
+   "V_pk_at_tD": 1.1013,
+   "H1_max_V_sw_raw": 0.0951,
+   "H1_settle_delay_ps": 0.07,
+   "H1_max_abs_V_sw_after_settle": 0.0951,
+   "H2_droop_mV": -3.519,
+   "H2_vs_baseline_mV": 25.382,
+   "E_gt_trapz_fJ": 2.193859,
+   "E_gtp_trapz_fJ": 1.890006,
+   "pair_trapz_fJ": 4.083865,
+   "E_park_trapz_fJ": null,
+   "E_resonant_TOTAL_trapz_fJ": 4.083865,
+   "E_gt_1F_fJ": 2.198246,
+   "E_gtp_1F_fJ": 1.893951,
+   "E_park_1F_fJ": 0.41151,
+   "ledger_closure_pct": [
+    -9.716340522341063e-13,
+    -1.9972204642867005e-13,
+    null
+   ],
+   "ehi_fJ_unbooked": 11.2478,
+   "EA_C_fJ": -150.0,
+   "IPK_uA": 368.596
+  },
+  "pa_sub": {
+   "VBEND": 0.68646,
+   "VBEND_gate": "PASS",
+   "E_hop_open_fJ": 8.06731,
+   "Ehop_gate": "PASS",
+   "VA_open": 0.09425,
+   "VA_gate": "PASS",
+   "cells_settled": "PASS",
+   "pmos_minus_nmos_ps": 1.823,
+   "nmos_cut_ps": 422.14364,
+   "cut_order": "PASS",
+   "ALL5": "PASS",
+   "park_close_dev_ps": 452.032,
+   "park_close_minus_nmos_cut_ps": 29.889,
+   "park_release_dev_ps": null,
+   "park_ON_at_t0": false,
+   "V_pk_range": [
+    -0.6001,
+    1.5
+   ],
+   "V_pk_at_tD": 1.426,
+   "H1_max_V_sw_raw": 0.74838,
+   "H1_settle_delay_ps": 349.43,
+   "H1_max_abs_V_sw_after_settle": 0.09998,
+   "H2_droop_mV": -28.13,
+   "H2_vs_baseline_mV": 0.772,
+   "E_gt_trapz_fJ": -2.724509,
+   "E_gtp_trapz_fJ": 5.928238,
+   "pair_trapz_fJ": 3.203729,
+   "E_park_trapz_fJ": 0.456986,
+   "E_resonant_TOTAL_trapz_fJ": 3.660715,
+   "E_gt_1F_fJ": -2.719547,
+   "E_gtp_1F_fJ": 5.932388,
+   "E_park_1F_fJ": 0.457382,
+   "ledger_closure_pct": [
+    -2.2982701191398363e-12,
+    6.4423309816572e-13,
+    7.531282654155179e-13
+   ],
+   "ehi_fJ_unbooked": 5.4751,
+   "EA_C_fJ": 17.76592,
+   "IPK_uA": 197.499
+  },
+  "pa_sub_e": {
+   "VBEND": 0.687115,
+   "VBEND_gate": "PASS",
+   "E_hop_open_fJ": 8.04922,
+   "Ehop_gate": "PASS",
+   "VA_open": 0.09472,
+   "VA_gate": "PASS",
+   "cells_settled": "PASS",
+   "pmos_minus_nmos_ps": 2.023,
+   "nmos_cut_ps": 422.14364,
+   "cut_order": "PASS",
+   "ALL5": "PASS",
+   "park_close_dev_ps": 430.025,
+   "park_close_minus_nmos_cut_ps": 7.882,
+   "park_release_dev_ps": null,
+   "park_ON_at_t0": false,
+   "V_pk_range": [
+    -0.6001,
+    1.5
+   ],
+   "V_pk_at_tD": 1.3731,
+   "H1_max_V_sw_raw": 0.78528,
+   "H1_settle_delay_ps": 348.93,
+   "H1_max_abs_V_sw_after_settle": 0.09999,
+   "H2_droop_mV": -28.092,
+   "H2_vs_baseline_mV": 0.81,
+   "E_gt_trapz_fJ": -2.731869,
+   "E_gtp_trapz_fJ": 6.06059,
+   "pair_trapz_fJ": 3.328721,
+   "E_park_trapz_fJ": 0.343648,
+   "E_resonant_TOTAL_trapz_fJ": 3.672369,
+   "E_gt_1F_fJ": -2.726931,
+   "E_gtp_1F_fJ": 6.064725,
+   "E_park_1F_fJ": 0.34404,
+   "ledger_closure_pct": [
+    4.226527465070694e-13,
+    -1.0258488051287562e-13,
+    4.846041263792414e-13
+   ],
+   "ehi_fJ_unbooked": 5.8525,
+   "EA_C_fJ": 17.76419,
+   "IPK_uA": 197.468
+  },
+  "pa_sub2": {
+   "VBEND": 0.684991,
+   "VBEND_gate": "PASS",
+   "E_hop_open_fJ": 8.11209,
+   "Ehop_gate": "PASS",
+   "VA_open": 0.092,
+   "VA_gate": "PASS",
+   "cells_settled": "PASS",
+   "pmos_minus_nmos_ps": 1.823,
+   "nmos_cut_ps": 422.14364,
+   "cut_order": "PASS",
+   "ALL5": "PASS",
+   "park_close_dev_ps": 452.03,
+   "park_close_minus_nmos_cut_ps": 29.887,
+   "park_release_dev_ps": null,
+   "park_ON_at_t0": false,
+   "V_pk_range": [
+    -0.6,
+    1.5
+   ],
+   "V_pk_at_tD": 1.0665,
+   "H1_max_V_sw_raw": 0.74848,
+   "H1_settle_delay_ps": null,
+   "H1_max_abs_V_sw_after_settle": null,
+   "H2_droop_mV": -28.733,
+   "H2_vs_baseline_mV": 0.169,
+   "E_gt_trapz_fJ": -2.719173,
+   "E_gtp_trapz_fJ": 6.159644,
+   "pair_trapz_fJ": 3.440471,
+   "E_park_trapz_fJ": 0.384244,
+   "E_resonant_TOTAL_trapz_fJ": 3.824715,
+   "E_gt_1F_fJ": -2.714244,
+   "E_gtp_1F_fJ": 6.16377,
+   "E_park_1F_fJ": 0.384562,
+   "ledger_closure_pct": [
+    1.1432241058574858e-13,
+    1.0958678473423945e-12,
+    3.033837537986014e-13
+   ],
+   "ehi_fJ_unbooked": 6.2132,
+   "EA_C_fJ": 17.77402,
+   "IPK_uA": 197.972
+  },
+  "pa_sub_w2": {
+   "VBEND": 0.68856,
+   "VBEND_gate": "PASS",
+   "E_hop_open_fJ": 7.98053,
+   "Ehop_gate": "PASS",
+   "VA_open": 0.1029,
+   "VA_gate": "PASS",
+   "cells_settled": "PASS",
+   "pmos_minus_nmos_ps": 1.823,
+   "nmos_cut_ps": 422.14364,
+   "cut_order": "PASS",
+   "ALL5": "PASS",
+   "park_close_dev_ps": 452.066,
+   "park_close_minus_nmos_cut_ps": 29.922,
+   "park_release_dev_ps": null,
+   "park_ON_at_t0": false,
+   "V_pk_range": [
+    -0.6002,
+    1.5
+   ],
+   "V_pk_at_tD": 1.4261,
+   "H1_max_V_sw_raw": 0.7541,
+   "H1_settle_delay_ps": 70.43,
+   "H1_max_abs_V_sw_after_settle": 0.09915,
+   "H2_droop_mV": -27.464,
+   "H2_vs_baseline_mV": 1.438,
+   "E_gt_trapz_fJ": -2.718603,
+   "E_gtp_trapz_fJ": 5.790248,
+   "pair_trapz_fJ": 3.071645,
+   "E_park_trapz_fJ": 0.898565,
+   "E_resonant_TOTAL_trapz_fJ": 3.97021,
+   "E_gt_1F_fJ": -2.713606,
+   "E_gtp_1F_fJ": 5.7944,
+   "E_park_1F_fJ": 0.899846,
+   "ledger_closure_pct": [
+    -4.737208425121928e-13,
+    5.522116592805103e-13,
+    6.919086612998649e-13
+   ],
+   "ehi_fJ_unbooked": 5.0766,
+   "EA_C_fJ": 17.7316,
+   "IPK_uA": 197.383
+  },
+  "pa_sub_w3": {
+   "VBEND": 0.690833,
+   "VBEND_gate": "FAIL",
+   "E_hop_open_fJ": 7.88757,
+   "Ehop_gate": "PASS",
+   "VA_open": 0.11131,
+   "VA_gate": "PASS",
+   "cells_settled": "PASS",
+   "pmos_minus_nmos_ps": 2.073,
+   "nmos_cut_ps": 421.89364,
+   "cut_order": "PASS",
+   "ALL5": "FAIL",
+   "park_close_dev_ps": 452.099,
+   "park_close_minus_nmos_cut_ps": 30.205,
+   "park_release_dev_ps": null,
+   "park_ON_at_t0": false,
+   "V_pk_range": [
+    -0.6003,
+    1.5
+   ],
+   "V_pk_at_tD": 1.4262,
+   "H1_max_V_sw_raw": 0.75866,
+   "H1_settle_delay_ps": 65.92,
+   "H1_max_abs_V_sw_after_settle": 0.09889,
+   "H2_droop_mV": -26.736,
+   "H2_vs_baseline_mV": 2.166,
+   "E_gt_trapz_fJ": -2.712164,
+   "E_gtp_trapz_fJ": 5.702654,
+   "pair_trapz_fJ": 2.99049,
+   "E_park_trapz_fJ": 1.319517,
+   "E_resonant_TOTAL_trapz_fJ": 4.310007,
+   "E_gt_1F_fJ": -2.70711,
+   "E_gtp_1F_fJ": 5.706811,
+   "E_park_1F_fJ": 1.321582,
+   "ledger_closure_pct": [
+    1.6373979354952878e-13,
+    -2.491972297339644e-13,
+    7.067643171821536e-13
+   ],
+   "ehi_fJ_unbooked": 4.8235,
+   "EA_C_fJ": 17.69589,
+   "IPK_uA": 197.821
+  },
+  "pa_subn": {
+   "VBEND": 0.688192,
+   "VBEND_gate": "PASS",
+   "E_hop_open_fJ": 8.01942,
+   "Ehop_gate": "PASS",
+   "VA_open": 0.09543,
+   "VA_gate": "PASS",
+   "cells_settled": "PASS",
+   "pmos_minus_nmos_ps": 2.023,
+   "nmos_cut_ps": 422.14364,
+   "cut_order": "PASS",
+   "ALL5": "PASS",
+   "park_close_dev_ps": 430.025,
+   "park_close_minus_nmos_cut_ps": 7.882,
+   "park_release_dev_ps": 963.746,
+   "park_ON_at_t0": false,
+   "V_pk_range": [
+    -0.9,
+    1.5
+   ],
+   "V_pk_at_tD": 1.2752,
+   "H1_max_V_sw_raw": 0.78662,
+   "H1_settle_delay_ps": 356.89,
+   "H1_max_abs_V_sw_after_settle": 0.09997,
+   "H2_droop_mV": -27.892,
+   "H2_vs_baseline_mV": 1.01,
+   "E_gt_trapz_fJ": -2.720824,
+   "E_gtp_trapz_fJ": 6.272741,
+   "pair_trapz_fJ": 3.551917,
+   "E_park_trapz_fJ": -0.039758,
+   "E_resonant_TOTAL_trapz_fJ": 3.512159,
+   "E_gt_1F_fJ": -2.71591,
+   "E_gtp_1F_fJ": 6.276881,
+   "E_park_1F_fJ": -0.03929,
+   "ledger_closure_pct": [
+    -4.0804665010269055e-13,
+    3.964613718246923e-13,
+    1.1972718843614288e-11
+   ],
+   "ehi_fJ_unbooked": 6.5125,
+   "EA_C_fJ": 17.76129,
+   "IPK_uA": 197.425
+  },
+  "pa_subn_w15": {
+   "VBEND": 0.690168,
+   "VBEND_gate": "FAIL",
+   "E_hop_open_fJ": 7.95043,
+   "Ehop_gate": "PASS",
+   "VA_open": 0.10037,
+   "VA_gate": "PASS",
+   "cells_settled": "PASS",
+   "pmos_minus_nmos_ps": 2.273,
+   "nmos_cut_ps": 421.89364,
+   "cut_order": "PASS",
+   "ALL5": "FAIL",
+   "park_close_dev_ps": 430.039,
+   "park_close_minus_nmos_cut_ps": 8.145,
+   "park_release_dev_ps": 963.759,
+   "park_ON_at_t0": false,
+   "V_pk_range": [
+    -0.9,
+    1.5
+   ],
+   "V_pk_at_tD": 1.2753,
+   "H1_max_V_sw_raw": 0.78767,
+   "H1_settle_delay_ps": 80.88,
+   "H1_max_abs_V_sw_after_settle": 0.09901,
+   "H2_droop_mV": -27.347,
+   "H2_vs_baseline_mV": 1.555,
+   "E_gt_trapz_fJ": -2.727428,
+   "E_gtp_trapz_fJ": 6.309067,
+   "pair_trapz_fJ": 3.581639,
+   "E_park_trapz_fJ": -0.024143,
+   "E_resonant_TOTAL_trapz_fJ": 3.557496,
+   "E_gt_1F_fJ": -2.722521,
+   "E_gtp_1F_fJ": 6.313213,
+   "E_park_1F_fJ": -0.023291,
+   "ledger_closure_pct": [
+    3.744938916847187e-13,
+    -8.446685001246137e-14,
+    -8.406813867507424e-12
+   ],
+   "ehi_fJ_unbooked": 6.5658,
+   "EA_C_fJ": 17.74181,
+   "IPK_uA": 195.95
+  },
+  "pa_subn_w2": {
+   "VBEND": 0.692229,
+   "VBEND_gate": "FAIL",
+   "E_hop_open_fJ": 7.8779,
+   "Ehop_gate": "PASS",
+   "VA_open": 0.10525,
+   "VA_gate": "PASS",
+   "cells_settled": "PASS",
+   "pmos_minus_nmos_ps": 2.273,
+   "nmos_cut_ps": 421.89364,
+   "cut_order": "PASS",
+   "ALL5": "FAIL",
+   "park_close_dev_ps": 430.052,
+   "park_close_minus_nmos_cut_ps": 8.159,
+   "park_release_dev_ps": 963.772,
+   "park_ON_at_t0": false,
+   "V_pk_range": [
+    -0.9,
+    1.5
+   ],
+   "V_pk_at_tD": 1.2754,
+   "H1_max_V_sw_raw": 0.78859,
+   "H1_settle_delay_ps": 76.26,
+   "H1_max_abs_V_sw_after_settle": 0.09758,
+   "H2_droop_mV": -26.74,
+   "H2_vs_baseline_mV": 2.162,
+   "E_gt_trapz_fJ": -2.730322,
+   "E_gtp_trapz_fJ": 6.310281,
+   "pair_trapz_fJ": 3.579959,
+   "E_park_trapz_fJ": -0.016305,
+   "E_resonant_TOTAL_trapz_fJ": 3.563654,
+   "E_gt_1F_fJ": -2.725364,
+   "E_gtp_1F_fJ": 6.314451,
+   "E_park_1F_fJ": -0.015028,
+   "ledger_closure_pct": [
+    1.0734956901395549e-12,
+    7.0375504087605e-13,
+    6.304609496782115e-11
+   ],
+   "ehi_fJ_unbooked": 6.5194,
+   "EA_C_fJ": 17.72176,
+   "IPK_uA": 194.506
+  },
+  "pa_sub_e_w2": {
+   "VBEND": 0.689992,
+   "VBEND_gate": "FAIL",
+   "E_hop_open_fJ": 7.94108,
+   "Ehop_gate": "PASS",
+   "VA_open": 0.10384,
+   "VA_gate": "PASS",
+   "cells_settled": "PASS",
+   "pmos_minus_nmos_ps": 2.273,
+   "nmos_cut_ps": 421.89364,
+   "cut_order": "PASS",
+   "ALL5": "FAIL",
+   "park_close_dev_ps": 430.052,
+   "park_close_minus_nmos_cut_ps": 8.159,
+   "park_release_dev_ps": null,
+   "park_ON_at_t0": false,
+   "V_pk_range": [
+    -0.6003,
+    1.5
+   ],
+   "V_pk_at_tD": 1.3732,
+   "H1_max_V_sw_raw": 0.78594,
+   "H1_settle_delay_ps": 79.68,
+   "H1_max_abs_V_sw_after_settle": 0.09778,
+   "H2_droop_mV": -27.232,
+   "H2_vs_baseline_mV": 1.67,
+   "E_gt_trapz_fJ": -2.748005,
+   "E_gtp_trapz_fJ": 5.964737,
+   "pair_trapz_fJ": 3.216732,
+   "E_park_trapz_fJ": 0.675737,
+   "E_resonant_TOTAL_trapz_fJ": 3.892469,
+   "E_gt_1F_fJ": -2.743059,
+   "E_gtp_1F_fJ": 5.968889,
+   "E_park_1F_fJ": 0.6769,
+   "ledger_closure_pct": [
+    2.262459172074416e-13,
+    4.764955677663581e-13,
+    1.774419813789972e-12
+   ],
+   "ehi_fJ_unbooked": 5.4638,
+   "EA_C_fJ": 17.72798,
+   "IPK_uA": 194.598
+  }
+ },
+ "f_the_complete_ledger": {
+  "convention": "E_total = E_resonant / eta_amp + E_bias, reverse-engineered from the brief's own numbers and VERIFIED: (2.974 + 1.5)/0.351 = 12.747 reproduces the stated 35.1%, and 4.474/x + 2.71 = 12.747 -> x = 44.58% reproduces the stated 44.6%.  E_resonant here is ALWAYS pair + park tap, both trapezoid, integrated over the full 1000 ps deck.",
+  "bias_term_IS4_MEASURED": {
+   "Q_net_per_cycle_fC": {
+    "gt": 0.6234,
+    "gtp": 1.1837,
+    "park_div2_tap_per_full_1160ps_period": 0.5134
+   },
+   "note": "gt and gtp reproduce the skeptic's 0.6234 / 1.1837 EXACTLY by an independent trapezoid.  The park figure is integrated over a WHOLE sub-harmonic period; integrating it over one 580 ps beat gives 2.26 fC, which is a half cycle of swing, not a DC component -- a metering trap I hit and corrected.",
+   "sum_fC": 2.3205,
+   "worst_case_1.5V_bound_fJ": 3.481,
+   "linear_regulator_form_fJ": 2.234,
+   "still_unmeasured": "the two non-rail reference LEVELS themselves (0.85 V, 0.41 V, 0.30-0.45 V) cost area and quiescent power that no deck in this campaign has ever metered"
+  },
+  "table": [
+   {
+    "case": "committed best row + park driver MEASURED (skeptic, the standing EXCLUSION)",
+    "E_fJ": 17.911,
+    "N_min": 69.2,
+    "fpu63": "FAIL"
+   },
+   {
+    "case": "the pre-stated admission line",
+    "E_fJ": 12.7467,
+    "N_min": 63.0,
+    "fpu63": "PASS"
+   },
+   {
+    "case": "R-A pa_subn  (div-2 narrowed tap, 1 um park)  E_res only",
+    "E_fJ": 3.51216,
+    "N_min": 51.9,
+    "fpu63": "PASS"
+   },
+   {
+    "case": "R-B pa_sub_w2 (div-2 50% tap, 2 um park)      E_res only",
+    "E_fJ": 3.97021,
+    "N_min": 52.4,
+    "fpu63": "PASS"
+   },
+   {
+    "case": "R-C pa_sub   (div-2 50% tap, 1 um park)       E_res only",
+    "E_fJ": 3.660715,
+    "N_min": 52.1,
+    "fpu63": "PASS"
+   },
+   {
+    "case": "R-N no park (H2 FAIL, ring never damps)       E_res only",
+    "E_fJ": 3.087092,
+    "N_min": 51.4,
+    "fpu63": "PASS"
+   },
+   {
+    "case": "R-A + linear-regulator bias 2.234, eta_amp = 1",
+    "E_fJ": 5.74616,
+    "N_min": 54.6,
+    "fpu63": "PASS"
+   },
+   {
+    "case": "R-A + worst-case 1.5 V bias 3.481, eta_amp = 1",
+    "E_fJ": 6.99316,
+    "N_min": 56.1,
+    "fpu63": "PASS"
+   },
+   {
+    "case": "R-A eta_amp = 0.50, bias 0",
+    "E_fJ": 7.02432,
+    "N_min": 56.1,
+    "fpu63": "PASS"
+   },
+   {
+    "case": "R-A eta_amp = 0.50, worst-case bias 3.481",
+    "E_fJ": 10.50532,
+    "N_min": 60.3,
+    "fpu63": "PASS"
+   },
+   {
+    "case": "R-B eta_amp = 0.50, worst-case bias 3.481",
+    "E_fJ": 11.42142,
+    "N_min": 61.4,
+    "fpu63": "PASS"
+   },
+   {
+    "case": "R-A eta_amp = 0.35, worst-case bias 3.481",
+    "E_fJ": 13.515743,
+    "N_min": 63.9,
+    "fpu63": "FAIL"
+   },
+   {
+    "case": "IS3 adverse: gt Miller harvest NOT netted (eta_net=0), eta_amp=1, bias 0",
+    "E_fJ": 6.232983,
+    "N_min": 55.2,
+    "fpu63": "PASS"
+   },
+   {
+    "case": "IS3 adverse + eta_amp 0.50 + worst bias",
+    "E_fJ": 15.946966,
+    "N_min": 66.9,
+    "fpu63": "FAIL"
+   }
+  ],
+  "break_even_eta_amp_pct": {
+   "R-A": {
+    "bias_0": 27.55,
+    "lin_reg": 33.41,
+    "worst": 37.9
+   },
+   "R-B": {
+    "bias_0": 31.15,
+    "lin_reg": 37.77,
+    "worst": 42.85
+   },
+   "R-C": {
+    "bias_0": 28.72,
+    "lin_reg": 34.82,
+    "worst": 39.51
+   }
+  },
+  "script": "qal/zcd/restate_admission.py, COMMITTED and UNMODIFIED, sha256 ab946e0d62b2b716..."
+ },
+ "g_ideal_source_inventory_AFTER_the_round": {
+  "IS1_park_driver": "CLOSED BY MEASUREMENT.  0.34-1.32 fJ on a resonant tap (and -0.04 fJ, a net receiver, on the narrowed tap) against the 15.0-15.5 fJ real conventional driver and the 9.7727 fJ headroom.  The park term is no longer the binding constraint.",
+  "IS2_sustaining_amplifier": "STILL ASSUMED (track B).  This round LOWERS what it must achieve: 27.6-37.9% instead of the previously restated 35.1-44.6%.",
+  "IS3_the_NETTING_of_the_gt_and_gtp_taps": "NEW, and now the LARGEST unexamined term in the headline.  The 2.974 fJ pair is the arithmetic sum of a -2.749 fJ net EXPORTER and a +5.723 fJ net IMPORTER that are two electrically unconnected ideal sources in the deck.  Summing them books a lossless bidirectional common tank that has never been built.  E_pair(eta_net) = 5.723 - 2.749*eta_net: 2.974 at eta_net=1, 4.349 at 0.5, 5.723 at 0.  The 2.749 fJ swing is 28.1% of the entire park headroom and it sits INSIDE the number everyone treats as closed.",
+  "IS4_tap_DC_bias": "MEASURED this round for the first time as a per-cycle net charge on all three taps (2.3205 fC/hop -> 2.234-3.481 fJ).  The non-rail reference LEVELS remain unpriced.",
+  "IS5_harmonic_synthesis_and_phase_network": "STILL BOOKED AT ZERO.  Now worse: this round adds a FOURTH mode (f/2) and a third independent tap phase.",
+  "IS6_inductor_Q": "STILL ASSUMED.  Unchanged.",
+  "IS7_VHI_pMOS_n_well_rail": "RE-MEASURED.  4.129 fJ at one beat, 4.494 at 1000 ps, 4.278 at 1160 ps, 4.022 at 2500 ps -- it is a STANDING cost of ~4.0-4.5 fJ/hop, not a transient that returns, and with ad/as/pd/ps dropped by sg13lv_compat.sp it is a LOWER BOUND.  It still has no home in either the hop or the timer ledger.  If it belongs in E it costs ~4 fJ and pushes R-A at eta_amp 0.5 + worst bias from N_min 60.3 to 66.3 (EXCLUDED).",
+  "IS8_the_park_RELEASE": "NEW.  Not an ideal SOURCE but an unbuilt REQUIREMENT: every park in this campaign ends with a rising edge that never falls.  On a two-beat run that destroys the bank.  See d_the_HOLD_test."
+ },
+ "h_verdict": {
+  "park_term": "SOLVED ON ENERGY.  A resonant park tap costs 0.34-1.32 fJ/bank/hop measured (and can be a net receiver), against a 9.7727 fJ headroom and a 15.0-15.5 fJ conventional floor.",
+  "best_row_passing_EVERY_pre_registered_gate_including_the_hold": "pa_sub_w2 -- div-2 sub-harmonic tap (off 0.45, peak 1.5 V, Vtn crossing 452.066 ps), 2 um park.  VBEND 0.688560 PASS, E_hop 7.98053 PASS, VA_open 0.10290 PASS, cells PASS, pMOS-nMOS +1.823 ps PASS, H1 settle 70.4 ps then max|V(sw)| 0.09915 PASS, H2 -27.464 mV (1.438 mV BETTER than the committed baseline) PASS.  E_resonant TOTAL 3.9702 fJ.",
+  "best_row_that_also_fits_the_derived_two_phase_window": "pa_subn -- narrowed div-2 tap (off 0.30, peak 1.5 V, 46% duty, crossing 430.025 ps), 1 um park.  All five gates PASS, H2 PASS, E_resonant TOTAL 3.5122 fJ, park tap a net RECEIVER at -0.0398 fJ, ON window [430.03, 963.75] inside the required [422.15, 1002.15] with 7.9 / 38.4 ps margin.  H1 marginal: max|V(sw)| 0.09997 V but the settle takes 356.9 ps.",
+  "measured_trade": "park conductance buys hold speed and costs VBEND.  Every park >= 1.5 um pushes VBEND above the pre-registered band's upper edge (0.68941): 1.5 um 0.690168, 2 um (narrowed tap) 0.692229, 3 um 0.690833.  The direction is favourable (more charge delivered) but the gate is two-sided and I have not moved it.",
+  "ADMISSION": "E <= 12.7467 fJ is CLEARED with large margin on the measured terms: 3.51-3.97 fJ of resonant drive, N_min 51.9-52.4, fpu min-bank-63 PASS, alu_top bush 29/37 = 99.6% of gates, sha_slice bush 4/10 = 87.6%.  It SURVIVES a 50%-efficient sustaining amplifier plus the worst-case DC bias (10.505 fJ, N_min 60.30, PASS).  It FAILS at eta_amp 0.35 with the worst-case bias (13.516 fJ, N_min 63.90), and it FAILS if the IS3 netting is worthless AND the amplifier is only 50% (15.947 fJ, N_min 66.90).",
+  "STATUS": "CONDITIONAL.  The park door is OPEN and the standing 17.911 fJ EXCLUSION does not survive it.  What now blocks an unconditional ADMITTED is not energy: it is (i) IS2 the sustaining amplifier, still never simulated; (ii) IS3 the tank that nets the gt tap's harvest into the gtp tap, never built; (iii) IS7 the 4.0-4.5 fJ VHI rail with no home; and (iv) IS8 the park RELEASE, which no design in this campaign has ever met on a two-beat run -- including the committed one.",
+  "NOT_an_admission_claim": "eta is never quoted here.  All figures are fJ/bank/hop."
+ }
+}
