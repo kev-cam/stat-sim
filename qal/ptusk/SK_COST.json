@@ -1,0 +1,56 @@
+{
+ "_doc": "SKEPTIC cost audit (d): is the top-up's OWN cost counted? HS + freewheel switch gates, the inductor, any bias.",
+ "_units": "fJ / fC",
+ "_label": "all MEASURED unless marked",
+ "reference_transfer_energy_per_beat_fJ": {
+  "hop1_E_from_source_rail": 36.7389,
+  "hop2_E_from_source_rail": 29.6161,
+  "sum": 66.355,
+  "_what": "what the CHAIN ITSELF spends moving charge between banks -- the yardstick"
+ },
+ "PULSED_inductor_topup": {
+  "form": "PULSED INDUCTOR, buck action, synchronous freewheel (committed form)",
+  "devices_per_topped_bank": 5,
+  "_devices": "1 high-side pMOS, 1 freewheel nMOS, 1 park nMOS, 1 inductor Ltu, 1 series R",
+  "driven_gates_LABELLED": 3,
+  "driven_gates_ACTUALLY_METERED": 4,
+  "_label_defect": "the row labels 3 driven gates; the integrator qgabs sums FOUR gate sources (VGTU high-side, VGFW freewheel, VGTO and VGTOP on the OUT switch). The METERING is complete -- the label undercounts, the number does not.",
+  "Q_gate_total_fC": 214.7841,
+  "E_SWITCH_GATE_DRIVE_fJ": 322.1762,
+  "_E_gate_convention": "Q_gate*VGH, the REAL-DRIVER cost, with Q_gate MEASURED as half the |I| integral over all four gate sources. This is the number to use.",
+  "q_from_supply_fC": 160.2232,
+  "E_from_supply_fJ": 192.2678,
+  "q_delivered_total_fC": 9.2578,
+  "E_landed_total_fJ": -1.1234,
+  "charge_multiplication_Qdel_over_Qsup": 0.058,
+  "total_topup_cost_fJ": 514.444,
+  "inductors_added": 2,
+  "inductors_total_in_chain": 4
+ },
+ "CLAMP_switched_to_ideal_source": {
+  "form": "RESISTIVE transmission gate to the ideal dV node, chain3's device and 20 ps window placement VERBATIM, fired at the START of the hold. The BOUNDING form: charge-conserving and therefore inefficient, but it restores the rail as hard as a supply can.",
+  "devices_per_topped_bank": 2,
+  "_devices": "1 nMOS + 1 pMOS transmission gate to the dV node (no inductor)",
+  "driven_gates_per_topped_bank": 2,
+  "Q_gate_total_fC": 139.0557,
+  "E_SWITCH_GATE_DRIVE_fJ": 208.5836,
+  "q_from_dV_node_total_fC": 90.762,
+  "inductors_added": 0,
+  "_ideal_source_booking": true
+ },
+ "VERDICT_d": {
+  "is_the_topup_cost_counted": "YES, and at the CONSERVATIVE convention. Both forms meter every driven gate with Q_gate*VGH (the real-driver cost), not the ideal-PWL net energy -- which would have flattered both. The pulsed form's FOUR gates per topped bank are all in the integrator.",
+  "pulsed_gate_drive_over_clamp_gate_drive": 1.545,
+  "pulsed_gate_drive_over_whole_chain_transfer_energy": 4.86,
+  "clamp_gate_drive_over_whole_chain_transfer_energy": 3.14,
+  "the_decisive_number": "the PULSED top-up spends 322.2 fJ of gate drive per beat to land -1.1234 fJ in the banks. The energy landed is NEGATIVE. Its gate drive alone is 4.9x the entire two-hop transfer energy of the chain it is meant to assist.",
+  "charge_multiplication_REFUTED": "the brief calls this form 'buck action, charge-multiplying'. MEASURED Qdel/Qsup = 0.058 -- it draws 160.2 fC from the supply and delivers 9.26 fC into the banks. It is a charge DIVIDER by a factor of ~16, not a multiplier.",
+  "WHAT_IS_NOT_COUNTED_in_EITHER_form": [
+   "the IDEAL SUPPLY itself. ptu draws from 'VTSUP tsup 0 dv', rtu from 'VDV vdv 0 dv' -- both ideal voltage sources. The converter that would actually make that node, and its efficiency, is booked at zero in both. The committed record labels the rtu case '_ideal_source_booking: true'; the same booking is present, and unlabelled, on the ptu side.",
+   "the INDUCTOR as a physical component. Its series resistance IS modelled (RSTU = 10 ohm, so conduction loss is counted), but area, Q, self-resonance and the cost of 2 EXTRA magnetics (4 total in a 4-bank chain) are not.",
+   "JUNCTION CAPACITANCE. qal/sg13lv_compat.sp zeroes ad/as/pd/ps, so every charge and energy number here is a LOWER BOUND -- the committed record says so itself.",
+   "Cna, the switch-node capacitance, is ASSUMED at 8 fF (a DERIVED central estimate), not extracted from layout."
+  ],
+  "does_a_cost_hide_one_level_down": "NO -- and this is the answer to the question I was sent to ask. The failure mode that overturned two earlier mechanisms on this campaign is not present here: the buck's two switches and their four gates ARE metered, at the conservative real-driver convention. The cost is not hidden; it is counted, and counting it is disqualifying on its own, BEFORE any settling argument."
+ }
+}

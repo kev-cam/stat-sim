@@ -1,0 +1,45 @@
+{
+  "role": "SKEPTIC / independent re-run",
+  "dir": "/usr/local/src/stat-sim/qal/buckskep",
+  "cache": "/usr/local/src/stat-sim/qal/buckskep/vae_cache_skep (own, created empty, warmed SERIALLY)",
+  "written_before_any_deck": true,
+
+  "what_i_am_policing": [
+    "(a) re-run committed C1 + fixed C9 from scratch; measure BOTH device currents across the turn-off window myself",
+    "(b) audit ledger closure with my OWN integration; a term that closes only by fitting is not a ledger",
+    "(c) re-measure rail and Qdel/Qsup incl. control cost",
+    "(d) chain re-run per gate per stage; separation by depth; per-hop collapse ratio computed by me",
+    "(e) does the signal still fade, at what depth; re-derive floor depth from the NEW ratio",
+    "(f) verdict + whether the committed pulsed conclusion needs retracting"
+  ],
+
+  "PRE_STATED_STRUCTURAL_SUSPICIONS": {
+    "S1_freewheel_deleted": "Read from RF_C9_L10_t35.cir line 154 BEFORE running: 'VGFW3 gfw3 0 PWL(0 0 4400p 0)'. The freewheel nMOS gate is held at 0 V for the entire run, i.e. the freewheel device is PERMANENTLY OFF. The prior agent calls this a 'diode freewheel' relying on the drain-bulk junction. PREDICTION: a buck's charge GAIN (Qdel/Qsup = Vin/Vout > 1) comes ENTIRELY from the freewheel phase, in which the inductor sources charge from GROUND, not from the supply. With no freewheel path, Qdel/Qsup is bounded ABOVE by 1.0 BY CONSTRUCTION, minus switch-node and leakage cost. So the prior agent's B3 failure (0.516) and its explanation ('a scale limit, gate charge is the same order as delivered charge') are CONFOUNDED: they never ran a converter that could exceed 1.",
+    "S1_falsifier": "If I measure the freewheel-node current in C9 and find substantial current flowing from ground into na3 during the HS-off phase, S1 is refuted and C9 really does freewheel.",
+    "S2_junction_is_absent": "sg13lv_compat.sp DECLARES ad/as/pd/ps as subckt params but the M1 instance line passes ONLY W and L: 'M1 d g s b sg13g2_nmos W={w} L={l}'. The junction areas are therefore never handed to the model at all. PREDICTION: the drain-bulk diode of XTUFW is effectively absent, so 'diode freewheel' is a mechanism that does not exist in this deck. Falsifier: measurable forward junction current at the FW device during HS-off.",
+    "S3_C9_is_a_five_variable_change": "C9 changes at least five things at once vs C1: freewheel device disabled, LTU 1n->10n, t_on 12->35 ps, fire time 8 ps earlier, OUT switch window retimed. The prior agent's own stated discipline is 'one change at a time so the effect of each is attributable', and their headline +199.65 mV is attributed to ONE of the five ('deleting the freewheel gate transitions is the mechanism'). That attribution is not established by the experiment they ran.",
+    "S4_the_missing_experiment": "C2 and C3 fix only the GATE dead times. Read from RF_C2.cir/RF_C3.cir BEFORE running: in BOTH, the HS pMOS turns ON at 313.137-317.137 ps while the OUT isolation switch does not close until 345.137 ps. So ~28 ps of the 40 ps on-time is spent with the inductor's far end DISCONNECTED. The brief explicitly asked for the OUT timing to be checked; C2/C3 do not change it. A PROPERLY timed synchronous buck -- correct dead time BOTH edges, OUT closed across conduction AND freewheel, and L large enough to be inductive -- was NEVER RUN. I will run it (call it K1). This is the decisive missing experiment and the main thing I am here to supply.",
+    "S5_C5_was_run_at_the_wrong_L": "The prior agent's own finding is that at Ltu = 1 nH, L/R = 2 ps << t_on, so the cell is a RESISTIVE transfer, not an inductive buck, and genuinely inductive operation needs L >> R*t_on ~ 6 nH. But their C5 'textbook order' negative result (-212 mV) was run at L = 1 nH. A textbook buck cannot work at an L where the circuit is not inductive. C5 therefore does not license the conclusion that textbook ordering fails.",
+    "S6_ideal_bound_depends_on_topology": "Qdel/Qsup = Vin/Vout = 1.5666 is the ideal bound for a buck WITH a freewheel. For a series-L resonant transfer with NO freewheel (which is what C9 actually is), the ideal bound is Qdel/Qsup = 1.0 exactly, because every coulomb reaching the bank passed through the supply. Judging C9's 0.516 against 1.5666 is judging it against the wrong bound."
+  },
+
+  "MY_ACCEPTANCE": {
+    "A1_digit_reproduction": "I re-run C1 and C9 in my own dir under my own cache and reproduce the reported rail3 (0.671431 and 0.949960) to <= 1e-5 relative, or I report the discrepancy.",
+    "A2_two_device_currents": "I measure I(HS) and I(FW) SIMULTANEOUSLY across BOTH the turn-on and turn-off windows of C1 and report the overlap charge from my own integration.",
+    "A3_ledger": "KCL residual at the switch node < 2% of Q_supply, with every term independently metered and NO term computed as a residual. If any term is a residual, the ledger does not close, it is defined to close.",
+    "A4_missing_experiment": "K1 = properly timed synchronous buck (dead time both edges, OUT closed across conduction AND freewheel, L in the inductive regime). Report its rail3 and Qdel/Qsup. This is a PASS/FAIL on the prior agent's 'scale limit' explanation: if K1 clears Qdel/Qsup = 1, the scale-limit explanation is wrong.",
+    "A5_chain": "Recompute per-gate settling, separation by depth and per-hop collapse ratio from the .prn files MYSELF, not from the prior agent's JSON.",
+    "A6_depth": "Re-derive floor depth from MY measured ratio only."
+  },
+
+  "PRE_STATED_EXPECTATIONS": {
+    "E1": "C1's dominant charge loss is at TURN-ON (cross-conduction with OUT open), not the turn-off edge the brief hypothesised. I expect to CONFIRM the prior agent here -- their reading of the PWLs is straightforwardly correct from the file.",
+    "E2": "C9 has NO measurable freewheel current. Predicted |Q_freewheel| < 1 fC per pulse.",
+    "E3": "K1 (real synchronous buck, inductive L, OUT closed through freewheel) achieves Qdel/Qsup > 1. I am stating this in advance so that a failure is a real falsification of my S1. If K1 also lands below 1, the prior agent's scale-limit explanation gains real support and I will say so.",
+    "E4": "Even with a working buck the CHAIN still fails A1 settling. I do not expect a fixed converter to fix the pipeline. Recorded in advance so a converter win cannot later be sold as a pipeline win.",
+    "E5": "The per-hop collapse ratio improves with a genuinely raised rail. I do NOT import the brief's 0.611-0.659."
+  },
+
+  "labels": "MEASURED = from a .prn/.mt0 I produced in this directory. DERIVED = arithmetic on MEASURED. ASSUMED = neither.",
+  "discipline": "own cache warmed serially from empty; no writes into qal/ptu, qal/ptusk, qal/skiptu, qal/buckfix; 1F integrators t0-referenced; kill by PID never pkill -f."
+}

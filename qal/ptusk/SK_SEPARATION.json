@@ -1,0 +1,616 @@
+{
+ "_doc": "SKEPTIC (e): independent recomputation of HIGH/LOW separation by depth, vs the PDK sigma-Vt floor of 3.42 mV.",
+ "_convention": "separation = min(pull-UP output) - max(pull-DOWN output) within a bank, each read at THAT BANK's own boundary. Recomputed from raw per-gate data, not quoted.",
+ "_floor_mV": 3.42,
+ "_floor_provenance": "3.42 mV is a committed PDK constant (qal/README.md Q2, qal/vtreq/analyse.py). NOTE: it does NOT appear anywhere in qal/restore5's own JSON, though the brief cites it to restore5.",
+ "restore5_UNRESTORED_ADJACENT_cascade_k6_T300_control": {
+  "recomputed_by_me": {
+   "1": {
+    "separation_mV": 528.6756,
+    "below_floor": false,
+    "inverted": false
+   },
+   "2": {
+    "separation_mV": -22.8913,
+    "below_floor": false,
+    "inverted": true
+   },
+   "3": {
+    "separation_mV": 1.5162,
+    "below_floor": true,
+    "inverted": false
+   },
+   "4": {
+    "separation_mV": -0.1221,
+    "below_floor": true,
+    "inverted": true
+   },
+   "5": {
+    "separation_mV": 0.0101,
+    "below_floor": true,
+    "inverted": false
+   },
+   "6": {
+    "separation_mV": -0.0009,
+    "below_floor": true,
+    "inverted": true
+   }
+  },
+  "brief_quoted": "528.68 / 22.89 / 1.52 / 0.122 / 0.010 / 0.001 mV",
+  "verdict": "REPRODUCES EXACTLY. But the brief quotes it as magnitudes; from bank 2 on the sign ALTERNATES and is NEGATIVE (LOW sits ABOVE HIGH) at banks 2, 4 and 6. The cascade does not merely lose the signal, it INVERTS it.",
+  "ATTRIBUTION": "this series belongs to restore5's UNRESTORED ADJACENT cascade, NOT to the skip chain this run is about. The brief applies it to the skip-chain question; that is a mis-attribution."
+ },
+ "skip_chain_separation_MY_extractor": {
+  "r_s4_free_T120_dv1200_L5_W10_t12_f0": {
+   "mode": "free",
+   "T_ps": 120,
+   "dv": 1.2,
+   "separation_mV_by_bank": {
+    "1": 1207.0345,
+    "2": 974.0927,
+    "3": 254.6899,
+    "4": 107.8949
+   },
+   "below_floor": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false
+   },
+   "inverted": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false
+   }
+  },
+  "r_s4_free_T160_dv1200_L5_W10_t12_f0": {
+   "mode": "free",
+   "T_ps": 160,
+   "dv": 1.2,
+   "separation_mV_by_bank": {
+    "1": 1207.0345,
+    "2": 823.4274,
+    "3": 290.3574,
+    "4": 199.7908
+   },
+   "below_floor": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false
+   },
+   "inverted": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false
+   }
+  },
+  "r_s4_free_T200_dv1200_L5_W10_t12_f0": {
+   "mode": "free",
+   "T_ps": 200,
+   "dv": 1.2,
+   "separation_mV_by_bank": {
+    "1": 1207.0345,
+    "2": 687.0171,
+    "3": 305.4487,
+    "4": 248.5858
+   },
+   "below_floor": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false
+   },
+   "inverted": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false
+   }
+  },
+  "r_s4_free_T300_dv1200_L5_W10_t12_f0": {
+   "mode": "free",
+   "T_ps": 300,
+   "dv": 1.2,
+   "separation_mV_by_bank": {
+    "1": 1207.0345,
+    "2": 407.9635,
+    "3": 283.0555,
+    "4": 316.3873
+   },
+   "below_floor": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false
+   },
+   "inverted": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false
+   }
+  },
+  "r_s4_free_T120_dv1500_L5_W10_t12_f0": {
+   "mode": "free",
+   "T_ps": 120,
+   "dv": 1.5,
+   "separation_mV_by_bank": {
+    "1": 1510.5708,
+    "2": 908.1747,
+    "3": 311.2879,
+    "4": 225.9095
+   },
+   "below_floor": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false
+   },
+   "inverted": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false
+   }
+  },
+  "r_s4_free_T160_dv1500_L5_W10_t12_f0": {
+   "mode": "free",
+   "T_ps": 160,
+   "dv": 1.5,
+   "separation_mV_by_bank": {
+    "1": 1510.5708,
+    "2": 572.786,
+    "3": 287.8541,
+    "4": 313.9338
+   },
+   "below_floor": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false
+   },
+   "inverted": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false
+   }
+  },
+  "r_s4_free_T200_dv1500_L5_W10_t12_f0": {
+   "mode": "free",
+   "T_ps": 200,
+   "dv": 1.5,
+   "separation_mV_by_bank": {
+    "1": 1510.5708,
+    "2": 331.5909,
+    "3": 58.0576,
+    "4": -20.0564
+   },
+   "below_floor": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false
+   },
+   "inverted": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": true
+   }
+  },
+  "r_s4_free_T300_dv1500_L5_W10_t12_f0": {
+   "mode": "free",
+   "T_ps": 300,
+   "dv": 1.5,
+   "separation_mV_by_bank": {
+    "1": 1510.5708,
+    "2": 29.4032,
+    "3": 1.398,
+    "4": -9.058
+   },
+   "below_floor": {
+    "1": false,
+    "2": false,
+    "3": true,
+    "4": false
+   },
+   "inverted": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": true
+   }
+  },
+  "r_s4_rtu_T120_dv1200_L1_W10_t20_f0": {
+   "mode": "rtu",
+   "T_ps": 120,
+   "dv": 1.2,
+   "separation_mV_by_bank": {
+    "1": 1207.0344,
+    "2": 954.5888,
+    "3": 210.1155,
+    "4": 290.9828
+   },
+   "below_floor": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false
+   },
+   "inverted": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false
+   }
+  },
+  "r_s4_rtu_T160_dv1200_L1_W10_t20_f0": {
+   "mode": "rtu",
+   "T_ps": 160,
+   "dv": 1.2,
+   "separation_mV_by_bank": {
+    "1": 1207.0344,
+    "2": 724.2119,
+    "3": 466.7219,
+    "4": 820.2073
+   },
+   "below_floor": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false
+   },
+   "inverted": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false
+   }
+  },
+  "r_s4_rtu_T200_dv1200_L1_W10_t20_f0": {
+   "mode": "rtu",
+   "T_ps": 200,
+   "dv": 1.2,
+   "separation_mV_by_bank": {
+    "1": 1207.0344,
+    "2": 577.1806,
+    "3": 537.1886,
+    "4": 947.656
+   },
+   "below_floor": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false
+   },
+   "inverted": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false
+   }
+  },
+  "r_s4_rtu_T300_dv1200_L1_W10_t20_f0": {
+   "mode": "rtu",
+   "T_ps": 300,
+   "dv": 1.2,
+   "separation_mV_by_bank": {
+    "1": 1207.0344,
+    "2": 303.0926,
+    "3": 375.6257,
+    "4": 409.3107
+   },
+   "below_floor": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false
+   },
+   "inverted": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false
+   }
+  },
+  "r_s4_rtu_T120_dv1500_L1_W10_t20_f0": {
+   "mode": "rtu",
+   "T_ps": 120,
+   "dv": 1.5,
+   "separation_mV_by_bank": {
+    "1": 1510.5707,
+    "2": 892.5697,
+    "3": 249.4116,
+    "4": 353.0292
+   },
+   "below_floor": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false
+   },
+   "inverted": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false
+   }
+  },
+  "r_s4_rtu_T160_dv1500_L1_W10_t20_f0": {
+   "mode": "rtu",
+   "T_ps": 160,
+   "dv": 1.5,
+   "separation_mV_by_bank": {
+    "1": 1510.5707,
+    "2": 462.6742,
+    "3": 319.1422,
+    "4": 164.1361
+   },
+   "below_floor": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false
+   },
+   "inverted": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false
+   }
+  },
+  "r_s4_rtu_T200_dv1500_L1_W10_t20_f0": {
+   "mode": "rtu",
+   "T_ps": 200,
+   "dv": 1.5,
+   "separation_mV_by_bank": {
+    "1": 1510.5707,
+    "2": 230.6619,
+    "3": 27.3882,
+    "4": -583.8387
+   },
+   "below_floor": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false
+   },
+   "inverted": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": true
+   }
+  },
+  "r_s4_rtu_T300_dv1500_L1_W10_t20_f0": {
+   "mode": "rtu",
+   "T_ps": 300,
+   "dv": 1.5,
+   "separation_mV_by_bank": {
+    "1": 1510.5707,
+    "2": 13.8005,
+    "3": 0.8142,
+    "4": -1154.1674
+   },
+   "below_floor": {
+    "1": false,
+    "2": false,
+    "3": true,
+    "4": false
+   },
+   "inverted": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": true
+   }
+  },
+  "r_s4_rtu_T200_dv1200_L1_W10_t10_f0": {
+   "mode": "rtu",
+   "T_ps": 200,
+   "dv": 1.2,
+   "separation_mV_by_bank": {
+    "1": 1207.0344,
+    "2": 612.2873,
+    "3": 368.9231,
+    "4": 482.7774
+   },
+   "below_floor": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false
+   },
+   "inverted": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false
+   }
+  },
+  "r_s4_rtu_T200_dv1200_L1_W10_t40_f0": {
+   "mode": "rtu",
+   "T_ps": 200,
+   "dv": 1.2,
+   "separation_mV_by_bank": {
+    "1": 1207.0344,
+    "2": 540.7971,
+    "3": 694.5648,
+    "4": 1108.1403
+   },
+   "below_floor": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false
+   },
+   "inverted": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false
+   }
+  },
+  "r_s5_free_T200_dv1200_L1_W10_t20_f0": {
+   "mode": "free",
+   "T_ps": 200,
+   "dv": 1.2,
+   "separation_mV_by_bank": {
+    "1": 1207.0344,
+    "2": 654.0086,
+    "3": 210.9924,
+    "4": 188.0089,
+    "5": -24.0804
+   },
+   "below_floor": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": false
+   },
+   "inverted": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": true
+   }
+  },
+  "r_s5_rtu_T200_dv1200_L1_W10_t20_f0": {
+   "mode": "rtu",
+   "T_ps": 200,
+   "dv": 1.2,
+   "separation_mV_by_bank": {
+    "1": 1207.0344,
+    "2": 568.487,
+    "3": 358.2753,
+    "4": 597.1898,
+    "5": 743.2911
+   },
+   "below_floor": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": false
+   },
+   "inverted": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": false
+   }
+  },
+  "r_s5_free_T300_dv1200_L1_W10_t20_f0": {
+   "mode": "free",
+   "T_ps": 300,
+   "dv": 1.2,
+   "separation_mV_by_bank": {
+    "1": 1207.0344,
+    "2": 362.5369,
+    "3": 169.8825,
+    "4": 218.5632,
+    "5": -13.5528
+   },
+   "below_floor": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": false
+   },
+   "inverted": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": true
+   }
+  },
+  "r_s5_rtu_T300_dv1200_L1_W10_t20_f0": {
+   "mode": "rtu",
+   "T_ps": 300,
+   "dv": 1.2,
+   "separation_mV_by_bank": {
+    "1": 1207.0344,
+    "2": 276.642,
+    "3": 184.2301,
+    "4": 102.1598,
+    "5": 0.0242
+   },
+   "below_floor": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": true
+   },
+   "inverted": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": false
+   }
+  },
+  "r_s4_free_T200_dv1000_L1_W10_t20_f0": {
+   "mode": "free",
+   "T_ps": 200,
+   "dv": 1.0,
+   "separation_mV_by_bank": {
+    "1": 1004.4227,
+    "2": 842.3277,
+    "3": 242.1982,
+    "4": 129.7305
+   },
+   "below_floor": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false
+   },
+   "inverted": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false
+   }
+  },
+  "r_s4_rtu_T200_dv1000_L1_W10_t20_f0": {
+   "mode": "rtu",
+   "T_ps": 200,
+   "dv": 1.0,
+   "separation_mV_by_bank": {
+    "1": 1004.4227,
+    "2": 756.1271,
+    "3": 509.883,
+    "4": 726.1395
+   },
+   "below_floor": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false
+   },
+   "inverted": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false
+   }
+  }
+ },
+ "FINDING": {
+  "depth_3": "the skip chain does NOT collapse at depth 3. At s4/T200/dV1.2 bank 3 separation is 305.4 mV (free), 537.2 mV (clamp), 233-250 mV (pulsed) -- two orders above the 3.42 mV floor. The brief's premise is FALSE for this topology.",
+  "why": "structural: the skip schedule re-powers banks 3 and 4 from fresh inductive hops off the IDEALLY PRE-CHARGED head banks, so the level is regenerated rather than passed down a cascade.",
+  "where_it_DOES_bite": "depth 5. In the 5-bank chain bank 5's predecessor rail itself came from a hop: free s5 b5 = -24.080 mV (T200) and -13.553 mV (T300), both INVERTED; and the CLAMP at s5/T300 lands b5 at +0.024 mV, BELOW the floor, with stage-5 settling of 0.02%.",
+  "agrees_with_committed_record": "qal/README.md Q2 states usable depth (separation positive AND above 3.42 mV) reaches 4 banks and that 'Depth 5 is unreachable at every swept point'. My independent measurement reproduces exactly that: depth 4 fine, depth 5 the wall.",
+  "consequence_for_the_verdict": "the pipeline verdict stands, but it must NOT be defended with 'separation collapses below sigma-Vt by depth 3'. The correct statement is depth 5, and for the ADJACENT unbuffered cascade it is depth 2-3."
+ }
+}

@@ -1,0 +1,54 @@
+{
+ "_doc": "SKEPTIC (c): pulse-phase decomposition of the topped rail's dV/dt. Computed on the PRIOR ANALYSIS's own decks so this conclusion does not depend on my re-run.",
+ "_window": "bank 3's hold: [open[0]+EDGE, min(bound[3], close[1])-EDGE]",
+ "_units": "V/ns",
+ "switched_clamp_rtu_t20": {
+  "delivery_phase_during_conduction": 58.5000001030287,
+  "at_switch_OPENING": 227.000000592415,
+  "rail3_at_conduction_start_V": 0.648074,
+  "rail3_at_conduction_end_V": 0.974156
+ },
+ "pulsed_inductor_t_on_12": {
+  "at_OUT_close": 0.12477231329676541,
+  "during_pulse_HS_on": 1.5641453791362916,
+  "delivery_phase_during_freewheel": 5.58953160254984,
+  "at_OUT_OPENING": 69.99999610533784,
+  "I_LTU3_at_OUT_close_uA": 818.082,
+  "I_LTU3_at_pulse_end_uA": 284.89,
+  "I_LTU3_at_OUT_open_uA": 0.324,
+  "timing_ps": {
+   "t_fire": 309.977,
+   "OUT_closes": 341.977,
+   "pulse": [
+    341.977,
+    353.977
+   ],
+   "OUT_opens": 360.195
+  }
+ },
+ "pulsed_inductor_t_on_24": {
+  "at_OUT_close": 0.12477231329676541,
+  "during_pulse_HS_on": 7.09499228779326,
+  "delivery_phase_during_freewheel": 10.529097417397063,
+  "at_OUT_OPENING": 92.00000018385293,
+  "I_LTU3_at_OUT_close_uA": 818.082,
+  "I_LTU3_at_pulse_end_uA": 1169.072,
+  "I_LTU3_at_OUT_open_uA": 0.357,
+  "timing_ps": {
+   "t_fire": 309.977,
+   "OUT_closes": 341.977,
+   "pulse": [
+    341.977,
+    365.977
+   ],
+   "OUT_opens": 371.992
+  }
+ },
+ "FINDINGS": {
+  "delivery_vs_delivery": "clamp 58.5 V/ns during conduction vs pulsed 10.5 V/ns during freewheel = 5.6x gentler. The brief's mechanism claim is CORRECT AT THE DELIVERY PHASE -- a series inductor really does ramp the rail.",
+  "but_the_dominant_edge_is_elsewhere": "in BOTH forms the largest edge is the top-up switch's TURN-OFF: clamp 227.0 V/ns, pulsed 92.0 V/ns. That is 2.47x, not the order of magnitude the brief's 'no voltage discontinuity' implies.",
+  "the_prior_mechanism_is_REFUTED": "the prior analysis attributed the pulsed form's 92 V/ns to the stored inductor current dumping in as the OUT switch CLOSES. MEASURED: at OUT-close the slope is 0.125 V/ns, and at the OUT-OPEN edge I(LTU3) = 0.36 uA. The inductor is empty when the big edge happens. It is gate-drive feedthrough at turn-off.",
+  "ZCS_is_actually_good": "I(LTU3) ramps 818 -> 1169 uA across the pulse and returns to 0.36 uA at the cut. The freewheel timing is correct; the inductor is doing its job. The residual step is not its fault -- it belongs to the isolation switch that AMENDMENT A1b proved mandatory.",
+  "verdict": "step coupling is REDUCED, NOT ELIMINATED, and the residual is STRUCTURAL."
+ }
+}

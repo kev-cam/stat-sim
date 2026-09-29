@@ -1,0 +1,56 @@
+{
+ "_doc": "qal/ptusk -- SKEPTIC re-run of the pulsed-inductor (ptu) vs switched-clamp (rtu) top-up comparison. Written as the SOLE file in this directory BEFORE any deck is built or run.",
+ "role": "SKEPTIC. Re-run, do not read. I reproduce the analyst's load-bearing decks from scratch under MY OWN cache and MY OWN extractor, and I adjudicate the mechanism claim independently.",
+ "own_cache": "PYMS_VAE_CACHE=<scratchpad>/vae_cache_ptusk -- built from scratch, nothing copied from skiptu, ptu, or any sibling.",
+ "writes": "ONLY /usr/local/src/stat-sim/qal/ptusk. qal/skiptu and qal/ptu are READ-ONLY from here.",
+
+ "WHAT_I_MUST_DELIVER": {
+  "a_rerun": "re-run the BEST pulsed-inductor point and its MATCHED clamp point FROM SCRATCH (own decks, own cache, own zeros).",
+  "b_police": "per-gate settling at EVERY stage from the RAW .prn with MY OWN extractor, not from .mt0 and not via tuextract.",
+  "c_mechanism": "is the step coupling genuinely ABSENT under inductive delivery, or merely SMALLER? measured rail dV/dt in BOTH forms + the predecessor's rail excursion.",
+  "d_cost": "is the top-up's OWN cost counted -- HS gate, freewheel gate, OUT switch gates, the inductor, any bias.",
+  "e_separation": "independently recompute HIGH/LOW separation by depth against the 3.42 mV sigma-Vt floor.",
+  "f_verdict": "does the correct top-up form change the committed outcome, and with what confidence."
+ },
+
+ "ACCEPTANCE_inherited_verbatim": {
+  "A1_settling": "EVERY gate in ALL stages >= 90% settled at its own stage boundary. pull-DOWN 100*(1 - V(o)/rail_k), pull-UP 100*(V(o)/rail_k), rail_k read at the SAME boundary instant. WORST gate, never an average.",
+  "A2_threshold": "delivered input HIGH >= 0.4400 V at EVERY stage.",
+  "A4_boundary": "bound_k = min(c_k + T, d_k - EDGE) for a hop-charged bank, d_k - EDGE for a head bank, EDGE = 2 ps.",
+  "A5_instrument": "committed robust single-hop point reproduced under MY cache: L=15nH W=30um dV=1.2 -> t_hop 65.49500982344826 ps, VBEND 0.7138163, VBPK 0.8368896, 8/8 settled. rel < 1e-6 or I do not report.",
+  "A6_ZCS": "interrupted |IZ| < 1.0 uA at each switch open, zeros re-probed per L and per hop.",
+  "A7_metering": "1F integrator or INTEG-I(Vsrc)+PARAM only; 1F integrators ALWAYS t0-referenced (they carry a t=0 pedestal)."
+ },
+
+ "MY_DISCRIMINATORS_fixed_in_advance": {
+  "S1_slope": "max rising dV/dt on the topped rail (rail3) over a window containing NO hop switching, computed by centred finite difference on the printed .prn grid, V/ns. Clamp vs pulsed at the SAME operating point.",
+  "S2_victim": "the damage measured ON THE VICTIM: stage 2's pull-DOWN outputs (the feeding stage's LOW), reported as topped-row MINUS free-control in the same window, mV.",
+  "S3_normalised": "damage PER mV OF RAIL ACTUALLY DELIVERED. A form that delivers less rail must not be credited for coupling less in absolute terms. This is the fair comparison and I fix it now, before seeing the data.",
+  "S4_pred_rail": "the feeding stage's rail at its own boundary, both forms vs free.",
+  "S5_rail_level": "rail3 at its boundary, and the resulting pMOS overdrive over the MEASURED |Vtp| = 0.4403 V.",
+  "S6_separation": "min(pull-up output) - max(pull-down output) within each stage, mV, by bank depth, vs the 3.42 mV floor.",
+  "no_post_hoc": "S1-S6 are fixed here. Any metric I invent after seeing data is reported as EXPLORATORY and kept OUT of the verdict."
+ },
+
+ "CLAIMS_I_AM_SENT_TO_CHECK_stated_before_testing": {
+  "brief_hypothesis": "a pulsed inductor CANNOT produce a voltage step, so the reported negative result may be an ARTEFACT of the substituted clamp. I test this and I am willing to overturn the committed verdict if it holds.",
+  "analyst_A8_defect": "analyst claims the ptu PROBE deck instantiates NO top-up devices, so every pulsed row fails the 1.0 uA A6 gate. VERIFIED BY ME ON DISK BEFORE RUNNING: p1_z_s4_ptu_T200_dv1200_L1_t12_C8_f.cir differs from the free probe by exactly ONE line, a DANGLING 'VTSUP tsup 0 1.2' on an unconnected node -- electrically identical. Recorded here so it cannot look post-hoc.",
+  "analyst_best_row": "analyst reports best corrected-pulsed = s4/T200/dV1.2/Ltu=1nH/t_on=24ps/Cna=8fF and best-stage-3 34.08% at t_on=12. I re-run BOTH t_on and pick the best myself.",
+  "two_numbers_I_also_could_not_find": "the brief's 0.1545 -> 0.0587 V and -0.0188 V. I scan for them myself and record the result BEFORE measuring."
+ },
+
+ "PRE_STATED_EXPECTATIONS_with_falsifiers": {
+  "K1": "the pulsed form will show a LOWER max dV/dt than the clamp. FALSIFIER: within 2x. If it is merely ~2x rather than orders of magnitude, the brief's 'no voltage discontinuity' claim is REFUTED as stated and I say so.",
+  "K2": "per mV of rail delivered, I expect the pulsed form's backward coupling to be NO BETTER than the clamp's. FALSIFIER: pulsed coupling per delivered mV materially below the clamp's.",
+  "K3": "the pulsed form will not exceed the clamp's rail3 = 1.069085 V. FALSIFIER: it does, with positive delivered charge.",
+  "K4": "separation in the SKIP chain will NOT collapse below 3.42 mV by depth 3, because banks 3/4 are re-powered from fresh hops off ideally pre-charged heads. NOTE: this CONTRADICTS the brief's premise and the analyst's H4. I state it before measuring.",
+  "K5": "I expect the committed bottom line to survive. Stated now so a confirmation cannot be dressed up as a discovery."
+ },
+
+ "HONESTY": {
+  "labels": "every number labelled MEASURED / DERIVED / ASSUMED.",
+  "confirmation_is_a_result": "if the pulsed form does not change the outcome, that is a clean confirmation and is reported as one.",
+  "loudness": "if it DOES change the outcome, I say so loudly and name the clause that needs amending.",
+  "shallow_stack": "all numbers SHALLOW-STACK; sg13lv_compat.sp zeroes ad/as/pd/ps so device numbers are LOWER bounds."
+ }
+}

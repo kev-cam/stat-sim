@@ -1,0 +1,680 @@
+{
+ "_doc": "qal/buckfix VERDICT -- the user's objection is UPHELD. The committed pulsed-inductor top-up was not a poor buck converter, it was a converter with a 32 ps designed-in cross-conduction interval and its output disconnected during that interval. Defect found, fixed, re-measured.",
+ "_provenance": "every number here is from MY OWN decks in /usr/local/src/stat-sim/qal/buckfix under MY OWN PYMS_VAE_CACHE (built from empty, serially, after a race-contaminated first build was discarded). Nothing is quoted from a committed summary except where labelled COMMITTED.",
+ "B1_instrument_check": {
+  "status": "PASS, digit-exact, on BOTH rows",
+  "committed_pulsed_t12": {
+   "rail3_at_bound_V": {
+    "mine": 0.671431,
+    "committed": 0.671431,
+    "rel_err": 0.0
+   },
+   "settling_worst_by_stage": {
+    "mine": [
+     99.95,
+     59.75,
+     34.07,
+     60.74
+    ],
+    "committed": [
+     99.95,
+     59.75,
+     34.07,
+     60.74
+    ]
+   },
+   "A2_min_delivered_HIGH_V": {
+    "mine": 0.288602,
+    "committed": 0.288602
+   },
+   "separation_mV": {
+    "mine": [
+     1207.0344,
+     673.0638,
+     233.9964,
+     158.3333
+    ],
+    "committed": [
+     1207.0344,
+     673.0638,
+     233.9964,
+     158.3333
+    ]
+   }
+  },
+  "free_control": {
+   "rail3_at_bound_V": {
+    "mine": 0.765884,
+    "committed": 0.765884
+   },
+   "settling_worst_by_stage": {
+    "mine": [
+     99.95,
+     60.65,
+     39.2,
+     63.52
+    ],
+    "committed": [
+     99.95,
+     60.65,
+     39.2,
+     63.52
+    ]
+   },
+   "A2_min_delivered_HIGH_V": {
+    "mine": 0.399548,
+    "committed": 0.399548
+   }
+  },
+  "conclusion": "I am debugging the circuit that was reported."
+ },
+ "THE_DEFECT": {
+  "statement": "the committed top-up cell turns the high-side pMOS ON while the freewheel nMOS is still fully ON and clamping the switch node at ground, and holds that state for 32 ps, with the OUT isolation switch OPEN the whole time. It is not a missing dead time, it is an ANTI-dead-time: cross-conduction by construction.",
+  "source_evidence": "qal/ptu/chain.py topup_dev_corrected() docstring, verbatim: 'HS pMOS ON at t_fire (while the LS still clamps na at 0); LS nMOS OFF over SLEW ps, ending at a = t_fire + SLEW + 4*EDGE; OUT switch CLOSES last'. SLEW=24 ps, EDGE=2 ps.",
+  "gate_schedule_MEASURED_off_the_reported_deck": {
+   "VGTU3_HS": "1.5 -> 0 over 313.137-317.137 ps (HS ON); 0 -> 1.5 over 357.137-359.137 (HS OFF)",
+   "VGFW3_FW": "1.5 -> 0 over 321.137-345.137 ps (a 24 ps release); 0 -> 1.5 over 357.137-359.137 (FW ON)",
+   "VGTO3_OUT": "closed only 345.137 -> 363.355 ps"
+  },
+  "DERIVED_overlap": "gtu3 crosses tsup-|Vtp|=0.76 V at 314.12 ps; gfw3 crosses Vtn=0.44 V at 338.10 ps -> 23.98 ps of both-devices-on, with the output disconnected.",
+  "the_briefs_own_reading": "the brief read qal/skiptu/q3_s4_T200_dv1200_L15_W10_t12_ptu.cir, whose TURN-ON edge is correctly dead-timed (6 ps) and whose TURN-OFF edge ramps both gates together. That reading is correct for THAT deck. The deck that produced the quoted digits is qal/ptusk/SR_s4_ptu_T200_dv1200_L1_t12.cir, which has the anti-dead-time at turn-on. Both share the simultaneous turn-off ramp."
+ },
+ "C_THE_CHARGE_AUDIT": {
+  "fixture": "standalone buck cell lifted verbatim from the reported deck (HS pMOS w=10u from tsup, FW nMOS w=10u to ground, CNA 8 fF, LTU 1 nH, RTU 10 ohm, OUT transmission gate 5u/10u) into an explicit 100 fF bank pre-charged to 0.766 V. Every branch carries a 0 V ammeter and a 1F integrator, t0-referenced at 0.5 ps.",
+  "the_ledger_is_exact_by_KCL_at_the_switch_node": "I(VMSUP) = I(VMFW) + I(LTU) + I(VMCNA) + I(VGTU) + I(VGFW)",
+  "TOTAL_fC": {
+   "q_supply": 65.4017,
+   "to_ground_via_freewheel": 72.1892,
+   "into_inductor": -6.6513,
+   "into_switch_node_CNA": -0.0544,
+   "HS_gate_overlap": -0.0172,
+   "FW_gate_overlap": -0.0645,
+   "KCL_residual": -7e-05,
+   "KCL_residual_pct_of_supply": -0.00011,
+   "into_bank": -4.9924
+  },
+  "LEDGER_CLOSES": "residual -0.00011% of the supply charge. The instrument is NOT the defect.",
+  "Qdel_over_Qsup": -0.07633,
+  "rail_change_mV": -49.87,
+  "energy_fJ": {
+   "E_supply": 78.482,
+   "E_into_bank": -3.6993,
+   "E_burned_in_FW_leg": 45.947,
+   "E_I2R_inductor": 1.4635,
+   "eta": -0.04714
+  },
+  "THE_DECISIVE_SPLIT": "57.2504 fC of the 65.4017 fC = 87.54% leaves the supply BEFORE the OUT switch closes at 345.137 ps. With the output disconnected, none of it can reach the bank by construction.",
+  "per_phase_fC": [
+   {
+    "phase": "Z->A",
+    "t_ps": [
+     0.5,
+     312.137
+    ],
+    "dt_ps": 311.637,
+    "q_supply_fC": 0.0,
+    "q_HSleg_fC": 0.0,
+    "q_to_ground_via_FW_fC": 0.0,
+    "q_into_inductor_fC": 0.0,
+    "q_into_CNA_fC": 0.0,
+    "q_gate_HS_fC": 0.0,
+    "q_gate_FW_fC": 0.0,
+    "q_into_bank_fC": 0.0,
+    "KCL_residual_fC": -4e-05
+   },
+   {
+    "phase": "A->B",
+    "t_ps": [
+     312.137,
+     317.337
+    ],
+    "dt_ps": 5.2,
+    "q_supply_fC": 12.2186,
+    "q_HSleg_fC": 12.2186,
+    "q_to_ground_via_FW_fC": -3.231,
+    "q_into_inductor_fC": -0.122,
+    "q_into_CNA_fC": -0.6221,
+    "q_gate_HS_fC": 16.9376,
+    "q_gate_FW_fC": -0.744,
+    "q_into_bank_fC": 0.0,
+    "KCL_residual_fC": 1e-05
+   },
+   {
+    "phase": "B->C",
+    "t_ps": [
+     317.337,
+     321.137
+    ],
+    "dt_ps": 3.8,
+    "q_supply_fC": 8.2565,
+    "q_HSleg_fC": 8.2565,
+    "q_to_ground_via_FW_fC": 0.4085,
+    "q_into_inductor_fC": -0.5632,
+    "q_into_CNA_fC": 1.0605,
+    "q_gate_HS_fC": 6.0918,
+    "q_gate_FW_fC": 1.259,
+    "q_into_bank_fC": 0.0,
+    "KCL_residual_fC": -1e-05
+   },
+   {
+    "phase": "C->D",
+    "t_ps": [
+     321.137,
+     345.137
+    ],
+    "dt_ps": 24.0,
+    "q_supply_fC": 36.7753,
+    "q_HSleg_fC": 36.7753,
+    "q_to_ground_via_FW_fC": 3.4602,
+    "q_into_inductor_fC": 5.5992,
+    "q_into_CNA_fC": 2.506,
+    "q_gate_HS_fC": 1.2278,
+    "q_gate_FW_fC": 23.9821,
+    "q_into_bank_fC": -0.8839,
+    "KCL_residual_fC": 5e-05
+   },
+   {
+    "phase": "D->E",
+    "t_ps": [
+     345.137,
+     357.137
+    ],
+    "dt_ps": 12.0,
+    "q_supply_fC": 14.5144,
+    "q_HSleg_fC": 14.5144,
+    "q_to_ground_via_FW_fC": 3.1901,
+    "q_into_inductor_fC": 4.5419,
+    "q_into_CNA_fC": 2.9241,
+    "q_gate_HS_fC": 1.7951,
+    "q_gate_FW_fC": 2.0632,
+    "q_into_bank_fC": -6.4454,
+    "KCL_residual_fC": 7e-05
+   },
+   {
+    "phase": "E->F",
+    "t_ps": [
+     357.137,
+     359.137
+    ],
+    "dt_ps": 2.0,
+    "q_supply_fC": -10.5315,
+    "q_HSleg_fC": -10.5315,
+    "q_to_ground_via_FW_fC": 8.1402,
+    "q_into_inductor_fC": 0.156,
+    "q_into_CNA_fC": 2.7181,
+    "q_gate_HS_fC": -14.522,
+    "q_gate_FW_fC": -7.0235,
+    "q_into_bank_fC": -0.0652,
+    "KCL_residual_fC": -0.00017
+   },
+   {
+    "phase": "F->G",
+    "t_ps": [
+     359.137,
+     363.355
+    ],
+    "dt_ps": 4.218,
+    "q_supply_fC": 1.914,
+    "q_HSleg_fC": 1.914,
+    "q_to_ground_via_FW_fC": 33.0147,
+    "q_into_inductor_fC": 3.0667,
+    "q_into_CNA_fC": -6.3428,
+    "q_gate_HS_fC": -10.796,
+    "q_gate_FW_fC": -17.0287,
+    "q_into_bank_fC": 0.3091,
+    "KCL_residual_fC": 0.0001
+   },
+   {
+    "phase": "G->H",
+    "t_ps": [
+     363.355,
+     365.855
+    ],
+    "dt_ps": 2.5,
+    "q_supply_fC": 1.4395,
+    "q_HSleg_fC": 1.4395,
+    "q_to_ground_via_FW_fC": 5.8709,
+    "q_into_inductor_fC": -0.9244,
+    "q_into_CNA_fC": -1.4477,
+    "q_gate_HS_fC": -0.4791,
+    "q_gate_FW_fC": -1.5801,
+    "q_into_bank_fC": 2.6546,
+    "KCL_residual_fC": -8e-05
+   },
+   {
+    "phase": "H->I",
+    "t_ps": [
+     365.855,
+     459.0
+    ],
+    "dt_ps": 93.145,
+    "q_supply_fC": 0.8149,
+    "q_HSleg_fC": 0.8149,
+    "q_to_ground_via_FW_fC": 21.3356,
+    "q_into_inductor_fC": -18.4055,
+    "q_into_CNA_fC": -0.8503,
+    "q_gate_HS_fC": -0.2724,
+    "q_gate_FW_fC": -0.9925,
+    "q_into_bank_fC": -0.5616,
+    "KCL_residual_fC": -0.0
+   }
+  ]
+ },
+ "D_SIMULTANEOUS_CONDUCTION_TEST": {
+  "answer": "CONFIRMED -- both devices conduct, and the dominant window is the TURN-ON edge, not the turn-off edge.",
+  "windows_at_100uA_threshold_ps": [
+   [
+    317.89,
+    332.77
+   ],
+   [
+    345.14,
+    357.14
+   ],
+   [
+    359.14,
+    365.05
+   ]
+  ],
+  "note_on_the_middle_window": "345.14-357.14 is the nominal on-phase with gfw3 = 0; that current is the 10 um freewheel device's subthreshold/junction leakage (200-350 uA), not gate-driven cross-conduction.",
+  "peak_simultaneous_current_uA": 3580.0,
+  "peak_at_ps": 359.137,
+  "direct_trace": "from 315.00 to 345.01 ps I(HS) runs 1.3-6.1 mA CONTINUOUSLY while I(bank) is 0.00 uA and V(na) is pinned between 0.03 and 0.38 V by the still-on freewheel device.",
+  "turn_off_edge_the_briefs_hypothesis": "REAL and confirmed -- both gates ramp together over 357.137-359.137 ps and the peak simultaneous current 3580 uA occurs there. But its CHARGE contribution is net -10.356 fC (charge RETURNED to the supply, dominated by gate-drive displacement), so it is not the sink."
+ },
+ "E_FIXES_one_at_a_time_on_the_FULL_CHAIN_deck": {
+  "method": "byte-identical copy of qal/ptusk/SR_s4_ptu_T200_dv1200_L1_t12.cir; ONLY the eight top-up gate PWL lines are rewritten (plus LTU3/LTU4 for C9, declared). Hop timings, cells, boundary rule and every .measure point unchanged. Top-up and hop current zeros RE-PROBED and iterated on the RESULT deck to A6 closure.",
+  "rows": {
+   "C1_committed": {
+    "rail3_V": 0.671431,
+    "delta_vs_free_mV": -94.45,
+    "Qdel_over_Qsup": 0.058,
+    "A2_V": 0.288602,
+    "A2_pass": false
+   },
+   "C2_break_before_make_at_TURN_ON": {
+    "rail3_V": 0.725444,
+    "delta_vs_C1_mV": 54.01,
+    "Qdel_over_Qsup": 0.04753,
+    "A2_V": 0.327119,
+    "A2_pass": false,
+    "A6_worst_uA": 0.023141
+   },
+   "C3_plus_dead_time_at_TURN_OFF": {
+    "rail3_V": 0.750308,
+    "delta_vs_C2_mV": 24.86,
+    "Qdel_over_Qsup": 0.07773,
+    "A2_V": 0.34972,
+    "A2_pass": false,
+    "A6_worst_uA": 0.363163
+   },
+   "C9_diode_freewheel_L10nH_t_on35ps": {
+    "rail3_V": 0.94996,
+    "delta_vs_C3_mV": 199.65,
+    "Qdel_over_Qsup": 0.51576,
+    "A2_V": 0.46503,
+    "A2_pass": true,
+    "A6_worst_uA": 0.223412
+   }
+  },
+  "negative_results_measured_on_the_fixture_and_kept": {
+   "C4_close_OUT_before_the_HS_is_on": "WORSE (-236 mV). With the switch node still at 0 the bank rings into the L-Cna tank at I = V*sqrt(C/L) = 2.2 mA and drains itself before the pulse starts.",
+   "C5_textbook_order_without_a_settle": "WORSE (-212 mV). The freewheel gate's own turn-off feedthrough yanks the 8 fF switch node to -0.44 V, the freewheel device's drain-bulk junction forward-biases, and the bank discharges through the inductor into that diode.",
+   "C7_delete_the_OUT_switch_and_cut_the_freewheel_at_the_zero": "WORSE (-97 mV), and it CONFIRMS AMENDMENT A1b. With the OUT switch gone the inductor and the 8 fF switch node form a 56 GHz series resonator ACROSS the bank (Z0 = 354 ohm, Q ~ 3); the bank does not DC-drain, it rings, and the ring is lossy. The OUT switch is necessary.",
+   "Cna_sweep_8_20_50_fF": "bigger is WORSE at this pulse size: the switch-node charging cost Cna*Vin (9.6 / 24 / 60 fC) overtakes the whole delivery budget.",
+   "switch_width_sweep_10_5_3_2_um": "no ratio win. Both the delivered charge (via Ron) and the gate charge scale with W, so sizing cannot move Qdel/Qsup."
+  }
+ },
+ "F_THE_RE_MEASURED_HEADLINE": {
+  "rail3_at_its_own_boundary_V": {
+   "free_control": 0.765884,
+   "committed_pulsed": 0.671431,
+   "FIXED_C9": 0.94996,
+   "switched_clamp_COMMITTED": 1.069085
+  },
+  "rise_above_the_no_top_up_control_mV": 184.076,
+  "rise_above_the_committed_pulsed_row_mV": 278.529,
+  "pmos_overdrive_over_measured_Vtp_0.4402734_V": {
+   "free": 0.325611,
+   "committed_pulsed": 0.231158,
+   "FIXED_C9": 0.509687,
+   "clamp": 0.628812
+  },
+  "A2_delivered_HIGH": "0.465030 V -- the FIRST pulsed row ever to clear the 0.4400 V gate",
+  "Qdel_over_Qsup": {
+   "committed": 0.058,
+   "FIXED_C9": 0.51576,
+   "improvement": "8.9x"
+  },
+  "efficiency": {
+   "Q_supply_fC": 87.783,
+   "Q_delivered_fC": 45.275,
+   "E_supply_fJ": 105.339,
+   "E_into_banks_fJ": 20.663,
+   "eta_energy": 0.1962,
+   "eta_including_gate_drive": 0.186,
+   "E_gate_drive_fJ": 5.76,
+   "gate_drive_vs_C2": "5.760 fJ against 29.067 fJ -- a 5.0x cut, and that is the mechanism of the fix"
+  },
+  "DID_IT_REACH_Qdel_over_Qsup_>=_1": "NO. Pre-registered acceptance B3 is NOT met and E4 as I stated it is FALSIFIED.",
+  "WHY_NOT_with_the_ledger": "the two 10 um switches' own gate charge is ~20 fC per 1.5 V transition and the switch node costs Cna*(Vin) per pulse, while the whole useful DCM pulse at the best window-compatible point carries only ~20 fC. The converter's signal is the same order as its own switching overhead. That is a SCALE limit, not a timing bug: at a 100 fF bank needing ~0.3 V, a hard-switched buck's gate and switch-node charge is comparable to what it can deliver. The 16x loss that was reported is NOT that limit -- it was the 32 ps cross-conduction on top of it."
+ },
+ "G_THE_CHAIN_WITH_A_WORKING_BUCK": {
+  "per_gate_settling_every_stage": {
+   "1": {
+    "0": {
+     "v_o": -3e-06,
+     "kind": "pulldown",
+     "settle_pct": 100.0
+    },
+    "1": {
+     "v_o": 1.207031,
+     "kind": "pullup",
+     "settle_pct": 99.95
+    },
+    "2": {
+     "v_o": -3e-06,
+     "kind": "pulldown",
+     "settle_pct": 100.0
+    },
+    "3": {
+     "v_o": 1.207031,
+     "kind": "pullup",
+     "settle_pct": 99.95
+    },
+    "4": {
+     "v_o": -3e-06,
+     "kind": "pulldown",
+     "settle_pct": 100.0
+    },
+    "5": {
+     "v_o": 1.207031,
+     "kind": "pullup",
+     "settle_pct": 99.95
+    },
+    "6": {
+     "v_o": -3e-06,
+     "kind": "pulldown",
+     "settle_pct": 100.0
+    },
+    "7": {
+     "v_o": 1.207031,
+     "kind": "pullup",
+     "settle_pct": 99.95
+    }
+   },
+   "2": {
+    "0": {
+     "v_o": 1.134805,
+     "kind": "pullup",
+     "settle_pct": 101.31
+    },
+    "1": {
+     "v_o": 0.487075,
+     "kind": "pulldown",
+     "settle_pct": 56.51
+    },
+    "2": {
+     "v_o": 1.134805,
+     "kind": "pullup",
+     "settle_pct": 101.31
+    },
+    "3": {
+     "v_o": 0.487075,
+     "kind": "pulldown",
+     "settle_pct": 56.51
+    },
+    "4": {
+     "v_o": 1.134805,
+     "kind": "pullup",
+     "settle_pct": 101.31
+    },
+    "5": {
+     "v_o": 0.487075,
+     "kind": "pulldown",
+     "settle_pct": 56.51
+    },
+    "6": {
+     "v_o": 1.134805,
+     "kind": "pullup",
+     "settle_pct": 101.31
+    },
+    "7": {
+     "v_o": 0.487075,
+     "kind": "pulldown",
+     "settle_pct": 56.51
+    }
+   },
+   "3": {
+    "0": {
+     "v_o": -0.003074,
+     "kind": "pulldown",
+     "settle_pct": 100.32
+    },
+    "1": {
+     "v_o": 0.286088,
+     "kind": "pullup",
+     "settle_pct": 30.12
+    },
+    "2": {
+     "v_o": -0.003074,
+     "kind": "pulldown",
+     "settle_pct": 100.32
+    },
+    "3": {
+     "v_o": 0.286088,
+     "kind": "pullup",
+     "settle_pct": 30.12
+    },
+    "4": {
+     "v_o": -0.003074,
+     "kind": "pulldown",
+     "settle_pct": 100.32
+    },
+    "5": {
+     "v_o": 0.286088,
+     "kind": "pullup",
+     "settle_pct": 30.12
+    },
+    "6": {
+     "v_o": -0.003074,
+     "kind": "pulldown",
+     "settle_pct": 100.32
+    },
+    "7": {
+     "v_o": 0.286088,
+     "kind": "pullup",
+     "settle_pct": 30.12
+    }
+   },
+   "4": {
+    "0": {
+     "v_o": 0.601738,
+     "kind": "pullup",
+     "settle_pct": 68.83
+    },
+    "1": {
+     "v_o": 0.300529,
+     "kind": "pulldown",
+     "settle_pct": 65.62
+    },
+    "2": {
+     "v_o": 0.601738,
+     "kind": "pullup",
+     "settle_pct": 68.83
+    },
+    "3": {
+     "v_o": 0.300529,
+     "kind": "pulldown",
+     "settle_pct": 65.62
+    },
+    "4": {
+     "v_o": 0.601738,
+     "kind": "pullup",
+     "settle_pct": 68.83
+    },
+    "5": {
+     "v_o": 0.300529,
+     "kind": "pulldown",
+     "settle_pct": 65.62
+    },
+    "6": {
+     "v_o": 0.601738,
+     "kind": "pullup",
+     "settle_pct": 68.83
+    },
+    "7": {
+     "v_o": 0.300529,
+     "kind": "pulldown",
+     "settle_pct": 65.62
+    }
+   }
+  },
+  "settling_worst_by_stage": {
+   "free": [
+    99.95,
+    60.65,
+    39.2,
+    63.52
+   ],
+   "committed_pulsed": [
+    99.95,
+    59.75,
+    34.07,
+    60.74
+   ],
+   "FIXED_C9": [
+    99.95,
+    56.51,
+    30.12,
+    65.62
+   ]
+  },
+  "A1_still_FAILS": "worst gate 30.12% against the 90% bar. Raising the rail does NOT make the pipeline compute.",
+  "why_stage_3_settling_falls_while_the_signal_improves": "settling is V(o)/V(rail); the rail grew 0.765884 -> 0.949960 while the pull-up output moved 0.3002 -> 0.2861 V, so the PERCENTAGE falls. The quantity that matters for the next stage, the delivered HIGH, ROSE 0.288602 -> 0.465030 V and cleared |Vtp| for the first time.",
+  "separation_mV_by_bank": {
+   "free": [
+    1207.0345,
+    687.0171,
+    305.4487,
+    248.5858
+   ],
+   "committed_pulsed": [
+    1207.0344,
+    673.0638,
+    233.9964,
+    158.3333
+   ],
+   "FIXED_C9": [
+    1207.0344,
+    647.7306,
+    289.1614,
+    301.2093
+   ]
+  },
+  "separation_per_hop_ratio_geomean": {
+   "free": 0.5905,
+   "committed_pulsed": 0.5081,
+   "FIXED_C9": 0.6296
+  },
+  "THE_LAST_HOP_STOPS_FADING": "under C9 the bank3 -> bank4 separation ratio is 1.0417 -- separation GROWS across that hop (289.16 -> 301.21 mV) instead of decaying. Under the committed pulsed row the same ratio is 0.6766.",
+  "PER_HOP_RAIL_COLLAPSE_RATIO_the_users_actual_question": {
+   "definition": "receiving bank's rail at its own boundary divided by the source bank's rail at its own boundary, for both hops (1->3 and 2->4), geometric mean",
+   "free_control": 0.60378,
+   "committed_pulsed": 0.55565,
+   "C2": 0.59875,
+   "C3": 0.6201,
+   "FIXED_C9": 0.78358,
+   "committed_claim_0.611_to_0.659": "my own measurement of the committed decks gives 0.5557 (pulsed) and 0.6038 (free), so the brief's 0.611-0.659 band brackets the free control and is optimistic for the pulsed row."
+  },
+  "DEPTH_AT_WHICH_THE_RAIL_REACHES_THE_THERMODYNAMIC_FLOOR": {
+   "floor": "2(kT/q)ln2 = 35.838 mV at 300 K (Swanson-Meindl unity-gain minimum supply)",
+   "start": "rail1 = 1.207605 V at its own boundary",
+   "re_derived_from_the_NEW_ratio_not_the_old_one": {
+    "free_control": 7,
+    "committed_pulsed": 6,
+    "C2": 7,
+    "C3": 8,
+    "FIXED_C9": 15
+   },
+   "against_the_PDK_sigma_Vt_3.42_mV_MEASURED_provenance": {
+    "free": 12,
+    "committed_pulsed": 10,
+    "FIXED_C9": 25
+   },
+   "against_the_briefs_6.44_mV_ASSUMED_provenance_not_located": {
+    "free": 11,
+    "committed_pulsed": 9,
+    "FIXED_C9": 22
+   }
+  },
+  "DEPTH_ON_SEPARATION_rather_than_rail": {
+   "floor_35.838mV": {
+    "free": 7,
+    "committed_pulsed": 6,
+    "FIXED_C9": 8
+   },
+   "floor_3.42mV": {
+    "free": 12,
+    "committed_pulsed": 9,
+    "FIXED_C9": 13
+   }
+  },
+  "DOES_THE_SIGNAL_STILL_FADE": "YES, but markedly less, and the user's physical objection is vindicated. The rail no longer collapses the same way: the per-hop ratio goes 0.556 -> 0.784 and the depth at which the rail reaches 35.838 mV goes 6 -> 15 hops. The SIGNAL separation still decays, but the per-hop ratio improves 0.508 -> 0.630, the depth to the thermodynamic floor goes 6 -> 8, and at the last measured hop the separation stops decaying altogether (ratio 1.0417). What does NOT change is A1: the worst gate is still 30.12% settled, so the pipeline still does not compute."
+ },
+ "PRE_REGISTERED_EXPECTATIONS_scored": {
+  "E1_shoot_through_is_real": "CONFIRMED",
+  "E2_turn_ON_dominates_not_turn_OFF": "CONFIRMED -- 87.54% of the supply charge leaves before the OUT switch closes; the turn-off edge contributes net -10.356 fC (returned to the supply), well inside the '< 10 fC' falsifier and of the opposite sign",
+  "E3_quantitative": {
+   "Q_supply_predicted_80_to_200_fC": "MISSED LOW -- MEASURED 65.40 fC on the one-bank fixture (the committed 160.2 fC is both banks over the whole chain run)",
+   "Q_into_inductor_predicted_5_to_12_fC": "WRONG SIGN -- MEASURED -6.65 fC net; the inductor is a net sink, not a store",
+   "Q_shoot_through_predicted_70_to_190_fC": "IN RANGE -- MEASURED 72.19 fC to ground",
+   "CNA_net_predicted_abs_below_12_fC": "CONFIRMED -- MEASURED 0.054 fC"
+  },
+  "E4_the_fix_will_take_Qdel_over_Qsup_above_1": "FALSIFIED as stated. Best achieved 0.516 on the chain, 0.394 on the fixture. The ideal DCM bound Vin/Vout = 1.5666 is not reachable at this scale because the switches' gate charge is the same order as the pulse charge.",
+  "E5_the_pipeline_verdict_survives": "CONFIRMED -- A1 still fails at 30.12%"
+ },
+ "ACCEPTANCE_vs_PRE_REGISTRATION": {
+  "B1_instrument_check": "PASS (digit-exact, both rows)",
+  "B2_closed_charge_ledger": "PASS (-0.00011% residual, well inside the 2% bar)",
+  "B3_Qdel_over_Qsup_>=_1": "FAIL (0.516). Reported as a failure, with the limiting loss named and quantified.",
+  "B4_rail_above_the_0.765884_V_control": "PASS (0.949960 V, +184.076 mV)",
+  "B5_one_change_at_a_time": "PASS (C2, C3, C9 on the chain; C4-C8 on the fixture, each with its own mechanism)",
+  "B6_chain_re_run": "PASS (per-gate settling every stage, separation by depth, new collapse ratio, re-derived depth)"
+ },
+ "DISCLOSURES": {
+  "cache": "the first cache build raced three concurrent Xyce processes and produced one 380-param 'nonzero-only' fallback .so. That cache was DELETED and rebuilt serially; both final .so are full 782-param builds.",
+  "Cna_8fF": "ASSUMED, inherited unchanged from the run under test so the comparison is like-for-like. Swept {8,20,50} fF; bigger is worse at this pulse size.",
+  "C_bank_100fF_on_the_fixture": "ASSUMED, DERIVED from the committed pair (9.26 fC delivered / 85.64 mV rail rise = 108 fF). The fixture is a mechanism instrument; every headline number is from the full chain deck.",
+  "the_6.44_mV_floor": "I could not locate it in qal/. The committed floor is sigma_Vt = 3.42 mV. Depths are reported against both and labelled.",
+  "the_528.68_22.89_series": "belongs to qal/restore5's UNRESTORED ADJACENT cascade, not to this skip chain -- qal/ptusk/SK_SEPARATION.json already records that mis-attribution, and that from bank 2 on the sign ALTERNATES. I report the skip chain's own series instead.",
+  "hop_zero_retiming": "A8 required hop 2's switch-open to move 498.096 -> 498.221 ps under C9. That is a hop-gate change beyond the top-up gate lines, and it is declared. Hop 1 needed none (I(L1) = 0.0004 uA at its committed open).",
+  "what_is_NOT_re_opened": "the threshold-invariance of the LC hop, and the 23.213 vs 12.7467 fJ energy exclusion. Neither is touched by this run."
+ },
+ "BRIEFS_OWN_ARITHMETIC_verified_or_refuted": {
+  "the_briefs_claim": "I(LTU3) peaks at 1169.11 uA with a 12 ps on-time -> ~7 fC entered the inductor, but 160.2 fC left the supply: ~23x more charge left the supply than entered the inductor.",
+  "VERDICT": "CORRECT IN SUBSTANCE, WRONG IN DETAIL -- and the substance is what matters.",
+  "detail_corrections_MEASURED_on_my_own_run_of_the_committed_t12_deck": {
+   "I_LTU3_peak_uA": {
+    "brief": 1169.112,
+    "MEASURED": 2123.757,
+    "explanation": "1169.112 is qal/ptusk/SK_VERDICT.json's I_LTU3_uA.at_pulse_end for the t_on=24 row -- not a peak, and not the t12 deck. The t12 deck's ITU3PK measures 2123.757 uA."
+   },
+   "Q_from_supply_fC": {
+    "brief": 160.2,
+    "MEASURED": 131.0601,
+    "note": "whole run, both banks, QSUP_D - QSUP_Z, t0-referenced"
+   },
+   "Qdel_over_Qsup": {
+    "brief": 0.058,
+    "MEASURED_on_the_t12_deck": -0.01313,
+    "explanation": "0.058 is qal/ptu/COMPARE.json rows[26], the t_on=24 row. The t12 deck that produced the quoted rail3 = 0.671431 delivers NEGATIVE charge: QTU3 = -2.348 fC, QTU4 = +0.627 fC."
+   },
+   "the_ratio": {
+    "brief": "23x",
+    "MEASURED_like_for_like": "10.3x (131.06 fC drawn vs 12.74 fC = 0.5*2123.757uA*12ps nominally entering the inductor), and the delivered charge is NEGATIVE, so the true statement is stronger than the brief's: the bank LOSES charge."
+   }
+  },
+  "the_substance": "the brief's inference -- that far more charge leaves the supply than can reach the inductor or the bank, and that this gap IS the result -- is CONFIRMED by a ledger that closes to -0.00011%: 87.54% of the supply charge leaves before the output switch even closes."
+ }
+}

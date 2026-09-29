@@ -1,0 +1,71 @@
+{
+ "_doc": "SKEPTIC reproduction check: MY from-scratch decks (own cache, own zeros, own extractor from raw .prn) vs the COMMITTED rows.",
+ "_why": "if my harness reproduces the committed free and clamp rows exactly, any DIFFERENCE I report on the pulsed rows is real and not a harness artefact.",
+ "s4_free_T200_dv1200_L1_t12": {
+  "committed_tag": "r_s4_free_T200_dv1200_L5_W10_t12_f0",
+  "settling_worst_by_stage": {
+   "mine": {
+    "1": 99.95,
+    "2": 60.65,
+    "3": 39.2,
+    "4": 63.52
+   },
+   "committed": {
+    "1": 99.95,
+    "2": 60.65,
+    "3": 39.2,
+    "4": 63.52
+   },
+   "IDENTICAL": true
+  },
+  "rail_max_abs_diff_V": 2.999999999997449e-05,
+  "A2": {
+   "mine": 0.399548,
+   "committed": 0.399561
+  },
+  "tz_ps": {
+   "mine": [
+    97.9774,
+    94.946
+   ],
+   "committed": [
+    97.977,
+    94.946
+   ]
+  }
+ },
+ "s4_rtu_T200_dv1200_L1_t20": {
+  "committed_tag": "r_s4_rtu_T200_dv1200_L1_W10_t20_f0",
+  "settling_worst_by_stage": {
+   "mine": {
+    "1": 99.95,
+    "2": 50.56,
+    "3": 49.65,
+    "4": 95.66
+   },
+   "committed": {
+    "1": 99.95,
+    "2": 50.56,
+    "3": 49.65,
+    "4": 95.66
+   },
+   "IDENTICAL": true
+  },
+  "rail_max_abs_diff_V": 4.000000000004e-06,
+  "A2": {
+   "mine": 0.455176,
+   "committed": 0.455176
+  },
+  "tz_ps": {
+   "mine": [
+    103.6805,
+    101.0165
+   ],
+   "committed": [
+    103.681,
+    101.016
+   ]
+  }
+ },
+ "VERDICT": "REPRODUCED. Per-stage worst-gate settling identical to <0.01 pp on both control forms; rails agree to ~3e-5 V (I interpolate between printed points, Xyce's .measure interpolates on its own finer internal grid); hop zeros agree to 1e-3 ps. The harness is sound and the comparison is like-for-like."
+}

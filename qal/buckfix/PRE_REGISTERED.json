@@ -1,0 +1,103 @@
+{
+  "_doc": "qal/buckfix -- THE OBJECTION RUN. The user objects, on physics, that a buck converter delivering into a capacitive bank MUST raise that bank's voltage, and that the committed pulsed-inductor top-up reporting Qdel/Qsup = 0.058 (a ~16x charge DIVIDER) and a rail BELOW the no-top-up control is a statement about THIS IMPLEMENTATION, not about buck converters. This file is written BEFORE any deck is built or run in this directory, and is the ONLY file in qal/buckfix at the moment it is written.",
+  "date": "2026-09-29",
+  "workdir": "/usr/local/src/stat-sim/qal/buckfix",
+  "own_cache": "PYMS_VAE_CACHE=/tmp/claude-1001/-usr-local-src/4921ad0c-f17b-4b84-986a-5917c9ebd2a6/scratchpad/vae_cache_buckfix -- MY OWN, created empty, nothing copied in from skiptu/ptu/ptusk.",
+  "reads_not_writes": "qal/ptu, qal/ptusk and qal/skiptu are READ ONLY from here. Nothing in this run writes into them.",
+
+  "PROVENANCE_OF_THE_NUMBERS_I_AM_OBJECTING_TO": {
+    "the_brief_says": "stat-sim 96c82f1, qal/ptu -- rail3 0.671431 / 0.739127 V, Qdel/Qsup 0.058, control 0.765884 V, I(LTU3) peak 1169.11 uA, t_on 12 ps, 160.2 fC from supply.",
+    "WHERE_THEY_ACTUALLY_LIVE_measured_on_disk": "0.671431 and 0.739127 do NOT appear in qal/ptu. They appear in qal/ptusk/SK_VERDICT.json, SK_POLICE.json and SK_A8_CONTROLLED.json -- an UNCOMMITTED (git-untracked) skeptic re-run. qal/ptu/COMPARE.json's corresponding rows read rail3 = 0.668973 (t_on 12) and 0.737441 (t_on 24) with topup_Qmult -0.011 and +0.058. The control 0.765884 IS in qal/ptu/COMPARE.json rows[2]. So the brief's digits are the ptusk re-extraction of the same circuit. I debug the ptusk decks, because those are the ones that produced the quoted digits, and I cross-check against the ptu row.",
+    "SOURCE_DECKS_with_mtimes_and_md5_recorded_BEFORE_I_touch_anything": {
+      "/usr/local/src/stat-sim/qal/ptusk/SR_s4_ptu_T200_dv1200_L1_t12.cir": {"mtime": "2026-09-29 03:53:03.666142593 -0700", "md5": "096cc3057877cf2bbe9078a8896adfaf"},
+      "/usr/local/src/stat-sim/qal/ptusk/SR_s4_ptu_T200_dv1200_L1_t24.cir": {"mtime": "2026-09-29 03:54:23.039247021 -0700", "md5": "a125f41cd070989da6079df337a4c40e"},
+      "/usr/local/src/stat-sim/qal/ptusk/SR_s4_free_T200_dv1200_L1_t12.cir": {"mtime": "2026-09-29 03:44:51.135457288 -0700", "md5": "2d35cd6de0b93fac4d248c613922daa9"},
+      "/usr/local/src/stat-sim/qal/ptusk/SK_VERDICT.json": {"mtime": "2026-09-29 03:56:53.197348871 -0700", "md5": "048a3223bdd494f1efb60d913e523d65"},
+      "/usr/local/src/stat-sim/qal/ptu/chain.py": {"mtime": "2026-09-29 02:13:41.360040853 -0700"}
+    }
+  },
+
+  "WHAT_I_HAVE_ALREADY_READ_and_it_is_a_SOURCE_LEVEL_FINDING_not_a_measurement": {
+    "status": "READ FROM SOURCE, NOT YET MEASURED. Recorded here before the first run so that the measurement is a test of it, not a rationalisation after it.",
+    "the_gate_schedule_of_the_reported_deck_MEASURED_from_the_file": {
+      "VGTU3_HS_pMOS_gate": "PWL(0 1.5 313.137p 1.5 317.137p 0 357.137p 0 359.137p 1.5) -- HS pMOS ON from ~314 ps, OFF at ~358 ps",
+      "VGFW3_FW_nMOS_gate": "PWL(0 1.5 321.137p 1.5 345.137p 0 357.137p 0 359.137p 1.5) -- FW nMOS ON until it begins a 24 ps release at 321.137 ps, fully off at 345.137 ps; back ON at 357.137-359.137 ps",
+      "VGTO3_OUT_isolation_nMOS": "PWL(0 0 343.137p 0 345.137p 1.5 363.355p 1.5 365.355p 0) -- OUT CLOSED only from 345.137 to 363.355 ps"
+    },
+    "the_generator_says_it_out_loud": "qal/ptu/chain.py topup_dev_corrected() docstring, verbatim: 'HS pMOS ON at t_fire (while the LS still clamps na at 0); LS nMOS OFF over SLEW ps, ending at a = t_fire + SLEW + 4*EDGE; OUT switch CLOSES last'. SLEW = 24.0 ps, EDGE = 2 ps, so the prepared interval is 32 ps and the HS is deliberately turned on at its START.",
+    "DERIVED_consequence": "the high-side pMOS (w=10 um, from the 1.2 V tsup) and the freewheel nMOS (w=10 um, to ground) are BOTH fully ON, simultaneously, for roughly 24 ps -- from gtu3 crossing tsup-|Vtp| = 0.76 V at ~314.1 ps to gfw3 crossing Vtn = 0.44 V at ~338.1 ps -- and during that ENTIRE interval the OUT isolation switch is OPEN, so the inductor's far end is disconnected and carries no current. Every coulomb drawn from tsup in that window can only reach ground. This is not a dead-time error, it is an ANTI-dead-time: cross-conduction by construction, 60x longer than the ~0.4 ps turn-off overlap the brief hypothesised.",
+    "the_briefs_own_hypothesis": "the brief read the qal/skiptu deck q3_s4_T200_dv1200_L15_W10_t12_ptu.cir, whose turn-ON edge IS correctly dead-timed (FW off 303.977, HS on 309.977, 6 ps dead) and whose turn-OFF edge ramps both gates together over 321.977-323.977 ps. That read is CORRECT for the skiptu deck. The deck that produced the QUOTED DIGITS is the ptusk/ptu one above, whose turn-ON edge is the anti-dead-time. Both decks share the simultaneous turn-OFF ramp."
+  },
+
+  "PRE_STATED_EXPECTATION_on_the_shoot_through_hypothesis_with_explicit_falsifiers": {
+    "E1_shoot_through_is_REAL": {
+      "statement": "both devices ARE simultaneously conducting and that is where the charge goes.",
+      "confidence": "HIGH",
+      "falsifier": "if the simultaneous-conduction charge is a small fraction (<25%) of Q_supply, the hypothesis is refuted and I say so."
+    },
+    "E2_the_DOMINANT_term_is_the_TURN_ON_edge_not_the_turn_off_edge": {
+      "statement": "I predict >= 80% of the charge that leaves VTSUP in one pulse leaves during the TURN-ON cross-conduction window 313.137-345.137 ps, while the OUT switch is still open, and NOT at the 357.137-359.137 ps turn-off edge. I predict the turn-off edge contributes < 10 fC.",
+      "why_I_can_say_this_before_measuring": "it is read off the PWLs and the generator docstring, not guessed.",
+      "falsifier": "turn-off-edge charge exceeding turn-on-window charge, or turn-on-window charge below 50% of Q_supply. Either falsifies E2 and I report the brief's turn-off hypothesis as the correct one instead."
+    },
+    "E3_quantitative_prediction_DERIVED": {
+      "Q_supply_per_pulse_fC": "80 to 200 (the committed extraction says 160.2)",
+      "Q_into_inductor_fC": "5 to 12 (the brief derives ~7 from 0.5*I_pk*t_on)",
+      "Q_shoot_through_to_ground_fC": "70 to 190",
+      "Q_switch_node_CNA_net_over_full_cycle_fC": "|net| < 12 (8 fF x 1.2 V = 9.6 fC is its full swing, and it returns most of it)"
+    },
+    "E4_the_fix_will_work": {
+      "statement": "with break-before-make at BOTH edges and the OUT switch closed across the whole conduction+freewheel interval, Qdel/Qsup will rise ABOVE 1 and approach the ideal-buck bound.",
+      "the_ideal_bound_DERIVED_here_so_it_cannot_be_chosen_later": "for a DCM buck pulse with zero initial and final inductor current, Q_supply = area under I_L during the HS-on phase only, Q_delivered = area under I_L over on+off phases. With on-slope (Vin-Vout)/L and off-slope Vout/L, t_off/t_on = (Vin-Vout)/Vout, so Qdel/Qsup = (t_on+t_off)/t_on = Vin/Vout EXACTLY. At Vin = 1.2 V and Vout ~ 0.766 V that is 1.5666. This reproduces the user's 1.56x independently, from the converter equations, and I adopt it as the target.",
+      "falsifier": "if, with cross-conduction eliminated and measured to be eliminated, Qdel/Qsup still stays below 1, then the 16x loss is NOT the gate schedule and I must find and report the real sink with a closed ledger."
+    },
+    "E5_what_I_do_NOT_expect_to_change": {
+      "statement": "I do NOT expect a working buck to make the QAL pipeline pass. Raising rail3 to ~1.07 V is what the SWITCHED CLAMP already did (qal/ptu row 10), and the clamp still failed A1 at 49.65% worst-gate settling. So I expect the fixed converter to land near the clamp's rail, not above it, and I expect the pipeline verdict to be unchanged. I state this now so that a fixed converter is not sold afterwards as a fixed pipeline.",
+      "but": "the per-hop rail COLLAPSE RATIO and the separation-by-depth are genuinely open, because resupply is exactly the thing that changes them. I do not import the old 0.611-0.659 ratio. I measure the new one."
+    }
+  },
+
+  "ACCEPTANCE_CRITERIA_fixed_now": {
+    "B1_instrument_check": "reproduce the committed row digit-checked in THIS directory under MY OWN cache from a BYTE-IDENTICAL copy of qal/ptusk/SR_s4_ptu_T200_dv1200_L1_t12.cir and _t24.cir: rail3_at_bound 0.671431 / 0.739127 V and the free control 0.765884 V, relative error < 1e-5. If the instrument check fails, nothing else in this run reports.",
+    "B2_closed_charge_ledger": "every fC leaving VTSUP in one pulse accounted for, per phase, with KCL residual at the switch node na3 below 2% of Q_supply. If the ledger does not close, the INSTRUMENT is the defect and that is the finding.",
+    "B3_working_buck": "Qdel/Qsup >= 1, with the ideal DCM bound Vin/Vout ~ 1.57 as the target. Efficiency reported as Q_delivered/Q_supply and as E_delivered/E_supply, with the limiting loss named and quantified.",
+    "B4_rail_above_control": "rail3 at its own boundary ABOVE the 0.765884 V no-top-up control, measured on the same chain deck with the same extractor.",
+    "B5_one_change_at_a_time": "each fix is a single-variable edit to the gate schedule with every other timing held at its committed absolute value where possible, and each change's effect is reported separately. Any change that requires a ZCS re-probe gets one (A6 discipline).",
+    "B6_chain_re_run": "per-gate settling at EVERY stage, HIGH/LOW separation by bank depth, and the NEW per-hop rail collapse ratio, all from the fixed-converter chain deck, extracted with the same convention as the committed rows (settling = V(o)/V(rail_k) for a pull-UP cell, 1 - V(o)/V(rail_k) for a pull-DOWN cell, at that bank's own boundary; separation = min(pull-UP output) - max(pull-DOWN output) within a bank at its own boundary). Worst gate, never an average."
+  },
+
+  "TWO_IMPORTED_CLAIMS_I_COULD_NOT_VERIFY_recorded_BEFORE_measuring": {
+    "the_6.44_mV_floor": "the brief calls 6.44 mV 'the corrected 6.44 mV 1-sigma floor'. I cannot find 6.44 mV as a noise/sigma floor anywhere in qal/. The committed floor is sigma_Vt = 3.42 mV (qal/vtreq/analyse.py line 18, qal/README.md Q2, and qal/ptusk/SK_SEPARATION.json which itself notes the figure does not appear in qal/restore5). The only 6.44 on disk is qal/vtreq/row_o21_d300B.json E_gate_drive_fJ = 6.441. I will report depth-crossing against BOTH 3.42 mV (MEASURED provenance) and 6.44 mV (ASSUMED, from the brief, provenance not located), and say which is which.",
+    "the_separation_series": "528.68 / 22.89 / 1.52 / 0.122 / 0.010 / 0.001 mV is NOT a skip-chain series. qal/ptusk/SK_SEPARATION.json reproduces it exactly and attributes it to qal/restore5's UNRESTORED ADJACENT cascade (k6, T300 control), and further records that from bank 2 the sign ALTERNATES negative -- the cascade inverts, it does not merely fade. I therefore report my new separation-by-depth against the skip chain's OWN committed series, and quote the restore5 series only as the adjacent-cascade reference it is."
+  },
+
+  "METHOD_in_order": [
+    "1. This file (sole file on disk in qal/buckfix at write time).",
+    "2. B1 instrument check: byte-identical copies of the three ptusk decks, run here under my own cache, digit-checked.",
+    "3. A STANDALONE BUCK FIXTURE (buck_*.cir): tsup, HS pMOS, FW nMOS, CNA, LTU, RTU, OUT transmission gate, into an explicit pre-charged bank capacitor. Small, seconds to run, one mechanism only. Every branch carries a 0 V ammeter and a 1F integrator; phase boundaries are .measure FIND points so each phase's charge is a difference of two integrator reads. t0-referenced at 0.5 ps to remove the pedestal.",
+    "4. THE CHARGE AUDIT on the fixture at the committed schedule, per phase, to closure.",
+    "5. THE SIMULTANEOUS-CONDUCTION TEST: I(HS) and I(FW) printed together across the whole prepared interval AND across the turn-off edge; charge lost to cross-conduction quantified at each edge separately.",
+    "6. FIXES, one at a time, each re-audited on the fixture: C2 = break-before-make at turn-ON only; C3 = C2 + dead time at turn-OFF; C4 = C3 + OUT-switch window covering the whole conduction and freewheel, cut at a RE-PROBED inductor zero.",
+    "7. The winning schedule transplanted into the full chain deck; ZCS re-probed; the headline re-measured (rail, Qdel/Qsup, efficiency).",
+    "8. The chain re-run: per-gate settling every stage, separation by depth, new per-hop collapse ratio, and the depth at which the rail reaches 2(kT/q)ln2 = 35.838 mV at 300 K re-derived from the NEW ratio, not the old one."
+  ],
+
+  "SIM_DISCIPLINE": {
+    "cache": "own PYMS_VAE_CACHE, created empty, nothing copied in",
+    "models": "sg13_lv via qal/sg13lv_compat.sp, which ZEROES ad/as/pd/ps -- so device numbers are LOWER bounds and the switch-node capacitance MUST be explicit (CNA, AMENDMENT A6). CNA = 8 fF is ASSUMED, inherited from the run under test so the comparison is like-for-like, and swept in the fixture.",
+    "psp103": ".hdl + sg13g2_psp103_tt.lib",
+    "runtime": "every deck < 4 min",
+    "metering": "1F integrators or INTEG-I(Vsrc)+PARAM only; every 1F integrator t0-referenced at 0.5 ps to remove its pedestal",
+    "zeros": "true current zeros RE-PROBED per L, per hop and per top-up bank, separately, for EVERY schedule change",
+    "forbidden": "vt/gmin adjustments",
+    "va_modules": "unique .va module names if any are added"
+  },
+
+  "HONESTY_CLAUSES": {
+    "labels": "every number labelled MEASURED / DERIVED / ASSUMED.",
+    "a_result_that_contradicts_circuit_physics_is_a_defect_until_proven_otherwise": "that is the standing rule this run exists to apply.",
+    "if_the_converter_is_correctly_built": "if the cross-conduction turns out not to be the sink, I must still close the ledger and name where the charge goes. 'It just does' is not an answer and I will not write one.",
+    "if_the_fix_works_but_the_pipeline_still_fails": "that is TWO results and I report them as two: the converter measurement was wrong, AND the pipeline verdict survives (or does not) on its own evidence.",
+    "no_post_hoc_metric": "B1-B6 and E1-E5 are fixed above."
+  }
+}

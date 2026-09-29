@@ -1,0 +1,20 @@
+{
+ "role": "SKEPTIC independent re-run",
+ "one_variable_experiment": {
+  "what": "Identical chain deck, identical L=10nH, TON=40ps, identical fire/dead-time/OUT-switch timing. ONLY the freewheel nMOS gate waveform differs. This isolates the prior agent's claimed mechanism; they never ran it.",
+  "K1_buck_drivenFW": "FW gate HIGH at rest, off before the pulse, on for the freewheel -> rail3 0.720271, Qdel/Qsup 0.20543",
+  "K2_fwlate_activeFW": "FW gate LOW at rest, pulsed HIGH only for the freewheel window (no pre-pulse feedthrough) -> rail3 0.777028, Qdel/Qsup 0.27256",
+  "K1_nofw_diodeFW": "FW gate LOW always; drain-bulk junction freewheels -> rail3 0.990626, Qdel/Qsup 0.84545",
+  "conclusion": "Every form of ACTIVELY driving the freewheel nMOS loses to leaving its gate at 0. K2 removes the pre-pulse feedthrough entirely and still loses badly, so the harm is not only feedthrough: an actively driven nMOS is BIDIRECTIONAL and lets the tank drain back to ground, while the junction diode is a RECTIFIER and cannot. In this resonant regime the freewheel must be one-way."
+ },
+ "instrument_findings": [
+  "sg13lv_compat.sp does NOT zero ad/as/pd/ps: the subckt declares them but the M1 line forwards only W and L, so PSP103 uses its instance defaults ABSOURCE/ABDRAIN = 1.0e-12 m^2 (PSP103_module.include:146,149; IPRco = instance param). C9's entire freewheel depends on that junction.",
+  "Xyce .measure FIND AT= disagrees with true interpolation by ~40 mV on the fast-moving source rails (rail1@199ps mt0 1.207605 vs true 1.164547; rail2@399ps 1.106073 vs 1.066071), ~0.3-1.9 mV on slow rails. Every rail-ratio in this campaign inherits it.",
+  "VAE codegen is term-order non-deterministic: ginac.cpp is byte-identical across builds (md5 67715d72095ecff7d39aac6993c7f556) but eval.cpp differs in 4746 lines of sum/product ordering. Cross-build reproducibility is therefore ~1%, not digit-exact. A 'rel err 0.000e+00' check that reuses the same .so is a determinism check, not an independence check.",
+  "The brief's 'corrected 6.44 mV 1-sigma floor' is not in the corpus as a voltage; 6.4414 appears only as fJ/bit in qal/bound/RESULTS.json. The committed floor is sigma_Vt = 3.42 mV."
+ ],
+ "process_disclosure": [
+  "I hit the PyMS VAE cache race twice myself (concurrent Xyce -> 'retrying without zero-valued params' degraded .so). Killed by PID, wiped the cache, re-ran strictly serially. No reported number comes from a degraded build; all 13 .so are 783-param full.",
+  "For the third model specialization (dce987c0) I installed the already-compiled binary from the prior agent's cache AFTER proving equivalence: ginac.cpp byte-identical, .params identical. Disclosed rather than hidden."
+ ]
+}

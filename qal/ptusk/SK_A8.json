@@ -1,0 +1,31 @@
+{
+ "_doc": "SKEPTIC: the A8 probe defect on the ptu path -- CONFIRMED, ROOT-CAUSED, QUANTIFIED, and FIXED. Neither the committed harness nor the prior re-analysis fixed it.",
+ "the_defect": "In tu.deck, a PROBE deck skips the top-up on any bank whose charging hop is >= the hop under probe: 'if probe is not None and hop >= probe: continue'. The rtu branch instead instantiates the devices permanently OFF (SK.supply_tg(k, total_um, None, 'topup')). So on the ptu path each hop's own DESTINATION bank's top-up is absent from the deck used to measure that hop's current zero -- and the OUT switch's drain capacitance sits ON that destination rail.",
+ "evidence_on_disk_BEFORE_any_rerun": {
+  "hop1_probe": "p1_z_s4_ptu_T200_dv1200_L1_t12_C8_f.cir differs from the FREE probe p1_z_s4_free_... by EXACTLY ONE LINE: 'VTSUP tsup 0 1.2', a supply on a node nothing connects to. Electrically identical. Verified by diff and md5.",
+  "hop2_probe": "p2_z_..._ptu_..._f.cir DOES contain CNA3/LTU3/XTUSW3 -- bank 3's top-up, whose hop (1) is < probe (2). What it lacks is bank 4's, the DESTINATION of hop 2. So the prior analysis's phrasing ('the top-up devices are not instantiated in a ptu probe deck at all') is too strong; the correct statement is that each probe is missing its OWN DESTINATION bank's top-up -- which is exactly the capacitance A8 is about.",
+  "consequence_visible_in_the_prior_run_log": "its ptu-mode hop-1 re-probe returned 97.97846125345552 / 97.97744506131079 ps against the free-mode 97.97846234478652 / 97.97744299786154 -- identical to ~2e-6 ps, i.e. the re-probe changed nothing for hop 1."
+ },
+ "MY_FIX": "sk_tu.py (my own patched copy) instantiates the missing bank's top-up in the PARKED state -- HS pMOS off, LS nMOS ON (na pinned to 0), OUT switch open, plus the switch-node cap -- which is exactly the cell's idle state in a row deck. Verified in the generated decks: p1_sz_s4_ptu_..._f.cir now carries CNAX3 CNAX4 LTU3 LTU4 XTUON3 XTUON4 XTUSW3 XTUSW4 where the committed deck carried none.",
+ "THE_MEASUREMENT": {
+  "hop1_zero_free_mode_ps": 97.977,
+  "hop1_zero_ptu_mode_A8_FIXED_ps": 101.137,
+  "shift_ps": 3.16,
+  "Ipk_free_uA": 1307.48,
+  "Ipk_ptu_fixed_uA": 1352.19,
+  "interpretation": "the destination rail's missing top-up capacitance shifts the transfer LC resonance by 3.16 ps. Cutting the hop switch 3.16 ps before its true zero is what leaves ~122 uA of inductor current to be interrupted.",
+  "hop2_zero_free_mode_ps": 94.946,
+  "hop2_zero_ptu_mode_A8_FIXED_ps": 98.096,
+  "hop2_shift_ps": 3.15,
+  "hop2_zero_in_the_PRIOR_analysis_ptu_reprobe_ps": 94.849,
+  "prior_hop2_shift_ps": -0.097,
+  "comparison": "my A8-fixed re-probe moves BOTH hop zeros by about +3.15 ps (hop1 97.977 -> 101.137, hop2 94.946 -> 98.096). The prior analysis's ptu-mode re-probe moved hop 1 by 2e-6 ps (nothing) and hop 2 by -0.097 ps -- the WRONG DIRECTION and about 30x too small -- because in its hop-2 probe the DESTINATION bank 4's top-up was still missing while bank 3's was present."
+ },
+ "WHY_IT_MATTERS": {
+  "A6_gate": "|IZ| < 1.0 uA, pre-registered.",
+  "measured_IZ1_on_EVERY_pulsed_row_committed_and_prior": "122.42 uA (committed skiptu ptu rows: 122.4203; prior corrected ptu rows: 122.4202-132.4580). IZ1 is IDENTICAL to 4 decimal places between the committed and the 'corrected' rows -- direct proof that hop 1's zero was never re-probed in either.",
+  "free_rows": "0.0027 uA (PASS)",
+  "clamp_rows": "0.0182 uA (PASS)",
+  "so": "every pulsed row in this campaign, committed or corrected, violates its own pre-registered ZCS gate by two orders of magnitude, for a reason that is now located, quantified and repaired."
+ }
+}

@@ -1,0 +1,63 @@
+{
+ "_doc": "THE CONTROLLED TEST: does repairing the A8 probe defect change the pulsed form's verdict?",
+ "_matched": "identical operating point s4 / T=200 ps / dV=1.2 / Ltu=1 nH / t_on=12 ps / Cna=8 fF, identical corrected cell. The ONLY difference is that my hop zeros were probed with the destination bank's top-up devices present.",
+ "PRIOR_run_A8_BROKEN": {
+  "IZ_worst_uA": 122.4202,
+  "A6_pass": false,
+  "settling_worst_by_stage": {
+   "1": 99.95,
+   "2": 59.88,
+   "3": 34.08,
+   "4": 60.45
+  },
+  "rail3_at_bound_V": 0.668973,
+  "separation_b3_mV": 233.201,
+  "_source": "qal/ptu R_s4_ptu_T200_dv1200_L1_t12_C8, extracted by ME from its raw .prn"
+ },
+ "MY_run_A8_FIXED": {
+  "IZ_worst_uA": 0.007293165,
+  "A6_pass": true,
+  "settling_worst_by_stage": {
+   "1": 99.95,
+   "2": 59.75,
+   "3": 34.07,
+   "4": 60.74
+  },
+  "rail3_at_bound_V": 0.671431,
+  "separation_b3_mV": 233.9964,
+  "_source": "qal/ptusk SR_s4_ptu_T200_dv1200_L1_t12, MY deck, MY cache, A8 FIXED"
+ },
+ "deltas": {
+  "IZ_uA": "122.4202 -> 0.0073  (a 16,800x reduction; FAIL -> PASS on the pre-registered 1.0 uA gate)",
+  "stage3_settling_pp": -0.01,
+  "rail3_mV": 2.458,
+  "separation_b3_mV": 0.795
+ },
+ "CONCLUSION": "The A8 defect is REAL, is worth 3.15 ps of hop-zero error and ~122 uA of interrupted current, and every pulsed row in this campaign -- committed and prior-corrected alike -- violates the pre-registered ZCS gate because of it. I repaired it and produced the FIRST gate-clean pulsed rows in the campaign. The repair moves stage-3 settling by -0.01 percentage points and the delivered rail by 2.5 mV. It does NOT change the verdict: the pulsed form still reaches only 34.07% against a 90% bar, still lands BELOW the free control's 0.765884 V rail, and still cannot clear A2. So the negative result is NOT an artefact of the broken instrument either.",
+ "ALSO_t_on_24_the_fixture_selected_best_point": {
+  "PRIOR_A8_broken": {
+   "IZ_uA": 122.4202,
+   "A6_pass": false,
+   "settling": {
+    "1": 99.95,
+    "2": 59.13,
+    "3": 33.08,
+    "4": 64.17
+   },
+   "rail3_V": 0.737441
+  },
+  "MINE_A8_fixed": {
+   "IZ_uA": 0.01813717,
+   "A6_pass": true,
+   "settling": {
+    "1": 99.95,
+    "2": 59.02,
+    "3": 33.06,
+    "4": 63.92
+   },
+   "rail3_V": 0.739127
+  },
+  "delta_stage3_pp": -0.02,
+  "delta_rail3_mV": 1.686
+ }
+}
