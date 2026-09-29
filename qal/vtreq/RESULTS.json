@@ -1,0 +1,203 @@
+{
+ "_doc": "qal/vtreq -- THE DELVTO (THRESHOLD) REQUIREMENT SWEEP. The user asked 'can QAL be faster?'; the campaign's answer on SG13G2 was NO and reduced to one device number, |Vtp| = 0.4403 V against a ~0.75 V hop-delivered rail. This run converts that into a REQUIREMENT and measures what buying it costs. Every number MEASURED / DERIVED / ASSUMED.",
+ "_provenance": {
+  "pre_registration": "qal/vtreq/PRE_REGISTERED.json",
+  "pre_registration_sha256": "147e29645b305348c510ed059da2c14f867cbaee5c2b5bb27d8f9b669982fd9f",
+  "pre_registration_bytes": 23604,
+  "pre_registration_was_the_only_file_in_this_directory_when_written": true,
+  "amendments": "qal/vtreq/AMENDMENT.md  (A1-A7)",
+  "tables": "qal/vtreq/TABLE.txt",
+  "machine_readable": "qal/vtreq/SUMMARY.json",
+  "per_point_rows": "qal/vtreq/rowd/*.json",
+  "pyms_vae_cache": "scratchpad/vae_cache_vtreq -- MY OWN, built from scratch, nothing copied in",
+  "model": "SG13G2 / PSP103 tt via qal/vtreq/shim_dvt.sp",
+  "shim": "the committed qal/sg13lv_compat.sp VERBATIM plus DELVTO={DVTN} / DELVTO={DVTP} on the M cards, driven by two global .param values. PYMS_CALLBACK_PARAMS=DELVTO keeps DELVTO symbolic in the vae .so (verified on disk: the generated eval.cpp contains double DELVTO = _pcb(\"DELVTO\"); and VFB_T = ... + DELVTO_i - 0.69967...), so one .so per geometry serves the whole sweep.",
+  "harnesses_imported_not_copied": [
+   "qal/skept/sk.py (hop generator + waveform-only extractor)",
+   "qal/restore5/rest.py + extract.py (the 6-bank chain)"
+  ],
+  "mtimes_proving_order": {
+   "PRE_REGISTERED.json": "2026-09-29 01:50:10",
+   "shim_dvt.sp": "2026-09-29 01:50:53",
+   "warm.py": "2026-09-29 01:51:14",
+   "vt.py": "2026-09-29 02:21:00",
+   "drive.py": "2026-09-29 02:27:22",
+   "chain.py": "2026-09-29 01:57:12",
+   "analyse.py": "2026-09-29 03:09:21",
+   "AMENDMENT.md": "2026-09-29 03:10:10",
+   "dc_d000.cir": "2026-09-29 02:05:35",
+   "cm_d000.cir": "2026-09-29 02:10:46",
+   "TABLE.txt": "2026-09-29 03:09:21"
+  },
+  "lower_bound_caveat": "shim_dvt.sp inherits the committed shim's ZEROED ad/as/pd/ps, so junction capacitance is ABSENT everywhere. Every capacitance, charge, energy, hop time and settling time here is a LOWER BOUND. It cuts BOTH ways in this study: the missing drain junction cap is part of what would HOLD a collapsing HIGH up and part of what would SLOW a creeping LOW.",
+  "shallow_stack_caveat": "every number is SHALLOW-STACK (inverter bank) except the section (f) o21ai rows.",
+  "energy_exclusion_untouched": "the committed energy EXCLUSION verdict (23.213 fJ/bank/hop vs a pre-stated <= 12.7467 fJ, stat-sim c814e52) is NOT reopened and NOT affected by anything here.",
+  "body_bias_still_parked": "the user PARKED body bias until real PDKs are in hand. This run does NOT un-park it. DELVTO here is a DEVICE-PARAMETER SENSITIVITY SWEEP answering 'what would be needed'. There is no FDX PDK on this machine and no claim is made that any technology delivers the thresholds below."
+ },
+ "G0_instrument_check": {
+  "verdict": "PASS on 14 of 14 quantities",
+  "checks": [
+   "robust single hop (sk path): t_hop rel 6.9e-13, VBEND / VBPK / IPK rel EXACTLY 0.0",
+   "real-load level (load691 cl_d165_L4_W30): t_valid90 115.467185 ps, VBEND 0.754572966, VA_open 0.11745601600934541 -- rel EXACTLY 0.0 on all three; t_hop rel 1.3e-12",
+   "real-load L = 3 nH: 115.702871 ps, rel EXACTLY 0.0 vs load691 cl_d165_L3_W30",
+   "CMOS inverter 1.2 V / 2 fF t90 rise 57.1427 ps vs the committed dvopt floor-deck check 57.1429 ps, rel 3.5e-6",
+   "Vtn 0.5239874 vs committed 0.5239460 (41 uV; 1 mV grid here vs 5 mV in chain3/vt.cir)",
+   "|Vtp| 0.4402826 vs committed 0.4402734 (10 uV)",
+   "o21ai bank t_valid90 495.510 ps vs the committed dvopt 495.5 ps",
+   "the 6-bank chain separation series at DELVTO = 0 reproduces the committed 528.68 / 22.89 / 1.52 / 0.122 / 0.010 / 0.001 mV AND its sign pattern"
+  ],
+  "amendment": "A1 -- the pre-registration quoted the lsw/.measure-path t_hop; the same-path sk anchor is the correct comparand and is reproduced at rel 6.9e-13."
+ },
+ "G1_does_DELVTO_reach_the_devices": {
+  "verdict": "PASS, and decisively",
+  "d_Vtn_d_DELVTO_N": 1.0,
+  "d_Vtp_abs_d_DELVTO_P": 1.004,
+  "cross_terms": "EXACTLY ZERO -- |Vtp| identical to 6 decimals on all five nMOS-only rows, Vtn identical to 6 decimals on all five pMOS-only rows",
+  "thresholds_MEASURED": {
+   "DELVTO 0": {
+    "Vtn": 0.523987,
+    "Vtp_abs": 0.440283
+   },
+   "-0.30 both": {
+    "Vtn": 0.223987,
+    "Vtp_abs": 0.13908
+   }
+  },
+  "note": "the sweep parameter is not silently ignored -- this campaign's oldest failure mode is closed here by measurement, not assertion."
+ },
+ "Q1_THE_LEVEL": {
+  "question": "at what threshold does the QAL level at the ALU's real 6.91 fF mean sink load reach parity with, then beat, a SAME-DELVTO CMOS logic level?",
+  "comparator": "CMOS_dev = the IDENTICAL campaign cell (1.12 um pMOS / 0.74 um nMOS, l = 0.13 um) on a fixed 1.20 V DC rail, driving the IDENTICAL 6.91 fF load, ideal 2 ps input edge, time to 90% of its own rail, WORST of rise and fall. Both sides carry the same cell, the same load and the same shift. The committed 92.8 ps figure is a SYNTHESIS/STA number and cannot be DELVTO-swept, so it enters only through the relative-gain layer.",
+  "DELVTO_0_anchor": {
+   "QAL_t_valid90_ps": 115.467185,
+   "CMOS_dev_worst_ps": 94.174,
+   "ratio": 1.2261,
+   "committed_ratio_vs_92p8_STA": "1.244 - 1.305",
+   "note": "the device-level comparator lands within 1.5% of the committed STA anchor at DELVTO = 0, which is why the two layers agree."
+  },
+  "pre_registered_form_L_fixed_at_4nH": {
+   "ratio_worst_edge": "1.2261 -> 1.0052 over the sweep (best = both devices at -0.30 V)",
+   "verdict": "PARITY NOT QUITE REACHED (0.5% short); a BEAT not reached."
+  },
+  "L_reoptimised_EXPLORATORY_amendment_A5": {
+   "why_it_is_legitimate": "t_hop = pi*sqrt(L*C/2) contains NO threshold and is MEASURED invariant (+0.11% over the whole sweep) while t_settle collapses x0.42, so the hop becomes 50% of the level at the deepest shift. At DELVTO = 0 the rail-drain gate C2 EXCLUDED small L (VA_open +0.263 at L = 1 nH); at -0.30 the same row reads +0.099 and passes. The threshold shift is what RE-ADMITS the small inductor.",
+   "PARITY": {
+    "reached_at_Vtp_abs": 0.2395,
+    "with_Vtn": 0.324,
+    "L_star_nH": 1.0,
+    "delivered_rail_V": 0.74277,
+    "ratio": 0.9426,
+    "within_0p2pct_already_at_Vtp_abs": 0.2897
+   },
+   "BEAT_0p90": {
+    "reached_at_Vtp_abs": 0.1391,
+    "with_Vtn": 0.224,
+    "L_star_nH": 0.7,
+    "delivered_rail_V": 0.73612,
+    "ratio": 0.8782
+   },
+   "on_the_committed_92p8_anchor_via_relative_gain": "0.891x - 0.935x at the deepest shift (g = 0.716)",
+   "on_the_MEAN_edge_convention": "parity NOT reached anywhere -- best 1.0467. The difference between the conventions is entirely the campaign cell's 1.83:1 rise/fall imbalance (94.17 vs 51.38 ps), a CELL-SIZING property, not a QAL property. Re-sizing the cell is untested here and is the obvious next lever."
+  },
+  "THE_MECHANISM": "the residue is the HOP. It is an LC time with no threshold in it. Lowering Vt collapses the settle term but cannot touch the hop; the only thing the threshold buys against the hop is INDIRECT -- a stronger switch re-admits a smaller inductor."
+ },
+ "Q2_THE_CHAIN": {
+  "question": "at what threshold does HIGH/LOW separation stay above the noise floor to depth 3, 5, 10?",
+  "vehicle": "qal/restore5 rest.py k = 6 NO-RESTORE control, 6 hop-powered banks, no buffer of any kind, L = 15 nH, W = 30 um, dV = 1.2, T = 300 ps",
+  "metric": "min(pull-UP output) - max(pull-DOWN output) at each bank's own stage boundary, SIGNED, mV. NEGATIVE means the stage carries INVERTED data, not weak data.",
+  "floor": {
+   "sigma_Vt_mV": 3.42,
+   "source": "IHP sg13g2_moslv_mismatch.lib delvto_mm = 0.0039",
+   "ASSUMPTION": "sigma_Vt is ASSUMED INDEPENDENT of DELVTO (delvto_mm is an absolute-volts sigma on the same additive parameter being swept). Sensitivity reported per row."
+  },
+  "depth_reached_MEASURED": {
+   "Vtp 0.4403 / Vtn 0.5240 (DELVTO 0)": 1,
+   "Vtp 0.2897 / Vtn 0.3740": 2,
+   "Vtp 0.2395 / Vtn 0.5240": 2,
+   "Vtp 0.4403 / Vtn 0.3240": 2,
+   "Vtp 0.4403 / Vtn 0.2240": 2,
+   "Vtp 0.2395 / Vtn 0.3240": 3,
+   "Vtp 0.1391 / Vtn 0.5240": 3,
+   "Vtp 0.1391 / Vtn 0.2240": 4
+  },
+  "DEPTH_3": "MEASURED reachable: |Vtp| <= 0.2395 V WITH Vtn <= 0.3240 V, or |Vtp| <= 0.1391 V alone.",
+  "DEPTH_4": "MEASURED reachable at |Vtp| = 0.1391 V AND Vtn = 0.2240 V (separation +8.33 mV, 2.4x the floor).",
+  "DEPTH_5": "NOT REACHED ANYWHERE. Best depth-5 separation in the whole sweep is +0.0597 mV, 57x below the PDK sigma_Vt, and of the WRONG SIGN (-0.0044 mV) at the most favourable point.",
+  "DEPTH_10": {
+   "status": "NOT SIMULATED -- DERIVED, and the derivation is given in full because it is load-bearing",
+   "rail_collapse_MEASURED": {
+    "DELVTO_0": [
+     0.5798,
+     0.3788,
+     0.2405,
+     0.1542,
+     0.1007,
+     0.0715
+    ],
+    "deepest_shift": [
+     0.5801,
+     0.3233,
+     0.1909,
+     0.1202,
+     0.08,
+     0.0489
+    ],
+    "per_hop_ratio_mean": {
+     "DELVTO_0": 0.659,
+     "deepest_shift": 0.611
+    },
+    "why_threshold_does_not_help": "the collapse is a fixed per-hop CHARGE against the bank's incremental capacitance (chain3), i.e. a charge/capacitance ratio; it is 0.66 at DELVTO = 0 and 0.61 at the deepest shift -- slightly WORSE, because lower-Vt cells draw more."
+   },
+   "derived_depth_10_rail_V": {
+    "central": 0.0079,
+    "band": [
+     0.0068,
+     0.0138
+    ]
+   },
+   "THE_SPEC": "a restoring CMOS gate needs |Vt| well below its own supply to have any gain. At depth 10 that supply is 6-14 mV, so the required |Vtp| is BELOW ~10 mV -- within ~3 sigma of ZERO against this PDK's own sigma_Vt of 3.42 mV. A threshold whose mean sits 3 sigma from zero cannot be manufactured to work: a large fraction of devices would be depletion-mode and would never turn off. QAL'S UNBUFFERED CHAIN AT DEPTH 10 NEEDS A THRESHOLD NOBODY CAN BUILD."
+  },
+  "sigma_Vt_sensitivity": "depth 4 at the deepest shift (+8.33 mV) would fail only if sigma_Vt were 2.4x the PDK value; depth 5 would pass only if sigma_Vt were 57x SMALLER. The depth >= 5 verdict is insensitive to any plausible mismatch model, and at the deepest shift depth 5's SIGN is wrong, which no mismatch floor can rescue.",
+  "E2_scoring": "the DC mechanism I pre-registered is CONFIRMED as DC physics (the stranded HIGH tracks |Vtp| at 0.81:1; the receiver trip point moves -0.485 V/V of pMOS DELVTO and +0.463 V/V of nMOS DELVTO, so the DC gap strand-minus-trip is OPENED by lowering |Vtp| and CLOSED by lowering Vtn) but REFUTED as the binding term: the measured chain gets BETTER when |Vtp| falls, because at a collapsed rail the limiter is the successor's own pMOS PULL-UP. Right physics, wrong term, and it is recorded as a miss."
+ },
+ "Q3_THE_COST": {
+  "question": "at what point does the cure cost more than the disease?",
+  "static_hold_current_per_8_cell_bank_A": {
+   "DELVTO_0": 2.813e-10,
+   "deepest_shift": 1.278e-06,
+   "ratio": 4544,
+   "slope_mV_per_decade": 82
+  },
+  "it_is_an_nMOS_ONLY_cost": "IN THIS HELD-BANK CONFIGURATION ONLY: every pMOS-only row is identical to the DELVTO = 0 row to 12 digits, because the pull-down cells' pMOS are REVERSE-gated (gate at VGH = 1.65 V, source at the 0.75 V rail, Vsg = -0.90 V) and the pull-up cells' pMOS are ON. The DEVICE-level pMOS off-current does rise with DELVTO_P -- MEASURED 7.614e-12 -> 4.611e-08 A at the delivered rail (6057x, ~84 mV/decade, the same slope as the nMOS) -- and would count in any bias arrangement that leaves a pMOS at Vgs = 0. The nMOS-only result is a property of the committed bank's gate drive, not of the pMOS.",
+  "held_rail_droop_over_one_beat_mV": {
+   "DELVTO_0": {
+    "120ps_DC_implied": -0.0009,
+    "120ps_measured_float": -0.0003
+   },
+   "deepest_shift": {
+    "120ps_DC_implied": -4.26,
+    "120ps_measured_float": -1.26,
+    "300ps_DC_implied": -10.66,
+    "300ps_measured_float": -3.06
+   }
+  },
+  "ANSWER": "THE CURE DOES NOT COST MORE THAN THE DISEASE ANYWHERE IN THE SWEPT SPACE. At the deepest shift the held rail loses 1.3-4.3 mV per 120 ps beat against a 754 mV rail (0.17-0.57%), still 5-20x smaller than the committed measured -20.2 to -28.6 mV settling-era hold droop. DERIVED: the beat period at which leakage equals the measured 15.2-29.1 fJ delivered per bank per hop falls from ~72 us to ~16 ns -- still ~130x longer than a 120 ps beat.",
+  "E3_scoring": "direction and slope CONFIRMED (I predicted 80-100 mV/decade, measured 82); MAGNITUDE REFUTED (I predicted >100 mV of droop per beat; measured 1.3-4.3 mV)."
+ },
+ "f_THE_2_HIGH_STACK": {
+  "cell": "sg13g2_o21ai_1 topology, the Vortex ALU's dominant mapped cell, driven through the 2-HIGH series pMOS stack; l = 0.13 um where the mapped netlist uses 0.15 um, so GENEROUS to QAL",
+  "iso_load_2fF_ratio_to_a_same_DELVTO_CMOS_level": {
+   "DELVTO_0": 8.671,
+   "deepest_shift": 4.772,
+   "relative_gain": 0.55,
+   "inverter_bank_relative_gain_at_the_same_shift": 0.82
+  },
+  "verdict": "E4 CONFIRMED -- the 2-high stack gains MORE than an inverter from the same shift, because it loses two threshold drops in series where an inverter loses one. BUT IT DOES NOT CHANGE CLASS: 4.77x a same-load, same-DELVTO CMOS level at the most favourable threshold in the sweep. THE SHALLOW-STACK LIBRARY RESTRICTION STANDS, and a threshold shift does not lift it."
+ },
+ "THE_ANSWER_IN_ONE_PARAGRAPH": "QAL needs |Vtp| <= 0.24 V at a 0.74 V delivered rail (with Vtn <= 0.32 V) to reach PARITY with a same-threshold CMOS logic level at the ALU's real 6.91 fF load, and |Vtp| <= 0.14 V at a 0.74 V rail (with Vtn <= 0.22 V) to BEAT it by 12%. Against SG13G2's actual |Vtp| = 0.4403 V that is a 0.20 V and a 0.30 V threshold reduction respectively -- large, but not absurd, and the leakage it costs is measured and does not bind. So the SPEED wall moves. What does NOT move is the CHAIN: the same shifts buy exactly one extra bank of usable logic depth each (1 -> 2 -> 3 -> 4 banks), because the thing killing the chain is not a threshold but a rail that collapses by a MEASURED 0.61-0.66 per hop -- a charge-over-capacitance ratio that a threshold cannot touch, and that gets slightly WORSE as Vt falls. Carrying data to the depth-10 sha_slice the throughput case needs would require the cell to work at a 6-14 mV supply, i.e. |Vtp| below ~10 mV, which is within 3 sigma of ZERO against this PDK's own 3.42 mV threshold spread. THAT is a threshold nobody can build. The honest summary: a reachable threshold makes the QAL HOP faster than CMOS; no threshold makes the QAL PIPELINE exist.",
+ "WHAT_THIS_CHANGES_AND_WHAT_IT_DOES_NOT": {
+  "changes": "the committed line 'at the real load QAL's level is SLOWER than a CMOS level everywhere in the PDK envelope' (stat-sim 88a0306) is a DELVTO = 0 statement. At |Vtp| <= 0.24 V it is false, measured. The committed 'no reachable knob moved it' becomes 'no knob IN THE PDK ENVELOPE moved it; the threshold does, and the amount needed is 0.20-0.30 V.'",
+  "does_not_change": "the pipeline verdict. chain3/skip4/restore5 concluded that QAL cannot form an unbuffered pipeline on this node; this run measures that a 0.30 V shift on both devices buys depth 4 instead of depth 1, and that depth 5 is unreachable at any swept value. MAX k = 1 (a restoring buffer between every bank) is not repealed by any threshold -- it is relaxed to roughly MAX k = 4 at a threshold nobody has offered to build, and the throughput case needs 10.",
+  "the_next_lever_this_run_points_at": "NOT the threshold. The chain's wall is the rail-collapse ratio 0.61-0.66/hop, which is charge-over-capacitance. The levers that attack THAT are a larger source bank / unequal bank ratio, or a keeper/latch per output -- i.e. the register back. Separately, the Q1 comparator's 1.83:1 rise/fall imbalance says the campaign CELL is unbalanced; re-sizing it is untested and would move both sides."
+ }
+}
