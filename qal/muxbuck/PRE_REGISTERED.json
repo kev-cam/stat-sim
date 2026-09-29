@@ -1,0 +1,87 @@
+{
+  "_what": "qal/muxbuck -- THE MUX RUN. The user proposes muxing the buck recharge between banks to save area, now that the top-up sits on the TANK (off the signal path, off the data timeline) and therefore has no per-beat timing constraint. My job is the CHARGE BALANCE and the N_max CURVE, plus the area ledger. This file is written BEFORE any deck exists in this directory and is the FIRST file written here (the directory contained only an empty vae_cache_muxbuck/ when this was written).",
+  "_written": "2026-09-29, before any .cir is generated or any Xyce run is started in qal/muxbuck/",
+  "_isolation": {
+    "dir": "/usr/local/src/stat-sim/qal/muxbuck",
+    "PYMS_VAE_CACHE": "/usr/local/src/stat-sim/qal/muxbuck/vae_cache_muxbuck",
+    "will_not_write_into": ["qal/tankfed", "qal/banktank", "qal/resv", "qal/tsweep", "qal/buckfix"],
+    "concurrency_cap": "at most 2 concurrent Xyce processes (box is shared, load ~10-13 on 16 cores at start)"
+  },
+
+  "INHERITED_NUMBERS_AND_THEIR_STATUS": {
+    "VBEND_0.7138163": "COMMITTED anchor, qal/lsweep/h_L15_W30_dv120.cir.mt0 (git 3454420). Used for the step-(b) instrument check.",
+    "held_rail_droop_-28.6_mV_over_~300ps": "COMMITTED (qal/README, vtreq era). Used as the BANK-side term of the tank/bank droop ratio.",
+    "settling_floor_vs_delivered_rail": {"1.200":40.4,"1.000":51.5,"0.800":81.0,"0.6754":137.7,"0.5884":252.8,"0.4885":801.3, "_units":"ps", "_status":"COMMITTED campaign series, taken as given by the brief"},
+    "Vt_cliff_settled_fraction_vs_dV": {"1.0":100.0,"0.8":77.1,"0.6":34.8, "_units":"percent", "_status":"COMMITTED"},
+    "buck_measured_9.26_fC_per_pulse": "UNDER AUDIT in qal/buckfix (Qdel/Qsup = 0.058, a ~16x charge DIVIDER where ideal DCM predicts Vin/Vout = 1.2/0.766 = 1.5666 GAIN). THIS RUN DOES NOT ADOPT IT AS A CONSTANT. It is one MARKED POINT on an N_max curve whose x-axis is charge-delivered-per-pulse.",
+    "ideal_buck_bound": "Qdel/Qsup = Vin/Vout exactly for a DCM pulse with zero initial and final inductor current (derived in qal/buckfix/PRE_REGISTERED.json). With the committed 160.2 fC supply draw per pulse this is 250.96 fC delivered. Marked as the second point.",
+    "committed_tank_and_bank": "C_tank = 359.79 fF (= m*35.979 fF, m=10), pre-charge V_t0 = dV(m+1)/2m = 0.66 V, L = 15 nH, R = 10 ohm, TG = sg13_lv_nmos w=10u / sg13_lv_pmos w=20u l=0.13u, tank-referenced park sg13_lv_nmos w=2u (banktank A6), bank = 8 inverters sg13_lv_pmos w=1.12u / sg13_lv_nmos w=0.74u l=0.13u with CL 2 fF. Delivered rail at m=10 probe = 0.7656 V.",
+    "committed_buck_block": "qal/ptu: HS sg13_lv_pmos w=10u, FW sg13_lv_nmos w=10u, LTU = 1 nH, RTU = 10 ohm, OUT TG sg13_lv_nmos w=5u / sg13_lv_pmos w=10u, CNA 8 fF, full pulse cycle ~= 60 ps (HS on 313.978 -> OUT off 374.042).",
+    "bank_profile_worst_case": "sha_slice 48/22/19/3/2/4/2/3/1/1 gates (10 banks, 48:1 spread, 105 gates total)."
+  },
+
+  "MY_CHOSEN_DROOP_BAND_AND_ITS_JUSTIFICATION": {
+    "quantity": "the DELIVERED RAIL that the bank sees at the end of its rise, as the tank droops.",
+    "band_top_V": 0.7656,
+    "band_top_source": "MEASURED committed probe rail at m = 10, dV = 1.2, with the tank at its pre-charge 0.66 V (banktank A4).",
+    "band_floor_V": 0.6754,
+    "band_floor_choice": "the LOWEST delivered rail in the committed settling series that is an actually-MEASURED grid point AND whose settling floor (137.7 ps) still fits inside the rail-high window of the committed schedule.",
+    "why_not_lower": [
+      "the series bends hard below it: d(ln t_settle)/dV steepens 0.800->0.6754 = -4.26 /V, 0.6754->0.5884 = -6.98 /V, 0.5884->0.4885 = -11.55 /V. Operating below 0.6754 V buys an 84% timing penalty for the next 87 mV.",
+      "0.5884 V already reads 252.8 ps, which exceeds the committed primary beat period T = 200 ps outright.",
+      "chain3/skip4 pre-registered an absolute cliff floor of 0.60 V as a device-Vt fact; 0.6754 sits above it with margin."
+    ],
+    "why_not_higher": "a tighter band is free to choose but makes the proposal look worse; 0.6754 is the most generous floor the COMMITTED measurements actually support, so the result is not manufactured by a conservative band.",
+    "band_width_of_rail_mV": 90.2,
+    "conversion_to_tank_droop": "divide by the MEASURED incremental gain g = dV_rail/dV_tank, obtained from the multi-beat droop deck (step c), not assumed."
+  },
+
+  "PRE_STATED_EXPECTATIONS": {
+    "E1_charge_drawn_per_beat": {
+      "statement": "Q_beat, the net charge an 8-gate bank removes from its tank over one full rise+return cycle, is 10-40 fC; point estimate 25 fC.",
+      "basis": "banktank A8 reports the four tanks each needing ~28 fC of recharge after one cycle, and the tank falling 0.66 -> 0.5611 V on 359.79 fF = 35.6 fC. The anchor's C_eff ~ 34.7 fF at 0.766 V is 26.6 fC of rail charge per rise, most of which the return should recover.",
+      "falsifier": "a measured Q_beat outside 10-40 fC is recorded as a miss."
+    },
+    "E2_tank_over_bank_droop_ratio": {
+      "statement": "the tank droops 8-12x more slowly than the held bank rail for the same beat, because the droop ratio is set by capacitance ratio C_bank/C_tank = 34.7/359.79 = 0.0964.",
+      "falsifier": "a ratio outside 8-12 means the two nodes are not losing the same charge and I must name the extra sink."
+    },
+    "E3_autonomy_is_the_binding_term_NOT_the_buck": {
+      "statement": "with Q_beat ~ 25 fC and a rail band of 90.2 mV, the COMMITTED 359.79 fF tank holds band for only about 1-2 beats. I therefore predict the tank must be RE-SIZED as C_tank proportional to N for a round-robin of N banks, and that this, not the buck's delivery, is the first thing that breaks.",
+      "consequence_pre_stated": "if the tank must grow as N, the chip-wide tank area grows as N^2 while the saved inductor area grows only as N, so there is a FINITE area crossover. Closed form pre-derived here so it cannot be chosen later: option (a) = N*A_ind + N*A_t1; option (b) = A_ind + N^2*A_t1; (b) < (a) iff N*A_t1 < A_ind, i.e. N < A_ind/A_t1.",
+      "falsifier": "if the measured Q_beat leaves the committed tank with >= 4 beats of autonomy, E3 is refuted and the tank does not have to grow."
+    },
+    "E4_mux_switch_amortises_as_1_over_N": {
+      "statement": "PARTLY. I predict the mux switch's own GATE DRIVE amortises as 1/N (it fires once per revolution, not once per beat) and that its WIDTH does NOT have to grow with N (it passes the same per-tank charge, unlike M1-C's freeze switch whose width tracked its load). But I predict a term that does NOT amortise: the N-1 idle mux switches hang their buck-side terminals on the SHARED node, so that node's capacitance grows proportional to N and is swung EVERY pulse. I pre-state that this shared-node tax is the recursion trap's real form here, and I pre-state its predicted size: 2-6 fC per idle tap per pulse.",
+      "falsifier_a": "if the measured delivered charge per pulse is independent of the number of idle taps, the shared-node tax is refuted and I record E4 as half-wrong in my favour, which I must say explicitly.",
+      "falsifier_b": "if delivered charge per pulse falls faster than linearly in N, the tax is worse than predicted and N_max is bounded by it."
+    },
+    "E5_N_max_at_the_three_marked_points": {
+      "statement": "N_max is reported as a CURVE against charge-delivered-per-pulse q. Pre-stated point predictions with Q_beat = 25 fC and P pulses per visit: at the measured q = 9.26 fC the buck cannot sustain even ONE bank at P = 1 and needs P >= 3 to sustain one; at the ideal-buck q = 250.96 fC it sustains roughly 10 banks at P = 1 and roughly 30 at P = 3. The whole span of the answer therefore lies inside the disputed factor, which is exactly why it is reported as a curve.",
+      "falsifier": "any N_max quoted as a single number in the deliverable is a failure of this run's own terms."
+    },
+    "E6_round_robin": {
+      "statement": "plain round-robin FAILS on the sha_slice profile. It gives every tank the same service while the banks draw in a 48:1 ratio, so the 48-gate bank starves first. I predict the fix is WEIGHTED round-robin (visits proportional to gate count) which costs no area, only a counter, and that under weighting the binding constraint collapses to a single TOTAL-throughput inequality: sum over banks of Q_beat,k <= P*q per beat.",
+      "falsifier": "if a measured 48-gate bank on a 6x tank does NOT droop at the same FRACTIONAL rate as an 8-gate bank on a 1x tank, then draw is not proportional to gate count and the weighting rule I propose is wrong."
+    }
+  },
+
+  "ACCEPTANCE_CRITERIA_pre_stated": {
+    "A1_instrument": "step (b) PASSES only if my own run, under this directory's own PYMS_VAE_CACHE, reproduces the committed VBEND 0.7138163 from a byte-identical copy of qal/lsweep/h_L15_W30_dv120.cir to a relative error <= 1e-6, with the md5 of the copied deck recorded. A FAIL halts the run and is reported as an instrument failure, not a result.",
+    "A2_metering": "every charge number comes from a 1 F integrator (CX/BX/RX triple) or from INTEG-I(Vsrc)+PARAM, NEVER from '.measure INTEGRAL V(<B-source>)'. Every 1 F integrator reading is t0-REFERENCED (value at the measurement instant minus its value at t = 1.5 ps) because of the known t=0 pedestal.",
+    "A3_ZCS_residual": "every commanded transfer-gate open reports the actual I(L) at that instant. Rows with |I(L)| > 30 uA at any open are flagged; the flag is reported with the row, and the physical size of the error is converted to stranded energy (1/2 L I^2) so the reader can judge it rather than take a pass/fail on trust.",
+    "A4_booking_labels": "any element modelled as an ideal source (the recharge supply, the gate drivers) makes its row a BOUND, not a result, and is labelled BOOKING in the output.",
+    "A5_area_labels": "every area number is labelled MEASURED-FROM-PDK (a density or a formula in IHP-Open-PDK), DERIVED (arithmetic on those), or ASSUMED (my own judgement). The inductor footprint is DERIVED from the PDK's own inductance estimator in libs.tech/klayout/python/sg13g2_pycell_lib/callbacks/inductor_cb.tcl, not assumed.",
+    "A6_no_single_Nmax": "the deliverable must be a curve N_max(q). A single N_max is only quoted alongside the q it assumes."
+  },
+
+  "DECK_PLAN_pre_stated": [
+    "b) mb_instr.cir -- byte copy of the committed lsweep anchor, digit-check VBEND.",
+    "c) mb_droop8.cir -- ONE 359.79 fF tank + L 15n + R 10 + committed TG + tank-referenced park + ONE 8-gate bank, 5 repeated rise/return cycles on the committed bank-1 window (rise close t=200+800k, open +118.184 ps; return close t=1000+800k, open +129.37 ps). Measures V(tnk) and the delivered rail every cycle -> Q_beat, droop per beat, and the incremental gain g = dV_rail/dV_tank. Same deck yields the held-rail droop for the tank/bank ratio.",
+    "f) mb_droop48.cir -- the same with a 48-gate bank on a 6x tank (2158.74 fF) and L/6 = 2.5 nH, 3 cycles, to test the fractional-droop scale-invariance that E6's weighting rule rests on.",
+    "d) mb_mux_N1 / mb_mux_N4 / mb_mux_N16.cir -- the committed buck block (HS 10u pmos, FW 10u nmos, LTU 1 nH, RTU 10, OUT TG 5u/10u) driving tank 1 through its mux switch with N-1 additional OFF mux switches hung on the shared node. Measures delivered charge per pulse vs N, the mux gate charge, and the shared-node excursion.",
+    "e,g) pure arithmetic on the above plus the PDK area models. No further decks."
+  ],
+
+  "HONESTY_CLAUSE": "This campaign has taken 20+ corrections, two of them from the user, including a converter whose measured charge ratio contradicts circuit physics. Anything I model as an ideal source is a BOOKING and its row is a BOUND. Where a measurement refutes one of E1-E6 above, the miss is reported as a miss in the deliverable, not quietly dropped."
+}

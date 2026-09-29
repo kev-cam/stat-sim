@@ -1,0 +1,61 @@
+{
+  "_what": "qal/muxbuck_sk -- THE SKEPTIC RUN against qal/muxbuck (the mux-the-buck-recharge proposal). My job is (a) the recursion audit, (b) the booking audit, (c) an independent re-measure of tank droop and the N_max curve, (d) a challenge to the scheduling result, (e) a sensitivity check on the inductor area model, (f) a verdict. I RE-RUN; I do not adopt the balance run's numbers.",
+  "_written": "2026-09-29, BEFORE any .cir exists in this directory. The directory contained only an empty vae_cache_sk/ when this was written.",
+  "_isolation": {
+    "dir": "/usr/local/src/stat-sim/qal/muxbuck_sk",
+    "PYMS_VAE_CACHE": "/usr/local/src/stat-sim/qal/muxbuck_sk/vae_cache_sk",
+    "will_not_write_into": ["qal/muxbuck", "qal/tankfed", "qal/banktank", "qal/resv", "qal/tsweep", "qal/buckfix"],
+    "concurrency_cap": "at most 2 concurrent Xyce processes"
+  },
+
+  "WHAT_I_AM_CHALLENGING": {
+    "claim_1_shared_node_tax": "The balance run reports a shared-node tax of 4.052 fC per idle tap per pulse, measured from mb_mux_N{1,4,16} (tank charge +2.859 / -16.505 / -57.921 fC), and folds it into N_max(q) as a term -N*dq_tap that it says 'genuinely does not amortise' and 'grows as N and is paid on EVERY pulse'. I challenge the EVERY PULSE part.",
+    "my_alternative_hypothesis_H1": "The measured deficit is a ONE-TIME CHARGE-SHARING REDISTRIBUTION, not a recurring per-pulse loss. In mb_mux_N*.cir the shared buck-output node nbx is DISCONNECTED from every tank for the first 41.978 ps of the pulse (the mux TG gate VGMN0 does not rise until 41.978p) while the buck's own HS/FW switches drive na, so nbx floats on L and rings (measured VNBXPK/VNBXMN 1.103/-0.664 at N=1, 0.399/-0.050 at N=16). When the mux finally closes, the selected tank must charge N tap capacitances from wherever nbx has landed up to its own potential. Arithmetic signature: 4.052 fC / 0.66 V = 6.14 fF per tap, which is the order of an OFF 5u/10u TG's shared-terminal capacitance. If H1 holds, the tax is a defect of the COMMITTED ptu gate schedule (the same block already under audit in qal/buckfix), not an intrinsic cost of muxing.",
+    "falsifier_for_H1": "If I close the mux gate at t=0 so nbx is never disconnected from the selected tank, and the N=16 vs N=1 delivered-charge difference REMAINS of order -60 fC, H1 is REFUTED and the balance run's tax term stands as a per-pulse cost. I will report that as a refutation of my own hypothesis, in my own words, if it happens.",
+    "claim_2_width_does_not_grow": "The balance run asserts the mux switch's width need not grow with N because it passes one tank's charge regardless of N, and says this is the M1-C distinction. It asserts this from topology, and measures only ONE width. I test it by MEASURING two more widths.",
+    "claim_3_Q_beat": "Q_beat(8 gates) = 35.42 fC from cycle 0 of mb_droop8. I re-measure it in my own deck with my own cache.",
+    "claim_4_ceiling": "N_max <= 24.4 is presented as the robust result that does not depend on the disputed buck delivery. I recompute it from my own Q_beat and my own band conversion and check whether the K = T_cycle/T_pulse = 24.975 factor is legitimate.",
+    "claim_5_area": "The inductor footprint is DERIVED from the PDK's inductor_cb.tcl estimator at default w/s/nr. I check the file exists and says what is claimed, and I test how far the area crossover N moves under plausible alternative winding choices."
+  },
+
+  "MY_PRE_STATED_EXPECTATIONS": {
+    "S1": {
+      "statement": "H1 will be CONFIRMED: with the mux gate closed from t=0, the N=16 minus N=1 delivered-charge gap will shrink by more than 3x relative to the -60.8 fC measured on the committed schedule.",
+      "falsifier": "gap shrinks by less than 3x -> S1 recorded as a miss and the balance run's per-pulse tax stands."
+    },
+    "S2": {
+      "statement": "The shared-node deficit will scale ROUGHLY LINEARLY WITH MUX TRANSISTOR WIDTH at fixed N=16, because it is tap capacitance. Halving the TG (2.5u/5u) should roughly halve the deficit; doubling it (10u/20u) should roughly double it. This makes the design pressure to NARROW the mux switch, which is the OPPOSITE of M1-C, where the switch had to WIDEN with its load.",
+      "falsifier": "deficit independent of width -> it is not tap capacitance and I have named the wrong mechanism."
+    },
+    "S3": {
+      "statement": "Q_beat for an 8-gate bank on the committed 359.79 fF tank, cycle 0, will reproduce the balance run's 35.42 fC to within 5%.",
+      "falsifier": "outside 5% -> one of the two runs has a metering or setup error and I must find which."
+    },
+    "S4": {
+      "statement": "The K = 24.975 pulses-per-bank-cycle factor is the load-bearing assumption behind the N_max <= 24.4 ceiling and it is a BOOKING, not a measurement: it assumes the shared buck can fire back-to-back at 64.06 ps cadence at 100% duty with zero dead time and zero settling of the shared node between visits to DIFFERENT tanks. I predict the ceiling is therefore NOT independent of the disputed buck, because a buck that delivers less per pulse is also the buck whose duty cycle is in question.",
+      "falsifier": "if K is independently measurable from a committed deck as a real achieved cadence rather than a schedule interval, S4 is wrong."
+    },
+    "S5": {
+      "statement": "The area crossover N ~ 1014 is ~40x above the charge ceiling ~24, so it is not the binding limit under ANY plausible inductor area model. I predict the qualitative conclusion 'area is never binding' survives even a 10x reduction in assumed inductor area.",
+      "falsifier": "a plausible inductor model that puts the crossover below 24."
+    }
+  },
+
+  "ACCEPTANCE_CRITERIA": {
+    "K1_instrument": "sk_instr.cir, a byte copy of the committed qal/lsweep/h_L15_W30_dv120.cir, must reproduce VBEND to rel <= 1e-6 under MY OWN from-scratch vae_cache_sk. A fail halts and is reported as an instrument failure, not a result.",
+    "K2_metering": "every charge number from a linear capacitor's own voltage (Q = C*dV) or from a 1 F integrator (CX/BX/RX), t0-referenced at 1.5 ps. Never from '.measure INTEGRAL V(<B-source>)'.",
+    "K3_controls": "every modified deck is run ALONGSIDE an unmodified control in the same cache, so a difference is attributable to the modification and not to my environment.",
+    "K4_bookings": "any ideal source (buck supply, all gate drives) makes its row a BOUND, labelled BOOKING.",
+    "K5_own_miss": "any of S1-S5 that a measurement refutes is reported as MY miss, explicitly, in the deliverable."
+  },
+
+  "DECK_PLAN": [
+    "sk_instr.cir  -- byte copy of the committed lsweep anchor; digit-check VBEND under my own cache.",
+    "sk_mx_c1.cir / sk_mx_c16.cir -- byte-faithful re-runs of the balance run's N=1 and N=16 mux decks (controls).",
+    "sk_mx_e1.cir / sk_mx_e16.cir -- the SAME decks with the mux gate closed from t=0 (shared node never disconnected). H1 test.",
+    "sk_mx_w16h.cir / sk_mx_w16d.cir -- N=16, committed schedule, mux TG at half (2.5u/5u) and double (10u/20u) width. S2 test.",
+    "sk_mx_p2.cir -- N=16, TWO back-to-back buck pulses, to separate first-pulse transient from steady state.",
+    "sk_droop8.cir -- my own 1 tank + 8-gate bank, ONE rise+return cycle on the committed window. Q_beat, delivered rail, held-rail droop.",
+    "arithmetic only for the N_max curve, the scheduling challenge and the area sensitivity. No further decks."
+  ]
+}
