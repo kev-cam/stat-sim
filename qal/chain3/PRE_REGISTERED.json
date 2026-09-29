@@ -1,0 +1,92 @@
+{
+ "_title": "QAL 3-BANK UNBUFFERED CHAIN: pre-registration. Written BEFORE any chain deck existed.",
+ "_written_before": "No file matching chain3/c_*.cir, chain3/p_*.cir, chain3/chain.py or chain3/RESULTS.json exists at the moment this file is written. mtimes are recorded in RESULTS.json._provenance.mtimes.",
+ "_author_run": "stat-sim/qal/chain3, PYMS_VAE_CACHE owned by this run (scratchpad/vae_cache_chain3, built from scratch).",
+
+ "THE_QUESTION": "Every committed QAL hop measurement is a SINGLE hop whose gate inputs are held at ideal DC (the pull-down cells' gates at the full dV=1.0, which is ABOVE the 0.676 V rail those cells actually run on -- non-physical but trivially easy to drive). A chain has no such luxury: bank N+1's input HIGH level is whatever bank N settled to. Does the hop survive cascading, and which device binds it?",
+
+ "TOPOLOGY_pre_stated": {
+  "banks": 3,
+  "hops": 2,
+  "buffering_between_banks": "NONE. o<i> of bank N IS in<i> of bank N+1 -- the same net name. No flop, no latch, no buffer, no level shifter. A bank is a POWER DOMAIN over one level of logic.",
+  "M_gates_per_bank": 8,
+  "M_rationale": "8 is the committed bank size. Inputs to bank 1 alternate 1,0,1,0,... so every bank has 4 pull-UP cells (input low, output must charge to its rail) and 4 pull-DOWN cells (input high, output must hold 0) at EVERY stage -- both device types exercised at every stage. Held constant across the entire sweep.",
+  "cells": "sg13_lv_pmos w=1.12u l=0.13u + sg13_lv_nmos w=0.74u l=0.13u, CL 2 fF, supply AND pMOS bulk on the bank node. COMMITTED, verbatim.",
+  "transfer_switch": "tg15p verbatim: XSWN nMOS w=5u + XSWP pMOS w=10u (bulk to vhi=1.5 V) + XPK park nMOS w=1u from the sw node to ground, its own pk phase closing after the cut. Widths widened ONLY if the measurement demands it, and the width used is reported per row.",
+  "series_R": "RS = 10 ohm per hop (committed).",
+  "bank_capacitance": "NO explicit rail decap. Each bank IS its 8 cells. MEASURED justification: the committed CA = 35.979 fF is exactly the 8-cell bank's own secant capacitance at 1.0 V (swsweep/sw_calib.cir.prn integrates Q_sup(1.0 V) = 35.983 fC), so a chain of identical 8-cell banks is capacitance-MATCHED by construction, exactly as the committed single hop was, and L = 277.8 nH keeps its meaning as the known-good anchor.",
+  "symmetry_devices": [
+   "Each bank carries an identical SUPPLY transmission gate (tg15p sizing) to an ideal dV rail. Bank 1's is the chain head (it pre-charges bank 1 to dV and OPENS before hop 1, so bank 1 starts genuinely settled with exactly Q(dV) on it, which a bare .ic cannot do -- the cells would charge their own outputs out of their own rail and drop it ~0.22 V before the hop). Banks 2 and 3 have the same device: DISABLED in the free-running chain, ENABLED in the top-up chain. So the free and top-up curves have IDENTICAL topology and differ only by an enable.",
+   "Bank 1 also carries a DUMMY incoming transfer switch, gate held off and park held on, so all three rails carry exactly one switch drain terminal. Without it hop 1 would transfer from a lighter source into a heavier destination and would not be representative of a steady-state pipeline stage."
+  ],
+  "ideal_sources_in_the_deck": "bank 1's 8 gate inputs (the chain head -- legitimate), the dV supply rail, vhi = 1.5 V, and the switch gate phases. NOTHING else."
+ },
+
+ "SEQUENCING_pre_stated": {
+  "rule": "Sequencing IS the wave. hop k closes at T_k, opens at its OWN re-probed true current zero t_zcs(k). hop 2 closes at T2 = T1 + t_zcs(1) + DELTA(L).",
+  "DELTA_definition": "DELTA(L) = ceil(t_valid90(L) - t_hop(L)) ps taken from the COMMITTED single-hop L sweep (qal/lsweep/rows.json, same L, same switch width), floored at 4 ps = 2*edge. This is a PRIOR measurement, not a chain measurement, so the stagger is not tuned on the result it is testing.",
+  "DELTA_values_ps_at_W15": {"277.8": 27, "150": 43, "100": 53, "60": 65, "45": 72, "30": 81, "10": 108},
+  "why_this_DELTA": "It gives each chain stage EXACTLY the time the single hop needed at that L (t_hop + lag = the committed t_level). So the chain at L is handed the single hop's own stage time and the pass/fail is a like-for-like test of whether that speed survives cascading.",
+  "pre_roll": "T1 = 200 ps. Bank 1's measured settling at T1 is reported; if it is not >=99.9% the pre-roll is lengthened and that is stated.",
+  "tail": "hop2_open + DELTA(L) + 500 ps, so bank 3 gets the same stage allowance as its predecessors AND an eventual-settle reading."
+ },
+
+ "ACCEPTANCE_all_must_hold": {
+  "A1_settling": "EVERY gate in EVERY one of the three banks settles >= 90% at its OWN stage-boundary checkpoint. Reported per gate, never aggregated.",
+  "A1_checkpoints": "Bank k's checkpoint is the instant its SUCCESSOR's transfer switch CLOSES, i.e. the instant bank k's data is actually sampled: bank 1 -> T1_close, bank 2 -> T2_close. Bank 3 -> hop2_open + DELTA(L), the same stage allowance its predecessors got.",
+  "A1_convention": "COMMITTED convention: pull-UP cell (input low) s = V(o)/V(rail_k); pull-DOWN cell (input high) s = 1 - V(o)/V(rail_k); V(rail_k) is the INSTANTANEOUS rail of that cell's own bank at the checkpoint.",
+  "A2_margin_budget": "Total delivered-rail depression <= 120 mV, charged BOTH ways and both reported: (i) CUMULATIVE from the committed single-hop reference delivered rail VBEND_ref = 0.6759 V -> absolute floor 0.5559 V for every bank; (ii) COMPOUNDING-ONLY, VBEND2 - VBEND3 <= 120 mV. Sub-allowance reported separately: the cliff floor VBEND >= 0.600 V (the committed C3 gate, whose stated rationale is that the cell pMOS stops clearing |Vtp| below it).",
+  "A2_budget_provenance": "120 mV = the ~76 mV cliff allowance implied by the committed C3 gate (0.6759 -> 0.600) plus the 44 mV recycle loss MEASURED in the committed two-bank recycle row (qal/README.md: 'recycle only 0.556 V (-44 mV)'). Chain compounding has never been charged against it before; this run charges it.",
+  "A3_instrument": "Per hop, the energy path identity ea - esw - er = dE_L must vanish at that hop's OWN current zero: |ea_k - esw_k - er_k| <= 0.02 fJ at t_zcs(k) (committed AMENDMENT A1 -- the identity holds at the ZERO, not at the post-open checkpoint). Every 1F integrator is t0-referenced at a 0.5 ps Z checkpoint (the campaign's pedestal trap). Plus the committed anchor reproduced digit-for-digit before any chain deck is run.",
+  "A4_rail_drain_completeness": "Committed C2: VA_open <= 0.1478 * (that hop's source rail). Reported per hop; it is the criterion that decides whether the transfer switch is widened.",
+  "VERDICT_rule": "A row is FUNCTIONAL only if A1 and A2(i) and A3 hold. A2(ii), the cliff sub-allowance and A4 are reported and discussed but do not by themselves void a row; any row that fails them is flagged."
+ },
+
+ "PRE_STATED_CALL_which_device_limits": {
+  "primary": "STAGE 2 BECOMES nMOS PULL-DOWN LIMITED. In the single hop the pull-down cells' gates were held at the full dV = 1.0 V while their own bank ran at a 0.676 V rail -- about 0.5 V of nMOS overdrive, non-physical and trivially easy. In the chain those gates get only bank 1's settled output, so about 0.676 V against a measured Vtn of roughly 0.4-0.5 V: about 0.18-0.27 V of overdrive, a ~2.5x reduction. The pMOS pull-up's condition is UNCHANGED from the single hop (its gate is a real logic 0 either way); it degrades only through rail droop.",
+  "primary_evidence_that_would_confirm_it": "min settling among bank 2's four pull-DOWN cells < min settling among bank 2's four pull-UP cells at the stage-2 checkpoint -- a REVERSAL of the committed single hop, where the pull-UP group was the laggard (81.9% at the open checkpoint) and the pull-DOWN group sat at 100.07%.",
+  "secondary": "STAGE 3 REVERTS TO pMOS PULL-UP LIMITED once its delivered rail falls below about 0.60 V, because that is the documented functional cliff (the pull-up cannot clear |Vtp| ~ 0.50 V). Pre-stated crossover: delivered rail ~ 0.60 V.",
+  "falsifier": "If at every stage and every L the pull-UP group is still the laggard and the pull-down group stays >= 99%, the primary call is WRONG and the chain's binding device is the same pMOS pull-up the single hop had -- i.e. the ideal-DC-input flattery did not matter."
+ },
+
+ "PRE_STATED_QUANTITATIVE_PREDICTIONS": {
+  "the_recorded_droop_will_not_reproduce": "The record's -0.56%/hop (qal_a1f_chain.py, qal_a1f_chain_bare.cir) was MEASURED on an IDEAL LC chain: 6 linear 10 fF caps, behavioral VSWITCH RON=1 ohm, L=1 uH, R=100 ohm, Q~141, dV=0.6, total loss 0.097 fJ over 5 hops, NO DEVICES AND NO GATES AT ALL. The real committed hop loses 8.383 fJ out of ~18 fJ stored, of which ~6.65 fJ is switch-related and only 0.050 fJ is I^2R. -0.56%/hop is an I^2R-only number and cannot survive real devices.",
+  "predicted_per_hop_droop": "DERIVED from the committed charge books: the tg15p switch absorbs about 8.2 fC per hop (Q through L at the open checkpoint 32.48 fC vs the destination bank's own Q(0.676 V) = 24.30 fC from the calib curve) and the source retains VA_open * C ~ 3.5 fC. Against a MEASURED incremental bank capacitance of 36.6 fF at the operating point, that is about 220 + 100 mV of rail lost per hop: predicted -25% to -33% per hop, roughly 50x worse than the recorded -0.56%/hop.",
+  "predicted_VBEND3": "0.42 - 0.52 V.",
+  "predicted_budget_outcome": "The FREE-RUNNING chain busts the 120 mV budget on the FIRST hop, at every L. If that is what happens, the headline is a NEGATIVE result -- the free-running unbuffered chain does not hold together at any L -- and the top-up is not an optional extra but a REQUIREMENT, so the headline L becomes the fastest L at which the TOPPED-UP chain settles, and the top-up energy is the price of the throughput claim.",
+  "predicted_headline_direction": "The chain's fastest sustainable L is SLOWER than the single hop's, because droop compounds and the cell settling lag is L-independent (~25 ps) while the stage time shrinks as sqrt(L)."
+ },
+
+ "SINGLE_HOP_COMPARATOR_frozen_now": {
+  "_source": "qal/lsweep/rows.json, the committed Track-1 L sweep. Frozen here so the chain cannot be compared against a moving target.",
+  "fastest_FUNCTIONAL_single_hop_at_W15": {"L_nH": 45, "t_hop_ps": 105.70, "t_valid90_ps": 176.87, "t_level_ps": 176.87, "VBEND": 0.6298, "VA_open": 0.1461},
+  "first_FAILING_single_hop_at_W15": {"L_nH": 40, "why": "C2 rail-drain VA_open 0.1506 > 0.1478"},
+  "fastest_FUNCTIONAL_single_hop_allowing_a_wider_switch": {"L_nH": 30, "total_um": 30, "t_hop_ps": 91.40, "t_valid90_ps": 198.26, "t_level_ps": 198.26, "VBEND": 0.6032},
+  "best_single_hop_t_level_overall": {"L_nH": 45, "total_um": 15, "t_level_ps": 176.87},
+  "committed_anchor_row": {"L_nH": 277.8, "t_zcs_ps": 266.755223, "E_hop_open_fJ": 8.3828171771408, "VBEND": 0.6758936, "VBPK": 0.7374377, "VA_open": 0.09778203952305342, "cells_burn_fJ": 1.6954746104994207, "t_valid90_ps": 292.15, "settling_at_open_pct": {"pull_up_group": 82.09, "pull_down_group": 100.1}}
+ },
+
+ "L_GRID_pre_stated": {
+  "primary_W15": [277.8, 150, 100, 60, 45, 30, 10],
+  "anchor": "277.8 nH is run FIRST as the known-good slow point (stage c). If the chain does not settle at all three stages there, or the measured per-hop droop is not explicable, the HARNESS is fixed before any L is swept.",
+  "widening": "If a row fails A4 (rail-drain completeness) the same L is re-run at total_um 30 and, if needed, 60, and the width used is reported per row. Widening is MEASURED, in the committed sweep, to trade VBEND away for VA_open, so for a chain it is not free and is not applied pre-emptively.",
+  "zero_re_probe": "MANDATORY at every point and for EVERY hop separately: the analytic pi*sqrt(LC) value was measured 36% early with real gate loads, and the chain's second hop sees a different source level and a different destination load than the first. Probe protocol: probe A = hop 1 closes and never opens, hop 2 held off -> first I(L1) downward zero after the I(L1) peak = t_zcs(1). probe B = hop 1 cut at t_zcs(1) + park, hop 2 closes at T2 and never opens -> first I(L2) downward zero after its peak = t_zcs(2). Then the measured deck cuts both at their own zeros."
+ },
+
+ "TOPUP_pre_stated": {
+  "mechanism": "Enable bank k's supply transmission gate (the SAME device already present and disabled in the free-running deck) for a window inside the inter-hop gap, closing it before that bank's own hop. It restores the bank to the dV rail, supplying only the deficit.",
+  "cost_metric": "Q_topup and E_topup = dV * Q_topup per bank per hop, from a 1F integrator on the dV source current, t0-referenced. Exact, because the supply is a constant-voltage source. Reported per bank and as a chain total, alongside the free-running numbers. Energy is NOT the gate for this run, but the cost is reported so it is not hidden.",
+  "risk_stated_now": "The top-up is RESISTIVE through a device, inside a gap only tens of ps wide. If it cannot complete in the gap, the device is widened and the width is reported -- and the widening adds capacitance to every bank, which is itself a cost and is reported as a shift in t_zcs.",
+  "control_run": "At L = 277.8 nH the chain is ALSO run with the supply TGs physically absent, to separate the supply device's capacitance from the top-up's effect."
+ },
+
+ "HEADLINE_definition_pre_stated": "The FASTEST L at which every gate in all three banks still settles >= 90% at its own stage-boundary checkpoint AND the chain stays inside the 120 mV margin budget -- reported for the free-running chain and for the topped-up chain separately -- compared against the frozen single-hop comparator above (best single-hop t_level 176.87 ps at L = 45 nH, W = 15 um). If the chain's limit is slower, THAT DIFFERENCE IS THE FINDING and it is the number a throughput claim has to use.",
+
+ "HONESTY_clauses": {
+  "lower_bound": "sg13lv_compat.sp ZEROES ad/as/pd/ps, so junction capacitance is ABSENT everywhere. Every capacitance, every energy and every delay in this run is therefore a LOWER BOUND / optimistic. That matters MORE for a chain than for a single hop, because the missing drain junction cap is part of the load bank N drives into bank N+1 and part of what holds bank N's output up after its rail collapses.",
+  "labels": "Every reported number is labelled MEASURED, DERIVED or ASSUMED.",
+  "negative_results": "A negative result is first-class. 'The chain does not hold together below L = X' and 'the chain does not hold together at ANY L without top-up' are both acceptable, reportable outcomes and neither will be dressed up.",
+  "no_self_baseline": "The single-hop comparator is the COMMITTED lsweep table, frozen above, not re-derived by this run.",
+  "what_would_make_this_run_worthless": "A chain that looks like it settles because it is not actually computing (e.g. a bank whose inputs never change, or a settling metric taken against a rail that has already collapsed so the ratio is trivially ~1). Guard: every bank's four pull-UP outputs must be measured HIGH (>= 0.5 * its rail) and its four pull-DOWN outputs measured LOW (<= 0.1 * its rail) at its checkpoint, i.e. the DATA PATTERN must be verified present at every stage, and that check is reported as its own row field."
+ }
+}

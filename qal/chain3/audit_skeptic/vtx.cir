@@ -1,0 +1,17 @@
+* SKEPTIC: independent Vt extraction, constant-current 100nA*W/L at |Vds|=0.1V
+.hdl "/usr/local/share/xyce/verilog-a/psp103/psp103.va"
+.include "/usr/local/src/kestrel/sim/models/sg13g2_psp103_tt.lib"
+.include "/usr/local/src/stat-sim/qal/sg13lv_compat.sp"
+VG vg 0 0.5
+VDN dn 0 0.1
+VSP sp 0 1.0
+VGP gp 0 0.5
+BGP 0 gpn I={0}
+EGP gpn 0 VALUE={1.0-V(vg)}
+XN dn vg 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XP dp gpn sp sp sg13_lv_pmos w=1.12u l=0.13u
+VDP dpm 0 0.9
+RDP dp dpm 0.001
+.dc VG 0.0 1.0 0.01
+.print dc I(VDN) I(VDP)
+.end

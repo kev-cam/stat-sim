@@ -1,0 +1,1001 @@
+{
+ "_provenance": {
+  "pre_registration": "qal/chain3/PRE_REGISTERED.json",
+  "pre_registration_sha256": "938e77390087bc438dadcfb9e6986ae0d514e8b83601f141381fb58e03af99e4",
+  "amendments": "qal/chain3/AMENDMENT.md (A1 topology, A2 head gate) + the two in-band amendments recorded under amendments_made_during_the_run below",
+  "mtimes_proving_order": {
+   "PRE_REGISTERED.json": "2026-09-28T17:42:31",
+   "vt.cir (device Vt deck)": "2026-09-28T17:52:48",
+   "instr_repro.cir (committed anchor re-run)": "2026-09-28T17:43:02",
+   "AMENDMENT.md": "2026-09-28T18:01:47",
+   "chain.py (first chain deck generator)": "2026-09-28T18:42:02",
+   "rows.json (first measured chain row)": "2026-09-28T18:49:52",
+   "RESULTS.json": "this file"
+  },
+  "pyms_vae_cache": "/tmp/claude-1001/-usr-local-src/4921ad0c-f17b-4b84-986a-5917c9ebd2a6/scratchpad/vae_cache_chain3",
+  "model": "SG13G2 / PSP103 tt via qal/sg13lv_compat.sp; .OPTIONS TIMEINT METHOD=GEAR RELTOL=1e-6 ABSTOL=1e-15 CHGTOL=1e-17 (committed, untouched); vt and gmin NOT touched",
+  "LOWER_BOUND_CAVEAT": "sg13lv_compat.sp ZEROES ad/as/pd/ps, so junction capacitance is ABSENT. Every capacitance, energy and delay here is a LOWER BOUND / optimistic. It matters MORE for a chain than for a single hop: the missing drain junction capacitance is part of the load bank N drives into bank N+1, and part of what would hold bank N's output HIGH up after its rail collapses -- i.e. the central failure mechanism measured here is UNDERSTATED by this model, not overstated.",
+  "metering": "1F integrators, ALWAYS t0-referenced at a 0.5 ps Z checkpoint (the campaign pedestal trap); every .measure FIND requested LAG_PS=1.0 ps late (the measured FIND lag of this Xyce build, inherited from lsweep/diag_find.py); no '.measure INTEGRAL V(<B-source>)' anywhere."
+ },
+ "a_instrument_check": {
+  "_what": "The committed tg15p single-hop row, reproduced two ways BEFORE any chain deck existed, digit-checked.",
+  "check1_re_extract_committed_mt0": {
+   "deck": "qal/swsweep/sw_tg15p_z.cir.mt0 (committed, not re-run)",
+   "E_hop_open_fJ": 8.382817177141,
+   "VBEND": 0.6758936,
+   "VBPK": 0.7374377,
+   "VA_open": 0.09778203952305,
+   "cells_burn_fJ": 1.695474610499,
+   "E_R_toC_fJ": 0.0495430348632,
+   "IZ_uA": -0.3793985,
+   "IPK_uA": 194.3655,
+   "t_zcs_ps": 266.755223,
+   "t_rail90_ps": 165.28,
+   "t_valid90_ps": 292.1477,
+   "relative_error_vs_committed": "0.00e+00 on every field"
+  },
+  "check2_committed_deck_RERUN_under_my_own_cache": {
+   "deck": "qal/chain3/instr_repro.cir (byte copy of the committed deck)",
+   "result": "BIT-IDENTICAL: every one of the eight fields matches to rel 0.00e+00; t_valid90 292.1477 ps reproduces the value the committed AMENDMENT A2 records as 292.15"
+  },
+  "digit_check_against_the_brief": {
+   "E_hop_open_fJ": "brief 8.383 -> measured 8.382817177141 OK",
+   "true_zero_ps": "brief 266.76 -> committed/measured 266.755223 OK",
+   "VBEND": "brief 0.6759 -> measured 0.6758936 OK"
+  },
+  "VERDICT": "PASS"
+ },
+ "b_measured_device_asymmetry": {
+  "Vtn": 0.5239460152201223,
+  "Vtp_abs": 0.4402734454819182,
+  "Id_nmos_uA": {
+   "1.0": 62.2412939,
+   "0.8": 24.9708371,
+   "0.7": 10.558455099999989,
+   "0.676": 8.03771002,
+   "0.65": 5.76264234,
+   "0.6": 2.67881165,
+   "0.55": 1.02220174,
+   "0.5": 0.316730071,
+   "0.45": 0.0843287917,
+   "0.4": 0.021031761500000003
+  },
+  "Id_pmos_uA": {
+   "1.0": 41.050697400000004,
+   "0.8": 25.72378190000001,
+   "0.7": 16.833561200000002,
+   "0.676": 14.70757644000001,
+   "0.65": 12.4614187,
+   "0.6": 8.446749749999999,
+   "0.55": 5.072877940000007,
+   "0.5": 2.5810037699999997,
+   "0.45": 1.0552692600000013,
+   "0.4": 0.336324274000001
+  },
+  "criterion": "Id = 100 nA * W/L at |Vds| = 0.1 V",
+  "deck": "chain3/vt.cir",
+  "_why_it_matters": "Vtn (0.5239 V) is HIGHER than |Vtp| (0.4403 V) and the nMOS/pMOS drive ratio crosses 1.0 at |Vgs| ~ 0.79 V. The committed single-hop deck drove its pull-DOWN gates at the full dV = 1.000 V (62.24 uA, 4.2x the pull-up) -- above the 0.676 V rail those cells actually run on. A chain can only drive them from the predecessor's settled output, ~0.676 V (8.04 uA, 0.55x the pull-up). This is the pre-stated mechanism, measured before any chain ran."
+ },
+ "c_netlist_proof_of_no_buffering": {
+  "_what": "o<i> of bank N IS in<i> of bank N+1 -- the same net name. The gate terminal of bank N+1's cell is bank N's output node. No flop, latch, buffer, level shifter, or source of any kind between them.",
+  "bank1_chain_head_ideal_inputs": [
+   "VI1_0 in1_0 0 1",
+   "VI1_1 in1_1 0 0",
+   "XP1_0 o1_0 in1_0 rail1 rail1 sg13_lv_pmos w=1.12u l=0.13u",
+   "XN1_0 o1_0 in1_0 gn1 gn1 sg13_lv_nmos w=0.74u l=0.13u",
+   "CL1_0 o1_0 gn1 2f"
+  ],
+  "bank2_gate_terminal_IS_bank1_output": [
+   "XP2_0 o2_0 o1_0 rail2 rail2 sg13_lv_pmos w=1.12u l=0.13u",
+   "XN2_0 o2_0 o1_0 gn2 gn2 sg13_lv_nmos w=0.74u l=0.13u",
+   "CL2_0 o2_0 gn2 2f",
+   "XP2_1 o2_1 o1_1 rail2 rail2 sg13_lv_pmos w=1.12u l=0.13u",
+   "XN2_1 o2_1 o1_1 gn2 gn2 sg13_lv_nmos w=0.74u l=0.13u"
+  ],
+  "bank3_gate_terminal_IS_bank2_output": [
+   "XP3_0 o3_0 o2_0 rail3 rail3 sg13_lv_pmos w=1.12u l=0.13u",
+   "XN3_0 o3_0 o2_0 gn3 gn3 sg13_lv_nmos w=0.74u l=0.13u",
+   "CL3_0 o3_0 gn3 2f"
+  ],
+  "the_only_ideal_sources_in_the_deck": "bank 1's eight gate inputs (VI1_*, the chain head), the dV supply VDV, vhi = 1.5 V, and the switch gate phases. Nothing else.",
+  "M_gates_per_bank": 8,
+  "data_pattern": "bank 1 inputs alternate 1,0,1,0,... and every bank inverts, so EVERY bank has 4 pull-UP cells (input low) and 4 pull-DOWN cells (input high) at EVERY stage. Both device types exercised at every stage. Held constant across the whole sweep."
+ },
+ "d_finding1_committed_switch_topology_does_not_compose": {
+  "_claim": "The COMMITTED receiving-side-only transfer switch does not compose into a chain. With the cut only on the receiving side, the SOURCE bank stays permanently wired to its own outgoing inductor, so while bank N is being CHARGED its outgoing inductor is a shunt resonator hanging off it.",
+  "_isolation": "a277_rxonly and a277_free differ ONLY by the presence of the source-side cut. Same cells, same banks, same head gate, same L, same switch widths, same phases.",
+  "MEASURED": {
+   "a277_rxonly": {
+    "q_L1_fC": 44.23111390660519,
+    "q_idle_L2_fC": 18.71597732227883,
+    "pct": 42.31405377173626,
+    "ipk_idle_L2_uA": 103.79633700000001
+   },
+   "a277_free": {
+    "q_L1_fC": 62.21570247678505,
+    "q_idle_L2_fC": 2.4118045330464082e-05,
+    "pct": 3.876520616232439e-05,
+    "ipk_idle_L2_uA": 0.00012181907499999999
+   }
+  },
+  "consequences_MEASURED": {
+   "charge_of_hop1_diverted_through_the_IDLE_next_stage_inductor_pct": 42.3141,
+   "peak_current_in_the_IDLE_inductor_uA": 103.796,
+   "inductor_current_at_hop2_close_uA": -34.878,
+   "ring_decay_tau_2L_over_R_ns": 55.6,
+   "note": "tau = 2L/R = 55.6 ns, so the ring CANNOT damp inside any usable inter-hop gap: hop 2 can never start from rest.",
+   "hop2_rail_drain_completeness_frac": 0.44221,
+   "hop2_rail_drain_committed_gate": 0.1478
+  },
+  "AFTER_the_source_side_cut": {
+   "diverted_charge_pct": 3.88e-05,
+   "peak_idle_inductor_current_uA": 0.0,
+   "hop1_rail_drain_completeness_frac": -0.00116,
+   "committed_single_hop_for_comparison": 0.0978
+  },
+  "cost_of_the_fix_MEASURED": {
+   "t_zcs_hop1_ps_single_hop": 266.755223,
+   "t_zcs_hop1_ps_chain_with_source_cut": 353.79,
+   "ratio": 1.326,
+   "why": "a chainable bank carries TWO transfer-switch terminals (one incoming, one outgoing) where the committed single-hop destination carried one, and the tg15p switch is 15 um of device width against a bank of 14.9 um of cell width. Source-cut conduction loss is negligible (I^2R 0.137 fJ of a 23.8 fJ hop)."
+  },
+  "_secondary": "Holding the committed destination park ON while a hop is idle is UNSAFE with a receiving-side-only cut (it shorts the source rail to ground through the inductor -- the committed AMENDMENT-A3 failure) but becomes SAFE and NECESSARY once the source side is cut: it is what pins the otherwise-floating inductor island. MEASURED: leaving that island floating aborts the run at the first gate edge."
+ },
+ "e_validation_at_the_known_good_slow_point": {
+  "_pre_registered_requirement": "Validate at L = 277.8 nH FIRST; if the chain does not settle at all three stages, or the per-hop droop is not explicable, fix the HARNESS before sweeping L.",
+  "harness_defects_found_and_fixed": [
+   "the pre-registered per-bank symmetry devices inflated bank C ~2-3x and moved t_zcs +38% off the frozen comparator (AMENDMENT A1)",
+   "a tg15p-sized head gate cut in 2 ps aborted the run at exactly t = 180 ps (AMENDMENT A2)",
+   "the committed receiving-side-only switch diverted 42.3% of hop 1's charge through the idle next-stage inductor (finding 1, source-side cut added)",
+   "the integrator reading I(VTU1) -- the branch current of a 0 V source feeding an OPEN circuit once the head gate cuts -- aborted the run at the first gate edge; bisection over all 18 integrators isolated it to that one; supply charge is now metered on the always-connected ideal source and split by disjoint checkpoint windows",
+   "the top-up window originally spanned the whole inter-hop gap, restoring the rail 2 ps before the stage boundary, so the settling ratio V(o)/V(rail) was read against a rail that had just jumped -- it moved the goalpost and read 44.7% on a chain whose rail was fine. Moved to the START of the gap."
+  ],
+  "instrument_state_after_the_fixes": {
+   "identity_at_each_hop_own_zero_fJ": {
+    "hop1": 1.47e-05,
+    "hop2": 1.15e-06,
+    "gate": 0.02
+   },
+   "same_identity_from_the_RAW_WAVEFORM_fJ": {
+    "hop1": 9.871e-06,
+    "hop2": 6.655e-07
+   },
+   "mt0_vs_waveform_rail_agreement_mV": {
+    "VBEND1": -0.0005,
+    "VBEND2": -0.00038,
+    "VBEND3": -0.03456
+   },
+   "idle_inductor_charge_diversion_pct": 3.88e-05,
+   "supply_charge_drawn_after_the_head_gate_opens_fC": 1e-05
+  },
+  "does_it_settle_at_all_three_stages": "NO. bank 1 99.94%, bank 2 62.50%, bank 3 35.75% at the pre-registered stagger. This is NOT a harness artifact: bank 3's outputs are still at 62.2-62.3% after a further 500 ps tail, so they are DRIVE-limited, not time-limited.",
+  "does_the_droop_land_near_the_recorded_minus_0p56_pct_per_hop": "NO, and it never could have.",
+  "why_minus_0p56_pct_per_hop_cannot_apply": "The recorded -0.56%/hop (qal_a1f_chain.py, qal_a1f_chain_bare.cir) was MEASURED on an IDEAL LC chain: 6 LINEAR 10 fF capacitors, BEHAVIOURAL VSWITCH switches with RON = 1 ohm, L = 1 uH, R = 100 ohm, Q ~ 141, dV = 0.6, total loss 0.097 fJ over 5 hops. There are NO DEVICES and NO GATES in that deck at all. It is an I^2R-only number. The real device hop's MEASURED loss is 8.383 fJ out of ~18 fJ stored, of which ~6.65 fJ is switch-related and only 0.050 fJ is I^2R -- so the term -0.56%/hop describes is 0.6% of the real per-hop loss. The COMMITTED SINGLE HOP ITSELF already droops -32.4% (1.000 V source -> 0.6759 V delivered); no chain built from it could ever have shown -0.56%/hop.",
+  "measured_per_hop_droop": {
+   "hop1_at_L277p8_pct": -36.03,
+   "hop2_at_L277p8_pct": -20.91,
+   "steady_state_estimate_is_hop2": "hop 2 is the representative hop: both of its ends are real gate banks at realistic levels, whereas hop 1's source starts at the saturated top of the bank's Q-V curve.",
+   "ratio_to_the_recorded_number": "-20.91 / -0.56 = 37x worse at the slow point; -29.15 / -0.56 = 52x worse at L = 10 nH",
+   "direction_of_the_residual_bias": "hop 2's droop is an OPTIMISTIC (under-) estimate of steady state: rail 3 carries only an incoming switch terminal, with no outgoing one, so it is lighter than a mid-pipeline bank would be.",
+   "mechanism": "per-hop fixed CHARGE absorbed by the transfer switch against the bank's incremental capacitance. MEASURED at the anchor: 62.15 fC flowed through L1 while the destination bank's own static charge at its delivered rail is only ~23 fC; the bank's measured incremental capacitance at the operating point is 36.6 fF, so the absorbed charge IS the rail droop. It is a switch-charge/bank-capacitance ratio, not an I^2R effect, so it does not improve with Q."
+  },
+  "VERDICT": "The harness was fixed until the instrument closed to 1e-5 fJ and the idle inductor was quiet to 4e-5 %. The remaining failure is PHYSICS, and the sweep proceeded."
+ },
+ "f_L_sweep_FREE_RUNNING_chain": {
+  "_stagger": "the PRE-REGISTERED DELTA(L) = the committed single hop's own measured (t_valid90 - t_hop) at the same L, so each chain stage is handed exactly the single hop's own stage time -- the strict like-for-like test.",
+  "_switch": "tg15p, total 15 um, at every point. Peak transfer current 283-1030 uA; the committed sweep MEASURED that widening the switch trades VBEND away for rail-drain completeness, so it is not free for a chain and was not applied pre-emptively. See h_switch_widening.",
+  "rows": [
+   {
+    "L_nH": 277.8,
+    "DELTA_ps": 27.0,
+    "t_zcs_hop1_ps": 353.79,
+    "t_zcs_hop2_ps": 317.5,
+    "stage_time_hop1_ps": 380.79,
+    "VBEND1": 1.0059,
+    "VBEND2": 0.6435,
+    "VBEND3": 0.5089,
+    "droop_hop1_pct": -36.03,
+    "droop_hop2_pct": -20.91,
+    "accum_droop_1to3_mV": -497.0,
+    "settling_min_bank1_pct": 99.94,
+    "settling_min_bank2_pct": 62.5,
+    "settling_min_bank3_pct": 35.75,
+    "limiting_device": "pull-up",
+    "margin_used_after_hop1_mV": 32.4,
+    "margin_used_after_hop2_mV": 167.0,
+    "margin_used_pct_of_120mV": 139.1,
+    "IPK_hop1_uA": 283.3,
+    "FUNCTIONAL": "NO",
+    "fails": [
+     "A1_settle",
+     "A2i_budget",
+     "data_pattern",
+     "A2ii_compounding",
+     "cliff_floor",
+     "A4_raildrain"
+    ]
+   },
+   {
+    "L_nH": 150.0,
+    "DELTA_ps": 43.0,
+    "t_zcs_hop1_ps": 259.92,
+    "t_zcs_hop2_ps": 233.21,
+    "stage_time_hop1_ps": 302.92,
+    "VBEND1": 1.0059,
+    "VBEND2": 0.6259,
+    "VBEND3": 0.4903,
+    "droop_hop1_pct": -37.78,
+    "droop_hop2_pct": -21.67,
+    "accum_droop_1to3_mV": -515.6,
+    "settling_min_bank1_pct": 99.94,
+    "settling_min_bank2_pct": 58.68,
+    "settling_min_bank3_pct": 34.98,
+    "limiting_device": "pull-up",
+    "margin_used_after_hop1_mV": 49.9,
+    "margin_used_after_hop2_mV": 185.6,
+    "margin_used_pct_of_120mV": 154.6,
+    "IPK_hop1_uA": 374.3,
+    "FUNCTIONAL": "NO",
+    "fails": [
+     "A1_settle",
+     "A2i_budget",
+     "data_pattern",
+     "A2ii_compounding",
+     "cliff_floor",
+     "A4_raildrain"
+    ]
+   },
+   {
+    "L_nH": 100.0,
+    "DELTA_ps": 53.0,
+    "t_zcs_hop1_ps": 212.39,
+    "t_zcs_hop2_ps": 190.52,
+    "stage_time_hop1_ps": 265.39,
+    "VBEND1": 1.0059,
+    "VBEND2": 0.6127,
+    "VBEND3": 0.4763,
+    "droop_hop1_pct": -39.1,
+    "droop_hop2_pct": -22.25,
+    "accum_droop_1to3_mV": -529.6,
+    "settling_min_bank1_pct": 99.94,
+    "settling_min_bank2_pct": 56.31,
+    "settling_min_bank3_pct": 34.4,
+    "limiting_device": "pull-up",
+    "margin_used_after_hop1_mV": 63.2,
+    "margin_used_after_hop2_mV": 199.6,
+    "margin_used_pct_of_120mV": 166.3,
+    "IPK_hop1_uA": 447.6,
+    "FUNCTIONAL": "NO",
+    "fails": [
+     "A1_settle",
+     "A2i_budget",
+     "data_pattern",
+     "A2ii_compounding",
+     "cliff_floor",
+     "A4_raildrain"
+    ]
+   },
+   {
+    "L_nH": 60.0,
+    "DELTA_ps": 65.0,
+    "t_zcs_hop1_ps": 164.83,
+    "t_zcs_hop2_ps": 147.77,
+    "stage_time_hop1_ps": 229.83,
+    "VBEND1": 1.0059,
+    "VBEND2": 0.5943,
+    "VBEND3": 0.4567,
+    "droop_hop1_pct": -40.92,
+    "droop_hop2_pct": -23.15,
+    "accum_droop_1to3_mV": -549.2,
+    "settling_min_bank1_pct": 99.94,
+    "settling_min_bank2_pct": 53.16,
+    "settling_min_bank3_pct": 33.57,
+    "limiting_device": "pull-up",
+    "margin_used_after_hop1_mV": 81.6,
+    "margin_used_after_hop2_mV": 219.2,
+    "margin_used_pct_of_120mV": 182.6,
+    "IPK_hop1_uA": 557.5,
+    "FUNCTIONAL": "NO",
+    "fails": [
+     "A1_settle",
+     "A2i_budget",
+     "data_pattern",
+     "A2ii_compounding",
+     "cliff_floor",
+     "A4_raildrain"
+    ]
+   },
+   {
+    "L_nH": 45.0,
+    "DELTA_ps": 72.0,
+    "t_zcs_hop1_ps": 142.96,
+    "t_zcs_hop2_ps": 128.1,
+    "stage_time_hop1_ps": 214.96,
+    "VBEND1": 1.0059,
+    "VBEND2": 0.583,
+    "VBEND3": 0.4444,
+    "droop_hop1_pct": -42.05,
+    "droop_hop2_pct": -23.77,
+    "accum_droop_1to3_mV": -561.6,
+    "settling_min_bank1_pct": 99.94,
+    "settling_min_bank2_pct": 51.35,
+    "settling_min_bank3_pct": 33.07,
+    "limiting_device": "pull-up",
+    "margin_used_after_hop1_mV": 92.9,
+    "margin_used_after_hop2_mV": 231.5,
+    "margin_used_pct_of_120mV": 192.9,
+    "IPK_hop1_uA": 629.1,
+    "FUNCTIONAL": "NO",
+    "fails": [
+     "A1_settle",
+     "A2i_budget",
+     "data_pattern",
+     "A2ii_compounding",
+     "cliff_floor",
+     "A4_raildrain"
+    ]
+   },
+   {
+    "L_nH": 30.0,
+    "DELTA_ps": 81.0,
+    "t_zcs_hop1_ps": 117.04,
+    "t_zcs_hop2_ps": 104.77,
+    "stage_time_hop1_ps": 198.04,
+    "VBEND1": 1.0059,
+    "VBEND2": 0.5664,
+    "VBEND3": 0.4258,
+    "droop_hop1_pct": -43.69,
+    "droop_hop2_pct": -24.82,
+    "accum_droop_1to3_mV": -580.1,
+    "settling_min_bank1_pct": 99.94,
+    "settling_min_bank2_pct": 48.37,
+    "settling_min_bank3_pct": 32.31,
+    "limiting_device": "pull-up",
+    "margin_used_after_hop1_mV": 109.5,
+    "margin_used_after_hop2_mV": 250.1,
+    "margin_used_pct_of_120mV": 208.4,
+    "IPK_hop1_uA": 743.0,
+    "FUNCTIONAL": "NO",
+    "fails": [
+     "A1_settle",
+     "A2i_budget",
+     "data_pattern",
+     "A2ii_compounding",
+     "cliff_floor",
+     "A4_raildrain"
+    ]
+   },
+   {
+    "L_nH": 10.0,
+    "DELTA_ps": 108.0,
+    "t_zcs_hop1_ps": 68.33,
+    "t_zcs_hop2_ps": 60.86,
+    "stage_time_hop1_ps": 176.33,
+    "VBEND1": 1.0059,
+    "VBEND2": 0.5134,
+    "VBEND3": 0.3637,
+    "droop_hop1_pct": -48.97,
+    "droop_hop2_pct": -29.15,
+    "accum_droop_1to3_mV": -642.2,
+    "settling_min_bank1_pct": 99.94,
+    "settling_min_bank2_pct": 39.08,
+    "settling_min_bank3_pct": 30.4,
+    "limiting_device": "pull-up",
+    "margin_used_after_hop1_mV": 162.5,
+    "margin_used_after_hop2_mV": 312.2,
+    "margin_used_pct_of_120mV": 260.1,
+    "IPK_hop1_uA": 1137.7,
+    "FUNCTIONAL": "NO",
+    "fails": [
+     "A1_settle",
+     "A2i_budget",
+     "data_pattern",
+     "A2ii_compounding",
+     "cliff_floor",
+     "A4_raildrain"
+    ]
+   }
+  ],
+  "VERDICT": "NO L PASSES. The free-running chain busts the 120 mV margin budget at EVERY L, including the known-good slow point.",
+  "where_it_busts": "hop 1 alone fits the budget for L >= 30 nH (27.0% of budget used at 277.8 nH, rising to 91.3% at 30 nH) and busts on hop 1 by itself at L = 10 nH (135.4%). hop 2 pushes it out of budget at EVERY L: 139.1% at 277.8 nH to 260.1% at 10 nH. So the free chain has room for ONE hop at the slow end and none for two, anywhere.",
+  "limiting_device": "pull-UP at every stage and every L -- the pre-stated SECONDARY call. The delivered rail at bank 3 is 0.364-0.509 V against a MEASURED |Vtp| of 0.4403 V, so the cell pMOS cannot clear its own threshold: 0 to 69 mV of overdrive. This is the committed functional cliff, reached by compounding rather than by choice of dV."
+ },
+ "g_L_sweep_TOPPED_UP_chain": {
+  "_mechanism": "bank k's supply transmission gate (tg15p sizing) is enabled for a 20 ps window at the START of the inter-hop gap, restoring the rail toward dV; the cells then settle against the restored rail for the rest of the gap.",
+  "_stagger": "DELTA = 300 ps, GENEROUS, so the stage time is not the binding constraint and the settling asymptote can be read. Rows at the pre-registered DELTA are in ROWS_full.json (a277_topup, a100_topup) and rows at intermediate DELTA (120/150/180 ps) bracket the requirement.",
+  "rows": [
+   {
+    "L_nH": 277.8,
+    "DELTA_ps": 300.0,
+    "t_zcs_hop1_ps": 365.28,
+    "t_zcs_hop2_ps": 367.93,
+    "stage_time_hop1_ps": 665.28,
+    "VBEND1": 1.0059,
+    "VBEND2": 0.7014,
+    "VBEND3": 0.7689,
+    "droop_hop1_pct": -30.27,
+    "droop_hop2_pct": 9.63,
+    "pullup_min_bank2_pct": 99.98,
+    "pulldown_min_bank2_pct": 84.26,
+    "pullup_min_bank3_pct": 100.03,
+    "pulldown_min_bank3_pct": 76.23,
+    "worst_gate_pct": 76.23,
+    "limiting_device": "pull-down",
+    "margin_used_after_hop2_mV": -25.5,
+    "margin_used_pct_of_120mV": -21.3,
+    "topup_charge_per_bank_fC": {
+     "2": 18.9,
+     "3": 17.46
+    },
+    "FUNCTIONAL": "NO",
+    "fails": [
+     "A1_settle",
+     "data_pattern",
+     "A4_raildrain"
+    ]
+   },
+   {
+    "L_nH": 150.0,
+    "DELTA_ps": 300.0,
+    "t_zcs_hop1_ps": 268.88,
+    "t_zcs_hop2_ps": 269.8,
+    "stage_time_hop1_ps": 568.88,
+    "VBEND1": 1.0059,
+    "VBEND2": 0.6887,
+    "VBEND3": 0.7582,
+    "droop_hop1_pct": -31.54,
+    "droop_hop2_pct": 10.09,
+    "pullup_min_bank2_pct": 99.93,
+    "pulldown_min_bank2_pct": 85.31,
+    "pullup_min_bank3_pct": 100.0,
+    "pulldown_min_bank3_pct": 77.16,
+    "worst_gate_pct": 77.16,
+    "limiting_device": "pull-down",
+    "margin_used_after_hop2_mV": -12.8,
+    "margin_used_pct_of_120mV": -10.7,
+    "topup_charge_per_bank_fC": {
+     "2": 19.24,
+     "3": 18.29
+    },
+    "FUNCTIONAL": "NO",
+    "fails": [
+     "A1_settle",
+     "data_pattern",
+     "A4_raildrain"
+    ]
+   },
+   {
+    "L_nH": 100.0,
+    "DELTA_ps": 300.0,
+    "t_zcs_hop1_ps": 219.96,
+    "t_zcs_hop2_ps": 220.06,
+    "stage_time_hop1_ps": 519.96,
+    "VBEND1": 1.0059,
+    "VBEND2": 0.6804,
+    "VBEND3": 0.7514,
+    "droop_hop1_pct": -32.36,
+    "droop_hop2_pct": 10.43,
+    "pullup_min_bank2_pct": 99.88,
+    "pulldown_min_bank2_pct": 85.92,
+    "pullup_min_bank3_pct": 99.98,
+    "pulldown_min_bank3_pct": 77.49,
+    "worst_gate_pct": 77.49,
+    "limiting_device": "pull-down",
+    "margin_used_after_hop2_mV": -4.5,
+    "margin_used_pct_of_120mV": -3.8,
+    "topup_charge_per_bank_fC": {
+     "2": 19.62,
+     "3": 18.91
+    },
+    "FUNCTIONAL": "NO",
+    "fails": [
+     "A1_settle",
+     "data_pattern",
+     "A4_raildrain"
+    ]
+   },
+   {
+    "L_nH": 60.0,
+    "DELTA_ps": 300.0,
+    "t_zcs_hop1_ps": 170.93,
+    "t_zcs_hop2_ps": 170.32,
+    "stage_time_hop1_ps": 470.93,
+    "VBEND1": 1.0059,
+    "VBEND2": 0.67,
+    "VBEND3": 0.7433,
+    "droop_hop1_pct": -33.39,
+    "droop_hop2_pct": 10.94,
+    "pullup_min_bank2_pct": 99.81,
+    "pulldown_min_bank2_pct": 86.65,
+    "pullup_min_bank3_pct": 99.95,
+    "pulldown_min_bank3_pct": 77.61,
+    "worst_gate_pct": 77.61,
+    "limiting_device": "pull-down",
+    "margin_used_after_hop2_mV": 5.9,
+    "margin_used_pct_of_120mV": 4.9,
+    "topup_charge_per_bank_fC": {
+     "2": 20.31,
+     "3": 19.79
+    },
+    "FUNCTIONAL": "NO",
+    "fails": [
+     "A1_settle",
+     "data_pattern",
+     "A4_raildrain"
+    ]
+   },
+   {
+    "L_nH": 45.0,
+    "DELTA_ps": 300.0,
+    "t_zcs_hop1_ps": 148.35,
+    "t_zcs_hop2_ps": 147.48,
+    "stage_time_hop1_ps": 448.35,
+    "VBEND1": 1.0059,
+    "VBEND2": 0.6642,
+    "VBEND3": 0.7389,
+    "droop_hop1_pct": -33.97,
+    "droop_hop2_pct": 11.26,
+    "pullup_min_bank2_pct": 99.77,
+    "pulldown_min_bank2_pct": 87.04,
+    "pullup_min_bank3_pct": 99.93,
+    "pulldown_min_bank3_pct": 77.52,
+    "worst_gate_pct": 77.52,
+    "limiting_device": "pull-down",
+    "margin_used_after_hop2_mV": 11.7,
+    "margin_used_pct_of_120mV": 9.8,
+    "topup_charge_per_bank_fC": {
+     "2": 20.8,
+     "3": 20.33
+    },
+    "FUNCTIONAL": "NO",
+    "fails": [
+     "A1_settle",
+     "data_pattern",
+     "A4_raildrain"
+    ]
+   },
+   {
+    "L_nH": 30.0,
+    "DELTA_ps": 300.0,
+    "t_zcs_hop1_ps": 121.57,
+    "t_zcs_hop2_ps": 120.46,
+    "stage_time_hop1_ps": 421.57,
+    "VBEND1": 1.0059,
+    "VBEND2": 0.6559,
+    "VBEND3": 0.733,
+    "droop_hop1_pct": -34.79,
+    "droop_hop2_pct": 11.74,
+    "pullup_min_bank2_pct": 99.69,
+    "pulldown_min_bank2_pct": 87.58,
+    "pullup_min_bank3_pct": 99.9,
+    "pulldown_min_bank3_pct": 77.21,
+    "worst_gate_pct": 77.21,
+    "limiting_device": "pull-down",
+    "margin_used_after_hop2_mV": 19.9,
+    "margin_used_pct_of_120mV": 16.6,
+    "topup_charge_per_bank_fC": {
+     "2": 21.62,
+     "3": 21.14
+    },
+    "FUNCTIONAL": "NO",
+    "fails": [
+     "A1_settle",
+     "data_pattern",
+     "A4_raildrain"
+    ]
+   },
+   {
+    "L_nH": 10.0,
+    "DELTA_ps": 300.0,
+    "t_zcs_hop1_ps": 71.21,
+    "t_zcs_hop2_ps": 69.92,
+    "stage_time_hop1_ps": 371.21,
+    "VBEND1": 1.0059,
+    "VBEND2": 0.6338,
+    "VBEND3": 0.7178,
+    "droop_hop1_pct": -36.99,
+    "droop_hop2_pct": 13.25,
+    "pullup_min_bank2_pct": 99.41,
+    "pulldown_min_bank2_pct": 89.36,
+    "pullup_min_bank3_pct": 99.81,
+    "pulldown_min_bank3_pct": 75.3,
+    "worst_gate_pct": 75.3,
+    "limiting_device": "pull-down",
+    "margin_used_after_hop2_mV": 42.1,
+    "margin_used_pct_of_120mV": 35.0,
+    "topup_charge_per_bank_fC": {
+     "2": 24.61,
+     "3": 23.69
+    },
+    "FUNCTIONAL": "NO",
+    "fails": [
+     "A1_settle",
+     "data_pattern",
+     "A4_raildrain"
+    ]
+   },
+   {
+    "L_nH": 3.0,
+    "DELTA_ps": 300.0,
+    "t_zcs_hop1_ps": 40.27,
+    "t_zcs_hop2_ps": 39.03,
+    "stage_time_hop1_ps": 340.27,
+    "VBEND1": 1.0059,
+    "VBEND2": 0.6103,
+    "VBEND3": 0.702,
+    "droop_hop1_pct": -39.33,
+    "droop_hop2_pct": 15.03,
+    "pullup_min_bank2_pct": 98.84,
+    "pulldown_min_bank2_pct": 92.82,
+    "pullup_min_bank3_pct": 99.75,
+    "pulldown_min_bank3_pct": 72.08,
+    "worst_gate_pct": 72.08,
+    "limiting_device": "pull-down",
+    "margin_used_after_hop2_mV": 65.6,
+    "margin_used_pct_of_120mV": 54.7,
+    "topup_charge_per_bank_fC": {
+     "2": 29.1,
+     "3": 27.04
+    },
+    "FUNCTIONAL": "NO",
+    "fails": [
+     "A1_settle",
+     "data_pattern",
+     "A4_raildrain"
+    ]
+   }
+  ],
+  "VERDICT": "Top-up ARRESTS the rail droop -- the margin budget is satisfied for L >= 45 nH (-25.5 to +11.7 mV used of 120 mV) and still only 16.6 / 35.0 / 54.7% at L = 30 / 10 / 3 nH. But NO L reaches 90% settling at every gate, and the limiting device FLIPS to the nMOS PULL-DOWN.",
+  "the_key_non_result": "bank 3's worst pull-DOWN settling is FLAT in L: 76.2 / 77.2 / 77.5 / 77.6 / 77.5 / 77.2 / 75.3 / 72.1% across L = 277.8 / 150 / 100 / 60 / 45 / 30 / 10 / 3 nH -- a 93x range in L moves it by 5.5 points and never past 78%. It is also flat in stage time: at L = 10 nH, DELTA = 120 / 180 / 300 ps gives 65.1 / 68.5 / 75.3%, still asymptoting below 90%, and bank 3's pull-downs are still at 72.4-75.7% after a further 500 ps tail. L is NOT the knob, and neither is time.",
+  "limiting_device": "nMOS PULL-DOWN at banks 2 and 3, at every L, whenever the stage time is long enough for the pull-up to finish. This is the pre-stated PRIMARY call."
+ },
+ "h_WHICH_DEVICE_LIMITS_the_evidence": {
+  "_pre_stated_primary": "stage 2 becomes nMOS PULL-DOWN limited; confirming evidence would be bank 2's pull-DOWN min below its pull-UP min, REVERSING the committed single hop (pull-UP laggard at 81.9%, pull-DOWN at 100.07%).",
+  "_pre_stated_secondary": "stage 3 reverts to pMOS PULL-UP limited once its delivered rail falls below about 0.60 V (the functional cliff, |Vtp| ~ 0.50 V).",
+  "VERDICT_primary": "CONFIRMED, in the regime the prediction was about. Whenever the rail is held up (top-up) and the stage time is long enough for the pull-up to finish, the pull-DOWN is the laggard at banks 2 AND 3, at every L: bank 2 84.3-92.8% vs pull-UP 98.8-100.0%; bank 3 72.1-77.6% vs pull-UP 99.8-100.0%. That is the reversal, and it is total.",
+  "VERDICT_secondary": "CONFIRMED, and the pre-stated crossover rail is right. In the FREE chain the delivered rail at bank 3 is 0.364-0.509 V (all below 0.60) and the pull-UP limits at 30.4-42.8%. In the TOPPED-UP chain bank 3's rail is 0.702-0.769 V (all above 0.60) and the pull-DOWN limits. The crossover therefore falls between 0.51 and 0.70 V, bracketing the pre-stated ~0.60 V.",
+  "MEASURED_device_asymmetry_that_makes_it_happen": {
+   "Vtn_V": 0.5239,
+   "Vtp_abs_V": 0.4403,
+   "nMOS_over_pMOS_drive_ratio_crosses_unity_at_Vgs_V": 0.79,
+   "single_hop_pulldown_gate_V": 1.0,
+   "single_hop_pulldown_Id_uA": 62.24,
+   "chain_pulldown_gate_V": 0.676,
+   "chain_pulldown_Id_uA": 8.04,
+   "ratio_single_hop_over_chain": 7.74,
+   "_note": "the single-hop deck held pull-down gates at 1.000 V, ABOVE the 0.676 V rail those cells run on -- non-physical, and worth 7.7x in drive."
+  },
+  "THE_DEEPER_MECHANISM_measured": {
+   "_statement": "The chain's pull-down failure is NOT just reduced overdrive. It is that the predecessor's logic HIGH is referenced to the predecessor's RAIL, and that rail is being drained forward by the very hop that powers the successor. A logic LOW is referenced to GROUND and survives intact; a logic HIGH does not. So the device driven by a HIGH -- the nMOS pull-down -- loses its gate drive DURING its own evaluation window, and there is no buffer to hold it.",
+   "bank2_pulldown_gate_drive_V_close_to_open": {
+    "L277p8": [
+     0.9772,
+     0.3767
+    ],
+    "L100": [
+     0.9772,
+     0.4173
+    ],
+    "L10": [
+     0.9772,
+     0.5526
+    ],
+    "L3": [
+     0.9772,
+     0.6423
+    ]
+   },
+   "bank2_nMOS_drive_collapse_x": {
+    "L277p8": 5218,
+    "L150": 2670,
+    "L100": 1651,
+    "L60": 838,
+    "L45": 555,
+    "L30": 301,
+    "L10": 52,
+    "L3": 11
+   },
+   "bank3_pulldown_gate_drive_V_close_to_open": {
+    "L277p8": [
+     0.6899,
+     0.4134
+    ],
+    "L100": [
+     0.6688,
+     0.4393
+    ],
+    "L10": [
+     0.6206,
+     0.4908
+    ]
+   },
+   "bank3_nMOS_drive_collapse_x": {
+    "L277p8": 308,
+    "L150": 174,
+    "L100": 117,
+    "L60": 71,
+    "L45": 55,
+    "L30": 37,
+    "L10": 15,
+    "L3": 7
+   },
+   "why_a_shorter_hop_helps_a_little": "the collapse is slower in absolute terms at small L only because the whole hop is shorter; the HIGH still falls 34-62% before the hop reaches its own current zero.",
+   "second_order_compounding": "the HIGH level degrades STAGE OVER STAGE independently of the rail: bank 2's pull-downs are driven at 0.977 V (from bank 1, an ideal-source chain head at dV), bank 3's at only 0.620-0.690 V (from bank 2, a real bank). That is why bank 3 is worse than bank 2 at every single L and every stagger, and why a 4th stage would be worse again."
+  },
+  "CAUSAL_CONTROL_h277_hold": {
+   "_design": "identical deck, identical L (277.8 nH), identical switch, identical cells, identical top-up, identical 300 ps stage time, identical bank-2 rail (0.70141 V to five digits). The ONLY difference: hop 2 never closes, so bank 2's charge is NOT transferred forward and its HIGH outputs are not drained.",
+   "bank3_pulldown_gate_at_evaluation_start_V": {
+    "transferred": 0.6899,
+    "held": 0.7013
+   },
+   "bank3_pulldown_gate_at_evaluation_end_V": {
+    "transferred": 0.4134,
+    "held": 0.7013
+   },
+   "bank3_pulldown_settling_pct": {
+    "transferred": 76.23,
+    "held": 100.14
+   },
+   "bank3_pulldown_output_V": {
+    "transferred": 0.1828,
+    "held": -0.001
+   },
+   "bank3_pulldown_data_pattern_guard": {
+    "transferred": "FAIL (output 0.238 x rail, gate is <= 0.10 x rail)",
+    "held": "PASS"
+   },
+   "CONCLUSION": "The pull-down failure is caused SPECIFICALLY by the forward charge transfer collapsing the predecessor's HIGH level. It is not rail droop, not the switch, not L, not the stage time, and not the cells: hold the predecessor up and the same cell on the same rail goes from 76.23% to 100.14% and lands its output at ground. This is a STRUCTURAL property of an unbuffered forward-transfer chain, not a parametric one, which is exactly why no L and no stagger fixes it.",
+   "_the_control_also_confirms_the_other_limit": "in the hold control bank 3's pull-UP becomes the laggard instead (65.3% at the boundary, 82.7% even after the tail), because there bank 3's rail is supplied only by a 20 ps top-up packet and sags to 0.690 V, leaving the pull-up 0.25 V of overdrive. So the two limits are independent and both real: pull-DOWN limited by HIGH-level collapse, pull-UP limited by rail level."
+  }
+ },
+ "i_TOPUP_COST": {
+  "_metric": "E = dV * dQ on the always-connected ideal dV source, dQ from a 1F integrator t0-referenced at 0.5 ps and split by DISJOINT checkpoint windows (head, bank-2 window, bank-3 window). Exact, because the supply is a constant-voltage source. MEASURED.",
+  "_reference_for_comparison": "the committed single hop's own dissipation E_hop_open = 8.3828 fJ.",
+  "rows": [
+   {
+    "L_nH": 277.8,
+    "DELTA_ps": 27.0,
+    "rail_before_topup_V": 0.5895,
+    "rail_after_topup_V": 0.7923,
+    "Q_bank2_fC": 15.177,
+    "E_bank2_fJ": 15.177,
+    "Q_bank3_fC": 14.413,
+    "E_bank3_fJ": 14.413,
+    "E_topup_gatedrive_fJ": {
+     "2": -0.197,
+     "3": -2.571
+    },
+    "E_total_per_hop_fJ": 14.98,
+    "delta_static_stored_on_the_8_cell_bank_fJ": 5.123,
+    "upper_bound_on_topup_dissipation_fJ": 10.054
+   },
+   {
+    "L_nH": 277.8,
+    "DELTA_ps": 300.0,
+    "rail_before_topup_V": 0.5895,
+    "rail_after_topup_V": 0.7014,
+    "Q_bank2_fC": 18.905,
+    "E_bank2_fJ": 18.905,
+    "Q_bank3_fC": 17.457,
+    "E_bank3_fJ": 17.457,
+    "E_topup_gatedrive_fJ": {
+     "2": -0.237,
+     "3": -2.571
+    },
+    "E_total_per_hop_fJ": 18.667,
+    "delta_static_stored_on_the_8_cell_bank_fJ": 2.651,
+    "upper_bound_on_topup_dissipation_fJ": 16.254
+   },
+   {
+    "L_nH": 150.0,
+    "DELTA_ps": 300.0,
+    "rail_before_topup_V": 0.5826,
+    "rail_after_topup_V": 0.6887,
+    "Q_bank2_fC": 19.238,
+    "E_bank2_fJ": 19.238,
+    "Q_bank3_fC": 18.288,
+    "E_bank3_fJ": 18.288,
+    "E_topup_gatedrive_fJ": {
+     "2": -0.275,
+     "3": -2.534
+    },
+    "E_total_per_hop_fJ": 18.963,
+    "delta_static_stored_on_the_8_cell_bank_fJ": 2.477,
+    "upper_bound_on_topup_dissipation_fJ": 16.761
+   },
+   {
+    "L_nH": 100.0,
+    "DELTA_ps": 300.0,
+    "rail_before_topup_V": 0.5746,
+    "rail_after_topup_V": 0.6804,
+    "Q_bank2_fC": 19.623,
+    "E_bank2_fJ": 19.623,
+    "Q_bank3_fC": 18.911,
+    "E_bank3_fJ": 18.911,
+    "E_topup_gatedrive_fJ": {
+     "2": -0.307,
+     "3": -2.512
+    },
+    "E_total_per_hop_fJ": 19.316,
+    "delta_static_stored_on_the_8_cell_bank_fJ": 2.441,
+    "upper_bound_on_topup_dissipation_fJ": 17.182
+   },
+   {
+    "L_nH": 60.0,
+    "DELTA_ps": 300.0,
+    "rail_before_topup_V": 0.5604,
+    "rail_after_topup_V": 0.67,
+    "Q_bank2_fC": 20.308,
+    "E_bank2_fJ": 20.308,
+    "Q_bank3_fC": 19.787,
+    "E_bank3_fJ": 19.787,
+    "E_topup_gatedrive_fJ": {
+     "2": -0.351,
+     "3": -2.483
+    },
+    "E_total_per_hop_fJ": 19.957,
+    "delta_static_stored_on_the_8_cell_bank_fJ": 2.481,
+    "upper_bound_on_topup_dissipation_fJ": 17.827
+   },
+   {
+    "L_nH": 45.0,
+    "DELTA_ps": 300.0,
+    "rail_before_topup_V": 0.5503,
+    "rail_after_topup_V": 0.6642,
+    "Q_bank2_fC": 20.797,
+    "E_bank2_fJ": 20.797,
+    "Q_bank3_fC": 20.326,
+    "E_bank3_fJ": 20.326,
+    "E_topup_gatedrive_fJ": {
+     "2": -0.379,
+     "3": -2.469
+    },
+    "E_total_per_hop_fJ": 20.418,
+    "delta_static_stored_on_the_8_cell_bank_fJ": 2.545,
+    "upper_bound_on_topup_dissipation_fJ": 18.252
+   },
+   {
+    "L_nH": 30.0,
+    "DELTA_ps": 300.0,
+    "rail_before_topup_V": 0.5337,
+    "rail_after_topup_V": 0.6559,
+    "Q_bank2_fC": 21.616,
+    "E_bank2_fJ": 21.616,
+    "Q_bank3_fC": 21.141,
+    "E_bank3_fJ": 21.141,
+    "E_topup_gatedrive_fJ": {
+     "2": -0.422,
+     "3": -2.448
+    },
+    "E_total_per_hop_fJ": 21.194,
+    "delta_static_stored_on_the_8_cell_bank_fJ": 2.682,
+    "upper_bound_on_topup_dissipation_fJ": 18.934
+   },
+   {
+    "L_nH": 10.0,
+    "DELTA_ps": 300.0,
+    "rail_before_topup_V": 0.474,
+    "rail_after_topup_V": 0.6338,
+    "Q_bank2_fC": 24.612,
+    "E_bank2_fJ": 24.612,
+    "Q_bank3_fC": 23.692,
+    "E_bank3_fJ": 23.692,
+    "E_topup_gatedrive_fJ": {
+     "2": -0.565,
+     "3": -2.402
+    },
+    "E_total_per_hop_fJ": 24.047,
+    "delta_static_stored_on_the_8_cell_bank_fJ": 3.911,
+    "upper_bound_on_topup_dissipation_fJ": 20.701
+   },
+   {
+    "L_nH": 3.0,
+    "DELTA_ps": 300.0,
+    "rail_before_topup_V": 0.3886,
+    "rail_after_topup_V": 0.6103,
+    "Q_bank2_fC": 29.099,
+    "E_bank2_fJ": 29.099,
+    "Q_bank3_fC": 27.041,
+    "E_bank3_fJ": 27.041,
+    "E_topup_gatedrive_fJ": {
+     "2": -0.777,
+     "3": -2.376
+    },
+    "E_total_per_hop_fJ": 28.322,
+    "delta_static_stored_on_the_8_cell_bank_fJ": 6.009,
+    "upper_bound_on_topup_dissipation_fJ": 23.09
+   }
+  ],
+  "HEADLINE_COST": "15.2 to 29.1 fJ of delivered energy per bank per hop (L = 277.8 nH down to 3 nH), against the committed single hop's own 8.383 fJ of dissipation. The top-up therefore costs 1.8x to 3.5x the loss it repairs.",
+  "why_it_is_so_expensive": "it is a RESISTIVE transfer from a fixed dV source into a bank, so it is not adiabatic; and the top-up window overlaps the cells' own settling, so the supply ends up delivering the cells' switching charge as well as the transfer deficit. Subtracting the measured static stored energy of the 8-cell bank bounds the dissipated part at 10.1-23.1 fJ per bank per hop.",
+  "the_unavoidable_tension_MEASURED": "a SHORT top-up window (restore only) leaves the rail to sag as the cells draw from it -- 0.792 V with a 15 ps window at DELTA = 27 ps, falling to 0.701 V with a 20 ps window and a 300 ps gap, because the bank pays for its own gates out of its own rail. A LONG window clamps the rail to the supply and the top-up then simply IS the power supply, at which point the resonant transfer is decoration. This tension, not the droop arithmetic, is what 'top-up -> lossless-in-level' has to answer.",
+  "device_capacitance_cost_of_carrying_the_topup_device_at_all": {
+   "_control": "a277_ctrl -- free-running chain with the banks-2/3 supply TGs PRESENT but never enabled",
+   "t_zcs_hop1_ps": {
+    "without_the_device": 353.79,
+    "with_it_present_but_off": 365.28,
+    "cost_ps": 11.49
+   },
+   "VBEND2": {
+    "without": 0.6435,
+    "with_present_but_off": 0.6001,
+    "cost_mV": 43.4
+   },
+   "_reading": "just HAVING a tg15p-sized top-up device on each bank costs 11.5 ps of hop time and 43 mV of delivered rail before it is ever switched on."
+  }
+ },
+ "j_HEADLINE": {
+  "pre_registered_acceptance": "every gate in ALL THREE banks >= 90% settling at its own stage boundary AND the chain inside the 120 mV margin budget.",
+  "ANSWER": "THERE IS NO SUCH L. Not free-running, not topped up, at no inductance from 277.8 nH down to 3 nH (a 93x range) and no stagger from 27 to 300 ps. 23 measured chain rows, zero pass.",
+  "the_difference_that_IS_the_finding": {
+   "single_hop_comparator_frozen_from_the_committed_lsweep_table": {
+    "fastest_FUNCTIONAL_L_nH": 45,
+    "switch_total_um": 15,
+    "t_hop_ps": 105.7,
+    "t_level_ps": 176.87,
+    "VBEND": 0.6298,
+    "settling": "all 8 cells 100% at the settle checkpoint"
+   },
+   "best_the_3_bank_chain_achieves_anywhere": {
+    "row": "g60_topup",
+    "L_nH": 60,
+    "stagger_DELTA_ps": 300,
+    "stage_time_hop1_ps": 470.93,
+    "worst_gate_pct": 77.61,
+    "which_gate": "a stage-3 nMOS pull-down (o3_0/2/4/6)",
+    "margin_used_pct_of_120mV": 4.9
+   },
+   "fastest_L_that_holds_every_gate_at_a_RELAXED_75_pct_AND_stays_in_budget": {
+    "L_nH": 10.0,
+    "row": "g10_topup",
+    "worst_gate_pct": 75.3,
+    "margin_used_pct_of_120mV": 35.0,
+    "stage_time_ps": 371.21
+   },
+   "THE_NUMBER_A_THROUGHPUT_CLAIM_HAS_TO_USE": {
+    "chain_stage_time_ps": 371.21,
+    "at_L_nH": 10,
+    "at_worst_gate_settling_pct": 75.3,
+    "single_hop_t_level_ps": 176.87,
+    "at_L_nH_single": 45,
+    "chain_is_slower_by": 2.099,
+    "_and_the_caveat_that_travels_with_it": "that 2.10x is measured at a 75% settling threshold the single hop meets at 100%. At the pre-registered 90% the chain has no operating point at all, so 2.10x is a FLOOR on the penalty, not the penalty."
+   },
+   "also_the_hop_itself_got_slower": {
+    "t_zcs_single_hop_ps": 266.755,
+    "t_zcs_chain_hop1_at_same_L_ps": 353.79,
+    "ratio": 1.326,
+    "why": "a chainable bank carries TWO transfer-switch terminals (incoming and outgoing) where the committed single-hop destination carried one. The source-side cut is not optional -- without it 42.3% of the hop's charge leaks into the idle next-stage inductor."
+   }
+  },
+  "so_is_the_hop_time_the_stage_time": "The architecture point is right in the sense that matters: there is no flop, latch or buffer between levels, so there is no clock-to-Q, no setup and no skew per stage. But the stage time is NOT the hop time. MEASURED, the stage time is t_zcs + a settling allowance, and the allowance is the larger term: at L = 10 nH the hop is 71.2 ps and the chain still had not settled at DELTA = 300 ps. Removing the register did not make the stage time equal to the transfer time; it made the stage time equal to the CELL time, and the cell time is set by the rail level and the input drive, both of which the transfer itself degrades.",
+  "L_is_not_the_knob": "bank 3's worst pull-down settling varies 72.1-77.6% over a 93x range in L, and 65.1-75.3% over a 2.5x range in stage time at fixed L, asymptoting below 90% in both. The binding constraint is structural (the HIGH level collapses as the predecessor's rail is drained forward), so it does not have an L at which it goes away."
+ },
+ "k_what_would_have_to_change": {
+  "_not_a_recommendation_an_implication_of_the_measurement": true,
+  "1_hold_the_predecessor": "the causal control proves this works (76.23% -> 100.14%), but holding bank N up means NOT transferring its charge forward, which is the energy argument.",
+  "2_buffer_or_keep_the_level": "a latch/keeper on each output holds the HIGH through the transfer -- and reintroduces exactly the per-stage register the throughput case was built on removing.",
+  "3_differential_dual_rail": "a differential pair carries the data in the DIFFERENCE, so a common-mode rail collapse does not destroy it. The campaign record already notes dual-rail is needed for the POWER DELIVERY (data-independent per-bank charge); this run says the LOGIC may need it too, which the record explicitly concluded it did not ('dual-rail OPTIONAL not required for completeness').",
+  "4_power_the_successor_from_elsewhere": "if bank N+1's rail came up from its own top-up while bank N was still up, and bank N were drained afterwards, the collapse would not overlap the evaluation. That is a different architecture (the recycle would have to go somewhere other than the immediate successor) and is not measured here.",
+  "_what_does_NOT_help_MEASURED": "smaller L (flat), longer stage time (asymptotes), the switch widths at the levels tested, or the rail top-up by itself (it fixes the rail, not the input HIGH)."
+ },
+ "l_negative_results_and_honesty": {
+  "pre_stated_predictions_scored": {
+   "recorded_-0.56_pct_per_hop_will_not_reproduce": "CONFIRMED. Measured -20.9 to -29.2%/hop steady state, 37-52x worse. The -0.56% figure is from an ideal 6-cap LC chain with behavioural switches and no devices or gates at all.",
+   "predicted_per_hop_droop_25_to_33_pct": "CONFIRMED for hop 1 (-36.0 to -49.0%, slightly worse than predicted) and for hop 2 (-20.9 to -29.2%, inside the predicted band at the slow end).",
+   "predicted_VBEND3_0.42_to_0.52_V": "CONFIRMED: 0.364-0.509 V free-running (the L = 10 nH point falls just below the predicted band).",
+   "predicted_free_chain_busts_the_budget_on_the_FIRST_hop_at_every_L": "PARTLY WRONG, and in the pessimistic direction: hop 1 alone FITS the budget for L >= 30 nH (27-91% used). It busts on hop 1 only at L = 10 nH. It busts on hop 2 at every L.",
+   "predicted_primary_limiting_device_nMOS_pull_down": "CONFIRMED wherever the rail is held up and the stage time is adequate, with the reversal total (pull-down 72-93% vs pull-up 99-100%), and causally isolated by the hold control.",
+   "predicted_secondary_pull_up_returns_below_a_0.60_V_rail": "CONFIRMED, crossover bracketed between 0.51 and 0.70 V.",
+   "predicted_headline_direction_chain_slower_than_the_single_hop": "CONFIRMED, and stronger than predicted: the chain has no 90% operating point at all, and even at a relaxed 75% it is 2.10x slower per stage."
+  },
+  "things_this_run_does_NOT_show": [
+   "it does not show a 4th stage; the stage-over-stage HIGH degradation (0.977 V -> 0.620-0.690 V) says stage 4 would be worse, but that is an extrapolation, not a measurement",
+   "it does not retune the switch width per L for the chain (the committed sweep MEASURED that widening trades delivered rail for rail-drain completeness, so it is not a free lever; tg15p was used throughout and the width is reported on every row)",
+   "it does not test dual-rail, a keeper, or a reordered top-up; those are implications, not results",
+   "rail 3 carries an incoming switch terminal but no outgoing one, so hop 2's droop is an OPTIMISTIC estimate of a mid-pipeline hop",
+   "every number is a LOWER BOUND on cost because sg13lv_compat.sp zeroes ad/as/pd/ps: the absent drain junction capacitance is part of what would have held a collapsing HIGH output up, so the central failure mechanism is UNDERSTATED here"
+  ],
+  "what_could_still_be_wrong": "the settling criterion is a RATIO to the instantaneous rail, inherited from the committed campaign. It is the right criterion for a pull-up but it flatters nothing for a pull-down: a pull-down reading 76% has its output at 0.238 x its rail, and the independent data-pattern guard (pull-down <= 0.10 x rail) fails on exactly those gates and passes in the hold control. Two independent criteria agree, so the conclusion does not rest on the ratio convention."
+ }
+}

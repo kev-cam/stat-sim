@@ -1,0 +1,18 @@
+* SKEPTIC: DC transfer characteristic of the COMMITTED cell at a fixed bank rail.
+* Answers: what input HIGH level does the cell need to produce a valid LOW?
+.hdl "/usr/local/share/xyce/verilog-a/psp103/psp103.va"
+.include "/usr/local/src/kestrel/sim/models/sg13g2_psp103_tt.lib"
+.include "/usr/local/src/stat-sim/qal/sg13lv_compat.sp"
+VG vg 0 0.5
+VR1 r1 0 0.7433
+VR2 r2 0 0.6759
+VR3 r3 0 1.0000
+XPA oa vg r1 r1 sg13_lv_pmos w=1.12u l=0.13u
+XNA oa vg 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XPB ob vg r2 r2 sg13_lv_pmos w=1.12u l=0.13u
+XNB ob vg 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XPC oc vg r3 r3 sg13_lv_pmos w=1.12u l=0.13u
+XNC oc vg 0 0 sg13_lv_nmos w=0.74u l=0.13u
+.dc VG 0.25 1.05 0.025
+.print dc V(oa) V(ob) V(oc)
+.end

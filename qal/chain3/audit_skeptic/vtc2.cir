@@ -1,0 +1,47 @@
+* SKEPTIC: static logic window of the COMMITTED cell vs bank rail
+.hdl "/usr/local/share/xyce/verilog-a/psp103/psp103.va"
+.include "/usr/local/src/kestrel/sim/models/sg13g2_psp103_tt.lib"
+.include "/usr/local/src/stat-sim/qal/sg13lv_compat.sp"
+VG vg 0 0.5
+VR0 r0 0 0.3600
+XP0 o0 vg r0 r0 sg13_lv_pmos w=1.12u l=0.13u
+XN0 o0 vg 0 0 sg13_lv_nmos w=0.74u l=0.13u
+VR1 r1 0 0.4000
+XP1 o1 vg r1 r1 sg13_lv_pmos w=1.12u l=0.13u
+XN1 o1 vg 0 0 sg13_lv_nmos w=0.74u l=0.13u
+VR2 r2 0 0.4500
+XP2 o2 vg r2 r2 sg13_lv_pmos w=1.12u l=0.13u
+XN2 o2 vg 0 0 sg13_lv_nmos w=0.74u l=0.13u
+VR3 r3 0 0.5000
+XP3 o3 vg r3 r3 sg13_lv_pmos w=1.12u l=0.13u
+XN3 o3 vg 0 0 sg13_lv_nmos w=0.74u l=0.13u
+VR4 r4 0 0.5087
+XP4 o4 vg r4 r4 sg13_lv_pmos w=1.12u l=0.13u
+XN4 o4 vg 0 0 sg13_lv_nmos w=0.74u l=0.13u
+VR5 r5 0 0.5500
+XP5 o5 vg r5 r5 sg13_lv_pmos w=1.12u l=0.13u
+XN5 o5 vg 0 0 sg13_lv_nmos w=0.74u l=0.13u
+VR6 r6 0 0.6000
+XP6 o6 vg r6 r6 sg13_lv_pmos w=1.12u l=0.13u
+XN6 o6 vg 0 0 sg13_lv_nmos w=0.74u l=0.13u
+VR7 r7 0 0.6435
+XP7 o7 vg r7 r7 sg13_lv_pmos w=1.12u l=0.13u
+XN7 o7 vg 0 0 sg13_lv_nmos w=0.74u l=0.13u
+VR8 r8 0 0.6759
+XP8 o8 vg r8 r8 sg13_lv_pmos w=1.12u l=0.13u
+XN8 o8 vg 0 0 sg13_lv_nmos w=0.74u l=0.13u
+VR9 r9 0 0.7000
+XP9 o9 vg r9 r9 sg13_lv_pmos w=1.12u l=0.13u
+XN9 o9 vg 0 0 sg13_lv_nmos w=0.74u l=0.13u
+VR10 r10 0 0.7433
+XP10 o10 vg r10 r10 sg13_lv_pmos w=1.12u l=0.13u
+XN10 o10 vg 0 0 sg13_lv_nmos w=0.74u l=0.13u
+VR11 r11 0 0.8000
+XP11 o11 vg r11 r11 sg13_lv_pmos w=1.12u l=0.13u
+XN11 o11 vg 0 0 sg13_lv_nmos w=0.74u l=0.13u
+VR12 r12 0 1.0000
+XP12 o12 vg r12 r12 sg13_lv_pmos w=1.12u l=0.13u
+XN12 o12 vg 0 0 sg13_lv_nmos w=0.74u l=0.13u
+.dc VG 0.0 1.0 0.01
+.print dc V(o0) V(o1) V(o2) V(o3) V(o4) V(o5) V(o6) V(o7) V(o8) V(o9) V(o10) V(o11) V(o12)
+.end
