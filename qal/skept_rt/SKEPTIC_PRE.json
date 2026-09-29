@@ -1,0 +1,45 @@
+{
+ "_role": "SKEPTIC / re-run auditor for TRACK A (reservoir, qal/resv) and TRACK B (1/T sweep, qal/tsweep).",
+ "_agent": "skeptic, own dir qal/skept_rt/, own PYMS_VAE_CACHE=/tmp/claude-1001/-usr-local-src/4921ad0c-f17b-4b84-986a-5917c9ebd2a6/scratchpad/vae_cache_skrt",
+ "written_before": "any deck, any .prn read, any re-run. This file is the ONLY file in qal/skept_rt at the instant it is written.",
+ "date": "2026-09-29",
+
+ "WHAT_I_AM_TESTING": [
+  "(a) BOOKING AUDIT: is the reservoir an ideal source anywhere in a REPORTED row? Is the tank recharge counted? Is the 1/T energy measured at real or ideal supplies?",
+  "(b) Re-run the best reservoir point + one mid-sweep point FROM SCRATCH; police per-gate settling at every stage; recompute separation-by-depth myself.",
+  "(c) Re-run two T-sweep points and re-fit the exponent independently; is it 1/T or a mis-binned per-op term?",
+  "(d) Is the end-to-end level MEASURED end-to-end or composed from a hop + a foreign settle?",
+  "(e) COMPOSITION at iso-performance vs the 94.174 ps CMOS level; does the per-op floor bite first?",
+  "(f) VERDICT + what is still un-costed."
+ ],
+
+ "ACCEPTANCE_pre_stated": {
+  "S1_REPRO": "A re-run row REPRODUCES iff every reported scalar matches to rel <= 1e-4. rel > 1e-4 but <= 1e-2 = DRIFT (reported, verdict caveated). rel > 1e-2 = DEFECT; the row is pulled from the headline.",
+  "S2_INDEPENDENT_EXTRACT": "I extract t_hop / VBPK / VBEND / t_level / per-gate settle from the .prn waveform with MY OWN reader, not by calling the track's analyse.py. If my reader and theirs disagree by > 1e-3 rel, theirs is on trial.",
+  "S3_END_TO_END": "The level is MEASURED end-to-end iff the t_hop and the t_valid90 that form it come from ONE waveform of ONE deck. If t_valid90 is read from a different deck than t_hop, that is COMPOSITION and I fail (d) regardless of the number.",
+  "S4_EXPONENT": "I re-fit p on the T sweep from the RAW per-row energies by my own least squares. Agreement with the reported p to <= 0.02 absolute = confirmed. I additionally test the mis-binning hypothesis by fitting E_total (not E_transfer) and by checking whether the per-op terms were subtracted using a T-dependent quantity.",
+  "S5_BOOKING": "Any row whose supply is a V-source with no series impedance and no metered recharge is an IDEAL SOURCE and the row is a BOUND. I will grep the decks, not the prose.",
+  "S6_ISO_PERF": "The composition is only a RESULT if a QAL operating point at or below 94.174 ps exists with all terms measured. Otherwise it is a BOUND and I say so."
+ },
+
+ "MY_PRIOR_EXPECTATIONS_scored_later": {
+  "P1": "I expect the tank IS an ideal source in the c1/c2 sweep rows (a .ic-charged cap with no regulator is a booking for the PRE-CHARGE but the droop is real; an actual V-source would be worse). Predict: the tank is a real capacitor with .ic, so droop is measured, but the pre-charge energy is uncosted.",
+  "P2": "I expect the reservoir chain's fade-stop to REPRODUCE -- the mechanism (each bank depth-1 off a shared rail) is sound circuit physics and the reported rail/tank ratio being constant at 1.33-1.43 across depth is the signature of a real mechanism, not an artifact.",
+  "P3": "I expect the 1.3413x speed claim (c1/c2, receiving-side cut only) to be REAL AS MEASURED but ARCHITECTURALLY INVALID, exactly as Track A itself concluded, because a shared tank with 6 idle inductors needs the source cut. I expect the c3 row (0.911x, CMOS faster) to be the honest one.",
+  "P4": "I expect the 1/T exponent to re-fit near -0.91 on the functional band and I expect the charge-growth correction to -0.99 to hold. The physics closure E = pi^2 R Q^2/(8T) with a constant fitted R inside the measured Ron band is a strong independent check and I expect it to survive.",
+  "P5": "I expect the per-op floor to DOMINATE, i.e. Track B's headline to survive: T_floor below the functional band. The consequence I expect for the composition: DVFS via the 1/T knob buys at most ~1.26x and cannot convert a 25% speed gain into an efficiency win.",
+  "P6": "I expect the COMPOSITION to be a BOUND, not a result, because Track A's honest (source-cut) topology has NO point under 94.174 ps and Track B has no functional point under 176.9 ps. If so, the deliverable 'energy ratio at iso-performance' cannot be formed from measurement and must be stated as such.",
+  "P7": "I expect at least one number in the two reports to be composed or mis-attributed. Named suspects, in advance: (i) the settle floor table (40.4/51.5/81.0 ps vs delivered rail) being applied across circuits; (ii) the 94.174 ps CMOS comparator being at 1.2 V while QAL rows run at 1.65 V; (iii) the tank pre-charge."
+ },
+
+ "DISCIPLINE": {
+  "cache": "own PYMS_VAE_CACHE, seeded by COPY not share; correctness proved by digit-exact reproduction of a committed anchor, not asserted",
+  "concurrency": "<= 4 heavy Xyce jobs",
+  "dirs": "qal/skept_rt only; ptu, skiptu, buckfix, resv, tsweep NOT written into",
+  "metering": "1F integrators t0-referenced; ZCS re-probed per L and per CA_MULT",
+  "labelling": "MEASURED / DERIVED / ASSUMED on every number",
+  "shallow_stack": "all numbers remain shallow-stack, 8-inverter bank; sg13g2_o21ai_1 never settles in the PDK envelope and nothing is generalised to it"
+ },
+
+ "A_CLEAN_NEGATIVE_IS_A_RESULT": "If the tracks reproduce and the answer is 'no efficiency win', that is the verdict and it is reported as the headline."
+}

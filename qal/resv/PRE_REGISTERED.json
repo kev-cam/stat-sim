@@ -1,0 +1,84 @@
+{
+ "_what": "TRACK A -- THE RESERVOIR. CA_MULT is hard-coded 1.0 in qal/qal_hop_gates.py:79 ('IDENTICAL banks (a real chain): equal caps -> an LC half-cycle') and every hop measured in this campaign moved charge PEER TO PEER between equal banks. Nothing in the architecture requires that. This track feeds the receiving bank from a LARGE SHARED TANK instead, sweeps the tank size, and asks whether the depth fade stops and whether the level beats CMOS.",
+ "_agent": "Track A agent, own directory qal/resv/, own PYMS_VAE_CACHE=/tmp/claude-1001/-usr-local-src/4921ad0c-f17b-4b84-986a-5917c9ebd2a6/scratchpad/vae_cache_resv",
+ "date_written": "2026-09-29",
+ "written_before": "any deck in qal/resv/ -- this file is the only file in the directory at the instant it is written; mtimes recorded in MTIMES.txt alongside",
+
+ "inherited_and_frozen_NOT_reopened": {
+  "harness": "qal/skept/sk.py (independently written generator + waveform-only extractor) via qal/dvopt/skept2/s2sk.py; qal/restore5/rest.py for the 6-bank chain. Cells, transfer switch (tg triple), series R=10 ohm, .OPTIONS, gate phases, park, TRUE-ZCS probe-then-cut, 1F-integrator metering with t0 reference, the +1.0 ps .measure-FIND lag and the per-gate settling convention are all inherited VERBATIM. Nothing is rewritten.",
+  "shim": "qal/sg13lv_compat.sp -- ad/as/pd/ps ZEROED, so junction capacitance is absent and every device number here is a LOWER BOUND on delay and an upper bound on speed.",
+  "cell": "sg13_lv inverter wp=1.12u wn=0.74u l=0.13u, 8 cells per bank, pMOS supply AND bulk on the bank rail.",
+  "CA_FF": 35.979,
+  "_CA_FF_note": "fF, the committed MEASURED secant capacitance of one 8-cell bank. CA_MULT = 1 means the source tank equals one bank. CA_MULT = m means C_tank = m * 35.979 fF.",
+  "t_pred_rescale": "sk.t_pred(L, ca) hard-codes C_ser = ca/2, which is the EQUAL-BANK series capacitance and is only correct at CA_MULT = 1. It is used ONLY to size the simulation window and the timestep ladder. I replace it with C_ser = ca*CB/(ca+CB) with CB = 35.979 fF, which is ALGEBRAICALLY IDENTICAL at CA_MULT = 1 (so the instrument check is unaffected to the last digit) and keeps the window/timestep sane as the tank grows. The ZCS instant itself is MEASURED by probe, never taken from t_pred."
+ },
+
+ "COMMITTED_ANCHORS_to_be_reproduced_first": {
+  "A1_robust_single_hop": {
+   "point": "skept 'headline': L=15 nH, TG total W=30 um, dV=1.2 V, cl=2.0 fF, ca=35.979 fF (CA_MULT=1)",
+   "t_hop_ps": 65.49500982344826,
+   "VBEND": 0.7138163,
+   "VBPK": 0.8368896,
+   "settled_cells": "8/8",
+   "tolerance": "rel < 1e-6 on each, or I do not report a sweep"
+  },
+  "A2_real_load_level": {
+   "point": "dvopt/load691 'cl_d165_L4_W30': L=4 nH, W=30 um, dV=1.65 V, cl=6.91 fF (the ALU's MEASURED mean sink load), ca=35.979 fF (CA_MULT=1)",
+   "t_level_ps": 115.467185,
+   "VBEND": 0.754572966,
+   "VBPK": 1.0881874,
+   "t_hop_ps": 34.28582535896825,
+   "VA_open": 0.11745601600934541,
+   "tolerance": "rel < 1e-6"
+  }
+ },
+
+ "COMPARATORS_committed_not_re-derived": {
+  "CMOS_level_ps": 94.174,
+  "_CMOS_provenance": "qal/vtreq/cm_d000.cir.mt0, T901P26P91R = 1.941744e-10 with the input step at 100 ps -> 94.1744 ps. Convention: 1.12/0.74 inverter, Vdd = 1.2 V, CL = 6.91 fF, output reaching 90% of its rail, WORST of rise/fall (fall is 51.376 ps). This is the number the brief names and the number I test against.",
+  "CMOS_level_at_1p5V_ps": 75.6329,
+  "_CMOS_1p5_provenance": "same deck, T901P56P91R = 1.756329e-10 - 100 ps. Recorded because the QAL rows below run at dV = 1.65 V while the 94.174 ps comparator runs at 1.2 V; the swing mismatch FAVOURS QAL and I will say so in every headline.",
+  "sigma_floor_mV": 6.44,
+  "_sigma_provenance": "qal/vtaudit/AUDIT.md line 68: sigma_trip = sqrt((0.4779*5.766)^2 + (0.4630*12.574)^2) = 6.441 mV, the receiver TRIP-POINT sigma propagated from the PDK's per-device Vt spreads through the MEASURED trip sensitivities -- a LOWER bound. The 3.42 mV figure used earlier in the campaign is a bare single-device sigma_Vt and is wrong by device geometry, in the direction that flatters QAL.",
+  "committed_peer_chain_separation_by_depth_mV": [528.6756, -22.8913, 1.5162, -0.1221, 0.0101, -0.0009],
+  "_peer_chain_provenance": "restore5/rows.json k6_T300_control, reproduced independently in vtaudit/AUDIT.md (d000 row) including the sign pattern. CA_MULT = 1, peer-to-peer, one 35.979 fF reservoir at the head only.",
+  "committed_per_hop_collapse_ratio": [0.611, 0.659],
+  "measured_settle_floor_vs_delivered_rail_ps": {"1.200": 40.4, "1.000": 51.5, "0.800": 81.0, "0.6754": 137.7, "0.5884": 252.8, "0.4885": 801.3}
+ },
+
+ "ACCEPTANCE_pre_stated": {
+  "A_FADE_STOPS": "PASS iff, in the 6-bank RESERVOIR chain, the HIGH/LOW separation stays ABOVE 6.44 mV at depth >= 5 (i.e. banks 5 and 6 both clear it) AND keeps the correct sign at every depth. The committed peer chain fails this at depth 3 (1.52 mV) on magnitude and alternates sign from depth 2. Anything that clears 6.44 mV at depth 5 and 6 is a PASS; a separation that merely falls more slowly is a PARTIAL and will be labelled so.",
+  "B_LEVEL": "PASS iff the MEASURED end-to-end level at the ALU's real 6.91 fF sink load, at some swept CA_MULT, is < 94.174 ps. The level is t_level_ps = max(t_hop, t_valid90) read off the waveform by the inherited extractor -- NEVER composed from a hop time plus a settle time taken from a different circuit. (A composed t_settle over-stated a bank settle by 1.29-1.84x once already in this campaign and swapped two objective surfaces.)",
+  "C_OVERSHOOT_RELIABILITY": "The delivered rail and its peak must be reported against the 1.65 V characterisation limit. A point whose V(bank) peak exceeds 1.65 V is flagged OUT-OF-ENVELOPE and its level is reported but NOT credited.",
+  "D_TANK_HONESTY": "Every row that does not carry a measured recharge cost is labelled a BOUND, not a result. An ideal-source tank row is a BOOKING and will be printed as one. This campaign has had three verdicts overturned by exactly that booking (the cells' gate burn, the ideal PWL gate drives, the park driver)."
+ },
+
+ "EXPECTATION_pre_stated_DERIVED_to_be_tested_not_trusted": {
+  "E1_delivered_rail_RISES": "DERIVED from lossless LC: a source C_A at dV into C_B through L rings C_B to 2*dV*m/(m+1) with m = C_A/C_B. The committed CA_MULT=1 real-load point peaks at VBPK = 1.0881874 V against a lossless ideal of dV = 1.65 V, i.e. a MEASURED loss factor r = VBPK/ideal = 0.6595. Holding r fixed predicts VBPK = 1.451 / 1.813 / 1.978 / 2.073 / 2.175 V at CA_MULT = 2 / 5 / 10 / 20 / ideal. I EXPECT r to FALL as the tank grows (more charge moved through the same 10 ohm + switch, and a harder drive into the settling gates), so I expect the measured peaks to come in BELOW those numbers. PASS/FAIL of this expectation is recorded either way.",
+  "E2_OVERSHOOT_YES_I_EXPECT_IT": "I DO expect overshoot above the tank voltage at large CA_MULT. The condition for V(bank)_peak > V(tank) is r > (m+1)/(2m), i.e. r > 0.55 at m=10 and r > 0.5 in the ideal-source limit. The MEASURED r at CA_MULT=1 is 0.6595, ABOVE both. So I pre-state: at CA_MULT >= 5 the bank rail peak EXCEEDS the tank voltage, and at dV = 1.65 V it will BREACH the 1.65 V characterisation limit -- probably reaching 1.8-2.2 V. That is a reliability finding, not a bonus. I pre-state the consequence: the useful reservoir operating point will have to be found by LOWERING dV, not by raising the tank, and I will sweep at least one lower-dV point if the limit is breached. NOTE the counter-case so it cannot be claimed after the fact: if r falls below 0.5 as m grows, no overshoot occurs and the rail asymptotes below the tank voltage.",
+  "E3_VBEND_vs_VBPK": "VBEND (the SETTLED rail, after the isolated bank charges its own 4 x 6.91 fF outputs) is 1.442x below VBPK at CA_MULT=1. That droop is a charge-sharing fact of the ISOLATED bank and I expect it to survive the tank almost unchanged in RATIO, because the tank is disconnected at ZCS. So I expect the delivered SETTLED rail to rise roughly in proportion to the peak, not to be held flat. A tank that is HELD CONNECTED through settling would remove the droop entirely; that is a DIFFERENT architecture and I will run it as a separately labelled row, not fold it into the sweep.",
+  "E4_LEVEL_BEATS_CMOS_but_the_hop_GROWS": "The brief's composed prediction (~40 ps settle at a 1.2 V rail + the 34.29 ps MEASURED hop = ~74 ps) contains an error I pre-state before measuring: t_hop = pi*sqrt(L*C_ser) and C_ser goes from C_B/2 at CA_MULT=1 to C_B in the tank limit, so the HOP GROWS BY sqrt(2) = 1.414x, from 34.29 ps to ~48.5 ps at fixed L = 4 nH. I therefore predict the level at CA_MULT=20, L=4 nH lands near 48 + 35 = ~83 ps, NOT 74 ps -- still a PASS on acceptance B but by a smaller margin. I further predict that re-optimising L downward (L ~ 2 nH restores t_hop ~ 34 ps at the tank's C_ser) recovers the rest, and I will sweep L at the best CA_MULT to test it.",
+  "E5_THE_RESERVOIR_SPENDS_THE_RECYCLING__my_main_worry": "This is the expectation I most expect to be told off for if I get it wrong, so it goes first in the energy section. In the PEER chain, bank N's charge BECOMES bank N+1's charge -- the recycling IS the peer hop, and that is what makes the loss adiabatic. A tank-fed bank does NOT consume its predecessor's charge; the predecessor's charge is left stranded on a rail that is then dumped. So I expect the tank architecture to BUY SPEED AND SPEND ENERGY unless the bank's charge is RETURNED to the tank on a second (reverse) half-cycle at the end of the beat. I pre-state the two rows I will measure for (e): (i) NO-RETURN: energy out of the tank per hop, with the bank's charge written off -- I expect this to be ~2x the bank's stored energy and therefore WORSE than CMOS (1/2)CV^2 per transition; (ii) WITH-RETURN: switch re-closed after the settle window, charge rung back into the tank, net tank energy per full cycle measured -- I expect this to be a few x smaller and to be the only honest reservoir row.",
+  "E6_FADE": "I expect the fade to STOP. Each bank becomes depth-1 in RAIL, and a CMOS inverter on a good rail restores its own output level, so the separation should stay in the hundreds of mV at every depth rather than collapsing 528 -> 0.001 mV. The residual risk I pre-state: the tank must supply 6 banks, so it droops; and 6 idle inductors hanging off one tank can divert charge (chain3 AMENDMENT A3 MEASURED 42.3% diverted into ONE idle inductor when the source-side cut was missing). I therefore use the source-side cut on EVERY hop including the reservoir hops, which is a DEVIATION from restore5 AMENDMENT A3 (which omits it on a reservoir hop because there was only one). The deviation is justified by A3's own measured reason and is recorded here in advance."
+ },
+
+ "MEASUREMENTS_pre_stated": {
+  "per_point": ["delivered settled rail VBEND", "peak rail VBPK", "overshoot ratio VBPK/V_tank and VBPK/VBEND", "collapse ratio VBEND/V_tank and VBPK/V_tank", "t_hop (MEASURED true current zero, re-probed per L and per CA_MULT -- never the analytic pi*sqrt(LC), which read 33% early on a chain hop)", "t_valid90 and t_level (MEASURED end-to-end, waveform)", "per-gate settling for ALL EIGHT cells at open and at end, never aggregated", "tank droop", "E_R, E_gate_drive, cells_ebk"],
+  "chain": ["per-bank rail at its own stage boundary", "per-gate output at every bank", "HIGH/LOW separation by depth, both classes, with sign", "tank droop across 6 hops"],
+  "tank": ["charge out of the tank per hop", "energy out of the tank per hop", "the same with a return half-cycle", "what is NOT costed, stated explicitly"]
+ },
+
+ "SIM_DISCIPLINE_pre_stated": {
+  "cache": "own PYMS_VAE_CACHE, not shared",
+  "concurrency": "<= 4 heavy Xyce jobs (another workflow is debugging the buck on this 16-core box)",
+  "dirs": "qal/resv/ only; qal/ptu, qal/skiptu, qal/buckfix are NOT touched",
+  "metering": "1F integrators, ALWAYS t0-referenced (they carry a t=0 pedestal). '.measure INTEGRAL V(<B-source>)' under-reports 11-44% and is not used for energy.",
+  "zcs": "true zero RE-PROBED per L and per CA_MULT off I(L) in a probe deck; the analytic half-cycle is recorded as a diagnostic only",
+  "vt_gmin": "reserved, not touched",
+  "corners": "instance-level DTA only; not used in this track",
+  "labelling": "every number MEASURED / DERIVED / ASSUMED",
+  "shallow_stack": "ALL numbers remain shallow-stack. sg13g2_o21ai_1, the ALU's dominant mapped cell, never settles at any operating point in the PDK envelope. Nothing here is generalised past the inverter bank."
+ },
+
+ "A_CLEAN_NEGATIVE_IS_A_RESULT": "If the fade does not stop, or the level does not clear 94.174 ps, or the tank cost eats the win, that is the finding and it is reported as the headline."
+}

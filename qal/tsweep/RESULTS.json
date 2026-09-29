@@ -1,0 +1,204 @@
+{
+  "track": "B -- THE 1/T ENERGY KNOB",
+  "dir": "/usr/local/src/stat-sim/qal/tsweep",
+  "pre_registration": {
+    "file": "PRE_REGISTERED.json",
+    "sha256": "f1efead7588b5ef2837717459743abb5fcb08595bef8e435396443a0213b1615",
+    "bytes": 10424,
+    "mtime": "2026-09-29 08:39:55.812319080 -0700",
+    "was_only_file_in_dir_at_that_instant": true,
+    "first_deck_written": "g0b.cir / p_anchor.cir at 08:44-08:52, i.e. AFTER the pre-registration"
+  },
+  "harness": {
+    "tsw.py": "BYTE-IDENTICAL copy of qal/lsweep/lsw.py, sha256 aff8a89b05a78ed218d6e833a03ecbbea9340e3c152a7963be5798837d27b415 (verified with cmp). NOTHING in the hop harness was modified.",
+    "tb.py": "driver: extended L list, RS mechanism check, TG Ron DC probe, cell RC_g probe, CMOS comparator, static-leakage probe",
+    "PYMS_VAE_CACHE": "scratchpad/vae_cache_tsweep -- OWN cache, seeded by copying the warm lsweep cache (a copy, not a share; correctness proved by the digit-exact G0 reproduction below)",
+    "rows": "21 primary T rows + 1 stretch + 4 RS rows + 73 CMOS rows + 3 RC_g + 1 Ron + 2 leak"
+  },
+
+  "b_INSTRUMENT_CHECK": {
+    "verdict": "PASS",
+    "G0a_extractor_vs_committed_mt0": "all EIGHT committed anchor keys reproduce at rel = 0.00e+00 (exact) from qal/swsweep/sw_tg15p_z.cir.mt0 (stat-sim c814e52): E_hop_open 8.3828171771408 fJ, VBEND 0.6758936, VBPK 0.7374377, VA_open 0.09778203952305342, cells_burn 1.6954746104994207 fJ, E_R_toC 0.049543034863200004 fJ, IZ -0.37939849999999997 uA, IPK 194.3655 uA",
+    "G0b_committed_deck_rerun_under_my_own_cache": "ran in 32.1 s, all eight keys again rel = 0.00e+00",
+    "G0c_G0d_note": "the verbatim harness prints 'G0 FAIL' on its own generator-vs-committed-deck leg: its re-probed true current zero is 265.5982 ps against the committed deck's fixed 266.755223 ps opening (1.157 ps earlier), which costs 0.14% on E_hop. That is a REAL physical difference (the campaign's own directive is to RE-PROBE the zero per L), not instrument error, and lsweep itself shipped past it -- its primary table quotes 265.598 ps / 8.394 fJ.",
+    "G0_extra_cross_check_not_required_but_done": "my re-run reproduces lsweep's SHIPPED L277p8_W15 row BIT-FOR-BIT on all 12 checked keys at 16 printed digits (E_hop_open 8.394258862221438, identity_at_B -3.5664863304703254e-05, IZ -0.00010583310000000001 uA, t_valid90 291.741484 ps, ...). NOTE: lsweep/g0cd_anchor_mine.json on disk is a STALE pre-LAG_PS artifact and does NOT match; the shipped rows.json does.",
+    "per_row_gate": "all 22 T rows, all 4 RS rows: C4_instrument PASS (|closure_Q| <= 1%, |closure_E| <= 1%, |waveform identity at the current zero| <= 0.02 fJ, |xc_dEhop| <= 1%)"
+  },
+
+  "c_DOES_E_FALL_AS_1_OVER_T": {
+    "knob_used": "T was varied THROUGH L (t_hop = pi*sqrt(L*C_ser)), L = 1 ... 25000 nH, a 161x span in T (15.93 -> 2571.56 ps). The true current zero was RE-PROBED per L; the analytic pi*sqrt(LC) was used only to size timesteps. dV, CA, switch width, RS, VGH, cells, gate edge and tail were held at the committed values. A slowed switch was NOT used as the T knob; the switch was instead used as an independent MECHANISM check (RS sweep).",
+    "MEASURED_E_transfer_vs_T_fJ": {
+      "15.93": 6.4319, "22.39": 5.0304, "27.35": 4.3609, "38.58": 3.4109,
+      "49.76": 2.8208, "70.36": 2.1458, "86.22": 1.8158, "105.70": 1.5308,
+      "122.18": 1.3539, "158.13": 1.0859, "194.18": 0.9100, "224.72": 0.8022,
+      "265.60": 0.6943, "319.80": 0.5908, "393.21": 0.4929, "509.92": 0.3908,
+      "647.09": 0.3142, "810.66": 0.2543, "1027.02": 0.2029, "1300.34": 0.1616,
+      "1626.22": 0.1298, "2571.56": 0.0826
+    },
+    "exponent_fits": {
+      "all_22_rows_2.21_decades": {"p": -0.8567, "R2": 0.997491},
+      "FUNCTIONAL_band_105.7_to_2571.6_ps_1.39_decades": {"p": -0.9092, "R2": 0.999212},
+      "T_ge_265.6_ps_0.99_decades": {"p": -0.9367, "R2": 0.999451},
+      "T_le_86_ps_0.65_decades": {"p": -0.7351, "R2": 0.999586},
+      "local_slope_slowest_pair_1626_to_2572_ps": -0.9878
+    },
+    "PRE_REGISTERED_A1_VERDICT": "PASS, MARGINALLY. A1 required p in [0.90, 1.10] over a contiguous span of at least one decade. The FUNCTIONAL band gives p = 0.9092 over 1.39 decades -- inside the band by 0.009. Over ALL rows (2.21 decades) p = 0.8567 and A1 would FAIL. The law is met only where the hop actually works.",
+    "WHERE_IT_DEPARTS_AND_WHY_MEASURED_NOT_ASSUMED": {
+      "statement": "The residual deficit from p = 1 is NOT a failure of the adiabatic law. It is the measured growth of the transferred CHARGE with T.",
+      "evidence": "A resonant half-cycle moving charge Q in time T through series R dissipates E = pi^2*R*Q^2/(8T) exactly. Inverting the MEASURED E*T product for R over the functional band gives R = 138.78-145.36 ohm, mean 142.23, spread 4.63% over a 24.3x T range -- a CONSTANT, and it sits inside the independently MEASURED TG DC Ron band 100.7-311.6 ohm (mean 190.2) plus RS = 10 ohm.",
+      "the_closure": "Q grows 30.723 -> 35.012 fC (+13.96%) across the functional band as the slower hop completes more of the transfer. Dividing the measured Q^2 out: E_xfer/Q^2 vs T gives p = -0.9904, R2 = 0.999802. The 1/T law is exact to 1%; the apparent 0.909 is the charge growth.",
+      "fast_side_breakdown": "below T ~ 50 ps the transfer stops completing (Q collapses to 14.48 fC at T = 15.93 ps, R_implied blows up to 396 ohm) and the rows fail C2/C3. Those rows are reported and EXCLUDED from every headline."
+    },
+    "MECHANISM_CHECK_is_the_loss_resistive": {
+      "method": "at FIXED T (L = 277.8 nH) sweep the series RS over 1 / 10 / 40 / 100 / 200 ohm",
+      "E_R_fJ": [0.0050, 0.0495, 0.1954, 0.4753, 0.9085],
+      "E_R_per_ohm": [0.004975, 0.004954, 0.004886, 0.004753, 0.004543],
+      "verdict": "E_R/RS is constant to 8.97% over a 200x RS range -> the metered series loss IS resistive. PRE_REGISTERED E5 PASS.",
+      "bonus": "t_hop varies by 0.0598 ps over the same 200x RS range -> T is set by the RESONANCE, R only sets the LOSS. That is the clean adiabatic separation the whole 1/T argument needs, and it is measured."
+    }
+  },
+
+  "d_THE_PER_OP_FLOOR": {
+    "T_dependent_term": "E_xfer = E_R + E_switchblock (MEASURED per row)",
+    "per_op_terms_measured_here": "E_gate_drive = the harness's own IDEAL-PWL gt/gtp/park drive: 4.0573 fJ at the fastest functional T -> 3.2674 fJ at the slowest. Spread 24.5% over a 24.3x T range, no power law (R2 0.73). PER-OP confirmed.",
+    "T_floor_where_the_floor_overtakes_the_T_dependent_term": {
+      "i_harness_ideal_PWL_drive": "26.61 ps",
+      "ii_committed_resonant_pair_2.974_fJ": "46.35 ps",
+      "iii_COMPLETE_timer_ledger_23.213_fJ": "NO CROSSING anywhere. E_xfer maxes at 6.4319 fJ (T = 15.93 ps). On the measured E_xfer*T = 102.4 fJ*ps invariant it would need T = 4.41 ps, far below any hop this structure can make."
+    },
+    "THE_HEADLINE": "BOTH computable T_floor values lie BELOW the functional band (which starts at 105.70 ps). AT EVERY T WHERE THE HOP ACTUALLY WORKS, THE PER-OP FLOOR ALREADY DOMINATES: E_xfer/E_gate = 0.3773 at the fastest functional T, falling to 0.0253 at the slowest. The 1/T knob was exhausted before the operating band began.",
+    "PRE_REGISTERED_E2_VERDICT": "CONFIRMED IN DIRECTION, WRONG IN MAGNITUDE. I pre-stated T_floor at level (i) 'somewhere near T = 40-70 ps'. MEASURED 26.61 ps -- 1.5-2.6x lower than I predicted. The load-bearing claim (that the whole committed L sweep is already floor-dominated) is CONFIRMED. The level-(iii) prediction (no T in the envelope) is CONFIRMED.",
+    "THE_FLOOR_IS_A_LADDER_NOT_A_NUMBER": {
+      "committed_measured_gate_charge": "29.0 fC/hop for tg15p = Q_gt(close) 10.50 + Q_gtp(open) 16.38 + park ~2.1 fC (qal/sar, MEASURED)",
+      "what_that_charge_costs_depends_entirely_on_the_driver": [
+        {"driver": "ideal-PWL recycling floor (MEASURED here)", "fJ": "3.27-4.06", "provenance": "MEASURED, and it is a LOWER BOUND -- the harness drives these gates from ideal sources"},
+        {"driver": "resonant gt/gtp pair", "fJ": 2.974, "provenance": "COMMITTED, but is itself the arithmetic netting of a -2.749 fJ exporter and a +5.723 fJ importer that are two electrically unconnected ideal sources (qal/park IS3)"},
+        {"driver": "75%-recovery resonant driver", "fJ": 10.9, "provenance": "COMMITTED but DERIVED, never built"},
+        {"driver": "COMPLETE timer ledger", "fJ": 23.213, "provenance": "COMMITTED, the only COMPLETE measured one (qal/park + qal/amp row [X4], stat-sim c814e52)"},
+        {"driver": "conventional CMOS driver off the 1.5 V rail", "fJ": 43.5, "provenance": "COMMITTED, computed from the measured 29.0 fC"}
+      ],
+      "consequence": "The 1/T knob moves every row of this ladder by at most 1.26x. Moving ONE RUNG of the ladder moves it by up to 4.8x. The driver choice is 4x more important than the entire speed-energy trade."
+    }
+  },
+
+  "e_CMOS_COMPARATOR": {
+    "method": "the SAME 8 cells (wp=1.12u / wn=0.74u), the SAME CL = 2 fF, on a HARD rail, supply energy metered with the SAME 1F-integrator instrument, over the LAST FULL CYCLE in steady state, at the SAME T points",
+    "anchor_check": "1.2 V, 34.81 ps edge (the campaign's own convention): MEASURED 10.2454 fJ/cycle/cell vs the committed campaign anchor 10.0831 -> +1.61%. (An independent campaign deck, qal/bound bd_rx2, got +1.12%.) The comparator is an instrument, not a fresh assumption.",
+    "T_INVARIANCE_MEASURED": {
+      "1.2V_fixed_5ps_edge_period_158_to_1600_ps_10.1x": "E/transition 42.5439 -> 43.2721 fJ, spread +1.686%",
+      "1.0V_fixed_5ps_edge_period_158_to_1600_ps_10.1x": "E/transition 28.0374 -> 30.2286 fJ, spread +7.313%",
+      "saturation": "at 1.2 V, E/transition is IDENTICAL to 6 significant figures (43.2721 fJ) from 506 ps to 1600 ps",
+      "verdict": "PRE_REGISTERED A3 PASS -- T-INVARIANT. CMOS burns the same energy however slowly it is clocked, MEASURED, exactly as the 1/2 CV^2 argument says.",
+      "restriction_stated": "periods below ~158 ps are EXCLUDED from the invariance claim: the cell t90 is 57 ps at 1.2 V, so a shorter half-period truncates the swing. The low energies at 16/28/50 ps periods are an incomplete transition, not a saving, and are reported as such."
+    },
+    "leakage_the_only_T_proportional_CMOS_term": {
+      "measured_from_the_DC_pedestal_of_a_static_deck": "P_leak = 9.893e-11 W at 1.2 V (8 cells), 6.744e-11 W at 1.0 V",
+      "size": "1.583e-4 fJ over a 1600 ps period = 1.83e-6 of the dynamic term. Negligible; it does not break T-invariance anywhere in this span."
+    },
+    "E_CMOS_used_in_every_ratio": {
+      "1.2V_campaign_convention_fJ_per_8cell_transition": 40.9815,
+      "1.0V_iso_voltage_fJ_per_8cell_transition": 30.1626
+    }
+  },
+
+  "f_TAU_AT_CROSSOVER_AND_THE_MAP": {
+    "RC_g_MEASURED_not_inherited": {
+      "method": "the committed cell on a hard rail, ideal 0.5 ps step in, RC = t(10-90%)/2.1972, both edges, slower one taken",
+      "vdd_1.2V": {"RC_rise_ps": 20.034, "RC_fall_ps": 10.570, "RC_g_ps": 20.034},
+      "vdd_1.0V": {"RC_rise_ps": 26.137, "RC_fall_ps": 18.028, "RC_g_ps": 26.137},
+      "vdd_0.6754V_the_QAL_DELIVERED_rail": {"RC_rise_ps": 74.120, "RC_fall_ps": 146.672, "RC_g_ps": 146.672},
+      "note": "at the rail QAL actually delivers, the cell's RC_g is 7.3x its value at the CMOS rail. The campaign's ~12 ps folklore RC_g is not what this cell measures at any voltage."
+    },
+    "the_map_under_test": "E_QAL/E_CMOS = 2*f_adia = 4/tau, tau = T/RC_g, floor cap 3-9.5x",
+    "map_crossover_prediction": "tau = 4, i.e. T = 4 * 20.034 = 80.13 ps",
+    "MEASURED": {
+      "E_QAL_over_E_CMOS_at_completeness_i": "0.3253 -> 0.2593 across the functional band (T 105.7 -> 2571.6 ps). It NEVER crosses 1.",
+      "crossovers_inside_the_functional_band": "NONE at any completeness level, at either voltage. (i) 0.3253->0.2593; (ii) 0.2988->0.2521; (iii) 0.7927->0.7460; (i) iso-V 0.4420->0.3522; (iii) iso-V 1.0770->1.0135.",
+      "so_there_is_no_measured_crossover_tau": "QAL at completeness (i)/(ii) is ALREADY 3-4x cheaper at the fastest functional T; at completeness (iii) iso-voltage it is 1.08x MORE expensive and closing only asymptotically. In neither case is there a tau at which the two meet inside the band.",
+      "PRE_REGISTERED_E3_VERDICT": "HALF RIGHT, HALF WRONG. I pre-stated 'measured crossover tau >= 12 at completeness (i)'. There is NO crossover at (i) at all -- QAL is cheaper everywhere, so my >= 12 is not merely wrong, it presumed a crossing that does not exist. My level-(iii) prediction ('NO CROSSOVER AT ALL') is CONFIRMED against CMOS at 1.2 V and very nearly at iso-voltage."
+    },
+    "WHERE_THE_MAP_IS_RIGHT_AND_WHERE_IT_BREAKS": {
+      "it_is_accurate_at_exactly_one_point": "at tau = 13.26 (T = 265.60 ps, the committed anchor) the map gives 0.3017 against a MEASURED 0.2920 -- agreement to +3.3%",
+      "below_that_it_is_far_too_PESSIMISTIC": "at tau = 0.80 the map says 5.031, measured 0.2668 (+1785%). The map predicts QAL should be 5x MORE expensive than CMOS at fast T; the measurement says it is 3.7x CHEAPER.",
+      "above_that_it_is_far_too_OPTIMISTIC": "at tau = 128.36 the map says 0.0312, measured 0.2593 (-88%). The map keeps falling as 1/tau; the measurement floors.",
+      "diagnosis": "the map's 4/tau shape is monotone in tau. The measured shape is NOT: it is flat to within 1.3x across a 161x T range, with a shallow maximum near tau ~ 2.5. The map omits the per-op floor entirely, and the floor is what the measurement is made of."
+    },
+    "FLOOR_CAPPED_RATIO_MEASURED": {
+      "best_E_CMOS_over_E_QAL_in_the_functional_band_CMOS_at_1.2V": {
+        "i_harness_ideal_PWL": 3.857, "ii_resonant_pair": 3.967,
+        "iii_COMPLETE_timer_ledger": 1.341,
+        "75pct_recovery_driver": 2.245, "conventional_CMOS_driver": 0.806
+      },
+      "same_at_ISO_VOLTAGE_CMOS_at_1.0V": {
+        "i_harness_ideal_PWL": 2.839, "iii_COMPLETE_timer_ledger": 0.987,
+        "conventional_CMOS_driver": 0.593
+      },
+      "map_floor_cap_claim": "3-9.5x",
+      "verdict": "the MEASURED floor-capped best is 3.86x (level i) / 3.97x (level ii) -- at the BOTTOM of the map's 3-9.5x band, and only on the harness's own IDEAL-PWL booking. On the only COMPLETE measured driver ledger it is 1.34x at 1.2 V and 0.99x iso-voltage, i.e. OUTSIDE and BELOW the map's band by 2.2-9.6x.",
+      "PRE_REGISTERED_E4_VERDICT": "CLOSE. I pre-stated '<= 3x at level (i)' and 'below 1 at level (iii)'. MEASURED 3.86x at (i) -- I was 29% pessimistic. At (iii) it is 1.34x at 1.2 V (I was wrong) but 0.987x iso-voltage (I was right). The iso-voltage framing is the one my prediction matched."
+    }
+  },
+
+  "THE_ANSWER_TO_THE_BRIEFS_QUESTION": {
+    "does_slowing_down_alone_save_energy_at_constant_voltage": "YES, and the amount is 1.26x. Measured, end to end, over the entire 24.3x functional T range: total hop energy 9.273 -> 7.357 fJ, and E_CMOS/E_QAL 3.074x -> 3.857x (level i) / 1.262x -> 1.341x (level iii, the complete ledger).",
+    "why_so_little": "because the resistive transfer term the 1/T law governs is already a minority of the hop's energy at the FASTEST T the hop can work at (37.7% of the switch gate drive alone, 16.5% of the hop total), and it is the ONLY term that obeys 1/T.",
+    "TERM_BY_TERM_OVER_THE_FUNCTIONAL_BAND_24.3x_in_T": {
+      "E_xfer resistive transfer": {"p": -0.9092, "R2": 0.999212, "falls_by": "18.5x", "note": "p = -0.9904 (R2 0.999802) once the measured 14% charge growth is divided out -- the 1/T law, exact"},
+      "cells_burn the cells own settle": {"p": -0.3891, "R2": 0.9541, "falls_by": "3.53x", "note": "-0.4768 normalised by VBEND^2. This IS the gate-adiabatic term and it DOES fall -- but at less than half the exponent the crossover map assumes"},
+      "E_Bresid destination side": {"p": -0.0171, "R2": 0.7070, "falls_by": "1.028x", "note": "essentially FLAT"},
+      "E_gate switch drive": {"p": -0.0733, "R2": 0.7345, "falls_by": "1.242x", "note": "PER-OP by construction; no power law"},
+      "E_hop TOTAL": {"p": -0.0769, "R2": 0.9460, "falls_by": "1.260x", "note": "THE HEADLINE"}
+    },
+    "NEW_FINDING_the_maps_CENTRAL_TERM_measured": "The crossover map's whole energy leg rests on the gate settling adiabatically, i.e. its energy falling as RC_g/T (exponent -1). MEASURED on this cell over the functional band, the cells' own settle energy falls as T^-0.389 (R2 0.954), or T^-0.477 normalised by VBEND^2 -- LESS THAN HALF the exponent the map assumes. The reason is measurable and measured: RC_g at the QAL-DELIVERED rail is 74-147 ps, comparable to T itself over most of the band, so the T >> RC_g condition the RC/T law requires is not met until T is well past 150 ps. The map applies an asymptotic law inside the regime where it does not hold.",
+    "so_the_DVFS_question": "On this harness the 1/T knob at FIXED voltage converts a speed headroom into at most a 1.26x energy gain. It cannot pay for a 1.27x speed gain twice over, and it cannot move QAL across any of the driver-ladder rungs. If the campaign wants an efficiency win from slowing down, the lever is the DRIVER (up to 4.8x across the ladder) or the VOLTAGE, not the transfer time.",
+    "what_this_does_NOT_settle": "the voltage half of DVFS. This track held dV fixed at 1.0 by design. The V^2 lever is untouched here and is bounded below by the Vt cliff the brief names (settling 100% at dV=1.0, 77.1% at 0.8, 34.8% at 0.6)."
+  },
+
+  "THE_THREE_LIMITS_THIS_TRACK_CAN_SPEAK_TO": {
+    "1_the_per_op_floor": "MEASURED AND BINDING. T_floor = 26.61 ps (harness ideal-PWL) / 46.35 ps (committed resonant pair), both BELOW the 105.70 ps where the hop first works. At the complete 23.213 fJ ledger there is no T in the envelope where the transfer term dominates.",
+    "2_the_Vt_cliff": "NOT TESTED HERE -- this track is fixed-voltage by design. Quoted from the campaign, not re-measured. But one relevant NEW measurement: the cell's RC_g at the QAL-DELIVERED 0.6754 V rail is 146.7 ps, 7.3x its 20.0 ps value at the 1.2 V CMOS rail, and the FALL edge is the slow one there (146.7 vs 74.1 ps) while at 1.2 V the RISE is (20.0 vs 10.6). The limiting edge SWAPS with the rail. Any voltage-scaling argument must carry that.",
+    "3_the_hop_is_invariant_to_V_and_Vt": "CORROBORATED ON THE T AXIS. t_hop over a 200x RS sweep varies by 0.0598 ps -- the hop time is set by pi*sqrt(LC) and nothing in the switch moves it. That is the same invariance the brief names, measured on a different axis."
+  },
+
+  "SPEED_CONTEXT_supplied_for_the_composition_not_claimed_as_a_result": {
+    "fastest_FUNCTIONAL_QAL_level_in_this_sweep": "176.9 ps (t_level, at L = 45 nH / t_hop 105.70 ps)",
+    "same_convention_CMOS_logic_level": "94.174 ps (committed, qal/vtreq)",
+    "so": "on THIS harness, at dV = 1.0 and CA = 35.979 fF, there is NO functional QAL operating point at or below the CMOS level time -- the fastest functional level is 1.88x SLOWER. An iso-performance energy ratio therefore cannot be formed from Track B alone; it needs whatever Track A's reservoir does to the delivered rail and hence to t_settle.",
+    "what_Track_B_supplies_to_that_composition": "E_QAL(T) is FLAT to within 1.26x over 105.7-2571.6 ps. So the composition may treat QAL energy as T-INDEPENDENT to 26% over the whole band, and take the operating point purely on the speed side, at whatever driver rung it can defend."
+  },
+
+  "FAILURES_DEFECTS_AND_CORRECTIONS_IN_THIS_TRACK": [
+    {
+      "what": "The first CMOS comparator decks carried a `.ic` that contradicted the t=0 input levels, holding each output against a fully-on pMOS and injecting ~186 uA of DC short-circuit current at the operating point.",
+      "how_it_showed": "the 1F integrator's DC PEDESTAL became 2.235e-6 V, and at 9 printed digits that quantised the readout to a 10 fJ LSB -- larger than the whole signal. Energies came out as exact multiples of 10 fJ with periodicity readings of exactly +-100%.",
+      "caught_by": "the per-row PERIODICITY guard (last cycle vs previous cycle), which is why it was in the deck.",
+      "fix": "removed the .ic; DCOP finds the correct state on its own. Post-fix periodicity is 0.000% on every settled row."
+    },
+    {
+      "what": "Four CMOS rows (period 122 ps) returned nan.",
+      "how_it_showed": "nan guard.",
+      "cause": "1e-10 * 1e12 round-trips to 487.99999999999994 for tend = 488 ps, which fell outside every interpolation interval.",
+      "fix": "clamp the requested time into [ts[0], ts[-1]]."
+    },
+    {
+      "what": "STALE-ROW CONTAMINATION, and the guard caught it.",
+      "how_it_happened": "the cleanup that was supposed to delete the buggy pre-fix decks ran in a compound command that began with `pkill -f \"tb.py cmos\"`. The pkill SELF-MATCHED and killed its own shell (the documented qal/pkill_selfmatch_trap), so the `rm` never executed. Twelve pre-fix rows then survived and were silently re-served as CACHE HITS on the relaunch.",
+      "caught_by": "the periodicity/nan guard again, on the re-read.",
+      "fix": "all 12 quarantined to tsweep/stale_prefix/ (not deleted -- they are the evidence) and re-run from scratch. NO stale row is in any number reported here; every CMOS row used was written after 09:10.",
+      "lesson": "a result cache plus a failed cleanup is a silent-wrong-answer machine. The guard has to be on the VALUE, not on the cache key."
+    },
+    {
+      "what": "PRE-REGISTERED prediction E2 was wrong in magnitude (I said T_floor 40-70 ps at level (i); measured 26.61 ps) and E3 was wrong in kind (I predicted a crossover tau >= 12 at level (i); there is no crossover at all there).",
+      "status": "recorded, not quietly corrected."
+    }
+  ],
+
+  "BIASES_AND_WHAT_IS_NOT_COSTED": [
+    "sg13lv_compat.sp zeroes ad/as/pd/ps: junction capacitance is ABSENT on BOTH sides. Both the QAL hop and the CMOS comparator are cheaper than reality; the RATIO is less biased than either absolute number, but neither is a silicon number.",
+    "The harness's gt/gtp/park drives are IDEAL PWL sources through series R. The MEASURED E_gate_drive (3.27-4.06 fJ) is therefore a LOWER BOUND on the real per-op switch cost, and the whole driver ladder above it is the honest range. Every ratio is reported at every rung.",
+    "The rails in this harness are IDEAL SOURCES. Slowing down does not make an ideal source more expensive. In a real design a longer T holds the rails up longer and costs static power; that term is UNCOSTED here and every slow row is therefore an OPTIMISTIC bound for QAL.",
+    "ALL NUMBERS ARE SHALLOW-STACK, single hop, 8 inverter cells. The ALU dominant cell sg13g2_o21ai_1 never settles at any operating point in the PDK envelope. Nothing here generalises to it, and nothing here is a chain result.",
+    "The 2.974 fJ resonant-pair rung is itself the arithmetic netting of two electrically unconnected ideal sources (qal/park IS3). It is quoted because the campaign committed it, and flagged because the campaign also flagged it.",
+    "The asymptote fit (E_hop -> 6.68 fJ as T -> inf, from the 4 slowest functional rows) is an EXTRAPOLATION, not a measurement. It says the complete-ledger iso-voltage ratio tends to 0.991 -- technically below 1, but only at T ~ 14.4 ns (tau ~ 720), a 5700x slowdown from the CMOS level time for a 0.9% energy win. Treat it as a bound, not a result."
+  ]
+}

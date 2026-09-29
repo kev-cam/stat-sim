@@ -1,0 +1,76 @@
+================================================================================================================
+INDEPENDENT RE-FIT   (22 rows, 15 functional)   source: /usr/local/src/stat-sim/qal/tsweep/rowd
+================================================================================================================
+tag           T_ps    E_xfer  E_xfer*T     Q_C_fC R_impl_ohm     E_hop    E_gate     E_vhi     cells
+T45         105.70    1.5308    161.81    30.7231    138.953    9.2731    4.0573    4.8182    1.9639
+T60         122.18    1.3539    165.41    31.0832    138.775    9.1572    3.9371    4.6262    1.9489
+T100        158.13    1.0859    171.71    31.6087    139.310    8.9253    3.7224    4.3098    1.8979
+T150        194.18    0.9100    176.71    31.9720    140.123    8.7227    3.7832    4.5558    1.8336
+T200        224.72    0.8022    180.28    32.2082    140.865    8.5706    3.7289    4.5313    1.7749
+T278        265.60    0.6943    184.40    32.4606    141.849    8.3943    3.5717    4.3118    1.6974
+T400        319.80    0.5908    188.95    32.7285    142.980    8.2033    3.3879    4.0440    1.5983
+T600        393.21    0.4929    193.81    33.0160    144.116    8.0200    3.2610    3.8554    1.4827
+T1000       509.92    0.3908    199.28    33.3651    145.099    7.8514    3.2063    3.7623    1.3381
+T1600       647.09    0.3142    203.29    33.6700    145.355    7.7455    3.2079    3.7366    1.2107
+T2500       810.66    0.2543    206.17    33.9405    145.071    7.6655    3.2210    3.7203    1.0921
+T4000      1027.02    0.2029    208.41    34.2028    144.404    7.5915    3.2339    3.6985    0.9716
+T6400      1300.34    0.1616    210.10    34.4414    143.564    7.5243    3.2442    3.6721    0.8564
+T10000     1626.22    0.1298    211.13    34.6469    142.562    7.4657    3.2513    3.6454    0.7527
+T25000     2571.56    0.0826    212.31    35.0125    140.386    7.3573    3.2674    3.5925    0.5557
+
+--- 1. E_xfer = k*T^-p  (the claimed adiabatic law) ---
+  FUNCTIONAL band        p = -0.9092   R^2 0.999212   (1.39 decades, n=15)
+  ALL rows               p = -0.8567   R^2 0.997491   (2.21 decades, n=22)
+  T >= 265 ps            p = -0.9367   R^2 0.999451   (0.99 decades, n=10)
+  T <= 86 ps (broken)    p = -0.7351   R^2 0.999586   (0.65 decades, n=6)
+
+--- 2. MIS-BINNING TEST:  E_xfer(T) = A/T + B   (B = a per-op floor hiding inside E_xfer) ---
+  functional band:  A = 160.1880 fJ*ps    B = +0.060599 fJ    R^2 0.996624
+  B as a fraction of E_xfer at the SLOWEST functional T (2571.6 ps, E=0.0826): +73.40%
+  -> a genuinely resistive term has B ~ 0.  A large positive B would mean a
+     per-op charge has been mis-binned into the T-dependent bucket.
+
+--- 3. CHARGE CORRECTION:  E_xfer / Q^2  vs T ---
+  E_xfer/Q^2 :  p = -0.9904   R^2 0.999802
+  Q grows 30.7231 -> 35.0125 fC (+13.96%) across the band; Q^2 therefore +29.87%
+
+--- 4. IMPLIED SERIES R (E = pi^2 R Q^2 / 8T) ---
+  R = 138.775 .. 145.355 ohm, mean 142.228, spread 4.63% over a 24.3x range in T
+
+--- 5. EVERY TERM'S EXPONENT over the functional band ---
+  E_xfer  resistive transfer                 p = -0.9092  R^2 0.9992   falls 18.541x  (1.5308 -> 0.0826 fJ)
+  cells_burn  the cells' own settle          p = -0.3891  R^2 0.9541   falls 3.534x  (1.9639 -> 0.5557 fJ)
+  E_Bresid  destination side                 p = -0.0171  R^2 0.7070   falls 1.028x  (7.4809 -> 7.2741 fJ)
+  E_gate  switch gate drive (per-op)         p = -0.0733  R^2 0.7345   falls 1.242x  (4.0573 -> 3.2674 fJ)
+  E_vhi   switch pMOS BULK supply *UNCOUNTED* p = -0.0969  R^2 0.8611   falls 1.341x  (4.8182 -> 3.5925 fJ)
+  E_hop   TOTAL out of bank A                p = -0.0769  R^2 0.9460   falls 1.260x  (9.2731 -> 7.3573 fJ)
+
+--- 6. THE UNCOUNTED TERM:  E_vhi  ---
+  E_vhi is metered in every row (integ 'ehi' = -VGH*I(VHI), VGH = 1.5 V) and is
+  summed into NO reported QAL total.  VHI is the BULK tie of the transfer
+  switch pMOS (XSWP sw gtp bkb vhi).  In the CMOS comparator deck the pMOS bulk
+  sits on `vdd`, whose current IS metered by the evdd integrator -- so the same
+  physical term is COUNTED on the CMOS side and OMITTED on the QAL side.
+
+tag           T_ps     E_hop     E_vhi    E_QAL(i) E_QAL(i)+vhi understate%
+T45         105.70    9.2731    4.8182     13.3304     18.1486       36.14
+T60         122.18    9.1572    4.6262     13.0943     17.7205       35.33
+T100        158.13    8.9253    4.3098     12.6477     16.9575       34.08
+T150        194.18    8.7227    4.5558     12.5059     17.0617       36.43
+T200        224.72    8.5706    4.5313     12.2996     16.8309       36.84
+T278        265.60    8.3943    4.3118     11.9659     16.2777       36.03
+T400        319.80    8.2033    4.0440     11.5912     15.6352       34.89
+T600        393.21    8.0200    3.8554     11.2810     15.1364       34.18
+T1000       509.92    7.8514    3.7623     11.0577     14.8200       34.02
+T1600       647.09    7.7455    3.7366     10.9535     14.6901       34.11
+T2500       810.66    7.6655    3.7203     10.8864     14.6067       34.17
+T4000      1027.02    7.5915    3.6985     10.8253     14.5238       34.17
+T6400      1300.34    7.5243    3.6721     10.7685     14.4406       34.10
+T10000     1626.22    7.4657    3.6454     10.7170     14.3624       34.02
+T25000     2571.56    7.3573    3.5925     10.6247     14.2172       33.81
+
+--- 7. WHAT IT DOES TO THE HEADLINE RATIOS ---
+tag           T_ps | (i) as-rep   (i) +vhi | (iii)as-rep  (iii)+vhi |  (iii)isoV (iii)isoV+
+T45         105.70 |     3.0743     2.2581 |     1.2615     1.0986 |     0.9285     0.8086
+T600        393.21 |     3.6328     2.7075 |     1.3121     1.1680 |     0.9657     0.8596
+T25000     2571.56 |     3.8572     2.8825 |     1.3406     1.1996 |     0.9867     0.8829

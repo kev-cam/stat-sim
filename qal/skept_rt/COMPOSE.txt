@@ -1,0 +1,69 @@
+========================================================================================================
+(e) COMPOSITION -- recomputed independently by the skeptic
+========================================================================================================
+RESERVOIR CHAIN, MEASURED from the tank's own terminal voltage:
+   tank 719.58 fF, 1.2000 -> 0.341068 V over 6 hops
+   charge drawn     618.07 fC total =  103.01 fC / bank-hop
+   ENERGY drawn     476.24 fJ total =   79.37 fJ / bank-hop   <-- MEASURED
+
+CMOS comparator, MEASURED on the SAME 8 cells, SAME CL = 2 fF, SAME 1.2 V:
+   %.4f fJ per 8-cell transition   (T-INVARIANT: 42.54 -> 43.27 fJ over a 10x
+   period range, and identical to 6 s.f. from 506 ps on -- so this number does
+   not move when QAL slows down, and every ratio below is like-for-like.)
+   value used: 40.9815 fJ (campaign 34.81 ps edge convention)
+
+--------------------------------------------------------------------------------------------------------
+PER-OP DRIVER LADDER.  A SHARED TANK NEEDS TWO transmission gates per hop
+(source-side cut + receiving-side cut).  The committed ledgers were measured
+for the ONE-cut committed topology, so the reservoir's floor is taken as 2x.
+The 2x is DERIVED by gate count, NOT re-measured -- flagged as such.
+--------------------------------------------------------------------------------------------------------
+driver rung                                                                  E_QAL   vs CMOS  verdict
+ideal-PWL, as the harness drives it (MEASURED, LOWER BOUND)                  96.83    0.423x QAL LOSES
+resonant gt/gtp pair 2.974 fJ x2 cuts (COMMITTED, x2 DERIVED)                85.32    0.480x QAL LOSES
+75%-recovery resonant driver 10.9 fJ x2 (COMMITTED-DERIVED, never built)    101.17    0.405x QAL LOSES
+COMPLETE timer ledger 23.213 fJ x2 cuts (the only COMPLETE one)             125.80    0.326x QAL LOSES
+conventional CMOS driver off 1.5 V, 43.5 fJ x2 (COMMITTED)                  166.37    0.246x QAL LOSES
+
+NOTE the ideal-PWL rung already uses the MEASURED E_gate_drive of the
+actual 2-cut reservoir deck (rowd/SC_m20_L3.json = 17.456 fJ), so that rung
+is measured, not doubled.
+
+--------------------------------------------------------------------------------------------------------
+SPEED SIDE
+--------------------------------------------------------------------------------------------------------
+  CMOS logic level (same convention)                  :   94.174 ps  MEASURED
+  best IN-ENVELOPE shared-tank-realisable single hop  :  103.378 ps  MEASURED
+       (CA_MULT=20, L=3 nH, W=30um, dV=1.65, cl=6.91fF; VBPK 1.5498 V, 6%% margin)
+       -> 0.911x of CMOS, i.e. CMOS is 9.8% FASTER
+  the CHAIN's actual per-stage beat                   :  300.000 ps  (schedule)
+       -> 3.19x SLOWER than the CMOS level
+       and at depth 5/6 even 300 ps is NOT enough (see settling audit), so
+       300 ps is a LOWER bound on the usable beat at depth, not an upper one.
+
+--------------------------------------------------------------------------------------------------------
+ISO-PERFORMANCE?
+--------------------------------------------------------------------------------------------------------
+  There is NO measured QAL operating point at or below 94.174 ps:
+    Track A, shared-tank-realisable, in envelope : best 103.378 ps  (0.911x)
+    Track A, receiving-cut-only (NOT chain-legal): best  70.209 ps  (1.341x)
+    Track B, dV = 1.0, functional                : best 176.9   ps  (0.532x)
+  => the iso-performance energy ratio CANNOT BE FORMED FROM MEASUREMENT.
+     Everything below is a BOUND at the fastest legal point, not a result.
+
+ENERGY-DELAY at the fastest legal reservoir point, against CMOS:
+   ideal-PWL, as the harness drives it (MEASURED, LOWER BOUND)      E  2.36x  x  T 3.19x  =  E*T   7.53x worse
+   resonant gt/gtp pair 2.974 fJ x2 cuts (COMMITTED, x2 DERIVED)    E  2.08x  x  T 3.19x  =  E*T   6.63x worse
+   75%-recovery resonant driver 10.9 fJ x2 (COMMITTED-DERIVED, neve E  2.47x  x  T 3.19x  =  E*T   7.86x worse
+   COMPLETE timer ledger 23.213 fJ x2 cuts (the only COMPLETE one)  E  3.07x  x  T 3.19x  =  E*T   9.78x worse
+   conventional CMOS driver off 1.5 V, 43.5 fJ x2 (COMMITTED)       E  4.06x  x  T 3.19x  =  E*T  12.93x worse
+
+--------------------------------------------------------------------------------------------------------
+DOES THE 1/T KNOB RESCUE IT?  (Track B, re-fit independently)
+--------------------------------------------------------------------------------------------------------
+  E_hop over the WHOLE 24.3x functional T range: 9.273 -> 7.357 fJ = 1.260x.
+  So the entire speed-for-energy trade is worth 1.26x.
+  Moving ONE RUNG of the driver ladder above is worth up to 1.95x.
+  => the driver choice dominates the 1/T knob by ~2x.  DVFS on T cannot
+     convert a speed gain into an efficiency win here, and there is no speed
+     gain in the legal topology to convert.

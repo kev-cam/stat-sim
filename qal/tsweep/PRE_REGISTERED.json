@@ -1,0 +1,86 @@
+{
+  "track": "B -- THE 1/T ENERGY KNOB",
+  "written_before_first_deck": true,
+  "owner_dir": "/usr/local/src/stat-sim/qal/tsweep",
+  "PYMS_VAE_CACHE": "/tmp/claude-1001/-usr-local-src/4921ad0c-f17b-4b84-986a-5917c9ebd2a6/scratchpad/vae_cache_tsweep",
+
+  "QUESTION": "At FIXED voltage, does the QAL hop's transfer energy fall as 1/T when T is swept, over what range does that law hold, and at what T does the PER-OP floor (switch gate charge + park + timer) take over and stop the saving?",
+
+  "WHY_IT_MATTERS": "A CMOS gate burns ~(1/2)CV^2 per transition regardless of clock period. QAL's transfer loss is RESISTIVE, so in principle it falls as 1/T and slowing alone saves energy at constant voltage. The campaign has an ANALYTIC crossover map (E_QAL/E_CMOS = 2*f_adia = 4/tau, tau = T/RC_g, floor-capped 3-9.5x) that has NEVER been measured on the built harness with the real switch and real cells. This track measures it.",
+
+  "HARNESS": {
+    "base": "qal/lsweep/lsw.py VERBATIM (which is sar/sar_observable.py verbatim, which is swsweep/sw_hop_meter.py verbatim, which is gateb's harness verbatim). Copied into tsweep/ as tsw.py with ONLY these changes: (1) HERE/CACHE point at tsweep; (2) the L list extended UPWARD past the committed 277.8 nH; (3) timestep/run-length scaling already present in lsw.py is reused unchanged; (4) a new CMOS comparator stage that lsweep does not have.",
+    "device": "SG13G2 / PSP103 tt via qal/sg13lv_compat.sp (ZEROES ad/as/pd/ps -- junction capacitance absent; every device number is a LOWER bound on capacitance and therefore an OPTIMISTIC bound on QAL speed and an OPTIMISTIC bound on CMOS energy alike).",
+    "fixed_at": {
+      "dV_V": 1.0,
+      "CA_fF": 35.979,
+      "switch_total_um": 15.0,
+      "RS_ohm": 10.0,
+      "VGH_V": 1.5,
+      "cells": "8 x sg13_lv inverter wp=1.12u wn=0.74u, CL=2 fF/cell",
+      "gate_edge_ps": 2.0,
+      "tail_ps": 500.0
+    },
+    "T_knob": "T is varied THROUGH L: t_hop = pi*sqrt(L*C_ser), C_ser = CA/2 = 17.9895 fF. This is the physical resonant knob and it changes NOTHING about the switch, the cells, the rails or the loss coefficient R. A SECOND, independent knob (series RS) is swept at one L as a MECHANISM CHECK: if the loss is resistive, E_transfer must be LINEAR in R at fixed T.",
+    "T_zero_discipline": "The true current zero is RE-PROBED per L with its own probe deck (lsw.py probe stage). The analytic pi*sqrt(LC) is used ONLY to size timesteps and run lengths, never as a measured hop time.",
+    "metering": "1F-integrator taps only (CX/BX/RX triplets), t0-referenced at the Z checkpoint (0.5 ps) to remove the integrator pedestal. NO '.measure INTEGRAL V(<B-source>)'. Every .measure FIND is requested LAG_PS=1.0 ps late, the measured instrument lag of this Xyce build (lsweep/diag_find.py)."
+  },
+
+  "PRE_STATED_ACCEPTANCE": {
+    "G0_instrument": {
+      "gate": "Reproduce the COMMITTED hop energy row digit-checked. Extract from qal/swsweep/sw_tg15p_z.cir.mt0 and require rel error < 1e-6 on ALL EIGHT committed anchor keys: E_hop_open_fJ=8.3828171771408, VBEND=0.6758936, VBPK=0.7374377, VA_open=0.09778203952305342, cells_burn_fJ=1.6954746104994207, E_R_toC_fJ=0.049543034863200004, IZ_uA=-0.37939849999999997, IPK_uA=194.3655. THEN re-run the committed deck unmodified under MY OWN PyMS cache and require the same 1e-6 on all eight. A FAIL here voids the whole track.",
+      "verdict_if_fail": "STOP and report the instrument as broken. No sweep number may be quoted."
+    },
+    "R1_per_row_instrument": "Every swept row must pass the committed C4 instrument gate: |closure_Q| <= 1.0%, |closure_E| <= 1.0%, |identity at the current zero| <= 0.02 fJ (waveform, not .measure), |xc_dEhop| <= 1.0%. Rows that fail C4 are REPORTED but EXCLUDED from every fit and every headline.",
+    "A1_does_E_fall_as_1_over_T": {
+      "statement": "Fit E_transfer = k * T^(-p) by least squares in log-log over the rows that pass R1.",
+      "accept_1_over_T": "p in [0.90, 1.10] over a contiguous span of at least one decade in T.",
+      "reject": "p outside [0.90, 1.10], or no contiguous decade.",
+      "also_report": "the T at which the local slope d(log E)/d(log T) departs from -1 by more than 0.1, in BOTH directions."
+    },
+    "A2_where_does_the_per_op_floor_take_over": {
+      "definition": "T_floor is the T at which the PER-OP terms equal the T-DEPENDENT term. Per-op terms are, in increasing completeness: (i) the measured switch gate-drive E_gate_drive_fJ (ideal-PWL, the harness's own booking); (ii) the committed resonant gt/gtp pair 2.974 fJ; (iii) the committed COMPLETE timer ledger 23.213 fJ/bank/hop. T-dependent term is E_R_toC + the resistive part of the switch block.",
+      "report": "T_floor for each of the three completeness levels, and the floor-capped total-energy ratio E_QAL_total(T)/E_QAL_total(T->inf)."
+    },
+    "A3_CMOS_comparator": {
+      "statement": "Measure the SAME 8 cells as static CMOS on a hard rail, energy per transition, at the SAME T points -- the input edge / period is swept over the same span the QAL hop is swept over.",
+      "accept_T_invariant": "spread of E_CMOS per transition across the T span <= 10% (a CMOS gate's dynamic energy is set by C and V, not by rate; leakage adds a small T-PROPORTIONAL term at the slow end and is reported separately).",
+      "if_not_T_invariant": "report the measured T dependence and use the MEASURED curve, not the (1/2)CV^2 idealisation, in every ratio."
+    },
+    "A4_tau_at_crossover": {
+      "statement": "tau = T / RC_g with RC_g MEASURED on this cell in this deck (not assumed, not the campaign's ~12 ps folklore). Report the measured tau at which E_QAL/E_CMOS crosses 1, against the map's prediction tau=4.",
+      "map_under_test": "E_QAL/E_CMOS = 2*f_adia = 4/tau, floor cap 3-9.5x."
+    }
+  },
+
+  "PRE_STATED_EXPECTATION": {
+    "confidence": "MEDIUM. Derived from the COMMITTED lsweep rows (already on disk, REPORT.txt), which is why it is written down here before any new deck: it must be falsifiable by the new slow rows.",
+    "E1_the_1_over_T_law_HOLDS_on_the_slow_side": "Committed rows give E_R+E_swblk times t_hop = 184.6 / 180.2 / 176.7 / 173.9 / 171.7 / 169.0 / 165.4 / 163.1 / 161.8 / 160.3 / 158.5 / 156.5 fJ*ps at L = 277.8 down to 30 nH -- constant to +-8%, i.e. p ~ 1. I expect p in [0.90, 1.00] over L >= 30 nH (T >= 86 ps) and a clear DEPARTURE below T ~ 50 ps (at L = 10/3/1 the product falls to 140.4 / 119.3 / 102.4, p drops well below 1 because the transfer stops completing).",
+    "E2_THE_FLOOR_HAS_ALREADY_TAKEN_OVER": "This is the load-bearing prediction and the one I most expect to be told is wrong. At the COMMITTED anchor (T = 265.6 ps) the T-dependent term is already only ~0.695 fJ while the harness's own measured switch gate drive is ~3.57 fJ -- 5.1x larger. So I predict T_floor at completeness level (i) lies BELOW the committed anchor, somewhere near T = 40-70 ps, and that the whole committed L sweep is ALREADY floor-dominated. At completeness level (iii), with the 23.213 fJ timer ledger, I predict there is NO T in the PDK envelope at which the T-dependent term dominates -- the floor wins everywhere, and the 1/T knob is worth at most a few percent of the total.",
+    "E3_predicted_crossover_tau": "The map says E_QAL/E_CMOS = 1 at tau = 4. With RC_g ~ 18-22 ps (my estimate from the committed cell floor t90 = 40.417 ps at 1.2 V and 51.505 ps at 1.0 V, assuming t90 = 2.3 RC), tau = 4 means T ~ 72-88 ps. I predict the MEASURED crossover tau will be MUCH LARGER than 4 -- i.e. QAL needs to be slowed far more than the map says -- because the map counts only the gate's own adiabatic settle and omits the per-op switch/park/timer charge entirely. My pre-stated number: measured crossover tau >= 12 at completeness level (i), and NO CROSSOVER AT ALL (E_QAL > E_CMOS at every T) at completeness level (iii).",
+    "E4_floor_capped_ratio": "The map's floor cap is 3-9.5x. I predict the MEASURED floor-capped best ratio E_CMOS/E_QAL at completeness level (i) lands at or below the bottom of that band (<= 3x), and is BELOW 1 (i.e. QAL is more expensive) at level (iii).",
+    "E5_mechanism_check": "E_transfer must be LINEAR in RS at fixed T. If it is not, the loss is not the resistive transfer term and the whole 1/T framing is wrong."
+  },
+
+  "WHAT_WOULD_FALSIFY_ME": [
+    "E_R + E_swblk continuing to fall as 1/T out to T = 1.5 ns with no floor in sight, and the per-op terms falling with it (they must not -- they are per-op).",
+    "E_gate_drive turning out to be T-DEPENDENT (it would mean the switch drive is not a per-op charge).",
+    "The measured CMOS comparator turning out to be strongly T-dependent, which would break the like-for-like ratio.",
+    "A measured crossover tau near 4, which would VINDICATE the map."
+  ],
+
+  "NOT_IN_SCOPE": [
+    "Track A (the reservoir / CA_MULT sweep) -- a different agent owns it. CA is held at the committed 35.979 fF here.",
+    "Any chain / multi-bank result. This is a SINGLE HOP.",
+    "Re-opening the committed energy EXCLUSION verdict (complete timer ledger 23.213 fJ/bank/hop vs a pre-stated <= 12.7467 fJ, stat-sim c814e52). That verdict is USED here as a committed per-op anchor; it is not re-litigated.",
+    "Any dV other than 1.0 -- the whole point is FIXED voltage.",
+    "vt / gmin adjustments, corner runs other than tt."
+  ],
+
+  "KNOWN_BIASES_STATED_UP_FRONT": [
+    "sg13lv_compat.sp zeroes ad/as/pd/ps: junction capacitance is ABSENT. This makes the cells cheaper than reality on BOTH sides (QAL hop and CMOS comparator), so the RATIO is less biased than either absolute number.",
+    "The harness's gt/gtp/park drives are IDEAL PWL sources through series R. The E_gate_drive term they meter is therefore a LOWER BOUND on the real per-op switch cost -- the committed campaign measured the real driver at 2.974 fJ (resonant pair, itself a netting of two unconnected ideal sources) up to 23.213 fJ (complete ledger). Every per-op number is reported at all three completeness levels and labelled.",
+    "ALL NUMBERS ARE SHALLOW-STACK. The ALU dominant cell sg13g2_o21ai_1 never settles at any operating point in the PDK envelope; nothing here generalises to it.",
+    "The rails in this harness are IDEAL SOURCES. Slowing down does not make an ideal source more expensive; in a real design a longer T holds the rails up for longer and costs static power. That term is UNCOSTED here and is stated as such."
+  ]
+}
