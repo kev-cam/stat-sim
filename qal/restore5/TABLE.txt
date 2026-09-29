@@ -1,0 +1,126 @@
+=== RESTORED QAL CHAIN: 6 hop-powered banks, restoring stage every k banks ===
+    L=15 nH, tg15p W=30 um, dV=1.2 V, SG13G2/PSP103 tt, sg13_lv shim (NO junction C)
+    restoring stage = CMOS inverter PAIR on a FIXED 1.2 V supply, CL 2 fF on both nodes:
+      1st (receiving) inverter SKEWED 0.15u pMOS / 1.48u nMOS  (AMENDMENT A4; trip 0.4595 V MEASURED)
+      2nd inverter campaign standard 1.12u pMOS / 0.74u nMOS   (its input is full swing)
+    k = hop-powered banks per inter-restore segment; each segment has its own 35.979 fF pre-charged reservoir
+    k=6 is the NO-RESTORE control (one segment, zero internal restoring stages)
+
+k     T ps   tres  seg    | worst%  bank    | A1      A2      A4      | rails min | PASS
+----------------------------------------------------------------------------------------
+1     200    279.0 6      |   95.22 1       | True    True    False   |    0.6568 | True
+1     300    179.0 6      |   98.39 1       | True    True    False   |    0.6375 | True
+1     300    179.0 6      |   98.39 1       | True    True    False   |    0.6375 | True
+1     300    179.0 6      |   98.39 1       | True    True    True    |    0.6375 | True
+2     300    305.0 3      |   15.32 3       | False   False   False   |    0.4007 | False
+3     300    305.0 2      |   15.83 4       | False   False   False   |    0.2531 | False
+6     300    0.0   1      |   25.04 2       | False   False   True    |    0.0715 | False
+k6_T300 ERROR restore latency not measurable
+
+=== PER-BANK, PER-GROUP SETTLING AT EACH BANK'S OWN STAGE BOUNDARY (never aggregated) ===
+    pos = position of the bank inside its segment; input = what drives its gates
+
+--- k=1 T=200ps tres=279.0ps  (6 segments)   PASS=True
+  bank pos  rail_V   UPmin%    DOWNmin%  worst%   lim        guard  input
+  1    1    0.6568    95.22    100.09   95.22  pull-up    True   ideal DC source
+  2    1    0.6776    96.35    100.08   96.35  pull-up    True   RESTORING stage
+  3    1    0.6766    96.32    100.08   96.32  pull-up    True   RESTORING stage
+  4    1    0.6766    96.32    100.08   96.32  pull-up    True   RESTORING stage
+  5    1    0.6766    96.32    100.08   96.32  pull-up    True   RESTORING stage
+  6    1    0.7428    99.77    100.01   99.77  pull-up    True   RESTORING stage
+      bank 1  gates: 0:100.09 1: 95.22 2:100.09 3: 95.22 4:100.09 5: 95.22 6:100.09 7: 95.22
+      bank 2  gates: 0: 96.35 1:100.08 2: 96.35 3:100.08 4: 96.35 5:100.08 6: 96.35 7:100.08
+      bank 3  gates: 0:100.08 1: 96.32 2:100.08 3: 96.32 4:100.08 5: 96.32 6:100.08 7: 96.32
+      bank 4  gates: 0: 96.32 1:100.08 2: 96.32 3:100.08 4: 96.32 5:100.08 6: 96.32 7:100.08
+      bank 5  gates: 0:100.08 1: 96.32 2:100.08 3: 96.32 4:100.08 5: 96.32 6:100.08 7: 96.32
+      bank 6  gates: 0: 99.77 1:100.01 2: 99.77 3:100.01 4: 99.77 5:100.01 6: 99.77 7:100.01
+
+--- k=1 T=300ps tres=179.0ps  (6 segments)   PASS=True
+  bank pos  rail_V   UPmin%    DOWNmin%  worst%   lim        guard  input
+  1    1    0.6375    98.39    100.03   98.39  pull-up    True   ideal DC source
+  2    1    0.6584    98.55    100.03   98.55  pull-up    True   RESTORING stage
+  3    1    0.6574    98.55    100.03   98.55  pull-up    True   RESTORING stage
+  4    1    0.6574    98.55    100.03   98.55  pull-up    True   RESTORING stage
+  5    1    0.6574    98.55    100.03   98.55  pull-up    True   RESTORING stage
+  6    1    0.7424   100.00    100.00  100.00  pull-up    True   RESTORING stage
+      bank 1  gates: 0:100.03 1: 98.39 2:100.03 3: 98.39 4:100.03 5: 98.39 6:100.03 7: 98.39
+      bank 2  gates: 0: 98.55 1:100.03 2: 98.55 3:100.03 4: 98.55 5:100.03 6: 98.55 7:100.03
+      bank 3  gates: 0:100.03 1: 98.55 2:100.03 3: 98.55 4:100.03 5: 98.55 6:100.03 7: 98.55
+      bank 4  gates: 0: 98.55 1:100.03 2: 98.55 3:100.03 4: 98.55 5:100.03 6: 98.55 7:100.03
+      bank 5  gates: 0:100.03 1: 98.55 2:100.03 3: 98.55 4:100.03 5: 98.55 6:100.03 7: 98.55
+      bank 6  gates: 0:100.00 1:100.00 2:100.00 3:100.00 4:100.00 5:100.00 6:100.00 7:100.00
+
+--- k=1 T=300ps tres=179.0ps  (6 segments)   PASS=True
+  bank pos  rail_V   UPmin%    DOWNmin%  worst%   lim        guard  input
+  1    1    0.6375    98.39    100.03   98.39  pull-up    True   ideal DC source
+  2    1    0.6588    98.55    100.03   98.55  pull-up    True   RESTORING stage
+  3    1    0.6578    98.55    100.03   98.55  pull-up    True   RESTORING stage
+  4    1    0.6578    98.55    100.03   98.55  pull-up    True   RESTORING stage
+  5    1    0.6578    98.55    100.03   98.55  pull-up    True   RESTORING stage
+  6    1    0.7431   100.00    100.00  100.00  pull-up    True   RESTORING stage
+      bank 1  gates: 0:100.03 1: 98.39 2:100.03 3: 98.39 4:100.03 5: 98.39 6:100.03 7: 98.39
+      bank 2  gates: 0: 98.55 1:100.03 2: 98.55 3:100.03 4: 98.55 5:100.03 6: 98.55 7:100.03
+      bank 3  gates: 0:100.03 1: 98.55 2:100.03 3: 98.55 4:100.03 5: 98.55 6:100.03 7: 98.55
+      bank 4  gates: 0: 98.55 1:100.03 2: 98.55 3:100.03 4: 98.55 5:100.03 6: 98.55 7:100.03
+      bank 5  gates: 0:100.03 1: 98.55 2:100.03 3: 98.55 4:100.03 5: 98.55 6:100.03 7: 98.55
+      bank 6  gates: 0:100.00 1:100.00 2:100.00 3:100.00 4:100.00 5:100.00 6:100.00 7:100.00
+
+--- k=1 T=300ps tres=179.0ps  (6 segments)   PASS=True
+  bank pos  rail_V   UPmin%    DOWNmin%  worst%   lim        guard  input
+  1    1    0.6375    98.39    100.03   98.39  pull-up    True   ideal DC source
+  2    1    0.6588    98.55    100.03   98.55  pull-up    True   RESTORING stage
+  3    1    0.6580    98.55    100.03   98.55  pull-up    True   RESTORING stage
+  4    1    0.6581    98.55    100.03   98.55  pull-up    True   RESTORING stage
+  5    1    0.6581    98.55    100.03   98.55  pull-up    True   RESTORING stage
+  6    1    0.7431   100.00    100.00  100.00  pull-up    True   RESTORING stage
+      bank 1  gates: 0:100.03 1: 98.39 2:100.03 3: 98.39 4:100.03 5: 98.39 6:100.03 7: 98.39
+      bank 2  gates: 0: 98.55 1:100.03 2: 98.55 3:100.03 4: 98.55 5:100.03 6: 98.55 7:100.03
+      bank 3  gates: 0:100.03 1: 98.55 2:100.03 3: 98.55 4:100.03 5: 98.55 6:100.03 7: 98.55
+      bank 4  gates: 0: 98.55 1:100.03 2: 98.55 3:100.03 4: 98.55 5:100.03 6: 98.55 7:100.03
+      bank 5  gates: 0:100.03 1: 98.55 2:100.03 3: 98.55 4:100.03 5: 98.55 6:100.03 7: 98.55
+      bank 6  gates: 0:100.00 1:100.00 2:100.00 3:100.00 4:100.00 5:100.00 6:100.00 7:100.00
+
+--- k=2 T=300ps tres=305.0ps  (3 segments)   PASS=False
+  bank pos  rail_V   UPmin%    DOWNmin%  worst%   lim        guard  input
+  1    1    0.5801    91.34    100.04   91.34  pull-up    True   ideal DC source
+  2    2    0.4339    30.62     69.47   30.62  pull-up    False  bank 1 direct (no buffer)
+  3    1    0.5292    84.68     15.32   15.32  pull-down  False  RESTORING stage
+  4    2    0.4007    31.62     68.38   31.62  pull-up    False  bank 3 direct (no buffer)
+  5    1    0.5292    84.68     15.32   15.32  pull-down  False  RESTORING stage
+  6    2    0.4007    31.62     68.38   31.62  pull-up    False  bank 5 direct (no buffer)
+      bank 1  gates: 0:100.04 1: 91.34 2:100.04 3: 91.34 4:100.04 5: 91.34 6:100.04 7: 91.34
+      bank 2  gates: 0: 30.62 1: 69.47 2: 30.62 3: 69.47 4: 30.62 5: 69.47 6: 30.62 7: 69.47
+      bank 3  gates: 0: 15.32 1: 84.68 2: 15.32 3: 84.68 4: 15.32 5: 84.68 6: 15.32 7: 84.68
+      bank 4  gates: 0: 31.62 1: 68.38 2: 31.62 3: 68.38 4: 31.62 5: 68.38 6: 31.62 7: 68.38
+      bank 5  gates: 0: 15.32 1: 84.68 2: 15.32 3: 84.68 4: 15.32 5: 84.68 6: 15.32 7: 84.68
+      bank 6  gates: 0: 31.62 1: 68.38 2: 31.62 3: 68.38 4: 31.62 5: 68.38 6: 31.62 7: 68.38
+
+--- k=3 T=300ps tres=305.0ps  (2 segments)   PASS=False
+  bank pos  rail_V   UPmin%    DOWNmin%  worst%   lim        guard  input
+  1    1    0.5798    91.15    100.05   91.15  pull-up    True   ideal DC source
+  2    2    0.3789    25.23     68.73   25.23  pull-up    False  bank 1 direct (no buffer)
+  3    3    0.2829    26.14     74.41   26.14  pull-up    False  bank 2 direct (no buffer)
+  4    1    0.5286    84.17     15.83   15.83  pull-down  False  RESTORING stage
+  5    2    0.3402    32.52     67.48   32.52  pull-up    False  bank 4 direct (no buffer)
+  6    3    0.2531    26.36     73.64   26.36  pull-up    False  bank 5 direct (no buffer)
+      bank 1  gates: 0:100.05 1: 91.15 2:100.05 3: 91.15 4:100.05 5: 91.15 6:100.05 7: 91.15
+      bank 2  gates: 0: 25.23 1: 68.73 2: 25.23 3: 68.73 4: 25.23 5: 68.73 6: 25.23 7: 68.73
+      bank 3  gates: 0: 74.41 1: 26.14 2: 74.41 3: 26.14 4: 74.41 5: 26.14 6: 74.41 7: 26.14
+      bank 4  gates: 0: 84.17 1: 15.83 2: 84.17 3: 15.83 4: 84.17 5: 15.83 6: 84.17 7: 15.83
+      bank 5  gates: 0: 67.48 1: 32.52 2: 67.48 3: 32.52 4: 67.48 5: 32.52 6: 67.48 7: 32.52
+      bank 6  gates: 0: 26.36 1: 73.64 2: 26.36 3: 73.64 4: 26.36 5: 73.64 6: 26.36 7: 73.64
+
+--- k=6 T=300ps tres=0.0ps  (1 segments)   PASS=False
+  bank pos  rail_V   UPmin%    DOWNmin%  worst%   lim        guard  input
+  1    1    0.5798    91.14    100.05   91.14  pull-up    True   ideal DC source
+  2    2    0.3788    25.04     68.92   25.04  pull-up    False  bank 1 direct (no buffer)
+  3    3    0.2405    25.75     74.88   25.75  pull-up    False  bank 2 direct (no buffer)
+  4    4    0.1542    25.10     74.82   25.10  pull-up    False  bank 3 direct (no buffer)
+  5    5    0.1007    25.30     74.71   25.30  pull-up    False  bank 4 direct (no buffer)
+  6    6    0.0715    25.82     74.17   25.82  pull-up    False  bank 5 direct (no buffer)
+      bank 1  gates: 0:100.05 1: 91.14 2:100.05 3: 91.14 4:100.05 5: 91.14 6:100.05 7: 91.14
+      bank 2  gates: 0: 25.04 1: 68.92 2: 25.04 3: 68.92 4: 25.04 5: 68.92 6: 25.04 7: 68.92
+      bank 3  gates: 0: 74.88 1: 25.75 2: 74.88 3: 25.75 4: 74.88 5: 25.75 6: 74.88 7: 25.75
+      bank 4  gates: 0: 25.10 1: 74.82 2: 25.10 3: 74.82 4: 25.10 5: 74.82 6: 25.10 7: 74.82
+      bank 5  gates: 0: 74.71 1: 25.30 2: 74.71 3: 25.30 4: 74.71 5: 25.30 6: 74.71 7: 25.30
+      bank 6  gates: 0: 25.82 1: 74.17 2: 25.82 3: 74.17 4: 25.82 5: 74.17 6: 25.82 7: 74.17

@@ -1,0 +1,94 @@
+{
+ "_what": "RESTORING STAGES EVERY k BANKS in a hop-powered QAL chain -- pre-registration. Written BEFORE any deck, driver, probe or extractor in this directory existed. When this file was written qal/restore5/ contained NOTHING else (mtime evidence in RESULTS.json._provenance).",
+ "_ask_under_test_verbatim": "Add restoring stages every few banks and see what it costs.",
+ "date_written": "2026-09-29T04:03Z (container clock; 2026-09-28 local)",
+
+ "inherited_and_frozen_NOT_reopened": {
+  "cells": "sg13_lv_pmos w=1.12u / sg13_lv_nmos w=0.74u l=0.13u, CL 2 fF per output, supply AND pMOS bulk on the bank rail -- the committed swsweep/gateb/chain3/skip4 cell, verbatim",
+  "transfer_switch": "tg15p at W=30 um: TG wn=10u / wp=20u + park 2u = skip.widths(30), the measured robust point",
+  "L": "15 nH, RS 10 ohm, VGH 1.5 V, transfer-gate edge 2 ps, head/pre-charge gate soft 20 ps edge at wn=1.0u/wp=1.12u (chain3 A2), post-run tail 500 ps",
+  "dV": "1.2 V",
+  "source_side_cut": "MANDATORY on EVERY hop (chain3 A3): identical tg15p triple between the source node and the inductor near node a{h}, same gate phases, no park on a{h}; destination park HELD ON while a hop is idle. NOTE this makes even a segment's FIRST hop carry one more switch terminal than the committed single hop, whose source was a bare lumped cap -- so my hop zeros will be LONGER than the committed 65.495 ps and are re-probed per hop, never assumed.",
+  "models": "PSP103 via .hdl + sg13g2_psp103_tt.lib; sg13_lv via qal/sg13lv_compat.sp which ZEROES ad/as/pd/ps -- junction capacitance is ABSENT, so every capacitance, charge, energy, hop time and settling time here is a LOWER BOUND / optimistic. Restated on every number it touches.",
+  "metering": "1F integrators (CX/BX/RX triple) or INTEG-I(Vsrc)+PARAM only; '.measure INTEGRAL' is banned (under-reports 11-44%). Every integrator is t0-referenced against its own Z checkpoint (the 1F pedestal). .measure FIND carries a MEASURED +1.0 ps lag in this Xyce build and every checkpoint is offset by it.",
+  "options": ".OPTIONS TIMEINT METHOD=GEAR RELTOL=1e-6 ABSTOL=1e-15 CHGTOL=1e-17; vt and gmin NOT touched; corners only via instance-level DTA (not exercised here)",
+  "standing_bound": "sg13g2_o21ai_1 (the ALU dominant mapped cell) NEVER settles anywhere in the PDK envelope, so this study uses the INVERTER-class bank and EVERY number is a SHALLOW-STACK number."
+ },
+
+ "ARCHITECTURE_pre_stated": {
+  "_reading_of_k": "k = the number of hop-powered LOGIC BANKS per inter-restore SEGMENT = the number of hops per segment. This reading is forced by the ask's own identification 'k = 1 (restore between every bank -- this is essentially the single hop, expected to pass, so it is your positive control)': the committed single hop is one bank charged by one hop from a fresh pre-charged reservoir with CLEAN inputs, so k=1 must reproduce exactly that.",
+  "segment": "one PRE-CHARGED CHARGE RESERVOIR (not a logic level) + k hop-powered logic banks + one restoring stage on the data path into the segment's first bank. Charge enters the segment once, at the reservoir, and is then handed forward bank-to-bank by k hops, so the pre-charge is amortised over k banks and droop accumulation is BOUNDED to k hops -- that is the feature the ask asks me to exploit, and the one pre-charge per segment is the cost it asks me to report.",
+  "reservoir": "a lumped capacitor CA = 35.979 fF -- the committed single hop's own source, which is the MEASURED secant capacitance of one 8-cell bank at 1.0 V. Pre-charged to dV, held by a small head gate that is cut 40 ps before its hop (chain3 A2 protocol).",
+  "restore_placement": "between the LAST bank of segment s and the FIRST bank of segment s+1. The last bank of a segment has no outgoing hop, so its rail is NEVER drained and its outputs are STABLE -- that is deliberate and is the property that makes a restoring stage able to work at all: a restoring stage reading a bank that is being drained mid-hop would see its own input collapse and would flip. Stated now, before measurement, as the load-bearing structural claim.",
+  "input_buffer": "the chain's FIRST bank is also driven through a restoring stage (whose input is an ideal DC source), so EVERY segment-head bank has identical drive and no bank is privileged. Therefore: exactly ONE reservoir and ONE restoring stage per segment.",
+  "chain_size": "6 hop-powered logic banks and 6 hops in EVERY configuration, so k=1/2/3/no-restore are apples-to-apples at equal logic depth and equal hop count. k=1 -> 6 segments (6 reservoirs, 6 restores); k=2 -> 3 segments; k=3 -> 2 segments; no-restore control k=inf -> 1 segment (1 reservoir, 1 restore = the input buffer only, 6 banks in one chain).",
+  "no_buffering_WITHIN_a_segment": "bank N's output net IS bank N+1's input net inside a segment -- the same net, no buffer, latch, flop or level shifter. Netlist proof will be pasted.",
+  "data_pattern": "is_hi(j,i) = (i+j)%2==1 on the GLOBAL bank index j, unchanged across restores because the restoring stage is NON-inverting. Every bank therefore has 4 pull-UP and 4 pull-DOWN cells at every stage, as in chain3/skip4.",
+  "schedule": "ADJACENT (primary, per the ask). Segment s's hops close at t_s + (0..k-1)*T. Segment s's last bank's stage boundary = its hop close + T. The next segment's data is valid t_res later, so t_{s+1} = t_s + k*T + t_res. Amortised time per logic stage = T + t_res/k, which is the quantity the economics turns on.",
+  "boundary_convention": "bank j's stage boundary = min(close_j + T, close_{j+1} - EDGE) where close_{j+1} is the hop that DRAINS bank j; for the last bank of a segment (never drained) it is close_j + T. Inherited from skip4 schedule(), strict form."
+ },
+
+ "RESTORING_STAGE_pre_stated": {
+  "form_CHOSEN": "a CMOS INVERTER PAIR (buffer) per data bit, transistor level, in the chain deck itself -- not a behavioural stand-in.",
+  "devices": "sg13_lv_pmos w=1.12u / sg13_lv_nmos w=0.74u l=0.13u -- the campaign standard cell geometry, VERBATIM the same devices as a bank cell.",
+  "loads": "CL 2 fF on the inverter-pair's internal node and 2 fF on its output node, so each of its two inverters carries exactly a bank cell's load (one successor gate + 2 fF). Its measured stage delay is therefore directly the full-rail CMOS level time for this same logic, which is also what the CMOS comparator needs.",
+  "supply": "a dedicated always-connected ideal source VRES at dV = 1.2 V, with the pMOS BULK on VRES (not on any bank rail). Metered by its own 1F integrator on -I(VRES), which is non-degenerate because VRES is never disconnected (chain3 A4's aborting integrator was a 0 V source feeding an OPEN circuit).",
+  "reasons": [
+   "(1) it is the campaign's own cell geometry verbatim, so its energy is directly comparable to the MEASURED CMOS inverter 10.0831 fJ per hi+lo cycle at 1.2 V / 2 fF, and its load matches a bank cell's load exactly;",
+   "(2) a PAIR preserves polarity, so the alternating data pattern and the is_hi convention carry across a restore unchanged and no bank's expected pattern has to be re-derived per k;",
+   "(3) full-rail supply plus its own bulk is precisely WHAT MAKES IT RESTORING: its output level is referenced to the fixed supply, not to a bank rail that the next hop drains, which is the exact mechanism both prior chain studies identified as the failure."
+  ],
+  "costs_I_WILL_COUNT_not_hide": [
+   "its own DRIVE: two 1.12u/0.74u inverters per bit, with real 2 fF loads, driving a real bank's 8 gate inputs -- measured latency, not assumed to be a gate delay;",
+   "its own SUPPLY: it draws from a fixed full-rail supply every beat at full swing. Counted as supply charge and energy on VRES.",
+   "what the deck still IDEALISES and I will say so: VRES has zero source impedance and no supply network, and the sg13_lv shim has no junction capacitance -- both make the restoring stage look CHEAPER and FASTER than silicon.",
+   "a HALF-restore (single inverter, which inverts) is priced too, from the same deck's internal node, so a reader can buy the cheaper form."
+  ]
+ },
+
+ "ACCEPTANCE_pre_stated": {
+  "A1_PRIMARY": "EVERY gate in EVERY bank of a segment reaches >= 90.0% settling at that bank's OWN stage boundary. Reported PER GATE PER BANK, never aggregated, for every bank of every segment.",
+  "settling_convention": "committed, verbatim: pull-DOWN cell (input HIGH) pct = 100*(1 - V(o)/rail_j); pull-UP cell (input LOW) pct = 100*(V(o)/rail_j); rail_j = V(rail j) at that same boundary instant.",
+  "A2_pattern_guard": "pull-DOWN output <= 0.10*rail_j and pull-UP output >= 0.50*rail_j, every gate.",
+  "A3_cliff": "every hop-charged rail >= 0.60 V absolute at its own boundary (device-Vt functional floor). Reported; A1+A2 decide PASS.",
+  "A4_instrument": "|I(L)| at each hop's own opening instant <= 1.0 uA (true ZCS), and the path identity EAN - ESW - ER = 0 within 0.02 fJ at each hop's own zero.",
+  "PASS_definition": "PASS(k) = A1 and A2 over ALL 6 banks. A failing bank is named with its position WITHIN its segment, because that position is the mechanism.",
+  "MAX_K_definition": "the largest k in {1,2,3} with PASS(k) true. If none, max k does not exist and I will say so plainly.",
+  "no_goalpost_moves": "settling is read at the bank's own stage boundary, against the INSTANTANEOUS rail, with the +1.0 ps FIND lag applied. Eventual (end-of-tail) settling is also reported but NEVER used for acceptance."
+ },
+
+ "EXPECTATION_pre_stated_DERIVED_to_be_tested_not_trusted": {
+  "max_k_PREDICTION": 1,
+  "k1": "PASS. k=1 is structurally the committed single hop: a fresh reservoir hops into one bank whose inputs are clean full-rail levels from a restoring stage. The committed single hop settles 8/8 at 100% eventual with t_level(90%) = 123.443 ps MEASURED at L=15/W=30/dV=1.2. My k=1 differs only by carrying the mandatory source-side switch triple on the reservoir node, which ADDS capacitance, so I expect the same pass with a LONGER hop zero and a somewhat longer level time.",
+  "k2": "FAIL, at position 2 within the segment. Bank 2's inputs are bank 1's outputs, and bank 1's rail is drained by the very hop that charges bank 2 -- chain3's bank-3 mechanism exactly (a predecessor HIGH referenced to a rail the hop drains, stranded at ~|Vtp| = 0.336-0.455 V MEASURED, never higher). chain3 measured a hard ceiling of 77.61% at that position over 20 operating points spanning 93x in L. Expected worst-gate settling at position 2: 60-80%.",
+  "k3": "FAIL, at positions 2 and 3, monotonically worse with position.",
+  "what_would_make_k2_pass_and_why_I_doubt_it": "a fresh per-segment pre-charge stops droop ACCUMULATING, so bank 1's rail starts from the full reservoir level rather than from an already-drooped predecessor. That raises the delivered rail at position 2 relative to chain3's bank 3. But chain3's bank 2 -- reading a predecessor at a HIGHER rail (1.2 V head) than my position-1 bank will hold -- still only reached 84-93% pull-DOWN free-running and 99.98/84.26 with top-up, i.e. it never cleared 90% on BOTH groups. So I expect position 2 to land in the 80s at best.",
+  "if_k1_is_the_only_workable_spacing_I_will_say_so_plainly": "it would mean QAL cannot form an unbuffered pipeline on this node: every logic bank would need its own restoring buffer AND its own pre-charge, the 'no buffering' property is conceded in full, and the register-tax advantage largely evaporates because the per-stage overhead stops being zero. That is a real architectural finding and I will report it as the headline rather than hunt for a configuration that rescues k>=2.",
+  "SECOND_pre_stated_risk_independent_of_restoration": "both prior studies show the PULL-UP group is rate-bound on the delivered rail (|Vsg| - |Vtp| is only ~0.2 V at a 0.65 V rail; skip4 MEASURED bank-2 pull-up 32.5% at T=120 ps rising only to 77.8% at T=300 ps). If that rate limit binds even at position 1 with clean restored inputs, then NO k passes and the finding is about the level time, not about restoration. I pre-state this alternative now so that it cannot be presented later as the same result."
+ },
+
+ "MEASUREMENTS_pre_stated": {
+  "M1_max_k": "per-gate per-bank settling for k = 1, 2, 3 and the no-restore control, at a GENEROUS beat period first (T = 300 ps) so that a k failure cannot be confused with a rate failure, then the beat sweep below.",
+  "M2_beat_period": "for the maximum workable k, sweep T downwards to find the smallest T with A1+A2 true, MEASURED. Grid: T in {130, 160, 200, 250, 300} ps, refined by bisection to +-10 ps if a pass exists.",
+  "M3_restore_latency": "t_res MEASURED in a dedicated deck: input edge to output crossing, 50% and 90% referred, for the PAIR and for the single inverter (internal node), driving a real bank's 8 gate inputs plus 2 fF. NOT assumed to be a gate delay.",
+  "M4_precharge": "per-segment pre-charge charge and energy MEASURED on a dedicated metered source charging the 35.979 fF reservoir from 0 to dV through the head gate: Q_pre, E_supply = dV*Q_pre, E_stored = the reservoir's own static stored energy, E_dissipated = the difference.",
+  "M5_energy": "per-hop energy ledger (source out, destination in, series R, switch block, gate drive) per hop, plus restore-stage supply energy on VRES, plus per-bank gate burn. Blended fJ per gate as a function of k = (E_pre/k + E_restore/k + E_hop_loss + E_gate_burn) per bank per bit, with every term labelled MEASURED / DERIVED.",
+  "M6_limiting_device": "which group (pull-UP or pull-DOWN) and which device binds at each position within a segment, and whether restoration removes the ~78% asymptote or only pushes it out. Decided by comparing position-1 banks (clean restored inputs) against position-2/3 banks (degraded inputs) at the SAME beat period in the SAME deck."
+ },
+
+ "ECONOMICS_pre_stated_formulas_so_they_cannot_move": {
+  "QAL_amortised_stage_ps": "T_min + t_res/k   (the level time plus the restoring stage's latency amortised over the k banks of its segment)",
+  "CMOS_pipelined_stage_ps": "t_reg + t_level_CMOS + unc, with t_reg = 307.1 / 335.7 / 390.0 ps MEASURED by OpenSTA on the vendor liberty with sg13g2_dfrbpq_1 at 0 / 6.91 / 20 fF (liberty is 1.11-1.21x OPTIMISTIC vs the transistor-level CLK->Q 258.9-302.25 ps, so t_reg is a LOWER bound), t_level_CMOS = 151.0 ps committed worst CMOS level (cross-checked against my own MEASURED inverter delay from M3), and clock uncertainty carried as NAMED corners unc = 250 (flow) / 100 (tree) / 0 (ideal) ps.",
+  "headline_ratio": "CMOS_pipelined_stage_ps / QAL_amortised_stage_ps at the measured maximum k, reported for all three t_reg loads x all three named uncertainty corners -- a band, never one number. This replaces the 1.5-4.7x streaming figure, which assumed no restoration.",
+  "energy_blend": "blended fJ/gate(k) as in M5, against the MEASURED CMOS inverter 10.0831 fJ per hi+lo cycle at 1.2 V / 2 fF and against a settling gate's ~1 fJ.",
+  "UNTOUCHED": "the energy EXCLUSION verdict (complete timer ledger 23.213 fJ/bank/hop vs a pre-stated 12.7467) is NOT reopened by this study and is NOT affected by it: it is about the switch TIMING hardware, not about restoration. Restated in the results."
+ },
+
+ "SIM_DISCIPLINE_pre_stated": {
+  "cache": "PYMS_VAE_CACHE owned by this directory only: scratchpad/vae_cache_restore5",
+  "concurrency": "at most 4 concurrent heavy Xyce jobs (16-core box shared with other workflows)",
+  "runtime": "target < 4 min per deck; any deck that exceeds it is reported with its wall time rather than silently trimmed",
+  "zeros": "the true current zero is RE-PROBED per hop in every configuration (the analytic pi*sqrt(LC) read 266.76 ps against a MEASURED chain hop-1 zero of 353.79 ps, 33% early -- analytic zeros are never used)",
+  "module_names": "unique .va module names; no shared shell cache"
+ }
+}
