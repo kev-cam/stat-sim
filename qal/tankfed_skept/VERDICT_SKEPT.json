@@ -1,0 +1,179 @@
+{
+  "_doc": "Skeptic verdict, qal/tankfed_skept. Every number below was produced by a Xyce run issued in this directory under PYMS_VAE_CACHE=.../vae_cache_tfskept (own cache, nothing copied in). Pre-registration SKEPTIC_PRE.json sha256 51bc163654bdf95719e7638bc811cfb2a7401b3bb5f99c21c960d07844d6f72a, 7961 B, mtime 2026-09-29 11:38:17.758 -0700, sole file in the directory at that instant.",
+
+  "S1_instrument_anchors": {
+    "verdict": "PASS, digit-checked, from md5-verified byte-identical deck copies",
+    "t_hop_ps": 65.4950098236746, "t_hop_expected": 65.49500982344826, "rel": 3.46e-12,
+    "VBEND": 0.7138163, "VBPK": 0.8368896, "rel_VBEND": 0.0, "rel_VBPK": 0.0,
+    "IZ_uA": -0.0004958676,
+    "skiptu_free_max_LOW_V": 0.438143, "skiptu_clamp_max_LOW_V": 0.551708,
+    "skiptu_attributable_damage_mV": 113.56499999999997, "err_mV": 2.8e-14,
+    "note": "tankfed's INSTRUMENT.json is fully reproduced. Its instrument is sound."
+  },
+
+  "S2_coupling": {
+    "destination_effect_reproduced": true,
+    "amplitude_step_at_logic_node_mV": {
+      "uniform_m6_bank3": {"bank": 31.574, "tank": 31.083, "delta_pct": 1.6},
+      "uniform_m2_bank3": {"bank": 49.623, "tank": 49.476, "delta_pct": 0.3},
+      "matched_m2_bank3": {"bank": 52.043, "tank": 51.857, "delta_pct": 0.4},
+      "uniform_m6_bank4": {"bank": 57.012, "tank": 57.611, "delta_pct": -1.1},
+      "uniform_m2_bank4": {"bank": 102.654, "tank": 102.828, "delta_pct": -0.2},
+      "matched_m2_bank4": {"bank": 249.015, "tank": 247.874, "delta_pct": 0.5}
+    },
+    "rate_at_logic_node_V_per_ns": {
+      "uniform_m6_bank3": {"bank": 27.80, "tank": 4.33, "factor": 6.42},
+      "uniform_m2_bank3": {"bank": 32.50, "tank": 10.72, "factor": 3.03},
+      "matched_m2_bank3": {"bank": 37.60, "tank": 20.12, "factor": 1.87},
+      "uniform_m6_bank4": {"bank": 20.79, "tank": 4.07, "factor": 5.11}
+    },
+    "THE_MISSING_CONTROL_notank": {
+      "step_at_logic_bank3_mV": {"notank": 79.035, "uniform_m2": 49.623, "uniform_m6": 31.574,
+                                 "attenuation_notank_to_m6": 2.50},
+      "step_at_logic_bank4_mV": {"notank": 319.912, "uniform_m2": 102.654, "uniform_m6": 57.012,
+                                 "attenuation_notank_to_m6": 5.61},
+      "self_lift_topped_bank3_mV": {"notank": 352.391, "matched_m2": 252.570,
+                                    "uniform_m2": 70.342, "uniform_m6": 44.453,
+                                    "attenuation_notank_to_m6": 7.93},
+      "finding": "Tank SIZE attenuates the switched clamp's step at a logic node by 2.50x (bank 3) to 5.61x (bank 4) and its self-lift by 7.93x. tankfed's claim that 'a switched clamp is a VOLTAGE source ... so tank size cannot attenuate it' is REFUTED. Its own COUPLING_m2/m6 tables already show 1.57x-1.80x between m=2 and m=6; it read the <=1.6% figure across DESTINATIONS and generalised it to SIZE."
+    },
+    "booking_test_finite_reservoir_1pF": {
+      "step_at_logic_bank3_mV": {"ideal_bank": 31.574, "res_bank": 29.106,
+                                 "ideal_tank": 31.083, "res_tank": 28.720},
+      "rail3_clamp_V": {"ideal_bank": 0.6726, "res_bank": 0.6613},
+      "finding": "the ideal dV source inflates the clamp's logic-node step by 8.5% at C_res = 1 pF. The destination null survives with a real source (1.3%). The booking is real, second-order at this reservoir size, and bounded."
+    },
+    "A1_verdict": "FAILS everywhere. Best tank-destination step at a logic node = 28.720 mV against the +7.0 mV bar (4.1x over)."
+  },
+
+  "S3_buck": {
+    "sign_reference_arm_R": {"Qdel_over_Qsup": 1.0000, "q_del_fC": 46.280, "q_sup_fC": 46.280,
+      "note": "a resistor from the same supply through the same meter into the same destination. Predicted a priori q_del = q_sup > 0. MEASURED exactly 1.0000. The instrument's sign and magnitude are validated; the negative ratios in the buck arms are the circuit."},
+    "meter_vs_independent_trapezoid_rel": "<= 8e-4 in every arm",
+    "IZ_at_cut_uA": "|IZ| <= 0.39 in every buck arm (passes the <1 uA gate)",
+    "Qdel_over_Qsup_reproduced": {
+      "A_early": -0.0124, "B_early": -0.0659, "C_early": -0.0657, "D_early": -0.0637,
+      "A_bbm": -0.4777, "B_bbm": -1.1895, "C_bbm": -1.1920, "D_bbm": -1.1708,
+      "note": "reproduces tankfed's eight arms to 4 significant figures."
+    },
+    "THE_DECISIVE_MEASURE_node_voltage": {
+      "peak_excursion_above_start_mV": {"A_early": 60.59, "B_early": 0.82, "C_early": 0.00,
+                                        "D_early": 0.00, "A_bbm": 0.00, "B_bbm": 0.00,
+                                        "C_bbm": 0.00, "D_bbm": 0.00},
+      "final_excursion_mV": {"A_early": -9.52, "B_early": -8.81, "C_early": -8.79,
+                             "D_early": -9.98, "A_bbm": -148.42, "B_bbm": -60.45,
+                             "C_bbm": -60.49, "D_bbm": -69.71},
+      "finding": "In seven of the eight arms the destination NEVER rises above its starting voltage at ANY instant. Node voltage cannot be fooled by switch channel charge. tankfed's conclusion stands: the committed pulsed top-up is a net sink, and it is a sink into a BARE CAPACITOR with no cells at all, so the defect is the CONVERTER, not the load."
+    },
+    "two_rehabilitating_hypotheses_I_TESTED_AND_REFUTED": [
+      "H1 'the converter delivers, the metering window just runs past the cut': charge through I(VMTU) is +26.2 fC by the cut and -27.2 fC after it (arm A early). REFUTED -- that current is the OUT transmission gate's own channel charge cycling; the destination node is already 9.9 mV BELOW its start AT the cut, and ends within 0.4 mV of where the cut left it.",
+      "H2 'the OUT switch fails to disconnect': REFUTED -- |IZ| <= 0.39 uA at the cut and the node's final value is within 0.4 mV of its value at the cut. The loss is incurred entirely DURING conduction."
+    ],
+    "mechanism_correction_that_DOES_survive": {
+      "evidence": "node voltage, uncontaminated by channel charge",
+      "A_bbm_node_trajectory_V": "0.76588 start -> 0.36439 minimum (~346 ps, during OUT-close/HS-on) -> 0.58088 at the cut",
+      "D_bbm_node_trajectory_V": "0.76588 -> 0.68120 minimum at 352.06 ps -> 0.69620",
+      "finding": "the destination is DISCHARGED during the OUT-close and HS-on phases and PARTIALLY RECOVERED during the freewheel. tankfed attributes the reverse conduction to 'the freewheel conducting past its true zero'; on the node-voltage evidence the freewheel is the only phase that delivers. A fix belongs at the OUT-switch closing sequence, not at the freewheel cut."
+    },
+    "load_dependence": "Qdel/Qsup at the same settings: bank-only -0.0124 vs bare-tank -0.0637 (early), -0.4777 vs -1.1708 (bbm). tankfed writes that arm D 'behaves identically ... to arm A'. It does not: the net differs 5.1x / 2.45x. The underlying forward and reverse charges differ by only 3-16%, and the net is their near-cancelling difference, so the 5x is a small-difference-of-large-numbers effect -- but the direction is real and unfavourable: a bigger tank lets the reverse phase steal 16% more charge (bbm).",
+    "framing": "Qfwd/Qsup reaches 2.13 in the bbm arms, ABOVE the 1.566 'ideal DCM buck' bound. This circuit is a resonant LC transfer, not a DCM buck (L/R = 100 ps against a 24 ps on-time), so 1.566 is not the applicable yardstick."
+  },
+
+  "S4_settling_and_value": {
+    "NETLIST_DEFECT_found": {
+      "what": "the committed extractor labels a cell pull-down/pull-up from the parity rule is_hi(k,i) = ((i+k) odd). Where a bank is WIDER than its predecessor the fan-out modulo breaks that rule. In PROFILE [48,19,3,1,2] there is exactly one such cell: bank 5 cell 1.",
+      "netlist_proof": "XP5_0 o5_0 o4_0 ... and XP5_1 o5_1 o4_0 ... -- BOTH bank-5 cells read o4_0, so both are pull-downs. The parity rule calls cell 5_1 a pull-up.",
+      "consequence": "the committed value check registers exactly 1 failure at bank 5 in EVERY row, by construction, whatever the physics does. Observed in all 12 committed rows (value_fail_by_stage = [.,.,.,.,1]) and reproduced by my rule-label column in all 18 of mine.",
+      "what_it_invalidates": "tankfed's 'banks 4 and 5 carry value_fail in every row, i.e. the deepest two stages settle to the WRONG SIDE'. With netlist-true labels bank 5 PASSES the value check in every row of mine, and bank 4 passes in 8 of my 18 rows. In the matched and notank-clamp and uniform-m2-clamp rows the value check is [0,0,0,0,0] -- EVERY GATE COMPUTES THE CORRECT VALUE AT EVERY DEPTH.",
+      "secondary": "the same mislabel sizes bank 5's tank: C_bank5 = 8.2309 fF in COST.json (1 down + 1 up) against my netlist-true 4.9695 fF (2 down). The matched tank at bank 5 is 1.66x oversized, which is why my hop-4 zero reads 98.16 ps against their 100.0 ps."
+    },
+    "the_real_negative_is_the_GUARD_not_the_VALUE": {
+      "observed": "guard_fail = [0,0,2,*,*] in EVERY arrangement including no tank at all",
+      "mechanism_measured": "matched/bank/clamp, bank 3: the two pull-down cells read Vg = 0.49224 / 0.49396 V at their own boundary against the MEASURED Vtn = 0.5239 V -- 32 and 30 mV BELOW threshold, drive -0.0317 / -0.0299 V. Their nMOS never conducts. Their outputs (0.258 / 0.317 V) sit below half-rail and therefore PASS the value check -- by not being pulled up, not by being pulled down. This is exactly the predecessor's-stranded-HIGH device constant the record already owns, and neither the tank, nor its sizing, nor the top-up's destination touches it.",
+      "bank5_guard": "fails (both cells, drive -0.21 V) whenever the rail is low, PASSES (drive +0.0599 V) in matched/clamp where rail5 = 0.8668 V. So bank 5 does compute when the rail is lifted."
+    },
+    "separation_by_depth_mV": {
+      "bank1": "1236.81 - 1270.53 (192-197 sigma)",
+      "bank2": "737.05 - 959.35 (114-149 sigma)",
+      "bank3": "181.41 (uniform m=6 free) - 737.04 (matched m=2 free) = 28.2 - 114.4 sigma",
+      "bank4_bank5": "UNDEFINED / DEGENERATE -- bank 4 has one gate, bank 5's two gates are electrically identical. My extractor refuses to emit a number rather than emitting 0.0.",
+      "A3_verdict": "NOT TESTABLE at depth >= 5 on this profile. Confirmed.",
+      "note": "no tank gives 3.2x better depth-3 separation than a uniform m=6 tank (584.28 vs 181.63 mV free); matched gives 4.1x (737.04 mV)."
+    },
+    "A2_cliff": {
+      "my_rows_passing": ["matched bank clamp", "matched tank clamp", "notank bank clamp",
+                          "uniform m=2 bank clamp", "uniform m=2 tank clamp"],
+      "finding": "tankfed states 'A2 (rail held) -- FAILS. The 0.600 V absolute cliff is missed at bank 5 in every row'. Its OWN extractor's cliff_pass field is True in 4 of its 12 rows (all four m=2 clamp rows: bank-5 rails 0.6383 / 0.6383 / 0.8333 / 0.8323 V, all above 0.600). The narrative contradicts the data, in the pessimistic direction."
+    }
+  },
+
+  "S5_matching": {
+    "C_bank_fit_MEASURED_independently": {
+      "C_pulldown_cell_fF": 2.4848, "C_pullup_cell_fF": 5.7465,
+      "tankfed": {"a": 2.4858, "b": 5.7451}, "agreement": "0.04% / 0.02%",
+      "C_bank_fF_netlist_true": {"1": 197.549, "2": 79.828, "3": 10.716, "4": 5.747, "5": 4.970}
+    },
+    "voltage_dependence_NEW": {
+      "C_bank_M48_fF": {"at_0.7138V": 197.550, "at_0.45V": 160.446, "delta_pct": -18.8},
+      "C_bank_M19_fF": {"at_0.7138V": 76.564, "at_0.45V": 63.129, "delta_pct": -17.5},
+      "finding": "the matching rule is matched at ONE voltage. The deep banks run at 0.26-0.50 V where the bank is 18-19% smaller, so C_tank/C_bank there is ~19% above nominal. An un-measured term in the committed matching rule, now bounded."
+    },
+    "per_hop_collapse_spread_free_rows": {"uniform_m2": 1.2005, "uniform_m6": 1.2211,
+      "matched_m2": 1.3188, "notank": 1.3681,
+      "A8_verdict": "FAILS for all (best is 20 pp against the 2 pp bar). Uniform is the most uniform; matched is intermediate; NO TANK is the worst."},
+    "hop_time_spread_MEASURED": {"uniform_m6": 1.3233, "uniform_m2": 1.4202,
+      "notank": 1.6942, "matched_m2": 2.2503, "matched_m6": "NO CURRENT ZERO on hop 1",
+      "tankfed": {"uniform_m6": 1.323, "uniform_m2": 1.419, "matched_m2": 2.209},
+      "A9_verdict": "FAILS at every sizing INCLUDING no tank at all (1.6942 > 1.10). Per-bank L is a requirement of the bare chain, not something tanks introduce."},
+    "matched_m6_no_operating_point": "CONFIRMED independently: hop 1 has no current zero out to 1600 ps; forward peak 3.339 mA against tankfed's 3.3388 mA (4 digits).",
+    "L_span_ARITHMETIC_CORRECTION": {
+      "tankfed_claim": "per-bank inductors from ~15 nH to ~250 nH (from the DERIVED 16.8x C_ser span)",
+      "correct_from_MEASURED_hop_times": "L must scale as 1/C_ser, and C_ser from measurement scales as t_zcs^2. matched m=2: (220.89/98.16)^2 = 4.88x -> 15 to 73 nH. uniform m=6: (255.01/192.71)^2 = 1.75x -> 15 to 26 nH. notank: 2.87x -> 15 to 43 nH.",
+      "why_they_differ": "the DERIVED C_ser span ignores the fixed per-bank overhead (switch drain, wiring) that dominates the small banks and compresses the real span. The measured hop times are the authority; the quoted 250 nH is 3.3x too large."
+    },
+    "R_crit_ceiling_CORRECTION": {
+      "tankfed": "C_ser < 4L/R_late^2 ~ 430 fF, 'which caps m at ~3.4 on a 48-gate bank'",
+      "check": "the ceiling binds on C_ser, and C_ser is dominated by the SMALLER node. Hop 1 at matched m: C_ser = (1+m) * 197.55*79.83/(197.55+79.83) = (1+m)*56.85 fF. Setting that below 427 fF gives m < 6.5, not 3.4. The 3.4 comes from applying the per-node figure (~860 fF, which assumes EQUAL nodes) to the largest node. The measured no-zero at m=6 is consistent with m_crit just above 6."
+    }
+  },
+
+  "S6_cost_and_bookings": {
+    "tank_not_booked": "CTK is a real capacitor, RTK a real 2 ohm resistor, touched by no cell. Verified in the netlist.",
+    "topup_switch_gate_charge_counted": "yes -- egtu_k integrates the clamp's two gate sources (and all four of the buck's). Verified in tf.py.",
+    "cap_density_1.5_fF_per_um2": "MEASURED, confirmed: .param cap_carea = 1.5E-15 in ihp-sg13g2/libs.tech/ngspice/models/cornerCAP.lib (0.9x/1.1x at the CAP corners).",
+    "IDEAL_sources_the_reported_rows_depend_on": [
+      "VDV 1.2 V -- feeds BOTH the chain head pre-charge AND the switched clamp. LOAD-BEARING for the amplitude claim; quantified at 8.5% with a 1 pF reservoir.",
+      "VHI 1.5 V pMOS well tie -- uncosted; carries no DC current with ad/as/pd/ps zeroed.",
+      "VI1_* bank-1 inputs -- ideal, the boundary, stated.",
+      "every PWL gate drive -- ideal; the gate CHARGE is metered, the cost of GENERATING the PWL is not. Labelled a lower bound: correct."
+    ],
+    "UNCOSTED_terms_named": [
+      "the head pre-charge gate drive (5x10 um nMOS + 3x20 um pMOS = 110 um of gate) is metered NOWHERE in tf.py -- `egt` covers only the four hop transfer gates. It cancels in the attributable (topped-minus-free) top-up figure so it does not corrupt that number, but it is absent from COST.json's LABELS. I meter it as `ehd`.",
+      "on-chip nH-class inductor area and Q -- correctly declared NOT COSTED, a BOUND.",
+      "the 5 um^2/cell figure behind '73 cells = ~365 um^2 of logic' and therefore behind 'the m=6 tank is ~3.3x the logic area' -- appears nowhere in COST.json, has no stated provenance, and is not labelled. An unlabelled ASSUMED number carrying a headline cost claim.",
+      "cmim is an upper-metal capacitor and can be laid over logic, so tank area is not necessarily additive to the floorplan. Not stated."
+    ],
+    "energy_framing_correction": {
+      "tankfed": "'the top-up costs ~10x the loss it repairs' (199.5 fJ drawn vs 17.6 fJ hop I2R)",
+      "my_decomposition_uniform_m6_bank": {"E_drawn_fJ_BOUND": 198.702,
+        "E_stored_on_topped_nodes_fJ": 87.307, "E_irrecoverable_fJ": 111.395,
+        "hop_I2R_free_fJ": 17.443, "hop_I2R_topped_fJ": 20.553},
+      "my_decomposition_uniform_m6_tank": {"E_drawn_fJ_BOUND": 200.676,
+        "E_stored_fJ": 88.291, "E_irrecoverable_fJ": 112.385},
+      "finding": "the comparison is drawn-vs-dissipated. 44% of the drawn energy ends up STORED on the topped nodes and is recoverable in principle by the same resonant machinery the architecture already uses. The irrecoverable part -- the clamp's own non-adiabatic 1/2 C dV^2 burn -- is 111.4 fJ, i.e. 6.4x the hop I2R it compensates, not 10x. It is destination-independent to +0.9%."
+    },
+    "one_node_change_claim": "tankfed's netlist_proof says 'one node changes between the two arms, nothing else'. A diff of its own two decks shows the injection node AND every probed hop zero differ (749.289 vs 749.31 ps, 1082.4 vs 1082.43, 1413.53 vs 1413.54) because the zeros were re-probed per arm. The differences are <= 0.03 ps out of ~209 ps (1.4e-4), so the <= 2.3 mV rail difference between destinations is within re-probe noise -- which STRENGTHENS the 'the destination costs nothing' conclusion rather than weakening it, but the claim as written is not literally true."
+  },
+
+  "S7_IZ_hygiene": {
+    "free_rows": "all pass, |IZ| <= 0.45 uA on all four hops",
+    "clamp_rows": "all FAIL on hops 3 and 4 (33.6 - 168.6 uA), reproducing tankfed's A11 exactly",
+    "hop2_clean_in_every_row": "|IZ| <= 0.40 uA -- bank 3's charging hop, so the headline coupling measurement is unaffected",
+    "consequence": "bank-4 and bank-5 rails in every clamp row carry this caveat, mine included"
+  },
+
+  "PROCESS": {
+    "cross_workflow_pgrep_trap": "my warm-chain wait loop used `pgrep -f \"Xyce warm[.]cir\"` and matched ANOTHER workflow's identically-named deck in qal/sha256, so it never exited. Cost ~8 minutes. This is a cousin of the recorded pkill self-match trap: not self-matching, CROSS-WORKFLOW matching on a generic deck name. Killed by PID and the second warm run directly.",
+    "concurrency": "<= 4 concurrent heavy Xyce jobs throughout; geometries warmed sequentially in one deck before any parallel run; own cache, nothing copied in."
+  }
+}

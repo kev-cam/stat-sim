@@ -1,0 +1,124 @@
+{
+  "_doc": "qal/tankfed -- THE DESTINATION-AND-MATCHING RUN. The user's refinement: 'The tank can be tuned to match its bank, and the top-up can feed it rather than the bank.' A 2x2 (top-up DESTINATION bank|tank x tank SIZING uniform|per-bank-matched) run on a chain whose banks carry the REAL sha_slice size profile, plus a sweep of the matching multiplier m. Written BEFORE any deck is built or run in this directory. This file is the ONLY file in /usr/local/src/stat-sim/qal/tankfed at the moment it is written.",
+  "date": "2026-09-29",
+  "written_at_local": "2026-09-29T09:0x-07:00 (mtime on disk is authoritative)",
+  "workdir": "/usr/local/src/stat-sim/qal/tankfed",
+  "own_cache": "PYMS_VAE_CACHE=/tmp/claude-1001/-usr-local-src/4921ad0c-f17b-4b84-986a-5917c9ebd2a6/scratchpad/vae_cache_tankfed -- MY OWN. Nothing copied in from any sibling (copying a VAE cache is the shell-cache poisoning trap the record already root-caused).",
+  "reads_not_writes": "qal/skiptu, qal/ptu, qal/ptusk, qal/skip4, qal/lsweep, qal/chain3, qal/vtaudit are READ-ONLY from here. qal/banktank and qal/buckfix and qal/resv and qal/tsweep are SIBLING RUNS IN FLIGHT -- nothing in this run reads their results as an input or writes into them. My contribution is the DESTINATION and the MATCHING; banktank owns per-bank tanks with top-up to the BANK at uniform sizing.",
+
+  "THE_TWO_FAILURES_THIS_ADDRESSES_as_stated_in_the_brief": {
+    "F1_step_coupling": "topping up the BANK RAIL damages the feeding stage: the switched clamp drove stage 2's pull-DOWN outputs up by +113.6 mV (attributable = topped minus free), because the rail's step couples through the load cells' own gate capacitance. The rail is a SIGNAL-PATH node.",
+    "F1_anchor_on_disk_MEASURED": "qal/ptu/EXISTING.json, s4/T200/dV1.2: free stage-2 max_LOW_V = 0.438143 V, clamp (rtu) stage-2 max_LOW_V = 0.551708 V -> +113.565 mV. Topped rail3 at its boundary: free 0.765884 V, clamp 1.069085 V.",
+    "F2_buck_could_not_drive_the_bank": "the pulsed-inductor top-up measured Qdel/Qsup = 0.058 (a ~16x charge DIVIDER where an ideal DCM buck from 1.2 V into a 0.77 V rail gives Vin/Vout ~ 1.566 GAIN) and left the rail BELOW the no-top-up control (0.671-0.739 V vs 0.766 V). qal/buckfix is auditing whether that is an implementation defect. I do not depend on its answer; I measure the same ratio with the TANK as the load and report the pair.",
+    "the_proposal_removes_both_BY_CONSTRUCTION_and_that_is_what_I_measure": "the tank is not a signal-path node; it is large so the same injected charge makes a smaller step; whatever step survives is attenuated on its way to a logic node."
+  },
+
+  "ARCHITECTURE_AS_I_WILL_BUILD_IT_stated_before_any_deck_so_it_cannot_be_reshaped_later": {
+    "chain": "5 banks, UNBUFFERED. Bank 1's 8-equivalent inputs are ideal DC sources; for k>1, gate i of bank k reads literally o{k-1}_{i mod M_{k-1}} -- the predecessor's output net. No flop, latch, buffer or level shifter anywhere. Where M_k > M_{k-1} the predecessor's outputs FAN OUT (a real size profile does this); no buffer is inserted.",
+    "bank_sizes_M": [48, 19, 3, 1, 2],
+    "why_these_sizes": "every entry is drawn from the REAL sha_slice bank profile 48/22/19/3/2/4/2/3/1/1. They span the full 48:1 spread and include the 48-gate and the 1-gate bank the matching question is about. The 1-gate bank is placed at depth 4 and a 2-gate bank at depth 5 so that intra-level HIGH/LOW separation remains DEFINED at depth 5 (a 1-gate level has no intra-level separation by construction). The real profile is itself non-monotonic (3,2,4,2,3,1,1), so a non-monotonic order is faithful, not contrived.",
+    "cell": "committed VERBATIM: sg13_lv_pmos w=1.12u / sg13_lv_nmos w=0.74u, l=0.13u, CL 2 fF per output, supply AND pMOS bulk on the bank node rail_k, nMOS source/bulk on the bank's 0 V ground meter gn_k.",
+    "hops": "adjacent schedule, hops 1->2, 2->3, 3->4, 4->5. Transfer switch = tg15p: TG 10/20 um + 2 um park, on BOTH the source side and the destination side (the chain3 'source-side cut is mandatory' finding), L = 15 nH, RS = 10 ohm. Committed verbatim.",
+    "TANK": "bank k carries a tank capacitor CTK_k from node ntk_k to ground, strapped to rail_k by an explicit series resistance RSTRAP (a metal strap, NOT an ideal wire). The tank therefore sits in the hop's resonant path, which is why t_hop = pi*sqrt(L*C_ser) scales as sqrt(C_bank) under matched sizing -- exactly as the brief states. The tank is NOT a signal-path node: no cell's supply, bulk, gate or output touches ntk_k.",
+    "RSTRAP_ohm": 2.0,
+    "RSTRAP_label": "ASSUMED. A 2 ohm strap is the same order as the 10 ohm hop series R the committed decks already carry, and is deliberately SMALL so that the strap is not doing the attenuation work by itself -- if a big strap were allowed to filter the step, the result would be about the strap, not about the tank. Swept as a sensitivity at the end if the coupling verdict turns on it.",
+    "TOPUP_destination": "either rail_k (the measured-bad baseline) or ntk_k (the proposal). ONE node changes between the two arms of the primary comparison; everything else is byte-identical.",
+    "TOPUP_forms_BOTH_run": {
+      "clamp_rtu": "the switched clamp to the ideal dV source through a tg15p-sized gate, committed skip4/skiptu 'topup' device verbatim, 20 ps window at the beat start. This is the form that produced the +113.6 mV anchor.",
+      "pulsed_ptu": "the corrected pulsed buck, qal/ptu/chain.py's topup_dev_corrected verbatim in its gate sequence (HS pMOS on early while the LS still clamps na at 0; LS released over a 24 ps slew; OUT switch closes last; OUT opens at the MEASURED freewheel current zero) WITH the mandatory explicit switch-node capacitance CNA. This is the form that produced the Qdel/Qsup = 0.058 number."
+    },
+    "CNA_fF": 8.0,
+    "CNA_label": "ASSUMED (DERIVED central estimate). sg13lv_compat.sp zeroes ad/as/pd/ps, so a buck switch node has no junction capacitance at all unless it is added explicitly; AMENDMENT A6 of the skiptu study makes it mandatory. ~3 um^2 drain at ~1 fF/um^2 per device, two devices, plus ~2 fF wiring.",
+    "topped_banks": [3, 4],
+    "why_banks_3_and_4": "matches the committed study, and leaves bank 2 as an UNTOPPED designated coupling victim -- bank 2 is the direct feeding stage of topped bank 3, which is exactly the stage the +113.6 mV anchor was measured on. Every stage's LOW-lift is reported anyway.",
+    "fire_time": "identical in the bank-destination and tank-destination arms of the primary 2x2 (t_fire = the charging hop's switch-open instant + 6*EDGE, committed). The brief's 'fire during the quiet phase' freedom is tested as a SEPARATE, LABELLED arm, not folded into the primary comparison, because changing two things at once would make the destination effect unattributable."
+  },
+
+  "THE_2x2_PLUS_m": {
+    "factor_1_destination": ["bank", "tank"],
+    "factor_2_sizing": ["uniform", "matched"],
+    "matched_rule": "C_tank_k = m * C_bank_k, with C_bank_k MEASURED per bank size in a dedicated small fixture BEFORE the chain is built (not assumed from a per-cell number).",
+    "uniform_rule": "C_tank_k = C_uniform for every k, with C_uniform = (sum_k m * C_bank_k) / N_banks -- i.e. the SAME TOTAL tank capacitance, hence the same tank area and the same cost, as the matched arm at the same m. This is the only fair uniform control; a uniform tank chosen at some other size would confound sizing with total area.",
+    "m_values": [2, 6],
+    "m_label": "swept. m=2 and m=6 bracket a ~3x range of tank/bank ratio (step attenuation 3x vs 7x). A third value is added only if the two bracket the acceptance boundary.",
+    "dv": {"primary": 1.2, "cross_check": 1.65},
+    "T_beat": "DERIVED per configuration, not fixed: T is set from the MEASURED slowest hop of that configuration (T = 1.25 * max_h t_zcs, rounded up to 10 ps) because matched tanks lengthen the hop by sqrt(1+m) and a T shorter than a hop is not an operating point. T is reported on every row. Comparisons ACROSS configurations at different T are labelled as confounded by T; the coupling measurement is WITHIN a configuration (topped minus free at the same T) and is therefore clean."
+  },
+
+  "ACCEPTANCE_pre_registered": {
+    "A1_coupling_at_a_LOGIC_node": "the attributable damage to the FEEDING stage's pull-DOWN outputs -- max over that stage's pull-down gates of V(o) at its own boundary, topped minus free, same configuration, same T -- BELOW +7.0 mV for the tank destination. +7.0 mV is the best the pulsed bank-fed form achieved (the brief's +7-16 mV band); the clamp's +113.6 mV is the other baseline. This is read at a CELL OUTPUT, never at the injection node.",
+    "A2_rail_held": "delivered rail at every bank's own boundary at least equal to the free control's rail at the same bank in the same configuration, AND at or above the 0.600 V absolute cliff (a device-Vt fact, not a fraction of dV).",
+    "A3_separation": "HIGH/LOW separation min(pull-up outputs) - max(pull-down outputs) within a stage, POSITIVE and >= 6.44 mV at depth >= 5. 6.44 mV is the CORRECTED 1-sigma floor (qal/vtaudit/AUDIT.md: sigma_trip = sqrt((0.4779*5.766)^2 + (0.4630*12.574)^2) = 6.441 mV, composing the per-geometry Pelgrom sigmas of the 1.12 um pMOS and 0.74 um nMOS with measured trip sensitivities). NOT 3.42 mV, which was the sigma of a 10 um transfer gate misapplied to a 0.74 um cell. The peer chain series to beat is 528.68 / 22.89 / 1.52 / 0.122 / 0.010 / 0.001 mV.",
+    "A4_all_gates_correct": "PER GATE, never aggregated, at every stage: (i) settling = V(o)/V(rail_k) for a pull-UP cell and 1 - V(o)/V(rail_k) for a pull-DOWN cell at bound_k; (ii) the VALUE CHECK -- every gate on the correct side of the expected inversion pattern; (iii) the PATTERN GUARD -- a gate only counts as computing if its own gate drive is on the conducting side of the measured device threshold (Vtn 0.5239 V, |Vtp| 0.4403 V). Settling fast to the wrong answer, or to an undisturbed node whose driver is off, is the failure mode this run invites and the guard is what catches it.",
+    "A5_instrument": "BOTH anchors digit-checked in THIS directory under MY OWN cache before any result is reported: (a) the committed robust single-hop point L=15 nH / W=30 um / dV=1.2 -> t_hop 65.49500982344826 ps, VBEND 0.7138163, VBPK 0.8368896, 8/8 cells settled, rel < 1e-6; (b) the skiptu clamp row's attributable stage-2 damage +113.565 mV (free 0.438143 -> clamp 0.551708 V at s4/T200/dV1.2) reproduced within 1.0 mV from decks re-run here. If either fails, nothing else reports.",
+    "A6_ZCS_hygiene": "the TRUE current zero RE-PROBED per L, per hop AND per configuration (tank sizing changes C_ser, so a zero probed at one m is invalid at another); the top-up freewheel zero re-probed PER BANK. |I| at each switch open < 1.0 uA, reported per row; rows that fail the gate are reported and excluded from the verdict, not silently dropped.",
+    "A7_metering": "1F-integrator or INTEG-I(Vsrc)+PARAM ONLY. '.measure INTEGRAL V(<B-source>)' under-reports 11-44% and is not used. Every 1F integrator is t0-referenced at 0.5 ps to remove its pedestal.",
+    "A8_matching": "under matched sizing C_tank_k = m*C_bank_k, the delivered rail at the 48-gate bank and at the 1-gate bank agree within 10 mV (as a fraction of dV: 0.83%), and the per-hop collapse ratio is equal across banks within 2 percentage points. Under uniform sizing I expect them NOT to.",
+    "A9_hop_coherence": "the hop-time spread across the profile, max_h t_zcs / min_h t_zcs, reported for both sizings. A spread above 1.10 means the wave does not stay coherent on one global beat and per-bank L tuning (L proportional to 1/C_bank) is a DESIGN REQUIREMENT; below 1.10 it is not. Stated as a threshold now so it cannot be chosen after the fact."
+  },
+
+  "PRE_STATED_EXPECTATION_with_falsifiers": {
+    "E1_coupling_will_improve_and_by_roughly_the_capacitance_ratio": {
+      "statement": "feeding the tank will reduce the attributable LOW-lift on the feeding stage. The DERIVED first-order prediction, which I write down now so the measurement can refute it: the injected charge Q lands on C_tank + C_bank instead of C_bank, so the step is smaller by (C_tank + C_bank)/C_bank = 1 + m. At m=2 that is 3x (clamp 113.6 -> ~38 mV), at m=6 it is 7x (clamp 113.6 -> ~16 mV). A FURTHER reduction beyond 1+m must come from the strap's RC filtering of the edge and from the tank not being a signal node; if the measurement beats 1+m I will say which of those did it.",
+      "confidence": "HIGH on the direction, MODERATE on the magnitude.",
+      "falsifier": "tank-destination LOW-lift within 20% of the bank-destination LOW-lift at the same m, or larger."
+    },
+    "E2_A1_at_7_mV_is_NOT_expected_to_pass_at_m=2_and_is_borderline_at_m=6": {
+      "statement": "for the CLAMP form I expect A1 to FAIL at m=2 (predicted ~38 mV vs the 7 mV bar) and to remain above 7 mV at m=6 (predicted ~16 mV). For the PULSED form, whose bank-destination damage is already +7-16 mV, I expect the tank destination to pass A1 comfortably. I state this now so a pass on the pulsed form is not dressed up afterwards as a surprise.",
+      "falsifier": "either form landing on the other side of 7 mV."
+    },
+    "E3_THE_BUCK_INTO_A_TANK_my_pre_stated_answer": {
+      "question_asked": "can the buck actually deliver into a tank, against 0.058 into a bank and ~1.56 ideal?",
+      "my_answer": "I expect Qdel/Qsup into a TANK to be MATERIALLY HIGHER than into a bank, and I expect it to still fall short of 1.566. Mechanism, stated as physics not as hedging: (i) a DCM buck's Vin/Vout ratio is derived under a CONSTANT output voltage; a small bank rail moves hundreds of mV during the pulse, which collapses the off-phase slope Vout/L and truncates the delivered charge, so a large tank restores the assumption the 1.566 bound is derived under and should help; BUT (ii) the 16x shortfall is two orders of magnitude, far more than a moving-Vout correction can explain, so the dominant sink is almost certainly destination-INDEPENDENT (cross-conduction in the gate schedule, or the freewheel conducting past its true zero and running the path backwards), and a better load cannot repair a converter that is shorting its own supply. CONCRETE PREDICTION: Qdel/Qsup into the tank between 0.1 and 0.9, i.e. better than 0.058 and still below unity.",
+      "what_each_outcome_MEANS_stated_now": {
+        "if_tank_ratio_>=_1": "the earlier failure LOCALISES TO THE LOAD. That is a real finding and I will say so loudly; it also means the bank, not the converter, was the problem, and the proposal is vindicated on its second leg.",
+        "if_tank_ratio_improves_but_stays_<1": "the load is a CONTRIBUTING but not the dominant term; the defect is in the converter and qal/buckfix owns it. I will report the split quantitatively (how much of the 16x the load accounts for).",
+        "if_tank_ratio_is_no_better_than_0.058": "the load contributes NOTHING and the entire deficit is the converter. Also a clean result."
+      },
+      "falsifier_for_my_own_answer": "a tank ratio at or above 1.0, or at or below 0.058."
+    },
+    "E4_matching_will_work_and_it_is_almost_a_theorem": {
+      "statement": "under C_tank_k = m*C_bank_k the resonant transfer ratio between bank k and bank k+1 is set by C_k/(C_k + C_k+1) with both scaled by the same factor, so the delivered rail should be size-INDEPENDENT. I expect A8 to PASS under matched sizing and to FAIL under uniform sizing, with the uniform arm's 1-gate bank OVERSHOOTING (a tiny bank behind a big uniform tank barely moves) and its 48-gate bank UNDERSHOOTING.",
+      "confidence": "HIGH -- this is close to definitional.",
+      "falsifier": "matched sizing failing A8, or uniform sizing passing it."
+    },
+    "E5_hop_time_will_NOT_stay_coherent_and_per_bank_L_WILL_be_required": {
+      "statement": "t_hop = pi*sqrt(L*C_ser) with C_ser proportional to C_bank means the hop between the 48-gate and 19-gate banks is sqrt(48/19) = 1.59x the hop between the 3-gate and 1-gate banks, ignoring the fixed per-bank overhead (switch drain caps, wiring) that partially equalises small banks. I predict a MEASURED spread well above the 1.10 threshold and therefore that per-bank L tuning (L proportional to 1/C_bank) is a DESIGN REQUIREMENT. This is the answer the brief says is worth knowing either way.",
+      "confidence": "HIGH on direction; the fixed overhead may compress the ratio below the naive sqrt(48/1) = 6.9.",
+      "falsifier": "measured spread below 1.10."
+    },
+    "E6_the_chain_verdict_itself": {
+      "statement": "I do NOT expect this to overturn the standing chain verdict. chain3 and skip4 measured that the binding inequality is a DEVICE constant -- the predecessor's stranded HIGH clamps at |Vtp| = 0.4403 V while the successor needs ~0.59*rail -- and neither the tank nor the destination of the top-up touches that. I expect A2 (rail held) to be the clause the tank helps most, A1 (coupling) to be the clause the proposal is actually about and where it should win, and A3/A4 (separation, all gates correct) to FAIL at depth for the same device reason as before. I state this now so that a confirmation is reported as one.",
+      "falsifier": "A3 and A4 passing to depth 5, which would be a genuinely new result and I would say so loudly."
+    }
+  },
+
+  "MEASUREMENTS_fixed_now_so_none_can_be_chosen_after_the_fact": {
+    "M1_coupling": "attributable LOW-lift at a LOGIC node = max over the feeding stage's pull-DOWN gates of V(o) at that stage's own boundary, topped minus free, same configuration. PLUS: max |dV/dt| in V/ns at (a) the injection node, (b) rail_k, (c) the feeding stage's worst logic node, all by centred finite difference on the printed grid. The step at the LOGIC node is the headline; the injection-node step is context.",
+    "M2_buck": "Qdel/Qsup with the tank as the load and with the bank as the load, at the same converter settings, against 0.058 (bank, measured elsewhere) and 1.566 (ideal DCM bound Vin/Vout). Q_delivered metered by a 1F integrator on a 0 V series source in the DESTINATION leg; Q_supply by a 1F integrator on the top-up supply source. Both t0-referenced. E_delivered/E_supply reported alongside.",
+    "M3_rail": "delivered rail per bank at its own boundary; per-hop collapse ratio rail_{k+1}/rail_k; HIGH/LOW separation by bank depth against 6.44 mV.",
+    "M4_matching": "delivered rail at the 48-gate and 1-gate banks under matched vs uniform sizing; per-hop t_zcs spread across the profile.",
+    "M5_per_gate": "settling of EVERY gate at EVERY stage, never aggregated, with the value check and the pattern guard of A4. The record's own caveat is carried forward: a bank of electrically identical cells yields identical numbers and cannot catch a single-gate outlier; the guard that does the work here is the pattern guard.",
+    "M6_cost": "tank area in um^2 from a stated PDK capacitance density; number of inductors; top-up energy INCLUDING its own switch gate drives (E_gate = -integral V(gate)*I(Vgate) over every top-up gate source). Any term not costed is a BOUND and is labelled as one."
+  },
+
+  "SIM_DISCIPLINE": {
+    "concurrency": "at most 4 concurrent heavy Xyce jobs; the box is shared with three other workflows (measured load average 13.96 on 16 cores at the moment this file is written).",
+    "cache": "own PYMS_VAE_CACHE, nothing copied in; geometries warmed SEQUENTIALLY before any parallel run.",
+    "models": "sg13_lv via qal/sg13lv_compat.sp, which ZEROES ad/as/pd/ps -- junction capacitance absent, so device numbers are LOWER bounds and every switch-node capacitance must be explicit (CNA on the buck switch node; the tank is an explicit capacitor and the bank's own rail capacitance is MEASURED, not assumed).",
+    "psp103": ".hdl + sg13g2_psp103_tt.lib",
+    "runtime": "target < 4 min per deck; any deck exceeding it is reported with its wall time.",
+    "zeros": "re-probed per L, per hop, per configuration and per bank for the top-up; the analytic pi*sqrt(LC) is NEVER used as a cut time (it read 266.76 ps against a measured 353.79 ps, 33% early).",
+    "forbidden": "vt/gmin adjustments; corners only via instance-level DTA.",
+    "va_modules": "unique .va module names.",
+    "scope": "ALL numbers are SHALLOW-STACK. The ALU dominant mapped cell sg13g2_o21ai_1 never settles at any operating point in the PDK envelope; nothing here generalises to it."
+  },
+
+  "HONESTY_CLAUSES": {
+    "labels": "every number labelled MEASURED / DERIVED / ASSUMED.",
+    "no_ideal_sources": "any tank, rail or gate drive modelled as an ideal source is a BOOKING and is labelled as a BOUND, not a result. Three verdicts in this campaign have already been overturned by exactly that (the cells' gate burn; ideal PWL gate drives that hid two orders of magnitude; a park driver booked at 2.4 fJ when the cheapest real one measures 15.0 fJ). The dV source and the top-up supply source are ideal by necessity -- they are the boundary of the modelled system -- and every number that depends on them is labelled a BOUND.",
+    "physics_first": "a result that contradicts circuit physics is a DEFECT until proven otherwise, and is chased before it is reported.",
+    "clean_negative": "a clean negative with the mechanism attached is as valuable as a win and is reported as one, at the same volume.",
+    "no_post_hoc_metric": "M1-M6 and A1-A9 are fixed above. Any discriminator I find later is reported as EXPLORATORY and kept out of the verdict."
+  }
+}

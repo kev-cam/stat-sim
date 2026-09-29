@@ -1,0 +1,57 @@
+{
+  "_doc": "qal/tankfed_skept -- INDEPENDENT SKEPTIC RE-RUN of the tankfed claims (top-up DESTINATION bank vs tank; tank SIZING uniform vs per-bank-matched). Written BEFORE any deck is built or run in this directory. This file is the ONLY file in /usr/local/src/stat-sim/qal/tankfed_skept at the moment it is written.",
+  "date": "2026-09-29",
+  "workdir": "/usr/local/src/stat-sim/qal/tankfed_skept",
+  "own_cache": "PYMS_VAE_CACHE=/tmp/claude-1001/-usr-local-src/4921ad0c-f17b-4b84-986a-5917c9ebd2a6/scratchpad/vae_cache_tfskept -- MY OWN, nothing copied in from tankfed or any sibling.",
+  "policy": "RE-RUN, DO NOT READ. Every number I report is produced by a Xyce invocation I issue in this directory. I read tankfed's decks and code to know WHAT to re-run and to audit bookings; I take no result number from its JSON on trust. I write nothing into qal/tankfed, qal/banktank, qal/buckfix, qal/resv, qal/tsweep.",
+
+  "WHAT_I_AM_CHECKING": {
+    "a_booking_audit": "enumerate every ideal source in the decks that produce the REPORTED rows; decide for each whether the reported quantity depends on it; mark those rows BOUNDS. Specifically: is the TANK ever an ideal source (it must be a real capacitor); is the top-up SUPPLY ideal; are the top-up SWITCH GATE DRIVES ideal PWL and is their gate charge counted in the reported top-up energy; is the chain head rail ideal.",
+    "b_coupling": "re-measure the attributable step at a LOGIC NODE (a cell output), not at the injection node, for destination=bank vs destination=tank, same config, same T, top-up devices PRESENT in both arms. The specific thing I am hunting: whether the reported improvement is a real reduction in what a logic node sees, or whether the PROBE POINT moved away from where the step lands.",
+    "c_buck_into_tank": "re-run Qdel/Qsup with (i) bank-only load, (ii) bank+tank inject at rail, (iii) bank+tank inject at tank, (iv) TANK ONLY, NO CELLS. Same converter settings, same gate sequence, across all four. If it fails into a bare capacitor it is the converter, not the load.",
+    "d_settling_and_value": "per-gate settling at EVERY stage, never aggregated, plus a VALUE check against the expected inversion pattern and a PATTERN GUARD against the measured device thresholds. Recompute HIGH/LOW separation by depth and state where it is degenerate by construction.",
+    "e_matching": "own extraction of C_bank(M), own matched/uniform tank sizing, own per-hop collapse and hop-time spread across the real size profile."
+  },
+
+  "MY_OWN_ACCEPTANCE_stated_now": {
+    "S1_anchors": "BOTH instrument anchors reproduced under MY cache from MY deck copies before any result reports: (a) robust single hop L=15nH/W=30um/dV=1.2 -> t_hop 65.49500982344826 ps, VBEND 0.7138163, VBPK 0.8368896, rel < 1e-6; (b) skiptu clamp attributable stage-2 damage +113.565 mV within 1.0 mV.",
+    "S2_coupling_claim": "tankfed claims dV/dt at a logic node falls 6.47x (m=6 uniform) while the STEP AMPLITUDE at a logic node changes <=1.6%. I accept the claim only if I reproduce BOTH halves within 25% on the rate and within 3 mV on the amplitude. If I reproduce the rate win but NOT the amplitude null, or vice versa, I report the discrepancy as the headline.",
+    "S3_buck": "tankfed reports Qdel/Qsup NEGATIVE in all eight fixture arms including a bare-capacitor load. A negative charge ratio is an extraordinary claim (the converter is a net SINK). I treat it as a DEFECT until I reproduce it with my own integrators and my own zero probe, and I additionally check the sign convention of every integrator against a trivially-signed reference.",
+    "S4_value_check": "tankfed reports banks 4 and 5 value_fail in every row. I verify this independently and, critically, check whether the VALUE CHECK ITSELF is well-posed -- i.e. whether the 'expected pattern' is derived from the netlist connectivity rather than from the measurement.",
+    "S5_degeneracy": "tankfed concedes depth-5 separation is degenerate (bank 5's two gates read the same net). I verify that from the NETLIST, and I check whether any OTHER reported separation number is similarly degenerate.",
+    "S6_no_operating_point": "tankfed reports matched m=6 hop 1 never resonates. I re-run that probe to a long stop myself and confirm or refute the monotonic-decay claim, and check the R_crit arithmetic independently.",
+    "S7_IZ": "tankfed concedes every clamp row fails its own |IZ| < 1 uA gate on hops 3 and 4 (37-157 uA). I re-measure IZ per hop per row and decide which reported rails are admissible."
+  },
+
+  "PRE_STATED_EXPECTATIONS_with_falsifiers": {
+    "P1": {
+      "statement": "The amplitude null is REAL and is correct physics. A switched clamp with a low-impedance path to an ideal dV source is a VOLTAGE source at the destination: it charges whatever capacitance is there until the node reaches the clamp voltage, so the final step is set by the clamp voltage, not by C_tank. Tank size can only change HOW LONG it takes and HOW FAST the edge is, which is exactly the rate win. I expect to reproduce both halves.",
+      "falsifier": "measured amplitude changing by more than 3 mV between destinations at the same m, or the rate ratio landing outside 25% of the reported 6.47x/3.07x/1.87x."
+    },
+    "P2": {
+      "statement": "The negative Qdel/Qsup will REPRODUCE in sign, because the reported reverse peak (-4.0 to -4.9 mA against +2.5 mA forward) is a physical freewheel-past-zero, not a sign error. But I expect the MAGNITUDE to be probe-window-dependent: a charge ratio integrated over a window that includes reverse conduction is not the same quantity as a DCM buck's Vin/Vout bound, and the honest statement is that the committed converter has no DCM operating point at these settings at all.",
+      "falsifier": "positive Qdel/Qsup in any arm with my own integrators, which would localise the earlier result to a sign/probe error."
+    },
+    "P3": {
+      "statement": "The coupling improvement is REAL but the probe point HAS ALSO moved in a way that matters: in the ADJACENT schedule the feeder's boundary precedes the fed bank's top-up, so the classic 'attributable damage at the feeder's own boundary' is structurally 0 and cannot be compared like-for-like to the +113.6 mV SKIP-schedule anchor. I expect to confirm this scheduling artefact from the deck's own times, and I will not accept any claim of beating +113.6 mV from an adjacent-schedule chain.",
+      "falsifier": "the feeder's boundary falling AFTER the top-up fire in the committed decks, which would make the comparison like-for-like after all."
+    },
+    "P4": {
+      "statement": "Matched sizing does NOT equalise the delivered rail, and tankfed's refutation of its own E4 is correct. The lossless half-cycle ratio 2*C_src/(C_src+C_dst) depends on the RATIO of consecutive bank sizes, and matched tanks PRESERVE that ratio while a large uniform tank drives it to 1. I expect to reproduce this from my own extraction.",
+      "falsifier": "matched per-hop collapse spread coming out BELOW the uniform spread in my run."
+    },
+    "P5": {
+      "statement": "The verdict will be: the destination change is real but small and buys RATE not amplitude; the matching half of the refinement is actively harmful; and the chain still does not close at depth for the device reason the record already owns. I state this now so a confirmation is reported as one.",
+      "falsifier": "any of A1/A2/A3/A4 passing in my run."
+    }
+  },
+
+  "DISCIPLINE": {
+    "concurrency": "<= 4 concurrent heavy Xyce jobs; shared 16-core box.",
+    "metering": "1F integrators or INTEG-I(Vsrc)+PARAM only; every integrator t0-referenced.",
+    "zeros": "re-probed per L, per hop, per configuration. Never the analytic pi*sqrt(LC).",
+    "forbidden": "vt/gmin adjustments; corners only via instance-level DTA.",
+    "labels": "MEASURED / DERIVED / ASSUMED on every number.",
+    "scope": "ALL numbers SHALLOW-STACK. Nothing generalises to sg13g2_o21ai_1."
+  }
+}

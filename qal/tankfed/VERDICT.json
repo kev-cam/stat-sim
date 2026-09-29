@@ -1,0 +1,3196 @@
+{
+ "_what": "qal/tankfed FINAL -- top-up DESTINATION (bank vs TANK) x tank SIZING (uniform vs per-bank matched), real sha_slice bank-size profile 48/19/3/1/2",
+ "prereg_sha256": "78fc0ac0c3fec5ae7b4f47b1ddc1a8a207d275a382944be8e20e13b742cc1c73",
+ "prereg_mtime": "2026-09-29 09:02:10.626 -0700 (sole file in the directory then)",
+ "instrument": {
+  "_what": "A5 instrument gate for qal/tankfed",
+  "_cache": "/tmp/claude-1001/-usr-local-src/4921ad0c-f17b-4b84-986a-5917c9ebd2a6/scratchpad/vae_cache_tankfed",
+  "_decks": "instr_anchor.cir / instr_probe.cir are md5-identical to qal/lsweep/h_L15_W30_dv120.cir / p_L15_W30_dv120.cir; instr_free.cir / instr_clamp.cir are md5-identical to qal/skiptu/r_s4_free_T200_dv1200_L5_W10_t12_f0.cir / r_s4_rtu_T200_dv1200_L1_W10_t20_f0.cir",
+  "anchor_a_single_hop": {
+   "t_hop_ps": {
+    "mine": 65.49500982,
+    "committed": 65.49500982344826,
+    "mine_absolute_ps": 115.49500982,
+    "switch_close_ps": 50.0,
+    "rel": 1.9736150103331933e-12
+   },
+   "IPK_uA_from_prn": 971.3205,
+   "VBEND": {
+    "mine": 0.7138163,
+    "committed": 0.7138163,
+    "rel": 0.0
+   },
+   "VBPK": {
+    "mine": 0.8368896,
+    "committed": 0.8368896,
+    "rel": 0.0
+   },
+   "IZ_uA": {
+    "mine": -0.0004958676,
+    "committed": -0.0004958676,
+    "rel": 0.0
+   },
+   "mt0_keys_compared": 129,
+   "mt0_keys_BIT_IDENTICAL": 118,
+   "mt0_worst_rel": 1.11752445974785e-06,
+   "mt0_worst_key": "QGL_Z",
+   "cells": {
+    "0": {
+     "kind": "pulldown",
+     "v_o": -4.551171e-09,
+     "settle_pct": 100.00000063758294
+    },
+    "1": {
+     "kind": "pullup",
+     "v_o": 0.7138163,
+     "settle_pct": 100.0
+    },
+    "2": {
+     "kind": "pulldown",
+     "v_o": -4.551171e-09,
+     "settle_pct": 100.00000063758294
+    },
+    "3": {
+     "kind": "pullup",
+     "v_o": 0.7138163,
+     "settle_pct": 100.0
+    },
+    "4": {
+     "kind": "pulldown",
+     "v_o": -4.551171e-09,
+     "settle_pct": 100.00000063758294
+    },
+    "5": {
+     "kind": "pullup",
+     "v_o": 0.7138163,
+     "settle_pct": 100.0
+    },
+    "6": {
+     "kind": "pulldown",
+     "v_o": -4.551171e-09,
+     "settle_pct": 100.00000063758294
+    },
+    "7": {
+     "kind": "pullup",
+     "v_o": 0.7138163,
+     "settle_pct": 100.0
+    }
+   },
+   "cells_measured": 8,
+   "cells_worst_settle_pct": 100.0,
+   "PASS": true
+  },
+  "anchor_b_clamp_damage": {
+   "free_max_LOW_V": 0.438143,
+   "clamp_max_LOW_V": 0.551708,
+   "committed_free": 0.438143,
+   "committed_clamp": 0.551708,
+   "damage_mV": 113.56499999999997,
+   "committed_damage_mV": 113.565,
+   "free_rail3_V": 0.765884,
+   "clamp_rail3_V": 1.069085,
+   "committed_free_rail3_V": 0.765884,
+   "committed_clamp_rail3_V": 1.069085,
+   "damage_err_mV": 2.842170943040401e-14,
+   "PASS": true,
+   "_NOTE_on_the_committed_convention": "the committed 'free' control deck instantiates NO top-up device on banks 3 and 4 at all, while the clamp deck instantiates one AND fires it.  So the committed +113.565 mV conflates the top-up EXISTING with the top-up FIRING.  chain3 measured that merely having the gate present shifts t_zcs by +11.5 ps and VBEND2 by -43.4 mV, so the conflation is not negligible.  Every free control in qal/tankfed carries the top-up devices PHYSICALLY PRESENT and parked off, which isolates the firing term.  This anchor is reproduced on the committed convention so the instrument is anchored; the run's own numbers use the stricter one."
+  },
+  "VERDICT": "PASS, digit-checked"
+ },
+ "coupling_m6": [
+  {
+   "topped_bank": 3,
+   "feeding_stage": 2,
+   "free_deck": "r_bank_uniform_m6_free_T340_dv1200.cir",
+   "topped_deck": "r_bank_uniform_m6_clamp_T340_dv1200.cir",
+   "max_LOW_free_V": -0.001018258,
+   "max_LOW_topped_V": -0.001018258,
+   "low_lift_mV": 0.0,
+   "rail_feeder_free_V": 0.7622205,
+   "rail_feeder_topped_V": 0.7622205,
+   "rail_topped_bank_free_V": 0.5089624,
+   "rail_topped_bank_topped_V": 0.6708243,
+   "slope_inject_V_per_ns": 136.0000003828049,
+   "slope_inject_at_ps": 781.289003,
+   "slope_inject_FREE_V_per_ns": 0.008307132031800106,
+   "slope_rail_topped_V_per_ns": 136.0000003828049,
+   "slope_rail_topped_at_ps": 781.289003,
+   "slope_rail_topped_FREE_V_per_ns": 0.008307132031800106,
+   "slope_rail_feeder_V_per_ns": 1.0000000019984014,
+   "slope_rail_feeder_at_ps": 781.289002,
+   "slope_rail_feeder_FREE_V_per_ns": 0.04920378203530518,
+   "step_at_logic_mV": 31.411303961776458,
+   "step_at_logic_gate": "o2_1",
+   "slope_logic_V_per_ns": 27.80000007012724,
+   "slope_logic_gate": "o2_1",
+   "per_gate": {
+    "o2_1": {
+     "step_mV": 31.411303961776458,
+     "slope_V_per_ns": 27.80000007012724,
+     "slope_free_V_per_ns": 0.14177746612673187
+    },
+    "o2_3": {
+     "step_mV": 0.09151170877411303,
+     "slope_V_per_ns": 0.7000000007049916,
+     "slope_free_V_per_ns": 0.4118527901556392
+    },
+    "o2_5": {
+     "step_mV": 0.09151170877411303,
+     "slope_V_per_ns": 0.7000000007049916,
+     "slope_free_V_per_ns": 0.4118527901556392
+    },
+    "o2_7": {
+     "step_mV": 0.09151170877411303,
+     "slope_V_per_ns": 0.7000000007049916,
+     "slope_free_V_per_ns": 0.4118527901556392
+    },
+    "o2_9": {
+     "step_mV": 0.09151170877411303,
+     "slope_V_per_ns": 0.7000000007049916,
+     "slope_free_V_per_ns": 0.4118527901556392
+    },
+    "o2_11": {
+     "step_mV": 0.09151170877411303,
+     "slope_V_per_ns": 0.7000000007049916,
+     "slope_free_V_per_ns": 0.4118527901556392
+    },
+    "o2_13": {
+     "step_mV": 0.09151170877411303,
+     "slope_V_per_ns": 0.7000000007049916,
+     "slope_free_V_per_ns": 0.4118527901556392
+    },
+    "o2_15": {
+     "step_mV": 0.09151170877411303,
+     "slope_V_per_ns": 0.7000000007049916,
+     "slope_free_V_per_ns": 0.4118527901556392
+    },
+    "o2_17": {
+     "step_mV": 0.09151170877411303,
+     "slope_V_per_ns": 0.7000000007049916,
+     "slope_free_V_per_ns": 0.4118527901556392
+    }
+   },
+   "cfg": {
+    "dest": "bank",
+    "sizing": "uniform",
+    "m": 6.0,
+    "form": "clamp",
+    "T": 340.0,
+    "dv": 1.2,
+    "ltu": 1.0,
+    "ton": 24.0,
+    "prof": [
+     48,
+     19,
+     3,
+     1,
+     2
+    ],
+    "cbank": {
+     "1": 197.541599999999,
+     "2": 79.82319999999956,
+     "3": 10.716699999999982,
+     "4": 5.745099999999937,
+     "5": 8.23089999999996
+    }
+   },
+   "window_ps": [
+    756.289,
+    801.289
+   ]
+  },
+  {
+   "topped_bank": 4,
+   "feeding_stage": 3,
+   "free_deck": "r_bank_uniform_m6_free_T340_dv1200.cir",
+   "topped_deck": "r_bank_uniform_m6_clamp_T340_dv1200.cir",
+   "max_LOW_free_V": 0.08075407,
+   "max_LOW_topped_V": 0.1250503,
+   "low_lift_mV": 44.29623000000001,
+   "rail_feeder_free_V": 0.5089624,
+   "rail_feeder_topped_V": 0.6708243,
+   "rail_topped_bank_free_V": 0.3481415,
+   "rail_topped_bank_topped_V": 0.6353183,
+   "slope_inject_V_per_ns": 111.2000002777334,
+   "slope_inject_at_ps": 1114.40001,
+   "slope_inject_FREE_V_per_ns": 0.00013572357655898618,
+   "slope_rail_topped_V_per_ns": 111.2000002777334,
+   "slope_rail_topped_at_ps": 1114.40001,
+   "slope_rail_topped_FREE_V_per_ns": 0.00013572357655898618,
+   "slope_rail_feeder_V_per_ns": 0.4000000007993606,
+   "slope_rail_feeder_at_ps": 1114.40001,
+   "slope_rail_feeder_FREE_V_per_ns": 0.00015834417236418346,
+   "step_at_logic_mV": 56.595154617462114,
+   "step_at_logic_gate": "o3_0",
+   "slope_logic_V_per_ns": 20.720000052786663,
+   "slope_logic_gate": "o3_0",
+   "per_gate": {
+    "o3_0": {
+     "step_mV": 56.595154617462114,
+     "slope_V_per_ns": 20.720000052786663,
+     "slope_free_V_per_ns": 0.0034236272125843198
+    },
+    "o3_2": {
+     "step_mV": 12.796954080355121,
+     "slope_V_per_ns": 0.11000000035860204,
+     "slope_free_V_per_ns": 0.0009076514166074061
+    }
+   },
+   "cfg": {
+    "dest": "bank",
+    "sizing": "uniform",
+    "m": 6.0,
+    "form": "clamp",
+    "T": 340.0,
+    "dv": 1.2,
+    "ltu": 1.0,
+    "ton": 24.0,
+    "prof": [
+     48,
+     19,
+     3,
+     1,
+     2
+    ],
+    "cbank": {
+     "1": 197.541599999999,
+     "2": 79.82319999999956,
+     "3": 10.716699999999982,
+     "4": 5.745099999999937,
+     "5": 8.23089999999996
+    }
+   },
+   "window_ps": [
+    1089.4025,
+    1134.4025
+   ]
+  },
+  {
+   "topped_bank": 3,
+   "feeding_stage": 2,
+   "free_deck": "r_tank_uniform_m6_free_T340_dv1200.cir",
+   "topped_deck": "r_tank_uniform_m6_clamp_T340_dv1200.cir",
+   "max_LOW_free_V": -0.001018383,
+   "max_LOW_topped_V": -0.001018383,
+   "low_lift_mV": 0.0,
+   "rail_feeder_free_V": 0.7622205,
+   "rail_feeder_topped_V": 0.7622205,
+   "rail_topped_bank_free_V": 0.5087327,
+   "rail_topped_bank_topped_V": 0.6722634,
+   "slope_inject_V_per_ns": 49.000000070166095,
+   "slope_inject_at_ps": 781.310003,
+   "slope_inject_FREE_V_per_ns": 0.008301477074824617,
+   "slope_rail_topped_V_per_ns": 21.142590550508213,
+   "slope_rail_topped_at_ps": 781.6283080000001,
+   "slope_rail_topped_FREE_V_per_ns": 0.008278857246294838,
+   "slope_rail_feeder_V_per_ns": 0.33333333399946713,
+   "slope_rail_feeder_at_ps": 781.310004,
+   "slope_rail_feeder_FREE_V_per_ns": 0.04919247212104029,
+   "step_at_logic_mV": 30.902812198771965,
+   "step_at_logic_gate": "o2_1",
+   "slope_logic_V_per_ns": 4.283928520936638,
+   "slope_logic_gate": "o2_1",
+   "per_gate": {
+    "o2_1": {
+     "step_mV": 30.902812198771965,
+     "slope_V_per_ns": 4.283928520936638,
+     "slope_free_V_per_ns": 0.14191301544926582
+    },
+    "o2_3": {
+     "step_mV": 0.08606039038330966,
+     "slope_V_per_ns": 0.5999999309052777,
+     "slope_free_V_per_ns": 0.41146768757469604
+    },
+    "o2_5": {
+     "step_mV": 0.08606039038330966,
+     "slope_V_per_ns": 0.5999999309052777,
+     "slope_free_V_per_ns": 0.41146768757469604
+    },
+    "o2_7": {
+     "step_mV": 0.08606039038330966,
+     "slope_V_per_ns": 0.5999999309052777,
+     "slope_free_V_per_ns": 0.41146768757469604
+    },
+    "o2_9": {
+     "step_mV": 0.08606039038330966,
+     "slope_V_per_ns": 0.5999999309052777,
+     "slope_free_V_per_ns": 0.41146768757469604
+    },
+    "o2_11": {
+     "step_mV": 0.08606039038330966,
+     "slope_V_per_ns": 0.5999999309052777,
+     "slope_free_V_per_ns": 0.41146768757469604
+    },
+    "o2_13": {
+     "step_mV": 0.08606039038330966,
+     "slope_V_per_ns": 0.5999999309052777,
+     "slope_free_V_per_ns": 0.41146768757469604
+    },
+    "o2_15": {
+     "step_mV": 0.08606039038330966,
+     "slope_V_per_ns": 0.5999999309052777,
+     "slope_free_V_per_ns": 0.41146768757469604
+    },
+    "o2_17": {
+     "step_mV": 0.08606039038330966,
+     "slope_V_per_ns": 0.5999999309052777,
+     "slope_free_V_per_ns": 0.41146768757469604
+    }
+   },
+   "cfg": {
+    "dest": "tank",
+    "sizing": "uniform",
+    "m": 6.0,
+    "form": "clamp",
+    "T": 340.0,
+    "dv": 1.2,
+    "ltu": 1.0,
+    "ton": 24.0,
+    "prof": [
+     48,
+     19,
+     3,
+     1,
+     2
+    ],
+    "cbank": {
+     "1": 197.541599999999,
+     "2": 79.82319999999956,
+     "3": 10.716699999999982,
+     "4": 5.745099999999937,
+     "5": 8.23089999999996
+    }
+   },
+   "window_ps": [
+    756.3097,
+    801.3097
+   ]
+  },
+  {
+   "topped_bank": 4,
+   "feeding_stage": 3,
+   "free_deck": "r_tank_uniform_m6_free_T340_dv1200.cir",
+   "topped_deck": "r_tank_uniform_m6_clamp_T340_dv1200.cir",
+   "max_LOW_free_V": 0.08061843,
+   "max_LOW_topped_V": 0.1253763,
+   "low_lift_mV": 44.75786999999999,
+   "rail_feeder_free_V": 0.5087327,
+   "rail_feeder_topped_V": 0.6722634,
+   "rail_topped_bank_free_V": 0.3476856,
+   "rail_topped_bank_topped_V": 0.6376077,
+   "slope_inject_V_per_ns": 39.100000103117516,
+   "slope_inject_at_ps": 1114.43001,
+   "slope_inject_FREE_V_per_ns": 0.00013572357655881168,
+   "slope_rail_topped_V_per_ns": 21.400466497064794,
+   "slope_rail_topped_at_ps": 1114.7129400000001,
+   "slope_rail_topped_FREE_V_per_ns": 0.00013572357655881168,
+   "slope_rail_feeder_V_per_ns": 0.10000000019984015,
+   "slope_rail_feeder_at_ps": 1114.43001,
+   "slope_rail_feeder_FREE_V_per_ns": 0.00015833521827146886,
+   "step_at_logic_mV": 57.19747767278589,
+   "step_at_logic_gate": "o3_0",
+   "slope_logic_V_per_ns": 4.028952502127039,
+   "slope_logic_gate": "o3_0",
+   "per_gate": {
+    "o3_0": {
+     "step_mV": 57.19747767278589,
+     "slope_V_per_ns": 4.028952502127039,
+     "slope_free_V_per_ns": 0.003436634055316131
+    },
+    "o3_2": {
+     "step_mV": 12.964198569916308,
+     "slope_V_per_ns": 0.011255301102647674,
+     "slope_free_V_per_ns": 0.0009082169315174417
+    }
+   },
+   "cfg": {
+    "dest": "tank",
+    "sizing": "uniform",
+    "m": 6.0,
+    "form": "clamp",
+    "T": 340.0,
+    "dv": 1.2,
+    "ltu": 1.0,
+    "ton": 24.0,
+    "prof": [
+     48,
+     19,
+     3,
+     1,
+     2
+    ],
+    "cbank": {
+     "1": 197.541599999999,
+     "2": 79.82319999999956,
+     "3": 10.716699999999982,
+     "4": 5.745099999999937,
+     "5": 8.23089999999996
+    }
+   },
+   "window_ps": [
+    1089.4336,
+    1134.4336
+   ]
+  }
+ ],
+ "coupling_m2": [
+  {
+   "topped_bank": 3,
+   "feeding_stage": 2,
+   "free_deck": "r_bank_matched_m2_free_T340_dv1200.cir",
+   "topped_deck": "r_bank_matched_m2_clamp_T340_dv1200.cir",
+   "max_LOW_free_V": -0.0001238149,
+   "max_LOW_topped_V": -0.0001238149,
+   "low_lift_mV": 0.0,
+   "rail_feeder_free_V": 0.9008888,
+   "rail_feeder_topped_V": 0.9008888,
+   "rail_topped_bank_free_V": 0.801784,
+   "rail_topped_bank_topped_V": 1.039568,
+   "slope_inject_V_per_ns": 179.00002084643813,
+   "slope_inject_at_ps": 713.2130030000001,
+   "slope_inject_FREE_V_per_ns": 0.2565880250622459,
+   "slope_rail_topped_V_per_ns": 179.00002084643813,
+   "slope_rail_topped_at_ps": 713.2130030000001,
+   "slope_rail_topped_FREE_V_per_ns": 0.2565880250622459,
+   "slope_rail_feeder_V_per_ns": 2.0000002313705054,
+   "slope_rail_feeder_at_ps": 713.2130030000001,
+   "slope_rail_feeder_FREE_V_per_ns": 0.17292858920121487,
+   "step_at_logic_mV": 52.04267587994639,
+   "step_at_logic_gate": "o2_1",
+   "slope_logic_V_per_ns": 37.60000436503107,
+   "slope_logic_gate": "o2_1",
+   "per_gate": {
+    "o2_1": {
+     "step_mV": 52.04267587994639,
+     "slope_V_per_ns": 37.60000436503107,
+     "slope_free_V_per_ns": 0.31011841480226116
+    },
+    "o2_3": {
+     "step_mV": 0.2270526219024522,
+     "slope_V_per_ns": 0.569000066127618,
+     "slope_free_V_per_ns": 0.2917579565245371
+    },
+    "o2_5": {
+     "step_mV": 0.2270526219024522,
+     "slope_V_per_ns": 0.569000066127618,
+     "slope_free_V_per_ns": 0.2917579565245371
+    },
+    "o2_7": {
+     "step_mV": 0.2270526219024522,
+     "slope_V_per_ns": 0.569000066127618,
+     "slope_free_V_per_ns": 0.2917579565245371
+    },
+    "o2_9": {
+     "step_mV": 0.2270526219024522,
+     "slope_V_per_ns": 0.569000066127618,
+     "slope_free_V_per_ns": 0.2917579565245371
+    },
+    "o2_11": {
+     "step_mV": 0.2270526219024522,
+     "slope_V_per_ns": 0.569000066127618,
+     "slope_free_V_per_ns": 0.2917579565245371
+    },
+    "o2_13": {
+     "step_mV": 0.2270526219024522,
+     "slope_V_per_ns": 0.569000066127618,
+     "slope_free_V_per_ns": 0.2917579565245371
+    },
+    "o2_15": {
+     "step_mV": 0.2270526219024522,
+     "slope_V_per_ns": 0.569000066127618,
+     "slope_free_V_per_ns": 0.2917579565245371
+    },
+    "o2_17": {
+     "step_mV": 0.2270526219024522,
+     "slope_V_per_ns": 0.569000066127618,
+     "slope_free_V_per_ns": 0.2917579565245371
+    }
+   },
+   "cfg": {
+    "dest": "bank",
+    "sizing": "matched",
+    "m": 2.0,
+    "form": "clamp",
+    "T": 340.0,
+    "dv": 1.2,
+    "ltu": 1.0,
+    "ton": 24.0,
+    "prof": [
+     48,
+     19,
+     3,
+     1,
+     2
+    ],
+    "probe_span": 794.5007512879024,
+    "cbank": {
+     "1": 197.541599999999,
+     "2": 79.82319999999956,
+     "3": 10.716699999999982,
+     "4": 5.745099999999937,
+     "5": 8.23089999999996
+    }
+   },
+   "window_ps": [
+    688.2127,
+    733.2127
+   ]
+  },
+  {
+   "topped_bank": 4,
+   "feeding_stage": 3,
+   "free_deck": "r_bank_matched_m2_free_T340_dv1200.cir",
+   "topped_deck": "r_bank_matched_m2_clamp_T340_dv1200.cir",
+   "max_LOW_free_V": 0.06448884,
+   "max_LOW_topped_V": 0.3170534,
+   "low_lift_mV": 252.56456,
+   "rail_feeder_free_V": 0.801784,
+   "rail_feeder_topped_V": 1.039568,
+   "rail_topped_bank_free_V": 0.5460994,
+   "rail_topped_bank_topped_V": 0.9989589,
+   "slope_inject_V_per_ns": 144.89999706986393,
+   "slope_inject_at_ps": 1028.75001,
+   "slope_inject_FREE_V_per_ns": 0.07640671831720086,
+   "slope_rail_topped_V_per_ns": 144.89999706986393,
+   "slope_rail_topped_at_ps": 1028.75001,
+   "slope_rail_topped_FREE_V_per_ns": 0.07640671831720086,
+   "slope_rail_feeder_V_per_ns": 0.5999999875566207,
+   "slope_rail_feeder_at_ps": 1028.75001,
+   "slope_rail_feeder_FREE_V_per_ns": 0.018500819996612915,
+   "step_at_logic_mV": 248.99699613247373,
+   "step_at_logic_gate": "o3_0",
+   "slope_logic_V_per_ns": 29.799999398632167,
+   "slope_logic_gate": "o3_0",
+   "per_gate": {
+    "o3_0": {
+     "step_mV": 248.99699613247373,
+     "slope_V_per_ns": 29.799999398632167,
+     "slope_free_V_per_ns": 0.07562461120855603
+    },
+    "o3_2": {
+     "step_mV": 189.742977,
+     "slope_V_per_ns": 0.19999999585220687,
+     "slope_free_V_per_ns": 0.12419838262754589
+    }
+   },
+   "cfg": {
+    "dest": "bank",
+    "sizing": "matched",
+    "m": 2.0,
+    "form": "clamp",
+    "T": 340.0,
+    "dv": 1.2,
+    "ltu": 1.0,
+    "ton": 24.0,
+    "prof": [
+     48,
+     19,
+     3,
+     1,
+     2
+    ],
+    "probe_span": 794.5007512879024,
+    "cbank": {
+     "1": 197.541599999999,
+     "2": 79.82319999999956,
+     "3": 10.716699999999982,
+     "4": 5.745099999999937,
+     "5": 8.23089999999996
+    }
+   },
+   "window_ps": [
+    1003.7468,
+    1048.7468
+   ]
+  },
+  {
+   "topped_bank": 3,
+   "feeding_stage": 2,
+   "free_deck": "r_bank_uniform_m2_free_T340_dv1200.cir",
+   "topped_deck": "r_bank_uniform_m2_clamp_T340_dv1200.cir",
+   "max_LOW_free_V": -0.0006444206,
+   "max_LOW_topped_V": -0.0006444206,
+   "low_lift_mV": 0.0,
+   "rail_feeder_free_V": 0.8622852,
+   "rail_feeder_topped_V": 0.8622852,
+   "rail_topped_bank_free_V": 0.6008444,
+   "rail_topped_bank_topped_V": 0.8372132,
+   "slope_inject_V_per_ns": 152.00000030375702,
+   "slope_inject_at_ps": 725.434003,
+   "slope_inject_FREE_V_per_ns": 0.0468795946521436,
+   "slope_rail_topped_V_per_ns": 152.00000030375702,
+   "slope_rail_topped_at_ps": 725.434003,
+   "slope_rail_topped_FREE_V_per_ns": 0.0468795946521436,
+   "slope_rail_feeder_V_per_ns": 2.000000003996803,
+   "slope_rail_feeder_at_ps": 725.434003,
+   "slope_rail_feeder_FREE_V_per_ns": 0.16329254224234835,
+   "step_at_logic_mV": 49.44828643526646,
+   "step_at_logic_gate": "o2_1",
+   "slope_logic_V_per_ns": 32.500000078825835,
+   "slope_logic_gate": "o2_1",
+   "per_gate": {
+    "o2_1": {
+     "step_mV": 49.44828643526646,
+     "slope_V_per_ns": 32.500000078825835,
+     "slope_free_V_per_ns": 0.22918789160565925
+    },
+    "o2_3": {
+     "step_mV": 0.2668271693987666,
+     "slope_V_per_ns": 1.1000001286415568,
+     "slope_free_V_per_ns": 0.7128169603470674
+    },
+    "o2_5": {
+     "step_mV": 0.2668271693987666,
+     "slope_V_per_ns": 1.1000001286415568,
+     "slope_free_V_per_ns": 0.7128169603470674
+    },
+    "o2_7": {
+     "step_mV": 0.2668271693987666,
+     "slope_V_per_ns": 1.1000001286415568,
+     "slope_free_V_per_ns": 0.7128169603470674
+    },
+    "o2_9": {
+     "step_mV": 0.2668271693987666,
+     "slope_V_per_ns": 1.1000001286415568,
+     "slope_free_V_per_ns": 0.7128169603470674
+    },
+    "o2_11": {
+     "step_mV": 0.2668271693987666,
+     "slope_V_per_ns": 1.1000001286415568,
+     "slope_free_V_per_ns": 0.7128169603470674
+    },
+    "o2_13": {
+     "step_mV": 0.2668271693987666,
+     "slope_V_per_ns": 1.1000001286415568,
+     "slope_free_V_per_ns": 0.7128169603470674
+    },
+    "o2_15": {
+     "step_mV": 0.2668271693987666,
+     "slope_V_per_ns": 1.1000001286415568,
+     "slope_free_V_per_ns": 0.7128169603470674
+    },
+    "o2_17": {
+     "step_mV": 0.2668271693987666,
+     "slope_V_per_ns": 1.1000001286415568,
+     "slope_free_V_per_ns": 0.7128169603470674
+    }
+   },
+   "cfg": {
+    "dest": "bank",
+    "sizing": "uniform",
+    "m": 2.0,
+    "form": "clamp",
+    "T": 340.0,
+    "dv": 1.2,
+    "ltu": 1.0,
+    "ton": 24.0,
+    "prof": [
+     48,
+     19,
+     3,
+     1,
+     2
+    ],
+    "probe_span": 674.9244544121889,
+    "cbank": {
+     "1": 197.541599999999,
+     "2": 79.82319999999956,
+     "3": 10.716699999999982,
+     "4": 5.745099999999937,
+     "5": 8.23089999999996
+    }
+   },
+   "window_ps": [
+    700.434,
+    745.434
+   ]
+  },
+  {
+   "topped_bank": 4,
+   "feeding_stage": 3,
+   "free_deck": "r_bank_uniform_m2_free_T340_dv1200.cir",
+   "topped_deck": "r_bank_uniform_m2_clamp_T340_dv1200.cir",
+   "max_LOW_free_V": 0.07563848,
+   "max_LOW_topped_V": 0.1454679,
+   "low_lift_mV": 69.82942000000001,
+   "rail_feeder_free_V": 0.6008444,
+   "rail_feeder_topped_V": 0.8372132,
+   "rail_topped_bank_free_V": 0.42016,
+   "rail_topped_bank_topped_V": 0.8156781,
+   "slope_inject_V_per_ns": 124.7000003185896,
+   "slope_inject_at_ps": 1058.70001,
+   "slope_inject_FREE_V_per_ns": 0.0032856415769646065,
+   "slope_rail_topped_V_per_ns": 124.7000003185896,
+   "slope_rail_topped_at_ps": 1058.70001,
+   "slope_rail_topped_FREE_V_per_ns": 0.0032856415769646065,
+   "slope_rail_feeder_V_per_ns": 0.5000000037747583,
+   "slope_rail_feeder_at_ps": 1058.70001,
+   "slope_rail_feeder_FREE_V_per_ns": 0.0028739467284886393,
+   "step_at_logic_mV": 102.07400351422011,
+   "step_at_logic_gate": "o3_0",
+   "slope_logic_V_per_ns": 25.4800000645195,
+   "slope_logic_gate": "o3_0",
+   "per_gate": {
+    "o3_0": {
+     "step_mV": 102.07400351422011,
+     "slope_V_per_ns": 25.4800000645195,
+     "slope_free_V_per_ns": 0.005007747554147636
+    },
+    "o3_2": {
+     "step_mV": 21.424752277188432,
+     "slope_V_per_ns": 0.1400000001409983,
+     "slope_free_V_per_ns": 0.008294407057665673
+    }
+   },
+   "cfg": {
+    "dest": "bank",
+    "sizing": "uniform",
+    "m": 2.0,
+    "form": "clamp",
+    "T": 340.0,
+    "dv": 1.2,
+    "ltu": 1.0,
+    "ton": 24.0,
+    "prof": [
+     48,
+     19,
+     3,
+     1,
+     2
+    ],
+    "probe_span": 674.9244544121889,
+    "cbank": {
+     "1": 197.541599999999,
+     "2": 79.82319999999956,
+     "3": 10.716699999999982,
+     "4": 5.745099999999937,
+     "5": 8.23089999999996
+    }
+   },
+   "window_ps": [
+    1033.7021,
+    1078.7021
+   ]
+  },
+  {
+   "topped_bank": 3,
+   "feeding_stage": 2,
+   "free_deck": "r_tank_matched_m2_free_T340_dv1200.cir",
+   "topped_deck": "r_tank_matched_m2_clamp_T340_dv1200.cir",
+   "max_LOW_free_V": -0.0001238295,
+   "max_LOW_topped_V": -0.0001238295,
+   "low_lift_mV": 0.0,
+   "rail_feeder_free_V": 0.9008888,
+   "rail_feeder_topped_V": 0.9008888,
+   "rail_topped_bank_free_V": 0.8015585,
+   "rail_topped_bank_topped_V": 1.039027,
+   "slope_inject_V_per_ns": 316.00000074251716,
+   "slope_inject_at_ps": 713.216003,
+   "slope_inject_FREE_V_per_ns": 0.2564749259202248,
+   "slope_rail_topped_V_per_ns": 96.06024391626268,
+   "slope_rail_topped_at_ps": 713.507783,
+   "slope_rail_topped_FREE_V_per_ns": 0.25626003754825016,
+   "slope_rail_feeder_V_per_ns": 0.6895128226884129,
+   "slope_rail_feeder_at_ps": 713.366313,
+   "slope_rail_feeder_FREE_V_per_ns": 0.17292293424423938,
+   "step_at_logic_mV": 51.85655625095795,
+   "step_at_logic_gate": "o2_1",
+   "slope_logic_V_per_ns": 20.121963770717983,
+   "slope_logic_gate": "o2_1",
+   "per_gate": {
+    "o2_1": {
+     "step_mV": 51.85655625095795,
+     "slope_V_per_ns": 20.121963770717983,
+     "slope_free_V_per_ns": 0.30944321292028226
+    },
+    "o2_3": {
+     "step_mV": 0.22568926545734214,
+     "slope_V_per_ns": 0.2915620688093641,
+     "slope_free_V_per_ns": 0.29156212535893516
+    },
+    "o2_5": {
+     "step_mV": 0.22568926545734214,
+     "slope_V_per_ns": 0.2915620688093641,
+     "slope_free_V_per_ns": 0.29156212535893516
+    },
+    "o2_7": {
+     "step_mV": 0.22568926545734214,
+     "slope_V_per_ns": 0.2915620688093641,
+     "slope_free_V_per_ns": 0.29156212535893516
+    },
+    "o2_9": {
+     "step_mV": 0.22568926545734214,
+     "slope_V_per_ns": 0.2915620688093641,
+     "slope_free_V_per_ns": 0.29156212535893516
+    },
+    "o2_11": {
+     "step_mV": 0.22568926545734214,
+     "slope_V_per_ns": 0.2915620688093641,
+     "slope_free_V_per_ns": 0.29156212535893516
+    },
+    "o2_13": {
+     "step_mV": 0.22568926545734214,
+     "slope_V_per_ns": 0.2915620688093641,
+     "slope_free_V_per_ns": 0.29156212535893516
+    },
+    "o2_15": {
+     "step_mV": 0.22568926545734214,
+     "slope_V_per_ns": 0.2915620688093641,
+     "slope_free_V_per_ns": 0.29156212535893516
+    },
+    "o2_17": {
+     "step_mV": 0.22568926545734214,
+     "slope_V_per_ns": 0.2915620688093641,
+     "slope_free_V_per_ns": 0.29156212535893516
+    }
+   },
+   "cfg": {
+    "dest": "tank",
+    "sizing": "matched",
+    "m": 2.0,
+    "form": "clamp",
+    "T": 340.0,
+    "dv": 1.2,
+    "ltu": 1.0,
+    "ton": 24.0,
+    "prof": [
+     48,
+     19,
+     3,
+     1,
+     2
+    ],
+    "probe_span": 794.5007512879024,
+    "cbank": {
+     "1": 197.541599999999,
+     "2": 79.82319999999956,
+     "3": 10.716699999999982,
+     "4": 5.745099999999937,
+     "5": 8.23089999999996
+    }
+   },
+   "window_ps": [
+    688.2164,
+    733.2164
+   ]
+  },
+  {
+   "topped_bank": 4,
+   "feeding_stage": 3,
+   "free_deck": "r_tank_matched_m2_free_T340_dv1200.cir",
+   "topped_deck": "r_tank_matched_m2_clamp_T340_dv1200.cir",
+   "max_LOW_free_V": 0.06437356,
+   "max_LOW_topped_V": 0.3154577,
+   "low_lift_mV": 251.08414000000002,
+   "rail_feeder_free_V": 0.8015585,
+   "rail_feeder_topped_V": 1.039027,
+   "rail_topped_bank_free_V": 0.5457259,
+   "rail_topped_bank_topped_V": 0.9978531,
+   "slope_inject_V_per_ns": 285.3999942309793,
+   "slope_inject_at_ps": 1028.75001,
+   "slope_inject_FREE_V_per_ns": 0.07611830571689567,
+   "slope_rail_topped_V_per_ns": 106.59188577873626,
+   "slope_rail_topped_at_ps": 1029.01526,
+   "slope_rail_topped_FREE_V_per_ns": 0.07610699541981703,
+   "slope_rail_feeder_V_per_ns": 0.42833710407397474,
+   "slope_rail_feeder_at_ps": 1028.92684,
+   "slope_rail_feeder_FREE_V_per_ns": 0.018473109766431524,
+   "step_at_logic_mV": 247.8576424680014,
+   "step_at_logic_gate": "o3_0",
+   "slope_logic_V_per_ns": 22.033119698403997,
+   "slope_logic_gate": "o3_0",
+   "per_gate": {
+    "o3_0": {
+     "step_mV": 247.8576424680014,
+     "slope_V_per_ns": 22.033119698403997,
+     "slope_free_V_per_ns": 0.07537069501786839
+    },
+    "o3_2": {
+     "step_mV": 188.3665545,
+     "slope_V_per_ns": 0.13630090497785674,
+     "slope_free_V_per_ns": 0.12430583045873976
+    }
+   },
+   "cfg": {
+    "dest": "tank",
+    "sizing": "matched",
+    "m": 2.0,
+    "form": "clamp",
+    "T": 340.0,
+    "dv": 1.2,
+    "ltu": 1.0,
+    "ton": 24.0,
+    "prof": [
+     48,
+     19,
+     3,
+     1,
+     2
+    ],
+    "probe_span": 794.5007512879024,
+    "cbank": {
+     "1": 197.541599999999,
+     "2": 79.82319999999956,
+     "3": 10.716699999999982,
+     "4": 5.745099999999937,
+     "5": 8.23089999999996
+    }
+   },
+   "window_ps": [
+    1003.7498,
+    1048.7498
+   ]
+  },
+  {
+   "topped_bank": 3,
+   "feeding_stage": 2,
+   "free_deck": "r_tank_uniform_m2_free_T340_dv1200.cir",
+   "topped_deck": "r_tank_uniform_m2_clamp_T340_dv1200.cir",
+   "max_LOW_free_V": -0.0006444818,
+   "max_LOW_topped_V": -0.0006444818,
+   "low_lift_mV": 0.0,
+   "rail_feeder_free_V": 0.8622852,
+   "rail_feeder_topped_V": 0.8622852,
+   "rail_topped_bank_free_V": 0.600567,
+   "rail_topped_bank_topped_V": 0.8374733,
+   "slope_inject_V_per_ns": 116.99998701572113,
+   "slope_inject_at_ps": 725.4400029999999,
+   "slope_inject_FREE_V_per_ns": 0.04682304508119326,
+   "slope_rail_topped_V_per_ns": 49.63010279009154,
+   "slope_rail_topped_at_ps": 725.827081,
+   "slope_rail_topped_FREE_V_per_ns": 0.046755185595603835,
+   "slope_rail_feeder_V_per_ns": 0.9999998883115762,
+   "slope_rail_feeder_at_ps": 725.4400029999999,
+   "slope_rail_feeder_FREE_V_per_ns": 0.16326426745689607,
+   "step_at_logic_mV": 49.300692930784216,
+   "step_at_logic_gate": "o2_1",
+   "slope_logic_V_per_ns": 10.647461715980596,
+   "slope_logic_gate": "o2_1",
+   "per_gate": {
+    "o2_1": {
+     "step_mV": 49.300692930784216,
+     "slope_V_per_ns": 10.647461715980596,
+     "slope_free_V_per_ns": 0.22929771087352416
+    },
+    "o2_3": {
+     "step_mV": 0.2655586991653202,
+     "slope_V_per_ns": 0.8999998980926399,
+     "slope_free_V_per_ns": 0.7122452441815909
+    },
+    "o2_5": {
+     "step_mV": 0.2655586991653202,
+     "slope_V_per_ns": 0.8999998980926399,
+     "slope_free_V_per_ns": 0.7122452441815909
+    },
+    "o2_7": {
+     "step_mV": 0.2655586991653202,
+     "slope_V_per_ns": 0.8999998980926399,
+     "slope_free_V_per_ns": 0.7122452441815909
+    },
+    "o2_9": {
+     "step_mV": 0.2655586991653202,
+     "slope_V_per_ns": 0.8999998980926399,
+     "slope_free_V_per_ns": 0.7122452441815909
+    },
+    "o2_11": {
+     "step_mV": 0.2655586991653202,
+     "slope_V_per_ns": 0.8999998980926399,
+     "slope_free_V_per_ns": 0.7122452441815909
+    },
+    "o2_13": {
+     "step_mV": 0.2655586991653202,
+     "slope_V_per_ns": 0.8999998980926399,
+     "slope_free_V_per_ns": 0.7122452441815909
+    },
+    "o2_15": {
+     "step_mV": 0.2655586991653202,
+     "slope_V_per_ns": 0.8999998980926399,
+     "slope_free_V_per_ns": 0.7122452441815909
+    },
+    "o2_17": {
+     "step_mV": 0.2655586991653202,
+     "slope_V_per_ns": 0.8999998980926399,
+     "slope_free_V_per_ns": 0.7122452441815909
+    }
+   },
+   "cfg": {
+    "dest": "tank",
+    "sizing": "uniform",
+    "m": 2.0,
+    "form": "clamp",
+    "T": 340.0,
+    "dv": 1.2,
+    "ltu": 1.0,
+    "ton": 24.0,
+    "prof": [
+     48,
+     19,
+     3,
+     1,
+     2
+    ],
+    "probe_span": 674.9244544121889,
+    "cbank": {
+     "1": 197.541599999999,
+     "2": 79.82319999999956,
+     "3": 10.716699999999982,
+     "4": 5.745099999999937,
+     "5": 8.23089999999996
+    }
+   },
+   "window_ps": [
+    700.4401,
+    745.4401
+   ]
+  },
+  {
+   "topped_bank": 4,
+   "feeding_stage": 3,
+   "free_deck": "r_tank_uniform_m2_free_T340_dv1200.cir",
+   "topped_deck": "r_tank_uniform_m2_clamp_T340_dv1200.cir",
+   "max_LOW_free_V": 0.07547757,
+   "max_LOW_topped_V": 0.1454819,
+   "low_lift_mV": 70.00433000000001,
+   "rail_feeder_free_V": 0.600567,
+   "rail_feeder_topped_V": 0.8374733,
+   "rail_topped_bank_free_V": 0.4195893,
+   "rail_topped_bank_topped_V": 0.8160283,
+   "slope_inject_V_per_ns": 92.90000023838708,
+   "slope_inject_at_ps": 1058.71001,
+   "slope_inject_FREE_V_per_ns": 0.003245871974530047,
+   "slope_rail_topped_V_per_ns": 49.87073471920432,
+   "slope_rail_topped_at_ps": 1059.112,
+   "slope_rail_topped_FREE_V_per_ns": 0.0032458719748439525,
+   "slope_rail_feeder_V_per_ns": 0.1406841956464184,
+   "slope_rail_feeder_at_ps": 1058.85147,
+   "slope_rail_feeder_FREE_V_per_ns": 0.002851326132455186,
+   "step_at_logic_mV": 102.25267481073521,
+   "step_at_logic_gate": "o3_0",
+   "slope_logic_V_per_ns": 10.342628112806757,
+   "slope_logic_gate": "o3_0",
+   "per_gate": {
+    "o3_0": {
+     "step_mV": 102.25267481073521,
+     "slope_V_per_ns": 10.342628112806757,
+     "slope_free_V_per_ns": 0.004917943787826959
+    },
+    "o3_2": {
+     "step_mV": 21.51525058328433,
+     "slope_V_per_ns": 0.04404862878182534,
+     "slope_free_V_per_ns": 0.008299496691749104
+    }
+   },
+   "cfg": {
+    "dest": "tank",
+    "sizing": "uniform",
+    "m": 2.0,
+    "form": "clamp",
+    "T": 340.0,
+    "dv": 1.2,
+    "ltu": 1.0,
+    "ton": 24.0,
+    "prof": [
+     48,
+     19,
+     3,
+     1,
+     2
+    ],
+    "probe_span": 674.9244544121889,
+    "cbank": {
+     "1": 197.541599999999,
+     "2": 79.82319999999956,
+     "3": 10.716699999999982,
+     "4": 5.745099999999937,
+     "5": 8.23089999999996
+    }
+   },
+   "window_ps": [
+    1033.7141,
+    1078.7141
+   ]
+  }
+ ],
+ "fixture_buck": [
+  {
+   "arm": "A",
+   "seq": "bbm",
+   "tag": "A_C479_L1_t24_bbm",
+   "ctk_fF": 479.0,
+   "ltu_nH": 1.0,
+   "ton_ps": 24.0,
+   "tfw_ps": 6.465178929108731,
+   "zero_ps": 362.46517892910873,
+   "IPK_uA": 2555.1940000000004,
+   "IZ_uA": -0.04933774,
+   "dest": "nrail",
+   "q_delivered_fC": -15.430000000000067,
+   "q_supply_fC": 32.3018,
+   "Qdel_over_Qsup": -0.47768235825867494,
+   "E_delivered_fJ": -13.19700000000007,
+   "E_supply_fJ": 38.762099999999975,
+   "E_gate_drive_fJ": 14.274279999999997,
+   "q_shootthrough_fC": 0.7933000000000265,
+   "IMN_uA": -3991.5009999999997,
+   "Edel_over_Esup": -0.34046143010827784,
+   "V_rail_before": 0.7658837,
+   "V_rail_after": 0.617459,
+   "V_rail_peak": 0.7658837,
+   "d_rail_mV": -148.42469999999997,
+   "V_tank_before": null,
+   "V_tank_after": null,
+   "d_tank_mV": null,
+   "slope_inject_V_per_ns": 116.87457136318402,
+   "slope_rail_V_per_ns": 116.87457136318402,
+   "slope_logic_V_per_ns": 26.38633696561832,
+   "msg": "ran fx_A_C479_L1_t24_bbm.cir in 79.3s"
+  },
+  {
+   "arm": "B",
+   "seq": "bbm",
+   "tag": "B_C479_L1_t24_bbm",
+   "ctk_fF": 479.0,
+   "ltu_nH": 1.0,
+   "ton_ps": 24.0,
+   "tfw_ps": 5.9101908125999785,
+   "zero_ps": 361.9101908126,
+   "IPK_uA": 2596.653,
+   "IZ_uA": -0.03873794,
+   "dest": "nrail",
+   "q_delivered_fC": -35.21299999999992,
+   "q_supply_fC": 29.602500000000024,
+   "Qdel_over_Qsup": -1.189527911493958,
+   "E_delivered_fJ": -25.811500000000027,
+   "E_supply_fJ": 35.522999999999996,
+   "E_gate_drive_fJ": 18.50972,
+   "q_shootthrough_fC": 0.7933000000000265,
+   "IMN_uA": -4867.657,
+   "Edel_over_Esup": -0.7266137432086262,
+   "V_rail_before": 0.7658839,
+   "V_rail_after": 0.7054381,
+   "V_rail_peak": 0.7658839,
+   "d_rail_mV": -60.44579999999999,
+   "V_tank_before": 0.7658839,
+   "V_tank_after": 0.7054381,
+   "d_tank_mV": -60.44579999999999,
+   "slope_inject_V_per_ns": 17.00000000621725,
+   "slope_rail_V_per_ns": 64.50000017053026,
+   "slope_logic_V_per_ns": 15.790000039872757,
+   "msg": "ran fx_B_C479_L1_t24_bbm.cir in 78.3s"
+  },
+  {
+   "arm": "C",
+   "seq": "bbm",
+   "tag": "C_C479_L1_t24_bbm",
+   "ctk_fF": 479.0,
+   "ltu_nH": 1.0,
+   "ton_ps": 24.0,
+   "tfw_ps": 5.91647676469978,
+   "zero_ps": 361.9164767646998,
+   "IPK_uA": 2596.111,
+   "IZ_uA": -0.3847006,
+   "dest": "ntk",
+   "q_delivered_fC": -35.238000000000014,
+   "q_supply_fC": 29.563400000000023,
+   "Qdel_over_Qsup": -1.1919467990826491,
+   "E_delivered_fJ": -25.917799999999996,
+   "E_supply_fJ": 35.47599999999998,
+   "E_gate_drive_fJ": 18.476169999999996,
+   "q_shootthrough_fC": 0.7933000000000265,
+   "IMN_uA": -4865.285,
+   "Edel_over_Esup": -0.7305727815988278,
+   "V_rail_before": 0.7658839,
+   "V_rail_after": 0.7053967,
+   "V_rail_peak": 0.7658839,
+   "d_rail_mV": -60.487199999999966,
+   "V_tank_before": 0.7658839,
+   "V_tank_after": 0.7053967,
+   "d_tank_mV": -60.487199999999966,
+   "slope_inject_V_per_ns": 17.063977362890217,
+   "slope_rail_V_per_ns": 17.125000030753178,
+   "slope_logic_V_per_ns": 3.8800000097964347,
+   "msg": "ran fx_C_C479_L1_t24_bbm.cir in 94.3s"
+  },
+  {
+   "arm": "D",
+   "seq": "bbm",
+   "tag": "D_C479_L1_t24_bbm",
+   "ctk_fF": 479.0,
+   "ltu_nH": 1.0,
+   "ton_ps": 24.0,
+   "tfw_ps": 5.941342830840313,
+   "zero_ps": 361.9413428308403,
+   "IPK_uA": 2590.396,
+   "IZ_uA": -0.2312107,
+   "dest": "ntk",
+   "q_delivered_fC": -34.68000000000001,
+   "q_supply_fC": 29.6203,
+   "Qdel_over_Qsup": -1.1708186615260483,
+   "E_delivered_fJ": -25.387200000000057,
+   "E_supply_fJ": 35.54429999999998,
+   "E_gate_drive_fJ": 18.37846999999999,
+   "q_shootthrough_fC": 0.7933000000000265,
+   "IMN_uA": -4835.281,
+   "Edel_over_Esup": -0.7142411019488377,
+   "V_rail_before": 0.765884,
+   "V_rail_after": 0.765884,
+   "V_rail_peak": 0.765884,
+   "d_rail_mV": 0.0,
+   "V_tank_before": 0.765884,
+   "V_tank_after": 0.6961767,
+   "d_tank_mV": -69.70730000000003,
+   "slope_inject_V_per_ns": 18.659574468119647,
+   "slope_rail_V_per_ns": 0.0,
+   "slope_logic_V_per_ns": null,
+   "msg": "ran fx_D_C479_L1_t24_bbm.cir in 24.6s"
+  },
+  {
+   "arm": "A",
+   "seq": "early",
+   "tag": "A_C479_L1_t24_early",
+   "ctk_fF": 479.0,
+   "ltu_nH": 1.0,
+   "ton_ps": 24.0,
+   "tfw_ps": 5.963285779442174,
+   "zero_ps": 361.9632857794422,
+   "IPK_uA": 2540.163,
+   "IZ_uA": -0.1344673,
+   "dest": "nrail",
+   "q_delivered_fC": -0.9829999999999768,
+   "q_supply_fC": 79.0737,
+   "Qdel_over_Qsup": -0.012431440542177447,
+   "E_delivered_fJ": -4.219899999999999,
+   "E_supply_fJ": 94.88839999999995,
+   "E_gate_drive_fJ": 16.776079999999993,
+   "q_shootthrough_fC": 55.85830000000001,
+   "IMN_uA": -4634.607,
+   "Edel_over_Esup": -0.04447224318251758,
+   "V_rail_before": 0.7658837,
+   "V_rail_after": 0.7563646,
+   "V_rail_peak": 0.8264714,
+   "d_rail_mV": -9.519099999999892,
+   "V_tank_before": null,
+   "V_tank_after": null,
+   "d_tank_mV": null,
+   "slope_inject_V_per_ns": 97.50000026423308,
+   "slope_rail_V_per_ns": 97.50000026423308,
+   "slope_logic_V_per_ns": 21.95000005531409,
+   "msg": "ran fx_A_C479_L1_t24_early.cir in 106.9s"
+  },
+  {
+   "arm": "B",
+   "seq": "early",
+   "tag": "B_C479_L1_t24_early",
+   "ctk_fF": 479.0,
+   "ltu_nH": 1.0,
+   "ton_ps": 24.0,
+   "tfw_ps": 5.95864323919767,
+   "zero_ps": 361.95864323919767,
+   "IPK_uA": 2573.9610000000002,
+   "IZ_uA": -0.2816082,
+   "dest": "nrail",
+   "q_delivered_fC": -5.130999999999971,
+   "q_supply_fC": 77.9077,
+   "Qdel_over_Qsup": -0.06585998559834227,
+   "E_delivered_fJ": -4.259399999999981,
+   "E_supply_fJ": 93.48920000000003,
+   "E_gate_drive_fJ": 17.67296,
+   "q_shootthrough_fC": 55.85830000000001,
+   "IMN_uA": -4781.783,
+   "Edel_over_Esup": -0.045560342798954094,
+   "V_rail_before": 0.7658839,
+   "V_rail_after": 0.7570724,
+   "V_rail_peak": 0.7667088,
+   "d_rail_mV": -8.811499999999972,
+   "V_tank_before": 0.7658839,
+   "V_tank_after": 0.7570724,
+   "d_tank_mV": -8.811499999999972,
+   "slope_inject_V_per_ns": 11.333333589227411,
+   "slope_rail_V_per_ns": 85.50000267030849,
+   "slope_logic_V_per_ns": 20.74500064192459,
+   "msg": "ran fx_B_C479_L1_t24_early.cir in 115.0s"
+  },
+  {
+   "arm": "C",
+   "seq": "early",
+   "tag": "C_C479_L1_t24_early",
+   "ctk_fF": 479.0,
+   "ltu_nH": 1.0,
+   "ton_ps": 24.0,
+   "tfw_ps": 5.959970894866217,
+   "zero_ps": 361.9599708948662,
+   "IPK_uA": 2573.4410000000003,
+   "IZ_uA": -0.021620860000000002,
+   "dest": "ntk",
+   "q_delivered_fC": -5.116999999999967,
+   "q_supply_fC": 77.89699999999999,
+   "Qdel_over_Qsup": -0.06568930767551982,
+   "E_delivered_fJ": -4.245200000000064,
+   "E_supply_fJ": 93.47629999999995,
+   "E_gate_drive_fJ": 17.636469999999992,
+   "q_shootthrough_fC": 55.85830000000001,
+   "IMN_uA": -4779.653,
+   "Edel_over_Esup": -0.045414720094826874,
+   "V_rail_before": 0.7658839,
+   "V_rail_after": 0.7570964,
+   "V_rail_peak": 0.7658839,
+   "d_rail_mV": -8.787499999999948,
+   "V_tank_before": 0.7658839,
+   "V_tank_after": 0.7570964,
+   "d_tank_mV": -8.787499999999948,
+   "slope_inject_V_per_ns": 14.00000002797762,
+   "slope_rail_V_per_ns": 12.39130435041171,
+   "slope_logic_V_per_ns": 2.830000000156143,
+   "msg": "ran fx_C_C479_L1_t24_early.cir in 118.4s"
+  },
+  {
+   "arm": "D",
+   "seq": "early",
+   "tag": "D_C479_L1_t24_early",
+   "ctk_fF": 479.0,
+   "ltu_nH": 1.0,
+   "ton_ps": 24.0,
+   "tfw_ps": 5.964215026619513,
+   "zero_ps": 361.9642150266195,
+   "IPK_uA": 2572.006,
+   "IZ_uA": -0.06915310000000001,
+   "dest": "ntk",
+   "q_delivered_fC": -4.9629999999999255,
+   "q_supply_fC": 77.92470000000002,
+   "Qdel_over_Qsup": -0.06368969017525797,
+   "E_delivered_fJ": -4.153399999999981,
+   "E_supply_fJ": 93.50959999999999,
+   "E_gate_drive_fJ": 17.601850000000002,
+   "q_shootthrough_fC": 55.8582,
+   "IMN_uA": -4772.804,
+   "Edel_over_Esup": -0.04441682992976102,
+   "V_rail_before": 0.765884,
+   "V_rail_after": 0.765884,
+   "V_rail_peak": 0.765884,
+   "d_rail_mV": 0.0,
+   "V_tank_before": 0.765884,
+   "V_tank_after": 0.7559083,
+   "d_tank_mV": -9.975700000000032,
+   "slope_inject_V_per_ns": 14.254122938529232,
+   "slope_rail_V_per_ns": 0.0,
+   "slope_logic_V_per_ns": null,
+   "msg": "ran fx_D_C479_L1_t24_early.cir in 39.7s"
+  }
+ ],
+ "damping": {
+  "_what": "series-RLC damping of each hop, per configuration. R_eff is MEASURED from the deck (peak dV across the loop / peak current); C_ser and R_crit are DERIVED.",
+  "L_nH": 15.0,
+  "hops": [
+   {
+    "sizing": "uniform",
+    "m": 2.0,
+    "hop": 1,
+    "src": 1,
+    "dst": 2,
+    "C_src_fF": 318.36,
+    "C_dst_fF": 200.65,
+    "C_ser_fF": 123.08,
+    "R_crit_ohm": 698.2,
+    "t_half_undamped_ps": 134.98,
+    "Q": 1.579,
+    "underdamped": true,
+    "t_half_damped_ps": 142.3
+   },
+   {
+    "sizing": "uniform",
+    "m": 2.0,
+    "hop": 2,
+    "src": 2,
+    "dst": 3,
+    "C_src_fF": 200.65,
+    "C_dst_fF": 131.54,
+    "C_ser_fF": 79.45,
+    "R_crit_ohm": 869.0,
+    "t_half_undamped_ps": 108.45,
+    "Q": 1.966,
+    "underdamped": true,
+    "t_half_damped_ps": 112.1
+   },
+   {
+    "sizing": "uniform",
+    "m": 2.0,
+    "hop": 3,
+    "src": 3,
+    "dst": 4,
+    "C_src_fF": 131.54,
+    "C_dst_fF": 126.57,
+    "C_ser_fF": 64.5,
+    "R_crit_ohm": 964.5,
+    "t_half_undamped_ps": 97.72,
+    "Q": 2.182,
+    "underdamped": true,
+    "t_half_damped_ps": 100.4
+   },
+   {
+    "sizing": "uniform",
+    "m": 2.0,
+    "hop": 4,
+    "src": 4,
+    "dst": 5,
+    "C_src_fF": 126.57,
+    "C_dst_fF": 129.05,
+    "C_ser_fF": 63.9,
+    "R_crit_ohm": 969.0,
+    "t_half_undamped_ps": 97.26,
+    "Q": 2.192,
+    "underdamped": true,
+    "t_half_damped_ps": 99.9
+   },
+   {
+    "sizing": "uniform",
+    "m": 6.0,
+    "hop": 1,
+    "src": 1,
+    "dst": 2,
+    "C_src_fF": 560.01,
+    "C_dst_fF": 442.29,
+    "C_ser_fF": 247.12,
+    "R_crit_ohm": 492.7,
+    "t_half_undamped_ps": 191.27,
+    "Q": 1.115,
+    "underdamped": true,
+    "t_half_damped_ps": 214.0
+   },
+   {
+    "sizing": "uniform",
+    "m": 6.0,
+    "hop": 2,
+    "src": 2,
+    "dst": 3,
+    "C_src_fF": 442.29,
+    "C_dst_fF": 373.19,
+    "C_ser_fF": 202.41,
+    "R_crit_ohm": 544.5,
+    "t_half_undamped_ps": 173.1,
+    "Q": 1.232,
+    "underdamped": true,
+    "t_half_damped_ps": 189.4
+   },
+   {
+    "sizing": "uniform",
+    "m": 6.0,
+    "hop": 3,
+    "src": 3,
+    "dst": 4,
+    "C_src_fF": 373.19,
+    "C_dst_fF": 368.21,
+    "C_ser_fF": 185.34,
+    "R_crit_ohm": 569.0,
+    "t_half_undamped_ps": 165.65,
+    "Q": 1.287,
+    "underdamped": true,
+    "t_half_damped_ps": 179.8
+   },
+   {
+    "sizing": "uniform",
+    "m": 6.0,
+    "hop": 4,
+    "src": 4,
+    "dst": 5,
+    "C_src_fF": 368.21,
+    "C_dst_fF": 370.7,
+    "C_ser_fF": 184.73,
+    "R_crit_ohm": 569.9,
+    "t_half_undamped_ps": 165.37,
+    "Q": 1.289,
+    "underdamped": true,
+    "t_half_damped_ps": 179.4
+   },
+   {
+    "sizing": "matched",
+    "m": 2.0,
+    "hop": 1,
+    "src": 1,
+    "dst": 2,
+    "C_src_fF": 592.62,
+    "C_dst_fF": 239.47,
+    "C_ser_fF": 170.55,
+    "R_crit_ohm": 593.1,
+    "t_half_undamped_ps": 158.9,
+    "Q": 1.342,
+    "underdamped": true,
+    "t_half_damped_ps": 171.2
+   },
+   {
+    "sizing": "matched",
+    "m": 2.0,
+    "hop": 2,
+    "src": 2,
+    "dst": 3,
+    "C_src_fF": 239.47,
+    "C_dst_fF": 32.15,
+    "C_ser_fF": 28.34,
+    "R_crit_ohm": 1454.9,
+    "t_half_undamped_ps": 64.78,
+    "Q": 3.292,
+    "underdamped": true,
+    "t_half_damped_ps": 65.5
+   },
+   {
+    "sizing": "matched",
+    "m": 2.0,
+    "hop": 3,
+    "src": 3,
+    "dst": 4,
+    "C_src_fF": 32.15,
+    "C_dst_fF": 17.24,
+    "C_ser_fF": 11.22,
+    "R_crit_ohm": 2312.5,
+    "t_half_undamped_ps": 40.76,
+    "Q": 5.231,
+    "underdamped": true,
+    "t_half_damped_ps": 40.9
+   },
+   {
+    "sizing": "matched",
+    "m": 2.0,
+    "hop": 4,
+    "src": 4,
+    "dst": 5,
+    "C_src_fF": 17.24,
+    "C_dst_fF": 24.69,
+    "C_ser_fF": 10.15,
+    "R_crit_ohm": 2431.3,
+    "t_half_undamped_ps": 38.76,
+    "Q": 5.5,
+    "underdamped": true,
+    "t_half_damped_ps": 38.9
+   },
+   {
+    "sizing": "matched",
+    "m": 6.0,
+    "hop": 1,
+    "src": 1,
+    "dst": 2,
+    "C_src_fF": 1382.79,
+    "C_dst_fF": 558.76,
+    "C_ser_fF": 397.96,
+    "R_crit_ohm": 388.3,
+    "t_half_undamped_ps": 242.72,
+    "Q": 0.878,
+    "underdamped": true,
+    "t_half_damped_ps": 295.3
+   },
+   {
+    "sizing": "matched",
+    "m": 6.0,
+    "hop": 2,
+    "src": 2,
+    "dst": 3,
+    "C_src_fF": 558.76,
+    "C_dst_fF": 75.02,
+    "C_ser_fF": 66.14,
+    "R_crit_ohm": 952.5,
+    "t_half_undamped_ps": 98.95,
+    "Q": 2.155,
+    "underdamped": true,
+    "t_half_damped_ps": 101.7
+   },
+   {
+    "sizing": "matched",
+    "m": 6.0,
+    "hop": 3,
+    "src": 3,
+    "dst": 4,
+    "C_src_fF": 75.02,
+    "C_dst_fF": 40.22,
+    "C_ser_fF": 26.18,
+    "R_crit_ohm": 1513.9,
+    "t_half_undamped_ps": 62.26,
+    "Q": 3.425,
+    "underdamped": true,
+    "t_half_damped_ps": 62.9
+   },
+   {
+    "sizing": "matched",
+    "m": 6.0,
+    "hop": 4,
+    "src": 4,
+    "dst": 5,
+    "C_src_fF": 40.22,
+    "C_dst_fF": 57.62,
+    "C_ser_fF": 23.68,
+    "R_crit_ohm": 1591.6,
+    "t_half_undamped_ps": 59.21,
+    "Q": 3.601,
+    "underdamped": true,
+    "t_half_damped_ps": 59.8
+   }
+  ],
+  "MEASURED_matched_m6_hop1": {
+   "I_peak_uA": 3338.84,
+   "t_peak_ps": 299.63,
+   "V_src_at_peak": 1.05774,
+   "V_dst_at_peak": 0.31979,
+   "R_eff_at_peak_ohm": 221.0,
+   "note": "at the current peak the inductor voltage is zero, so (V_src - V_dst)/I is the loop series resistance directly: two tg15p transfer gates in series (source-side cut + destination side) plus RS = 10 ohm."
+  },
+  "R_eff_used_ohm": 221.0
+ },
+ "cost": {
+  "cap_density_fF_per_um2": 1.5,
+  "provenance": "MEASURED from the PDK: .param cap_carea = 1.5E-15 (F/um^2) in /usr/local/src/IHP-Open-PDK/ihp-sg13g2/libs.tech/ngspice/models/cornerCAP.lib, cmim typ; 0.9x/1.1x at the CAP corners.",
+  "C_bank_per_bank_fF": {
+   "1": 197.5416,
+   "2": 79.8232,
+   "3": 10.7167,
+   "4": 5.7451,
+   "5": 8.2309
+  },
+  "tanks": [
+   {
+    "sizing": "uniform",
+    "m": 2.0,
+    "C_tank_fF": {
+     "1": 120.82,
+     "2": 120.82,
+     "3": 120.82,
+     "4": 120.82,
+     "5": 120.82
+    },
+    "total_tank_fF": 604.11,
+    "tank_area_um2": 402.7,
+    "area_per_bank_um2": {
+     "1": 80.5,
+     "2": 80.5,
+     "3": 80.5,
+     "4": 80.5,
+     "5": 80.5
+    }
+   },
+   {
+    "sizing": "uniform",
+    "m": 6.0,
+    "C_tank_fF": {
+     "1": 362.47,
+     "2": 362.47,
+     "3": 362.47,
+     "4": 362.47,
+     "5": 362.47
+    },
+    "total_tank_fF": 1812.34,
+    "tank_area_um2": 1208.2,
+    "area_per_bank_um2": {
+     "1": 241.6,
+     "2": 241.6,
+     "3": 241.6,
+     "4": 241.6,
+     "5": 241.6
+    }
+   },
+   {
+    "sizing": "matched",
+    "m": 2.0,
+    "C_tank_fF": {
+     "1": 395.08,
+     "2": 159.65,
+     "3": 21.43,
+     "4": 11.49,
+     "5": 16.46
+    },
+    "total_tank_fF": 604.11,
+    "tank_area_um2": 402.7,
+    "area_per_bank_um2": {
+     "1": 263.4,
+     "2": 106.4,
+     "3": 14.3,
+     "4": 7.7,
+     "5": 11.0
+    }
+   },
+   {
+    "sizing": "matched",
+    "m": 6.0,
+    "C_tank_fF": {
+     "1": 1185.25,
+     "2": 478.94,
+     "3": 64.3,
+     "4": 34.47,
+     "5": 49.39
+    },
+    "total_tank_fF": 1812.34,
+    "tank_area_um2": 1208.2,
+    "area_per_bank_um2": {
+     "1": 790.2,
+     "2": 319.3,
+     "3": 42.9,
+     "4": 23.0,
+     "5": 32.9
+    }
+   }
+  ],
+  "inductors": {
+   "hop_inductors": 4,
+   "topup_inductors_clamp": 0,
+   "topup_inductors_pulsed": 2,
+   "note": "4 hop inductors for a depth-5 chain (one per hop). The CLAMP top-up adds none. The PULSED buck adds one per topped bank (2 here). L = 15 nH each; on-chip nH-class inductors are the known area/Q problem and are NOT costed in um^2 here -- that is a BOUND, not a result."
+  },
+  "energy_m6_uniform": {
+   "bank": {
+    "Q_from_dV_source_topped_fC": 128.237,
+    "Q_from_dV_source_free_fC": -38.033,
+    "attributable_topup_charge_fC": 166.27,
+    "attributable_topup_energy_fJ_BOUND": 199.524,
+    "topup_switch_gate_drive_fJ": 2.21,
+    "extra_hop_gate_drive_fJ": 4.893,
+    "total_topup_cost_fJ": 201.734,
+    "hop_IR_loss_free_fJ": 17.558,
+    "hop_IR_loss_topped_fJ": 20.68
+   },
+   "tank": {
+    "Q_from_dV_source_topped_fC": 129.903,
+    "Q_from_dV_source_free_fC": -38.033,
+    "attributable_topup_charge_fC": 167.936,
+    "attributable_topup_energy_fJ_BOUND": 201.523,
+    "topup_switch_gate_drive_fJ": 2.233,
+    "extra_hop_gate_drive_fJ": 4.938,
+    "total_topup_cost_fJ": 203.756,
+    "hop_IR_loss_free_fJ": 17.545,
+    "hop_IR_loss_topped_fJ": 20.698
+   }
+  },
+  "LABELS": "tank area and C_bank: MEASURED (PDK density x MEASURED capacitance). top-up charge/energy: MEASURED charge from a 1F integrator on the dV source, times the IDEAL 1.2 V source voltage -- the source is ideal, so the energy is a LOWER BOUND (a real regulator delivering it costs more). Gate-drive energies: MEASURED from 1F integrators on the real PWL gate sources, so they include the gate charge but NOT the cost of generating the PWL -- also a LOWER BOUND. Inductor area: NOT COSTED, a BOUND."
+ },
+ "cbank": [
+  {
+   "M": 1,
+   "msg": "ran cb_M1.cir in 22.3s",
+   "QA": 1.505272e-14,
+   "QB": 1.53013e-14,
+   "dQ_fC": 0.24858000000000216,
+   "VA": 0.713816,
+   "VB": 0.813816,
+   "dV": 0.09999999999999998,
+   "C_bank_fF": 2.485800000000022,
+   "C_per_cell_fF": 2.485800000000022
+  },
+  {
+   "M": 2,
+   "msg": "ran cb_M2.cir in 22.6s",
+   "QA": 5.175648e-14,
+   "QB": 5.257957e-14,
+   "dQ_fC": 0.8230899999999958,
+   "VA": 0.713816,
+   "VB": 0.813816,
+   "dV": 0.09999999999999998,
+   "C_bank_fF": 8.23089999999996,
+   "C_per_cell_fF": 4.11544999999998
+  },
+  {
+   "M": 3,
+   "msg": "ran cb_M3.cir in 21.1s",
+   "QA": 6.68092e-14,
+   "QB": 6.788087e-14,
+   "dQ_fC": 1.0716700000000043,
+   "VA": 0.713816,
+   "VB": 0.813816,
+   "dV": 0.09999999999999998,
+   "C_bank_fF": 10.716700000000046,
+   "C_per_cell_fF": 3.5722333333333487
+  },
+  {
+   "M": 8,
+   "msg": "ran cb_M8.cir in 26.5s",
+   "QA": 2.070259e-13,
+   "QB": 2.103183e-13,
+   "dQ_fC": 3.292400000000001,
+   "VA": 0.713816,
+   "VB": 0.813816,
+   "dV": 0.09999999999999998,
+   "C_bank_fF": 32.92400000000002,
+   "C_per_cell_fF": 4.115500000000003
+  },
+  {
+   "M": 19,
+   "msg": "ran cb_M19.cir in 43.1s",
+   "QA": 4.80861e-13,
+   "QB": 4.885174e-13,
+   "dQ_fC": 7.656400000000032,
+   "VA": 0.713816,
+   "VB": 0.813816,
+   "dV": 0.09999999999999998,
+   "C_bank_fF": 76.56400000000033,
+   "C_per_cell_fF": 4.029684210526334
+  },
+  {
+   "M": 48,
+   "msg": "ran cb_M48.cir in 67.9s",
+   "QA": 1.242155e-12,
+   "QB": 1.26191e-12,
+   "dQ_fC": 19.755000000000052,
+   "VA": 0.713816,
+   "VB": 0.813816,
+   "dV": 0.09999999999999998,
+   "C_bank_fF": 197.55000000000055,
+   "C_per_cell_fF": 4.115625000000011
+  }
+ ],
+ "results": {
+  "_what": "qal/tankfed assembled results",
+  "sigma_floor_mV": 6.44,
+  "cliff_V": 0.6,
+  "coupling_bar_mV": 7.0,
+  "cap_density_fF_per_um2": 1.5,
+  "cap_density_provenance": "MEASURED from the PDK: cap_carea = 1.5E-15 F/um^2 (cmim, typ) in ihp-sg13g2/libs.tech/ngspice/models/cornerCAP.lib; 0.9x / 1.1x at the CAP corners",
+  "n_rows": 12,
+  "C_bank_MEASURED_fF": {
+   "1": 2.4858,
+   "2": 8.2309,
+   "3": 10.7167,
+   "8": 32.924,
+   "19": 76.564,
+   "48": 197.55
+  },
+  "rows": [
+   {
+    "tag": "bank_uniform_m6_free_T340_dv1200",
+    "dest": "bank",
+    "sizing": "uniform",
+    "m": 6.0,
+    "form": "free",
+    "dv": 1.2,
+    "T_ps": 340.0,
+    "tz_ps": [
+     256.0727,
+     209.289,
+     202.4025,
+     193.5264
+    ],
+    "hop_spread": 1.3231926796715159,
+    "rail_V": [
+     1.24408,
+     0.76222,
+     0.50896,
+     0.34814,
+     0.26049
+    ],
+    "collapse": [
+     0.6127,
+     0.6677,
+     0.684,
+     0.7482
+    ],
+    "worst_settle_pct": [
+     99.54,
+     96.3,
+     51.0,
+     19.7,
+     33.09
+    ],
+    "separation_mV": [
+     1238.2532,
+     735.0331,
+     178.8127,
+     null,
+     0.0
+    ],
+    "max_LOW_V": [
+     5.2e-05,
+     -0.001018,
+     0.080754,
+     null,
+     0.086195
+    ],
+    "guard_fail": [
+     0,
+     0,
+     2,
+     1,
+     2
+    ],
+    "value_fail": [
+     0,
+     0,
+     0,
+     1,
+     1
+    ],
+    "IZ_uA": [
+     -0.0026,
+     -0.0009,
+     -0.0289,
+     -0.0397
+    ],
+    "IZ_gate_pass": true,
+    "cliff_pass": false,
+    "tank_total_fF": 1812.35,
+    "tank_area_um2": 1208.2,
+    "ledger": {
+     "hop1": {
+      "q_fC": 443.21139999999997,
+      "E_src_fJ": 402.86940000000004,
+      "E_dst_fJ": 170.8584,
+      "E_R_fJ": 10.4644294758193
+     },
+     "hop2": {
+      "q_fC": 264.3607,
+      "E_src_fJ": 123.0948,
+      "E_dst_fJ": 65.89819,
+      "E_R_fJ": 4.2165734758193
+     },
+     "hop3": {
+      "q_fC": 179.31289999999993,
+      "E_src_fJ": 53.739920000000005,
+      "E_dst_fJ": 30.6272,
+      "E_R_fJ": 1.9934614758192999
+     },
+     "hop4": {
+      "q_fC": 116.88309999999997,
+      "E_src_fJ": 24.712320000000002,
+      "E_dst_fJ": 15.0881,
+      "E_R_fJ": 0.8831378758192999
+     },
+     "E_hop_gate_drive_fJ": -9.441600000000022,
+     "Q_dv_source_fC": -38.03300000000011,
+     "topup3": {
+      "q_delivered_fC": null,
+      "E_delivered_fJ": null,
+      "E_gate_drive_fJ": null
+     },
+     "topup4": {
+      "q_delivered_fC": null,
+      "E_delivered_fJ": null,
+      "E_gate_drive_fJ": null
+     }
+    }
+   },
+   {
+    "tag": "bank_uniform_m6_clamp_T340_dv1200",
+    "dest": "bank",
+    "sizing": "uniform",
+    "m": 6.0,
+    "form": "clamp",
+    "dv": 1.2,
+    "T_ps": 340.0,
+    "tz_ps": [
+     256.0727,
+     209.289,
+     202.4025,
+     193.5264
+    ],
+    "hop_spread": 1.3231926796715159,
+    "rail_V": [
+     1.24408,
+     0.76222,
+     0.67082,
+     0.63532,
+     0.45921
+    ],
+    "collapse": [
+     0.6127,
+     0.8801,
+     0.9471,
+     0.7228
+    ],
+    "worst_settle_pct": [
+     99.54,
+     96.3,
+     77.6,
+     35.3,
+     35.86
+    ],
+    "separation_mV": [
+     1238.2532,
+     735.0331,
+     395.487,
+     null,
+     0.0
+    ],
+    "max_LOW_V": [
+     5.2e-05,
+     -0.001018,
+     0.12505,
+     null,
+     0.164678
+    ],
+    "guard_fail": [
+     0,
+     0,
+     2,
+     0,
+     2
+    ],
+    "value_fail": [
+     0,
+     0,
+     0,
+     1,
+     1
+    ],
+    "IZ_uA": [
+     -0.0026,
+     -0.0009,
+     37.2716,
+     41.732
+    ],
+    "IZ_gate_pass": false,
+    "cliff_pass": false,
+    "tank_total_fF": 1812.35,
+    "tank_area_um2": 1208.2,
+    "ledger": {
+     "hop1": {
+      "q_fC": 443.21139999999997,
+      "E_src_fJ": 402.86940000000004,
+      "E_dst_fJ": 170.8584,
+      "E_R_fJ": 10.4644294758193
+     },
+     "hop2": {
+      "q_fC": 264.3607,
+      "E_src_fJ": 123.0948,
+      "E_dst_fJ": 65.89819,
+      "E_R_fJ": 4.2165734758193
+     },
+     "hop3": {
+      "q_fC": 231.0309,
+      "E_src_fJ": 92.10654000000001,
+      "E_dst_fJ": 50.586029999999994,
+      "E_R_fJ": 3.2886114758193
+     },
+     "hop4": {
+      "q_fC": 205.34669999999994,
+      "E_src_fJ": 79.82964,
+      "E_dst_fJ": 46.08931,
+      "E_R_fJ": 2.7105124758193
+     },
+     "E_hop_gate_drive_fJ": -14.33500000000001,
+     "Q_dv_source_fC": 128.23699999999974,
+     "topup3": {
+      "q_delivered_fC": null,
+      "E_delivered_fJ": null,
+      "E_gate_drive_fJ": -1.023729999999999
+     },
+     "topup4": {
+      "q_delivered_fC": null,
+      "E_delivered_fJ": null,
+      "E_gate_drive_fJ": -1.1861499999999983
+     }
+    }
+   },
+   {
+    "tag": "tank_uniform_m6_free_T340_dv1200",
+    "dest": "tank",
+    "sizing": "uniform",
+    "m": 6.0,
+    "form": "free",
+    "dv": 1.2,
+    "T_ps": 340.0,
+    "tz_ps": [
+     256.0727,
+     209.3097,
+     202.4336,
+     193.5411
+    ],
+    "hop_spread": 1.323092427042717,
+    "rail_V": [
+     1.24408,
+     0.76222,
+     0.50873,
+     0.34769,
+     0.26004
+    ],
+    "collapse": [
+     0.6127,
+     0.6674,
+     0.6834,
+     0.7479
+    ],
+    "worst_settle_pct": [
+     99.54,
+     96.3,
+     50.95,
+     19.7,
+     33.09
+    ],
+    "separation_mV": [
+     1238.2532,
+     735.0332,
+     178.5983,
+     null,
+     0.0
+    ],
+    "max_LOW_V": [
+     5.2e-05,
+     -0.001018,
+     0.080618,
+     null,
+     0.086052
+    ],
+    "guard_fail": [
+     0,
+     0,
+     2,
+     1,
+     2
+    ],
+    "value_fail": [
+     0,
+     0,
+     0,
+     1,
+     1
+    ],
+    "IZ_uA": [
+     -0.0026,
+     -0.0069,
+     -0.0118,
+     -0.0003
+    ],
+    "IZ_gate_pass": true,
+    "cliff_pass": false,
+    "tank_total_fF": 1812.35,
+    "tank_area_um2": 1208.2,
+    "ledger": {
+     "hop1": {
+      "q_fC": 443.21139999999997,
+      "E_src_fJ": 402.86940000000004,
+      "E_dst_fJ": 170.8584,
+      "E_R_fJ": 10.4644294758193
+     },
+     "hop2": {
+      "q_fC": 264.2412999999999,
+      "E_src_fJ": 123.06840000000001,
+      "E_dst_fJ": 65.91732,
+      "E_R_fJ": 4.2125524758193
+     },
+     "hop3": {
+      "q_fC": 179.0783,
+      "E_src_fJ": 53.63335,
+      "E_dst_fJ": 30.585560000000005,
+      "E_R_fJ": 1.9881274758193002
+     },
+     "hop4": {
+      "q_fC": 116.68459999999999,
+      "E_src_fJ": 24.62685,
+      "E_dst_fJ": 15.037550000000001,
+      "E_R_fJ": 0.8801174758193
+     },
+     "E_hop_gate_drive_fJ": -9.441099999999986,
+     "Q_dv_source_fC": -38.03300000000011,
+     "topup3": {
+      "q_delivered_fC": null,
+      "E_delivered_fJ": null,
+      "E_gate_drive_fJ": null
+     },
+     "topup4": {
+      "q_delivered_fC": null,
+      "E_delivered_fJ": null,
+      "E_gate_drive_fJ": null
+     }
+    }
+   },
+   {
+    "tag": "tank_uniform_m6_clamp_T340_dv1200",
+    "dest": "tank",
+    "sizing": "uniform",
+    "m": 6.0,
+    "form": "clamp",
+    "dv": 1.2,
+    "T_ps": 340.0,
+    "tz_ps": [
+     256.0727,
+     209.3097,
+     202.4336,
+     193.5411
+    ],
+    "hop_spread": 1.323092427042717,
+    "rail_V": [
+     1.24408,
+     0.76222,
+     0.67226,
+     0.63761,
+     0.46051
+    ],
+    "collapse": [
+     0.6127,
+     0.882,
+     0.9484,
+     0.7223
+    ],
+    "worst_settle_pct": [
+     99.54,
+     96.3,
+     77.64,
+     35.45,
+     35.9
+    ],
+    "separation_mV": [
+     1238.2532,
+     735.0332,
+     396.5473,
+     null,
+     0.0
+    ],
+    "max_LOW_V": [
+     5.2e-05,
+     -0.001018,
+     0.125376,
+     null,
+     0.165308
+    ],
+    "guard_fail": [
+     0,
+     0,
+     2,
+     0,
+     2
+    ],
+    "value_fail": [
+     0,
+     0,
+     0,
+     1,
+     1
+    ],
+    "IZ_uA": [
+     -0.0026,
+     -0.0069,
+     37.7536,
+     42.4197
+    ],
+    "IZ_gate_pass": false,
+    "cliff_pass": false,
+    "tank_total_fF": 1812.35,
+    "tank_area_um2": 1208.2,
+    "ledger": {
+     "hop1": {
+      "q_fC": 443.21139999999997,
+      "E_src_fJ": 402.86940000000004,
+      "E_dst_fJ": 170.8584,
+      "E_R_fJ": 10.4644294758193
+     },
+     "hop2": {
+      "q_fC": 264.2412999999999,
+      "E_src_fJ": 123.06840000000001,
+      "E_dst_fJ": 65.91732,
+      "E_R_fJ": 4.2125524758193
+     },
+     "hop3": {
+      "q_fC": 231.27609999999996,
+      "E_src_fJ": 92.39159000000001,
+      "E_dst_fJ": 50.75466,
+      "E_R_fJ": 3.2951314758193
+     },
+     "hop4": {
+      "q_fC": 205.9263,
+      "E_src_fJ": 80.31791,
+      "E_dst_fJ": 46.348240000000004,
+      "E_R_fJ": 2.7255464758193
+     },
+     "E_hop_gate_drive_fJ": -14.378699999999991,
+     "Q_dv_source_fC": 129.9030000000002,
+     "topup3": {
+      "q_delivered_fC": null,
+      "E_delivered_fJ": null,
+      "E_gate_drive_fJ": -1.0385199999999994
+     },
+     "topup4": {
+      "q_delivered_fC": null,
+      "E_delivered_fJ": null,
+      "E_gate_drive_fJ": -1.1944499999999996
+     }
+    }
+   },
+   {
+    "tag": "bank_uniform_m2_free_T340_dv1200",
+    "dest": "bank",
+    "sizing": "uniform",
+    "m": 2.0,
+    "form": "free",
+    "dv": 1.2,
+    "T_ps": 340.0,
+    "tz_ps": [
+     191.6091,
+     153.434,
+     146.7021,
+     135.0526
+    ],
+    "hop_spread": 1.4187738581971505,
+    "rail_V": [
+     1.2626,
+     0.86229,
+     0.60084,
+     0.42016,
+     0.34453
+    ],
+    "collapse": [
+     0.6829,
+     0.6968,
+     0.6993,
+     0.82
+    ],
+    "worst_settle_pct": [
+     99.41,
+     99.82,
+     87.41,
+     23.02,
+     33.24
+    ],
+    "separation_mV": [
+     1255.1079,
+     861.3746,
+     454.3531,
+     null,
+     0.0
+    ],
+    "max_LOW_V": [
+     2.4e-05,
+     -0.000644,
+     0.075638,
+     null,
+     0.114535
+    ],
+    "guard_fail": [
+     0,
+     0,
+     2,
+     1,
+     2
+    ],
+    "value_fail": [
+     0,
+     0,
+     0,
+     1,
+     1
+    ],
+    "IZ_uA": [
+     -0.0023,
+     -0.0006,
+     -0.0027,
+     -0.029
+    ],
+    "IZ_gate_pass": true,
+    "cliff_pass": false,
+    "tank_total_fF": 604.12,
+    "tank_area_um2": 402.7,
+    "ledger": {
+     "hop1": {
+      "q_fC": 295.1832,
+      "E_src_fJ": 268.7925,
+      "E_dst_fJ": 131.4204,
+      "E_R_fJ": 6.0440374758193
+     },
+     "hop2": {
+      "q_fC": 168.55719999999994,
+      "E_src_fJ": 80.20437,
+      "E_dst_fJ": 49.257149999999996,
+      "E_R_fJ": 2.3330124758193
+     },
+     "hop3": {
+      "q_fC": 114.84019999999995,
+      "E_src_fJ": 35.70234,
+      "E_dst_fJ": 23.31154,
+      "E_R_fJ": 1.1249554758192999
+     },
+     "hop4": {
+      "q_fC": 70.91609999999993,
+      "E_src_fJ": 16.61626,
+      "E_dst_fJ": 11.913030000000001,
+      "E_R_fJ": 0.4645818758193
+     },
+     "E_hop_gate_drive_fJ": -7.308599999999996,
+     "Q_dv_source_fC": -38.86099999999987,
+     "topup3": {
+      "q_delivered_fC": null,
+      "E_delivered_fJ": null,
+      "E_gate_drive_fJ": null
+     },
+     "topup4": {
+      "q_delivered_fC": null,
+      "E_delivered_fJ": null,
+      "E_gate_drive_fJ": null
+     }
+    }
+   },
+   {
+    "tag": "bank_uniform_m2_clamp_T340_dv1200",
+    "dest": "bank",
+    "sizing": "uniform",
+    "m": 2.0,
+    "form": "clamp",
+    "dv": 1.2,
+    "T_ps": 340.0,
+    "tz_ps": [
+     191.6091,
+     153.434,
+     146.7021,
+     135.0526
+    ],
+    "hop_spread": 1.4187738581971505,
+    "rail_V": [
+     1.2626,
+     0.86229,
+     0.83721,
+     0.81568,
+     0.6383
+    ],
+    "collapse": [
+     0.6829,
+     0.9709,
+     0.9743,
+     0.7825
+    ],
+    "worst_settle_pct": [
+     99.41,
+     99.82,
+     82.62,
+     81.18,
+     18.41
+    ],
+    "separation_mV": [
+     1255.1079,
+     861.3746,
+     688.7107,
+     null,
+     0.0
+    ],
+    "max_LOW_V": [
+     2.4e-05,
+     -0.000644,
+     0.145468,
+     null,
+     0.117539
+    ],
+    "guard_fail": [
+     0,
+     0,
+     2,
+     0,
+     2
+    ],
+    "value_fail": [
+     0,
+     0,
+     0,
+     0,
+     1
+    ],
+    "IZ_uA": [
+     -0.0023,
+     -0.0006,
+     60.0188,
+     76.6899
+    ],
+    "IZ_gate_pass": false,
+    "cliff_pass": true,
+    "tank_total_fF": 604.12,
+    "tank_area_um2": 402.7,
+    "ledger": {
+     "hop1": {
+      "q_fC": 295.1832,
+      "E_src_fJ": 268.7925,
+      "E_dst_fJ": 131.4204,
+      "E_R_fJ": 6.0440374758193
+     },
+     "hop2": {
+      "q_fC": 168.55719999999994,
+      "E_src_fJ": 80.20437,
+      "E_dst_fJ": 49.257149999999996,
+      "E_R_fJ": 2.3330124758193
+     },
+     "hop3": {
+      "q_fC": 156.14049999999997,
+      "E_src_fJ": 68.66591,
+      "E_dst_fJ": 42.62852,
+      "E_R_fJ": 2.0618924758193
+     },
+     "hop4": {
+      "q_fC": 131.5107,
+      "E_src_fJ": 60.28963,
+      "E_dst_fJ": 40.27525,
+      "E_R_fJ": 1.5826274758193
+     },
+     "E_hop_gate_drive_fJ": -14.156999999999996,
+     "Q_dv_source_fC": 78.26299999999942,
+     "topup3": {
+      "q_delivered_fC": null,
+      "E_delivered_fJ": null,
+      "E_gate_drive_fJ": -0.41055999999999854
+     },
+     "topup4": {
+      "q_delivered_fC": null,
+      "E_delivered_fJ": null,
+      "E_gate_drive_fJ": -0.9505
+     }
+    }
+   },
+   {
+    "tag": "bank_matched_m2_free_T340_dv1200",
+    "dest": "bank",
+    "sizing": "matched",
+    "m": 2.0,
+    "form": "free",
+    "dv": 1.2,
+    "T_ps": 340.0,
+    "tz_ps": [
+     220.887,
+     141.2127,
+     116.7468,
+     100.0093
+    ],
+    "hop_spread": 2.208664224490329,
+    "rail_V": [
+     1.2424,
+     0.90089,
+     0.80178,
+     0.5461,
+     0.47284
+    ],
+    "collapse": [
+     0.7251,
+     0.89,
+     0.6811,
+     0.8659
+    ],
+    "worst_settle_pct": [
+     99.56,
+     99.8,
+     91.96,
+     57.04,
+     37.06
+    ],
+    "separation_mV": [
+     1236.8145,
+     899.2191,
+     737.0369,
+     null,
+     0.0
+    ],
+    "max_LOW_V": [
+     6.7e-05,
+     -0.000124,
+     0.064489,
+     null,
+     0.175229
+    ],
+    "guard_fail": [
+     0,
+     0,
+     2,
+     0,
+     2
+    ],
+    "value_fail": [
+     0,
+     0,
+     0,
+     0,
+     1
+    ],
+    "IZ_uA": [
+     -0.0002,
+     -0.0083,
+     -0.0077,
+     -0.0149
+    ],
+    "IZ_gate_pass": true,
+    "cliff_pass": false,
+    "tank_total_fF": 604.12,
+    "tank_area_um2": 402.7,
+    "ledger": {
+     "hop1": {
+      "q_fC": 341.1846,
+      "E_src_fJ": 334.4744,
+      "E_dst_fJ": 156.2893,
+      "E_R_fJ": 7.312599475819301
+     },
+     "hop2": {
+      "q_fC": 147.9719,
+      "E_src_fJ": 86.86869999999999,
+      "E_dst_fJ": 57.20103,
+      "E_R_fJ": 1.9647344758193002
+     },
+     "hop3": {
+      "q_fC": 91.3164,
+      "E_src_fJ": 33.702349999999996,
+      "E_dst_fJ": 24.10288,
+      "E_R_fJ": 0.8963101758193001
+     },
+     "hop4": {
+      "q_fC": 46.43949999999997,
+      "E_src_fJ": 12.73793,
+      "E_dst_fJ": 10.37004,
+      "E_R_fJ": 0.2693024758193
+     },
+     "E_hop_gate_drive_fJ": -9.013800000000002,
+     "Q_dv_source_fC": -37.96699999999997,
+     "topup3": {
+      "q_delivered_fC": null,
+      "E_delivered_fJ": null,
+      "E_gate_drive_fJ": null
+     },
+     "topup4": {
+      "q_delivered_fC": null,
+      "E_delivered_fJ": null,
+      "E_gate_drive_fJ": null
+     }
+    }
+   },
+   {
+    "tag": "bank_matched_m2_clamp_T340_dv1200",
+    "dest": "bank",
+    "sizing": "matched",
+    "m": 2.0,
+    "form": "clamp",
+    "dv": 1.2,
+    "T_ps": 340.0,
+    "tz_ps": [
+     220.887,
+     141.2127,
+     116.7468,
+     100.0093
+    ],
+    "hop_spread": 2.208664224490329,
+    "rail_V": [
+     1.2424,
+     0.90089,
+     1.03957,
+     0.99896,
+     0.83326
+    ],
+    "collapse": [
+     0.7251,
+     1.1539,
+     0.9609,
+     0.8341
+    ],
+    "worst_settle_pct": [
+     99.56,
+     99.8,
+     69.5,
+     91.31,
+     -0.41
+    ],
+    "separation_mV": [
+     1236.8145,
+     899.2191,
+     723.4336,
+     null,
+     0.0
+    ],
+    "max_LOW_V": [
+     6.7e-05,
+     -0.000124,
+     0.317053,
+     null,
+     -0.003423
+    ],
+    "guard_fail": [
+     0,
+     0,
+     2,
+     0,
+     1
+    ],
+    "value_fail": [
+     0,
+     0,
+     0,
+     0,
+     1
+    ],
+    "IZ_uA": [
+     -0.0003,
+     -0.0083,
+     88.9144,
+     157.1449
+    ],
+    "IZ_gate_pass": false,
+    "cliff_pass": true,
+    "tank_total_fF": 604.12,
+    "tank_area_um2": 402.7,
+    "ledger": {
+     "hop1": {
+      "q_fC": 341.1846,
+      "E_src_fJ": 334.4744,
+      "E_dst_fJ": 156.2893,
+      "E_R_fJ": 7.312599475819301
+     },
+     "hop2": {
+      "q_fC": 147.9719,
+      "E_src_fJ": 86.86869999999999,
+      "E_dst_fJ": 57.20103,
+      "E_R_fJ": 1.9647344758193002
+     },
+     "hop3": {
+      "q_fC": 116.33670000000001,
+      "E_src_fJ": 56.46741,
+      "E_dst_fJ": 38.52753,
+      "E_R_fJ": 1.4348684758193
+     },
+     "hop4": {
+      "q_fC": 83.59800000000003,
+      "E_src_fJ": 41.99245,
+      "E_dst_fJ": 31.8546,
+      "E_R_fJ": 0.8518537758193
+     },
+     "E_hop_gate_drive_fJ": -17.30600000000002,
+     "Q_dv_source_fC": 40.063999999999616,
+     "topup3": {
+      "q_delivered_fC": null,
+      "E_delivered_fJ": null,
+      "E_gate_drive_fJ": 0.25671000000000255
+     },
+     "topup4": {
+      "q_delivered_fC": null,
+      "E_delivered_fJ": null,
+      "E_gate_drive_fJ": -0.4731200000000001
+     }
+    }
+   },
+   {
+    "tag": "tank_uniform_m2_free_T340_dv1200",
+    "dest": "tank",
+    "sizing": "uniform",
+    "m": 2.0,
+    "form": "free",
+    "dv": 1.2,
+    "T_ps": 340.0,
+    "tz_ps": [
+     191.6091,
+     153.4401,
+     146.7141,
+     135.0613
+    ],
+    "hop_spread": 1.4186829565741859,
+    "rail_V": [
+     1.2626,
+     0.86229,
+     0.60057,
+     0.41959,
+     0.34391
+    ],
+    "collapse": [
+     0.6829,
+     0.6965,
+     0.6987,
+     0.8196
+    ],
+    "worst_settle_pct": [
+     99.41,
+     99.82,
+     87.43,
+     22.97,
+     33.24
+    ],
+    "separation_mV": [
+     1255.1079,
+     861.3747,
+     453.8921,
+     null,
+     0.0
+    ],
+    "max_LOW_V": [
+     2.4e-05,
+     -0.000644,
+     0.075478,
+     null,
+     0.114316
+    ],
+    "guard_fail": [
+     0,
+     0,
+     2,
+     1,
+     2
+    ],
+    "value_fail": [
+     0,
+     0,
+     0,
+     1,
+     1
+    ],
+    "IZ_uA": [
+     -0.0024,
+     -0.0007,
+     -0.0071,
+     -0.015
+    ],
+    "IZ_gate_pass": true,
+    "cliff_pass": false,
+    "tank_total_fF": 604.12,
+    "tank_area_um2": 402.7,
+    "ledger": {
+     "hop1": {
+      "q_fC": 295.1832,
+      "E_src_fJ": 268.7925,
+      "E_dst_fJ": 131.4204,
+      "E_R_fJ": 6.0440374758193
+     },
+     "hop2": {
+      "q_fC": 168.47969999999992,
+      "E_src_fJ": 80.18937,
+      "E_dst_fJ": 49.26528,
+      "E_R_fJ": 2.3308324758193
+     },
+     "hop3": {
+      "q_fC": 114.68369999999999,
+      "E_src_fJ": 35.63053,
+      "E_dst_fJ": 23.275589999999998,
+      "E_R_fJ": 1.1218884758193
+     },
+     "hop4": {
+      "q_fC": 70.79199999999999,
+      "E_src_fJ": 16.55758,
+      "E_dst_fJ": 11.8721,
+      "E_R_fJ": 0.4629535758193
+     },
+     "E_hop_gate_drive_fJ": -7.308599999999996,
+     "Q_dv_source_fC": -38.86099999999987,
+     "topup3": {
+      "q_delivered_fC": null,
+      "E_delivered_fJ": null,
+      "E_gate_drive_fJ": null
+     },
+     "topup4": {
+      "q_delivered_fC": null,
+      "E_delivered_fJ": null,
+      "E_gate_drive_fJ": null
+     }
+    }
+   },
+   {
+    "tag": "tank_uniform_m2_clamp_T340_dv1200",
+    "dest": "tank",
+    "sizing": "uniform",
+    "m": 2.0,
+    "form": "clamp",
+    "dv": 1.2,
+    "T_ps": 340.0,
+    "tz_ps": [
+     191.6091,
+     153.4401,
+     146.7141,
+     135.0613
+    ],
+    "hop_spread": 1.4186829565741859,
+    "rail_V": [
+     1.2626,
+     0.86229,
+     0.83747,
+     0.81603,
+     0.6383
+    ],
+    "collapse": [
+     0.6829,
+     0.9712,
+     0.9744,
+     0.7822
+    ],
+    "worst_settle_pct": [
+     99.41,
+     99.82,
+     82.63,
+     81.16,
+     18.41
+    ],
+    "separation_mV": [
+     1255.1079,
+     861.3747,
+     688.9454,
+     null,
+     0.0
+    ],
+    "max_LOW_V": [
+     2.4e-05,
+     -0.000644,
+     0.145482,
+     null,
+     0.117519
+    ],
+    "guard_fail": [
+     0,
+     0,
+     2,
+     0,
+     2
+    ],
+    "value_fail": [
+     0,
+     0,
+     0,
+     0,
+     1
+    ],
+    "IZ_uA": [
+     -0.0024,
+     -0.0008,
+     60.023,
+     76.7652
+    ],
+    "IZ_gate_pass": false,
+    "cliff_pass": true,
+    "tank_total_fF": 604.12,
+    "tank_area_um2": 402.7,
+    "ledger": {
+     "hop1": {
+      "q_fC": 295.1832,
+      "E_src_fJ": 268.7925,
+      "E_dst_fJ": 131.4204,
+      "E_R_fJ": 6.0440374758193
+     },
+     "hop2": {
+      "q_fC": 168.47969999999992,
+      "E_src_fJ": 80.18937,
+      "E_dst_fJ": 49.26528,
+      "E_R_fJ": 2.3308324758193
+     },
+     "hop3": {
+      "q_fC": 156.0463,
+      "E_src_fJ": 68.63422,
+      "E_dst_fJ": 42.626400000000004,
+      "E_R_fJ": 2.0593694758193
+     },
+     "hop4": {
+      "q_fC": 131.50989999999996,
+      "E_src_fJ": 60.28887,
+      "E_dst_fJ": 40.27496,
+      "E_R_fJ": 1.5825874758193
+     },
+     "E_hop_gate_drive_fJ": -14.132100000000012,
+     "Q_dv_source_fC": 78.55499999999996,
+     "topup3": {
+      "q_delivered_fC": null,
+      "E_delivered_fJ": null,
+      "E_gate_drive_fJ": -0.4224099999999981
+     },
+     "topup4": {
+      "q_delivered_fC": null,
+      "E_delivered_fJ": null,
+      "E_gate_drive_fJ": -0.9598199999999976
+     }
+    }
+   },
+   {
+    "tag": "tank_matched_m2_free_T340_dv1200",
+    "dest": "tank",
+    "sizing": "matched",
+    "m": 2.0,
+    "form": "free",
+    "dv": 1.2,
+    "T_ps": 340.0,
+    "tz_ps": [
+     220.887,
+     141.2164,
+     116.7498,
+     100.0128
+    ],
+    "hop_spread": 2.208586583371868,
+    "rail_V": [
+     1.2424,
+     0.90089,
+     0.80156,
+     0.54573,
+     0.47243
+    ],
+    "collapse": [
+     0.7251,
+     0.8897,
+     0.6808,
+     0.8657
+    ],
+    "worst_settle_pct": [
+     99.56,
+     99.8,
+     91.97,
+     56.94,
+     37.05
+    ],
+    "separation_mV": [
+     1236.8145,
+     899.2191,
+     736.9255,
+     null,
+     0.0
+    ],
+    "max_LOW_V": [
+     6.7e-05,
+     -0.000124,
+     0.064374,
+     null,
+     0.175044
+    ],
+    "guard_fail": [
+     0,
+     0,
+     2,
+     0,
+     2
+    ],
+    "value_fail": [
+     0,
+     0,
+     0,
+     0,
+     1
+    ],
+    "IZ_uA": [
+     -0.0003,
+     -0.0052,
+     -0.0071,
+     -0.0342
+    ],
+    "IZ_gate_pass": true,
+    "cliff_pass": false,
+    "tank_total_fF": 604.12,
+    "tank_area_um2": 402.7,
+    "ledger": {
+     "hop1": {
+      "q_fC": 341.1846,
+      "E_src_fJ": 334.4744,
+      "E_dst_fJ": 156.2893,
+      "E_R_fJ": 7.312599475819301
+     },
+     "hop2": {
+      "q_fC": 147.93279999999996,
+      "E_src_fJ": 86.85397999999999,
+      "E_dst_fJ": 57.19911,
+      "E_R_fJ": 1.9636624758193
+     },
+     "hop3": {
+      "q_fC": 91.2487,
+      "E_src_fJ": 33.66344,
+      "E_dst_fJ": 24.07965,
+      "E_R_fJ": 0.8949951758192999
+     },
+     "hop4": {
+      "q_fC": 46.40049999999997,
+      "E_src_fJ": 12.71619,
+      "E_dst_fJ": 10.35271,
+      "E_R_fJ": 0.2688504758193
+     },
+     "E_hop_gate_drive_fJ": -8.993700000000011,
+     "Q_dv_source_fC": -37.96699999999997,
+     "topup3": {
+      "q_delivered_fC": null,
+      "E_delivered_fJ": null,
+      "E_gate_drive_fJ": null
+     },
+     "topup4": {
+      "q_delivered_fC": null,
+      "E_delivered_fJ": null,
+      "E_gate_drive_fJ": null
+     }
+    }
+   },
+   {
+    "tag": "tank_matched_m2_clamp_T340_dv1200",
+    "dest": "tank",
+    "sizing": "matched",
+    "m": 2.0,
+    "form": "clamp",
+    "dv": 1.2,
+    "T_ps": 340.0,
+    "tz_ps": [
+     220.887,
+     141.2164,
+     116.7498,
+     100.0128
+    ],
+    "hop_spread": 2.208586583371868,
+    "rail_V": [
+     1.2424,
+     0.90089,
+     1.03903,
+     0.99785,
+     0.8323
+    ],
+    "collapse": [
+     0.7251,
+     1.1533,
+     0.9604,
+     0.8341
+    ],
+    "worst_settle_pct": [
+     99.56,
+     99.8,
+     69.64,
+     91.35,
+     -0.41
+    ],
+    "separation_mV": [
+     1236.8145,
+     899.2191,
+     724.4833,
+     null,
+     0.0
+    ],
+    "max_LOW_V": [
+     6.7e-05,
+     -0.000124,
+     0.315458,
+     null,
+     -0.003401
+    ],
+    "guard_fail": [
+     0,
+     0,
+     2,
+     0,
+     1
+    ],
+    "value_fail": [
+     0,
+     0,
+     0,
+     0,
+     1
+    ],
+    "IZ_uA": [
+     -0.0003,
+     -0.0052,
+     88.6194,
+     156.4281
+    ],
+    "IZ_gate_pass": false,
+    "cliff_pass": true,
+    "tank_total_fF": 604.12,
+    "tank_area_um2": 402.7,
+    "ledger": {
+     "hop1": {
+      "q_fC": 341.1846,
+      "E_src_fJ": 334.4744,
+      "E_dst_fJ": 156.2893,
+      "E_R_fJ": 7.312599475819301
+     },
+     "hop2": {
+      "q_fC": 147.93279999999996,
+      "E_src_fJ": 86.85397999999999,
+      "E_dst_fJ": 57.19911,
+      "E_R_fJ": 1.9636624758193
+     },
+     "hop3": {
+      "q_fC": 116.2307,
+      "E_src_fJ": 56.37788,
+      "E_dst_fJ": 38.477900000000005,
+      "E_R_fJ": 1.4323294758193
+     },
+     "hop4": {
+      "q_fC": 83.4979,
+      "E_src_fJ": 41.88812,
+      "E_dst_fJ": 31.78443,
+      "E_R_fJ": 0.8498808758192999
+     },
+     "E_hop_gate_drive_fJ": -17.207500000000007,
+     "Q_dv_source_fC": 39.939000000000156,
+     "topup3": {
+      "q_delivered_fC": null,
+      "E_delivered_fJ": null,
+      "E_gate_drive_fJ": 0.3037200000000017
+     },
+     "topup4": {
+      "q_delivered_fC": null,
+      "E_delivered_fJ": null,
+      "E_gate_drive_fJ": -0.42652999999999786
+     }
+    }
+   }
+  ]
+ }
+}

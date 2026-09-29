@@ -1,0 +1,124 @@
+{
+  "cap_density_fF_per_um2": 1.5,
+  "provenance": "MEASURED from the PDK: .param cap_carea = 1.5E-15 (F/um^2) in /usr/local/src/IHP-Open-PDK/ihp-sg13g2/libs.tech/ngspice/models/cornerCAP.lib, cmim typ; 0.9x/1.1x at the CAP corners.",
+  "C_bank_per_bank_fF": {
+    "1": 197.5416,
+    "2": 79.8232,
+    "3": 10.7167,
+    "4": 5.7451,
+    "5": 8.2309
+  },
+  "tanks": [
+    {
+      "sizing": "uniform",
+      "m": 2.0,
+      "C_tank_fF": {
+        "1": 120.82,
+        "2": 120.82,
+        "3": 120.82,
+        "4": 120.82,
+        "5": 120.82
+      },
+      "total_tank_fF": 604.11,
+      "tank_area_um2": 402.7,
+      "area_per_bank_um2": {
+        "1": 80.5,
+        "2": 80.5,
+        "3": 80.5,
+        "4": 80.5,
+        "5": 80.5
+      }
+    },
+    {
+      "sizing": "uniform",
+      "m": 6.0,
+      "C_tank_fF": {
+        "1": 362.47,
+        "2": 362.47,
+        "3": 362.47,
+        "4": 362.47,
+        "5": 362.47
+      },
+      "total_tank_fF": 1812.34,
+      "tank_area_um2": 1208.2,
+      "area_per_bank_um2": {
+        "1": 241.6,
+        "2": 241.6,
+        "3": 241.6,
+        "4": 241.6,
+        "5": 241.6
+      }
+    },
+    {
+      "sizing": "matched",
+      "m": 2.0,
+      "C_tank_fF": {
+        "1": 395.08,
+        "2": 159.65,
+        "3": 21.43,
+        "4": 11.49,
+        "5": 16.46
+      },
+      "total_tank_fF": 604.11,
+      "tank_area_um2": 402.7,
+      "area_per_bank_um2": {
+        "1": 263.4,
+        "2": 106.4,
+        "3": 14.3,
+        "4": 7.7,
+        "5": 11.0
+      }
+    },
+    {
+      "sizing": "matched",
+      "m": 6.0,
+      "C_tank_fF": {
+        "1": 1185.25,
+        "2": 478.94,
+        "3": 64.3,
+        "4": 34.47,
+        "5": 49.39
+      },
+      "total_tank_fF": 1812.34,
+      "tank_area_um2": 1208.2,
+      "area_per_bank_um2": {
+        "1": 790.2,
+        "2": 319.3,
+        "3": 42.9,
+        "4": 23.0,
+        "5": 32.9
+      }
+    }
+  ],
+  "inductors": {
+    "hop_inductors": 4,
+    "topup_inductors_clamp": 0,
+    "topup_inductors_pulsed": 2,
+    "note": "4 hop inductors for a depth-5 chain (one per hop). The CLAMP top-up adds none. The PULSED buck adds one per topped bank (2 here). L = 15 nH each; on-chip nH-class inductors are the known area/Q problem and are NOT costed in um^2 here -- that is a BOUND, not a result."
+  },
+  "energy_m6_uniform": {
+    "bank": {
+      "Q_from_dV_source_topped_fC": 128.237,
+      "Q_from_dV_source_free_fC": -38.033,
+      "attributable_topup_charge_fC": 166.27,
+      "attributable_topup_energy_fJ_BOUND": 199.524,
+      "topup_switch_gate_drive_fJ": 2.21,
+      "extra_hop_gate_drive_fJ": 4.893,
+      "total_topup_cost_fJ": 201.734,
+      "hop_IR_loss_free_fJ": 17.558,
+      "hop_IR_loss_topped_fJ": 20.68
+    },
+    "tank": {
+      "Q_from_dV_source_topped_fC": 129.903,
+      "Q_from_dV_source_free_fC": -38.033,
+      "attributable_topup_charge_fC": 167.936,
+      "attributable_topup_energy_fJ_BOUND": 201.523,
+      "topup_switch_gate_drive_fJ": 2.233,
+      "extra_hop_gate_drive_fJ": 4.938,
+      "total_topup_cost_fJ": 203.756,
+      "hop_IR_loss_free_fJ": 17.545,
+      "hop_IR_loss_topped_fJ": 20.698
+    }
+  },
+  "LABELS": "tank area and C_bank: MEASURED (PDK density x MEASURED capacitance). top-up charge/energy: MEASURED charge from a 1F integrator on the dV source, times the IDEAL 1.2 V source voltage -- the source is ideal, so the energy is a LOWER BOUND (a real regulator delivering it costs more). Gate-drive energies: MEASURED from 1F integrators on the real PWL gate sources, so they include the gate charge but NOT the cost of generating the PWL -- also a LOWER BOUND. Inductor area: NOT COSTED, a BOUND."
+}
