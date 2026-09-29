@@ -1,0 +1,121 @@
+{
+  "_doc": "qal/ptu -- THE MATCHED COMPARISON: does the PULSED-INDUCTOR top-up (current-ramp delivery) avoid the step-coupling damage that the SWITCHED CLAMP TO AN IDEAL SOURCE (voltage-step delivery) inflicts on the feeding stage, and does it change the settling, the pull-up overdrive, or the HIGH/LOW separation by depth? Written BEFORE any new deck is built or run in this directory. This file is the ONLY file in qal/ptu at the moment it is written.",
+  "date": "2026-09-29",
+  "workdir": "/usr/local/src/stat-sim/qal/ptu",
+  "own_cache": "PYMS_VAE_CACHE=<scratchpad>/vae_cache_ptu -- MY OWN, not copied from skiptu or any sibling (copying a VAE cache is the shell-cache poisoning trap the record already root-caused).",
+  "reads_not_writes": "qal/skiptu is READ ONLY from here. Nothing in this run writes into it.",
+
+  "WHAT_THE_GAP_IS": {
+    "claimed": "the skiptu study (f63db4f) PRE-REGISTERED a pulsed-inductor top-up, BUILT it, RAN it (34 *_ptu*.cir decks with .prn), and then reported its verdict rows from a SWITCHED CLAMP TO AN IDEAL SOURCE instead.",
+    "confirmed_true_on_disk": "yes. 34 ptu decks exist with correct buck topology (XTUSW_k high-side pMOS from tsup, XTUFW_k freewheel nMOS to ground, LTU_k na_k->ntm_k, Ltu in {1,2,5,15} nH). Every one of the 24 rows in skiptu/rows.json is mode 'free' (8 rows) or mode 'rtu' (16 rows). ZERO ptu rows are reported.",
+    "but_the_substitution_was_NOT_silent": "AMENDMENT.md clause A7 states it explicitly, gives the measurement behind it (small-fixture q_delivered = -1.203 to -2.560 fC, q_from_supply 57.2-65.5 fC, Qmult -0.018 to -0.045 at the DERIVED Cna = 8 fF), and labels every rtu row an ideal-source booking. So this is NOT an undisclosed substitution. It IS, however, a substitution whose bounding argument I intend to test, because that argument is the load-bearing part.",
+    "the_load_bearing_claim_I_am_testing": "A7's justification is that the clamp 'restores the rail as hard as a supply can, so it upper-bounds what ANY top-up can do for settling.' That is a bound on RAIL RESTORATION. It is NOT automatically a bound on SETTLING, because the clamp's own delivery mechanism -- a voltage step -- introduces a damage term (backward capacitive coupling into the predecessor's LOW outputs) that a current-ramp delivery does not have. VERDICT.json m2 records that damage as MEASURED: stage 2 goes 60.65% -> 50.56% at dV=1.2/T=200 while stage 4 goes 63.52% -> 96.80%, and names the cause 'the topped bank's rail STEP couples backward through its own cell gate capacitance into the predecessor's output nodes.' If the pulsed form lacks that term, the clamp does not bound settling from above, and A7's bounding argument needs qualification."
+  },
+
+  "INVENTORY_of_the_34_existing_ptu_decks_MEASURED_from_disk": {
+    "total": 34,
+    "families": {
+      "q3_s4_T200_dv1200_L{1,2,5,15}_W10_t{6,12,24}_ptu.cir": {
+        "count": 12,
+        "what": "TOP-UP ZCS PROBE decks for BANK 3. The freewheel gate returns HIGH and the OUT switch gate VGTO3 is driven high at t_fire and held to 4400p -- i.e. past the 1100p transient end, so it NEVER opens. This is the A1 probe-then-cut form: run it to find I(LTU3)'s first zero after peak, then cut the real deck there.",
+        "role": "INSTRUMENT, not a result. Cannot be read as an operating point.",
+        "mt0": "12/12 present"
+      },
+      "q4_s4_T200_dv1200_L{1,2,5,15}_W10_t{6,12,24}_ptu.cir": {
+        "count": 11,
+        "missing": "L2/t6",
+        "what": "same, for BANK 4 (VGTO4 held to 4400p).",
+        "role": "INSTRUMENT, not a result.",
+        "mt0": "11/11 present"
+      },
+      "r_s4_ptu_T200_dv1200_L{1,2,5,15}_W10_t{6,12,24}_f0.cir": {
+        "count": 11,
+        "missing": "L2/t6",
+        "what": "THE ACTUAL ROW DECKS. Both banks topped, OUT switch cut at the MEASURED freewheel zero (e.g. VGTO3 opens at 469.358p for L5/t12). Full 1100p transient, 4 banks.",
+        "role": "RESULT decks -- these are the ones that went unreported.",
+        "mt0": "8/11 present; MISSING for L15/t12, L15/t24, L15/t6, L5/t24 (4 decks have .prn but no .mt0 -- the run did not complete its measure block or was killed)"
+      }
+    },
+    "operating_points_actually_covered": "ONE: scheme s4 (4-bank), T = 200 ps, dV = 1.2, L_hop = 15 nH / W = 30 um (the deck .param line reads LT=15n RS=10 in all of them). The sweep in the filenames is over the TOP-UP knobs only: Ltu in {1,2,5,15} nH x t_on in {6,12,24} ps.",
+    "operating_points_NOT_covered": "dV = 1.0, dV = 1.5, T = 120, T = 160, T = 300, and the 5-bank (s5) scheme. The reported clamp verdict spans all of these. So the existing ptu set cannot be put side by side with the reported rows without new decks.",
+
+    "WHAT_IS_MEASURABLE_FROM_THEM_stated_exactly": {
+      "per_gate_settling": "YES, fully. The brief's premise that they 'carry charge measures but apparently NOT per-gate settling' is WRONG on disk. Every ptu deck writes O1_0S..O4_7E (per-gate output at its own stage boundary AND at t=1096p), G2_*/G3_*/G4_* (each stage's delivered input, i.e. the predecessor's outputs read at the successor's boundary), and VR1B1/VR2B1/VR3B1/VR4B1, VR{1..4}K{1..4}, VR{1..4}PK, VR{1..4}MN. Everything the committed settling convention needs is in the .mt0, and the raw node voltages are additionally in the .prn. They went unreported for a different reason -- A7 -- not for lack of instrumentation.",
+      "delivered_charge": "YES. QTU3_*/QTU4_* = integral I(VMTU_k), the delivered charge metered in the RAIL LEG (the A5b-corrected branch); QIND3_*/QIND4_* = integral I(LTU_k) in the inductor; QSUP_* from the top-up supply; EGTU/QGABS for the gate-drive recursion cost.",
+      "rail_dV_dt": "YES, from the .prn. V(rail3)/V(rail4) are printed on the 0.0884183 ps max-step grid, so the delivery slope is directly differentiable. Same for the clamp decks. This is the discriminating measurement and BOTH forms carry the data for it already.",
+      "THE_DISQUALIFYING_DEFECT": "NO SWITCH-NODE CAPACITANCE. Not one of the 34 chain ptu decks contains a CNA element on na_k, and tu.py -- including its FINAL 22:17 version -- never emits one. Only tucell.py (22:09, the small fixture) does. mtimes prove the ordering: the chain ptu decks were written 21:56-21:59, the small fixture that DISCOVERED the defect at 22:05-22:09. AMENDMENT A6 is explicit that for a buck switch node the zeroed ad/as/pd/ps of sg13lv_compat.sp is not a conservative lower bound but makes the topology 'unsimulatable', and 'any number taken from it -- in either direction -- is an artefact of the shim.' By the study's OWN standing clause, every one of the 34 existing chain ptu decks is disqualified as a physical result. They remain valid as evidence of what the un-capacitanced model does, and their probe half remains valid as an instrument.",
+      "what_the_existing_ptu_mt0_already_shows_ANYWAY": "r_s4_ptu_T200_dv1200_L5_W10_t12_f0: QTU3_D = -45.67 fC (delivered charge NEGATIVE -- a net sink), VR3K3 = -0.1407 V and VR4K4 = -0.1141 V (both topped rails driven NEGATIVE). This is A7's fixture pathology reproduced at chain scale. It is pre-CNA, so it is reported as the artefact A6 says it is, not as physics."
+    }
+  },
+
+  "ACCEPTANCE_CRITERIA_copied_VERBATIM_from_skiptu_PRE_REGISTERED.json_so_the_re-verdict_is_judged_by_the_SAME_bar": {
+    "A1_settling": "EVERY gate in ALL FOUR stages reaches >= 90% settled at its own stage boundary. Settling = V(o)/V(rail_k) for a pull-UP cell and 1 - V(o)/V(rail_k) for a pull-DOWN cell, read at bound_k. PASS/FAIL on the WORST gate, never an average -- averaging is exactly how a non-computing bank passes.",
+    "A2_threshold": "the delivered input HIGH >= 0.4400 V at EVERY stage. 0.4400 V is the adjacent chain's measured shortfall point and is numerically the measured |Vtp| = 0.4402734 V.",
+    "A4_stage_boundary_rule": "bound_k = min(c_k + T, d_k - EDGE) for a hop-charged bank, d_k - EDGE for a head bank, EDGE = 2 ps. Inherited verbatim.",
+    "A5_instrument_gate": "the committed robust single-hop point reproduced digit-checked in THIS directory under MY OWN cache: L=15 nH, W=30 um, dV=1.2 -> t_hop = 65.495 ps (committed 65.49500982344826), VBEND = 0.7138163, VBPK = 0.8368896, 8/8 cells settled. Rel error must be < 1e-6 on t_hop, VBEND and VBPK or this run does not report.",
+    "A6_ZCS_hygiene": "true current zero RE-PROBED per L and per hop separately, and for the top-up inductor per bank; interrupted |IZ| < 1.0 uA at each switch open.",
+    "A7_metering": "1F-integrator or INTEG-I(Vsrc)+PARAM only; every 1F integrator t0-referenced at 0.5 ps to remove its pedestal.",
+    "NEW_A8_switch_node_capacitance_is_MANDATORY_here": "Because AMENDMENT A6 disqualifies any buck result taken without it, every NEW ptu deck in this run carries an explicit CNA on na_k and Cna is SWEPT, never fixed. Cna is labelled ASSUMED. DERIVED central estimate ~8 fF (a w=10 um drain with ~0.3 um contacted extension is ~3 um^2; at ~1 fF/um^2 ~3 fF per device, two devices ~6 fF, plus ~2 fF wiring). Swept over {2, 8, 20, 50} fF. If the pulsed form only delivers positive charge at Cna well above the DERIVED ~8 fF, the mechanism is being carried by an assumption and is reported NOT DEMONSTRATED."
+  },
+
+  "THE_DISCRIMINATING_MEASUREMENT_pre_specified_so_it_cannot_be_chosen_after_the_fact": {
+    "D1_rail_slope": "max |dV/dt| on the TOPPED rail (rail3, and rail4 where topped) over its delivery window, computed from the .prn by centred finite difference on the printed grid, reported in V/ns. Clamp form vs pulsed form at the SAME operating point. The mechanism claim is that a voltage-step clamp produces a large |dV/dt| and a di/dt-limited inductive delivery does not.",
+    "D2_predecessor_LOW": "the feeding stage's WORST (highest) pull-down output voltage at its own boundary -- max over the pull-down gates of V(o). Committed clamp-era values at s4/T200/dV1.2: free 0.438143 V, clamp 0.551708 V (a +113.6 mV lift of the predecessor's LOW outputs = the damage). Pulsed form measured the same way.",
+    "D3_predecessor_RAIL": "the feeding stage's rail at its own boundary. Committed clamp-era values at s4/T200/dV1.2: free 1.113319 V, clamp 1.116025 V.",
+    "D4_stage_settling": "per-stage worst-gate settling, per the A1 convention, never aggregated.",
+    "D5_topped_rail_level": "rail3 at its boundary. Committed: free 0.765884 V, clamp 1.069085 V. If the pulsed form cannot exceed the clamp's rail, the pull-up overdrive question is settled against it and the device constant |Vtp| = 0.4403 V still binds.",
+    "D6_separation": "HIGH/LOW separation by bank depth = min(pull-up output) - max(pull-down output) within a stage, in mV, against the clamp-era series 528.68 / 22.89 / 1.52 / 0.122 / 0.010 / 0.001 mV and the PDK sigma-Vt floor of 3.42 mV (stat-sim e4c980b, qal/restore5).",
+    "NOTE_on_two_numbers_in_the_brief_I_could_NOT_locate": "the brief cites the feeding rail falling '0.1545 -> 0.0587 V free -> topped' and '-0.0188 V in the 5-bank topped row'. Neither 0.1545 nor 0.0587 nor -0.0188 appears anywhere in skiptu's committed JSON. A numeric scan of the sibling directories finds 0.1544887 in qal/skip4/rows.json as rail_at_hop_open_V[hop 2][bank 2] -- a bank's rail after its OWN outgoing hop has drained it, in the NO-top-up skip4 run -- and -0.0188103 in qal/chain3/rows.json as rails_all_checkpoints['1C1'] in the ADJACENT 3-bank chain. So those two figures come from two different sibling studies, are a DRAINED rail and an adjacent-chain checkpoint respectively, and are not skiptu step-coupling numbers. I record this BEFORE measuring so that I cannot be accused of explaining away a number after failing to reproduce it. I will nonetheless test the mechanism exactly as the brief states it, using skiptu's own committed step-coupling evidence (D2/D3/D4 above) as the target."
+  },
+
+  "PRE_STATED_EXPECTATION_with_explicit_falsifiers": {
+    "H1_the_mechanism_claim_is_TRUE": {
+      "statement": "the pulsed inductive form WILL show a markedly lower max |dV/dt| on the topped rail than the clamp, because a series inductor makes the rail current a ramp and forbids a voltage discontinuity. I expect this to hold and I expect it to be a large ratio, not a marginal one.",
+      "confidence": "HIGH -- this is close to definitional for a series L.",
+      "falsifier": "if the pulsed form's max |dV/dt| on rail3 is within 2x of the clamp's, the mechanism claim in the brief is refuted and I say so."
+    },
+    "H2_but_the_benefit_will_NOT_materialise": {
+      "statement": "the pulsed form will NOT raise rail3 above the clamp's 1.069085 V, and at the DERIVED Cna = 8 fF I expect it to deliver approximately ZERO or NEGATIVE charge and therefore to leave rail3 at or BELOW the free control's 0.765884 V. Reason, MEASURED not guessed: A7's clean-fixture numbers (Qmult -0.018 to -0.045 at Cna = 8 fF) and the existing pre-CNA chain decks' QTU3_D = -45.67 fC.",
+      "consequence_if_true": "stage 3's pull-up overdrive over |Vtp| = 0.4403 V does NOT improve, the device constant still binds, and the committed verdict stands for a BETTER reason than before -- not 'we substituted a bounding form' but 'the preferred form was run at chain scale with the switch-node capacitance restored and it still cannot raise the rail.'",
+      "falsifier": "rail3 at its boundary under pulsed top-up exceeding 1.069085 V at any Cna in the swept set, with q_delivered positive."
+    },
+    "H3_the_bounding_argument_needs_QUALIFYING_even_if_the_verdict_stands": {
+      "statement": "I expect the pulsed form to show LESS predecessor-LOW lift than the clamp (D2 closer to the free control's 0.438143 V than to the clamp's 0.551708 V) while ALSO showing less rail restoration. If both hold, the clamp is an upper bound on rail restoration but NOT a uniform upper bound on settling, and A7's sentence 'it upper-bounds what ANY top-up can do for settling' is too strong as written.",
+      "falsifier": "the pulsed form lifting the predecessor's LOW outputs as much as or more than the clamp does."
+    },
+    "H4_separation_still_collapses": {
+      "statement": "HIGH/LOW separation will still fall below the PDK's 3.42 mV sigma-Vt by depth 3 under pulsed top-up. Reason: separation is produced by the CELLS' incomplete restoration within a beat, and the top-up form changes only how the rail arrives, not the pMOS drive available at a hop-delivered rail.",
+      "confidence": "HIGH",
+      "falsifier": "separation at bank 3 exceeding 3.42 mV under any pulsed configuration -- which would be a genuinely new result and I would say so loudly."
+    },
+    "H5_overall": "I expect the committed verdict's BOTTOM LINE (no row reaches 90% at every stage; the pipeline verdict stands) to survive unchanged, and I expect the amendment that IS needed to be to A7's bounding CLAUSE rather than to the verdict. I state this now so that a confirmation is not dressed up afterwards as a discovery."
+  },
+
+  "PLAN_in_order": [
+    "1. This file (sole file on disk in qal/ptu at write time).",
+    "2. A5 instrument check: md5-identical byte copies of the committed qal/lsweep decks, run under MY OWN cache, digit-checked on t_hop / VBEND / VBPK / 8-of-8 cells. If it fails, nothing reports.",
+    "3. Extract per-gate settling, rails, LOW/HIGH outputs and rail dV/dt from the EXISTING 34 ptu decks (.mt0 where present, .prn otherwise). Reported as PRE-CNA / A6-DISQUALIFIED.",
+    "4. Build NEW ptu chain decks WITH the CNA sweep at the operating points the clamp rows were reported at, so the comparison is like-for-like.",
+    "5. The matched comparison D1-D5, per operating point, ptu vs rtu vs free.",
+    "6. The separation test D6 by bank depth.",
+    "7. Re-verdict against A1 + A2 above, and an explicit statement of whether the committed verdict needs amending."
+  ],
+
+  "SIM_DISCIPLINE_restated": {
+    "cache": "own PYMS_VAE_CACHE, nothing copied in",
+    "models": "sg13_lv via qal/sg13lv_compat.sp (ZEROES ad/as/pd/ps -> device numbers are LOWER bounds; and per A6 this is FIRST-ORDER, not second-order, at a buck switch node, which is why CNA is mandatory and swept here)",
+    "psp103": ".hdl + sg13g2_psp103_tt.lib",
+    "runtime": "every deck < 4 min",
+    "metering": "1F integrators, ALWAYS t0-referenced (they carry a t=0 pedestal)",
+    "zeros": "re-probe true current zeros per L and per hop, and per bank for the top-up inductor; per beat period and per mode (skiptu A4 and A8)",
+    "forbidden": "vt/gmin adjustments; corners only via instance-level DTA",
+    "scope": "all numbers are SHALLOW-STACK (sg13g2_o21ai_1 never settles anywhere in the PDK envelope)"
+  },
+
+  "HONESTY_CLAUSES": {
+    "labels": "every number labelled MEASURED / DERIVED / ASSUMED.",
+    "confirmation_is_a_result": "if the pulsed inductor does NOT change the outcome, that is a clean confirmation and is reported as one, with the mechanism quantified rather than asserted.",
+    "loudness": "if it DOES change the outcome, I say so loudly and state exactly which committed clause needs amending.",
+    "no_post_hoc_metric": "D1-D6 are fixed above. I will not introduce a new discriminator after seeing the data; if I find one worth having, it is reported as EXPLORATORY and kept out of the verdict."
+  }
+}

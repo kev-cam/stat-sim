@@ -1,0 +1,168 @@
+{
+ "_doc": "qal/ptu -- THE MATCHED COMPARISON. Does the PULSED-INDUCTOR (current-ramp) top-up avoid the step-coupling damage the SWITCHED CLAMP (voltage-step) inflicts on the feeding stage, and does it change the settling, the pull-up overdrive, or the HIGH/LOW separation by depth?",
+ "date": "2026-09-29",
+ "pre_registration": "PRE_REGISTERED.json, SOLE file on disk at 2026-09-29 01:30:52.417 -0700 (mtime is the proof); first new deck run at 01:31",
+ "own_cache": "PYMS_VAE_CACHE=<scratchpad>/vae_cache_ptu, built from scratch; no .so copied from any sibling",
+ "writes_into_skiptu": "NONE. qal/skiptu was read only.",
+
+ "HEADLINE": {
+  "Q_does_the_pulsed_form_avoid_the_step_coupling": "NO. REFUTED, and this is the run's main result. The coupling is proportional to HOW MUCH RAIL IS DELIVERED, not to the FORM of the delivery. Measured predecessor-LOW lift per mV of rail actually delivered: CLAMP 0.165 mean / 0.214 median (n=11); CORRECTED PULSED 0.447 mean / 0.355 median (n=4). Per volt delivered the pulsed form couples about TWICE AS HARD, not less. Its smaller absolute damage number (+5 to +42 mV against the clamp's +73 to +157 mV) is bought entirely by delivering 5x less rail.",
+  "Q_is_the_committed_negative_result_an_artefact_of_the_substituted_form": "NO. The committed verdict does NOT need amending on its bottom line.",
+  "Q_does_it_change_the_settling": "NO, and it is WORSE than no top-up at all. At the headline point (s4, T=200 ps, dV=1.2) stage 3 reads 39.20% free, 49.65% clamped, and 33.08-34.08% under the corrected pulsed form.",
+  "Q_does_it_move_the_pull_up": "NO. Stage 3's rail is 0.765884 V free, 1.069085 V clamped, and 0.668973-0.737441 V under the corrected pulsed form -- BELOW the free control. The pMOS overdrive over the MEASURED |Vtp| = 0.4403 V therefore gets WORSE, not better, and the device constant still binds.",
+  "Q_does_it_move_the_HIGH_LOW_separation": "NO meaningful change, and the brief's premise about the separation is itself mis-attributed -- see SEPARATION below.",
+  "A1_any_row_all_stages_90pct": false,
+  "A1_best_worst_gate_over_CORRECTED_PULSED_rows_pct": 34.08,
+  "A1_best_worst_gate_over_ALL_rows_pct": 59.48,
+  "A1_best_row": "r_s4_rtu_T200_dv1000 -- the committed ideal-source bounding row, unchanged"
+ },
+
+ "WHAT_THE_CLAMP_IS_AND_IS_NOT_A_BOUND_ON": {
+  "A7_claim_under_test": "skiptu AMENDMENT A7: the clamp 'restores the rail as hard as a supply can, so it upper-bounds what ANY top-up can do for settling.'",
+  "verdict": "SOUND AS USED, with one clause that should be narrowed.",
+  "sound_part": "the clamp IS an upper bound on RAIL RESTORATION (+472 mV against the pulsed form's +88 mV at the matched point) and therefore on the settling that rail restoration can buy. The corrected pulsed form does not come close to it at any operating point measured.",
+  "clause_to_narrow": "'upper-bounds what ANY top-up can do for settling' is too strong as a universal, because the clamp introduces its own damage term (backward coupling into the predecessor's LOW outputs) that costs stage 2 between 6.7 and 13.6 settling points. A form that delivered the same rail with less coupling would beat it on the chain minimum. The measurement here is that THE PULSED INDUCTOR IS NOT THAT FORM -- it couples harder per volt delivered. So A7's conclusion survives; only its generality over unbuilt forms is unsupported.",
+  "stage2_cost_of_the_clamp_pct": {"free": 60.65, "clamp_t10": 54.0, "clamp_t20": 50.56, "clamp_t40": 47.02},
+  "stage2_cost_of_the_corrected_pulsed_pct": {"free": 60.65, "pulsed_t12": 59.88, "pulsed_t24": 59.13}
+ },
+
+ "D1_THE_DELIVERY_SLOPE_on_the_topped_rail": {
+  "_units": "V/ns, max RISING dV/dt on rail3, centred difference on the printed grid, over a window computed per row from its OWN schedule: [open[0]+EDGE, min(bound[3], close[1])-EDGE] so no hop switching is ever inside it",
+  "free_control": "0.00 to 0.45",
+  "switched_clamp": "58.5 to 250",
+  "corrected_pulsed_inductor": "0.03 to 121",
+  "at_the_matched_headline_point_s4_T200_dv1p2": {"free": 0.20, "clamp_t20": 227.0, "pulsed_t24": 92.0,
+   "ratio_clamp_over_pulsed": 2.47},
+  "READING": "the pulsed form IS gentler -- by about 2.5x -- but the brief's stronger claim, that a di/dt-limited delivery has 'no voltage discontinuity to couple capacitively', is NOT what the waveform shows. 92 V/ns is a steep edge. The inductor limits the current, but the OUT switch still closes onto the rail and the stored inductor current still dumps into it, so the rail still steps."
+ },
+
+ "D2_THE_DAMAGE_on_the_actual_victim": {
+  "_victim": "stage 2's PULL-DOWN output nodes o2_1, o2_3, o2_5, o2_7 (SK.is_hi(2,i) true), measured in the same window as D1",
+  "_metric": "worst LOW-node lift in mV, and the part ATTRIBUTABLE to the top-up = (topped row) - (free control at the same T, dV, same window)",
+  "clamp_attributable_mV": {"T120_dv1.2": 31.861, "T160_dv1.2": 110.342, "T200_dv1.2_t10": 72.782,
+   "T200_dv1.2_t20": 113.822, "T200_dv1.2_t40": 157.36, "T300_dv1.2": 101.194, "T200_dv1.0": 106.153,
+   "T200_dv1.5": 76.208},
+  "clamp_is_MONOTONE_in_its_own_strength": "t_on 10 -> 20 -> 40 ps gives +72.8 -> +113.8 -> +157.4 mV, which is the mechanism confirming itself",
+  "corrected_pulsed_attributable_mV": {"T120_dv1.2": 5.351, "T160_dv1.2": 5.518, "T200_dv1.2_t12": 18.046,
+   "T200_dv1.2_t24": 27.585, "T300_dv1.2": 34.863, "T200_dv1.0_t24": 13.094, "T200_dv1.5": 42.277},
+  "THE_FAIR_COMPARISON_damage_per_mV_of_rail_delivered": {
+   "clamp": {"n": 11, "mean": 0.165, "median": 0.214, "range": [-0.057, 0.274]},
+   "corrected_pulsed": {"n": 4, "mean": 0.447, "median": 0.355, "range": [0.198, 0.881]},
+   "READING": "the pulsed form is about 2x WORSE per volt delivered. The step coupling is NOT an artefact of the clamp's form."}
+ },
+
+ "D5_THE_RAIL_DELIVERED": {
+  "rail3_at_its_own_boundary_V_s4_T200_dv1p2": {"free": 0.765884, "clamp_t10": 0.918849,
+   "clamp_t20": 1.069085, "clamp_t40": 1.221639, "pulsed_t12": 0.668973, "pulsed_t24": 0.737441},
+  "Vtp_abs_MEASURED_V": 0.4403,
+  "pMOS_overdrive_V": {"free": 0.3256, "clamp_t20": 0.6288, "pulsed_t24": 0.2971},
+  "VERDICT": "the corrected pulsed form cannot exceed the clamp's rail; it cannot even reach the FREE control's rail. The pull-up does not improve, it degrades. The device constant binds for a better reason than before: the preferred form was run at chain scale WITH the switch-node capacitance restored and the corrected gate sequence, and it still cannot raise the rail."
+ },
+
+ "SEPARATION_D6": {
+  "the_briefs_comparator_is_MIS_ATTRIBUTED": "the series 528.68 / 22.89 / 1.52 / 0.122 / 0.010 / 0.001 mV belongs to qal/restore5's UNRESTORED ADJACENT cascade (row k6_T300_control), NOT to the skip chain. Reproduced here exactly from restore5/RESULTS.json: 528.6756 / -22.8913 / 1.5162 / -0.1221 / 0.0101 / -0.0009 mV. Note the SIGNS: from bank 2 on it is not merely small, it is INVERTED.",
+  "the_SKIP_chain_does_NOT_reproduce_that_collapse": {
+   "free_s4_T200_dv1.2_mV_by_bank": [1207.034, 687.017, 305.449, 248.673],
+   "clamp_s4_T200_dv1.2_mV_by_bank": [1207.034, 577.181, 537.188, 947.683],
+   "corrected_pulsed_s4_T200_dv1.2_t24_mV_by_bank": [1207.034, 668.026, 250.007, 198.491],
+   "sigma_vt_floor_mV": 3.42,
+   "READING": "at dV = 1.2 every bank in every form is two to three orders of magnitude ABOVE the 3.42 mV sigma-Vt floor. The skip schedule re-powers banks 3 and 4 from fresh inductive hops off the ideally pre-charged head banks, so the level is regenerated rather than passed down a chain. The brief's 'separation still collapses below sigma-Vt by depth 3' is FALSE for this topology."},
+  "where_the_depth_effect_DOES_appear": "the 5-bank chain, where bank 5's predecessor rail itself came from a hop: free s5 stage 5 separation is -24.075 mV at T=200 and -13.548 mV at T=300 -- INVERTED. And at dV = 1.5 the 4-bank chain degrades too (free stage 3 1.398 mV at T=300, below the floor; stage 4 inverted).",
+  "effect_of_top_up_form_on_separation": "NONE that rescues it. Under the corrected pulsed form s4/T200/dV1.5 stage 4 is -40.796 mV (inverted), the same failure the free and clamped rows show at that dV."
+ },
+
+ "INSTRUMENT_AND_HONESTY": {
+  "A5_digit_check": "PASS. VBEND 0.7138163 (rel 0.0), VBPK 0.8368896 (rel 0.0), t_hop 65.49500982 ps vs committed 65.49500982344826 (rel 1.85e-11), 8/8 cells at 100.000000%, 120/129 mt0 keys BIT-IDENTICAL against the committed mt0 (worst rel 6.24e-07 on QGT_Z, a t=0 pedestal). Decks are md5-identical byte copies of qal/lsweep/h_L15_W30_dv120.cir and p_L15_W30_dv120.cir.",
+  "independent_cross_checks_of_the_harness": [
+   "my extractor reproduces EVERY committed free and rtu row's per-stage worst-gate percentage digit-for-digit from the .mt0 (e.g. free s4/T200/dV1.2 = 99.95/60.65/39.20/63.52; rtu = 99.95/50.56/49.65/95.66)",
+   "my hop-zero probes reproduce the committed A4 table exactly: hop 2 zero = 95.506 / 95.174 / 94.946 ps at T = 120 / 160 / 200 ps",
+   "restore5's unrestored separation series reproduced to 4 decimal places"],
+
+  "A6_INSTRUMENT_GATE_FAILURE_reported_not_hidden": {
+   "statement": "ALL 11 of my corrected pulsed rows FAIL the pre-registered 1.0 uA interrupted-inductor-current gate, at 112.4 to 132.5 uA. So do all 7 measurable committed ptu rows, at 110.7 to 122.4 uA. The free rows (0.0027-0.0162 uA) and the clamp rows (0.0017-0.0187 uA) PASS.",
+   "ROOT_CAUSE_located_in_the_committed_harness": "AMENDMENT A8's fix -- 'in a PROBE deck the top-up DEVICES are still instantiated (so their loading is in the measurement) but are held permanently OFF' -- is implemented ONLY in tu.deck's RESISTIVE branch, as `L += SK.supply_tg(k, total_um, None, 'topup')`. The PULSED branch has no equivalent: it `continue`s, so the top-up devices are not instantiated in a ptu probe deck AT ALL. PROVEN on disk: the ptu-mode hop-1 probe deck p1_z_s4_ptu_T200_dv1200_L1_t12_C8_f.cir contains ZERO XTUSW/CNA lines while its row deck R_s4_ptu_T200_dv1200_L1_t12_C8.cir contains 4. skiptu/go.py compounds this with `zmode = 'rtu' if mode == 'rtu' else 'free'`, which routes ptu rows to free-mode zeros outright.",
+   "consequence": "the pulsed top-up's hop zeros cannot be probed correctly by this harness as written. My A8 bootstrap (free zeros -> measured tfw -> re-probe in ptu mode) did not help, because the ptu probe deck is electrically identical to the free one -- and indeed it returned the same zero, 97.977 ps.",
+   "what_this_does_and_does_not_undermine": "It means every CHAIN-level pulsed number in this run, and in the committed run, is instrumentally compromised at the ~9% level (122 uA against a ~1300 uA peak). It does NOT undermine the two load-bearing results, because: (1) the CLAMP rows, which carry the step-coupling measurement, PASS the gate; (2) the central claim that the pulsed form cannot deliver charge is established INDEPENDENTLY on a small fixture with no hops at all, hence no hop-zero to get wrong."
+  },
+
+  "ROWS_NOT_MEASURED_stated_plainly": {
+   "count": "3 of 14 attempted corrected-pulsed rows",
+   "which": ["s4 dV=1.5 t_on=12", "s5 T=200 t_on=24", "s5 T=300 t_on=24"],
+   "why": "their top-up ZCS probe deck fails to CONVERGE, not to finish: q3_tz_s5_T300_dv1200_L1_t24_C8.cir stops at t = 198.0 ps of a 1600 ps transient -- at hop 1's switch close -- with 19 failed steps and 8 nonlinear failures, after which every .measure reports FAILED. Re-run twice with the same result, so it is reproducible and not contention.",
+   "coverage_gap_that_remains": "the 5-bank (s5) topology under the CORRECTED pulsed top-up is NOT measured. dV coverage is complete (1.0 / 1.2 / 1.5) and T coverage is complete (120/160/200/300) in the 4-bank topology via the t_on = 24 ps rows."
+  },
+
+  "A_SCHEDULING_RESULT_that_is_not_bookkeeping": {
+   "statement": "the fixture-mandated gate sequence costs SLEW + 4*EDGE = 32 ps of preparation before the pulse can start (the high side must be fully on while the low side still clamps na, or na is yanked negative -- A6). At T = 120 ps the whole hold window between hop 1's measured zero (297.98 ps) and bank 3's stage boundary (320.00 ps) is 22.0 ps. The preparation ALONE exceeds it.",
+   "measured_consequence": "at T = 120 the pulse ENDS 33.98 ps (t_on=12) or 45.98 ps (t_on=24) AFTER the boundary at which the settling is read; at T = 160 with t_on = 24 it ends 5.98 ps after. Those rows are reported, but their top-up has not delivered anything by the instant the measurement is taken -- confirmed by the waveform: rail3 rise over the window is 0.0 mV at T = 120 and T = 160.",
+   "why_it_matters": "T = 120 and 160 ps are exactly where the free chain CLEARS the 0.4400 V threshold. So a correctly-sequenced pulsed top-up is unavailable precisely where the schedule otherwise works."
+  }
+ },
+
+ "THE_SMALL_FIXTURE_the_clean_evidence": {
+  "_why_it_is_the_clean_evidence": "one linear capacitor, no hops, no schedule -- so no hop zero to get wrong and none of the A6/A8 contamination above. The standing directive is to prove a mechanism on a small fixture and use full scale as confirmation only.",
+  "fixture": "28.98 fF bank pre-charged to the chain's OWN measured free rail3 of 0.765884 V, supply 1.2 V, wsw = 10 um, tucell.py's corrected gate sequence, freewheel cut at its MEASURED current zero",
+  "grid": "Cna {8, 20, 50} fF x Ltu {1, 5, 15} nH x t_on {6, 12, 24} ps = 27 points",
+  "n_points_with_POSITIVE_delivery": 1,
+  "n_points_with_BUCK_ACTION_Qmult_gt_1": 0,
+  "the_only_positive_point": {"Cna_fF": 8.0, "Ltu_nH": 1.0, "ton_ps": 24.0,
+   "q_delivered_fC": 0.93, "q_supply_fC": 79.4887, "charge_mult": 0.0117,
+   "bank_V": "0.765884 -> 0.787285", "dV_mV": 21.401},
+  "required_for_buck_action": 1.0,
+  "A7_EXTRAPOLATION_REFUTED": "skiptu A7 swept the switch-node capacitance only to the DERIVED 8 fF, and its own table trends toward zero FROM BELOW (-15.735 fC at 2 fF, -2.560 at 8 fF), which invites the reading that a larger Cna would cross into positive delivery. MEASURED here: it does NOT. Cna = 20 fF and 50 fF are WORSE than 8 fF at every (Ltu, t_on). The trend is NOT monotone; it turns around. This is why the chain Cna sweep was cut to the DERIVED 8 fF -- small fixture first, full scale as confirmation only.",
+  "chain_scale_confirmation": "at chain scale the corrected cell delivers q = -1.4 fC (t_on=12) to +9.3 fC (t_on=24) into two banks at s4/T200/dV1.2, Qmult -0.011 to +0.058, against a switch gate drive of 297.8 to 322.2 fJ. The gate drive alone is ~36x the committed single-hop dissipation of 8.3828 fJ."
+ },
+
+ "WHAT_THE_A6_FIX_DID_ACHIEVE": {
+  "statement": "adding the A6-mandated switch-node capacitance and tucell's corrected sequence DOES largely repair the unholdable switch node at chain scale, which is a real improvement over the committed decks.",
+  "measured": "V(na3) over [300,400] ps now has a minimum of -0.08179 V and reaches 1.09652 V (t_on=12) / 1.17222 V (t_on=24) against a 1.2 V supply. The A6 pathology was na driven to -0.30 to -0.42 V with the inductor reversed.",
+  "and_yet": "delivery is still ~zero and the rail still ends BELOW the free control. So the switch node was a real defect, it has been largely fixed, and fixing it does not rescue the mechanism."
+ },
+
+ "INVENTORY_of_the_34_committed_ptu_decks": {
+  "total": 34,
+  "q3_probe_decks": 12, "q4_probe_decks": 11, "r_row_decks": 11,
+  "_probe_vs_row": "q3_*/q4_* hold VGTO_k high to 4400p, past the 1100p transient end -- they are the A1 probe-then-cut INSTRUMENT, not results. Only the 11 r_s4_ptu_* are row decks.",
+  "operating_points_covered": "ONE: s4, T = 200 ps, dV = 1.2, L_hop = 15 nH / W = 30 um. The filename sweep is over the top-up knobs only (Ltu {1,2,5,15} nH x t_on {6,12,24} ps). No dV = 1.0 or 1.5, no T = 120/160/300, no 5-bank.",
+  "mt0_present": "7 of 11 row decks; 5 of those carry complete stage-3 and stage-4 settling (the other 2 had rail3 driven below the 0.02 V guard, which is itself the pathology)",
+  "IS_per_gate_settling_present": "YES -- the brief's premise that they 'carry charge measures but apparently NOT per-gate settling' is WRONG on disk. Every ptu deck writes O1_0S..O4_7E, G2_*/G3_*/G4_*, VR{1..4}K{1..4}, VR{1..4}PK/MN. Everything the committed settling convention needs is present.",
+  "WHY_THEY_WENT_UNREPORTED_four_independent_reasons_all_MEASURED": [
+   "1. They FAIL the pre-registered A6 gate at 110.7-122.4 uA against 1.0 uA, for the tu.deck root cause documented above.",
+   "2. They carry NO switch-node capacitance -- AMENDMENT A6 rules that any buck number taken without it 'is an artefact of the shim'. mtimes prove the ordering: the chain ptu decks were written 21:56-21:59, the small fixture that DISCOVERED the defect at 22:05-22:09, and tu.py NEVER emits a CNA even in its final 22:17 version.",
+   "3. They use the pre-A6 gate sequence (simultaneous make-before-break), not tucell's corrected early-HS / slewed-LS / OUT-last sequence.",
+   "4. Their per-stage settling reproduces, digit for digit, the seven values AMENDMENT A5 names as DISCARDED and not to be quoted: L1/t6 41.14, L1/t12 36.96, L1/t24 33.87, L2/t12 40.10, L2/t24 34.25, L5/t6 71.75, L5/t12 71.13."],
+  "what_they_already_showed": "every one delivered NEGATIVE charge into both topped banks (-5.2 to -45.7 fC), and drove the topped rails negative (VR3K3 = -0.1407 V, VR4K4 = -0.1141 V in the L5/t12 row). A7's fixture pathology, reproduced at chain scale.",
+  "SO_THE_SUBSTITUTION_WAS_NOT_SILENT": "AMENDMENT A7 states the substitution explicitly, gives the measurement behind it, and labels every rtu row an ideal-source booking. The gap this run closes is not a concealment; it is that the pulsed form was abandoned BEFORE the two fixes the small fixture forced were ever carried back into the chain."
+ },
+
+ "RE_VERDICT_against_the_SAME_pre_registered_acceptance": {
+  "A1_every_gate_in_every_stage_90pct": "FAIL, in every form, at every operating point. Best corrected-pulsed row 34.08%; best row anywhere still the committed ideal-source clamp row at 59.48%.",
+  "A2_delivered_input_HIGH_0p4400_at_every_stage": "one corrected-pulsed row clears it -- s4 T=120 dV=1.2 t_on=24, min 0.4535 V -- but that row's top-up pulse ENDS 45.98 ps AFTER the stage boundary, so it is the FREE chain's result, not the top-up's. The committed positive result stands unchanged: the skip schedule clears 0.4400 V at short beats WITHOUT any top-up (best minimum 0.531571 V).",
+  "DOES_THE_COMMITTED_VERDICT_NEED_AMENDING": "NO on its bottom line, and it now rests on a stronger footing than before: the architecture's preferred pulsed-inductor form has been run at CHAIN scale with the switch-node capacitance restored and the corrected gate sequence installed, and it still cannot raise the rail, still cannot reach 90%, and couples backward into the feeding stage HARDER per volt delivered than the clamp does.",
+  "WHAT_SHOULD_BE_AMENDED": [
+   "A7's clause 'it upper-bounds what ANY top-up can do for settling' should be narrowed to 'upper-bounds what any top-up can do BY RAIL RESTORATION'. The clamp carries a damage term of its own (stage 2: 60.65% -> 47.02-54.00%) and is therefore not a uniform upper bound on the chain minimum over all conceivable forms. It remains a valid bound against every form actually built.",
+   "A8 should be recorded as UNFIXED ON THE ptu PATH. The 'instantiate the idle devices in the probe deck' fix exists only in tu.deck's resistive branch; the pulsed branch continues past it. Until that is repaired, no pulsed row from this harness -- committed or new -- can pass the A6 gate.",
+   "The record should note that the pulsed top-up's corrected gate sequence needs 32 ps of preparation, which does not fit inside the hold window at T <= 160 ps."]
+ },
+
+ "ARTEFACTS": {
+  "PRE_REGISTERED.json": "acceptance + falsifiable expectations, sole file on disk at 01:30:52",
+  "INSTRUMENT.json": "the A5 digit check",
+  "EXISTING.json": "per-gate settling, rails, LOW/HIGH and top-up meters extracted from all 34 committed ptu decks plus the free/rtu rows",
+  "FIXTURE.json": "the 27-point Cna x Ltu x t_on sweep of the corrected top-up cell",
+  "COUPLING.json / COUPLING2.json": "D1 delivery slope and D2 predecessor-LOW lift, per row, on per-row windows",
+  "SLOPES.json": "the first-pass slope scan on the committed decks",
+  "SEPARATION.json": "D6 by bank depth, with restore5's series recomputed",
+  "COMPARE.json": "the matched table and the re-verdict",
+  "ROWS_core.json / ROWS_best.json": "the 11 corrected pulsed-inductor chain rows",
+  "zeros.json / tu_zeros.json": "every MEASURED hop zero and top-up freewheel zero, with the raw probe value and the 32 ps preparation offset recorded separately"
+ },
+
+ "LABELS": {
+  "MEASURED": "every settling, rail, LOW-node, slope, charge, separation and zero figure above",
+  "DERIVED": "the switch-node capacitance central estimate of ~8 fF (A6's own arithmetic); the damage-per-volt ratios",
+  "ASSUMED": "Cna itself, which is why it was swept over {8, 20, 50} fF on the fixture",
+  "LOWER_BOUND": "all device charge and energy numbers -- sg13lv_compat.sp zeroes ad/as/pd/ps. Per A6 this is FIRST-ORDER at a buck switch node, which is why CNA is explicit here.",
+  "SCOPE": "all numbers are SHALLOW-STACK (sg13g2_o21ai_1 never settles anywhere in the PDK envelope)"
+ }
+}

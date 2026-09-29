@@ -1,0 +1,2361 @@
+{
+ "_what": "D1 + D2, generalised: the delivery slope on the TOPPED rail and the resulting\nlift on the FEEDING stage's LOW output nodes, computed per row from that row's\nOWN schedule so the window is correct at every beat period.\n\nWindow = [ open[0] + EDGE , min(bound[3], close[1]) - EDGE ]\n  open[0]  = hop 1's MEASURED zero -- bank 3 is charged, its hold begins\n  bound[3] = bank 3's stage boundary -- where the settling is read\n  close[1] = hop 2's close -- MUST be excluded, it drains bank 2 and would\n             swamp the coupling measurement with bank 2's own drain event\nAt T = 200 that is [300, 399]; at T = 120 hop 2 closes at 320, so the window\nshortens automatically instead of silently including the drain.\n\nWorks on any row that carries close_ps/open_ps/bound_ps and has a .prn.",
+ "rows": {
+  "free|s4|T120|dv1.2|L5|t12": {
+   "window_ps": [
+    299.98,
+    318.0
+   ],
+   "rail3": {
+    "V_start": 0.778112,
+    "V_end": 0.767265,
+    "V_min": 0.767265,
+    "V_max": 0.778112,
+    "rise_from_start_mV": 0.0,
+    "net_change_mV": -10.848,
+    "max_RISING_dVdt_V_per_ns": 0.0,
+    "rising_at_ps": null,
+    "max_FALLING_dVdt_V_per_ns": -1.102
+   },
+   "rail2": {
+    "V_start": 1.191009,
+    "V_end": 1.171989,
+    "V_min": 1.171989,
+    "V_max": 1.191009,
+    "rise_from_start_mV": 0.0,
+    "net_change_mV": -19.02,
+    "max_RISING_dVdt_V_per_ns": 0.0,
+    "rising_at_ps": null,
+    "max_FALLING_dVdt_V_per_ns": -2.5
+   },
+   "stage2_LOW_nodes": {
+    "o2_1": {
+     "V_start": 0.161433,
+     "V_end": 0.214271,
+     "V_min": 0.161433,
+     "V_max": 0.214271,
+     "rise_from_start_mV": 52.839,
+     "net_change_mV": 52.839,
+     "max_RISING_dVdt_V_per_ns": 3.25,
+     "rising_at_ps": 301.978,
+     "max_FALLING_dVdt_V_per_ns": 0.0
+    },
+    "o2_3": {
+     "V_start": 0.161433,
+     "V_end": 0.214271,
+     "V_min": 0.161433,
+     "V_max": 0.214271,
+     "rise_from_start_mV": 52.839,
+     "net_change_mV": 52.839,
+     "max_RISING_dVdt_V_per_ns": 3.25,
+     "rising_at_ps": 301.978,
+     "max_FALLING_dVdt_V_per_ns": 0.0
+    },
+    "o2_5": {
+     "V_start": 0.161433,
+     "V_end": 0.214271,
+     "V_min": 0.161433,
+     "V_max": 0.214271,
+     "rise_from_start_mV": 52.839,
+     "net_change_mV": 52.839,
+     "max_RISING_dVdt_V_per_ns": 3.25,
+     "rising_at_ps": 301.978,
+     "max_FALLING_dVdt_V_per_ns": 0.0
+    },
+    "o2_7": {
+     "V_start": 0.161433,
+     "V_end": 0.214271,
+     "V_min": 0.161433,
+     "V_max": 0.214271,
+     "rise_from_start_mV": 52.839,
+     "net_change_mV": 52.839,
+     "max_RISING_dVdt_V_per_ns": 3.25,
+     "rising_at_ps": 301.978,
+     "max_FALLING_dVdt_V_per_ns": 0.0
+    }
+   },
+   "worst_LOW_lift_mV": 52.839,
+   "worst_LOW_end_V": 0.214271
+  },
+  "free|s4|T160|dv1.2|L5|t12": {
+   "window_ps": [
+    299.98,
+    358.0
+   ],
+   "rail3": {
+    "V_start": 0.777594,
+    "V_end": 0.766048,
+    "V_min": 0.764597,
+    "V_max": 0.777594,
+    "rise_from_start_mV": 0.0,
+    "net_change_mV": -11.546,
+    "max_RISING_dVdt_V_per_ns": 0.111,
+    "rising_at_ps": 357.946,
+    "max_FALLING_dVdt_V_per_ns": -1.167
+   },
+   "rail2": {
+    "V_start": 1.185067,
+    "V_end": 1.137125,
+    "V_min": 1.137125,
+    "V_max": 1.185067,
+    "rise_from_start_mV": 0.0,
+    "net_change_mV": -47.942,
+    "max_RISING_dVdt_V_per_ns": 0.211,
+    "rising_at_ps": 320.001,
+    "max_FALLING_dVdt_V_per_ns": -2.5
+   },
+   "stage2_LOW_nodes": {
+    "o2_1": {
+     "V_start": 0.15846,
+     "V_end": 0.327209,
+     "V_min": 0.15846,
+     "V_max": 0.327209,
+     "rise_from_start_mV": 168.75,
+     "net_change_mV": 168.75,
+     "max_RISING_dVdt_V_per_ns": 3.167,
+     "rising_at_ps": 301.977,
+     "max_FALLING_dVdt_V_per_ns": 0.0
+    },
+    "o2_3": {
+     "V_start": 0.15846,
+     "V_end": 0.327209,
+     "V_min": 0.15846,
+     "V_max": 0.327209,
+     "rise_from_start_mV": 168.75,
+     "net_change_mV": 168.75,
+     "max_RISING_dVdt_V_per_ns": 3.167,
+     "rising_at_ps": 301.977,
+     "max_FALLING_dVdt_V_per_ns": 0.0
+    },
+    "o2_5": {
+     "V_start": 0.15846,
+     "V_end": 0.327209,
+     "V_min": 0.15846,
+     "V_max": 0.327209,
+     "rise_from_start_mV": 168.75,
+     "net_change_mV": 168.75,
+     "max_RISING_dVdt_V_per_ns": 3.167,
+     "rising_at_ps": 301.977,
+     "max_FALLING_dVdt_V_per_ns": 0.0
+    },
+    "o2_7": {
+     "V_start": 0.15846,
+     "V_end": 0.327209,
+     "V_min": 0.15846,
+     "V_max": 0.327209,
+     "rise_from_start_mV": 168.75,
+     "net_change_mV": 168.75,
+     "max_RISING_dVdt_V_per_ns": 3.167,
+     "rising_at_ps": 301.977,
+     "max_FALLING_dVdt_V_per_ns": 0.0
+    }
+   },
+   "worst_LOW_lift_mV": 168.75,
+   "worst_LOW_end_V": 0.327209
+  },
+  "free|s4|T200|dv1.2|L5|t12": {
+   "window_ps": [
+    299.98,
+    398.0
+   ],
+   "rail3": {
+    "V_start": 0.777594,
+    "V_end": 0.7721,
+    "V_min": 0.764112,
+    "V_max": 0.777594,
+    "rise_from_start_mV": 0.0,
+    "net_change_mV": -5.494,
+    "max_RISING_dVdt_V_per_ns": 0.197,
+    "rising_at_ps": 365.539,
+    "max_FALLING_dVdt_V_per_ns": -1.167
+   },
+   "rail2": {
+    "V_start": 1.185067,
+    "V_end": 1.113319,
+    "V_min": 1.113319,
+    "V_max": 1.185067,
+    "rise_from_start_mV": 0.0,
+    "net_change_mV": -71.748,
+    "max_RISING_dVdt_V_per_ns": 0.458,
+    "rising_at_ps": 360.001,
+    "max_FALLING_dVdt_V_per_ns": -2.5
+   },
+   "stage2_LOW_nodes": {
+    "o2_1": {
+     "V_start": 0.15846,
+     "V_end": 0.438143,
+     "V_min": 0.15846,
+     "V_max": 0.438143,
+     "rise_from_start_mV": 279.683,
+     "net_change_mV": 279.683,
+     "max_RISING_dVdt_V_per_ns": 3.167,
+     "rising_at_ps": 301.977,
+     "max_FALLING_dVdt_V_per_ns": 0.0
+    },
+    "o2_3": {
+     "V_start": 0.15846,
+     "V_end": 0.438143,
+     "V_min": 0.15846,
+     "V_max": 0.438143,
+     "rise_from_start_mV": 279.683,
+     "net_change_mV": 279.683,
+     "max_RISING_dVdt_V_per_ns": 3.167,
+     "rising_at_ps": 301.977,
+     "max_FALLING_dVdt_V_per_ns": 0.0
+    },
+    "o2_5": {
+     "V_start": 0.15846,
+     "V_end": 0.438143,
+     "V_min": 0.15846,
+     "V_max": 0.438143,
+     "rise_from_start_mV": 279.683,
+     "net_change_mV": 279.683,
+     "max_RISING_dVdt_V_per_ns": 3.167,
+     "rising_at_ps": 301.977,
+     "max_FALLING_dVdt_V_per_ns": 0.0
+    },
+    "o2_7": {
+     "V_start": 0.15846,
+     "V_end": 0.438143,
+     "V_min": 0.15846,
+     "V_max": 0.438143,
+     "rise_from_start_mV": 279.683,
+     "net_change_mV": 279.683,
+     "max_RISING_dVdt_V_per_ns": 3.167,
+     "rising_at_ps": 301.977,
+     "max_FALLING_dVdt_V_per_ns": 0.0
+    }
+   },
+   "worst_LOW_lift_mV": 279.683,
+   "worst_LOW_end_V": 0.438143
+  },
+  "free|s4|T300|dv1.2|L5|t12": {
+   "window_ps": [
+    299.98,
+    498.0
+   ],
+   "rail3": {
+    "V_start": 0.777594,
+    "V_end": 0.7811,
+    "V_min": 0.764112,
+    "V_max": 0.782216,
+    "rise_from_start_mV": 4.623,
+    "net_change_mV": 3.507,
+    "max_RISING_dVdt_V_per_ns": 0.17,
+    "rising_at_ps": 379.927,
+    "max_FALLING_dVdt_V_per_ns": -1.167
+   },
+   "rail2": {
+    "V_start": 1.185067,
+    "V_end": 1.083263,
+    "V_min": 1.083263,
+    "V_max": 1.185067,
+    "rise_from_start_mV": 0.0,
+    "net_change_mV": -101.804,
+    "max_RISING_dVdt_V_per_ns": 0.828,
+    "rising_at_ps": 460.001,
+    "max_FALLING_dVdt_V_per_ns": -2.5
+   },
+   "stage2_LOW_nodes": {
+    "o2_1": {
+     "V_start": 0.15846,
+     "V_end": 0.684284,
+     "V_min": 0.15846,
+     "V_max": 0.684284,
+     "rise_from_start_mV": 525.824,
+     "net_change_mV": 525.824,
+     "max_RISING_dVdt_V_per_ns": 3.167,
+     "rising_at_ps": 301.977,
+     "max_FALLING_dVdt_V_per_ns": 0.0
+    },
+    "o2_3": {
+     "V_start": 0.15846,
+     "V_end": 0.684284,
+     "V_min": 0.15846,
+     "V_max": 0.684284,
+     "rise_from_start_mV": 525.824,
+     "net_change_mV": 525.824,
+     "max_RISING_dVdt_V_per_ns": 3.167,
+     "rising_at_ps": 301.977,
+     "max_FALLING_dVdt_V_per_ns": 0.0
+    },
+    "o2_5": {
+     "V_start": 0.15846,
+     "V_end": 0.684284,
+     "V_min": 0.15846,
+     "V_max": 0.684284,
+     "rise_from_start_mV": 525.824,
+     "net_change_mV": 525.824,
+     "max_RISING_dVdt_V_per_ns": 3.167,
+     "rising_at_ps": 301.977,
+     "max_FALLING_dVdt_V_per_ns": 0.0
+    },
+    "o2_7": {
+     "V_start": 0.15846,
+     "V_end": 0.684284,
+     "V_min": 0.15846,
+     "V_max": 0.684284,
+     "rise_from_start_mV": 525.824,
+     "net_change_mV": 525.824,
+     "max_RISING_dVdt_V_per_ns": 3.167,
+     "rising_at_ps": 301.977,
+     "max_FALLING_dVdt_V_per_ns": 0.0
+    }
+   },
+   "worst_LOW_lift_mV": 525.824,
+   "worst_LOW_end_V": 0.684284
+  },
+  "free|s4|T120|dv1.5|L5|t12": {
+   "window_ps": [
+    304.4,
+    318.0
+   ],
+   "rail3": {
+    "V_start": 0.985667,
+    "V_end": 0.984225,
+    "V_min": 0.983366,
+    "V_max": 0.985667,
+    "rise_from_start_mV": 0.0,
+    "net_change_mV": -1.441,
+    "max_RISING_dVdt_V_per_ns": 0.239,
+    "rising_at_ps": 317.95,
+    "max_FALLING_dVdt_V_per_ns": -1.0
+   },
+   "rail2": {
+    "V_start": 1.413871,
+    "V_end": 1.381793,
+    "V_min": 1.381793,
+    "V_max": 1.413871,
+    "rise_from_start_mV": 0.0,
+    "net_change_mV": -32.078,
+    "max_RISING_dVdt_V_per_ns": 0.0,
+    "rising_at_ps": null,
+    "max_FALLING_dVdt_V_per_ns": -5.0
+   },
+   "stage2_LOW_nodes": {
+    "o2_1": {
+     "V_start": 0.410056,
+     "V_end": 0.507146,
+     "V_min": 0.410056,
+     "V_max": 0.507146,
+     "rise_from_start_mV": 97.09,
+     "net_change_mV": 97.09,
+     "max_RISING_dVdt_V_per_ns": 11.0,
+     "rising_at_ps": 304.403,
+     "max_FALLING_dVdt_V_per_ns": 0.0
+    },
+    "o2_3": {
+     "V_start": 0.410056,
+     "V_end": 0.507146,
+     "V_min": 0.410056,
+     "V_max": 0.507146,
+     "rise_from_start_mV": 97.09,
+     "net_change_mV": 97.09,
+     "max_RISING_dVdt_V_per_ns": 11.0,
+     "rising_at_ps": 304.403,
+     "max_FALLING_dVdt_V_per_ns": 0.0
+    },
+    "o2_5": {
+     "V_start": 0.410056,
+     "V_end": 0.507146,
+     "V_min": 0.410056,
+     "V_max": 0.507146,
+     "rise_from_start_mV": 97.09,
+     "net_change_mV": 97.09,
+     "max_RISING_dVdt_V_per_ns": 11.0,
+     "rising_at_ps": 304.403,
+     "max_FALLING_dVdt_V_per_ns": 0.0
+    },
+    "o2_7": {
+     "V_start": 0.410056,
+     "V_end": 0.507146,
+     "V_min": 0.410056,
+     "V_max": 0.507146,
+     "rise_from_start_mV": 97.09,
+     "net_change_mV": 97.09,
+     "max_RISING_dVdt_V_per_ns": 11.0,
+     "rising_at_ps": 304.403,
+     "max_FALLING_dVdt_V_per_ns": 0.0
+    }
+   },
+   "worst_LOW_lift_mV": 97.09,
+   "worst_LOW_end_V": 0.507146
+  },
+  "free|s4|T160|dv1.5|L5|t12": {
+   "window_ps": [
+    304.4,
+    358.0
+   ],
+   "rail3": {
+    "V_start": 0.985376,
+    "V_end": 0.992525,
+    "V_min": 0.98337,
+    "V_max": 0.993459,
+    "rise_from_start_mV": 8.082,
+    "net_change_mV": 7.149,
+    "max_RISING_dVdt_V_per_ns": 0.446,
+    "rising_at_ps": 325.187,
+    "max_FALLING_dVdt_V_per_ns": -1.0
+   },
+   "rail2": {
+    "V_start": 1.414716,
+    "V_end": 1.321397,
+    "V_min": 1.321397,
+    "V_max": 1.414716,
+    "rise_from_start_mV": 0.0,
+    "net_change_mV": -93.319,
+    "max_RISING_dVdt_V_per_ns": 0.0,
+    "rising_at_ps": null,
+    "max_FALLING_dVdt_V_per_ns": -10.0
+   },
+   "stage2_LOW_nodes": {
+    "o2_1": {
+     "V_start": 0.407445,
+     "V_end": 0.772756,
+     "V_min": 0.407445,
+     "V_max": 0.772756,
+     "rise_from_start_mV": 365.312,
+     "net_change_mV": 365.312,
+     "max_RISING_dVdt_V_per_ns": 11.0,
+     "rising_at_ps": 304.403,
+     "max_FALLING_dVdt_V_per_ns": 0.0
+    },
+    "o2_3": {
+     "V_start": 0.407445,
+     "V_end": 0.772756,
+     "V_min": 0.407445,
+     "V_max": 0.772756,
+     "rise_from_start_mV": 365.312,
+     "net_change_mV": 365.312,
+     "max_RISING_dVdt_V_per_ns": 11.0,
+     "rising_at_ps": 304.403,
+     "max_FALLING_dVdt_V_per_ns": 0.0
+    },
+    "o2_5": {
+     "V_start": 0.407445,
+     "V_end": 0.772756,
+     "V_min": 0.407445,
+     "V_max": 0.772756,
+     "rise_from_start_mV": 365.312,
+     "net_change_mV": 365.312,
+     "max_RISING_dVdt_V_per_ns": 11.0,
+     "rising_at_ps": 304.403,
+     "max_FALLING_dVdt_V_per_ns": 0.0
+    },
+    "o2_7": {
+     "V_start": 0.407445,
+     "V_end": 0.772756,
+     "V_min": 0.407445,
+     "V_max": 0.772756,
+     "rise_from_start_mV": 365.312,
+     "net_change_mV": 365.312,
+     "max_RISING_dVdt_V_per_ns": 11.0,
+     "rising_at_ps": 304.403,
+     "max_FALLING_dVdt_V_per_ns": 0.0
+    }
+   },
+   "worst_LOW_lift_mV": 365.312,
+   "worst_LOW_end_V": 0.772756
+  },
+  "free|s4|T200|dv1.5|L5|t12": {
+   "window_ps": [
+    304.4,
+    398.0
+   ],
+   "rail3": {
+    "V_start": 0.985376,
+    "V_end": 0.974694,
+    "V_min": 0.974694,
+    "V_max": 0.994156,
+    "rise_from_start_mV": 8.78,
+    "net_change_mV": -10.683,
+    "max_RISING_dVdt_V_per_ns": 0.407,
+    "rising_at_ps": 325.554,
+    "max_FALLING_dVdt_V_per_ns": -1.0
+   },
+   "rail2": {
+    "V_start": 1.414716,
+    "V_end": 1.285869,
+    "V_min": 1.285869,
+    "V_max": 1.414716,
+    "rise_from_start_mV": 0.0,
+    "net_change_mV": -128.847,
+    "max_RISING_dVdt_V_per_ns": 0.099,
+    "rising_at_ps": 360.001,
+    "max_FALLING_dVdt_V_per_ns": -10.0
+   },
+   "stage2_LOW_nodes": {
+    "o2_1": {
+     "V_start": 0.407445,
+     "V_end": 0.973727,
+     "V_min": 0.407445,
+     "V_max": 0.973727,
+     "rise_from_start_mV": 566.282,
+     "net_change_mV": 566.282,
+     "max_RISING_dVdt_V_per_ns": 11.0,
+     "rising_at_ps": 304.403,
+     "max_FALLING_dVdt_V_per_ns": 0.0
+    },
+    "o2_3": {
+     "V_start": 0.407445,
+     "V_end": 0.973727,
+     "V_min": 0.407445,
+     "V_max": 0.973727,
+     "rise_from_start_mV": 566.282,
+     "net_change_mV": 566.282,
+     "max_RISING_dVdt_V_per_ns": 11.0,
+     "rising_at_ps": 304.403,
+     "max_FALLING_dVdt_V_per_ns": 0.0
+    },
+    "o2_5": {
+     "V_start": 0.407445,
+     "V_end": 0.973727,
+     "V_min": 0.407445,
+     "V_max": 0.973727,
+     "rise_from_start_mV": 566.282,
+     "net_change_mV": 566.282,
+     "max_RISING_dVdt_V_per_ns": 11.0,
+     "rising_at_ps": 304.403,
+     "max_FALLING_dVdt_V_per_ns": 0.0
+    },
+    "o2_7": {
+     "V_start": 0.407445,
+     "V_end": 0.973727,
+     "V_min": 0.407445,
+     "V_max": 0.973727,
+     "rise_from_start_mV": 566.282,
+     "net_change_mV": 566.282,
+     "max_RISING_dVdt_V_per_ns": 11.0,
+     "rising_at_ps": 304.403,
+     "max_FALLING_dVdt_V_per_ns": 0.0
+    }
+   },
+   "worst_LOW_lift_mV": 566.282,
+   "worst_LOW_end_V": 0.973727
+  },
+  "free|s4|T300|dv1.5|L5|t12": {
+   "window_ps": [
+    304.4,
+    498.0
+   ],
+   "rail3": {
+    "V_start": 0.985376,
+    "V_end": 0.986023,
+    "V_min": 0.97523,
+    "V_max": 0.994156,
+    "rise_from_start_mV": 8.78,
+    "net_change_mV": 0.647,
+    "max_RISING_dVdt_V_per_ns": 0.407,
+    "rising_at_ps": 325.554,
+    "max_FALLING_dVdt_V_per_ns": -1.0
+   },
+   "rail2": {
+    "V_start": 1.414716,
+    "V_end": 1.307576,
+    "V_min": 1.307576,
+    "V_max": 1.414716,
+    "rise_from_start_mV": 0.0,
+    "net_change_mV": -107.139,
+    "max_RISING_dVdt_V_per_ns": 1.41,
+    "rising_at_ps": 460.001,
+    "max_FALLING_dVdt_V_per_ns": -10.0
+   },
+   "stage2_LOW_nodes": {
+    "o2_1": {
+     "V_start": 0.407445,
+     "V_end": 1.282249,
+     "V_min": 0.407445,
+     "V_max": 1.282249,
+     "rise_from_start_mV": 874.804,
+     "net_change_mV": 874.804,
+     "max_RISING_dVdt_V_per_ns": 11.0,
+     "rising_at_ps": 304.403,
+     "max_FALLING_dVdt_V_per_ns": 0.0
+    },
+    "o2_3": {
+     "V_start": 0.407445,
+     "V_end": 1.282249,
+     "V_min": 0.407445,
+     "V_max": 1.282249,
+     "rise_from_start_mV": 874.804,
+     "net_change_mV": 874.804,
+     "max_RISING_dVdt_V_per_ns": 11.0,
+     "rising_at_ps": 304.403,
+     "max_FALLING_dVdt_V_per_ns": 0.0
+    },
+    "o2_5": {
+     "V_start": 0.407445,
+     "V_end": 1.282249,
+     "V_min": 0.407445,
+     "V_max": 1.282249,
+     "rise_from_start_mV": 874.804,
+     "net_change_mV": 874.804,
+     "max_RISING_dVdt_V_per_ns": 11.0,
+     "rising_at_ps": 304.403,
+     "max_FALLING_dVdt_V_per_ns": 0.0
+    },
+    "o2_7": {
+     "V_start": 0.407445,
+     "V_end": 1.282249,
+     "V_min": 0.407445,
+     "V_max": 1.282249,
+     "rise_from_start_mV": 874.804,
+     "net_change_mV": 874.804,
+     "max_RISING_dVdt_V_per_ns": 11.0,
+     "rising_at_ps": 304.403,
+     "max_FALLING_dVdt_V_per_ns": 0.0
+    }
+   },
+   "worst_LOW_lift_mV": 874.804,
+   "worst_LOW_end_V": 1.282249
+  },
+  "rtu|s4|T120|dv1.2|L1|t20": {
+   "window_ps": [
+    305.68,
+    318.0
+   ],
+   "rail3": {
+    "V_start": 0.648364,
+    "V_end": 0.854209,
+    "V_min": 0.557807,
+    "V_max": 0.854209,
+    "rise_from_start_mV": 205.845,
+    "net_change_mV": 205.845,
+    "max_RISING_dVdt_V_per_ns": 58.5,
+    "rising_at_ps": 307.682,
+    "max_FALLING_dVdt_V_per_ns": -87.141
+   },
+   "rail2": {
+    "V_start": 1.174495,
+    "V_end": 1.169737,
+    "V_min": 1.168967,
+    "V_max": 1.174495,
+    "rise_from_start_mV": 0.0,
+    "net_change_mV": -4.758,
+    "max_RISING_dVdt_V_per_ns": 0.5,
+    "rising_at_ps": 307.682,
+    "max_FALLING_dVdt_V_per_ns": -5.0
+   },
+   "stage2_LOW_nodes": {
+    "o2_1": {
+     "V_start": 0.161336,
+     "V_end": 0.246036,
+     "V_min": 0.152609,
+     "V_max": 0.246036,
+     "rise_from_start_mV": 84.7,
+     "net_change_mV": 84.7,
+     "max_RISING_dVdt_V_per_ns": 14.0,
+     "rising_at_ps": 307.682,
+     "max_FALLING_dVdt_V_per_ns": -11.689
+    },
+    "o2_3": {
+     "V_start": 0.161336,
+     "V_end": 0.246036,
+     "V_min": 0.152609,
+     "V_max": 0.246036,
+     "rise_from_start_mV": 84.7,
+     "net_change_mV": 84.7,
+     "max_RISING_dVdt_V_per_ns": 14.0,
+     "rising_at_ps": 307.682,
+     "max_FALLING_dVdt_V_per_ns": -11.689
+    },
+    "o2_5": {
+     "V_start": 0.161336,
+     "V_end": 0.246036,
+     "V_min": 0.152609,
+     "V_max": 0.246036,
+     "rise_from_start_mV": 84.7,
+     "net_change_mV": 84.7,
+     "max_RISING_dVdt_V_per_ns": 14.0,
+     "rising_at_ps": 307.682,
+     "max_FALLING_dVdt_V_per_ns": -11.689
+    },
+    "o2_7": {
+     "V_start": 0.161336,
+     "V_end": 0.246036,
+     "V_min": 0.152609,
+     "V_max": 0.246036,
+     "rise_from_start_mV": 84.7,
+     "net_change_mV": 84.7,
+     "max_RISING_dVdt_V_per_ns": 14.0,
+     "rising_at_ps": 307.682,
+     "max_FALLING_dVdt_V_per_ns": -11.689
+    }
+   },
+   "worst_LOW_lift_mV": 84.7,
+   "worst_LOW_end_V": 0.246036
+  },
+  "rtu|s4|T160|dv1.2|L1|t20": {
+   "window_ps": [
+    305.68,
+    358.0
+   ],
+   "rail3": {
+    "V_start": 0.648074,
+    "V_end": 1.085535,
+    "V_min": 0.55756,
+    "V_max": 1.120682,
+    "rise_from_start_mV": 472.608,
+    "net_change_mV": 437.461,
+    "max_RISING_dVdt_V_per_ns": 227.0,
+    "rising_at_ps": 325.681,
+    "max_FALLING_dVdt_V_per_ns": -87.097
+   },
+   "rail2": {
+    "V_start": 1.171022,
+    "V_end": 1.14626,
+    "V_min": 1.14626,
+    "V_max": 1.17926,
+    "rise_from_start_mV": 8.237,
+    "net_change_mV": -24.762,
+    "max_RISING_dVdt_V_per_ns": 10.0,
+    "rising_at_ps": 325.681,
+    "max_FALLING_dVdt_V_per_ns": -5.0
+   },
+   "stage2_LOW_nodes": {
+    "o2_1": {
+     "V_start": 0.158203,
+     "V_end": 0.437295,
+     "V_min": 0.149324,
+     "V_max": 0.437295,
+     "rise_from_start_mV": 279.092,
+     "net_change_mV": 279.092,
+     "max_RISING_dVdt_V_per_ns": 57.0,
+     "rising_at_ps": 325.681,
+     "max_FALLING_dVdt_V_per_ns": -11.808
+    },
+    "o2_3": {
+     "V_start": 0.158203,
+     "V_end": 0.437295,
+     "V_min": 0.149324,
+     "V_max": 0.437295,
+     "rise_from_start_mV": 279.092,
+     "net_change_mV": 279.092,
+     "max_RISING_dVdt_V_per_ns": 57.0,
+     "rising_at_ps": 325.681,
+     "max_FALLING_dVdt_V_per_ns": -11.808
+    },
+    "o2_5": {
+     "V_start": 0.158203,
+     "V_end": 0.437295,
+     "V_min": 0.149324,
+     "V_max": 0.437295,
+     "rise_from_start_mV": 279.092,
+     "net_change_mV": 279.092,
+     "max_RISING_dVdt_V_per_ns": 57.0,
+     "rising_at_ps": 325.681,
+     "max_FALLING_dVdt_V_per_ns": -11.808
+    },
+    "o2_7": {
+     "V_start": 0.158203,
+     "V_end": 0.437295,
+     "V_min": 0.149324,
+     "V_max": 0.437295,
+     "rise_from_start_mV": 279.092,
+     "net_change_mV": 279.092,
+     "max_RISING_dVdt_V_per_ns": 57.0,
+     "rising_at_ps": 325.681,
+     "max_FALLING_dVdt_V_per_ns": -11.808
+    }
+   },
+   "worst_LOW_lift_mV": 279.092,
+   "worst_LOW_end_V": 0.437295
+  },
+  "rtu|s4|T200|dv1.2|L1|t20": {
+   "window_ps": [
+    305.68,
+    398.0
+   ],
+   "rail3": {
+    "V_start": 0.648074,
+    "V_end": 1.07365,
+    "V_min": 0.55756,
+    "V_max": 1.120477,
+    "rise_from_start_mV": 472.403,
+    "net_change_mV": 425.576,
+    "max_RISING_dVdt_V_per_ns": 227.0,
+    "rising_at_ps": 325.681,
+    "max_FALLING_dVdt_V_per_ns": -87.097
+   },
+   "rail2": {
+    "V_start": 1.171022,
+    "V_end": 1.116025,
+    "V_min": 1.116025,
+    "V_max": 1.172977,
+    "rise_from_start_mV": 1.955,
+    "net_change_mV": -54.998,
+    "max_RISING_dVdt_V_per_ns": 10.0,
+    "rising_at_ps": 325.681,
+    "max_FALLING_dVdt_V_per_ns": -5.0
+   },
+   "stage2_LOW_nodes": {
+    "o2_1": {
+     "V_start": 0.158203,
+     "V_end": 0.551708,
+     "V_min": 0.149324,
+     "V_max": 0.551708,
+     "rise_from_start_mV": 393.505,
+     "net_change_mV": 393.505,
+     "max_RISING_dVdt_V_per_ns": 56.0,
+     "rising_at_ps": 325.681,
+     "max_FALLING_dVdt_V_per_ns": -11.808
+    },
+    "o2_3": {
+     "V_start": 0.158203,
+     "V_end": 0.551708,
+     "V_min": 0.149324,
+     "V_max": 0.551708,
+     "rise_from_start_mV": 393.505,
+     "net_change_mV": 393.505,
+     "max_RISING_dVdt_V_per_ns": 56.0,
+     "rising_at_ps": 325.681,
+     "max_FALLING_dVdt_V_per_ns": -11.808
+    },
+    "o2_5": {
+     "V_start": 0.158203,
+     "V_end": 0.551708,
+     "V_min": 0.149324,
+     "V_max": 0.551708,
+     "rise_from_start_mV": 393.505,
+     "net_change_mV": 393.505,
+     "max_RISING_dVdt_V_per_ns": 56.0,
+     "rising_at_ps": 325.681,
+     "max_FALLING_dVdt_V_per_ns": -11.808
+    },
+    "o2_7": {
+     "V_start": 0.158203,
+     "V_end": 0.551708,
+     "V_min": 0.149324,
+     "V_max": 0.551708,
+     "rise_from_start_mV": 393.505,
+     "net_change_mV": 393.505,
+     "max_RISING_dVdt_V_per_ns": 56.0,
+     "rising_at_ps": 325.681,
+     "max_FALLING_dVdt_V_per_ns": -11.808
+    }
+   },
+   "worst_LOW_lift_mV": 393.505,
+   "worst_LOW_end_V": 0.551708
+  },
+  "rtu|s4|T300|dv1.2|L1|t20": {
+   "window_ps": [
+    305.68,
+    498.0
+   ],
+   "rail3": {
+    "V_start": 0.648074,
+    "V_end": 1.065306,
+    "V_min": 0.55756,
+    "V_max": 1.120477,
+    "rise_from_start_mV": 472.403,
+    "net_change_mV": 417.232,
+    "max_RISING_dVdt_V_per_ns": 227.0,
+    "rising_at_ps": 325.681,
+    "max_FALLING_dVdt_V_per_ns": -87.097
+   },
+   "rail2": {
+    "V_start": 1.171022,
+    "V_end": 1.078845,
+    "V_min": 1.078845,
+    "V_max": 1.172977,
+    "rise_from_start_mV": 1.955,
+    "net_change_mV": -92.177,
+    "max_RISING_dVdt_V_per_ns": 10.0,
+    "rising_at_ps": 325.681,
+    "max_FALLING_dVdt_V_per_ns": -5.0
+   },
+   "stage2_LOW_nodes": {
+    "o2_1": {
+     "V_start": 0.158203,
+     "V_end": 0.785221,
+     "V_min": 0.149324,
+     "V_max": 0.785221,
+     "rise_from_start_mV": 627.018,
+     "net_change_mV": 627.018,
+     "max_RISING_dVdt_V_per_ns": 56.0,
+     "rising_at_ps": 325.681,
+     "max_FALLING_dVdt_V_per_ns": -11.808
+    },
+    "o2_3": {
+     "V_start": 0.158203,
+     "V_end": 0.785221,
+     "V_min": 0.149324,
+     "V_max": 0.785221,
+     "rise_from_start_mV": 627.018,
+     "net_change_mV": 627.018,
+     "max_RISING_dVdt_V_per_ns": 56.0,
+     "rising_at_ps": 325.681,
+     "max_FALLING_dVdt_V_per_ns": -11.808
+    },
+    "o2_5": {
+     "V_start": 0.158203,
+     "V_end": 0.785221,
+     "V_min": 0.149324,
+     "V_max": 0.785221,
+     "rise_from_start_mV": 627.018,
+     "net_change_mV": 627.018,
+     "max_RISING_dVdt_V_per_ns": 56.0,
+     "rising_at_ps": 325.681,
+     "max_FALLING_dVdt_V_per_ns": -11.808
+    },
+    "o2_7": {
+     "V_start": 0.158203,
+     "V_end": 0.785221,
+     "V_min": 0.149324,
+     "V_max": 0.785221,
+     "rise_from_start_mV": 627.018,
+     "net_change_mV": 627.018,
+     "max_RISING_dVdt_V_per_ns": 56.0,
+     "rising_at_ps": 325.681,
+     "max_FALLING_dVdt_V_per_ns": -11.808
+    }
+   },
+   "worst_LOW_lift_mV": 627.018,
+   "worst_LOW_end_V": 0.785221
+  },
+  "rtu|s4|T120|dv1.5|L1|t20": {
+   "window_ps": [
+    309.71,
+    318.0
+   ],
+   "rail3": {
+    "V_start": 0.812465,
+    "V_end": 0.954139,
+    "V_min": 0.683676,
+    "V_max": 0.954139,
+    "rise_from_start_mV": 141.674,
+    "net_change_mV": 141.674,
+    "max_RISING_dVdt_V_per_ns": 81.0,
+    "rising_at_ps": 311.711,
+    "max_FALLING_dVdt_V_per_ns": -97.511
+   },
+   "rail2": {
+    "V_start": 1.387742,
+    "V_end": 1.372877,
+    "V_min": 1.372877,
+    "V_max": 1.387742,
+    "rise_from_start_mV": 0.0,
+    "net_change_mV": -14.865,
+    "max_RISING_dVdt_V_per_ns": 0.0,
+    "rising_at_ps": null,
+    "max_FALLING_dVdt_V_per_ns": -5.651
+   },
+   "stage2_LOW_nodes": {
+    "o2_1": {
+     "V_start": 0.440786,
+     "V_end": 0.529816,
+     "V_min": 0.440758,
+     "V_max": 0.529816,
+     "rise_from_start_mV": 89.03,
+     "net_change_mV": 89.03,
+     "max_RISING_dVdt_V_per_ns": 23.0,
+     "rising_at_ps": 311.711,
+     "max_FALLING_dVdt_V_per_ns": -3.796
+    },
+    "o2_3": {
+     "V_start": 0.440786,
+     "V_end": 0.529816,
+     "V_min": 0.440758,
+     "V_max": 0.529816,
+     "rise_from_start_mV": 89.03,
+     "net_change_mV": 89.03,
+     "max_RISING_dVdt_V_per_ns": 23.0,
+     "rising_at_ps": 311.711,
+     "max_FALLING_dVdt_V_per_ns": -3.796
+    },
+    "o2_5": {
+     "V_start": 0.440786,
+     "V_end": 0.529816,
+     "V_min": 0.440758,
+     "V_max": 0.529816,
+     "rise_from_start_mV": 89.03,
+     "net_change_mV": 89.03,
+     "max_RISING_dVdt_V_per_ns": 23.0,
+     "rising_at_ps": 311.711,
+     "max_FALLING_dVdt_V_per_ns": -3.796
+    },
+    "o2_7": {
+     "V_start": 0.440786,
+     "V_end": 0.529816,
+     "V_min": 0.440758,
+     "V_max": 0.529816,
+     "rise_from_start_mV": 89.03,
+     "net_change_mV": 89.03,
+     "max_RISING_dVdt_V_per_ns": 23.0,
+     "rising_at_ps": 311.711,
+     "max_FALLING_dVdt_V_per_ns": -3.796
+    }
+   },
+   "worst_LOW_lift_mV": 89.03,
+   "worst_LOW_end_V": 0.529816
+  },
+  "rtu|s4|T160|dv1.5|L1|t20": {
+   "window_ps": [
+    309.71,
+    358.0
+   ],
+   "rail3": {
+    "V_start": 0.812534,
+    "V_end": 1.456945,
+    "V_min": 0.683834,
+    "V_max": 1.486774,
+    "rise_from_start_mV": 674.24,
+    "net_change_mV": 644.411,
+    "max_RISING_dVdt_V_per_ns": 250.0,
+    "rising_at_ps": 329.711,
+    "max_FALLING_dVdt_V_per_ns": -97.46
+   },
+   "rail2": {
+    "V_start": 1.394189,
+    "V_end": 1.33393,
+    "V_min": 1.33393,
+    "V_max": 1.394189,
+    "rise_from_start_mV": 0.0,
+    "net_change_mV": -60.259,
+    "max_RISING_dVdt_V_per_ns": 10.0,
+    "rising_at_ps": 329.711,
+    "max_FALLING_dVdt_V_per_ns": -4.773
+   },
+   "stage2_LOW_nodes": {
+    "o2_1": {
+     "V_start": 0.43972,
+     "V_end": 0.898474,
+     "V_min": 0.43972,
+     "V_max": 0.898474,
+     "rise_from_start_mV": 458.754,
+     "net_change_mV": 458.754,
+     "max_RISING_dVdt_V_per_ns": 63.0,
+     "rising_at_ps": 329.711,
+     "max_FALLING_dVdt_V_per_ns": -3.448
+    },
+    "o2_3": {
+     "V_start": 0.43972,
+     "V_end": 0.898474,
+     "V_min": 0.43972,
+     "V_max": 0.898474,
+     "rise_from_start_mV": 458.754,
+     "net_change_mV": 458.754,
+     "max_RISING_dVdt_V_per_ns": 63.0,
+     "rising_at_ps": 329.711,
+     "max_FALLING_dVdt_V_per_ns": -3.448
+    },
+    "o2_5": {
+     "V_start": 0.43972,
+     "V_end": 0.898474,
+     "V_min": 0.43972,
+     "V_max": 0.898474,
+     "rise_from_start_mV": 458.754,
+     "net_change_mV": 458.754,
+     "max_RISING_dVdt_V_per_ns": 63.0,
+     "rising_at_ps": 329.711,
+     "max_FALLING_dVdt_V_per_ns": -3.448
+    },
+    "o2_7": {
+     "V_start": 0.43972,
+     "V_end": 0.898474,
+     "V_min": 0.43972,
+     "V_max": 0.898474,
+     "rise_from_start_mV": 458.754,
+     "net_change_mV": 458.754,
+     "max_RISING_dVdt_V_per_ns": 63.0,
+     "rising_at_ps": 329.711,
+     "max_FALLING_dVdt_V_per_ns": -3.448
+    }
+   },
+   "worst_LOW_lift_mV": 458.754,
+   "worst_LOW_end_V": 0.898474
+  },
+  "rtu|s4|T200|dv1.5|L1|t20": {
+   "window_ps": [
+    309.71,
+    398.0
+   ],
+   "rail3": {
+    "V_start": 0.812534,
+    "V_end": 1.439409,
+    "V_min": 0.683834,
+    "V_max": 1.486569,
+    "rise_from_start_mV": 674.035,
+    "net_change_mV": 626.875,
+    "max_RISING_dVdt_V_per_ns": 250.0,
+    "rising_at_ps": 329.711,
+    "max_FALLING_dVdt_V_per_ns": -97.46
+   },
+   "rail2": {
+    "V_start": 1.394189,
+    "V_end": 1.292976,
+    "V_min": 1.292976,
+    "V_max": 1.394189,
+    "rise_from_start_mV": 0.0,
+    "net_change_mV": -101.213,
+    "max_RISING_dVdt_V_per_ns": 10.0,
+    "rising_at_ps": 329.711,
+    "max_FALLING_dVdt_V_per_ns": -4.773
+   },
+   "stage2_LOW_nodes": {
+    "o2_1": {
+     "V_start": 0.43972,
+     "V_end": 1.08221,
+     "V_min": 0.43972,
+     "V_max": 1.08221,
+     "rise_from_start_mV": 642.49,
+     "net_change_mV": 642.49,
+     "max_RISING_dVdt_V_per_ns": 63.0,
+     "rising_at_ps": 329.711,
+     "max_FALLING_dVdt_V_per_ns": -3.448
+    },
+    "o2_3": {
+     "V_start": 0.43972,
+     "V_end": 1.08221,
+     "V_min": 0.43972,
+     "V_max": 1.08221,
+     "rise_from_start_mV": 642.49,
+     "net_change_mV": 642.49,
+     "max_RISING_dVdt_V_per_ns": 63.0,
+     "rising_at_ps": 329.711,
+     "max_FALLING_dVdt_V_per_ns": -3.448
+    },
+    "o2_5": {
+     "V_start": 0.43972,
+     "V_end": 1.08221,
+     "V_min": 0.43972,
+     "V_max": 1.08221,
+     "rise_from_start_mV": 642.49,
+     "net_change_mV": 642.49,
+     "max_RISING_dVdt_V_per_ns": 63.0,
+     "rising_at_ps": 329.711,
+     "max_FALLING_dVdt_V_per_ns": -3.448
+    },
+    "o2_7": {
+     "V_start": 0.43972,
+     "V_end": 1.08221,
+     "V_min": 0.43972,
+     "V_max": 1.08221,
+     "rise_from_start_mV": 642.49,
+     "net_change_mV": 642.49,
+     "max_RISING_dVdt_V_per_ns": 63.0,
+     "rising_at_ps": 329.711,
+     "max_FALLING_dVdt_V_per_ns": -3.448
+    }
+   },
+   "worst_LOW_lift_mV": 642.49,
+   "worst_LOW_end_V": 1.08221
+  },
+  "rtu|s4|T300|dv1.5|L1|t20": {
+   "window_ps": [
+    309.71,
+    498.0
+   ],
+   "rail3": {
+    "V_start": 0.812534,
+    "V_end": 1.446189,
+    "V_min": 0.683834,
+    "V_max": 1.486569,
+    "rise_from_start_mV": 674.035,
+    "net_change_mV": 633.655,
+    "max_RISING_dVdt_V_per_ns": 250.0,
+    "rising_at_ps": 329.711,
+    "max_FALLING_dVdt_V_per_ns": -97.46
+   },
+   "rail2": {
+    "V_start": 1.394189,
+    "V_end": 1.333822,
+    "V_min": 1.317586,
+    "V_max": 1.394189,
+    "rise_from_start_mV": 0.0,
+    "net_change_mV": -60.367,
+    "max_RISING_dVdt_V_per_ns": 10.0,
+    "rising_at_ps": 329.711,
+    "max_FALLING_dVdt_V_per_ns": -4.773
+   },
+   "stage2_LOW_nodes": {
+    "o2_1": {
+     "V_start": 0.43972,
+     "V_end": 1.321913,
+     "V_min": 0.43972,
+     "V_max": 1.321913,
+     "rise_from_start_mV": 882.194,
+     "net_change_mV": 882.194,
+     "max_RISING_dVdt_V_per_ns": 63.0,
+     "rising_at_ps": 329.711,
+     "max_FALLING_dVdt_V_per_ns": -3.448
+    },
+    "o2_3": {
+     "V_start": 0.43972,
+     "V_end": 1.321913,
+     "V_min": 0.43972,
+     "V_max": 1.321913,
+     "rise_from_start_mV": 882.194,
+     "net_change_mV": 882.194,
+     "max_RISING_dVdt_V_per_ns": 63.0,
+     "rising_at_ps": 329.711,
+     "max_FALLING_dVdt_V_per_ns": -3.448
+    },
+    "o2_5": {
+     "V_start": 0.43972,
+     "V_end": 1.321913,
+     "V_min": 0.43972,
+     "V_max": 1.321913,
+     "rise_from_start_mV": 882.194,
+     "net_change_mV": 882.194,
+     "max_RISING_dVdt_V_per_ns": 63.0,
+     "rising_at_ps": 329.711,
+     "max_FALLING_dVdt_V_per_ns": -3.448
+    },
+    "o2_7": {
+     "V_start": 0.43972,
+     "V_end": 1.321913,
+     "V_min": 0.43972,
+     "V_max": 1.321913,
+     "rise_from_start_mV": 882.194,
+     "net_change_mV": 882.194,
+     "max_RISING_dVdt_V_per_ns": 63.0,
+     "rising_at_ps": 329.711,
+     "max_FALLING_dVdt_V_per_ns": -3.448
+    }
+   },
+   "worst_LOW_lift_mV": 882.194,
+   "worst_LOW_end_V": 1.321913
+  },
+  "rtu|s4|T200|dv1.2|L1|t10": {
+   "window_ps": [
+    305.68,
+    398.0
+   ],
+   "rail3": {
+    "V_start": 0.648074,
+    "V_end": 0.922839,
+    "V_min": 0.55756,
+    "V_max": 0.93964,
+    "rise_from_start_mV": 291.566,
+    "net_change_mV": 274.765,
+    "max_RISING_dVdt_V_per_ns": 208.0,
+    "rising_at_ps": 315.681,
+    "max_FALLING_dVdt_V_per_ns": -87.097
+   },
+   "rail2": {
+    "V_start": 1.171022,
+    "V_end": 1.11005,
+    "V_min": 1.11005,
+    "V_max": 1.172973,
+    "rise_from_start_mV": 1.951,
+    "net_change_mV": -60.973,
+    "max_RISING_dVdt_V_per_ns": 10.0,
+    "rising_at_ps": 315.681,
+    "max_FALLING_dVdt_V_per_ns": -5.0
+   },
+   "stage2_LOW_nodes": {
+    "o2_1": {
+     "V_start": 0.158203,
+     "V_end": 0.510667,
+     "V_min": 0.149324,
+     "V_max": 0.510667,
+     "rise_from_start_mV": 352.465,
+     "net_change_mV": 352.465,
+     "max_RISING_dVdt_V_per_ns": 50.0,
+     "rising_at_ps": 315.681,
+     "max_FALLING_dVdt_V_per_ns": -11.808
+    },
+    "o2_3": {
+     "V_start": 0.158203,
+     "V_end": 0.510667,
+     "V_min": 0.149324,
+     "V_max": 0.510667,
+     "rise_from_start_mV": 352.465,
+     "net_change_mV": 352.465,
+     "max_RISING_dVdt_V_per_ns": 50.0,
+     "rising_at_ps": 315.681,
+     "max_FALLING_dVdt_V_per_ns": -11.808
+    },
+    "o2_5": {
+     "V_start": 0.158203,
+     "V_end": 0.510667,
+     "V_min": 0.149324,
+     "V_max": 0.510667,
+     "rise_from_start_mV": 352.465,
+     "net_change_mV": 352.465,
+     "max_RISING_dVdt_V_per_ns": 50.0,
+     "rising_at_ps": 315.681,
+     "max_FALLING_dVdt_V_per_ns": -11.808
+    },
+    "o2_7": {
+     "V_start": 0.158203,
+     "V_end": 0.510667,
+     "V_min": 0.149324,
+     "V_max": 0.510667,
+     "rise_from_start_mV": 352.465,
+     "net_change_mV": 352.465,
+     "max_RISING_dVdt_V_per_ns": 50.0,
+     "rising_at_ps": 315.681,
+     "max_FALLING_dVdt_V_per_ns": -11.808
+    }
+   },
+   "worst_LOW_lift_mV": 352.465,
+   "worst_LOW_end_V": 0.510667
+  },
+  "rtu|s4|T200|dv1.2|L1|t40": {
+   "window_ps": [
+    305.68,
+    398.0
+   ],
+   "rail3": {
+    "V_start": 0.648074,
+    "V_end": 1.227191,
+    "V_min": 0.55756,
+    "V_max": 1.288498,
+    "rise_from_start_mV": 640.424,
+    "net_change_mV": 579.117,
+    "max_RISING_dVdt_V_per_ns": 230.0,
+    "rising_at_ps": 345.681,
+    "max_FALLING_dVdt_V_per_ns": -87.097
+   },
+   "rail2": {
+    "V_start": 1.171022,
+    "V_end": 1.123445,
+    "V_min": 1.123445,
+    "V_max": 1.171022,
+    "rise_from_start_mV": 0.0,
+    "net_change_mV": -47.578,
+    "max_RISING_dVdt_V_per_ns": 10.0,
+    "rising_at_ps": 345.681,
+    "max_FALLING_dVdt_V_per_ns": -5.0
+   },
+   "stage2_LOW_nodes": {
+    "o2_1": {
+     "V_start": 0.158203,
+     "V_end": 0.595246,
+     "V_min": 0.149324,
+     "V_max": 0.595246,
+     "rise_from_start_mV": 437.043,
+     "net_change_mV": 437.043,
+     "max_RISING_dVdt_V_per_ns": 57.0,
+     "rising_at_ps": 345.681,
+     "max_FALLING_dVdt_V_per_ns": -11.808
+    },
+    "o2_3": {
+     "V_start": 0.158203,
+     "V_end": 0.595246,
+     "V_min": 0.149324,
+     "V_max": 0.595246,
+     "rise_from_start_mV": 437.043,
+     "net_change_mV": 437.043,
+     "max_RISING_dVdt_V_per_ns": 57.0,
+     "rising_at_ps": 345.681,
+     "max_FALLING_dVdt_V_per_ns": -11.808
+    },
+    "o2_5": {
+     "V_start": 0.158203,
+     "V_end": 0.595246,
+     "V_min": 0.149324,
+     "V_max": 0.595246,
+     "rise_from_start_mV": 437.043,
+     "net_change_mV": 437.043,
+     "max_RISING_dVdt_V_per_ns": 57.0,
+     "rising_at_ps": 345.681,
+     "max_FALLING_dVdt_V_per_ns": -11.808
+    },
+    "o2_7": {
+     "V_start": 0.158203,
+     "V_end": 0.595246,
+     "V_min": 0.149324,
+     "V_max": 0.595246,
+     "rise_from_start_mV": 437.043,
+     "net_change_mV": 437.043,
+     "max_RISING_dVdt_V_per_ns": 57.0,
+     "rising_at_ps": 345.681,
+     "max_FALLING_dVdt_V_per_ns": -11.808
+    }
+   },
+   "worst_LOW_lift_mV": 437.043,
+   "worst_LOW_end_V": 0.595246
+  },
+  "free|s4|T200|dv1|L1|t20": {
+   "window_ps": [
+    297.06,
+    398.0
+   ],
+   "rail3": {
+    "V_start": 0.640297,
+    "V_end": 0.612282,
+    "V_min": 0.612282,
+    "V_max": 0.640297,
+    "rise_from_start_mV": 0.0,
+    "net_change_mV": -28.016,
+    "max_RISING_dVdt_V_per_ns": 0.0,
+    "rising_at_ps": null,
+    "max_FALLING_dVdt_V_per_ns": -1.0
+   },
+   "rail2": {
+    "V_start": 1.009107,
+    "V_end": 0.981888,
+    "V_min": 0.981888,
+    "V_max": 1.009107,
+    "rise_from_start_mV": 0.0,
+    "net_change_mV": -27.219,
+    "max_RISING_dVdt_V_per_ns": 0.726,
+    "rising_at_ps": 360.001,
+    "max_FALLING_dVdt_V_per_ns": -0.454
+   },
+   "stage2_LOW_nodes": {
+    "o2_1": {
+     "V_start": 0.061442,
+     "V_end": 0.144718,
+     "V_min": 0.061442,
+     "V_max": 0.144718,
+     "rise_from_start_mV": 83.276,
+     "net_change_mV": 83.276,
+     "max_RISING_dVdt_V_per_ns": 1.042,
+     "rising_at_ps": 363.506,
+     "max_FALLING_dVdt_V_per_ns": 0.0
+    },
+    "o2_3": {
+     "V_start": 0.061442,
+     "V_end": 0.144718,
+     "V_min": 0.061442,
+     "V_max": 0.144718,
+     "rise_from_start_mV": 83.276,
+     "net_change_mV": 83.276,
+     "max_RISING_dVdt_V_per_ns": 1.042,
+     "rising_at_ps": 363.506,
+     "max_FALLING_dVdt_V_per_ns": 0.0
+    },
+    "o2_5": {
+     "V_start": 0.061442,
+     "V_end": 0.144718,
+     "V_min": 0.061442,
+     "V_max": 0.144718,
+     "rise_from_start_mV": 83.276,
+     "net_change_mV": 83.276,
+     "max_RISING_dVdt_V_per_ns": 1.042,
+     "rising_at_ps": 363.506,
+     "max_FALLING_dVdt_V_per_ns": 0.0
+    },
+    "o2_7": {
+     "V_start": 0.061442,
+     "V_end": 0.144718,
+     "V_min": 0.061442,
+     "V_max": 0.144718,
+     "rise_from_start_mV": 83.276,
+     "net_change_mV": 83.276,
+     "max_RISING_dVdt_V_per_ns": 1.042,
+     "rising_at_ps": 363.506,
+     "max_FALLING_dVdt_V_per_ns": 0.0
+    }
+   },
+   "worst_LOW_lift_mV": 83.276,
+   "worst_LOW_end_V": 0.144718
+  },
+  "rtu|s4|T200|dv1|L1|t20": {
+   "window_ps": [
+    303.22,
+    398.0
+   ],
+   "rail3": {
+    "V_start": 0.53299,
+    "V_end": 0.852541,
+    "V_min": 0.474114,
+    "V_max": 0.920385,
+    "rise_from_start_mV": 387.395,
+    "net_change_mV": 319.551,
+    "max_RISING_dVdt_V_per_ns": 191.0,
+    "rising_at_ps": 323.216,
+    "max_FALLING_dVdt_V_per_ns": -55.116
+   },
+   "rail2": {
+    "V_start": 1.00047,
+    "V_end": 0.986851,
+    "V_min": 0.986851,
+    "V_max": 1.011852,
+    "rise_from_start_mV": 11.382,
+    "net_change_mV": -13.618,
+    "max_RISING_dVdt_V_per_ns": 10.0,
+    "rising_at_ps": 323.216,
+    "max_FALLING_dVdt_V_per_ns": -2.193
+   },
+   "stage2_LOW_nodes": {
+    "o2_1": {
+     "V_start": 0.046988,
+     "V_end": 0.236417,
+     "V_min": 0.038379,
+     "V_max": 0.236417,
+     "rise_from_start_mV": 189.429,
+     "net_change_mV": 189.429,
+     "max_RISING_dVdt_V_per_ns": 45.0,
+     "rising_at_ps": 323.216,
+     "max_FALLING_dVdt_V_per_ns": -8.673
+    },
+    "o2_3": {
+     "V_start": 0.046988,
+     "V_end": 0.236417,
+     "V_min": 0.038379,
+     "V_max": 0.236417,
+     "rise_from_start_mV": 189.429,
+     "net_change_mV": 189.429,
+     "max_RISING_dVdt_V_per_ns": 45.0,
+     "rising_at_ps": 323.216,
+     "max_FALLING_dVdt_V_per_ns": -8.673
+    },
+    "o2_5": {
+     "V_start": 0.046988,
+     "V_end": 0.236417,
+     "V_min": 0.038379,
+     "V_max": 0.236417,
+     "rise_from_start_mV": 189.429,
+     "net_change_mV": 189.429,
+     "max_RISING_dVdt_V_per_ns": 45.0,
+     "rising_at_ps": 323.216,
+     "max_FALLING_dVdt_V_per_ns": -8.673
+    },
+    "o2_7": {
+     "V_start": 0.046988,
+     "V_end": 0.236417,
+     "V_min": 0.038379,
+     "V_max": 0.236417,
+     "rise_from_start_mV": 189.429,
+     "net_change_mV": 189.429,
+     "max_RISING_dVdt_V_per_ns": 45.0,
+     "rising_at_ps": 323.216,
+     "max_FALLING_dVdt_V_per_ns": -8.673
+    }
+   },
+   "worst_LOW_lift_mV": 189.429,
+   "worst_LOW_end_V": 0.236417
+  },
+  "ptu_CORRECTED|s4|T120|dv1.2|L1|t24": {
+   "window_ps": [
+    299.98,
+    318.0
+   ],
+   "rail3": {
+    "V_start": 0.696999,
+    "V_end": 0.694728,
+    "V_min": 0.694722,
+    "V_max": 0.696999,
+    "rise_from_start_mV": 0.0,
+    "net_change_mV": -2.271,
+    "max_RISING_dVdt_V_per_ns": 0.028,
+    "rising_at_ps": 317.978,
+    "max_FALLING_dVdt_V_per_ns": -0.354
+   },
+   "rail2": {
+    "V_start": 1.185225,
+    "V_end": 1.165674,
+    "V_min": 1.165674,
+    "V_max": 1.185225,
+    "rise_from_start_mV": 0.0,
+    "net_change_mV": -19.551,
+    "max_RISING_dVdt_V_per_ns": 0.0,
+    "rising_at_ps": null,
+    "max_FALLING_dVdt_V_per_ns": -3.333
+   },
+   "stage2_LOW_nodes": {
+    "o2_1": {
+     "V_start": 0.149039,
+     "V_end": 0.207228,
+     "V_min": 0.149039,
+     "V_max": 0.207228,
+     "rise_from_start_mV": 58.19,
+     "net_change_mV": 58.19,
+     "max_RISING_dVdt_V_per_ns": 3.667,
+     "rising_at_ps": 313.978,
+     "max_FALLING_dVdt_V_per_ns": 0.0
+    },
+    "o2_3": {
+     "V_start": 0.149039,
+     "V_end": 0.207228,
+     "V_min": 0.149039,
+     "V_max": 0.207228,
+     "rise_from_start_mV": 58.19,
+     "net_change_mV": 58.19,
+     "max_RISING_dVdt_V_per_ns": 3.667,
+     "rising_at_ps": 313.978,
+     "max_FALLING_dVdt_V_per_ns": 0.0
+    },
+    "o2_5": {
+     "V_start": 0.149039,
+     "V_end": 0.207228,
+     "V_min": 0.149039,
+     "V_max": 0.207228,
+     "rise_from_start_mV": 58.19,
+     "net_change_mV": 58.19,
+     "max_RISING_dVdt_V_per_ns": 3.667,
+     "rising_at_ps": 313.978,
+     "max_FALLING_dVdt_V_per_ns": 0.0
+    },
+    "o2_7": {
+     "V_start": 0.149039,
+     "V_end": 0.207228,
+     "V_min": 0.149039,
+     "V_max": 0.207228,
+     "rise_from_start_mV": 58.19,
+     "net_change_mV": 58.19,
+     "max_RISING_dVdt_V_per_ns": 3.667,
+     "rising_at_ps": 313.978,
+     "max_FALLING_dVdt_V_per_ns": 0.0
+    }
+   },
+   "worst_LOW_lift_mV": 58.19,
+   "worst_LOW_end_V": 0.207228
+  },
+  "ptu_CORRECTED|s4|T160|dv1.2|L1|t24": {
+   "window_ps": [
+    299.98,
+    358.0
+   ],
+   "rail3": {
+    "V_start": 0.696628,
+    "V_end": 0.629363,
+    "V_min": 0.613142,
+    "V_max": 0.696628,
+    "rise_from_start_mV": 0.0,
+    "net_change_mV": -67.265,
+    "max_RISING_dVdt_V_per_ns": 2.731,
+    "rising_at_ps": 357.985,
+    "max_FALLING_dVdt_V_per_ns": -75.874
+   },
+   "rail2": {
+    "V_start": 1.179747,
+    "V_end": 1.127678,
+    "V_min": 1.127678,
+    "V_max": 1.179747,
+    "rise_from_start_mV": 0.0,
+    "net_change_mV": -52.07,
+    "max_RISING_dVdt_V_per_ns": 0.198,
+    "rising_at_ps": 320.002,
+    "max_FALLING_dVdt_V_per_ns": -10.0
+   },
+   "stage2_LOW_nodes": {
+    "o2_1": {
+     "V_start": 0.146135,
+     "V_end": 0.320307,
+     "V_min": 0.146135,
+     "V_max": 0.320307,
+     "rise_from_start_mV": 174.172,
+     "net_change_mV": 174.172,
+     "max_RISING_dVdt_V_per_ns": 3.667,
+     "rising_at_ps": 309.977,
+     "max_FALLING_dVdt_V_per_ns": -7.957
+    },
+    "o2_3": {
+     "V_start": 0.146135,
+     "V_end": 0.320307,
+     "V_min": 0.146135,
+     "V_max": 0.320307,
+     "rise_from_start_mV": 174.172,
+     "net_change_mV": 174.172,
+     "max_RISING_dVdt_V_per_ns": 3.667,
+     "rising_at_ps": 309.977,
+     "max_FALLING_dVdt_V_per_ns": -7.957
+    },
+    "o2_5": {
+     "V_start": 0.146135,
+     "V_end": 0.320307,
+     "V_min": 0.146135,
+     "V_max": 0.320307,
+     "rise_from_start_mV": 174.172,
+     "net_change_mV": 174.172,
+     "max_RISING_dVdt_V_per_ns": 3.667,
+     "rising_at_ps": 309.977,
+     "max_FALLING_dVdt_V_per_ns": -7.957
+    },
+    "o2_7": {
+     "V_start": 0.146135,
+     "V_end": 0.320307,
+     "V_min": 0.146135,
+     "V_max": 0.320307,
+     "rise_from_start_mV": 174.172,
+     "net_change_mV": 174.172,
+     "max_RISING_dVdt_V_per_ns": 3.667,
+     "rising_at_ps": 309.977,
+     "max_FALLING_dVdt_V_per_ns": -7.957
+    }
+   },
+   "worst_LOW_lift_mV": 174.172,
+   "worst_LOW_end_V": 0.320307
+  },
+  "ptu_CORRECTED|s4|T200|dv1.2|L1|t24": {
+   "window_ps": [
+    299.98,
+    398.0
+   ],
+   "rail3": {
+    "V_start": 0.696628,
+    "V_end": 0.741995,
+    "V_min": 0.613032,
+    "V_max": 0.784552,
+    "rise_from_start_mV": 87.924,
+    "net_change_mV": 45.367,
+    "max_RISING_dVdt_V_per_ns": 92.0,
+    "rising_at_ps": 371.992,
+    "max_FALLING_dVdt_V_per_ns": -75.86
+   },
+   "rail2": {
+    "V_start": 1.179747,
+    "V_end": 1.109462,
+    "V_min": 1.109462,
+    "V_max": 1.179747,
+    "rise_from_start_mV": 0.0,
+    "net_change_mV": -70.285,
+    "max_RISING_dVdt_V_per_ns": 1.818,
+    "rising_at_ps": 371.992,
+    "max_FALLING_dVdt_V_per_ns": -10.0
+   },
+   "stage2_LOW_nodes": {
+    "o2_1": {
+     "V_start": 0.146135,
+     "V_end": 0.453403,
+     "V_min": 0.146135,
+     "V_max": 0.453403,
+     "rise_from_start_mV": 307.268,
+     "net_change_mV": 307.268,
+     "max_RISING_dVdt_V_per_ns": 16.5,
+     "rising_at_ps": 371.992,
+     "max_FALLING_dVdt_V_per_ns": -7.958
+    },
+    "o2_3": {
+     "V_start": 0.146135,
+     "V_end": 0.453403,
+     "V_min": 0.146135,
+     "V_max": 0.453403,
+     "rise_from_start_mV": 307.268,
+     "net_change_mV": 307.268,
+     "max_RISING_dVdt_V_per_ns": 16.5,
+     "rising_at_ps": 371.992,
+     "max_FALLING_dVdt_V_per_ns": -7.958
+    },
+    "o2_5": {
+     "V_start": 0.146135,
+     "V_end": 0.453403,
+     "V_min": 0.146135,
+     "V_max": 0.453403,
+     "rise_from_start_mV": 307.268,
+     "net_change_mV": 307.268,
+     "max_RISING_dVdt_V_per_ns": 16.5,
+     "rising_at_ps": 371.992,
+     "max_FALLING_dVdt_V_per_ns": -7.958
+    },
+    "o2_7": {
+     "V_start": 0.146135,
+     "V_end": 0.453403,
+     "V_min": 0.146135,
+     "V_max": 0.453403,
+     "rise_from_start_mV": 307.268,
+     "net_change_mV": 307.268,
+     "max_RISING_dVdt_V_per_ns": 16.5,
+     "rising_at_ps": 371.992,
+     "max_FALLING_dVdt_V_per_ns": -7.958
+    }
+   },
+   "worst_LOW_lift_mV": 307.268,
+   "worst_LOW_end_V": 0.453403
+  },
+  "ptu_CORRECTED|s4|T300|dv1.2|L1|t24": {
+   "window_ps": [
+    299.98,
+    498.0
+   ],
+   "rail3": {
+    "V_start": 0.696628,
+    "V_end": 0.747983,
+    "V_min": 0.613032,
+    "V_max": 0.784517,
+    "rise_from_start_mV": 87.89,
+    "net_change_mV": 51.355,
+    "max_RISING_dVdt_V_per_ns": 92.0,
+    "rising_at_ps": 371.993,
+    "max_FALLING_dVdt_V_per_ns": -75.86
+   },
+   "rail2": {
+    "V_start": 1.179747,
+    "V_end": 1.078636,
+    "V_min": 1.078636,
+    "V_max": 1.179747,
+    "rise_from_start_mV": 0.0,
+    "net_change_mV": -101.112,
+    "max_RISING_dVdt_V_per_ns": 5.0,
+    "rising_at_ps": 371.993,
+    "max_FALLING_dVdt_V_per_ns": -10.0
+   },
+   "stage2_LOW_nodes": {
+    "o2_1": {
+     "V_start": 0.146135,
+     "V_end": 0.706822,
+     "V_min": 0.146135,
+     "V_max": 0.706822,
+     "rise_from_start_mV": 560.687,
+     "net_change_mV": 560.687,
+     "max_RISING_dVdt_V_per_ns": 16.5,
+     "rising_at_ps": 371.993,
+     "max_FALLING_dVdt_V_per_ns": -7.958
+    },
+    "o2_3": {
+     "V_start": 0.146135,
+     "V_end": 0.706822,
+     "V_min": 0.146135,
+     "V_max": 0.706822,
+     "rise_from_start_mV": 560.687,
+     "net_change_mV": 560.687,
+     "max_RISING_dVdt_V_per_ns": 16.5,
+     "rising_at_ps": 371.993,
+     "max_FALLING_dVdt_V_per_ns": -7.958
+    },
+    "o2_5": {
+     "V_start": 0.146135,
+     "V_end": 0.706822,
+     "V_min": 0.146135,
+     "V_max": 0.706822,
+     "rise_from_start_mV": 560.687,
+     "net_change_mV": 560.687,
+     "max_RISING_dVdt_V_per_ns": 16.5,
+     "rising_at_ps": 371.993,
+     "max_FALLING_dVdt_V_per_ns": -7.958
+    },
+    "o2_7": {
+     "V_start": 0.146135,
+     "V_end": 0.706822,
+     "V_min": 0.146135,
+     "V_max": 0.706822,
+     "rise_from_start_mV": 560.687,
+     "net_change_mV": 560.687,
+     "max_RISING_dVdt_V_per_ns": 16.5,
+     "rising_at_ps": 371.993,
+     "max_FALLING_dVdt_V_per_ns": -7.958
+    }
+   },
+   "worst_LOW_lift_mV": 560.687,
+   "worst_LOW_end_V": 0.706822
+  },
+  "ptu_CORRECTED|s4|T200|dv1|L1|t24": {
+   "window_ps": [
+    297.06,
+    398.0
+   ],
+   "rail3": {
+    "V_start": 0.574383,
+    "V_end": 0.579072,
+    "V_min": 0.459384,
+    "V_max": 0.589254,
+    "rise_from_start_mV": 14.871,
+    "net_change_mV": 4.689,
+    "max_RISING_dVdt_V_per_ns": 71.5,
+    "rising_at_ps": 369.343,
+    "max_FALLING_dVdt_V_per_ns": -56.868
+   },
+   "rail2": {
+    "V_start": 1.004844,
+    "V_end": 0.978619,
+    "V_min": 0.978619,
+    "V_max": 1.004849,
+    "rise_from_start_mV": 0.005,
+    "net_change_mV": -26.225,
+    "max_RISING_dVdt_V_per_ns": 2.0,
+    "rising_at_ps": 369.343,
+    "max_FALLING_dVdt_V_per_ns": -2.374
+   },
+   "stage2_LOW_nodes": {
+    "o2_1": {
+     "V_start": 0.049235,
+     "V_end": 0.145605,
+     "V_min": 0.049235,
+     "V_max": 0.145605,
+     "rise_from_start_mV": 96.37,
+     "net_change_mV": 96.37,
+     "max_RISING_dVdt_V_per_ns": 14.0,
+     "rising_at_ps": 369.343,
+     "max_FALLING_dVdt_V_per_ns": -9.192
+    },
+    "o2_3": {
+     "V_start": 0.049235,
+     "V_end": 0.145605,
+     "V_min": 0.049235,
+     "V_max": 0.145605,
+     "rise_from_start_mV": 96.37,
+     "net_change_mV": 96.37,
+     "max_RISING_dVdt_V_per_ns": 14.0,
+     "rising_at_ps": 369.343,
+     "max_FALLING_dVdt_V_per_ns": -9.192
+    },
+    "o2_5": {
+     "V_start": 0.049235,
+     "V_end": 0.145605,
+     "V_min": 0.049235,
+     "V_max": 0.145605,
+     "rise_from_start_mV": 96.37,
+     "net_change_mV": 96.37,
+     "max_RISING_dVdt_V_per_ns": 14.0,
+     "rising_at_ps": 369.343,
+     "max_FALLING_dVdt_V_per_ns": -9.192
+    },
+    "o2_7": {
+     "V_start": 0.049235,
+     "V_end": 0.145605,
+     "V_min": 0.049235,
+     "V_max": 0.145605,
+     "rise_from_start_mV": 96.37,
+     "net_change_mV": 96.37,
+     "max_RISING_dVdt_V_per_ns": 14.0,
+     "rising_at_ps": 369.343,
+     "max_FALLING_dVdt_V_per_ns": -9.192
+    }
+   },
+   "worst_LOW_lift_mV": 96.37,
+   "worst_LOW_end_V": 0.145605
+  },
+  "ptu_CORRECTED|s4|T200|dv1.5|L1|t24": {
+   "window_ps": [
+    304.4,
+    398.0
+   ],
+   "rail3": {
+    "V_start": 0.875134,
+    "V_end": 0.973053,
+    "V_min": 0.794006,
+    "V_max": 1.088376,
+    "rise_from_start_mV": 213.242,
+    "net_change_mV": 97.919,
+    "max_RISING_dVdt_V_per_ns": 121.0,
+    "rising_at_ps": 376.535,
+    "max_FALLING_dVdt_V_per_ns": -80.05
+   },
+   "rail2": {
+    "V_start": 1.408005,
+    "V_end": 1.284646,
+    "V_min": 1.284646,
+    "V_max": 1.408005,
+    "rise_from_start_mV": 0.0,
+    "net_change_mV": -123.359,
+    "max_RISING_dVdt_V_per_ns": 0.87,
+    "rising_at_ps": 376.535,
+    "max_FALLING_dVdt_V_per_ns": -10.0
+   },
+   "stage2_LOW_nodes": {
+    "o2_1": {
+     "V_start": 0.397136,
+     "V_end": 1.005695,
+     "V_min": 0.397136,
+     "V_max": 1.005695,
+     "rise_from_start_mV": 608.559,
+     "net_change_mV": 608.559,
+     "max_RISING_dVdt_V_per_ns": 21.0,
+     "rising_at_ps": 376.535,
+     "max_FALLING_dVdt_V_per_ns": -2.718
+    },
+    "o2_3": {
+     "V_start": 0.397136,
+     "V_end": 1.005695,
+     "V_min": 0.397136,
+     "V_max": 1.005695,
+     "rise_from_start_mV": 608.559,
+     "net_change_mV": 608.559,
+     "max_RISING_dVdt_V_per_ns": 21.0,
+     "rising_at_ps": 376.535,
+     "max_FALLING_dVdt_V_per_ns": -2.718
+    },
+    "o2_5": {
+     "V_start": 0.397136,
+     "V_end": 1.005695,
+     "V_min": 0.397136,
+     "V_max": 1.005695,
+     "rise_from_start_mV": 608.559,
+     "net_change_mV": 608.559,
+     "max_RISING_dVdt_V_per_ns": 21.0,
+     "rising_at_ps": 376.535,
+     "max_FALLING_dVdt_V_per_ns": -2.718
+    },
+    "o2_7": {
+     "V_start": 0.397136,
+     "V_end": 1.005695,
+     "V_min": 0.397136,
+     "V_max": 1.005695,
+     "rise_from_start_mV": 608.559,
+     "net_change_mV": 608.559,
+     "max_RISING_dVdt_V_per_ns": 21.0,
+     "rising_at_ps": 376.535,
+     "max_FALLING_dVdt_V_per_ns": -2.718
+    }
+   },
+   "worst_LOW_lift_mV": 608.559,
+   "worst_LOW_end_V": 1.005695
+  },
+  "ptu_CORRECTED|s4|T120|dv1.2|L1|t12": {
+   "window_ps": [
+    299.98,
+    318.0
+   ],
+   "rail3": {
+    "V_start": 0.696999,
+    "V_end": 0.694728,
+    "V_min": 0.694722,
+    "V_max": 0.696999,
+    "rise_from_start_mV": 0.0,
+    "net_change_mV": -2.271,
+    "max_RISING_dVdt_V_per_ns": 0.028,
+    "rising_at_ps": 317.978,
+    "max_FALLING_dVdt_V_per_ns": -0.354
+   },
+   "rail2": {
+    "V_start": 1.185225,
+    "V_end": 1.165674,
+    "V_min": 1.165674,
+    "V_max": 1.185225,
+    "rise_from_start_mV": 0.0,
+    "net_change_mV": -19.551,
+    "max_RISING_dVdt_V_per_ns": 0.0,
+    "rising_at_ps": null,
+    "max_FALLING_dVdt_V_per_ns": -3.333
+   },
+   "stage2_LOW_nodes": {
+    "o2_1": {
+     "V_start": 0.149039,
+     "V_end": 0.207228,
+     "V_min": 0.149039,
+     "V_max": 0.207228,
+     "rise_from_start_mV": 58.19,
+     "net_change_mV": 58.19,
+     "max_RISING_dVdt_V_per_ns": 3.667,
+     "rising_at_ps": 313.978,
+     "max_FALLING_dVdt_V_per_ns": 0.0
+    },
+    "o2_3": {
+     "V_start": 0.149039,
+     "V_end": 0.207228,
+     "V_min": 0.149039,
+     "V_max": 0.207228,
+     "rise_from_start_mV": 58.19,
+     "net_change_mV": 58.19,
+     "max_RISING_dVdt_V_per_ns": 3.667,
+     "rising_at_ps": 313.978,
+     "max_FALLING_dVdt_V_per_ns": 0.0
+    },
+    "o2_5": {
+     "V_start": 0.149039,
+     "V_end": 0.207228,
+     "V_min": 0.149039,
+     "V_max": 0.207228,
+     "rise_from_start_mV": 58.19,
+     "net_change_mV": 58.19,
+     "max_RISING_dVdt_V_per_ns": 3.667,
+     "rising_at_ps": 313.978,
+     "max_FALLING_dVdt_V_per_ns": 0.0
+    },
+    "o2_7": {
+     "V_start": 0.149039,
+     "V_end": 0.207228,
+     "V_min": 0.149039,
+     "V_max": 0.207228,
+     "rise_from_start_mV": 58.19,
+     "net_change_mV": 58.19,
+     "max_RISING_dVdt_V_per_ns": 3.667,
+     "rising_at_ps": 313.978,
+     "max_FALLING_dVdt_V_per_ns": 0.0
+    }
+   },
+   "worst_LOW_lift_mV": 58.19,
+   "worst_LOW_end_V": 0.207228
+  },
+  "ptu_CORRECTED|s4|T160|dv1.2|L1|t12": {
+   "window_ps": [
+    299.98,
+    358.0
+   ],
+   "rail3": {
+    "V_start": 0.696628,
+    "V_end": 0.630127,
+    "V_min": 0.613142,
+    "V_max": 0.696628,
+    "rise_from_start_mV": 0.0,
+    "net_change_mV": -66.501,
+    "max_RISING_dVdt_V_per_ns": 4.065,
+    "rising_at_ps": 357.929,
+    "max_FALLING_dVdt_V_per_ns": -75.874
+   },
+   "rail2": {
+    "V_start": 1.179747,
+    "V_end": 1.127701,
+    "V_min": 1.127701,
+    "V_max": 1.179747,
+    "rise_from_start_mV": 0.0,
+    "net_change_mV": -52.046,
+    "max_RISING_dVdt_V_per_ns": 0.198,
+    "rising_at_ps": 320.002,
+    "max_FALLING_dVdt_V_per_ns": -10.0
+   },
+   "stage2_LOW_nodes": {
+    "o2_1": {
+     "V_start": 0.146135,
+     "V_end": 0.320403,
+     "V_min": 0.146135,
+     "V_max": 0.320403,
+     "rise_from_start_mV": 174.268,
+     "net_change_mV": 174.268,
+     "max_RISING_dVdt_V_per_ns": 4.0,
+     "rising_at_ps": 353.977,
+     "max_FALLING_dVdt_V_per_ns": -7.957
+    },
+    "o2_3": {
+     "V_start": 0.146135,
+     "V_end": 0.320403,
+     "V_min": 0.146135,
+     "V_max": 0.320403,
+     "rise_from_start_mV": 174.268,
+     "net_change_mV": 174.268,
+     "max_RISING_dVdt_V_per_ns": 4.0,
+     "rising_at_ps": 353.977,
+     "max_FALLING_dVdt_V_per_ns": -7.957
+    },
+    "o2_5": {
+     "V_start": 0.146135,
+     "V_end": 0.320403,
+     "V_min": 0.146135,
+     "V_max": 0.320403,
+     "rise_from_start_mV": 174.268,
+     "net_change_mV": 174.268,
+     "max_RISING_dVdt_V_per_ns": 4.0,
+     "rising_at_ps": 353.977,
+     "max_FALLING_dVdt_V_per_ns": -7.957
+    },
+    "o2_7": {
+     "V_start": 0.146135,
+     "V_end": 0.320403,
+     "V_min": 0.146135,
+     "V_max": 0.320403,
+     "rise_from_start_mV": 174.268,
+     "net_change_mV": 174.268,
+     "max_RISING_dVdt_V_per_ns": 4.0,
+     "rising_at_ps": 353.977,
+     "max_FALLING_dVdt_V_per_ns": -7.957
+    }
+   },
+   "worst_LOW_lift_mV": 174.268,
+   "worst_LOW_end_V": 0.320403
+  },
+  "ptu_CORRECTED|s4|T200|dv1.2|L1|t12": {
+   "window_ps": [
+    299.98,
+    398.0
+   ],
+   "rail3": {
+    "V_start": 0.696628,
+    "V_end": 0.673598,
+    "V_min": 0.613032,
+    "V_max": 0.696628,
+    "rise_from_start_mV": 0.0,
+    "net_change_mV": -23.03,
+    "max_RISING_dVdt_V_per_ns": 70.0,
+    "rising_at_ps": 360.196,
+    "max_FALLING_dVdt_V_per_ns": -75.86
+   },
+   "rail2": {
+    "V_start": 1.179747,
+    "V_end": 1.106351,
+    "V_min": 1.106351,
+    "V_max": 1.179747,
+    "rise_from_start_mV": 0.0,
+    "net_change_mV": -73.396,
+    "max_RISING_dVdt_V_per_ns": 3.333,
+    "rising_at_ps": 360.196,
+    "max_FALLING_dVdt_V_per_ns": -10.0
+   },
+   "stage2_LOW_nodes": {
+    "o2_1": {
+     "V_start": 0.146135,
+     "V_end": 0.443864,
+     "V_min": 0.146135,
+     "V_max": 0.443864,
+     "rise_from_start_mV": 297.729,
+     "net_change_mV": 297.729,
+     "max_RISING_dVdt_V_per_ns": 13.0,
+     "rising_at_ps": 360.196,
+     "max_FALLING_dVdt_V_per_ns": -7.958
+    },
+    "o2_3": {
+     "V_start": 0.146135,
+     "V_end": 0.443864,
+     "V_min": 0.146135,
+     "V_max": 0.443864,
+     "rise_from_start_mV": 297.729,
+     "net_change_mV": 297.729,
+     "max_RISING_dVdt_V_per_ns": 13.0,
+     "rising_at_ps": 360.196,
+     "max_FALLING_dVdt_V_per_ns": -7.958
+    },
+    "o2_5": {
+     "V_start": 0.146135,
+     "V_end": 0.443864,
+     "V_min": 0.146135,
+     "V_max": 0.443864,
+     "rise_from_start_mV": 297.729,
+     "net_change_mV": 297.729,
+     "max_RISING_dVdt_V_per_ns": 13.0,
+     "rising_at_ps": 360.196,
+     "max_FALLING_dVdt_V_per_ns": -7.958
+    },
+    "o2_7": {
+     "V_start": 0.146135,
+     "V_end": 0.443864,
+     "V_min": 0.146135,
+     "V_max": 0.443864,
+     "rise_from_start_mV": 297.729,
+     "net_change_mV": 297.729,
+     "max_RISING_dVdt_V_per_ns": 13.0,
+     "rising_at_ps": 360.196,
+     "max_FALLING_dVdt_V_per_ns": -7.958
+    }
+   },
+   "worst_LOW_lift_mV": 297.729,
+   "worst_LOW_end_V": 0.443864
+  },
+  "ptu_CORRECTED|s4|T300|dv1.2|L1|t12": {
+   "window_ps": [
+    299.98,
+    498.0
+   ],
+   "rail3": {
+    "V_start": 0.696628,
+    "V_end": 0.680306,
+    "V_min": 0.613032,
+    "V_max": 0.696628,
+    "rise_from_start_mV": 0.0,
+    "net_change_mV": -16.321,
+    "max_RISING_dVdt_V_per_ns": 80.0,
+    "rising_at_ps": 360.196,
+    "max_FALLING_dVdt_V_per_ns": -75.86
+   },
+   "rail2": {
+    "V_start": 1.179747,
+    "V_end": 1.077185,
+    "V_min": 1.077185,
+    "V_max": 1.179747,
+    "rise_from_start_mV": 0.0,
+    "net_change_mV": -102.563,
+    "max_RISING_dVdt_V_per_ns": 5.0,
+    "rising_at_ps": 360.196,
+    "max_FALLING_dVdt_V_per_ns": -10.0
+   },
+   "stage2_LOW_nodes": {
+    "o2_1": {
+     "V_start": 0.146135,
+     "V_end": 0.697534,
+     "V_min": 0.146135,
+     "V_max": 0.697534,
+     "rise_from_start_mV": 551.399,
+     "net_change_mV": 551.399,
+     "max_RISING_dVdt_V_per_ns": 14.0,
+     "rising_at_ps": 360.196,
+     "max_FALLING_dVdt_V_per_ns": -7.958
+    },
+    "o2_3": {
+     "V_start": 0.146135,
+     "V_end": 0.697534,
+     "V_min": 0.146135,
+     "V_max": 0.697534,
+     "rise_from_start_mV": 551.399,
+     "net_change_mV": 551.399,
+     "max_RISING_dVdt_V_per_ns": 14.0,
+     "rising_at_ps": 360.196,
+     "max_FALLING_dVdt_V_per_ns": -7.958
+    },
+    "o2_5": {
+     "V_start": 0.146135,
+     "V_end": 0.697534,
+     "V_min": 0.146135,
+     "V_max": 0.697534,
+     "rise_from_start_mV": 551.399,
+     "net_change_mV": 551.399,
+     "max_RISING_dVdt_V_per_ns": 14.0,
+     "rising_at_ps": 360.196,
+     "max_FALLING_dVdt_V_per_ns": -7.958
+    },
+    "o2_7": {
+     "V_start": 0.146135,
+     "V_end": 0.697534,
+     "V_min": 0.146135,
+     "V_max": 0.697534,
+     "rise_from_start_mV": 551.399,
+     "net_change_mV": 551.399,
+     "max_RISING_dVdt_V_per_ns": 14.0,
+     "rising_at_ps": 360.196,
+     "max_FALLING_dVdt_V_per_ns": -7.958
+    }
+   },
+   "worst_LOW_lift_mV": 551.399,
+   "worst_LOW_end_V": 0.697534
+  },
+  "ptu_CORRECTED|s4|T200|dv1|L1|t12": {
+   "window_ps": [
+    297.06,
+    398.0
+   ],
+   "rail3": {
+    "V_start": 0.574383,
+    "V_end": 0.495165,
+    "V_min": 0.459833,
+    "V_max": 0.574469,
+    "rise_from_start_mV": 0.086,
+    "net_change_mV": -79.218,
+    "max_RISING_dVdt_V_per_ns": 23.2,
+    "rising_at_ps": 357.618,
+    "max_FALLING_dVdt_V_per_ns": -56.868
+   },
+   "rail2": {
+    "V_start": 1.004844,
+    "V_end": 0.974515,
+    "V_min": 0.974515,
+    "V_max": 1.004849,
+    "rise_from_start_mV": 0.005,
+    "net_change_mV": -30.329,
+    "max_RISING_dVdt_V_per_ns": 1.281,
+    "rising_at_ps": 297.065,
+    "max_FALLING_dVdt_V_per_ns": -2.374
+   },
+   "stage2_LOW_nodes": {
+    "o2_1": {
+     "V_start": 0.049235,
+     "V_end": 0.131478,
+     "V_min": 0.049235,
+     "V_max": 0.131478,
+     "rise_from_start_mV": 82.243,
+     "net_change_mV": 82.243,
+     "max_RISING_dVdt_V_per_ns": 5.706,
+     "rising_at_ps": 297.065,
+     "max_FALLING_dVdt_V_per_ns": -9.192
+    },
+    "o2_3": {
+     "V_start": 0.049235,
+     "V_end": 0.131478,
+     "V_min": 0.049235,
+     "V_max": 0.131478,
+     "rise_from_start_mV": 82.243,
+     "net_change_mV": 82.243,
+     "max_RISING_dVdt_V_per_ns": 5.706,
+     "rising_at_ps": 297.065,
+     "max_FALLING_dVdt_V_per_ns": -9.192
+    },
+    "o2_5": {
+     "V_start": 0.049235,
+     "V_end": 0.131478,
+     "V_min": 0.049235,
+     "V_max": 0.131478,
+     "rise_from_start_mV": 82.243,
+     "net_change_mV": 82.243,
+     "max_RISING_dVdt_V_per_ns": 5.706,
+     "rising_at_ps": 297.065,
+     "max_FALLING_dVdt_V_per_ns": -9.192
+    },
+    "o2_7": {
+     "V_start": 0.049235,
+     "V_end": 0.131478,
+     "V_min": 0.049235,
+     "V_max": 0.131478,
+     "rise_from_start_mV": 82.243,
+     "net_change_mV": 82.243,
+     "max_RISING_dVdt_V_per_ns": 5.706,
+     "rising_at_ps": 297.065,
+     "max_FALLING_dVdt_V_per_ns": -9.192
+    }
+   },
+   "worst_LOW_lift_mV": 82.243,
+   "worst_LOW_end_V": 0.131478
+  }
+ }
+}
