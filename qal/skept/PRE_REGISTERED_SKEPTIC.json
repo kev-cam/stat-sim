@@ -1,0 +1,52 @@
+{
+  "_doc": "SKEPTIC pre-registration, written BEFORE any deck was generated or run in this workdir. Role: re-run, do not read. Police Track 1's fastest functional point, re-derive Track 2's crossover independently, re-run Track 3's QAL->sync level test, and COMPOSE them. Speed is the primary metric; energy is reported and gates nothing.",
+  "date": "2026-09-28",
+  "workdir": "/usr/local/src/stat-sim/qal/skept",
+  "cache": "/tmp/claude-1001/-usr-local-src/4921ad0c-f17b-4b84-986a-5917c9ebd2a6/scratchpad/vae_cache_skept2 (seeded from vae_cache_lsweep + vae_cache_boundT3; geometry-only reuse, no results reused)",
+
+  "instrument_gates_PRE_STATED": {
+    "I0_committed_deck": "The COMMITTED deck qal/swsweep/sw_tg15p_z.cir, re-run byte-identical in my workdir under MY cache, must reproduce the committed .mt0 headlines VBPK / VBEND / VAEND / IPK / IZ to rel < 1e-6. Separates my toolchain from my arithmetic.",
+    "I1_my_generator": "My OWN independently written deck generator at the anchor point (L=277.8 nH, TG 5/10 um + 1 um park, dV=1.0, RS=10, CA=35.979 fF) must reproduce the committed true zero 266.755 ps to within 1.5 ps and VBEND 0.6758936 to within 0.5%.",
+    "I2_lag_claim": "Track 1 claims a CONSTANT 1.0 ps lag in this Xyce build's '.measure tran X FIND expr AT=T'. I test it independently: one deck, print step <= 0.02 ps, FIND at several T, compared against the .prn value at T. PASS = lag reproduced to within 0.1 ps. If it is NOT 1.0 ps, every Track 1 number that used LAG_PS=1.0 is suspect and I say so.",
+    "I3_waveform_only": "Every SPEED number I report is taken from the .prn waveform by my own extractor, never from .measure alone, so no speed claim can depend on the lag at all."
+  },
+
+  "a_rerun_acceptance_PRE_STATED": {
+    "points": "(1) Track 1's HEADLINE fastest functional point L=15 nH, TG 10/20 um + 2 um park, dV=1.2. (2) One MID-SWEEP point: L=45 nH, TG 5/10 + 1 um park, dV=1.0 -- Track 1's 'last functional at W=15/dV=1.0', i.e. the load-bearing boundary row.",
+    "reproduction": "REPRODUCED iff my t_hop is within 3% and my VBEND / VA_open within 1% (absolute 0.01 V) of Track 1's reported values (headline t_hop 65.495 ps, VBEND 0.71382, VA_open 0.12768, t_level 123.443 / 115.571 ps; mid t_hop 105.701 ps, VBEND 0.6298, VA_open 0.1461). Outside that = NOT REPRODUCED and reported as such.",
+    "per_cell_settling_POLICE": "All 8 cells individually, at BOTH checkpoints, from the waveform: (i) at the switch-open instant, (ii) at end of the 500 ps tail. lo-input cell s = V(o)/V(bkb); hi-input cell s = 1 - V(o)/V(bkb). A speed claim resting on a partly-settled bank is vacuous. I additionally require an ABSOLUTE margin test that Track 1 did NOT state: every lo cell output must exceed, and every hi cell output must stay below, the MEASURED DC trip point of the downstream receiver I build in (c). A bank whose outputs straddle no usable trip point is not computing, whatever its percentage settling says.",
+    "t_level": "t_level = max(t_hop, t_valid90) with t_valid90 = first time after switch close at which ALL 8 cells are simultaneously within 90% (lo) / within 10% (hi) of the INSTANTANEOUS rail and stay there to end of run. Reported alongside t_settle90 (against the FINAL rail). Verdict on the conservative of the two."
+  },
+
+  "c_boundary_acceptance_PRE_STATED": {
+    "test": "QAL bank level -> standard sync gate, re-run by me. DC transfer curves (my own .DC sweep) of: (i) the campaign's standard generic inverter 1.12u/0.74u @1.2 V, (ii) Track 3's 'cell K' 0.15u/1.48u @0.9 V, (iii) 0.15u/1.48u @1.2 V. Extract trip point and static contention current vs input level.",
+    "range_requirement": "PASS requires margin across a RANGE, not at the nominal point: the receiver must resolve correctly for delivered levels spanning the family's measured spread, 0.55 V to 0.85 V, with >= 100 mV of margin between the QAL high level and the trip point AND between the trip point and the QAL low level. Nominal-point-only success is recorded as FAILS-ON-RANGE.",
+    "driver_realism": "Track 3 drove its receiver from an IDEAL PWL source. I additionally drive it from the REAL QAL cell output inside the real hop deck, because the real driver is a 1.12u/0.74u inverter on a 0.68-0.71 V resonant rail and must also supply the receiver's static contention current. If the two differ materially, the PWL result is an idealisation and I say so."
+  },
+
+  "d_composition_acceptance_PRE_STATED": {
+    "test": "Track 1's FASTEST FUNCTIONAL point with Track 3's boundary attached: one receiver per cell output (8 receivers) on the real hop deck, at L=15 nH / W=30 um / dV=1.2.",
+    "joint_pass": "JOINT PASS requires ALL of: (i) all 8 cells still >= 90% settled at the end checkpoint; (ii) VBEND >= 0.60 V ABSOLUTE (Track 1's own pre-registered C3 device-Vt floor, not a fraction of dV); (iii) VA_open <= 0.1478 (Track 1's C2 transfer completeness); (iv) every receiver resolves to the correct logic value, crossing 50% of its own output rail, inside the QAL valid window. FAILING ANY ONE = the composition does not hold and the tracks' separate passes were obtained by zeroing each other's term.",
+    "t_level_with_boundary": "t_level_b = max(t_hop, t_valid90, t_receiver_resolve). This, not t_hop, is the quantity that can be compared to a CMOS logic level.",
+    "switch_widening_crosscheck": "Does the switch widening Track 1 needed (15 -> 30 um at dV=1.2) change Track 3's answer? Run the same composition at W=15 um, same L and dV, and report whether the boundary verdict flips."
+  },
+
+  "b_crossover_recheck_PRE_STATED": {
+    "method": "Re-derive the crossover arithmetic myself from the definition throughput_QAL > throughput_CMOS <=> n_beat * t_beat_QAL < d * t_level_CMOS + t_reg, independently of Track 2's script. Verify Track 2's flop-overhead provenance: if CQ/setup came from liberty, check the liberty tables directly and check OpenSTA's interpolation, and flag them against the record's finding that liberty internal-power is 1.5-3.7x low and its th22 entry was wrong.",
+    "power_vs_timing": "The record's liberty indictment is about INTERNAL POWER, not delay. I will state explicitly whether it transfers to the timing tables or not, rather than assuming either way."
+  },
+
+  "comparators_PRE_STATED": {
+    "cmos_logic_level": "92.8 ps = sha_slice MEASURED comb path 928.1 ps / mapped depth 10 (the record's own figure). Combinational, NO flop overhead.",
+    "cmos_inverter": "34.81 ps committed SG13G2 inverter anchor (1.2 V, 2 fF, full cycle).",
+    "faster_means": "QAL is FASTER than a CMOS logic level iff t_level (or t_level_b where a boundary is attached) < 92.8 ps. t_hop alone is NOT the comparator and t_hop/8 will not be claimed as a speed win."
+  },
+
+  "declared_limits_PRE_STATED": [
+    "sg13lv_compat.sp zeroes ad/as/pd/ps, so junction capacitance is ABSENT: every capacitance, charge, energy and delay is a LOWER BOUND / optimistic, worst at wide-switch fast points.",
+    "Gate drive of the transfer switch is an ideal PWL source with a 2 ps edge; a 30-60 um TG gate cannot be driven that fast, so the driver's own delay is EXCLUDED.",
+    "The 8 metered cells have DC inputs: this is a RAIL-ARRIVAL test, not logic evaluation. Inherited from the committed harness.",
+    "One hop, not a chain and not a pipeline. No multi-hop charge recovery, no register-tax claim is measured here.",
+    "Energy is reported; no energy verdict is claimed or overturned. The EXCLUSION verdict stands on its own ledger."
+  ]
+}

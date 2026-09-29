@@ -1,0 +1,67 @@
+{
+ "_doc": "TRACK 1 pre-registration, written BEFORE any deck was generated or run. QUESTION: how fast can a FUNCTIONAL QAL bank-to-bank hop go on SG13G2? Every QAL point in the campaign so far fixed L by an ENERGY rule (L = 400nH*(dV/1.2)^2 -> 277.8 nH at dV=1.0). The hop is resonance-limited, t_hop ~ pi*sqrt(L*C_eff), so L is the SPEED knob and it has never been swept downward. The published 'QAL is slower than CMOS' reading is therefore a property of an energy-optimal operating point, not of QAL. SPEED IS THE PRIMARY METRIC HERE; energy is reported honestly but does NOT gate the speed verdict.",
+ "date": "2026-09-28",
+
+ "derived_predictions_to_test_not_trust": {
+  "t_hop_scaling": "DERIVED: t_hop = pi*sqrt(L*C_ser_eff). Back-fitting the committed tg15p true zero 266.755223 ps at L=277.8 nH gives C_ser_eff = (266.755223e-12/pi)^2/277.8e-9 = 25.96 fF. Prediction: t_hop(L) = 266.755 * sqrt(L/277.8) ps -> 160.0 / 87.66 / 50.61 / 27.71 / 16.00 ps at 100/30/10/3/1 nH.",
+  "I_pk_scaling": "DERIVED: I_pk = dV*sqrt(C/L) grows as 1/sqrt(L); from the measured 194.37 uA at 277.8 nH, predict 324 / 591 / 1024 / 1775 / 3240 uA at 100/30/10/3/1 nH.",
+  "loss_scaling": "DERIVED: fractional resonant loss ~ pi/Q with Q = sqrt(L/C)/R_total. With the protocol RS=10 ohm ALONE, Q = 19.6 at L=1 nH -> 16% loss before the switch is counted. The switch channel resistance adds directly, so the fast points are expected to be conduction-limited and to demand a WIDER switch.",
+  "crossover_predictions": "DERIVED from the sqrt(L) law: t_hop crosses the sha_slice 93 ps/level at L ~ 34 nH and the CMOS-inverter 34.81 ps at L ~ 4.7 nH. These are the numbers the measurement must confirm or refute."
+ },
+
+ "instrument_gates": {
+  "G0a_extractor": "My extractor, run against the COMMITTED mt0 /usr/local/src/stat-sim/qal/swsweep/sw_tg15p_z.cir.mt0, must reproduce every committed tg15p headline to rel < 1e-6: E_hop_open 8.3828171771408 fJ, VBEND 0.6758936, VBPK 0.7374377, VA_open 0.09778203952305342, cells_burn 1.6954746104994207 fJ, E_R_toC 0.049543034863200004 fJ, IZ -0.3793985 uA, IPK 194.3655 uA.",
+  "G0b_toolchain": "The COMMITTED deck sw_tg15p_z.cir, re-run byte-identical in my own workdir with my own PYMS_VAE_CACHE, must reproduce the committed mt0 headlines to rel < 1e-6. This separates 'my arithmetic' from 'my toolchain'.",
+  "G0c_probe": "My own generator, at L=277.8 nH / tg15p, must reproduce the committed probe true zero 266.755223 ps to within one print step (0.1 ps).",
+  "G0d_non_perturbation": "My extended deck (extra .measure lines, no new circuit elements) at the anchor point must reproduce E_hop_open / VBEND / VA_open within 0.1%.",
+  "G1_closure_per_point": "Per point: (i) Q closure |qlt_D - CA*(dV-VAEND)| <= 1% of the latter; (ii) E closure |ea_D - 0.5*CA*(dV^2-VAEND^2)| <= 1%; (iii) path identity |ea_C - esw_C - er_C| <= 0.02 fJ (exact at zero inductor current). A point failing closure is an INSTRUMENT FAILURE for that run, not a data point, and is reported as such."
+ },
+
+ "protocol": {
+  "inherited_verbatim": "Deck topology, cells, metering integrators, .OPTIONS, dV=1.0, CA=35.979 fF, RS=10 ohm, VGH=1.5 V, 8 metered inverters (4 hi-input / 4 lo-input, 1.12u/0.74u, 2 fF loads), T0=50 ps close, 2 ps gate edges, 500 ps post-open tail, TRUE-ZCS timing (switch opens exactly at the design's own probe zero, amendment A1), and the A2 robust energy metric E_hop_open = ea_C - E_sup_static(VBEND) are all taken UNCHANGED from swsweep/sw_hop_meter.py and sar/sar_observable.py. The static Q/E reference curve is the G1-gated swsweep/sw_calib.cir.prn, read-only.",
+  "what_changes": "ONLY (i) L, (ii) the transfer-switch widths, (iii) timestep resolution, which is scaled with L so that the anchor point reproduces the committed settings exactly: probe print step = min(0.1, t_est/2000) ps, hop print step = min(0.1, t_est/2000) ps, hop max time step = min(0.25, t_est/1000) ps, with t_est(L) = 266.755*sqrt(L/277.8).",
+  "per_point": "probe (switch held closed, find the true I(LT) zero) -> hop with the switch opened exactly at that zero -> full ledger. The zero MOVES with both L and switch width, so it is re-probed for every point.",
+  "overdamped_handling": "If the probe finds NO current zero the point is OVERDAMPED (not a resonant hop). It is recorded with no_zero=true, t_open is set to the time I(LT) first falls below 1% of I_pk, and the row is flagged OVERDAMPED. Such a point cannot be the headline."
+ },
+
+ "sweep": {
+  "primary_L_nH": [277.8, 100, 30, 10, 3, 1],
+  "switch_family": "transmission gate at 1:2 n:p (wn = total/3, wp = 2*total/3) plus a park nMOS of width total/15 on node sw (control: 0 until open, 1.5 V from open+2 ps). total=15 um reproduces the committed optimum tg15p exactly (wn=5, wp=10, park=1). Widths swept: total in {15, 30, 60, 120, 240} um.",
+  "widening_rule": "At each L, start at total=15 um. If the point fails any functional criterion, widen through the family until it passes or the family is exhausted. Report the MINIMUM passing width per L as the switch-width-vs-speed curve, together with that switch's measured gate charge (qgt_D + qgtp_D + park) and ideal gate-drive energy (egt_D).",
+  "sensitivity_studies_secondary": [
+   "RS = 1 ohm instead of 10 at the fast points. Rationale: RS=10 is the protocol value fitted for a 278 nH inductor; a 1 nH inductor is physically ~1/278 the conductor length and would not carry the same DC resistance, so holding RS=10 at small L is PESSIMISTIC. Reported as sensitivity, never as the primary row.",
+   "gate edge 0.2 ps instead of 2 ps at the fastest point, to quantify how much of the fast-point behaviour is the finite drive edge.",
+   "post-open tail 150 ps instead of 500 ps at one fast point, to show the tail length does not move VBEND / cells_burn."
+  ]
+ },
+
+ "functional_criteria_PRE_STATED": {
+  "C1_cell_settling": "Per-cell settling for ALL 8 cells. lo-input cell (output must follow the newly arrived rail up): s_i = V(o_i)/V(bkb). hi-input cell (output must stay at 0): s_i = 1 - V(o_i)/V(bkb). PASS requires all 8 >= 90%. Evaluated at BOTH checkpoints: at the OPEN checkpoint (t_open) and at the SETTLE checkpoint (t_open + 495 ps, the committed convention). THE HEADLINE USES THE OPEN CHECKPOINT, because a speed claim may not borrow post-hop settling time.",
+  "C2_rail_drain": "VA_open (ring-free, = dV - qlt_C/CA) <= 0.1478 V, i.e. the committed tg15p anchor 0.09778 + 0.05, which is the AMENDMENT.md A1 rule. A point that leaves more than that on bank A did not actually transfer the rail.",
+  "C3_delivered_swing": "VBEND >= 0.60 V. Rationale: the MEASURED functional cliff is at dV=0.6, where the cell pMOS never clears Vt and settling collapses to 34.8%. Stated separately from C1 because C1 is a RATIO and could be satisfied at a uselessly small swing.",
+  "C4_instrument": "G1 closure above.",
+  "FUNCTIONAL": "C1(open) AND C2 AND C3 AND C4. Only FUNCTIONAL points are eligible for the speed headline."
+ },
+
+ "what_faster_would_require_PRE_STATED": {
+  "primary_comparator": "The measured sha_slice combinational path: 0.928 ns over DEPTH 10 = 92.8 ps per logic level, with NO flop overhead in that number. A QAL hop is FASTER THAN A CMOS LOGIC LEVEL iff t_hop < 92.8 ps with all 8 cells FUNCTIONAL at the open checkpoint. This is the claim that matters for a datapath.",
+  "aggressive_comparator": "The measured single CMOS inverter, 34.81 ps at 1.2 V into 2 fF. This is the FLOOR of a CMOS level delay (minimum fanout, no wire), not its datapath average. QAL beats it iff t_hop < 34.81 ps.",
+  "what_will_NOT_be_claimed": "A QAL hop settles 8 cells (one whole level of 8 gates) per hop, while the 34.81 ps figure is one gate. The per-gate division (t_hop/8) will be reported for completeness but will NOT be claimed as a speed win. Speed is wall-clock per level.",
+  "energy_context_not_a_gate": "Energy comparator for context only: CMOS inverter 10.0831 fJ/cycle x 8 cells = 80.66 fJ per 8-gate level, vs E_hop_open. The ratio is reported. There is NO energy pass/fail in this track. The committed EXCLUSION verdict (23.213 fJ/bank/hop complete timer ledger vs a pre-stated <= 12.7467 fJ, stat-sim c814e52) is an ENERGY verdict and is not re-litigated here."
+ },
+
+ "known_limitations_declared_up_front": {
+  "junction_caps_absent": "sg13lv_compat.sp zeroes ad/as/pd/ps, so junction capacitance is ABSENT from every device. Every capacitance, every charge and every energy here is a LOWER BOUND, and every t_hop is a LOWER BOUND (optimistic/fast). This bites HARDER at the wide-switch fast points, where junction area is largest.",
+  "cells_settle_they_do_not_switch": "The 8 metered cells have DC inputs; the test is RAIL ARRIVAL (does the output track the newly delivered supply), not logic evaluation. This limitation is inherited from the committed harness and is not fixed here. The genuine functional content is (i) the cell pMOS must clear Vt at the delivered swing, and (ii) the output must reach the rail inside the hop.",
+  "gate_drive_is_ideal": "VGT/VGTP/VPK are ideal PWL sources with 2 ps edges. A 240 um transmission gate has of order 0.6 pF of gate capacitance and CANNOT be driven in 2 ps by anything reasonable. At the fast/wide points the 2 ps edge is a first-order idealisation and the reported t_hop EXCLUDES the driver's own delay. This is flagged on every affected row.",
+  "one_hop_not_a_pipeline": "This is a single bank-to-bank hop, not a chain. The structural 1.5-3x register-tax claim from the crossover map is NOT tested here; that is Track 2's job."
+ },
+
+ "deliverables": ["RESULTS_LSWEEP.json (machine-readable rows + verdict)", "the switch-width-vs-speed curve", "the headline fastest FUNCTIONAL point with t_hop and energy", "a yes/no answer on 'is a QAL hop faster than a CMOS logic level', with the pre-stated comparators"],
+ "environment": {
+  "PYMS_VAE_CACHE": "/tmp/claude-1001/-usr-local-src/4921ad0c-f17b-4b84-986a-5917c9ebd2a6/scratchpad/vae_cache_lsweep (private to this agent, seeded from vae_cache_sar)",
+  "PYMS_DIR": "/usr/local/share/xyce/PyMS",
+  "Xyce": "/usr/local/src/xyce-build/src/Xyce",
+  "workdir": "/usr/local/src/stat-sim/qal/lsweep"
+ }
+}

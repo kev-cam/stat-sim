@@ -1,0 +1,73 @@
+{
+  "_doc": "TRACK 3 -- TAILORED BOUNDARY HANDLING. Pre-registered BEFORE any deck exists in this directory. All thresholds below are stated in advance; every number in RESULTS.json will be labelled MEASURED / DERIVED / ASSUMED. Own PYMS_VAE_CACHE (vae_cache_boundT3).",
+  "framing": "SPEED is the primary metric for the parent run; this track's own primary metric is BOUNDARY COST in fJ/bit and ps of added latency. The record's 124.7 fJ/bit round-trip figure is UNSOURCED and is what the 'few LARGE domains' selection rule rests on; this track either replaces it with a measurement or reports it still unmeasured.",
+
+  "anchors_taken_as_given_not_re_derived": {
+    "QAL_logic1_level_V": 0.6758936,
+    "QAL_logic0_level_V": -4.97e-09,
+    "QAL_source": "qal/swsweep/sweep_rows.json row tg15p_zcs, outputs_end (cell output high == VBEND)",
+    "QAL_hop_ps": 266.755223,
+    "QAL_E_hop_fJ": 8.408270111148767,
+    "QAL_cells_burn_fJ": 1.6954746104994207,
+    "CMOS_inverter_anchor_fJ_per_full_cycle": 10.0831,
+    "CMOS_inverter_anchor_ps": 34.81,
+    "CMOS_anchor_conditions": "1.2 V, 2 fF load, full hi+lo cycle",
+    "th22_C_element_fJ": 44.62,
+    "th22_ps": 356,
+    "E0_ff_fJ": 59.1,
+    "E_tree_fJ_per_flop_per_cyc": 27.7,
+    "sha_slice": {"generic_gates": 105, "depth": 10, "cmos_fJ_per_op": 232, "cmos_ns": 0.928},
+    "alu_top": {"cells": 4721, "cmos_pJ_per_op_liberty": 46.67, "closed_ns": 4.75}
+  },
+
+  "H1_QAL_to_sync_plain_inverter_is_the_whole_adapter": {
+    "claim_under_test": "a settled QAL bank level (0.6759 V) drives a STANDARD SG13G2 inverter on a 1.2 V rail correctly, so the boundary needs no converter",
+    "PASS_requires_ALL": [
+      "DC: V_out at V_in = 0.6759 V is <= 0.24 V (0.2*VDD) -- an unambiguous logic 0 into the next stage",
+      "DC: static supply current at V_in = 0.6759 V is <= 1.0 uA (so <= 0.35 fJ over a 290 ps QAL hold window)",
+      "DC: margin V_in(50% trip) is <= 0.576 V, i.e. >= 100 mV below the QAL high level (the campaign's worst measured VBEND row is tg60 0.5763 V, so a receiver must work for the whole family)"
+    ],
+    "MARGINAL_verdict_if": "V_out at 0.6759 V lands in (0.24, 0.96) V, or static current > 1.0 uA, or trip point above 0.576 V -- then a plain inverter is NOT the whole adapter and the fix must be built and costed",
+    "fix_counts_as_CHEAP_if": "total QAL->sync boundary cost <= 20.17 fJ/bit (2x the measured CMOS inverter cycle energy) AND added latency <= 100 ps",
+    "fix_candidates_to_be_built": ["skewed-Vt / skewed-W receiver (lower trip)", "two-stage skewed receiver", "explicit differential/current-mirror level shifter if the skewed receiver fails"]
+  },
+
+  "H2_sync_to_QAL_needs_no_converter": {
+    "claim_under_test": "a full-swing synchronous driver (1.2 V) can drive QAL cell gate terminals directly -- the QAL cell's devices are gate-controlled, and an overdriven gate is MORE strongly on/off than a QAL-level gate, so the 'converter' is the CMOS driver that already exists",
+    "vehicle": "text patch of the committed qal/swsweep/sw_tg15p_z.cir changing only the cell data sources VI0..VI7 from 1.0/0 V to the sync rail; a 1.0 V control row is re-run in MY lane so the comparison is same-lane",
+    "PASS_requires_ALL": [
+      "all 8 cells still settle (outputs_end pattern: alternating ~0 and ~VBEND, no cell stuck mid-rail)",
+      "VBEND within 2% of the same-lane 1.0 V control row",
+      "E_hop increase <= 10% vs the same-lane 1.0 V control row"
+    ],
+    "FAIL_consequence": "sync->QAL is NOT free; the extra gate charge must be booked per bit per hop and added to the boundary ledger"
+  },
+
+  "H3_sync_QDI_adapters": {
+    "claim_under_test": "sync<->QDI adapters are small fixed circuits (encoder = 1 INV + 2 AND2; decoder = data is a wire + 1 OR2/bit into a completion tree)",
+    "vehicle": "transistor-level SG13G2 encoder and decoder, own VDD sources per block, 2 fF loads, NULL->DATA->NULL full cycle",
+    "report": "fJ/bit and ps for each direction",
+    "acceptance_for_CHEAP": "encoder+decoder data path <= 44.62 fJ/bit (one th22 C-element, the campaign's measured QDI cell) -- if the adapter costs less than a single cell of the domain it feeds, it is not the thing that forces large domains"
+  },
+
+  "H4_selection_rule_consequence": {
+    "rule_today": "converter tax O(width) -> few LARGE domains",
+    "test": "compute break-even domain size from the MEASURED per-bit boundary cost, separately in ENERGY and in LATENCY, for sha_slice and alu_top",
+    "overturn_threshold_stated_in_advance": "if the measured sync<->QAL round trip is < 30 fJ/bit, then converter ENERGY does not by itself force large domains at the widths of interest (32-96 bits) and the rule must be restated with the measured break-even; if it is > 60 fJ/bit the existing rule is confirmed with a source",
+    "latency_break_even_definition": "domain depth D such that boundary latency t_b <= 0.10 * D * t_hop (QAL) or <= 0.10 * D * t_level (sync)"
+  },
+
+  "H5_async_at_the_boundary": {
+    "claim_under_test": "async's natural home is the BOUNDARY (elastic handshake between synchronous islands), not the bulk logic, because handshake cost is O(1) in channel width while both QDI bulk logic and a synchronizer are O(width)",
+    "method": "DERIVED composition of MEASURED cells only (th22 44.62 fJ, E0_ff 59.1 fJ, E_tree 27.7 fJ/flop/cyc, ALU QDI 523.7 pJ vs CMOS 46.67 pJ) -- no new simulation claimed as measurement",
+    "acceptance": "the argument holds iff per-transfer handshake control energy is width-independent and smaller than the per-bit synchronizer energy times width at W >= 8"
+  },
+
+  "sim_discipline_commitments": [
+    "own PYMS_VAE_CACHE, built from scratch, no sharing",
+    "1F-integrator metering with EXPLICIT t0 reference (the pedestal trap), or exact 1/2*C*(Vi^2-Vf^2); never bare .measure INTEGRAL of a B-source",
+    "sg13lv_compat.sp zeroes ad/as/pd/ps -> junction capacitance ABSENT -> every device energy here is a LOWER BOUND; stated wherever it matters",
+    "unique .va module names; runs kept short",
+    "negative results are first-class and reported"
+  ]
+}

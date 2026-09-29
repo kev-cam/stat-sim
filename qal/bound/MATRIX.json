@@ -1,0 +1,141 @@
+{
+  "_doc": "TRACK 3 (a): the 4x4 boundary-adapter matrix over {SYNC, BD (bundled data), QDI (dual-rail delay-insensitive), QAL (quasi-adiabatic banked)}, DIAGONAL INCLUDED. This is mylex/SELECTION-RULE.md section 8 'Next measurements' item 1 -- 'the only first-order input with zero provenance, and it decides whether a per-block rule exists at all'. Each cell says what signal transformation is PHYSICALLY REQUIRED on four axes: LEVEL (voltage domain), TIMING (when is the value valid / who waits), ENCODING (how is a bit represented), COMPLETION (how does the receiver know). 'none' = no circuit required on that axis. Costs live in RESULTS.json; this file is the structure.",
+
+  "_axes_note": "The record's converter tax is an ENCODING-axis tax only. Two whole axes were missing from it: LEVEL (which binds at exactly one edge, QAL->sync) and TIMING (which binds at EVERY edge but is PER DOMAIN, not per bit -- which is why it never appeared in an O(width) formula).",
+
+  "SYNC_to_SYNC": {
+    "level": "none (same rail) -- unless the islands are on different rails, then a level shifter, which is a power-intent question (UPF), not a binding question",
+    "timing": "THE WHOLE BOUNDARY: two clocks, no phase relation. Needs a synchronizer (metastability) or a FIFO.",
+    "encoding": "none", "completion": "none",
+    "adapter": "2-flop synchronizer per bit for control; async FIFO for data",
+    "cost_class": "O(width), and the most expensive diagonal in the matrix",
+    "cost": "DERIVED from MEASURED cells: 2*(E0_ff 59.1 + E_tree 27.7) = 173.60 fJ/bit/transfer + 2 destination clock cycles of latency"
+  },
+
+  "SYNC_to_BD": {
+    "level": "none", "encoding": "none (both single-rail full swing)",
+    "timing": "the clock edge becomes the REQUEST; the ack must gate the next launch (stall input).",
+    "completion": "none in the data path; the handshake carries it.",
+    "adapter": "handshake control only -- 2 C-elements per CHANNEL. Data path is a WIRE.",
+    "cost_class": "O(1) in width",
+    "cost": "DERIVED from MEASURED th22 44.62 fJ: 89.24 fJ per channel per transfer, width-INDEPENDENT; 356 ps per C-element"
+  },
+  "BD_to_SYNC": {
+    "level": "none", "encoding": "none",
+    "timing": "the ack/completion becomes the capture enable; the matched delay line must have expired.",
+    "completion": "matched delay line (or the measured current-sense early-out, 82-246 ps, which shrinks the line ~9 -> 1-4 stages)",
+    "adapter": "handshake control only; data path is a WIRE",
+    "cost_class": "O(1) in width",
+    "cost": "same 89.24 fJ/channel DERIVED figure; the delay line measures ~1.2-1.7% of energy at Vortex effective widths"
+  },
+  "BD_to_BD": {
+    "level": "none", "encoding": "none",
+    "timing": "join/fork of two handshakes", "completion": "C-element merge",
+    "adapter": "1-2 C-elements per channel", "cost_class": "O(1)",
+    "cost": "44.62-89.24 fJ/channel DERIVED from the MEASURED th22"
+  },
+
+  "SYNC_to_QDI": {
+    "level": "none (both full-swing 1.2 V)",
+    "timing": "the encoder must be MONOTONIC and must not emit DATA until every bit of the word is valid, or the receiver's completion detector fires on a partial word. Gating a STABLE D with a rising EN is monotonic by construction.",
+    "encoding": "THE WHOLE BOUNDARY: single-rail -> dual-rail with a NULL spacer. T = D.EN, F = /D.EN = 3 INV + 2 NAND2 per bit as built.",
+    "completion": "the QDI side makes its own; the sync side must honour ack before relaunching.",
+    "adapter": "5 static gates per bit + the launch flop that already exists",
+    "cost_class": "O(width)",
+    "measured_by": "H3, bd_qdi.cir encoder rail (MEASURED)"
+  },
+  "QDI_to_SYNC": {
+    "level": "none",
+    "timing": "capture after completion asserts and before NULL clears the rails -> pulse or level-sensitive latch plus ack",
+    "encoding": "dual-rail -> single-rail is A WIRE (take the true rail). THE ASYMMETRY THAT MATTERS: decode is free in the data path, encode is not.",
+    "completion": "THE WHOLE BOUNDARY: OR per bit (NOR2+INV) then an AND tree over W bits -> one word-complete signal that becomes the capture enable. O(W) gates, O(log W) depth.",
+    "adapter": "1 OR2 per bit + (W-1) tree nodes + a capture pulse; data path is wire",
+    "cost_class": "O(width) in gates, O(log width) in delay",
+    "measured_by": "H3, bd_qdi.cir decoder rail + tree node (MEASURED)"
+  },
+  "BD_to_QDI": {
+    "level": "none",
+    "timing": "same monotonicity obligation as sync->QDI, but the REQUEST already exists (it is the bundled-data req), so the encoder's EN is free",
+    "encoding": "single-rail -> dual-rail, same 5 gates/bit as sync->QDI",
+    "completion": "already present on both sides",
+    "adapter": "the sync->QDI encoder MINUS the request generation",
+    "cost_class": "O(width)",
+    "cost": "= measured sync->QDI encoder (the EN generation is shared, so it is the cheaper of the two encode edges)"
+  },
+  "QDI_to_BD": {
+    "level": "none", "encoding": "dual-rail -> single-rail = a WIRE",
+    "timing": "the QDI completion IS the bundled-data req -- the two protocols already speak the same language",
+    "completion": "reuse the QDI completion tree as the BD req: NO new circuit beyond the tree that QDI builds anyway",
+    "adapter": "a wire plus a renamed signal",
+    "cost_class": "O(1) marginal",
+    "note": "CHEAPEST cross-family boundary in the matrix. If a QDI block must talk to anything, it should talk to BD."
+  },
+  "QDI_to_QDI": {
+    "level": "none", "encoding": "none (same rail count)", "timing": "none", "completion": "none",
+    "adapter": "NOTHING -- two QDI domains compose by construction; that is the point of delay insensitivity",
+    "cost_class": "zero",
+    "note": "the only genuinely free cell in the matrix, and it is the reason QDI's cost is entirely INTERNAL (measured 5.41x cells, 8.2-11.2x energy on the ALU) rather than at its edges"
+  },
+
+  "SYNC_to_QAL": {
+    "level": "NONE REQUIRED -- and this is the measured finding, not an assumption. A QAL cell's data inputs are MOS GATE terminals; the cell's source/body rail is the bank node (MEASURED settle 0.6759 V, tg15p_zcs). A 1.2 V sync high on the cell pMOS whose source sits at 0.676 V gives Vgs = +0.52 V -> hard OFF; the cell nMOS sees Vgs = 1.2 V -> hard ON. Overdrive makes the cell MORE decisive than a QAL-level input. The node already runs a 1.5 V gate rail on the transfer switch (VHI), so 1.2 V on a cell gate is inside existing practice.",
+    "timing": "THE WHOLE BOUNDARY: the datum must be stable before the bank rail rises and must not move until the rail has recovered (the un-compute window). Requirement = HOLD ACROSS THE BEAT, i.e. the launching flop must be phase-related to the QAL beat.",
+    "encoding": "none", "completion": "none inbound; the obligation is negative (do not launch during settle)",
+    "adapter": "the launch flop that already exists + a beat-phase constraint. ZERO extra devices in the data path.",
+    "cost_class": "O(1) per domain (a phase relation) + a per-bit GATE CHARGE delta",
+    "measured_by": "H2, s2q_rows.json (cell data sources swept 1.0/1.2/1.5 V on the committed tg15p true-ZCS hop)"
+  },
+  "QAL_to_SYNC": {
+    "level": "THE WHOLE BOUNDARY. QAL logic-1 == the bank's settled level: MEASURED 0.6759 V (tg15p_zcs) and 0.5763 V (tg60); the committed switch family spans 0.576-0.685 V. Logic-0 is a true zero (MEASURED -5e-9 V). So the receiver sees a 0.58-0.68 V high on a 1.2 V rail -- about half swing, i.e. sitting near a standard inverter's trip point.",
+    "timing": "the QAL output is EPHEMERAL: valid only between settle and un-compute. MEASURED window from the park deck -- transfer nMOS cuts at 422.15 ps, next beat turn-on at 708.865 ps -> a 286.7 ps valid window inside a 580 ps beat. The capture edge must land inside it.",
+    "encoding": "none",
+    "completion": "none (schedule known); the capture-edge placement is a timing-closure obligation, paid once per domain",
+    "adapter": "a level-resolving receiver + one capture flop per bit (the flop is the island's own boundary register if the boundary is at a register)",
+    "cost_class": "O(width) -- in THREE currencies: receiver energy, receiver input capacitance hung on the bank (which costs hop TIME as sqrt(C) and hop ENERGY as C), and static contention while the ephemeral high is held",
+    "measured_by": "H1, bd_dc.cir (DC transfer + static contention, 8 receiver variants) + bd_rx.cir (transient energy, delay, input capacitance)"
+  },
+  "BD_to_QAL": {
+    "level": "none (same argument as sync->QAL: gate terminals, overdrive is benign)",
+    "timing": "WORSE than sync->QAL: bundled data arrives when it arrives, but a QAL bank fires on a beat and cannot wait. The handshake must be terminated in a register clocked by the beat -> the BD side must be able to STALL.",
+    "encoding": "none", "completion": "the ack must be generated by the beat, not by the logic",
+    "adapter": "sync->QAL adapter + a BD-to-clocked interface (the island's own register)",
+    "cost_class": "O(1) per channel + the sync->QAL per-bit gate charge",
+    "note": "DERIVED: this is sync->QAL with the request/ack conversion of BD->sync, both measured; the fused boundary was not simulated"
+  },
+  "QAL_to_BD": {
+    "level": "same as QAL->sync (the level problem is a property of the QAL side, not of who receives)",
+    "timing": "the beat generates the req; the BD consumer must accept at beat rate or the bank's value is lost (no back-pressure into a resonant bank)",
+    "encoding": "none", "completion": "beat-derived req",
+    "adapter": "QAL->sync receiver + req generation from the beat",
+    "cost_class": "O(width) receiver + O(1) control",
+    "note": "DERIVED from the two measured halves"
+  },
+  "QAL_to_QAL": {
+    "level": "NONE if both domains run the same dV -- and at SG13G2 that is FORCED: the MEASURED functional cliff (settling 100% at dV=1.0/1.2, 77.1% at 0.8, 34.8% at 0.6, pMOS never clears Vt) leaves dV=1.0 as the only usable swing, so every QAL domain at this node is at the same level by necessity.",
+    "timing": "THE WHOLE BOUNDARY: two independently-resonated domains have independent beats, so a value leaving bank A must be HELD while domain B's rail rises. The holding element is exactly the PARK device -- MEASURED resonant park tap -0.0398 fJ (a NET RECEIVER) on the 46%-duty row, 11-44x under the 15.0 fJ conventional floor, and ZERO new devices: the park nMOS already exists in the committed switch (XPK w=1u), only its drive changed.",
+    "encoding": "none", "completion": "none",
+    "adapter": "a park phase. THE CHEAPEST CROSS-DOMAIN CELL IN THE MATRIX -- provided the two domains are BEAT-LOCKED.",
+    "enabler_already_measured": "Q is B-INVARIANT under inductor sharing (3-4 inductors chip-wide, L1 5.9 nH at B=64) -- so beat-locking many QAL domains is not merely allowed, it is the CHEAPEST way to build them.",
+    "if_beats_are_NOT_locked": "you need a static hold on a 1.2 V rail, i.e. QAL->sync->QAL, paying BOTH level conversions. DERIVED consequence: a GALS fabric should treat QAL as ONE beat domain with many banks, not as many independent QAL domains.",
+    "cost_class": "O(1) per domain pair",
+    "measured_by": "qal/park/RESULTS.json (committed); no new simulation in this track"
+  },
+  "QDI_to_QAL_and_QAL_to_QDI": {
+    "level": "1.2 V full swing <-> 0.68 V half swing, both directions",
+    "timing": "handshake (data-dependent, unbounded) <-> schedule (fixed beat). INCOMPATIBLE disciplines: a QAL bank cannot wait.",
+    "encoding": "dual-rail <-> single-rail",
+    "completion": "the QDI NULL phase has NO QAL counterpart. A QAL bank's return-to-NULL is the un-compute, which is TIMED, not acknowledged -- so a QDI receiver cannot detect a QAL bank's NULL, and a QAL bank cannot be told to hold DATA until an ack arrives.",
+    "verdict": "WORST cell in the matrix, and no fusion removes a term. RULE: NEVER abut QDI and QAL. Insert a sync (or BD) island. Cost is then QDI->sync + sync->QAL, both measured, with the island's boundary register SHARED by both adapters -- so the fused cost is LESS than the sum, but the rule should simply forbid the direct abutment.",
+    "cost_class": "O(width) on both the encoding and the level axis simultaneously",
+    "measured_by": "composition of two measured halves; the fused boundary itself was NOT simulated -- DERIVED"
+  },
+
+  "structural_summary": {
+    "level_conversion_needed_at_exactly_one_edge": "QAL->sync (and QAL->BD, which is the same circuit). Everywhere else the level axis is 'none'.",
+    "encoding_conversion_needed_at_exactly_one_edge_direction": "*->QDI (encode). QDI->* (decode) is a wire in the data path.",
+    "timing_needed_at_EVERY_edge": "and it is PER DOMAIN, not per bit -- which is why it never appeared in the O(width) converter tax.",
+    "cheapest_cells": ["QDI->QDI (nothing)", "QAL->QAL beat-locked (a park, measured net-negative)", "QDI->BD (the completion tree is already built)"],
+    "most_expensive_cells": ["QDI<->QAL (forbid it)", "SYNC->SYNC across clocks (O(width) synchronizers -- the most expensive DIAGONAL)", "*->QDI encode (O(width))"],
+    "the_term_the_O_width_intuition_was_actually_feeling": "see RESULTS.json captax: every receiver hung on a QAL bank node ADDS to that bank's capacitance, and the hop is resonance-limited (t = pi*sqrt(LC), a MEASURED property of the committed harness), so W receivers cost sqrt(1 + W*C_rx/C_bank) in hop TIME and (1 + W*C_rx/C_bank) in hop ENERGY. That is a real O(width) boundary tax with no converter in it."
+  }
+}
