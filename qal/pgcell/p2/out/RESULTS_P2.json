@@ -1,0 +1,3869 @@
+{
+ "_doc": "PHASE 2 of the pass-gate cell study: remap sha_slice onto the Phase 1 TG-XOR/TG-MUX cells and price it. Pre-registration PRE_REGISTERED_P2.json (sha256 in PRE_REGISTERED_P2.sha256), written before any netlist, liberty or script of this run existed.",
+ "G0_ANCHOR": {
+  "committed_census_THIS_RUN": {
+   "cells": 56,
+   "devices": 406,
+   "W_tot_um": 352.65,
+   "depth": 8,
+   "profile": [
+    32,
+    12,
+    3,
+    2,
+    2,
+    2,
+    2,
+    1
+   ]
+  },
+  "committed_census_SIBLING_qal_sha256": {
+   "cells": 56,
+   "depth": 8,
+   "profile": [
+    32,
+    12,
+    3,
+    2,
+    2,
+    2,
+    2,
+    1
+   ]
+  },
+  "types_match": true,
+  "AGREE": true,
+  "G0B_committed_netlist_passes_MY_formal_flow": true,
+  "BRIEF_CORRECTION_depth": {
+   "brief_says": "the committed mapped sha_slice is 56 cells, depth 10",
+   "MEASURED_this_run": "56 cells, depth 8",
+   "sibling_independently": "56 cells, depth 8",
+   "where_10_comes_from": "the committed QAL projection counts GENERIC gates ($_AND_/$_OR_/$_XOR_/$_NOT_) and 10 GENERIC levels (qal/sha256/REMAP_CONSEQUENCE.json -> committed_reference). That is not the mapped netlist's depth. Re-mapping the RTL to that generic set in this run gives 91 cells, confirming it is a different object.",
+   "consequence": "every depth ratio in this file is taken against the MEASURED mapped depth 8, which is the harder comparison for the pass-gate remap, not the flattering one."
+  }
+ },
+ "restoration_rule": {
+  "_doc": "PHASE 2 (d) -- derive the RESTORATION RULE from Phase 1's MEASURED chain data.\n\nThe rule is read off qal/pgcell/CHAIN_*.json, which are the tank-fed, per-bank\nmatched-tank, chain-legal-cut measurements.  Nothing here is theory: the two\nbudgets below are arithmetic on measured per-bank separations and per-bank\nvalue-correctness flags.\n\n  N_SEP  the SEPARATION budget.  How many consecutive pass-gate levels a signal\n         can traverse before min(HIGH) - max(LOW) falls below the corrected\n         6.44 mV 1-sigma trip floor, given the measured per-bank transfer ratios\n         and a full inverter-bank head separation.\n\n  N_VAL  the VALUE budget.  How many pass-gate levels actually occur before the\n         FIRST bank in the measured chain returns a wrong value (all_correct\n         False).  This is the binding rule -- a bank can be above the floor and\n         still be wrong, and in ALT_vhi bank 2 it is.\n",
+  "floor_mV": 6.44,
+  "source": "qal/pgcell/CHAIN_*.json",
+  "chains": {
+   "CTL_vhi": {
+    "comp": [
+     "inv",
+     "inv",
+     "inv",
+     "inv"
+    ],
+    "separation_mV": [
+     706.5578189999999,
+     612.378631,
+     619.5096000000001,
+     671.433094
+    ],
+    "all_correct": [
+     true,
+     true,
+     true,
+     true
+    ],
+    "x_floor": [
+     109.71,
+     95.09,
+     96.2,
+     104.26
+    ],
+    "bank_transfer_ratio": [
+     null,
+     0.86671,
+     1.01164,
+     1.08381
+    ],
+    "tg_bank_transfer_ratio": [],
+    "inv_bank_transfer_ratio": [
+     0.86671,
+     1.01164,
+     1.08381
+    ],
+    "n_TG_levels_delivered_correct_before_first_wrong_bank": null,
+    "VALUE_CHECK": true
+   },
+   "ALT_vhi": {
+    "comp": [
+     "inv",
+     "tg",
+     "inv",
+     "tg"
+    ],
+    "separation_mV": [
+     458.9497159,
+     55.36814,
+     145.03169999999997,
+     5.485649999999994
+    ],
+    "all_correct": [
+     true,
+     false,
+     false,
+     false
+    ],
+    "x_floor": [
+     71.27,
+     8.6,
+     22.52,
+     0.85
+    ],
+    "bank_transfer_ratio": [
+     null,
+     0.12064,
+     2.61941,
+     0.03782
+    ],
+    "tg_bank_transfer_ratio": [
+     0.12064,
+     0.03782
+    ],
+    "inv_bank_transfer_ratio": [
+     2.61941
+    ],
+    "n_TG_levels_delivered_correct_before_first_wrong_bank": 0,
+    "VALUE_CHECK": false
+   },
+   "ALT_rail": {
+    "comp": [
+     "inv",
+     "tg",
+     "inv",
+     "tg"
+    ],
+    "separation_mV": [
+     416.72986000000003,
+     186.2071,
+     106.00800000000002,
+     24.551500000000004
+    ],
+    "all_correct": [
+     true,
+     true,
+     false,
+     false
+    ],
+    "x_floor": [
+     64.71,
+     28.91,
+     16.46,
+     3.81
+    ],
+    "bank_transfer_ratio": [
+     null,
+     0.44683,
+     0.5693,
+     0.2316
+    ],
+    "tg_bank_transfer_ratio": [
+     0.44683,
+     0.2316
+    ],
+    "inv_bank_transfer_ratio": [
+     0.5693
+    ],
+    "n_TG_levels_delivered_correct_before_first_wrong_bank": 1,
+    "VALUE_CHECK": false
+   },
+   "ALLTG_vhi": {
+    "comp": [
+     "tg",
+     "tg",
+     "tg",
+     "tg"
+    ],
+    "separation_mV": [
+     153.43059999999997,
+     80.33840000000004,
+     48.166999999999845,
+     102.7767999999999
+    ],
+    "all_correct": [
+     false,
+     false,
+     false,
+     false
+    ],
+    "x_floor": [
+     23.82,
+     12.47,
+     7.48,
+     15.96
+    ],
+    "bank_transfer_ratio": [
+     null,
+     0.52361,
+     0.59955,
+     2.13376
+    ],
+    "tg_bank_transfer_ratio": [
+     0.52361,
+     0.59955,
+     2.13376
+    ],
+    "inv_bank_transfer_ratio": [],
+    "n_TG_levels_delivered_correct_before_first_wrong_bank": 0,
+    "VALUE_CHECK": false
+   }
+  },
+  "N_SEP_derivation": {
+   "unit": "one (inverter bank, pass-gate bank) PAIR, the repeating unit of the measured ALT arrangement",
+   "head_separation_mV": 706.5578189999999,
+   "head_source": "CTL_vhi bank 1 -- a full inverter-bank separation, the best the tank-fed arrangement delivers",
+   "pair_transfer_ratio_MEASURED": {
+    "ALT_vhi": 0.09908,
+    "ALT_rail": 0.13185
+   },
+   "pairs_to_floor": {
+    "ALT_vhi": 2.032,
+    "ALT_rail": 2.319
+   },
+   "N_SEP": 2,
+   "meaning": "at most 2 consecutive pass-gate levels before the separation reaches the 6.44 mV 1-sigma floor"
+  },
+  "N_VAL_derivation": {
+   "n_TG_levels_delivered_correct": {
+    "ALT_vhi": 0,
+    "ALT_rail": 1
+   },
+   "N_VAL": 0,
+   "meaning": "the measured chains deliver 0 pass-gate level(s) with every gate value-correct; the next bank is wrong. ALT_vhi (fixed well) delivers 0, ALT_rail delivers 1.",
+   "binding": "N_VAL is the BINDING rule: ALT_vhi bank 2 is a pass-gate bank at 8.6x the floor -- above it -- and still all_correct False. Being above the noise floor is necessary, not sufficient."
+  },
+  "N_SEP": 2,
+  "N_VAL": 0,
+  "UNSATISFIABLE_NOTE": "N_VAL = 0. A pass-gate remap necessarily contains at least one pass-gate level, so a budget of 0 would be unsatisfiable by any pass-gate mapping. The fixed-well (vhi) chain measures 0 and is therefore CLOSED to pass-gate logic in this arrangement; the rail-well chain measures 1 and admits a remap in which NO pass-gate cell ever drives another pass-gate cell."
+ },
+ "remap_meta_polarity_aware": {
+  "pgp": {
+   "variant": "pgp",
+   "max_run": null,
+   "restore_outputs": false,
+   "cell_types": {
+    "pg_mux2": 23,
+    "pg_xor2": 15
+   },
+   "inverters": {
+    "restore": 0,
+    "mux_data_polarity_match": 0,
+    "module_output": 0
+   },
+   "max_pg_run_seen": 9,
+   "path": "/usr/local/src/stat-sim/qal/pgcell/p2/out/sha_slice.pgp.v"
+  },
+  "pgp2": {
+   "variant": "pgp2",
+   "max_run": 2,
+   "restore_outputs": false,
+   "cell_types": {
+    "pg_mux2": 23,
+    "pg_xnor2": 4,
+    "pg_xor2": 11,
+    "sg13g2_inv_1": 10
+   },
+   "inverters": {
+    "restore": 7,
+    "mux_data_polarity_match": 3,
+    "module_output": 0
+   },
+   "max_pg_run_seen": 2,
+   "path": "/usr/local/src/stat-sim/qal/pgcell/p2/out/sha_slice.pgp2.v"
+  },
+  "pgp2c": {
+   "variant": "pgp2c",
+   "max_run": 2,
+   "restore_outputs": true,
+   "cell_types": {
+    "pg_mux2": 23,
+    "pg_xnor2": 4,
+    "pg_xor2": 11,
+    "sg13g2_inv_1": 40
+   },
+   "inverters": {
+    "restore": 7,
+    "mux_data_polarity_match": 3,
+    "module_output": 30
+   },
+   "max_pg_run_seen": 2,
+   "path": "/usr/local/src/stat-sim/qal/pgcell/p2/out/sha_slice.pgp2c.v"
+  },
+  "pgp1": {
+   "variant": "pgp1",
+   "max_run": 1,
+   "restore_outputs": false,
+   "cell_types": {
+    "pg_mux2": 23,
+    "pg_xnor2": 3,
+    "pg_xor2": 12,
+    "sg13g2_inv_1": 18
+   },
+   "inverters": {
+    "restore": 15,
+    "mux_data_polarity_match": 3,
+    "module_output": 0
+   },
+   "max_pg_run_seen": 1,
+   "path": "/usr/local/src/stat-sim/qal/pgcell/p2/out/sha_slice.pgp1.v"
+  },
+  "pgp1c": {
+   "variant": "pgp1c",
+   "max_run": 1,
+   "restore_outputs": true,
+   "cell_types": {
+    "pg_mux2": 23,
+    "pg_xnor2": 3,
+    "pg_xor2": 12,
+    "sg13g2_inv_1": 65
+   },
+   "inverters": {
+    "restore": 15,
+    "mux_data_polarity_match": 3,
+    "module_output": 47
+   },
+   "max_pg_run_seen": 1,
+   "path": "/usr/local/src/stat-sim/qal/pgcell/p2/out/sha_slice.pgp1c.v"
+  }
+ },
+ "remap_meta_naive": {
+  "pg": {
+   "variant": "pg",
+   "max_run": null,
+   "restore_outputs": false,
+   "cell_types": {
+    "pg_mux2": 23,
+    "pg_xor2": 15
+   },
+   "absorbed_free": {
+    "mux_select": 0,
+    "xor_xnor": 0,
+    "output_from_xor": 0
+   },
+   "inverter_pairs_forced": {
+    "mux_data": 0,
+    "output_from_mux_or_shared_xor": 0
+   },
+   "max_run_on_outputs": 9,
+   "path": "/usr/local/src/stat-sim/qal/pgcell/p2/out/sha_slice.pg.v"
+  },
+  "pgr2": {
+   "variant": "pgr2",
+   "max_run": 2,
+   "restore_outputs": false,
+   "cell_types": {
+    "pg_mux2": 23,
+    "pg_xnor2": 7,
+    "pg_xor2": 8,
+    "sg13g2_inv_1": 19
+   },
+   "absorbed_free": {
+    "mux_select": 0,
+    "xor_xnor": 7,
+    "output_from_xor": 0
+   },
+   "inverter_pairs_forced": {
+    "mux_data": 6,
+    "output_from_mux_or_shared_xor": 0
+   },
+   "max_run_on_outputs": 2,
+   "path": "/usr/local/src/stat-sim/qal/pgcell/p2/out/sha_slice.pgr2.v"
+  },
+  "pgr2c": {
+   "variant": "pgr2c",
+   "max_run": 2,
+   "restore_outputs": true,
+   "cell_types": {
+    "pg_mux2": 23,
+    "pg_xor2": 15,
+    "sg13g2_inv_1": 42
+   },
+   "absorbed_free": {
+    "mux_select": 0,
+    "xor_xnor": 7,
+    "output_from_xor": 7
+   },
+   "inverter_pairs_forced": {
+    "mux_data": 6,
+    "output_from_mux_or_shared_xor": 8
+   },
+   "max_run_on_outputs": 2,
+   "path": "/usr/local/src/stat-sim/qal/pgcell/p2/out/sha_slice.pgr2c.v"
+  },
+  "pgr1": {
+   "variant": "pgr1",
+   "max_run": 1,
+   "restore_outputs": false,
+   "cell_types": {
+    "pg_mux2": 23,
+    "pg_xor2": 15,
+    "sg13g2_inv_1": 41
+   },
+   "absorbed_free": {
+    "mux_select": 15,
+    "xor_xnor": 14,
+    "output_from_xor": 0
+   },
+   "inverter_pairs_forced": {
+    "mux_data": 6,
+    "output_from_mux_or_shared_xor": 0
+   },
+   "max_run_on_outputs": 1,
+   "path": "/usr/local/src/stat-sim/qal/pgcell/p2/out/sha_slice.pgr1.v"
+  },
+  "pgr1c": {
+   "variant": "pgr1c",
+   "max_run": 1,
+   "restore_outputs": true,
+   "cell_types": {
+    "pg_mux2": 23,
+    "pg_xnor2": 7,
+    "pg_xor2": 8,
+    "sg13g2_inv_1": 82
+   },
+   "absorbed_free": {
+    "mux_select": 15,
+    "xor_xnor": 14,
+    "output_from_xor": 7
+   },
+   "inverter_pairs_forced": {
+    "mux_data": 6,
+    "output_from_mux_or_shared_xor": 17
+   },
+   "max_run_on_outputs": 1,
+   "path": "/usr/local/src/stat-sim/qal/pgcell/p2/out/sha_slice.pgr1c.v"
+  }
+ },
+ "rows": {
+  "committed": {
+   "path": "/usr/local/src/stat-sim/qal/synth/threeway/work/sha_slice.cmos.v",
+   "cells": 56,
+   "devices": 406,
+   "n_nmos": 203,
+   "n_pmos": 203,
+   "W_tot_um": 352.65,
+   "depth_levels": 8,
+   "profile": [
+    32,
+    12,
+    3,
+    2,
+    2,
+    2,
+    2,
+    1
+   ],
+   "types": {
+    "sg13g2_xnor2_1": 10,
+    "sg13g2_mux2_1": 8,
+    "sg13g2_a21oi_1": 6,
+    "sg13g2_nand2_1": 5,
+    "sg13g2_nor2_1": 5,
+    "sg13g2_o21ai_1": 5,
+    "sg13g2_a21o_1": 3,
+    "sg13g2_and2_1": 3,
+    "sg13g2_inv_1": 3,
+    "sg13g2_nor2b_1": 3,
+    "sg13g2_or2_1": 3,
+    "sg13g2_xor2_1": 2
+   },
+   "bank_profile": {
+    "bank_width_cells": 8,
+    "cells_per_level": [
+     32,
+     12,
+     3,
+     2,
+     2,
+     2,
+     2,
+     1
+    ],
+    "banks_per_level": [
+     4,
+     2,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "total_banks": 12,
+    "beats": 8,
+    "level_kind": [
+     "static",
+     "static",
+     "static",
+     "static",
+     "static",
+     "static",
+     "static",
+     "static"
+    ],
+    "level_types": [
+     {
+      "sg13g2_inv_1": 3,
+      "sg13g2_nand2_1": 4,
+      "sg13g2_o21ai_1": 1,
+      "sg13g2_nor2_1": 4,
+      "sg13g2_or2_1": 3,
+      "sg13g2_and2_1": 3,
+      "sg13g2_a21oi_1": 1,
+      "sg13g2_mux2_1": 8,
+      "sg13g2_xnor2_1": 3,
+      "sg13g2_xor2_1": 2
+     },
+     {
+      "sg13g2_nand2_1": 1,
+      "sg13g2_o21ai_1": 4,
+      "sg13g2_a21o_1": 3,
+      "sg13g2_nor2_1": 1,
+      "sg13g2_nor2b_1": 3
+     },
+     {
+      "sg13g2_xnor2_1": 2,
+      "sg13g2_a21oi_1": 1
+     },
+     {
+      "sg13g2_xnor2_1": 1,
+      "sg13g2_a21oi_1": 1
+     },
+     {
+      "sg13g2_xnor2_1": 1,
+      "sg13g2_a21oi_1": 1
+     },
+     {
+      "sg13g2_xnor2_1": 1,
+      "sg13g2_a21oi_1": 1
+     },
+     {
+      "sg13g2_xnor2_1": 1,
+      "sg13g2_a21oi_1": 1
+     },
+     {
+      "sg13g2_xnor2_1": 1
+     }
+    ],
+    "n_levels_MIXED": 0,
+    "n_levels_tg_only": 0,
+    "n_levels_static_only": 8,
+    "max_consecutive_tg_levels_UPPER_BOUND": 0
+   },
+   "max_passgate_run_on_any_path": 0,
+   "passgate_run_histogram": {
+    "0": 56
+   },
+   "x_committed": {
+    "cells": 1.0,
+    "devices": 1.0,
+    "W": 1.0,
+    "depth": 1.0,
+    "banks": 1.0
+   },
+   "rail_draw_partial": {
+    "q_rail_fC_covered_cells": 184.89,
+    "cells_covered": 21,
+    "cells_total": 56,
+    "coverage_pct": 37.5,
+    "cells_with_NO_measured_rail_draw": {
+     "sg13g2_a21oi_1": 6,
+     "sg13g2_nand2_1": 5,
+     "sg13g2_nor2_1": 5,
+     "sg13g2_o21ai_1": 5,
+     "sg13g2_a21o_1": 3,
+     "sg13g2_and2_1": 3,
+     "sg13g2_nor2b_1": 3,
+     "sg13g2_or2_1": 3,
+     "sg13g2_xor2_1": 2
+    }
+   },
+   "VERIFY": {
+    "E5_PORT_FIDELITY": true,
+    "E1_SAT_MITER": true,
+    "E2_EQUIV": true,
+    "E3_VECTORS": true,
+    "vectors": 155600,
+    "mismatches": 0,
+    "ALL_PASS": true
+   }
+  },
+  "pgp": {
+   "path": "/usr/local/src/stat-sim/qal/pgcell/p2/out/sha_slice.pgp.v",
+   "cells": 38,
+   "devices": 258,
+   "n_nmos": 129,
+   "n_pmos": 129,
+   "W_tot_um": 239.94,
+   "depth_levels": 9,
+   "profile": [
+    16,
+    9,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    1
+   ],
+   "types": {
+    "pg_mux2": 23,
+    "pg_xor2": 15
+   },
+   "bank_profile": {
+    "bank_width_cells": 8,
+    "cells_per_level": [
+     16,
+     9,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     1
+    ],
+    "banks_per_level": [
+     2,
+     2,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "total_banks": 11,
+    "beats": 9,
+    "level_kind": [
+     "tg",
+     "tg",
+     "tg",
+     "tg",
+     "tg",
+     "tg",
+     "tg",
+     "tg",
+     "tg"
+    ],
+    "level_types": [
+     {
+      "pg_mux2": 8,
+      "pg_xor2": 8
+     },
+     {
+      "pg_mux2": 9
+     },
+     {
+      "pg_mux2": 1,
+      "pg_xor2": 1
+     },
+     {
+      "pg_mux2": 1,
+      "pg_xor2": 1
+     },
+     {
+      "pg_mux2": 1,
+      "pg_xor2": 1
+     },
+     {
+      "pg_mux2": 1,
+      "pg_xor2": 1
+     },
+     {
+      "pg_mux2": 1,
+      "pg_xor2": 1
+     },
+     {
+      "pg_mux2": 1,
+      "pg_xor2": 1
+     },
+     {
+      "pg_xor2": 1
+     }
+    ],
+    "n_levels_MIXED": 0,
+    "n_levels_tg_only": 9,
+    "n_levels_static_only": 0,
+    "max_consecutive_tg_levels_UPPER_BOUND": 9
+   },
+   "max_passgate_run_on_any_path": 9,
+   "passgate_run_histogram": {
+    "2": 9,
+    "1": 16,
+    "3": 2,
+    "4": 2,
+    "5": 2,
+    "6": 2,
+    "7": 2,
+    "8": 2,
+    "9": 1
+   },
+   "x_committed": {
+    "cells": 0.679,
+    "devices": 0.635,
+    "W": 0.68,
+    "depth": 1.125,
+    "banks": 0.917
+   },
+   "rail_draw_partial": {
+    "q_rail_fC_covered_cells": 165.28,
+    "cells_covered": 38,
+    "cells_total": 38,
+    "coverage_pct": 100.0,
+    "cells_with_NO_measured_rail_draw": {}
+   },
+   "VERIFY": {
+    "E5_PORT_FIDELITY": true,
+    "E1_SAT_MITER": true,
+    "E2_EQUIV": true,
+    "E3_VECTORS": true,
+    "vectors": 155600,
+    "mismatches": 0,
+    "ALL_PASS": true
+   }
+  },
+  "pgp2": {
+   "path": "/usr/local/src/stat-sim/qal/pgcell/p2/out/sha_slice.pgp2.v",
+   "cells": 48,
+   "devices": 278,
+   "n_nmos": 139,
+   "n_pmos": 139,
+   "W_tot_um": 258.54,
+   "depth_levels": 16,
+   "profile": [
+    19,
+    9,
+    1,
+    2,
+    1,
+    2,
+    1,
+    2,
+    1,
+    2,
+    1,
+    2,
+    1,
+    2,
+    1,
+    1
+   ],
+   "types": {
+    "pg_mux2": 23,
+    "pg_xor2": 11,
+    "sg13g2_inv_1": 10,
+    "pg_xnor2": 4
+   },
+   "bank_profile": {
+    "bank_width_cells": 8,
+    "cells_per_level": [
+     19,
+     9,
+     1,
+     2,
+     1,
+     2,
+     1,
+     2,
+     1,
+     2,
+     1,
+     2,
+     1,
+     2,
+     1,
+     1
+    ],
+    "banks_per_level": [
+     3,
+     2,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "total_banks": 19,
+    "beats": 16,
+    "level_kind": [
+     "MIXED",
+     "tg",
+     "static",
+     "tg",
+     "static",
+     "tg",
+     "static",
+     "tg",
+     "static",
+     "tg",
+     "static",
+     "tg",
+     "static",
+     "tg",
+     "static",
+     "tg"
+    ],
+    "level_types": [
+     {
+      "pg_mux2": 8,
+      "sg13g2_inv_1": 3,
+      "pg_xor2": 8
+     },
+     {
+      "pg_mux2": 9
+     },
+     {
+      "sg13g2_inv_1": 1
+     },
+     {
+      "pg_mux2": 1,
+      "pg_xnor2": 1
+     },
+     {
+      "sg13g2_inv_1": 1
+     },
+     {
+      "pg_mux2": 1,
+      "pg_xor2": 1
+     },
+     {
+      "sg13g2_inv_1": 1
+     },
+     {
+      "pg_mux2": 1,
+      "pg_xnor2": 1
+     },
+     {
+      "sg13g2_inv_1": 1
+     },
+     {
+      "pg_mux2": 1,
+      "pg_xor2": 1
+     },
+     {
+      "sg13g2_inv_1": 1
+     },
+     {
+      "pg_mux2": 1,
+      "pg_xnor2": 1
+     },
+     {
+      "sg13g2_inv_1": 1
+     },
+     {
+      "pg_mux2": 1,
+      "pg_xor2": 1
+     },
+     {
+      "sg13g2_inv_1": 1
+     },
+     {
+      "pg_xnor2": 1
+     }
+    ],
+    "n_levels_MIXED": 1,
+    "n_levels_tg_only": 8,
+    "n_levels_static_only": 7,
+    "max_consecutive_tg_levels_UPPER_BOUND": 2
+   },
+   "max_passgate_run_on_any_path": 2,
+   "passgate_run_histogram": {
+    "2": 22,
+    "1": 16,
+    "0": 10
+   },
+   "x_committed": {
+    "cells": 0.857,
+    "devices": 0.685,
+    "W": 0.733,
+    "depth": 2.0,
+    "banks": 1.583
+   },
+   "rail_draw_partial": {
+    "q_rail_fC_covered_cells": 196.14,
+    "cells_covered": 48,
+    "cells_total": 48,
+    "coverage_pct": 100.0,
+    "cells_with_NO_measured_rail_draw": {}
+   },
+   "VERIFY": {
+    "E5_PORT_FIDELITY": true,
+    "E1_SAT_MITER": true,
+    "E2_EQUIV": true,
+    "E3_VECTORS": true,
+    "vectors": 155600,
+    "mismatches": 0,
+    "ALL_PASS": true
+   }
+  },
+  "pgp2c": {
+   "path": "/usr/local/src/stat-sim/qal/pgcell/p2/out/sha_slice.pgp2c.v",
+   "cells": 78,
+   "devices": 338,
+   "n_nmos": 169,
+   "n_pmos": 169,
+   "W_tot_um": 314.34,
+   "depth_levels": 18,
+   "profile": [
+    19,
+    9,
+    9,
+    10,
+    2,
+    3,
+    2,
+    3,
+    2,
+    3,
+    2,
+    3,
+    2,
+    3,
+    2,
+    2,
+    1,
+    1
+   ],
+   "types": {
+    "sg13g2_inv_1": 40,
+    "pg_mux2": 23,
+    "pg_xor2": 11,
+    "pg_xnor2": 4
+   },
+   "bank_profile": {
+    "bank_width_cells": 8,
+    "cells_per_level": [
+     19,
+     9,
+     9,
+     10,
+     2,
+     3,
+     2,
+     3,
+     2,
+     3,
+     2,
+     3,
+     2,
+     3,
+     2,
+     2,
+     1,
+     1
+    ],
+    "banks_per_level": [
+     3,
+     2,
+     2,
+     2,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "total_banks": 23,
+    "beats": 18,
+    "level_kind": [
+     "MIXED",
+     "tg",
+     "static",
+     "MIXED",
+     "static",
+     "MIXED",
+     "static",
+     "MIXED",
+     "static",
+     "MIXED",
+     "static",
+     "MIXED",
+     "static",
+     "MIXED",
+     "static",
+     "MIXED",
+     "static",
+     "static"
+    ],
+    "level_types": [
+     {
+      "pg_mux2": 8,
+      "sg13g2_inv_1": 3,
+      "pg_xor2": 8
+     },
+     {
+      "pg_mux2": 9
+     },
+     {
+      "sg13g2_inv_1": 9
+     },
+     {
+      "pg_mux2": 1,
+      "sg13g2_inv_1": 8,
+      "pg_xnor2": 1
+     },
+     {
+      "sg13g2_inv_1": 2
+     },
+     {
+      "pg_mux2": 1,
+      "sg13g2_inv_1": 1,
+      "pg_xor2": 1
+     },
+     {
+      "sg13g2_inv_1": 2
+     },
+     {
+      "pg_mux2": 1,
+      "sg13g2_inv_1": 1,
+      "pg_xnor2": 1
+     },
+     {
+      "sg13g2_inv_1": 2
+     },
+     {
+      "pg_mux2": 1,
+      "sg13g2_inv_1": 1,
+      "pg_xor2": 1
+     },
+     {
+      "sg13g2_inv_1": 2
+     },
+     {
+      "pg_mux2": 1,
+      "sg13g2_inv_1": 1,
+      "pg_xnor2": 1
+     },
+     {
+      "sg13g2_inv_1": 2
+     },
+     {
+      "pg_mux2": 1,
+      "sg13g2_inv_1": 1,
+      "pg_xor2": 1
+     },
+     {
+      "sg13g2_inv_1": 2
+     },
+     {
+      "sg13g2_inv_1": 1,
+      "pg_xnor2": 1
+     },
+     {
+      "sg13g2_inv_1": 1
+     },
+     {
+      "sg13g2_inv_1": 1
+     }
+    ],
+    "n_levels_MIXED": 8,
+    "n_levels_tg_only": 1,
+    "n_levels_static_only": 9,
+    "max_consecutive_tg_levels_UPPER_BOUND": 2
+   },
+   "max_passgate_run_on_any_path": 2,
+   "passgate_run_histogram": {
+    "2": 22,
+    "1": 16,
+    "0": 40
+   },
+   "x_committed": {
+    "cells": 1.393,
+    "devices": 0.833,
+    "W": 0.891,
+    "depth": 2.25,
+    "banks": 1.917
+   },
+   "rail_draw_partial": {
+    "q_rail_fC_covered_cells": 288.74,
+    "cells_covered": 78,
+    "cells_total": 78,
+    "coverage_pct": 100.0,
+    "cells_with_NO_measured_rail_draw": {}
+   },
+   "VERIFY": {
+    "E5_PORT_FIDELITY": true,
+    "E1_SAT_MITER": true,
+    "E2_EQUIV": true,
+    "E3_VECTORS": true,
+    "vectors": 155600,
+    "mismatches": 0,
+    "ALL_PASS": true
+   }
+  },
+  "pgp1": {
+   "path": "/usr/local/src/stat-sim/qal/pgcell/p2/out/sha_slice.pgp1.v",
+   "cells": 56,
+   "devices": 294,
+   "n_nmos": 147,
+   "n_pmos": 147,
+   "W_tot_um": 273.42,
+   "depth_levels": 17,
+   "profile": [
+    19,
+    8,
+    9,
+    1,
+    2,
+    1,
+    2,
+    1,
+    2,
+    1,
+    2,
+    1,
+    2,
+    1,
+    2,
+    1,
+    1
+   ],
+   "types": {
+    "pg_mux2": 23,
+    "sg13g2_inv_1": 18,
+    "pg_xor2": 12,
+    "pg_xnor2": 3
+   },
+   "bank_profile": {
+    "bank_width_cells": 8,
+    "cells_per_level": [
+     19,
+     8,
+     9,
+     1,
+     2,
+     1,
+     2,
+     1,
+     2,
+     1,
+     2,
+     1,
+     2,
+     1,
+     2,
+     1,
+     1
+    ],
+    "banks_per_level": [
+     3,
+     1,
+     2,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "total_banks": 20,
+    "beats": 17,
+    "level_kind": [
+     "MIXED",
+     "static",
+     "tg",
+     "static",
+     "tg",
+     "static",
+     "tg",
+     "static",
+     "tg",
+     "static",
+     "tg",
+     "static",
+     "tg",
+     "static",
+     "tg",
+     "static",
+     "tg"
+    ],
+    "level_types": [
+     {
+      "pg_mux2": 8,
+      "sg13g2_inv_1": 3,
+      "pg_xor2": 8
+     },
+     {
+      "sg13g2_inv_1": 8
+     },
+     {
+      "pg_mux2": 9
+     },
+     {
+      "sg13g2_inv_1": 1
+     },
+     {
+      "pg_mux2": 1,
+      "pg_xor2": 1
+     },
+     {
+      "sg13g2_inv_1": 1
+     },
+     {
+      "pg_mux2": 1,
+      "pg_xnor2": 1
+     },
+     {
+      "sg13g2_inv_1": 1
+     },
+     {
+      "pg_mux2": 1,
+      "pg_xor2": 1
+     },
+     {
+      "sg13g2_inv_1": 1
+     },
+     {
+      "pg_mux2": 1,
+      "pg_xnor2": 1
+     },
+     {
+      "sg13g2_inv_1": 1
+     },
+     {
+      "pg_mux2": 1,
+      "pg_xor2": 1
+     },
+     {
+      "sg13g2_inv_1": 1
+     },
+     {
+      "pg_mux2": 1,
+      "pg_xnor2": 1
+     },
+     {
+      "sg13g2_inv_1": 1
+     },
+     {
+      "pg_xor2": 1
+     }
+    ],
+    "n_levels_MIXED": 1,
+    "n_levels_tg_only": 8,
+    "n_levels_static_only": 8,
+    "max_consecutive_tg_levels_UPPER_BOUND": 1
+   },
+   "max_passgate_run_on_any_path": 1,
+   "passgate_run_histogram": {
+    "1": 38,
+    "0": 18
+   },
+   "x_committed": {
+    "cells": 1.0,
+    "devices": 0.724,
+    "W": 0.775,
+    "depth": 2.125,
+    "banks": 1.667
+   },
+   "rail_draw_partial": {
+    "q_rail_fC_covered_cells": 220.83,
+    "cells_covered": 56,
+    "cells_total": 56,
+    "coverage_pct": 100.0,
+    "cells_with_NO_measured_rail_draw": {}
+   },
+   "VERIFY": {
+    "E5_PORT_FIDELITY": true,
+    "E1_SAT_MITER": true,
+    "E2_EQUIV": true,
+    "E3_VECTORS": true,
+    "vectors": 155600,
+    "mismatches": 0,
+    "ALL_PASS": true
+   }
+  },
+  "pgp1c": {
+   "path": "/usr/local/src/stat-sim/qal/pgcell/p2/out/sha_slice.pgp1c.v",
+   "cells": 103,
+   "devices": 388,
+   "n_nmos": 194,
+   "n_pmos": 194,
+   "W_tot_um": 360.84,
+   "depth_levels": 19,
+   "profile": [
+    19,
+    16,
+    18,
+    9,
+    10,
+    2,
+    3,
+    2,
+    3,
+    2,
+    3,
+    2,
+    3,
+    2,
+    3,
+    2,
+    2,
+    1,
+    1
+   ],
+   "types": {
+    "sg13g2_inv_1": 65,
+    "pg_mux2": 23,
+    "pg_xor2": 12,
+    "pg_xnor2": 3
+   },
+   "bank_profile": {
+    "bank_width_cells": 8,
+    "cells_per_level": [
+     19,
+     16,
+     18,
+     9,
+     10,
+     2,
+     3,
+     2,
+     3,
+     2,
+     3,
+     2,
+     3,
+     2,
+     3,
+     2,
+     2,
+     1,
+     1
+    ],
+    "banks_per_level": [
+     3,
+     2,
+     3,
+     2,
+     2,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "total_banks": 26,
+    "beats": 19,
+    "level_kind": [
+     "MIXED",
+     "static",
+     "MIXED",
+     "static",
+     "MIXED",
+     "static",
+     "MIXED",
+     "static",
+     "MIXED",
+     "static",
+     "MIXED",
+     "static",
+     "MIXED",
+     "static",
+     "MIXED",
+     "static",
+     "MIXED",
+     "static",
+     "static"
+    ],
+    "level_types": [
+     {
+      "pg_mux2": 8,
+      "sg13g2_inv_1": 3,
+      "pg_xor2": 8
+     },
+     {
+      "sg13g2_inv_1": 16
+     },
+     {
+      "pg_mux2": 9,
+      "sg13g2_inv_1": 9
+     },
+     {
+      "sg13g2_inv_1": 9
+     },
+     {
+      "pg_mux2": 1,
+      "sg13g2_inv_1": 8,
+      "pg_xor2": 1
+     },
+     {
+      "sg13g2_inv_1": 2
+     },
+     {
+      "pg_mux2": 1,
+      "sg13g2_inv_1": 1,
+      "pg_xnor2": 1
+     },
+     {
+      "sg13g2_inv_1": 2
+     },
+     {
+      "pg_mux2": 1,
+      "sg13g2_inv_1": 1,
+      "pg_xor2": 1
+     },
+     {
+      "sg13g2_inv_1": 2
+     },
+     {
+      "pg_mux2": 1,
+      "sg13g2_inv_1": 1,
+      "pg_xnor2": 1
+     },
+     {
+      "sg13g2_inv_1": 2
+     },
+     {
+      "pg_mux2": 1,
+      "sg13g2_inv_1": 1,
+      "pg_xor2": 1
+     },
+     {
+      "sg13g2_inv_1": 2
+     },
+     {
+      "pg_mux2": 1,
+      "sg13g2_inv_1": 1,
+      "pg_xnor2": 1
+     },
+     {
+      "sg13g2_inv_1": 2
+     },
+     {
+      "sg13g2_inv_1": 1,
+      "pg_xor2": 1
+     },
+     {
+      "sg13g2_inv_1": 1
+     },
+     {
+      "sg13g2_inv_1": 1
+     }
+    ],
+    "n_levels_MIXED": 9,
+    "n_levels_tg_only": 0,
+    "n_levels_static_only": 10,
+    "max_consecutive_tg_levels_UPPER_BOUND": 1
+   },
+   "max_passgate_run_on_any_path": 1,
+   "passgate_run_histogram": {
+    "1": 38,
+    "0": 65
+   },
+   "x_committed": {
+    "cells": 1.839,
+    "devices": 0.956,
+    "W": 1.023,
+    "depth": 2.375,
+    "banks": 2.167
+   },
+   "rail_draw_partial": {
+    "q_rail_fC_covered_cells": 365.9,
+    "cells_covered": 103,
+    "cells_total": 103,
+    "coverage_pct": 100.0,
+    "cells_with_NO_measured_rail_draw": {}
+   },
+   "VERIFY": {
+    "E5_PORT_FIDELITY": true,
+    "E1_SAT_MITER": true,
+    "E2_EQUIV": true,
+    "E3_VECTORS": true,
+    "vectors": 155600,
+    "mismatches": 0,
+    "ALL_PASS": true
+   }
+  },
+  "pgr1_naive": {
+   "path": "/usr/local/src/stat-sim/qal/pgcell/p2/out/sha_slice.pgr1.v",
+   "cells": 79,
+   "devices": 340,
+   "n_nmos": 170,
+   "n_pmos": 170,
+   "W_tot_um": 316.2,
+   "depth_levels": 23,
+   "profile": [
+    16,
+    22,
+    9,
+    2,
+    2,
+    1,
+    2,
+    2,
+    1,
+    2,
+    2,
+    1,
+    2,
+    2,
+    1,
+    2,
+    2,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1
+   ],
+   "types": {
+    "sg13g2_inv_1": 41,
+    "pg_mux2": 23,
+    "pg_xor2": 15
+   },
+   "bank_profile": {
+    "bank_width_cells": 8,
+    "cells_per_level": [
+     16,
+     22,
+     9,
+     2,
+     2,
+     1,
+     2,
+     2,
+     1,
+     2,
+     2,
+     1,
+     2,
+     2,
+     1,
+     2,
+     2,
+     1,
+     2,
+     2,
+     1,
+     1,
+     1
+    ],
+    "banks_per_level": [
+     2,
+     3,
+     2,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "total_banks": 27,
+    "beats": 23,
+    "level_kind": [
+     "tg",
+     "static",
+     "tg",
+     "static",
+     "MIXED",
+     "tg",
+     "static",
+     "MIXED",
+     "tg",
+     "static",
+     "MIXED",
+     "tg",
+     "static",
+     "MIXED",
+     "tg",
+     "static",
+     "MIXED",
+     "tg",
+     "static",
+     "MIXED",
+     "tg",
+     "static",
+     "tg"
+    ],
+    "level_types": [
+     {
+      "pg_mux2": 8,
+      "pg_xor2": 8
+     },
+     {
+      "sg13g2_inv_1": 22
+     },
+     {
+      "pg_mux2": 9
+     },
+     {
+      "sg13g2_inv_1": 2
+     },
+     {
+      "sg13g2_inv_1": 1,
+      "pg_xor2": 1
+     },
+     {
+      "pg_mux2": 1
+     },
+     {
+      "sg13g2_inv_1": 2
+     },
+     {
+      "sg13g2_inv_1": 1,
+      "pg_xor2": 1
+     },
+     {
+      "pg_mux2": 1
+     },
+     {
+      "sg13g2_inv_1": 2
+     },
+     {
+      "sg13g2_inv_1": 1,
+      "pg_xor2": 1
+     },
+     {
+      "pg_mux2": 1
+     },
+     {
+      "sg13g2_inv_1": 2
+     },
+     {
+      "sg13g2_inv_1": 1,
+      "pg_xor2": 1
+     },
+     {
+      "pg_mux2": 1
+     },
+     {
+      "sg13g2_inv_1": 2
+     },
+     {
+      "sg13g2_inv_1": 1,
+      "pg_xor2": 1
+     },
+     {
+      "pg_mux2": 1
+     },
+     {
+      "sg13g2_inv_1": 2
+     },
+     {
+      "sg13g2_inv_1": 1,
+      "pg_xor2": 1
+     },
+     {
+      "pg_mux2": 1
+     },
+     {
+      "sg13g2_inv_1": 1
+     },
+     {
+      "pg_xor2": 1
+     }
+    ],
+    "n_levels_MIXED": 6,
+    "n_levels_tg_only": 9,
+    "n_levels_static_only": 8,
+    "max_consecutive_tg_levels_UPPER_BOUND": 2
+   },
+   "max_passgate_run_on_any_path": 1,
+   "passgate_run_histogram": {
+    "1": 38,
+    "0": 41
+   },
+   "x_committed": {
+    "cells": 1.411,
+    "devices": 0.837,
+    "W": 0.897,
+    "depth": 2.875,
+    "banks": 2.25
+   },
+   "rail_draw_partial": {
+    "q_rail_fC_covered_cells": 291.82,
+    "cells_covered": 79,
+    "cells_total": 79,
+    "coverage_pct": 100.0,
+    "cells_with_NO_measured_rail_draw": {}
+   },
+   "VERIFY": {
+    "E5_PORT_FIDELITY": true,
+    "E1_SAT_MITER": true,
+    "E2_EQUIV": true,
+    "E3_VECTORS": true,
+    "vectors": 155600,
+    "mismatches": 0,
+    "ALL_PASS": true
+   }
+  },
+  "pgr2_naive": {
+   "path": "/usr/local/src/stat-sim/qal/pgcell/p2/out/sha_slice.pgr2.v",
+   "cells": 57,
+   "devices": 296,
+   "n_nmos": 148,
+   "n_pmos": 148,
+   "W_tot_um": 275.28,
+   "depth_levels": 22,
+   "profile": [
+    16,
+    9,
+    2,
+    2,
+    1,
+    2,
+    2,
+    1,
+    2,
+    2,
+    1,
+    2,
+    2,
+    1,
+    2,
+    2,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1
+   ],
+   "types": {
+    "pg_mux2": 23,
+    "sg13g2_inv_1": 19,
+    "pg_xor2": 8,
+    "pg_xnor2": 7
+   },
+   "bank_profile": {
+    "bank_width_cells": 8,
+    "cells_per_level": [
+     16,
+     9,
+     2,
+     2,
+     1,
+     2,
+     2,
+     1,
+     2,
+     2,
+     1,
+     2,
+     2,
+     1,
+     2,
+     2,
+     1,
+     2,
+     2,
+     1,
+     1,
+     1
+    ],
+    "banks_per_level": [
+     2,
+     2,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "total_banks": 24,
+    "beats": 22,
+    "level_kind": [
+     "tg",
+     "tg",
+     "static",
+     "MIXED",
+     "tg",
+     "static",
+     "MIXED",
+     "tg",
+     "static",
+     "MIXED",
+     "tg",
+     "static",
+     "MIXED",
+     "tg",
+     "static",
+     "MIXED",
+     "tg",
+     "static",
+     "MIXED",
+     "tg",
+     "static",
+     "tg"
+    ],
+    "level_types": [
+     {
+      "pg_mux2": 8,
+      "pg_xor2": 8
+     },
+     {
+      "pg_mux2": 9
+     },
+     {
+      "sg13g2_inv_1": 2
+     },
+     {
+      "sg13g2_inv_1": 1,
+      "pg_xnor2": 1
+     },
+     {
+      "pg_mux2": 1
+     },
+     {
+      "sg13g2_inv_1": 2
+     },
+     {
+      "sg13g2_inv_1": 1,
+      "pg_xnor2": 1
+     },
+     {
+      "pg_mux2": 1
+     },
+     {
+      "sg13g2_inv_1": 2
+     },
+     {
+      "sg13g2_inv_1": 1,
+      "pg_xnor2": 1
+     },
+     {
+      "pg_mux2": 1
+     },
+     {
+      "sg13g2_inv_1": 2
+     },
+     {
+      "sg13g2_inv_1": 1,
+      "pg_xnor2": 1
+     },
+     {
+      "pg_mux2": 1
+     },
+     {
+      "sg13g2_inv_1": 2
+     },
+     {
+      "sg13g2_inv_1": 1,
+      "pg_xnor2": 1
+     },
+     {
+      "pg_mux2": 1
+     },
+     {
+      "sg13g2_inv_1": 2
+     },
+     {
+      "sg13g2_inv_1": 1,
+      "pg_xnor2": 1
+     },
+     {
+      "pg_mux2": 1
+     },
+     {
+      "sg13g2_inv_1": 1
+     },
+     {
+      "pg_xnor2": 1
+     }
+    ],
+    "n_levels_MIXED": 6,
+    "n_levels_tg_only": 9,
+    "n_levels_static_only": 7,
+    "max_consecutive_tg_levels_UPPER_BOUND": 2
+   },
+   "max_passgate_run_on_any_path": 2,
+   "passgate_run_histogram": {
+    "2": 22,
+    "1": 16,
+    "0": 19
+   },
+   "x_committed": {
+    "cells": 1.018,
+    "devices": 0.729,
+    "W": 0.781,
+    "depth": 2.75,
+    "banks": 2.0
+   },
+   "rail_draw_partial": {
+    "q_rail_fC_covered_cells": 223.92,
+    "cells_covered": 57,
+    "cells_total": 57,
+    "coverage_pct": 100.0,
+    "cells_with_NO_measured_rail_draw": {}
+   },
+   "VERIFY": {
+    "E5_PORT_FIDELITY": true,
+    "E1_SAT_MITER": true,
+    "E2_EQUIV": true,
+    "E3_VECTORS": true,
+    "vectors": 155600,
+    "mismatches": 0,
+    "ALL_PASS": true
+   }
+  },
+  "pgr1c_naive": {
+   "path": "/usr/local/src/stat-sim/qal/pgcell/p2/out/sha_slice.pgr1c.v",
+   "cells": 120,
+   "devices": 422,
+   "n_nmos": 211,
+   "n_pmos": 211,
+   "W_tot_um": 392.46,
+   "depth_levels": 24,
+   "profile": [
+    16,
+    31,
+    18,
+    10,
+    10,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    1,
+    1,
+    1
+   ],
+   "types": {
+    "sg13g2_inv_1": 82,
+    "pg_mux2": 23,
+    "pg_xor2": 8,
+    "pg_xnor2": 7
+   },
+   "bank_profile": {
+    "bank_width_cells": 8,
+    "cells_per_level": [
+     16,
+     31,
+     18,
+     10,
+     10,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     1,
+     1,
+     1
+    ],
+    "banks_per_level": [
+     2,
+     4,
+     3,
+     2,
+     2,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "total_banks": 32,
+    "beats": 24,
+    "level_kind": [
+     "tg",
+     "static",
+     "MIXED",
+     "static",
+     "MIXED",
+     "MIXED",
+     "static",
+     "MIXED",
+     "MIXED",
+     "static",
+     "MIXED",
+     "MIXED",
+     "static",
+     "MIXED",
+     "MIXED",
+     "static",
+     "MIXED",
+     "MIXED",
+     "static",
+     "MIXED",
+     "MIXED",
+     "static",
+     "tg",
+     "static"
+    ],
+    "level_types": [
+     {
+      "pg_mux2": 8,
+      "pg_xor2": 8
+     },
+     {
+      "sg13g2_inv_1": 31
+     },
+     {
+      "pg_mux2": 9,
+      "sg13g2_inv_1": 9
+     },
+     {
+      "sg13g2_inv_1": 10
+     },
+     {
+      "sg13g2_inv_1": 9,
+      "pg_xnor2": 1
+     },
+     {
+      "pg_mux2": 1,
+      "sg13g2_inv_1": 1
+     },
+     {
+      "sg13g2_inv_1": 2
+     },
+     {
+      "sg13g2_inv_1": 1,
+      "pg_xnor2": 1
+     },
+     {
+      "pg_mux2": 1,
+      "sg13g2_inv_1": 1
+     },
+     {
+      "sg13g2_inv_1": 2
+     },
+     {
+      "sg13g2_inv_1": 1,
+      "pg_xnor2": 1
+     },
+     {
+      "pg_mux2": 1,
+      "sg13g2_inv_1": 1
+     },
+     {
+      "sg13g2_inv_1": 2
+     },
+     {
+      "sg13g2_inv_1": 1,
+      "pg_xnor2": 1
+     },
+     {
+      "pg_mux2": 1,
+      "sg13g2_inv_1": 1
+     },
+     {
+      "sg13g2_inv_1": 2
+     },
+     {
+      "sg13g2_inv_1": 1,
+      "pg_xnor2": 1
+     },
+     {
+      "pg_mux2": 1,
+      "sg13g2_inv_1": 1
+     },
+     {
+      "sg13g2_inv_1": 2
+     },
+     {
+      "sg13g2_inv_1": 1,
+      "pg_xnor2": 1
+     },
+     {
+      "pg_mux2": 1,
+      "sg13g2_inv_1": 1
+     },
+     {
+      "sg13g2_inv_1": 1
+     },
+     {
+      "pg_xnor2": 1
+     },
+     {
+      "sg13g2_inv_1": 1
+     }
+    ],
+    "n_levels_MIXED": 13,
+    "n_levels_tg_only": 2,
+    "n_levels_static_only": 9,
+    "max_consecutive_tg_levels_UPPER_BOUND": 2
+   },
+   "max_passgate_run_on_any_path": 1,
+   "passgate_run_histogram": {
+    "1": 38,
+    "0": 82
+   },
+   "x_committed": {
+    "cells": 2.143,
+    "devices": 1.039,
+    "W": 1.113,
+    "depth": 3.0,
+    "banks": 2.667
+   },
+   "rail_draw_partial": {
+    "q_rail_fC_covered_cells": 418.37,
+    "cells_covered": 120,
+    "cells_total": 120,
+    "coverage_pct": 100.0,
+    "cells_with_NO_measured_rail_draw": {}
+   },
+   "VERIFY": {
+    "E5_PORT_FIDELITY": true,
+    "E1_SAT_MITER": true,
+    "E2_EQUIV": true,
+    "E3_VECTORS": true,
+    "vectors": 155600,
+    "mismatches": 0,
+    "ALL_PASS": true
+   }
+  },
+  "abc_pg_area": {
+   "path": "/usr/local/src/stat-sim/qal/pgcell/p2/out/sha_slice.abc_pg_area.v",
+   "cells": 97,
+   "devices": 394,
+   "n_nmos": 197,
+   "n_pmos": 197,
+   "W_tot_um": 362.19,
+   "depth_levels": 17,
+   "profile": [
+    33,
+    16,
+    13,
+    15,
+    3,
+    1,
+    2,
+    1,
+    2,
+    1,
+    2,
+    1,
+    2,
+    1,
+    2,
+    1,
+    1
+   ],
+   "types": {
+    "sg13g2_nand2_1": 51,
+    "sg13g2_inv_1": 21,
+    "sg13g2_buf_1": 9,
+    "pg_mux2": 8,
+    "pg_xor2": 5,
+    "pg_xnor2": 3
+   },
+   "bank_profile": {
+    "bank_width_cells": 8,
+    "cells_per_level": [
+     33,
+     16,
+     13,
+     15,
+     3,
+     1,
+     2,
+     1,
+     2,
+     1,
+     2,
+     1,
+     2,
+     1,
+     2,
+     1,
+     1
+    ],
+    "banks_per_level": [
+     5,
+     2,
+     2,
+     2,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "total_banks": 24,
+    "beats": 17,
+    "level_kind": [
+     "MIXED",
+     "static",
+     "static",
+     "MIXED",
+     "static",
+     "static",
+     "MIXED",
+     "static",
+     "MIXED",
+     "static",
+     "MIXED",
+     "static",
+     "MIXED",
+     "static",
+     "MIXED",
+     "static",
+     "tg"
+    ],
+    "level_types": [
+     {
+      "sg13g2_inv_1": 16,
+      "sg13g2_nand2_1": 8,
+      "pg_mux2": 8,
+      "pg_xor2": 1
+     },
+     {
+      "sg13g2_nand2_1": 8,
+      "sg13g2_buf_1": 7,
+      "sg13g2_inv_1": 1
+     },
+     {
+      "sg13g2_nand2_1": 11,
+      "sg13g2_buf_1": 2
+     },
+     {
+      "sg13g2_nand2_1": 10,
+      "pg_xor2": 1,
+      "sg13g2_inv_1": 4
+     },
+     {
+      "sg13g2_nand2_1": 3
+     },
+     {
+      "sg13g2_nand2_1": 1
+     },
+     {
+      "pg_xor2": 1,
+      "sg13g2_nand2_1": 1
+     },
+     {
+      "sg13g2_nand2_1": 1
+     },
+     {
+      "pg_xnor2": 1,
+      "sg13g2_nand2_1": 1
+     },
+     {
+      "sg13g2_nand2_1": 1
+     },
+     {
+      "pg_xor2": 1,
+      "sg13g2_nand2_1": 1
+     },
+     {
+      "sg13g2_nand2_1": 1
+     },
+     {
+      "pg_xnor2": 1,
+      "sg13g2_nand2_1": 1
+     },
+     {
+      "sg13g2_nand2_1": 1
+     },
+     {
+      "pg_xor2": 1,
+      "sg13g2_nand2_1": 1
+     },
+     {
+      "sg13g2_nand2_1": 1
+     },
+     {
+      "pg_xnor2": 1
+     }
+    ],
+    "n_levels_MIXED": 7,
+    "n_levels_tg_only": 1,
+    "n_levels_static_only": 9,
+    "max_consecutive_tg_levels_UPPER_BOUND": 1
+   },
+   "max_passgate_run_on_any_path": 1,
+   "passgate_run_histogram": {
+    "0": 81,
+    "1": 16
+   },
+   "x_committed": {
+    "cells": 1.732,
+    "devices": 0.97,
+    "W": 1.027,
+    "depth": 2.125,
+    "banks": 2.0
+   },
+   "rail_draw_partial": {
+    "q_rail_fC_covered_cells": 139.48,
+    "cells_covered": 37,
+    "cells_total": 97,
+    "coverage_pct": 38.1,
+    "cells_with_NO_measured_rail_draw": {
+     "sg13g2_nand2_1": 51,
+     "sg13g2_buf_1": 9
+    }
+   },
+   "VERIFY": {
+    "E5_PORT_FIDELITY": true,
+    "E1_SAT_MITER": true,
+    "E2_EQUIV": true,
+    "E3_VECTORS": true,
+    "vectors": 155600,
+    "mismatches": 0,
+    "ALL_PASS": true
+   }
+  },
+  "abc_pg_del": {
+   "path": "/usr/local/src/stat-sim/qal/pgcell/p2/out/sha_slice.abc_pg_del.v",
+   "cells": 92,
+   "devices": 386,
+   "n_nmos": 193,
+   "n_pmos": 193,
+   "W_tot_um": 356.16,
+   "depth_levels": 15,
+   "profile": [
+    35,
+    13,
+    13,
+    13,
+    4,
+    1,
+    2,
+    1,
+    2,
+    1,
+    2,
+    1,
+    2,
+    1,
+    1
+   ],
+   "types": {
+    "sg13g2_nand2_1": 49,
+    "sg13g2_inv_1": 19,
+    "pg_mux2": 8,
+    "pg_xor2": 7,
+    "sg13g2_buf_1": 6,
+    "pg_xnor2": 3
+   },
+   "bank_profile": {
+    "bank_width_cells": 8,
+    "cells_per_level": [
+     35,
+     13,
+     13,
+     13,
+     4,
+     1,
+     2,
+     1,
+     2,
+     1,
+     2,
+     1,
+     2,
+     1,
+     1
+    ],
+    "banks_per_level": [
+     5,
+     2,
+     2,
+     2,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "total_banks": 22,
+    "beats": 15,
+    "level_kind": [
+     "MIXED",
+     "static",
+     "MIXED",
+     "static",
+     "MIXED",
+     "static",
+     "MIXED",
+     "static",
+     "MIXED",
+     "static",
+     "MIXED",
+     "static",
+     "MIXED",
+     "static",
+     "tg"
+    ],
+    "level_types": [
+     {
+      "sg13g2_inv_1": 16,
+      "sg13g2_nand2_1": 8,
+      "pg_mux2": 8,
+      "pg_xor2": 3
+     },
+     {
+      "sg13g2_nand2_1": 8,
+      "sg13g2_buf_1": 4,
+      "sg13g2_inv_1": 1
+     },
+     {
+      "sg13g2_nand2_1": 10,
+      "sg13g2_buf_1": 2,
+      "pg_xor2": 1
+     },
+     {
+      "sg13g2_nand2_1": 11,
+      "sg13g2_inv_1": 2
+     },
+     {
+      "sg13g2_nand2_1": 3,
+      "pg_xor2": 1
+     },
+     {
+      "sg13g2_nand2_1": 1
+     },
+     {
+      "pg_xnor2": 1,
+      "sg13g2_nand2_1": 1
+     },
+     {
+      "sg13g2_nand2_1": 1
+     },
+     {
+      "pg_xor2": 1,
+      "sg13g2_nand2_1": 1
+     },
+     {
+      "sg13g2_nand2_1": 1
+     },
+     {
+      "pg_xnor2": 1,
+      "sg13g2_nand2_1": 1
+     },
+     {
+      "sg13g2_nand2_1": 1
+     },
+     {
+      "pg_xor2": 1,
+      "sg13g2_nand2_1": 1
+     },
+     {
+      "sg13g2_nand2_1": 1
+     },
+     {
+      "pg_xnor2": 1
+     }
+    ],
+    "n_levels_MIXED": 7,
+    "n_levels_tg_only": 1,
+    "n_levels_static_only": 7,
+    "max_consecutive_tg_levels_UPPER_BOUND": 1
+   },
+   "max_passgate_run_on_any_path": 2,
+   "passgate_run_histogram": {
+    "0": 74,
+    "1": 16,
+    "2": 2
+   },
+   "x_committed": {
+    "cells": 1.643,
+    "devices": 0.951,
+    "W": 1.01,
+    "depth": 1.875,
+    "banks": 1.833
+   },
+   "rail_draw_partial": {
+    "q_rail_fC_covered_cells": 145.65,
+    "cells_covered": 37,
+    "cells_total": 92,
+    "coverage_pct": 40.2,
+    "cells_with_NO_measured_rail_draw": {
+     "sg13g2_nand2_1": 49,
+     "sg13g2_buf_1": 6
+    }
+   },
+   "VERIFY": {
+    "E5_PORT_FIDELITY": true,
+    "E1_SAT_MITER": true,
+    "E2_EQUIV": true,
+    "E3_VECTORS": true,
+    "vectors": 155600,
+    "mismatches": 0,
+    "ALL_PASS": true
+   }
+  },
+  "abc_pg_resyn2": {
+   "path": "/usr/local/src/stat-sim/qal/pgcell/p2/out/sha_slice.abc_pg_resyn2.v",
+   "cells": 84,
+   "devices": 378,
+   "n_nmos": 189,
+   "n_pmos": 189,
+   "W_tot_um": 351.54,
+   "depth_levels": 15,
+   "profile": [
+    40,
+    9,
+    10,
+    9,
+    2,
+    1,
+    2,
+    1,
+    2,
+    1,
+    2,
+    1,
+    2,
+    1,
+    1
+   ],
+   "types": {
+    "sg13g2_nand2_1": 44,
+    "sg13g2_inv_1": 17,
+    "pg_xor2": 15,
+    "pg_mux2": 8
+   },
+   "bank_profile": {
+    "bank_width_cells": 8,
+    "cells_per_level": [
+     40,
+     9,
+     10,
+     9,
+     2,
+     1,
+     2,
+     1,
+     2,
+     1,
+     2,
+     1,
+     2,
+     1,
+     1
+    ],
+    "banks_per_level": [
+     5,
+     2,
+     2,
+     2,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "total_banks": 22,
+    "beats": 15,
+    "level_kind": [
+     "MIXED",
+     "static",
+     "MIXED",
+     "static",
+     "MIXED",
+     "static",
+     "MIXED",
+     "static",
+     "MIXED",
+     "static",
+     "MIXED",
+     "static",
+     "MIXED",
+     "static",
+     "tg"
+    ],
+    "level_types": [
+     {
+      "sg13g2_nand2_1": 8,
+      "sg13g2_inv_1": 16,
+      "pg_mux2": 8,
+      "pg_xor2": 8
+     },
+     {
+      "sg13g2_nand2_1": 8,
+      "sg13g2_inv_1": 1
+     },
+     {
+      "sg13g2_nand2_1": 9,
+      "pg_xor2": 1
+     },
+     {
+      "sg13g2_nand2_1": 9
+     },
+     {
+      "pg_xor2": 1,
+      "sg13g2_nand2_1": 1
+     },
+     {
+      "sg13g2_nand2_1": 1
+     },
+     {
+      "pg_xor2": 1,
+      "sg13g2_nand2_1": 1
+     },
+     {
+      "sg13g2_nand2_1": 1
+     },
+     {
+      "pg_xor2": 1,
+      "sg13g2_nand2_1": 1
+     },
+     {
+      "sg13g2_nand2_1": 1
+     },
+     {
+      "pg_xor2": 1,
+      "sg13g2_nand2_1": 1
+     },
+     {
+      "sg13g2_nand2_1": 1
+     },
+     {
+      "pg_xor2": 1,
+      "sg13g2_nand2_1": 1
+     },
+     {
+      "sg13g2_nand2_1": 1
+     },
+     {
+      "pg_xor2": 1
+     }
+    ],
+    "n_levels_MIXED": 7,
+    "n_levels_tg_only": 1,
+    "n_levels_static_only": 7,
+    "max_consecutive_tg_levels_UPPER_BOUND": 1
+   },
+   "max_passgate_run_on_any_path": 2,
+   "passgate_run_histogram": {
+    "0": 61,
+    "1": 16,
+    "2": 7
+   },
+   "x_committed": {
+    "cells": 1.5,
+    "devices": 0.931,
+    "W": 0.997,
+    "depth": 1.875,
+    "banks": 1.833
+   },
+   "rail_draw_partial": {
+    "q_rail_fC_covered_cells": 170.35,
+    "cells_covered": 40,
+    "cells_total": 84,
+    "coverage_pct": 47.6,
+    "cells_with_NO_measured_rail_draw": {
+     "sg13g2_nand2_1": 44
+    }
+   },
+   "VERIFY": {
+    "E5_PORT_FIDELITY": true,
+    "E1_SAT_MITER": true,
+    "E2_EQUIV": true,
+    "E3_VECTORS": true,
+    "vectors": 155600,
+    "mismatches": 0,
+    "ALL_PASS": true
+   }
+  },
+  "abc_pgnor_resyn2": {
+   "path": "/usr/local/src/stat-sim/qal/pgcell/p2/out/sha_slice.abc_pgnor_resyn2.v",
+   "cells": 85,
+   "devices": 380,
+   "n_nmos": 190,
+   "n_pmos": 190,
+   "W_tot_um": 352.46,
+   "depth_levels": 14,
+   "profile": [
+    34,
+    14,
+    11,
+    11,
+    2,
+    2,
+    1,
+    2,
+    1,
+    2,
+    1,
+    2,
+    1,
+    1
+   ],
+   "types": {
+    "sg13g2_nor2_1": 41,
+    "sg13g2_inv_1": 16,
+    "pg_xor2": 12,
+    "pg_mux2": 8,
+    "sg13g2_nand2_1": 4,
+    "pg_xnor2": 2,
+    "sg13g2_buf_1": 2
+   },
+   "bank_profile": {
+    "bank_width_cells": 8,
+    "cells_per_level": [
+     34,
+     14,
+     11,
+     11,
+     2,
+     2,
+     1,
+     2,
+     1,
+     2,
+     1,
+     2,
+     1,
+     1
+    ],
+    "banks_per_level": [
+     5,
+     2,
+     2,
+     2,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "total_banks": 21,
+    "beats": 14,
+    "level_kind": [
+     "MIXED",
+     "MIXED",
+     "MIXED",
+     "MIXED",
+     "static",
+     "MIXED",
+     "static",
+     "MIXED",
+     "static",
+     "MIXED",
+     "static",
+     "MIXED",
+     "static",
+     "tg"
+    ],
+    "level_types": [
+     {
+      "sg13g2_nand2_1": 2,
+      "sg13g2_nor2_1": 8,
+      "sg13g2_inv_1": 12,
+      "pg_mux2": 8,
+      "pg_xnor2": 2,
+      "pg_xor2": 2
+     },
+     {
+      "sg13g2_buf_1": 1,
+      "sg13g2_inv_1": 3,
+      "sg13g2_nor2_1": 7,
+      "pg_xor2": 3
+     },
+     {
+      "sg13g2_nand2_1": 1,
+      "sg13g2_nor2_1": 8,
+      "sg13g2_buf_1": 1,
+      "pg_xor2": 1
+     },
+     {
+      "sg13g2_nand2_1": 1,
+      "sg13g2_nor2_1": 8,
+      "pg_xor2": 1,
+      "sg13g2_inv_1": 1
+     },
+     {
+      "sg13g2_nor2_1": 2
+     },
+     {
+      "pg_xor2": 1,
+      "sg13g2_nor2_1": 1
+     },
+     {
+      "sg13g2_nor2_1": 1
+     },
+     {
+      "pg_xor2": 1,
+      "sg13g2_nor2_1": 1
+     },
+     {
+      "sg13g2_nor2_1": 1
+     },
+     {
+      "pg_xor2": 1,
+      "sg13g2_nor2_1": 1
+     },
+     {
+      "sg13g2_nor2_1": 1
+     },
+     {
+      "pg_xor2": 1,
+      "sg13g2_nor2_1": 1
+     },
+     {
+      "sg13g2_nor2_1": 1
+     },
+     {
+      "pg_xor2": 1
+     }
+    ],
+    "n_levels_MIXED": 8,
+    "n_levels_tg_only": 1,
+    "n_levels_static_only": 5,
+    "max_consecutive_tg_levels_UPPER_BOUND": 4
+   },
+   "max_passgate_run_on_any_path": 2,
+   "passgate_run_histogram": {
+    "0": 63,
+    "1": 17,
+    "2": 5
+   },
+   "x_committed": {
+    "cells": 1.518,
+    "devices": 0.936,
+    "W": 0.999,
+    "depth": 1.75,
+    "banks": 1.75
+   },
+   "rail_draw_partial": {
+    "q_rail_fC_covered_cells": 161.09,
+    "cells_covered": 38,
+    "cells_total": 85,
+    "coverage_pct": 44.7,
+    "cells_with_NO_measured_rail_draw": {
+     "sg13g2_nor2_1": 41,
+     "sg13g2_nand2_1": 4,
+     "sg13g2_buf_1": 2
+    }
+   },
+   "VERIFY": {
+    "E5_PORT_FIDELITY": true,
+    "E1_SAT_MITER": true,
+    "E2_EQUIV": true,
+    "E3_VECTORS": true,
+    "vectors": 155600,
+    "mismatches": 0,
+    "ALL_PASS": true
+   }
+  },
+  "abc_nand_area": {
+   "path": "/usr/local/src/stat-sim/qal/pgcell/p2/out/sha_slice.abc_nand_area.v",
+   "cells": 146,
+   "devices": 498,
+   "n_nmos": 249,
+   "n_pmos": 249,
+   "W_tot_um": 458.44,
+   "depth_levels": 23,
+   "profile": [
+    40,
+    24,
+    22,
+    17,
+    6,
+    2,
+    3,
+    2,
+    3,
+    3,
+    2,
+    2,
+    1,
+    2,
+    3,
+    2,
+    2,
+    2,
+    1,
+    2,
+    3,
+    1,
+    1
+   ],
+   "types": {
+    "sg13g2_nand2_1": 93,
+    "sg13g2_inv_1": 43,
+    "sg13g2_buf_1": 10
+   },
+   "bank_profile": {
+    "bank_width_cells": 8,
+    "cells_per_level": [
+     40,
+     24,
+     22,
+     17,
+     6,
+     2,
+     3,
+     2,
+     3,
+     3,
+     2,
+     2,
+     1,
+     2,
+     3,
+     2,
+     2,
+     2,
+     1,
+     2,
+     3,
+     1,
+     1
+    ],
+    "banks_per_level": [
+     5,
+     3,
+     3,
+     3,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "total_banks": 33,
+    "beats": 23,
+    "level_kind": [
+     "static",
+     "static",
+     "static",
+     "static",
+     "static",
+     "static",
+     "static",
+     "static",
+     "static",
+     "static",
+     "static",
+     "static",
+     "static",
+     "static",
+     "static",
+     "static",
+     "static",
+     "static",
+     "static",
+     "static",
+     "static",
+     "static",
+     "static"
+    ],
+    "level_types": [
+     {
+      "sg13g2_inv_1": 24,
+      "sg13g2_nand2_1": 16
+     },
+     {
+      "sg13g2_nand2_1": 16,
+      "sg13g2_buf_1": 7,
+      "sg13g2_inv_1": 1
+     },
+     {
+      "sg13g2_nand2_1": 19,
+      "sg13g2_buf_1": 3
+     },
+     {
+      "sg13g2_nand2_1": 12,
+      "sg13g2_inv_1": 5
+     },
+     {
+      "sg13g2_nand2_1": 3,
+      "sg13g2_inv_1": 3
+     },
+     {
+      "sg13g2_nand2_1": 2
+     },
+     {
+      "sg13g2_inv_1": 2,
+      "sg13g2_nand2_1": 1
+     },
+     {
+      "sg13g2_nand2_1": 2
+     },
+     {
+      "sg13g2_nand2_1": 2,
+      "sg13g2_inv_1": 1
+     },
+     {
+      "sg13g2_inv_1": 1,
+      "sg13g2_nand2_1": 2
+     },
+     {
+      "sg13g2_nand2_1": 2
+     },
+     {
+      "sg13g2_inv_1": 1,
+      "sg13g2_nand2_1": 1
+     },
+     {
+      "sg13g2_nand2_1": 1
+     },
+     {
+      "sg13g2_nand2_1": 2
+     },
+     {
+      "sg13g2_inv_1": 2,
+      "sg13g2_nand2_1": 1
+     },
+     {
+      "sg13g2_nand2_1": 2
+     },
+     {
+      "sg13g2_nand2_1": 2
+     },
+     {
+      "sg13g2_inv_1": 1,
+      "sg13g2_nand2_1": 1
+     },
+     {
+      "sg13g2_nand2_1": 1
+     },
+     {
+      "sg13g2_nand2_1": 2
+     },
+     {
+      "sg13g2_inv_1": 2,
+      "sg13g2_nand2_1": 1
+     },
+     {
+      "sg13g2_nand2_1": 1
+     },
+     {
+      "sg13g2_nand2_1": 1
+     }
+    ],
+    "n_levels_MIXED": 0,
+    "n_levels_tg_only": 0,
+    "n_levels_static_only": 23,
+    "max_consecutive_tg_levels_UPPER_BOUND": 0
+   },
+   "max_passgate_run_on_any_path": 0,
+   "passgate_run_histogram": {
+    "0": 146
+   },
+   "x_committed": {
+    "cells": 2.607,
+    "devices": 1.227,
+    "W": 1.3,
+    "depth": 2.875,
+    "banks": 2.75
+   },
+   "rail_draw_partial": {
+    "q_rail_fC_covered_cells": 132.72,
+    "cells_covered": 43,
+    "cells_total": 146,
+    "coverage_pct": 29.5,
+    "cells_with_NO_measured_rail_draw": {
+     "sg13g2_nand2_1": 93,
+     "sg13g2_buf_1": 10
+    }
+   },
+   "VERIFY": {
+    "E5_PORT_FIDELITY": true,
+    "E1_SAT_MITER": true,
+    "E2_EQUIV": true,
+    "E3_VECTORS": true,
+    "vectors": 155600,
+    "mismatches": 0,
+    "ALL_PASS": true
+   }
+  },
+  "abc_nand_del": {
+   "path": "/usr/local/src/stat-sim/qal/pgcell/p2/out/sha_slice.abc_nand_del.v",
+   "cells": 148,
+   "devices": 506,
+   "n_nmos": 253,
+   "n_pmos": 253,
+   "W_tot_um": 464.94,
+   "depth_levels": 19,
+   "profile": [
+    40,
+    24,
+    22,
+    17,
+    6,
+    2,
+    3,
+    2,
+    3,
+    4,
+    3,
+    3,
+    3,
+    4,
+    3,
+    3,
+    3,
+    2,
+    1
+   ],
+   "types": {
+    "sg13g2_nand2_1": 93,
+    "sg13g2_inv_1": 43,
+    "sg13g2_buf_1": 12
+   },
+   "bank_profile": {
+    "bank_width_cells": 8,
+    "cells_per_level": [
+     40,
+     24,
+     22,
+     17,
+     6,
+     2,
+     3,
+     2,
+     3,
+     4,
+     3,
+     3,
+     3,
+     4,
+     3,
+     3,
+     3,
+     2,
+     1
+    ],
+    "banks_per_level": [
+     5,
+     3,
+     3,
+     3,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "total_banks": 29,
+    "beats": 19,
+    "level_kind": [
+     "static",
+     "static",
+     "static",
+     "static",
+     "static",
+     "static",
+     "static",
+     "static",
+     "static",
+     "static",
+     "static",
+     "static",
+     "static",
+     "static",
+     "static",
+     "static",
+     "static",
+     "static",
+     "static"
+    ],
+    "level_types": [
+     {
+      "sg13g2_inv_1": 24,
+      "sg13g2_nand2_1": 16
+     },
+     {
+      "sg13g2_nand2_1": 16,
+      "sg13g2_buf_1": 7,
+      "sg13g2_inv_1": 1
+     },
+     {
+      "sg13g2_nand2_1": 19,
+      "sg13g2_buf_1": 3
+     },
+     {
+      "sg13g2_nand2_1": 12,
+      "sg13g2_inv_1": 5
+     },
+     {
+      "sg13g2_nand2_1": 3,
+      "sg13g2_inv_1": 3
+     },
+     {
+      "sg13g2_nand2_1": 2
+     },
+     {
+      "sg13g2_inv_1": 2,
+      "sg13g2_nand2_1": 1
+     },
+     {
+      "sg13g2_nand2_1": 2
+     },
+     {
+      "sg13g2_nand2_1": 2,
+      "sg13g2_buf_1": 1
+     },
+     {
+      "sg13g2_inv_1": 2,
+      "sg13g2_nand2_1": 2
+     },
+     {
+      "sg13g2_nand2_1": 2,
+      "sg13g2_inv_1": 1
+     },
+     {
+      "sg13g2_nand2_1": 3
+     },
+     {
+      "sg13g2_nand2_1": 2,
+      "sg13g2_buf_1": 1
+     },
+     {
+      "sg13g2_inv_1": 2,
+      "sg13g2_nand2_1": 2
+     },
+     {
+      "sg13g2_nand2_1": 2,
+      "sg13g2_inv_1": 1
+     },
+     {
+      "sg13g2_nand2_1": 3
+     },
+     {
+      "sg13g2_nand2_1": 2,
+      "sg13g2_inv_1": 1
+     },
+     {
+      "sg13g2_inv_1": 1,
+      "sg13g2_nand2_1": 1
+     },
+     {
+      "sg13g2_nand2_1": 1
+     }
+    ],
+    "n_levels_MIXED": 0,
+    "n_levels_tg_only": 0,
+    "n_levels_static_only": 19,
+    "max_consecutive_tg_levels_UPPER_BOUND": 0
+   },
+   "max_passgate_run_on_any_path": 0,
+   "passgate_run_histogram": {
+    "0": 148
+   },
+   "x_committed": {
+    "cells": 2.643,
+    "devices": 1.246,
+    "W": 1.318,
+    "depth": 2.375,
+    "banks": 2.417
+   },
+   "rail_draw_partial": {
+    "q_rail_fC_covered_cells": 132.72,
+    "cells_covered": 43,
+    "cells_total": 148,
+    "coverage_pct": 29.1,
+    "cells_with_NO_measured_rail_draw": {
+     "sg13g2_nand2_1": 93,
+     "sg13g2_buf_1": 12
+    }
+   },
+   "VERIFY": {
+    "E5_PORT_FIDELITY": true,
+    "E1_SAT_MITER": true,
+    "E2_EQUIV": true,
+    "E3_VECTORS": true,
+    "vectors": 155600,
+    "mismatches": 0,
+    "ALL_PASS": true
+   }
+  },
+  "abc_nand_resyn2": {
+   "path": "/usr/local/src/stat-sim/qal/pgcell/p2/out/sha_slice.abc_nand_resyn2.v",
+   "cells": 154,
+   "devices": 534,
+   "n_nmos": 267,
+   "n_pmos": 267,
+   "W_tot_um": 489.1,
+   "depth_levels": 19,
+   "profile": [
+    40,
+    24,
+    24,
+    17,
+    6,
+    4,
+    3,
+    2,
+    3,
+    4,
+    3,
+    3,
+    3,
+    4,
+    4,
+    3,
+    3,
+    2,
+    2
+   ],
+   "types": {
+    "sg13g2_nand2_1": 97,
+    "sg13g2_inv_1": 41,
+    "sg13g2_buf_1": 16
+   },
+   "bank_profile": {
+    "bank_width_cells": 8,
+    "cells_per_level": [
+     40,
+     24,
+     24,
+     17,
+     6,
+     4,
+     3,
+     2,
+     3,
+     4,
+     3,
+     3,
+     3,
+     4,
+     4,
+     3,
+     3,
+     2,
+     2
+    ],
+    "banks_per_level": [
+     5,
+     3,
+     3,
+     3,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "total_banks": 29,
+    "beats": 19,
+    "level_kind": [
+     "static",
+     "static",
+     "static",
+     "static",
+     "static",
+     "static",
+     "static",
+     "static",
+     "static",
+     "static",
+     "static",
+     "static",
+     "static",
+     "static",
+     "static",
+     "static",
+     "static",
+     "static",
+     "static"
+    ],
+    "level_types": [
+     {
+      "sg13g2_nand2_1": 16,
+      "sg13g2_inv_1": 24
+     },
+     {
+      "sg13g2_buf_1": 7,
+      "sg13g2_nand2_1": 16,
+      "sg13g2_inv_1": 1
+     },
+     {
+      "sg13g2_buf_1": 5,
+      "sg13g2_nand2_1": 19
+     },
+     {
+      "sg13g2_nand2_1": 10,
+      "sg13g2_buf_1": 2,
+      "sg13g2_inv_1": 5
+     },
+     {
+      "sg13g2_nand2_1": 3,
+      "sg13g2_inv_1": 3
+     },
+     {
+      "sg13g2_nand2_1": 4
+     },
+     {
+      "sg13g2_inv_1": 2,
+      "sg13g2_nand2_1": 1
+     },
+     {
+      "sg13g2_nand2_1": 2
+     },
+     {
+      "sg13g2_nand2_1": 2,
+      "sg13g2_buf_1": 1
+     },
+     {
+      "sg13g2_inv_1": 2,
+      "sg13g2_nand2_1": 2
+     },
+     {
+      "sg13g2_nand2_1": 3
+     },
+     {
+      "sg13g2_nand2_1": 3
+     },
+     {
+      "sg13g2_nand2_1": 2,
+      "sg13g2_buf_1": 1
+     },
+     {
+      "sg13g2_nand2_1": 3,
+      "sg13g2_inv_1": 1
+     },
+     {
+      "sg13g2_inv_1": 1,
+      "sg13g2_nand2_1": 3
+     },
+     {
+      "sg13g2_nand2_1": 3
+     },
+     {
+      "sg13g2_nand2_1": 2,
+      "sg13g2_inv_1": 1
+     },
+     {
+      "sg13g2_nand2_1": 2
+     },
+     {
+      "sg13g2_inv_1": 1,
+      "sg13g2_nand2_1": 1
+     }
+    ],
+    "n_levels_MIXED": 0,
+    "n_levels_tg_only": 0,
+    "n_levels_static_only": 19,
+    "max_consecutive_tg_levels_UPPER_BOUND": 0
+   },
+   "max_passgate_run_on_any_path": 0,
+   "passgate_run_histogram": {
+    "0": 154
+   },
+   "x_committed": {
+    "cells": 2.75,
+    "devices": 1.315,
+    "W": 1.387,
+    "depth": 2.375,
+    "banks": 2.417
+   },
+   "rail_draw_partial": {
+    "q_rail_fC_covered_cells": 126.55,
+    "cells_covered": 41,
+    "cells_total": 154,
+    "coverage_pct": 26.6,
+    "cells_with_NO_measured_rail_draw": {
+     "sg13g2_nand2_1": 97,
+     "sg13g2_buf_1": 16
+    }
+   },
+   "VERIFY": {
+    "E5_PORT_FIDELITY": true,
+    "E1_SAT_MITER": true,
+    "E2_EQUIV": true,
+    "E3_VECTORS": true,
+    "vectors": 155600,
+    "mismatches": 0,
+    "ALL_PASS": true
+   }
+  }
+ },
+ "NAND2_only_cross_check": {
+  "sibling_qal_sha256_nand_mincell": {
+   "cells": 138,
+   "depth": 19,
+   "types": {
+    "sg13g2_nand2_1": 97,
+    "sg13g2_inv_1": 41
+   }
+  },
+  "mine_abc_nand_resyn2": {
+   "cells": 154,
+   "depth": 19,
+   "types": {
+    "sg13g2_nand2_1": 97,
+    "sg13g2_inv_1": 41,
+    "sg13g2_buf_1": 16
+   }
+  },
+  "mine_excluding_depth_buffers": {
+   "cells": 138,
+   "types": {
+    "sg13g2_nand2_1": 97,
+    "sg13g2_inv_1": 41
+   }
+  },
+  "AGREE": true,
+  "note": "my ABC script adds `buffer,-N,2`, which the sibling's did not; excluding those 16 buffers the two runs land on the SAME 97 nand2 + 41 inv at the SAME depth 19. Independent confirmation of the NAND2-only reference point.",
+  "brief_estimate_check": {
+   "brief_says": "NAND2-only costs ~4 cells and ~2 levels per XOR or MUX over 20 cells",
+   "that_would_predict_cells": 116,
+   "MEASURED": 138,
+   "verdict": "the brief's estimate UNDERSTATES the NAND2-only cost by 22 cells, because the 14 AOI/OAI cells must decompose too -- the 20 XOR/MUX cells are not the whole bill."
+  }
+ },
+ "AOI_OAI_decomposition": {
+  "committed_AOI_OAI_cells": {
+   "sg13g2_a21oi_1": 6,
+   "sg13g2_o21ai_1": 5,
+   "sg13g2_a21o_1": 3,
+   "total": 14,
+   "devices": 90
+  },
+  "WHAT_I_USED": "NO NAND2 decomposition at all. The 14 AOI/OAI cells ARE the block's carry chain and majority, and both of those functions are literally 2:1 muxes:  maj(a,b,c) = (a^b) ? c : a  and  c_out = (a^b) ? c_in : a.  A transmission gate is natively a 2:1 mux, so each AOI/OAI cell is ABSORBED into one pg_mux2 rather than expanded into a NAND2 tree. The identity is PROVEN by the E1 SAT miter over all 2^48 inputs, not asserted.",
+  "second_saving": "the half-sum a^b is SHARED three ways -- one pg_xor2 drives maj[i], the carry mux and the sum xor. The committed netlist recomputes that term separately in the maj cone (27 cells) and the sum cone (21 cells).",
+  "structure": {
+   "p[i] = a[i]^b[i]": "8 x pg_xor2 (shared)",
+   "maj[i] = p[i] ? c[i] : a[i]": "8 x pg_mux2",
+   "ch[i] = e[i] ? f[i] : g[i]": "8 x pg_mux2",
+   "k[i+1] = p[i] ? k[i] : a[i]": "7 x pg_mux2 (k[0]=0 makes the first one a&b)",
+   "sum[0] = p[0]; sum[i] = p[i]^k[i]": "7 x pg_xor2",
+   "total": "38 cells, 258 devices"
+  }
+ },
+ "preregistered_predictions_scored": {
+  "P1_cells_le_45": {
+   "stated": "The pass-gate remap will use FEWER cells than the committed 56, and far fewer than a NAND2-only mapping. Stated bound: <= 45 cells.",
+   "MEASURED": {
+    "pure pass-gate remap pgp": 38,
+    "restored pgp1": 56,
+    "NAND2-only": 138
+   },
+   "VERDICT": "SPLIT. CONFIRMED for the unrestricted remap (38 <= 45) and it is far below the NAND2-only 138. REFUTED for the restored remap: pgp1 is 56 cells, exactly the committed cell count, and pgp1c is 103. I predicted a bound on the wrong object -- the number that matters is the RESTORED one, and it misses my bound."
+  },
+  "P2_devices_le_300": {
+   "stated": "Device count will be BELOW the committed netlist's, because TG-XNOR2 (8 dev) < static xnor2 (10 dev) and TG-MUX2 (6 dev) < static mux2 (12 dev). Stated bound: <= 300 devices vs the committed count.",
+   "MEASURED": {
+    "pgp": 258,
+    "pgp1": 294,
+    "pgp1c": 388,
+    "committed": 406
+   },
+   "VERDICT": "CONFIRMED for pgp (258) and pgp1 (294), both below both 300 and the committed 406. REFUTED for the chain-legal pgp1c (388), which is still below the committed 406 but above my stated bound."
+  },
+  "P3_depth_worse": {
+   "stated": "Logic DEPTH will be WORSE (larger) than the committed netlist's, because the mux carry chain is a ripple and each carry stage is its own cell. Stated direction: PG depth > committed depth.",
+   "MEASURED": {
+    "committed": 8,
+    "pgp": 9,
+    "pgp1": 17,
+    "pgp2": 16
+   },
+   "VERDICT": "CONFIRMED, and by more than the direction alone suggests: the unrestricted remap is only 9 vs 8, but every RESTORED variant is 16-19, i.e. 2.0-2.4x the committed depth. The depth cost is not in the mux ripple, it is in the restoration the ripple forces."
+  },
+  "P4_restoration_doubles_cells": {
+   "stated": "Applying the measured restoration rule will roughly DOUBLE the cell count of the pass-gate remap and will erase most of the device-count advantage. Stated bound: restored variant device count within +-25% of the committed netlist's.",
+   "MEASURED": {
+    "naive pgr1 / pgp": 2.08,
+    "polarity-aware pgp1 / pgp": 1.47,
+    "pgp1 devices vs committed pct": -27.6,
+    "pgr1 devices vs committed pct": -16.3
+   },
+   "VERDICT": "SPLIT, and the half I got wrong is the interesting one. CONFIRMED for NAIVE restoration: 2.08x the cells and -16.3% devices vs the committed netlist, inside my +-25% band. REFUTED for the polarity-aware restoration I had not anticipated: only 1.47x the cells and -27.6% devices, outside the band on the good side. Carrying the carry in ALTERNATING polarity instead of undoing every restoring inversion is worth 23 cells and 6 levels, and I did not pre-register it."
+  },
+  "P5_formal_passes_electrical_fails": {
+   "stated": "The pass-gate remap will PASS formal equivalence and vectors (it is a Boolean identity), and will FAIL the electrical admission rule inherited from Phase 1, because the carry chain wants more consecutive pass-gate levels than the measured budget allows.",
+   "MEASURED": {
+    "all 16 netlists E1+E2+E3+E5": true,
+    "vectors": 155600,
+    "N_VAL_fixed_well": 0,
+    "pure remap max pass-gate run": 9
+   },
+   "VERDICT": "CONFIRMED on both halves. Every variant passes SAT over all 2^48 inputs, the independent equiv_induct engine, port fidelity and 155,600 vectors with 0 mismatches. And the pure remap needs a 9-deep pass-gate run where the measured budget is 1 (rail well) or 0 (fixed well)."
+  }
+ },
+ "ADMISSION_VERDICT": {
+  "rule": "N_VAL = 0 (fixed well) / 1 (rail well); N_SEP = 2",
+  "fixed_well": "CLOSED. N_VAL = 0 means the measured fixed-well chain delivers ZERO value-correct pass-gate levels, and any pass-gate remap contains at least one. No pass-gate mapping of sha_slice is admissible in that tie, at any cell count.",
+  "rail_well": "ADMITS pgp1 / pgp1c, the only variants whose measured max-pass-gate-run on any path is 1. Cost against the committed netlist: 1.0 cells, 0.724 devices, 2.125 depth, 1.667 banks.",
+  "separation_budget_N_SEP_2": "admits pgp2 (48 cells, 278 devices, depth 16) but N_SEP is NOT the binding rule -- ALT_vhi bank 2 sits at 8.6x the floor and is still value-wrong. Reported for completeness only.",
+  "unmeasured_gap": "Phase 1 measured HOMOGENEOUS banks (all-inv or all-tg). Every restored variant here produces levels containing BOTH pass-gate cells and inverters. A MIXED bank was never measured, so the admission of pgp1 rests on a configuration adjacent to, not identical to, the one that was characterised. That gap is not closed by this phase.",
+  "mixed_levels": {
+   "pgp": 0,
+   "pgp1": 1,
+   "pgp1c": 9,
+   "pgp2": 1
+  }
+ },
+ "HEAD_TO_HEAD_rule_compliant": {
+  "_doc": "Both of these satisfy the shallow-stack requirement AND the Phase 1 pass-gate run-length rule. The committed netlist satisfies neither: it carries 5 o21ai + 5 nor2 + 6 a21oi + 3 a21o with 2-high pull-up stacks. This is the comparison the brief asked the two sibling runs to bound.",
+  "rows": {
+   "passgate_chain_legal_pgp1c": {
+    "cells": 103,
+    "devices": 388,
+    "W_tot_um": 360.84,
+    "depth_levels": 19
+   },
+   "NAND2_only_sibling_nand_mincell": {
+    "cells": 138,
+    "devices": 470,
+    "W_tot_um": 437.1,
+    "depth_levels": 19,
+    "source": "qal/sha256/REMAP_CONSEQUENCE.json, the sibling run's MEASUREMENT"
+   },
+   "NAND2_only_mine_abc_nand_resyn2": {
+    "cells": 154,
+    "devices": 534,
+    "W_tot_um": 489.1,
+    "depth_levels": 19
+   }
+  },
+  "passgate_vs_NAND2_sibling": {
+   "cells": 0.746,
+   "devices": 0.826,
+   "W": 0.826,
+   "depth": 1.0
+  },
+  "passgate_vs_NAND2_mine": {
+   "cells": 0.669,
+   "devices": 0.727,
+   "W": 0.738,
+   "depth": 1.0
+  },
+  "VERDICT": "At IDENTICAL depth 19, the chain-legal pass-gate remap is 0.75x the cells and 0.83x the devices of the sibling's NAND2-only mapping (0.67x / 0.73x against my own). Among SHALLOW-STACK remaps the pass-gate route wins on every axis. Against the COMMITTED deep-stack netlist it is device-neutral (0.96x) and 2.38x deeper -- the pass-gate cells' device saving is eaten almost exactly by the restoring inverters the measured rule forces."
+ },
+ "rail_draw_notes": {
+  "_doc": "Phase 1 metered only 4 of the cell types that appear here. Coverage is reported per row and no uncovered cell is imputed a value in the q_rail_fC column.",
+  "MEASURED_per_cell_fC": {
+   "pg_mux2": 3.16,
+   "sg13g2_inv_1": 3.0865,
+   "sg13g2_mux2_1": 10.9195,
+   "sg13g2_xnor2_1": 8.8278
+  },
+  "DERIVED_per_cell_fC": {
+   "pg_xor2": 6.173,
+   "pg_xnor2": 6.173
+  },
+  "committed_is_only_37_pct_covered": {
+   "q_rail_from_covered_cells_fC": 184.89,
+   "cells_covered": 21,
+   "cells_total": 56,
+   "uncovered": {
+    "sg13g2_a21oi_1": 6,
+    "sg13g2_nand2_1": 5,
+    "sg13g2_nor2_1": 5,
+    "sg13g2_o21ai_1": 5,
+    "sg13g2_a21o_1": 3,
+    "sg13g2_and2_1": 3,
+    "sg13g2_nor2b_1": 3,
+    "sg13g2_or2_1": 3,
+    "sg13g2_xor2_1": 2
+   }
+  },
+  "STRICTLY_MEASURED_statement": "the ENTIRE pure pass-gate remap draws 165.3 fC from the bank rail (100% of its 38 cells metered or mechanism-derived), which is already BELOW the 184.9 fC that 21 of the committed netlist's 56 cells draw on their own. The committed block's full draw is strictly greater than 184.9 fC and was not measured.",
+  "ASSUMED_floor_for_the_committed_block": {
+   "assumption": "each of the 35 unmetered committed cells draws AT LEAST one sg13g2_inv_1 (3.0865 fC) -- they all have 4-8 devices against the inverter's 2, so this is a floor, but it is an ASSUMPTION and not a measurement",
+   "committed_floor_fC": 292.9,
+   "comparison_against_that_floor": {
+    "pgp": {
+     "q_rail_fC": 165.28,
+     "vs_committed_floor": 0.564,
+     "BELOW_the_floor": true
+    },
+    "pgp2": {
+     "q_rail_fC": 196.14,
+     "vs_committed_floor": 0.67,
+     "BELOW_the_floor": true
+    },
+    "pgp1": {
+     "q_rail_fC": 220.83,
+     "vs_committed_floor": 0.754,
+     "BELOW_the_floor": true
+    },
+    "pgp2c": {
+     "q_rail_fC": 288.74,
+     "vs_committed_floor": 0.986,
+     "BELOW_the_floor": true
+    },
+    "pgp1c": {
+     "q_rail_fC": 365.9,
+     "vs_committed_floor": 1.249,
+     "BELOW_the_floor": false
+    }
+   },
+   "consequence": "THE RAIL-DRAW ADVANTAGE DOES NOT SURVIVE THE RESTORATION. The unrestricted remap (165.3 fC) and the input-restored pgp1 (220.8 fC) are well under the committed block's assumed floor of 292.9 fC, but the CHAIN-LEGAL pgp1c is 365.9 fC -- 1.25x that floor. The 65 restoring inverters cost 200.6 fC, which is more than the entire pass-gate saving. I had this backwards on the first pass of this file and caught it by computing the comparison instead of asserting it."
+  }
+ },
+ "BRIEF_CORRECTION_shallow_stack_set": {
+  "brief_says": "Only inv + nand2 + nor2 (13 of 56) are unambiguously shallow-stack.",
+  "MEASURED_binding_pmos_rise_depth_1": {
+   "cells": {
+    "sg13g2_nand2_1": 5,
+    "sg13g2_and2_1": 3,
+    "sg13g2_inv_1": 3
+   },
+   "total": 11
+  },
+  "MEASURED_binding_pmos_rise_depth_2": {
+   "cells": {
+    "sg13g2_xnor2_1": 10,
+    "sg13g2_mux2_1": 8,
+    "sg13g2_a21oi_1": 6,
+    "sg13g2_nor2_1": 5,
+    "sg13g2_o21ai_1": 5,
+    "sg13g2_a21o_1": 3,
+    "sg13g2_nor2b_1": 3,
+    "sg13g2_or2_1": 3,
+    "sg13g2_xor2_1": 2
+   },
+   "total": 45
+  },
+  "CORRECTION": "sg13g2_nor2_1 has a 2-HIGH SERIES pMOS pull-up -- binding_pmos_rise_depth 2, the SAME as the sg13g2_o21ai_1 anchor. It does not belong in the shallow set. sg13g2_and2_1 does (its output stage is an inverter, depth 1) and the brief omits it. The truly depth-1 pull-up set in the committed netlist is inv(3) + nand2(5) + and2(3) = 11 of 56, not 13; 45 of 56 cells carry the same 2-high pull-up as the anchor cell.",
+  "why_it_matters": "the pass-gate cells' claim is that their DATA path has no series pull-up at all (depth 1, and only the control inverters touch the rail). That claim is unaffected -- but the baseline it is measured against is worse than the brief states, and the nor2-bearing ABC variants in this file (abc_pgnor_*) are NOT shallow-stack remaps and are reported for completeness only, not as admissible.",
+  "source": "qal/sha256/cells/stack_depths.json (the sibling run's MEASURED per-cell stack extraction, read-only input here)"
+ }
+}

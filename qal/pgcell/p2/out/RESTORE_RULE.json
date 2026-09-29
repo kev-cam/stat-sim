@@ -1,0 +1,196 @@
+{
+ "_doc": "PHASE 2 (d) -- derive the RESTORATION RULE from Phase 1's MEASURED chain data.\n\nThe rule is read off qal/pgcell/CHAIN_*.json, which are the tank-fed, per-bank\nmatched-tank, chain-legal-cut measurements.  Nothing here is theory: the two\nbudgets below are arithmetic on measured per-bank separations and per-bank\nvalue-correctness flags.\n\n  N_SEP  the SEPARATION budget.  How many consecutive pass-gate levels a signal\n         can traverse before min(HIGH) - max(LOW) falls below the corrected\n         6.44 mV 1-sigma trip floor, given the measured per-bank transfer ratios\n         and a full inverter-bank head separation.\n\n  N_VAL  the VALUE budget.  How many pass-gate levels actually occur before the\n         FIRST bank in the measured chain returns a wrong value (all_correct\n         False).  This is the binding rule -- a bank can be above the floor and\n         still be wrong, and in ALT_vhi bank 2 it is.\n",
+ "floor_mV": 6.44,
+ "source": "qal/pgcell/CHAIN_*.json",
+ "chains": {
+  "CTL_vhi": {
+   "comp": [
+    "inv",
+    "inv",
+    "inv",
+    "inv"
+   ],
+   "separation_mV": [
+    706.5578189999999,
+    612.378631,
+    619.5096000000001,
+    671.433094
+   ],
+   "all_correct": [
+    true,
+    true,
+    true,
+    true
+   ],
+   "x_floor": [
+    109.71,
+    95.09,
+    96.2,
+    104.26
+   ],
+   "bank_transfer_ratio": [
+    null,
+    0.86671,
+    1.01164,
+    1.08381
+   ],
+   "tg_bank_transfer_ratio": [],
+   "inv_bank_transfer_ratio": [
+    0.86671,
+    1.01164,
+    1.08381
+   ],
+   "n_TG_levels_delivered_correct_before_first_wrong_bank": null,
+   "VALUE_CHECK": true
+  },
+  "ALT_vhi": {
+   "comp": [
+    "inv",
+    "tg",
+    "inv",
+    "tg"
+   ],
+   "separation_mV": [
+    458.9497159,
+    55.36814,
+    145.03169999999997,
+    5.485649999999994
+   ],
+   "all_correct": [
+    true,
+    false,
+    false,
+    false
+   ],
+   "x_floor": [
+    71.27,
+    8.6,
+    22.52,
+    0.85
+   ],
+   "bank_transfer_ratio": [
+    null,
+    0.12064,
+    2.61941,
+    0.03782
+   ],
+   "tg_bank_transfer_ratio": [
+    0.12064,
+    0.03782
+   ],
+   "inv_bank_transfer_ratio": [
+    2.61941
+   ],
+   "n_TG_levels_delivered_correct_before_first_wrong_bank": 0,
+   "VALUE_CHECK": false
+  },
+  "ALT_rail": {
+   "comp": [
+    "inv",
+    "tg",
+    "inv",
+    "tg"
+   ],
+   "separation_mV": [
+    416.72986000000003,
+    186.2071,
+    106.00800000000002,
+    24.551500000000004
+   ],
+   "all_correct": [
+    true,
+    true,
+    false,
+    false
+   ],
+   "x_floor": [
+    64.71,
+    28.91,
+    16.46,
+    3.81
+   ],
+   "bank_transfer_ratio": [
+    null,
+    0.44683,
+    0.5693,
+    0.2316
+   ],
+   "tg_bank_transfer_ratio": [
+    0.44683,
+    0.2316
+   ],
+   "inv_bank_transfer_ratio": [
+    0.5693
+   ],
+   "n_TG_levels_delivered_correct_before_first_wrong_bank": 1,
+   "VALUE_CHECK": false
+  },
+  "ALLTG_vhi": {
+   "comp": [
+    "tg",
+    "tg",
+    "tg",
+    "tg"
+   ],
+   "separation_mV": [
+    153.43059999999997,
+    80.33840000000004,
+    48.166999999999845,
+    102.7767999999999
+   ],
+   "all_correct": [
+    false,
+    false,
+    false,
+    false
+   ],
+   "x_floor": [
+    23.82,
+    12.47,
+    7.48,
+    15.96
+   ],
+   "bank_transfer_ratio": [
+    null,
+    0.52361,
+    0.59955,
+    2.13376
+   ],
+   "tg_bank_transfer_ratio": [
+    0.52361,
+    0.59955,
+    2.13376
+   ],
+   "inv_bank_transfer_ratio": [],
+   "n_TG_levels_delivered_correct_before_first_wrong_bank": 0,
+   "VALUE_CHECK": false
+  }
+ },
+ "N_SEP_derivation": {
+  "unit": "one (inverter bank, pass-gate bank) PAIR, the repeating unit of the measured ALT arrangement",
+  "head_separation_mV": 706.5578189999999,
+  "head_source": "CTL_vhi bank 1 -- a full inverter-bank separation, the best the tank-fed arrangement delivers",
+  "pair_transfer_ratio_MEASURED": {
+   "ALT_vhi": 0.09908,
+   "ALT_rail": 0.13185
+  },
+  "pairs_to_floor": {
+   "ALT_vhi": 2.032,
+   "ALT_rail": 2.319
+  },
+  "N_SEP": 2,
+  "meaning": "at most 2 consecutive pass-gate levels before the separation reaches the 6.44 mV 1-sigma floor"
+ },
+ "N_VAL_derivation": {
+  "n_TG_levels_delivered_correct": {
+   "ALT_vhi": 0,
+   "ALT_rail": 1
+  },
+  "N_VAL": 0,
+  "meaning": "the measured chains deliver 0 pass-gate level(s) with every gate value-correct; the next bank is wrong. ALT_vhi (fixed well) delivers 0, ALT_rail delivers 1.",
+  "binding": "N_VAL is the BINDING rule: ALT_vhi bank 2 is a pass-gate bank at 8.6x the floor -- above it -- and still all_correct False. Being above the noise floor is necessary, not sufficient."
+ },
+ "N_SEP": 2,
+ "N_VAL": 0,
+ "UNSATISFIABLE_NOTE": "N_VAL = 0. A pass-gate remap necessarily contains at least one pass-gate level, so a budget of 0 would be unsatisfiable by any pass-gate mapping. The fixed-well (vhi) chain measures 0 and is therefore CLOSED to pass-gate logic in this arrangement; the rail-well chain measures 1 and admits a remap in which NO pass-gate cell ever drives another pass-gate cell."
+}

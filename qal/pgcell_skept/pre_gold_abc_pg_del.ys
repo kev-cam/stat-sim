@@ -1,0 +1,6 @@
+
+read_verilog -sv /usr/local/src/stat-sim/qal/synth/threeway/sha_slice.v
+hierarchy -top sha_slice
+proc; opt -full; flatten; opt -full
+rename sha_slice gold
+write_rtlil /usr/local/src/stat-sim/qal/pgcell_skept/g_abc_pg_del_gold.il

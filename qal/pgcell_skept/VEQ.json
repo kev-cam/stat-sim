@@ -1,0 +1,479 @@
+{
+ "models": "/usr/local/src/stat-sim/qal/pgcell_skept/mycells.v",
+ "when": "2026-09-29 13:18:09",
+ "pg_crosscheck": {
+  "pg_xor2": {
+   "vs": "sg13g2_xor2_1",
+   "identical": true
+  },
+  "pg_xnor2": {
+   "vs": "sg13g2_xnor2_1",
+   "identical": true
+  },
+  "pg_mux2": {
+   "vs": "sg13g2_mux2_1",
+   "identical": true
+  }
+ },
+ "minicells_agreement": {
+  "sg13g2_inv_1": "~A",
+  "sg13g2_buf_1": "A",
+  "sg13g2_nand2_1": "~(A & B)",
+  "sg13g2_nor2_1": "~(A | B)",
+  "sg13g2_and2_1": "(A & B)",
+  "sg13g2_or2_1": "(A | B)",
+  "sg13g2_xor2_1": "(A ^ B)",
+  "sg13g2_xnor2_1": "~(A ^ B)",
+  "sg13g2_nor2b_1": "~A & B_N",
+  "sg13g2_nand2b_1": "A_N | ~B",
+  "sg13g2_mux2_1": "S ? A1 : A0",
+  "sg13g2_a21oi_1": "~((A1 & A2) | B1)",
+  "sg13g2_a21o_1": "((A1 & A2) | B1)",
+  "sg13g2_o21ai_1": "~((A1 | A2) & B1)",
+  "sg13g2_o21a_1": "((A1 | A2) & B1)",
+  "sg13g2_tiehi": null,
+  "sg13g2_tielo": null
+ },
+ "netlists": {
+  "cmos": {
+   "path": "/usr/local/src/stat-sim/qal/synth/threeway/work/sha_slice.cmos.v",
+   "E1_sat": {
+    "rc": 0,
+    "pass_": true,
+    "tail": "               | $$  | $$    | $$__/       | $$  | $$   \n                | $$/$$ $$    | $$          | $$  | $$   \n                |  $$$$$$/ /$$| $$$$$$$$ /$$| $$$$$$$//$$\n                 \\____ $$$|__/|________/|__/|_______/|__/\n                       \\__/                              \n\nEnd of script. Logfile hash: 17f7824658, CPU: user 0.03s system 0.00s, MEM: 19.56 MB peak\nYosys 0.58 (git sha1 157aabb58, g++ 14.2.0-19 -fPIC -O3)\nTime spent: 52% 1x sat (0 sec), 15% 4x read_rtlil (0 sec), ...\n"
+   },
+   "E2_induct": {
+    "rc": 0,
+    "pass_": true,
+    "tail": "s.\n\n6. Executing EQUIV_INDUCT pass.\nNo selected unproven $equiv cells found in equiv.\nProved 0 previously unproven $equiv cells.\n\n7. Executing EQUIV_STATUS pass.\nFound 24 $equiv cells in equiv:\n  Of those cells 24 are proven and 0 are unproven.\n  Equivalence successfully proven!\n\nEnd of script. Logfile hash: 992a4e9177, CPU: user 0.03s system 0.00s, MEM: 18.35 MB peak\nYosys 0.58 (git sha1 157aabb58, g++ 14.2.0-19 -fPIC -O3)\nTime spent: 61% 1x equiv_simple (0 sec), 19% 4x read_rtlil (0 sec), ...\n"
+   },
+   "E3_vectors": {
+    "compiled": true,
+    "vectors": 156056,
+    "mismatches": 0,
+    "pass_": true,
+    "log": "VECTORS 156056 MISMATCH 0\n/usr/local/src/stat-sim/qal/pgcell_skept/tb_cmos.v:50: $finish called at 156056000 (1ps)\n"
+   },
+   "wall_s": 6.1,
+   "PASS": true
+  },
+  "pg": {
+   "path": "/usr/local/src/stat-sim/qal/pgcell/p2/out/sha_slice.pg.v",
+   "E1_sat": {
+    "rc": 0,
+    "pass_": true,
+    "tail": "   \n                | $$  | $$    | $$__/       | $$  | $$   \n                | $$/$$ $$    | $$          | $$  | $$   \n                |  $$$$$$/ /$$| $$$$$$$$ /$$| $$$$$$$//$$\n                 \\____ $$$|__/|________/|__/|_______/|__/\n                       \\__/                              \n\nEnd of script. Logfile hash: 4cd6038fcc, CPU: user 0.02s system 0.01s, MEM: 18.57 MB peak\nYosys 0.58 (git sha1 157aabb58, g++ 14.2.0-19 -fPIC -O3)\nTime spent: 54% 1x sat (0 sec), 15% 1x clean (0 sec), ...\n"
+   },
+   "E2_induct": {
+    "rc": 0,
+    "pass_": true,
+    "tail": "s.\n\n6. Executing EQUIV_INDUCT pass.\nNo selected unproven $equiv cells found in equiv.\nProved 0 previously unproven $equiv cells.\n\n7. Executing EQUIV_STATUS pass.\nFound 24 $equiv cells in equiv:\n  Of those cells 24 are proven and 0 are unproven.\n  Equivalence successfully proven!\n\nEnd of script. Logfile hash: d7988e1db4, CPU: user 0.03s system 0.00s, MEM: 19.64 MB peak\nYosys 0.58 (git sha1 157aabb58, g++ 14.2.0-19 -fPIC -O3)\nTime spent: 67% 1x equiv_simple (0 sec), 14% 4x read_rtlil (0 sec), ...\n"
+   },
+   "E3_vectors": {
+    "compiled": true,
+    "vectors": 156056,
+    "mismatches": 0,
+    "pass_": true,
+    "log": "VECTORS 156056 MISMATCH 0\n/usr/local/src/stat-sim/qal/pgcell_skept/tb_pg.v:50: $finish called at 156056000 (1ps)\n"
+   },
+   "wall_s": 4.9,
+   "PASS": true
+  },
+  "pgp": {
+   "path": "/usr/local/src/stat-sim/qal/pgcell/p2/out/sha_slice.pgp.v",
+   "E1_sat": {
+    "rc": 0,
+    "pass_": true,
+    "tail": "   \n                | $$  | $$    | $$__/       | $$  | $$   \n                | $$/$$ $$    | $$          | $$  | $$   \n                |  $$$$$$/ /$$| $$$$$$$$ /$$| $$$$$$$//$$\n                 \\____ $$$|__/|________/|__/|_______/|__/\n                       \\__/                              \n\nEnd of script. Logfile hash: 2acc725297, CPU: user 0.02s system 0.01s, MEM: 18.76 MB peak\nYosys 0.58 (git sha1 157aabb58, g++ 14.2.0-19 -fPIC -O3)\nTime spent: 55% 1x sat (0 sec), 14% 1x clean (0 sec), ...\n"
+   },
+   "E2_induct": {
+    "rc": 0,
+    "pass_": true,
+    "tail": "s.\n\n6. Executing EQUIV_INDUCT pass.\nNo selected unproven $equiv cells found in equiv.\nProved 0 previously unproven $equiv cells.\n\n7. Executing EQUIV_STATUS pass.\nFound 24 $equiv cells in equiv:\n  Of those cells 24 are proven and 0 are unproven.\n  Equivalence successfully proven!\n\nEnd of script. Logfile hash: 472e5688ca, CPU: user 0.02s system 0.00s, MEM: 17.65 MB peak\nYosys 0.58 (git sha1 157aabb58, g++ 14.2.0-19 -fPIC -O3)\nTime spent: 67% 1x equiv_simple (0 sec), 14% 4x read_rtlil (0 sec), ...\n"
+   },
+   "E3_vectors": {
+    "compiled": true,
+    "vectors": 156056,
+    "mismatches": 0,
+    "pass_": true,
+    "log": "VECTORS 156056 MISMATCH 0\n/usr/local/src/stat-sim/qal/pgcell_skept/tb_pgp.v:50: $finish called at 156056000 (1ps)\n"
+   },
+   "wall_s": 3.0,
+   "PASS": true
+  },
+  "pgp1": {
+   "path": "/usr/local/src/stat-sim/qal/pgcell/p2/out/sha_slice.pgp1.v",
+   "E1_sat": {
+    "rc": 0,
+    "pass_": true,
+    "tail": "   \n                | $$  | $$    | $$__/       | $$  | $$   \n                | $$/$$ $$    | $$          | $$  | $$   \n                |  $$$$$$/ /$$| $$$$$$$$ /$$| $$$$$$$//$$\n                 \\____ $$$|__/|________/|__/|_______/|__/\n                       \\__/                              \n\nEnd of script. Logfile hash: 0c08e50303, CPU: user 0.02s system 0.00s, MEM: 19.08 MB peak\nYosys 0.58 (git sha1 157aabb58, g++ 14.2.0-19 -fPIC -O3)\nTime spent: 51% 1x sat (0 sec), 15% 1x clean (0 sec), ...\n"
+   },
+   "E2_induct": {
+    "rc": 0,
+    "pass_": true,
+    "tail": "s.\n\n6. Executing EQUIV_INDUCT pass.\nNo selected unproven $equiv cells found in equiv.\nProved 0 previously unproven $equiv cells.\n\n7. Executing EQUIV_STATUS pass.\nFound 24 $equiv cells in equiv:\n  Of those cells 24 are proven and 0 are unproven.\n  Equivalence successfully proven!\n\nEnd of script. Logfile hash: 700286d4d7, CPU: user 0.03s system 0.00s, MEM: 17.75 MB peak\nYosys 0.58 (git sha1 157aabb58, g++ 14.2.0-19 -fPIC -O3)\nTime spent: 63% 1x equiv_simple (0 sec), 17% 4x read_rtlil (0 sec), ...\n"
+   },
+   "E3_vectors": {
+    "compiled": true,
+    "vectors": 156056,
+    "mismatches": 0,
+    "pass_": true,
+    "log": "VECTORS 156056 MISMATCH 0\n/usr/local/src/stat-sim/qal/pgcell_skept/tb_pgp1.v:50: $finish called at 156056000 (1ps)\n"
+   },
+   "wall_s": 4.8,
+   "PASS": true
+  },
+  "pgp1c": {
+   "path": "/usr/local/src/stat-sim/qal/pgcell/p2/out/sha_slice.pgp1c.v",
+   "E1_sat": {
+    "rc": 0,
+    "pass_": true,
+    "tail": "               | $$  | $$    | $$__/       | $$  | $$   \n                | $$/$$ $$    | $$          | $$  | $$   \n                |  $$$$$$/ /$$| $$$$$$$$ /$$| $$$$$$$//$$\n                 \\____ $$$|__/|________/|__/|_______/|__/\n                       \\__/                              \n\nEnd of script. Logfile hash: d5d47f0afc, CPU: user 0.02s system 0.01s, MEM: 19.16 MB peak\nYosys 0.58 (git sha1 157aabb58, g++ 14.2.0-19 -fPIC -O3)\nTime spent: 46% 1x sat (0 sec), 16% 4x read_rtlil (0 sec), ...\n"
+   },
+   "E2_induct": {
+    "rc": 0,
+    "pass_": true,
+    "tail": "s.\n\n6. Executing EQUIV_INDUCT pass.\nNo selected unproven $equiv cells found in equiv.\nProved 0 previously unproven $equiv cells.\n\n7. Executing EQUIV_STATUS pass.\nFound 24 $equiv cells in equiv:\n  Of those cells 24 are proven and 0 are unproven.\n  Equivalence successfully proven!\n\nEnd of script. Logfile hash: 5c86fd9cb1, CPU: user 0.03s system 0.00s, MEM: 18.12 MB peak\nYosys 0.58 (git sha1 157aabb58, g++ 14.2.0-19 -fPIC -O3)\nTime spent: 58% 1x equiv_simple (0 sec), 19% 4x read_rtlil (0 sec), ...\n"
+   },
+   "E3_vectors": {
+    "compiled": true,
+    "vectors": 156056,
+    "mismatches": 0,
+    "pass_": true,
+    "log": "VECTORS 156056 MISMATCH 0\n/usr/local/src/stat-sim/qal/pgcell_skept/tb_pgp1c.v:50: $finish called at 156056000 (1ps)\n"
+   },
+   "wall_s": 5.3,
+   "PASS": true
+  },
+  "pgp2": {
+   "path": "/usr/local/src/stat-sim/qal/pgcell/p2/out/sha_slice.pgp2.v",
+   "E1_sat": {
+    "rc": 0,
+    "pass_": true,
+    "tail": "   \n                | $$  | $$    | $$__/       | $$  | $$   \n                | $$/$$ $$    | $$          | $$  | $$   \n                |  $$$$$$/ /$$| $$$$$$$$ /$$| $$$$$$$//$$\n                 \\____ $$$|__/|________/|__/|_______/|__/\n                       \\__/                              \n\nEnd of script. Logfile hash: 7191a4cfed, CPU: user 0.02s system 0.01s, MEM: 18.76 MB peak\nYosys 0.58 (git sha1 157aabb58, g++ 14.2.0-19 -fPIC -O3)\nTime spent: 53% 1x sat (0 sec), 14% 1x clean (0 sec), ...\n"
+   },
+   "E2_induct": {
+    "rc": 0,
+    "pass_": true,
+    "tail": "s.\n\n6. Executing EQUIV_INDUCT pass.\nNo selected unproven $equiv cells found in equiv.\nProved 0 previously unproven $equiv cells.\n\n7. Executing EQUIV_STATUS pass.\nFound 24 $equiv cells in equiv:\n  Of those cells 24 are proven and 0 are unproven.\n  Equivalence successfully proven!\n\nEnd of script. Logfile hash: 58824e0a5b, CPU: user 0.02s system 0.01s, MEM: 17.60 MB peak\nYosys 0.58 (git sha1 157aabb58, g++ 14.2.0-19 -fPIC -O3)\nTime spent: 66% 1x equiv_simple (0 sec), 16% 4x read_rtlil (0 sec), ...\n"
+   },
+   "E3_vectors": {
+    "compiled": true,
+    "vectors": 156056,
+    "mismatches": 0,
+    "pass_": true,
+    "log": "VECTORS 156056 MISMATCH 0\n/usr/local/src/stat-sim/qal/pgcell_skept/tb_pgp2.v:50: $finish called at 156056000 (1ps)\n"
+   },
+   "wall_s": 3.6,
+   "PASS": true
+  },
+  "pgp2c": {
+   "path": "/usr/local/src/stat-sim/qal/pgcell/p2/out/sha_slice.pgp2c.v",
+   "E1_sat": {
+    "rc": 0,
+    "pass_": true,
+    "tail": "               | $$  | $$    | $$__/       | $$  | $$   \n                | $$/$$ $$    | $$          | $$  | $$   \n                |  $$$$$$/ /$$| $$$$$$$$ /$$| $$$$$$$//$$\n                 \\____ $$$|__/|________/|__/|_______/|__/\n                       \\__/                              \n\nEnd of script. Logfile hash: af76aa3f40, CPU: user 0.02s system 0.01s, MEM: 18.90 MB peak\nYosys 0.58 (git sha1 157aabb58, g++ 14.2.0-19 -fPIC -O3)\nTime spent: 50% 1x sat (0 sec), 15% 4x read_rtlil (0 sec), ...\n"
+   },
+   "E2_induct": {
+    "rc": 0,
+    "pass_": true,
+    "tail": "s.\n\n6. Executing EQUIV_INDUCT pass.\nNo selected unproven $equiv cells found in equiv.\nProved 0 previously unproven $equiv cells.\n\n7. Executing EQUIV_STATUS pass.\nFound 24 $equiv cells in equiv:\n  Of those cells 24 are proven and 0 are unproven.\n  Equivalence successfully proven!\n\nEnd of script. Logfile hash: e3fa27280b, CPU: user 0.02s system 0.00s, MEM: 17.93 MB peak\nYosys 0.58 (git sha1 157aabb58, g++ 14.2.0-19 -fPIC -O3)\nTime spent: 62% 1x equiv_simple (0 sec), 18% 4x read_rtlil (0 sec), ...\n"
+   },
+   "E3_vectors": {
+    "compiled": true,
+    "vectors": 156056,
+    "mismatches": 0,
+    "pass_": true,
+    "log": "VECTORS 156056 MISMATCH 0\n/usr/local/src/stat-sim/qal/pgcell_skept/tb_pgp2c.v:50: $finish called at 156056000 (1ps)\n"
+   },
+   "wall_s": 5.0,
+   "PASS": true
+  },
+  "pgr1": {
+   "path": "/usr/local/src/stat-sim/qal/pgcell/p2/out/sha_slice.pgr1.v",
+   "E1_sat": {
+    "rc": 0,
+    "pass_": true,
+    "tail": "               | $$  | $$    | $$__/       | $$  | $$   \n                | $$/$$ $$    | $$          | $$  | $$   \n                |  $$$$$$/ /$$| $$$$$$$$ /$$| $$$$$$$//$$\n                 \\____ $$$|__/|________/|__/|_______/|__/\n                       \\__/                              \n\nEnd of script. Logfile hash: 676b16e690, CPU: user 0.02s system 0.00s, MEM: 19.23 MB peak\nYosys 0.58 (git sha1 157aabb58, g++ 14.2.0-19 -fPIC -O3)\nTime spent: 46% 1x sat (0 sec), 16% 4x read_rtlil (0 sec), ...\n"
+   },
+   "E2_induct": {
+    "rc": 0,
+    "pass_": true,
+    "tail": "s.\n\n6. Executing EQUIV_INDUCT pass.\nNo selected unproven $equiv cells found in equiv.\nProved 0 previously unproven $equiv cells.\n\n7. Executing EQUIV_STATUS pass.\nFound 24 $equiv cells in equiv:\n  Of those cells 24 are proven and 0 are unproven.\n  Equivalence successfully proven!\n\nEnd of script. Logfile hash: 02699b709b, CPU: user 0.02s system 0.01s, MEM: 17.92 MB peak\nYosys 0.58 (git sha1 157aabb58, g++ 14.2.0-19 -fPIC -O3)\nTime spent: 60% 1x equiv_simple (0 sec), 17% 4x read_rtlil (0 sec), ...\n"
+   },
+   "E3_vectors": {
+    "compiled": true,
+    "vectors": 156056,
+    "mismatches": 0,
+    "pass_": true,
+    "log": "VECTORS 156056 MISMATCH 0\n/usr/local/src/stat-sim/qal/pgcell_skept/tb_pgr1.v:50: $finish called at 156056000 (1ps)\n"
+   },
+   "wall_s": 4.8,
+   "PASS": true
+  },
+  "pgr1c": {
+   "path": "/usr/local/src/stat-sim/qal/pgcell/p2/out/sha_slice.pgr1c.v",
+   "E1_sat": {
+    "rc": 0,
+    "pass_": true,
+    "tail": "   \n                | $$  | $$    | $$__/       | $$  | $$   \n                | $$/$$ $$    | $$          | $$  | $$   \n                |  $$$$$$/ /$$| $$$$$$$$ /$$| $$$$$$$//$$\n                 \\____ $$$|__/|________/|__/|_______/|__/\n                       \\__/                              \n\nEnd of script. Logfile hash: eb4ad2c440, CPU: user 0.03s system 0.00s, MEM: 18.94 MB peak\nYosys 0.58 (git sha1 157aabb58, g++ 14.2.0-19 -fPIC -O3)\nTime spent: 44% 1x sat (0 sec), 17% 1x clean (0 sec), ...\n"
+   },
+   "E2_induct": {
+    "rc": 0,
+    "pass_": true,
+    "tail": "s.\n\n6. Executing EQUIV_INDUCT pass.\nNo selected unproven $equiv cells found in equiv.\nProved 0 previously unproven $equiv cells.\n\n7. Executing EQUIV_STATUS pass.\nFound 24 $equiv cells in equiv:\n  Of those cells 24 are proven and 0 are unproven.\n  Equivalence successfully proven!\n\nEnd of script. Logfile hash: 2e0f067547, CPU: user 0.02s system 0.01s, MEM: 18.19 MB peak\nYosys 0.58 (git sha1 157aabb58, g++ 14.2.0-19 -fPIC -O3)\nTime spent: 55% 1x equiv_simple (0 sec), 22% 4x read_rtlil (0 sec), ...\n"
+   },
+   "E3_vectors": {
+    "compiled": true,
+    "vectors": 156056,
+    "mismatches": 0,
+    "pass_": true,
+    "log": "VECTORS 156056 MISMATCH 0\n/usr/local/src/stat-sim/qal/pgcell_skept/tb_pgr1c.v:50: $finish called at 156056000 (1ps)\n"
+   },
+   "wall_s": 4.8,
+   "PASS": true
+  },
+  "pgr2": {
+   "path": "/usr/local/src/stat-sim/qal/pgcell/p2/out/sha_slice.pgr2.v",
+   "E1_sat": {
+    "rc": 0,
+    "pass_": true,
+    "tail": "   \n                | $$  | $$    | $$__/       | $$  | $$   \n                | $$/$$ $$    | $$          | $$  | $$   \n                |  $$$$$$/ /$$| $$$$$$$$ /$$| $$$$$$$//$$\n                 \\____ $$$|__/|________/|__/|_______/|__/\n                       \\__/                              \n\nEnd of script. Logfile hash: 5d7c233af9, CPU: user 0.02s system 0.00s, MEM: 18.79 MB peak\nYosys 0.58 (git sha1 157aabb58, g++ 14.2.0-19 -fPIC -O3)\nTime spent: 56% 1x sat (0 sec), 13% 1x clean (0 sec), ...\n"
+   },
+   "E2_induct": {
+    "rc": 0,
+    "pass_": true,
+    "tail": "s.\n\n6. Executing EQUIV_INDUCT pass.\nNo selected unproven $equiv cells found in equiv.\nProved 0 previously unproven $equiv cells.\n\n7. Executing EQUIV_STATUS pass.\nFound 24 $equiv cells in equiv:\n  Of those cells 24 are proven and 0 are unproven.\n  Equivalence successfully proven!\n\nEnd of script. Logfile hash: d19fbe6fb0, CPU: user 0.03s system 0.00s, MEM: 17.39 MB peak\nYosys 0.58 (git sha1 157aabb58, g++ 14.2.0-19 -fPIC -O3)\nTime spent: 63% 1x equiv_simple (0 sec), 16% 4x read_rtlil (0 sec), ...\n"
+   },
+   "E3_vectors": {
+    "compiled": true,
+    "vectors": 156056,
+    "mismatches": 0,
+    "pass_": true,
+    "log": "VECTORS 156056 MISMATCH 0\n/usr/local/src/stat-sim/qal/pgcell_skept/tb_pgr2.v:50: $finish called at 156056000 (1ps)\n"
+   },
+   "wall_s": 5.4,
+   "PASS": true
+  },
+  "pgr2c": {
+   "path": "/usr/local/src/stat-sim/qal/pgcell/p2/out/sha_slice.pgr2c.v",
+   "E1_sat": {
+    "rc": 0,
+    "pass_": true,
+    "tail": "               | $$  | $$    | $$__/       | $$  | $$   \n                | $$/$$ $$    | $$          | $$  | $$   \n                |  $$$$$$/ /$$| $$$$$$$$ /$$| $$$$$$$//$$\n                 \\____ $$$|__/|________/|__/|_______/|__/\n                       \\__/                              \n\nEnd of script. Logfile hash: db82804b44, CPU: user 0.02s system 0.00s, MEM: 20.75 MB peak\nYosys 0.58 (git sha1 157aabb58, g++ 14.2.0-19 -fPIC -O3)\nTime spent: 49% 1x sat (0 sec), 15% 4x read_rtlil (0 sec), ...\n"
+   },
+   "E2_induct": {
+    "rc": 0,
+    "pass_": true,
+    "tail": "s.\n\n6. Executing EQUIV_INDUCT pass.\nNo selected unproven $equiv cells found in equiv.\nProved 0 previously unproven $equiv cells.\n\n7. Executing EQUIV_STATUS pass.\nFound 24 $equiv cells in equiv:\n  Of those cells 24 are proven and 0 are unproven.\n  Equivalence successfully proven!\n\nEnd of script. Logfile hash: 285a6cb588, CPU: user 0.02s system 0.01s, MEM: 19.96 MB peak\nYosys 0.58 (git sha1 157aabb58, g++ 14.2.0-19 -fPIC -O3)\nTime spent: 61% 1x equiv_simple (0 sec), 17% 4x read_rtlil (0 sec), ...\n"
+   },
+   "E3_vectors": {
+    "compiled": true,
+    "vectors": 156056,
+    "mismatches": 0,
+    "pass_": true,
+    "log": "VECTORS 156056 MISMATCH 0\n/usr/local/src/stat-sim/qal/pgcell_skept/tb_pgr2c.v:50: $finish called at 156056000 (1ps)\n"
+   },
+   "wall_s": 4.7,
+   "PASS": true
+  },
+  "abc_nand_area": {
+   "path": "/usr/local/src/stat-sim/qal/pgcell/p2/out/sha_slice.abc_nand_area.v",
+   "E1_sat": {
+    "rc": 0,
+    "pass_": true,
+    "tail": "               | $$  | $$    | $$__/       | $$  | $$   \n                | $$/$$ $$    | $$          | $$  | $$   \n                |  $$$$$$/ /$$| $$$$$$$$ /$$| $$$$$$$//$$\n                 \\____ $$$|__/|________/|__/|_______/|__/\n                       \\__/                              \n\nEnd of script. Logfile hash: 6a5c0f90aa, CPU: user 0.02s system 0.00s, MEM: 20.04 MB peak\nYosys 0.58 (git sha1 157aabb58, g++ 14.2.0-19 -fPIC -O3)\nTime spent: 46% 1x sat (0 sec), 19% 4x read_rtlil (0 sec), ...\n"
+   },
+   "E2_induct": {
+    "rc": 0,
+    "pass_": true,
+    "tail": "s.\n\n6. Executing EQUIV_INDUCT pass.\nNo selected unproven $equiv cells found in equiv.\nProved 0 previously unproven $equiv cells.\n\n7. Executing EQUIV_STATUS pass.\nFound 24 $equiv cells in equiv:\n  Of those cells 24 are proven and 0 are unproven.\n  Equivalence successfully proven!\n\nEnd of script. Logfile hash: e881764435, CPU: user 0.02s system 0.00s, MEM: 19.33 MB peak\nYosys 0.58 (git sha1 157aabb58, g++ 14.2.0-19 -fPIC -O3)\nTime spent: 57% 1x equiv_simple (0 sec), 22% 4x read_rtlil (0 sec), ...\n"
+   },
+   "E3_vectors": {
+    "compiled": true,
+    "vectors": 156056,
+    "mismatches": 0,
+    "pass_": true,
+    "log": "VECTORS 156056 MISMATCH 0\n/usr/local/src/stat-sim/qal/pgcell_skept/tb_abc_nand_area.v:50: $finish called at 156056000 (1ps)\n"
+   },
+   "wall_s": 3.8,
+   "PASS": true
+  },
+  "abc_nand_del": {
+   "path": "/usr/local/src/stat-sim/qal/pgcell/p2/out/sha_slice.abc_nand_del.v",
+   "E1_sat": {
+    "rc": 0,
+    "pass_": true,
+    "tail": "               | $$  | $$    | $$__/       | $$  | $$   \n                | $$/$$ $$    | $$          | $$  | $$   \n                |  $$$$$$/ /$$| $$$$$$$$ /$$| $$$$$$$//$$\n                 \\____ $$$|__/|________/|__/|_______/|__/\n                       \\__/                              \n\nEnd of script. Logfile hash: 31b2fa4d22, CPU: user 0.03s system 0.00s, MEM: 20.36 MB peak\nYosys 0.58 (git sha1 157aabb58, g++ 14.2.0-19 -fPIC -O3)\nTime spent: 42% 1x sat (0 sec), 18% 4x read_rtlil (0 sec), ...\n"
+   },
+   "E2_induct": {
+    "rc": 0,
+    "pass_": true,
+    "tail": "s.\n\n6. Executing EQUIV_INDUCT pass.\nNo selected unproven $equiv cells found in equiv.\nProved 0 previously unproven $equiv cells.\n\n7. Executing EQUIV_STATUS pass.\nFound 24 $equiv cells in equiv:\n  Of those cells 24 are proven and 0 are unproven.\n  Equivalence successfully proven!\n\nEnd of script. Logfile hash: 22f12b646d, CPU: user 0.02s system 0.01s, MEM: 19.23 MB peak\nYosys 0.58 (git sha1 157aabb58, g++ 14.2.0-19 -fPIC -O3)\nTime spent: 53% 1x equiv_simple (0 sec), 22% 4x read_rtlil (0 sec), ...\n"
+   },
+   "E3_vectors": {
+    "compiled": true,
+    "vectors": 156056,
+    "mismatches": 0,
+    "pass_": true,
+    "log": "VECTORS 156056 MISMATCH 0\n/usr/local/src/stat-sim/qal/pgcell_skept/tb_abc_nand_del.v:50: $finish called at 156056000 (1ps)\n"
+   },
+   "wall_s": 7.4,
+   "PASS": true
+  },
+  "abc_nand_resyn2": {
+   "path": "/usr/local/src/stat-sim/qal/pgcell/p2/out/sha_slice.abc_nand_resyn2.v",
+   "E1_sat": {
+    "rc": 0,
+    "pass_": true,
+    "tail": "               | $$  | $$    | $$__/       | $$  | $$   \n                | $$/$$ $$    | $$          | $$  | $$   \n                |  $$$$$$/ /$$| $$$$$$$$ /$$| $$$$$$$//$$\n                 \\____ $$$|__/|________/|__/|_______/|__/\n                       \\__/                              \n\nEnd of script. Logfile hash: 47648c5594, CPU: user 0.03s system 0.00s, MEM: 20.12 MB peak\nYosys 0.58 (git sha1 157aabb58, g++ 14.2.0-19 -fPIC -O3)\nTime spent: 43% 1x sat (0 sec), 21% 4x read_rtlil (0 sec), ...\n"
+   },
+   "E2_induct": {
+    "rc": 0,
+    "pass_": true,
+    "tail": "s.\n\n6. Executing EQUIV_INDUCT pass.\nNo selected unproven $equiv cells found in equiv.\nProved 0 previously unproven $equiv cells.\n\n7. Executing EQUIV_STATUS pass.\nFound 24 $equiv cells in equiv:\n  Of those cells 24 are proven and 0 are unproven.\n  Equivalence successfully proven!\n\nEnd of script. Logfile hash: 9202576a93, CPU: user 0.03s system 0.00s, MEM: 19.05 MB peak\nYosys 0.58 (git sha1 157aabb58, g++ 14.2.0-19 -fPIC -O3)\nTime spent: 54% 1x equiv_simple (0 sec), 22% 4x read_rtlil (0 sec), ...\n"
+   },
+   "E3_vectors": {
+    "compiled": true,
+    "vectors": 156056,
+    "mismatches": 0,
+    "pass_": true,
+    "log": "VECTORS 156056 MISMATCH 0\n/usr/local/src/stat-sim/qal/pgcell_skept/tb_abc_nand_resyn2.v:50: $finish called at 156056000 (1ps)\n"
+   },
+   "wall_s": 5.6,
+   "PASS": true
+  },
+  "abc_pg_area": {
+   "path": "/usr/local/src/stat-sim/qal/pgcell/p2/out/sha_slice.abc_pg_area.v",
+   "E1_sat": {
+    "rc": 0,
+    "pass_": true,
+    "tail": "               | $$  | $$    | $$__/       | $$  | $$   \n                | $$/$$ $$    | $$          | $$  | $$   \n                |  $$$$$$/ /$$| $$$$$$$$ /$$| $$$$$$$//$$\n                 \\____ $$$|__/|________/|__/|_______/|__/\n                       \\__/                              \n\nEnd of script. Logfile hash: 7cefeb4f4e, CPU: user 0.02s system 0.01s, MEM: 19.69 MB peak\nYosys 0.58 (git sha1 157aabb58, g++ 14.2.0-19 -fPIC -O3)\nTime spent: 48% 1x sat (0 sec), 15% 4x read_rtlil (0 sec), ...\n"
+   },
+   "E2_induct": {
+    "rc": 0,
+    "pass_": true,
+    "tail": "s.\n\n6. Executing EQUIV_INDUCT pass.\nNo selected unproven $equiv cells found in equiv.\nProved 0 previously unproven $equiv cells.\n\n7. Executing EQUIV_STATUS pass.\nFound 24 $equiv cells in equiv:\n  Of those cells 24 are proven and 0 are unproven.\n  Equivalence successfully proven!\n\nEnd of script. Logfile hash: 755f0275a7, CPU: user 0.03s system 0.01s, MEM: 18.23 MB peak\nYosys 0.58 (git sha1 157aabb58, g++ 14.2.0-19 -fPIC -O3)\nTime spent: 57% 1x equiv_simple (0 sec), 20% 4x read_rtlil (0 sec), ...\n"
+   },
+   "E3_vectors": {
+    "compiled": true,
+    "vectors": 156056,
+    "mismatches": 0,
+    "pass_": true,
+    "log": "VECTORS 156056 MISMATCH 0\n/usr/local/src/stat-sim/qal/pgcell_skept/tb_abc_pg_area.v:50: $finish called at 156056000 (1ps)\n"
+   },
+   "wall_s": 3.7,
+   "PASS": true
+  },
+  "abc_pg_del": {
+   "path": "/usr/local/src/stat-sim/qal/pgcell/p2/out/sha_slice.abc_pg_del.v",
+   "E1_sat": {
+    "rc": 0,
+    "pass_": true,
+    "tail": "               | $$  | $$    | $$__/       | $$  | $$   \n                | $$/$$ $$    | $$          | $$  | $$   \n                |  $$$$$$/ /$$| $$$$$$$$ /$$| $$$$$$$//$$\n                 \\____ $$$|__/|________/|__/|_______/|__/\n                       \\__/                              \n\nEnd of script. Logfile hash: 124c5f603e, CPU: user 0.02s system 0.00s, MEM: 19.40 MB peak\nYosys 0.58 (git sha1 157aabb58, g++ 14.2.0-19 -fPIC -O3)\nTime spent: 50% 1x sat (0 sec), 17% 4x read_rtlil (0 sec), ...\n"
+   },
+   "E2_induct": {
+    "rc": 0,
+    "pass_": true,
+    "tail": "s.\n\n6. Executing EQUIV_INDUCT pass.\nNo selected unproven $equiv cells found in equiv.\nProved 0 previously unproven $equiv cells.\n\n7. Executing EQUIV_STATUS pass.\nFound 24 $equiv cells in equiv:\n  Of those cells 24 are proven and 0 are unproven.\n  Equivalence successfully proven!\n\nEnd of script. Logfile hash: 8279cbfecc, CPU: user 0.01s system 0.00s, MEM: 18.61 MB peak\nYosys 0.58 (git sha1 157aabb58, g++ 14.2.0-19 -fPIC -O3)\nTime spent: 61% 1x equiv_simple (0 sec), 20% 4x read_rtlil (0 sec), ...\n"
+   },
+   "E3_vectors": {
+    "compiled": true,
+    "vectors": 156056,
+    "mismatches": 0,
+    "pass_": true,
+    "log": "VECTORS 156056 MISMATCH 0\n/usr/local/src/stat-sim/qal/pgcell_skept/tb_abc_pg_del.v:50: $finish called at 156056000 (1ps)\n"
+   },
+   "wall_s": 4.3,
+   "PASS": true
+  },
+  "abc_pg_resyn2": {
+   "path": "/usr/local/src/stat-sim/qal/pgcell/p2/out/sha_slice.abc_pg_resyn2.v",
+   "E1_sat": {
+    "rc": 0,
+    "pass_": true,
+    "tail": "               | $$  | $$    | $$__/       | $$  | $$   \n                | $$/$$ $$    | $$          | $$  | $$   \n                |  $$$$$$/ /$$| $$$$$$$$ /$$| $$$$$$$//$$\n                 \\____ $$$|__/|________/|__/|_______/|__/\n                       \\__/                              \n\nEnd of script. Logfile hash: c035aa2b15, CPU: user 0.03s system 0.00s, MEM: 19.04 MB peak\nYosys 0.58 (git sha1 157aabb58, g++ 14.2.0-19 -fPIC -O3)\nTime spent: 46% 1x sat (0 sec), 17% 4x read_rtlil (0 sec), ...\n"
+   },
+   "E2_induct": {
+    "rc": 0,
+    "pass_": true,
+    "tail": "s.\n\n6. Executing EQUIV_INDUCT pass.\nNo selected unproven $equiv cells found in equiv.\nProved 0 previously unproven $equiv cells.\n\n7. Executing EQUIV_STATUS pass.\nFound 24 $equiv cells in equiv:\n  Of those cells 24 are proven and 0 are unproven.\n  Equivalence successfully proven!\n\nEnd of script. Logfile hash: 5cae3d9030, CPU: user 0.03s system 0.00s, MEM: 18.32 MB peak\nYosys 0.58 (git sha1 157aabb58, g++ 14.2.0-19 -fPIC -O3)\nTime spent: 59% 1x equiv_simple (0 sec), 21% 4x read_rtlil (0 sec), ...\n"
+   },
+   "E3_vectors": {
+    "compiled": true,
+    "vectors": 156056,
+    "mismatches": 0,
+    "pass_": true,
+    "log": "VECTORS 156056 MISMATCH 0\n/usr/local/src/stat-sim/qal/pgcell_skept/tb_abc_pg_resyn2.v:50: $finish called at 156056000 (1ps)\n"
+   },
+   "wall_s": 4.8,
+   "PASS": true
+  },
+  "abc_pgnor_area": {
+   "path": "/usr/local/src/stat-sim/qal/pgcell/p2/out/sha_slice.abc_pgnor_area.v",
+   "E1_sat": {
+    "rc": 0,
+    "pass_": true,
+    "tail": "               | $$  | $$    | $$__/       | $$  | $$   \n                | $$/$$ $$    | $$          | $$  | $$   \n                |  $$$$$$/ /$$| $$$$$$$$ /$$| $$$$$$$//$$\n                 \\____ $$$|__/|________/|__/|_______/|__/\n                       \\__/                              \n\nEnd of script. Logfile hash: 4c268c0e90, CPU: user 0.02s system 0.01s, MEM: 19.46 MB peak\nYosys 0.58 (git sha1 157aabb58, g++ 14.2.0-19 -fPIC -O3)\nTime spent: 46% 1x sat (0 sec), 18% 4x read_rtlil (0 sec), ...\n"
+   },
+   "E2_induct": {
+    "rc": 0,
+    "pass_": true,
+    "tail": "s.\n\n6. Executing EQUIV_INDUCT pass.\nNo selected unproven $equiv cells found in equiv.\nProved 0 previously unproven $equiv cells.\n\n7. Executing EQUIV_STATUS pass.\nFound 24 $equiv cells in equiv:\n  Of those cells 24 are proven and 0 are unproven.\n  Equivalence successfully proven!\n\nEnd of script. Logfile hash: e027680935, CPU: user 0.03s system 0.00s, MEM: 18.27 MB peak\nYosys 0.58 (git sha1 157aabb58, g++ 14.2.0-19 -fPIC -O3)\nTime spent: 57% 1x equiv_simple (0 sec), 20% 4x read_rtlil (0 sec), ...\n"
+   },
+   "E3_vectors": {
+    "compiled": true,
+    "vectors": 156056,
+    "mismatches": 0,
+    "pass_": true,
+    "log": "VECTORS 156056 MISMATCH 0\n/usr/local/src/stat-sim/qal/pgcell_skept/tb_abc_pgnor_area.v:50: $finish called at 156056000 (1ps)\n"
+   },
+   "wall_s": 5.1,
+   "PASS": true
+  },
+  "abc_pgnor_del": {
+   "path": "/usr/local/src/stat-sim/qal/pgcell/p2/out/sha_slice.abc_pgnor_del.v",
+   "E1_sat": {
+    "rc": 0,
+    "pass_": true,
+    "tail": "               | $$  | $$    | $$__/       | $$  | $$   \n                | $$/$$ $$    | $$          | $$  | $$   \n                |  $$$$$$/ /$$| $$$$$$$$ /$$| $$$$$$$//$$\n                 \\____ $$$|__/|________/|__/|_______/|__/\n                       \\__/                              \n\nEnd of script. Logfile hash: dbef86daa9, CPU: user 0.03s system 0.00s, MEM: 19.41 MB peak\nYosys 0.58 (git sha1 157aabb58, g++ 14.2.0-19 -fPIC -O3)\nTime spent: 45% 1x sat (0 sec), 17% 4x read_rtlil (0 sec), ...\n"
+   },
+   "E2_induct": {
+    "rc": 0,
+    "pass_": true,
+    "tail": "s.\n\n6. Executing EQUIV_INDUCT pass.\nNo selected unproven $equiv cells found in equiv.\nProved 0 previously unproven $equiv cells.\n\n7. Executing EQUIV_STATUS pass.\nFound 24 $equiv cells in equiv:\n  Of those cells 24 are proven and 0 are unproven.\n  Equivalence successfully proven!\n\nEnd of script. Logfile hash: db356d28ad, CPU: user 0.02s system 0.01s, MEM: 18.47 MB peak\nYosys 0.58 (git sha1 157aabb58, g++ 14.2.0-19 -fPIC -O3)\nTime spent: 58% 1x equiv_simple (0 sec), 20% 4x read_rtlil (0 sec), ...\n"
+   },
+   "E3_vectors": {
+    "compiled": true,
+    "vectors": 156056,
+    "mismatches": 0,
+    "pass_": true,
+    "log": "VECTORS 156056 MISMATCH 0\n/usr/local/src/stat-sim/qal/pgcell_skept/tb_abc_pgnor_del.v:50: $finish called at 156056000 (1ps)\n"
+   },
+   "wall_s": 4.9,
+   "PASS": true
+  },
+  "abc_pgnor_resyn2": {
+   "path": "/usr/local/src/stat-sim/qal/pgcell/p2/out/sha_slice.abc_pgnor_resyn2.v",
+   "E1_sat": {
+    "rc": 0,
+    "pass_": true,
+    "tail": "               | $$  | $$    | $$__/       | $$  | $$   \n                | $$/$$ $$    | $$          | $$  | $$   \n                |  $$$$$$/ /$$| $$$$$$$$ /$$| $$$$$$$//$$\n                 \\____ $$$|__/|________/|__/|_______/|__/\n                       \\__/                              \n\nEnd of script. Logfile hash: 68e71e7eab, CPU: user 0.02s system 0.00s, MEM: 21.22 MB peak\nYosys 0.58 (git sha1 157aabb58, g++ 14.2.0-19 -fPIC -O3)\nTime spent: 46% 1x sat (0 sec), 17% 4x read_rtlil (0 sec), ...\n"
+   },
+   "E2_induct": {
+    "rc": 0,
+    "pass_": true,
+    "tail": "s.\n\n6. Executing EQUIV_INDUCT pass.\nNo selected unproven $equiv cells found in equiv.\nProved 0 previously unproven $equiv cells.\n\n7. Executing EQUIV_STATUS pass.\nFound 24 $equiv cells in equiv:\n  Of those cells 24 are proven and 0 are unproven.\n  Equivalence successfully proven!\n\nEnd of script. Logfile hash: 889672f80f, CPU: user 0.01s system 0.00s, MEM: 18.23 MB peak\nYosys 0.58 (git sha1 157aabb58, g++ 14.2.0-19 -fPIC -O3)\nTime spent: 58% 1x equiv_simple (0 sec), 19% 4x read_rtlil (0 sec), ...\n"
+   },
+   "E3_vectors": {
+    "compiled": true,
+    "vectors": 156056,
+    "mismatches": 0,
+    "pass_": true,
+    "log": "VECTORS 156056 MISMATCH 0\n/usr/local/src/stat-sim/qal/pgcell_skept/tb_abc_pgnor_resyn2.v:50: $finish called at 156056000 (1ps)\n"
+   },
+   "wall_s": 4.7,
+   "PASS": true
+  }
+ }
+}

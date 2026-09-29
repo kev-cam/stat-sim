@@ -1,0 +1,7 @@
+read_verilog /usr/local/src/stat-sim/qal/synth/threeway/sha_slice.v
+hierarchy -top sha_slice
+proc; opt; techmap; opt
+abc -liberty /usr/local/src/stat-sim/qal/pgcell/p2/out/pgnor.lib -script +strash;ifraig;scorr;dc2;dretime;strash;dch,-f;map,-a;topo;stime,-p;buffer,-N,2;upsize;dnsize
+opt_clean
+write_verilog -noattr /usr/local/src/stat-sim/qal/pgcell/p2/out/sha_slice.abc_pgnor_area.v
+stat -liberty /usr/local/src/stat-sim/qal/pgcell/p2/out/pgnor.lib

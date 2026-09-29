@@ -1,0 +1,17 @@
+ran A_h_i0_o21_dv150.cir in 724s
+Traceback (most recent call last):
+  File "/usr/local/src/stat-sim/qal/pgcell/anchor.py", line 175, in <module>
+    res["A_bank_row"] = anchor_A()
+                        ~~~~~~~~^^
+  File "/usr/local/src/stat-sim/qal/pgcell/anchor.py", line 91, in anchor_A
+    t80 = valid_t(ts, outs, bkb, 0.80)
+  File "/usr/local/src/stat-sim/qal/pgcell/anchor.py", line 41, in valid_t
+    ok = [all(s_of(i, outs[i][k], rail[k]) >= frac * 100.0 for i in range(8))
+          ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/src/stat-sim/qal/pgcell/anchor.py", line 41, in <genexpr>
+    ok = [all(s_of(i, outs[i][k], rail[k]) >= frac * 100.0 for i in range(8))
+              ~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/src/stat-sim/qal/pgcell/anchor.py", line 34, in s_of
+    return (1.0 - v / rail) * 100.0 if i in HI else (v / rail) * 100.0
+                  ~~^~~~~~
+ZeroDivisionError: float division by zero

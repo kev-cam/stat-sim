@@ -1,0 +1,8 @@
+
+read_rtlil /usr/local/src/stat-sim/qal/pgcell_skept/g_abc_nand_resyn2_gold.il
+read_rtlil /usr/local/src/stat-sim/qal/pgcell_skept/g_abc_nand_resyn2_gate.il
+equiv_make gold gate equiv
+hierarchy -top equiv
+equiv_simple
+equiv_induct
+equiv_status -assert

@@ -1,0 +1,52 @@
+{
+  "_doc": "PHASE 2 PRE-REGISTRATION -- written BEFORE any remap netlist, liberty, deck or verification script of this run existed. Phase 2 of the pass-gate (transmission-gate) cell study: remap qal/synth/threeway/sha_slice.v onto the TG-XOR/TG-MUX cells characterised in Phase 1 (qal/pgcell/RESULTS.json) plus shallow-stack statics, and price it. Own directory qal/pgcell/p2/. NOTHING is written to qal/sha256/ (the sibling NAND2-only run) -- it is read-only input here.",
+
+  "inherited_phase1_facts_MEASURED": {
+    "TG_XNOR2_devices": 8,
+    "TG_MUX2_devices": 6,
+    "TG_stack_depth_pullup": 1,
+    "TG_rail_draw_fixed_well_fC": 0.0,
+    "TG_MUX2_whole_cell_rail_fC_fixed_well": 3.16,
+    "static_mux2_rail_fC": 10.9195,
+    "static_xnor2_rail_fC": 8.8278,
+    "static_inv_rail_fC": 3.0865,
+    "TG_single_cell_transparent_loss_mV_ckpt_abs_max": 0.227,
+    "sigma_floor_mV": 6.44,
+    "chain_ALT_vhi_sep_mV": [458.95, 55.37, 145.03, 5.49],
+    "chain_ALT_rail_sep_mV": [416.73, 186.21, 106.01, 24.55],
+    "chain_CTL_vhi_sep_mV": [706.56, 612.38, 619.51, 671.43],
+    "phase1_verdict": "the alternating chain does NOT hold; pass-gate stages compound with the bank's own non-restoration faster than one inverter-class stage repairs"
+  },
+
+  "acceptance_gates": {
+    "G0_ANCHOR": "Independently re-extract the COMMITTED netlist census (cell count, type histogram, device count, total device width, logic depth, per-level profile) from qal/synth/threeway/work/sha_slice.cmos.v and the PDK spice, with code written for this run. PASS = cell count and type histogram reproduce the committed 56-cell census exactly. The DEPTH is reported as measured, whatever it is; the brief's 'depth 10' is treated as a CLAIM TO BE CHECKED, not a given.",
+    "E1_SAT_MITER": "yosys: miter -equiv -flatten -make_assert gold gate; sat -verify -prove-asserts. PASS = 'SAT proof finished - no model found: SUCCESS!' Required for EVERY remap variant reported.",
+    "E2_EQUIV_INDUCT": "yosys equiv_make / equiv_simple / equiv_induct / equiv_status -assert. A structurally different engine. PASS = 'Equivalence successfully proven'.",
+    "E5_PORTS": "gate module port list and widths identical to the RTL, read back from yosys write_json (not a regex).",
+    "E3_VECTORS": ">= 151,584 vectors, 0 mismatches -- the standard the committed QDI form met. Adopting the sibling qal/sha256/verify.py vector construction (all 65,536 (a,b) pairs exhaustive so the 8-bit CPA is COMPLETE, + 64 per-bit exhaustive maj/ch covers, + pseudo-random to carry the total past 151,584).",
+    "C_COST": "Report for every variant: cell count, transistor (device) count, total device width, logic depth, per-level cell profile. Against BOTH the committed netlist AND a NAND2-only mapping.",
+    "D_RESTORATION": "Derive the restoration rule from Phase 1's MEASURED per-bank chain data (not from theory), apply it to the remap, and report what it costs in cells / devices / depth."
+  },
+
+  "declared_method": {
+    "route_A": "STRUCTURAL hand remap exploiting the identity maj(a,b,c) = (a^b) ? c : a and c_out = (a^b) ? c_in : a -- i.e. the carry and majority functions ARE 2:1 muxes, which is exactly what a transmission gate is natively. Proven by SAT, not by assertion.",
+    "route_B": "ABC liberty-constrained mapping onto the same restricted cell set, as an INDEPENDENT cross-check that the hand remap is not worse than what a mapper finds.",
+    "route_N": "my own NAND2-only (inv+nand2) mapping, to cross-check the sibling run's NAND2-only numbers rather than quoting them unchecked.",
+    "AOI_OAI_decomposition": "TO BE REPORTED AS FOUND. The committed netlist's 14 AOI/OAI cells (6 a21oi + 5 o21ai + 3 a21o) are carry-chain and majority cells; the declared hypothesis is that they are ABSORBED into TG muxes rather than decomposed into NAND2 trees. If that hypothesis fails, the NAND2/INV decomposition actually used will be reported instead."
+  },
+
+  "PRE_STATED_PREDICTIONS_to_be_scored": {
+    "P1_cells": "The pass-gate remap will use FEWER cells than the committed 56, and far fewer than a NAND2-only mapping. Stated bound: <= 45 cells.",
+    "P2_devices": "Device count will be BELOW the committed netlist's, because TG-XNOR2 (8 dev) < static xnor2 (10 dev) and TG-MUX2 (6 dev) < static mux2 (12 dev). Stated bound: <= 300 devices vs the committed count.",
+    "P3_depth": "Logic DEPTH will be WORSE (larger) than the committed netlist's, because the mux carry chain is a ripple and each carry stage is its own cell. Stated direction: PG depth > committed depth.",
+    "P4_restoration_cost": "Applying the measured restoration rule will roughly DOUBLE the cell count of the pass-gate remap and will erase most of the device-count advantage. Stated bound: restored variant device count within +-25% of the committed netlist's.",
+    "P5_verdict": "The pass-gate remap will PASS formal equivalence and vectors (it is a Boolean identity), and will FAIL the electrical admission rule inherited from Phase 1, because the carry chain wants more consecutive pass-gate levels than the measured budget allows."
+  },
+
+  "declared_limitations_stated_in_advance": [
+    "Phase 2 is a STRUCTURAL and FORMAL exercise. The vector check and the SAT proof validate the BOOLEAN remap only -- they run on behavioural cell models and say NOTHING about level loss, settling or rail draw. The electrical verdict is Phase 1's and is inherited, not re-measured here.",
+    "Device counts and total device widths are MEASURED from the PDK spice netlists (for statics) and from the Phase 1 emitted TG netlists. Any ENERGY figure derived from them is DERIVED, and any figure resting on the campaign's committed per-gate energy is a BOOKING carried forward from that source.",
+    "No new SPICE deck is required by this phase's deliverable. If any is run it will be declared and its numbers labelled MEASURED separately.",
+    "The sibling run qal/sha256/ is read-only input. Its NAND2-only numbers are quoted as ITS measurement and are additionally cross-checked by my own independent mapping; where the two disagree, both are reported."
+  ]
+}

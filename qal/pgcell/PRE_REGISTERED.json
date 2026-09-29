@@ -1,0 +1,107 @@
+{
+ "_doc": "PHASE 1 PRE-REGISTRATION -- pass-gate (transmission-gate) XOR2/XNOR2 and MUX2 built from SG13G2 primitives and characterised on a QAL delivered rail, against the static sg13g2_xnor2_1 / sg13g2_mux2_1 controls. Written BEFORE any deck of this run was generated or run. The working directory qal/pgcell/ contained exactly one file at this instant (DISK_STATE_BEFORE.txt, 0 bytes, 2026-09-29 11:44:26.305884143 -0700); this file is the second.",
+ "date": "2026-09-29",
+ "author_task": "USER'S SUGGESTION: 'You can use the pass-gate xor here.' Phase 1 = build and characterise TG-XOR2 and TG-MUX2 on a QAL rail. Phase 2 (remap sha_slice) is a separate deliverable and is NOT attempted in this file.",
+
+ "why_this_targets_the_blocker": {
+  "census": "work/sha_slice.cmos.v = 56 cells: 10 xnor2, 8 mux2, 6 a21oi, 5 o21ai, 5 nor2, 5 nand2, 3 or2, 3 nor2b, 3 inv, 3 and2, 3 a21o, 2 xor2.",
+  "stack_depths_MEASURED_from_the_PDK_spice": "qal/sha256/cells/stack_depths.json, computed by switch-level evaluation of sg13g2_stdcell.spice: sg13g2_xnor2_1 binding_pmos_rise_depth = 2 (worst vector A=0,B=0), sg13g2_mux2_1 binding_pmos_rise_depth = 2 (internal net6 on vector A0=A1=S=0), sg13g2_o21ai_1 binding depth 2, sg13g2_inv_1 = 1, sg13g2_nand2_1 = 1.",
+  "therefore": "the 10 xnor2 + 8 mux2 (18 of 56, and 20 with the 2 xor2) are 2-HIGH cells in the static library. A transmission gate has NO pull-up stack at all: its conduction path from source to load is one nMOS and one pMOS IN PARALLEL, depth 1 by inspection and referenced to the DATA node, not to the rail."
+ },
+
+ "HONEST_RESTATEMENT_OF_THE_ANCHOR_BEFORE_I_MEASURE_IT": {
+  "what_the_brief_says": "sg13g2_o21ai_1 is 'the cell MEASURED never to settle at any operating point inside the PDK envelope (25.3% of rail at freeze, 49.5% after a full 500 ps tail, 83.0% even at dV=1.5, t_valid80 first at 515.1 ps)'.",
+  "what_the_campaign_ITSELF_later_measured": "qal/dvopt/RESULTS.json section f_two_high_stack AMENDS that reading. Against an IDEAL supply the 2-high stack reaches 99.78-99.99 % of its rail at EVERY characterised swing 0.60-1.65 V; it is not a headroom failure, it is a SPEED failure (t90 715.4 ps at 0.60 V, 116.5 ps at 1.50 V = a near-constant 3.12-3.55x the inverter at the same supply) COMPOUNDED by a DELIVERY failure (the o21ai bank's VA_open is NEGATIVE, -0.113 to -0.228 V, because the unsettled stack conducts DC, so the bank delivers only 0.61-0.73 V where an inverter bank delivers 1.01 V). At dV=1.65 the o21ai bank does reach t_valid90 = 495.5 ps inside the committed 500 ps window. The standing verdict is 'correctness relaxes, SPEED does not: 406-507 ps level time = 4.4-5.5x the 92.8 ps CMOS logic level'.",
+  "so_what_I_will_actually_reproduce": "BOTH readings, because both are load-bearing: (i) the committed in-bank row i0_o21_dv150 numbers the brief quotes (VBEND 0.6076701932224732, t_hop 67.31716163004057 ps, VA_open -0.17394619083354046, t_valid80 515.148911 ps, IPK 1435.09869 uA, s_end(min) 82.988377554491, t_valid90 = None), and (ii) the ideal-supply floor t90 at 0.60 / 1.00 / 1.50 V (715.433 / 177.001 / 116.458 ps). If my harness reproduces both, it is anchored to the anchor AND to its amendment, and I will state the amended reading in the result rather than repeating the superseded one.",
+  "consequence_for_this_run": "the pass-gate case must be argued against the AMENDED anchor -- 'the deep-stack cells are 3.1-3.5x slow and load the bank so hard it cannot deliver' -- not against 'they never settle'. A pass-gate cell that is merely as fast as an inverter and draws little from the rail would answer BOTH halves of the amended anchor; that is the bar."
+ },
+
+ "cells_to_be_built_PRE_STATED_TOPOLOGY": {
+  "tg_xnor2": {
+   "function": "Y = A XNOR B. B is the select: B=0 -> Y = Abar (from the rail-powered inverter), B=1 -> Y = A (raw, passed).",
+   "devices": "inv_A (pMOS wp / nMOS wn, supply AND pMOS bulk on the bank rail) -> Abar; inv_B -> Bbar; TG1 = nMOS(gate Bbar) || pMOS(gate B) passing Abar; TG2 = nMOS(gate B) || pMOS(gate Bbar) passing A. 8 transistors.",
+   "xor_variant": "identical cell with the two TG source taps exchanged (TG1 passes A, TG2 passes Abar). Same 8 devices, same cost -- XOR and XNOR are the SAME cell in this family, which is itself a finding to record against a static library that needs two different cells."
+  },
+  "tg_mux2": {
+   "function": "X = S ? A1 : A0.",
+   "devices": "inv_S -> Sb; TG0 = nMOS(gate Sb) || pMOS(gate S) passing A0; TG1 = nMOS(gate S) || pMOS(gate Sb) passing A1. 6 transistors."
+  },
+  "PRE_STATED_ASYMMETRY_I_EXPECT_TO_MEASURE": "TG-XNOR2 is RESTORED on the B=0 half of its input space (the passed node is an inverter output referenced to this cell's own rail) and TRANSPARENT on the B=1 half (the passed node is the raw predecessor level). TG-MUX2 is TRANSPARENT on BOTH halves -- it never touches the rail with its data path. So MUX2 is the harder case and any level-loss verdict must be quoted per-vector, never averaged."
+ },
+
+ "sizing_and_its_justification_PRE_STATED": {
+  "campaign_reference_points": "static cell = pMOS 1.12 um / nMOS 0.74 um (l=0.13u); bank TRANSFER switch = TG nMOS 10 um / pMOS 20 um + 2 um park (tg15p).",
+  "why_a_logic_TG_must_be_far_smaller_than_the_transfer_switch": "the transfer switch moves the whole bank charge (CA = 35.979 fF, ~43 fC at dV=1.2) through an LC resonance in 70-126 ps and its Ron sets Q = sqrt(L/C_eff)/R -- MEASURED Ron 60 ohm at w=10u. A logic TG drives CL = 2 fF (the committed load) and only needs Ron*CL << the settle window: at a 100 ps window that is Ron << 50 kohm, four orders of magnitude slacker. Sizing a logic TG like the transfer switch would add its own gate and well capacitance to every logic node for no speed.",
+  "swept_widths": [
+   {"name": "tgS", "wn_um": 0.37, "wp_um": 0.56, "rationale": "half the campaign static cell"},
+   {"name": "tgM", "wn_um": 0.74, "wp_um": 1.12, "rationale": "EXACTLY the campaign-standard static-cell widths and ratio -- the default, so the comparison against the static control is iso-device-width"},
+   {"name": "tgL", "wn_um": 1.48, "wp_um": 2.24, "rationale": "double, to show whether width is a lever at all"}
+  ],
+  "control_inverter_widths": "held at the campaign standard 1.12u/0.74u in every variant, so the swept quantity is the PASS devices alone.",
+  "rule_pre_stated": "the reported cell is the SMALLEST swept width that passes C1 and C2 at the committed robust delivered rail 0.7138163 V. If all three pass, tgS is reported as the cell and tgM/tgL are reported as the sensitivity."
+ },
+
+ "rails_PRE_STATED": {
+  "grid_V": [0.68, 0.7138163, 0.7544, 1.26],
+  "provenance": "0.7138163 = the committed robust delivered rail (lsweep h_L15_W30_dv120 VBEND, reproduced EXACTLY by banktank's instrument check); 0.7544 = banktank bank-1 rail at its own boundary; 0.68 and 1.26 = the low and high ends of the brief's stated QAL delivered range (~0.68-0.75 V peer-fed, up to ~1.26 V tank-fed).",
+  "reference": "1.2 V CMOS DC reference case included in every deck, both as the speed comparator and as the per-deck instrument check (committed cellcmp2 bc112 = 57.1432 ps; dvopt's own re-run 57.1429 ps)."
+ },
+
+ "acceptance_gates_PRE_STATED": {
+  "G0_ANCHOR_bank": "the committed dvopt row i0_o21_dv150 reproduces at rel <= 1e-6 on VBEND, t_hop_ps, VA_open, t_valid80_ps and IPK_uA, and s_end(min) within 1e-3 rel of 82.99, with t_valid90 = None. Method: the committed deck h_i0_o21_dv150.cir is copied BYTE-IDENTICAL (md5 recorded) into this directory and re-run under this run's OWN PYMS_VAE_CACHE.",
+  "G0_ANCHOR_floor": "the ideal-supply o21ai t90 at 0.60 / 1.00 / 1.50 V reproduces 715.433 / 177.001 / 116.458 ps within 1 % rel, and the 1.2 V CMOS inverter reference reproduces 57.143 ps within 0.1 %.",
+  "C1_FUNCTION": "PASS iff EVERY input vector of TG-XNOR2 (4 vectors) and TG-MUX2 (8 vectors) puts the output on the CORRECT side of half the rail at the settle checkpoint, at EVERY rail in the grid. A single wrong vector at any rail is a FAIL and is reported as such.",
+  "C2_LEVEL_single_cell": "PASS iff |level loss| <= 50 mV for BOTH polarities through ONE cell at rail 0.7138163 V at the settle checkpoint. 50 mV is chosen as ~7.8x the 6.44 mV 1-sigma trip floor (qal/vtaudit/AUDIT.md), i.e. a loss that still leaves a decisive separation. Loss is defined as (source level) - (output level) for a HIGH and (output level) - (source level) for a LOW, both signed so that positive = loss.",
+  "C2_LEVEL_chained": "the same quantity through a chain of 4 TG cells with NO restoring cell between them, reported per depth. NO pass/fail is pre-stated -- the number is the answer, and the pre-stated EXPECTATION is below.",
+  "C3_SPEED": "t50/t80/t90/t95 at the delivered rail for the TG cell and for the static PDK control at the SAME rail, on the SAME deck. Reported as a ratio. No pass/fail: a ratio is the answer.",
+  "C4_RAIL_DRAW": "Q_rail (fC) and E_rail (fJ) per operation, metered by 1 F integrator on the cell's rail source with t0 reference, for (i) the WHOLE TG cell, (ii) a TG-PROPER variant whose control signals come from an external source so that only the pass devices and their wells touch the rail, and (iii) the static PDK control. Instrument gate: |charge closure| <= 1 % on the metered loop. NO pass/fail on the value -- reporting it IS the deliverable.",
+  "C5_CHAIN_separation": "in the TANK-FED per-bank-matched-tank configuration (the only arrangement that has produced a computing unbuffered multi-bank chain), an ALTERNATING chain (bank1 inverter-class, bank2 TG, bank3 inverter-class, bank4 TG) must hold HIGH/LOW separation >= 6.44 mV with the CORRECT SIGN at every bank depth. An all-inverter chain in the SAME harness is run as the control and is expected to reproduce the committed banktank separations (706.56 / 612.38 / 619.51 / 671.43 mV) in shape.",
+  "C6_INSTRUMENT": "every metered deck reports its charge/energy closure; any deck failing C6 is an INSTRUMENT FAILURE and is reported as such, not as a data point."
+ },
+
+ "PRE_STATED_EXPECTATIONS_the_three_subtleties": {
+  "a_rail_draw": {
+   "prediction": "The transmission gates THEMSELVES draw essentially nothing from the bank rail: there is no DC path from either pass device to the rail, and the only rail coupling is the pMOS n-well (bulk), whose junction capacitance is ZEROED by sg13lv_compat.sp. I predict the TG-PROPER rail charge to be under 5 % of the whole-cell rail charge. But the CELL is not the gates: its control inverter(s) ARE rail-powered static CMOS, so the whole TG-XNOR2 cell WILL draw from the rail. I predict whole-cell Q_rail within a factor of 2 of the static sg13g2_xnor2_1 control, and the TG-MUX2 (one inverter) to be the cheapest of the three.",
+   "consequence_if_true": "the bank population arithmetic does NOT change in kind -- TG cells are still bank-rail loads and still count in the bank -- but it changes in DEGREE, and the degree is what I am measuring.",
+   "consequence_if_false_and_the_TG_cell_really_draws_nothing": "then a TG cell is not a bank member at all and the whole admission rule is re-derived on a different population; I will say so explicitly rather than folding it into the existing arithmetic.",
+   "declared_bound": "because ad/as/pd/ps are ZEROED, every rail-draw number here is a LOWER BOUND. The well-junction charge of a real layout is exactly the term that is missing, and it is the term that would most inflate the TG-PROPER figure. This is restated on the headline."
+  },
+  "b_level_loss": {
+   "prediction": "STEADY STATE: a full complementary TG has no threshold drop in principle, and at rail >= 0.68 V the rail still exceeds |Vt| for both devices, so I predict steady-state loss under 5 mV for both polarities at 0.7138 V through one cell. TRANSIENT: I predict the loss inside a QAL-length window (~100-200 ps) to be MUCH larger than the steady-state value, because the last tens of millivolts are approached with whichever device is near cutoff, and that is where a pass gate at low overdrive is weakest. I explicitly predict that the HIGH polarity is the worse one at low rail (the nMOS is off at the top and the pMOS has only rail-|Vtp| of overdrive).",
+   "chained": "I predict chained loss to be SUB-ADDITIVE and dominated by the first stage, because a chain of TGs with no restoring cell is just a series resistance from ONE driven source to the final load -- it is an RC delay, not a per-stage charge division. If instead the loss is ADDITIVE per stage, that means something is dividing charge at each node and the pass-gate case is materially worse than the RC argument suggests; that would be the finding."
+  },
+  "c_non_restoring_compound": {
+   "prediction": "In the TANK-FED configuration I predict the ALTERNATING chain HOLDS: separation stays above 6.44 mV with the correct sign at every depth, because the inverter-class stages re-reference the level to their own tank rail and the TG stages, being level-transparent rather than charge-dividing, pass what they are given. I predict separation LOWER than the all-inverter control (706/612/620/671 mV) but still >= 50x the floor.",
+   "the_failure_mode_I_NAME_IN_ADVANCE": "if the TG stage's output is not rail-referenced, the following inverter's input can sit nearer its trip point with a smaller margin than a rail-referenced input. That would show as a separation REDUCED SPECIFICALLY AT THE TG DEPTHS (the even banks), NOT as a monotone fade with depth. A monotone fade would instead mean the TG cells COMPOUND with the bank non-restoration, which is the outcome that would kill the pass-gate path.",
+   "why_tank_fed_and_not_peer_fed": "peer-fed fails for EVERYTHING measured so far (separation 528.7 -> 22.9 -> 1.52 -> 0.12 mV, below the floor by depth 3), so testing TG cells there would measure the known-bad arrangement, not the cells. Tank-fed is the arrangement in which the committed all-static chain computes (32/32 gates value-correct at a 200 ps beat, worst gate 90.545 %, banktank 0aae11e) and shows NO depth dependence."
+  }
+ },
+
+ "configuration_inherited_VERBATIM": {
+  "chain_topology": "qal/banktank per-bank matched tanks: C_tank = m * CBANK with m = 10, CBANK = 35.979 fF; own L = 15 nH and own tg15p transfer triple (nMOS 10u / pMOS 20u / park 2u) per bank; park TANK-REFERENCED (banktank amendment A6, NOT ground-referenced); RS = 10 ohm; VGH = 1.5 V; 2 ps gate edges; true-ZCS probe-then-cut with schedule-matched zeros (A7); dV = 1.2; beat T = 200 ps (the MEASURED earliest correct beat); H = 4 banks.",
+  "metering": "1 F integrators with an explicit t=0 PEDESTAL reference on every integrator. '.measure INTEGRAL V(<B-source>)' is NOT used anywhere (it under-reports 11-44 %).",
+  "devices": "sg13_lv_nmos / sg13_lv_pmos via qal/sg13lv_compat.sp (ad/as/pd/ps ZEROED); PSP103 via .hdl + sg13g2_psp103_tt.lib; l = 0.13u for hand-built devices, the PDK's own l for the PDK control subckts (0.13u for xnor2/mux2/inv/nand2, 0.15u for o21ai).",
+  "corners": "tt only. No corner work in this phase; if any is added it is via INSTANCE-LEVEL DTA only (.OPTIONS DEVICE TEMP is INERT against PyMS-compiled PSP103)."
+ },
+
+ "declared_limitations_repeated_on_every_headline": [
+  "sg13lv_compat.sp ZEROES ad/as/pd/ps: junction capacitance is ABSENT from every hand-built device and from the PDK control subckts as instantiated through the shim. Every time, every energy and every rail-draw number here is a LOWER BOUND on a real layout, and the TG-PROPER rail draw is the number most affected because the pMOS n-well junction is precisely the missing term.",
+  "no interconnect, no routing capacitance, no inductor self-capacitance.",
+  "the ideal inductor with a lumped RS = 10 ohm is inherited from the committed harness; MEASURED TG channel resistance during a hop is 96-130 ohm so RS is not the limiter.",
+  "anything driven from an ideal voltage source is a BOOKING and its row is a BOUND. In this phase the bank-1 inputs, the TG-PROPER control signals and the tank pre-charge are ideal sources and are labelled as such on their rows.",
+  "single-cell and 4-bank scope only. This phase does NOT remap sha_slice and does NOT produce a cell-count, transistor-count or depth comparison; that is Phase 2."
+ ],
+
+ "deliverables": ["PRE_REGISTERED.json (this file)", "pg.py (the generator/driver)", "ANCHOR.json", "CELLS.json", "RAILDRAW.json", "LEVEL.json", "CHAIN.json", "RESULTS.json", "AMENDMENT.md if any protocol change is forced"],
+
+ "environment": {
+  "xyce": "/usr/local/src/xyce-build/src/Xyce",
+  "psp103_va": "/usr/local/share/xyce/verilog-a/psp103/psp103.va",
+  "model": "/usr/local/src/kestrel/sim/models/sg13g2_psp103_tt.lib",
+  "shim": "/usr/local/src/stat-sim/qal/sg13lv_compat.sp",
+  "pdk_spice": "/usr/local/src/IHP-Open-PDK/ihp-sg13g2/libs.ref/sg13g2_stdcell/spice/sg13g2_stdcell.spice",
+  "own_cache": "/tmp/claude-1001/-usr-local-src/4921ad0c-f17b-4b84-986a-5917c9ebd2a6/scratchpad/vae_cache_pgcell",
+  "own_directory": "/usr/local/src/stat-sim/qal/pgcell -- nothing is written to qal/sha256/ (the sibling NAND2-only run) or to any other workflow's directory",
+  "concurrency": "<= 4 heavy Xyce jobs; other workflows share this 16-core box (load average 3.75 at the time of writing)"
+ }
+}

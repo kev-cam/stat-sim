@@ -1,0 +1,6 @@
+
+read_rtlil /usr/local/src/stat-sim/qal/pgcell_skept/g_cmos_gold.il
+read_rtlil /usr/local/src/stat-sim/qal/pgcell_skept/g_cmos_gate.il
+miter -equiv -flatten -make_assert gold gate miter
+hierarchy -top miter
+sat -verify -prove-asserts -show-ports miter

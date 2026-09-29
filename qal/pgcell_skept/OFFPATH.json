@@ -1,0 +1,302 @@
+{
+ "_doc": "DIAGNOSIS of the one place my fixed-rail cascade and the run's disagree.\n\nSix of the run's eight fixed-rail TG-cascade rows reproduce here to <= 1.4 mV.\nTwo disagree by ~660-690 mV, and they are exactly the two LOW-polarity rows.\n\nThe cause, pinned rather than guessed:\n  the run's cascade ties every mux's OFF path to a single IDEAL source at the\n  opposite logic level (level.py: `VOFF<tag> off_<tag> 0 <0.0 if hi else v>`).\n  For the LOW cascades that source holds a full 0.7138 V from t = 0 -- BEFORE the\n  bank rail has ramped at all.  The deselected transmission gate's pMOS gate is\n  Sb, which comes from the cell's own rail-powered inverter and is therefore 0 V\n  until the rail arrives, so that pMOS is hard ON and drags the output up to the\n  off-path source.  The result is a node at 0.84 V on a 0.714 V rail while it is\n  supposed to be at 0.\n\n  For the HIGH cascades the same source sits at 0.0 V, which is what a\n  rail-powered predecessor also produces before its rail arrives -- so those rows\n  carry no artifact, and they match to 0.17 mV.\n\nThis run therefore measures BOTH off-path drivers:\n  off = IDEAL source at the opposite level  (the run's construction)\n  off = a REAL rail-powered inverter        (what a predecessor QAL bank is)\nand reports them side by side.  The tank-fed chain is NOT affected: bt.py wires\neach TG bank's off path to a real predecessor cell output (only bank 1's comes\nfrom an ideal source), so the chain verdict stands on its own footing.",
+ "rows": {
+  "vhi  LOW  ideal-head": {
+   "run_loss_ckpt_mV": [
+    350.016,
+    646.113,
+    687.739,
+    701.096
+   ],
+   "run_correct": [
+    true,
+    false,
+    false,
+    false
+   ],
+   "mine_loss_ckpt_mV": [
+    351.433,
+    646.306,
+    687.899,
+    701.246
+   ],
+   "mine_correct": [
+    true,
+    false,
+    false,
+    false
+   ],
+   "max_abs_diff_mV": 1.418,
+   "run_off_path": "IDEAL source held at 0.7138 V from t=0, i.e. a full logic HIGH before the bank rail exists",
+   "mine_off_path": "IDEAL source at the opposite level (as the run)"
+  },
+  "vhi  HIGH ideal-head": {
+   "run_loss_ckpt_mV": [
+    27.876,
+    61.704,
+    102.637,
+    139.633
+   ],
+   "run_correct": [
+    true,
+    true,
+    true,
+    true
+   ],
+   "mine_loss_ckpt_mV": [
+    27.86,
+    61.675,
+    102.62,
+    139.667
+   ],
+   "mine_correct": [
+    true,
+    true,
+    true,
+    true
+   ],
+   "max_abs_diff_mV": 0.033,
+   "run_off_path": "IDEAL source at 0 V -- same as a rail-powered driver before its rail arrives, so NO artifact",
+   "mine_off_path": "IDEAL source at the opposite level (as the run)"
+  },
+  "rail LOW  ideal-head": {
+   "run_loss_ckpt_mV": [
+    526.997,
+    671.986,
+    721.185,
+    738.528
+   ],
+   "run_correct": [
+    false,
+    false,
+    false,
+    false
+   ],
+   "mine_loss_ckpt_mV": [
+    526.623,
+    671.678,
+    720.842,
+    738.168
+   ],
+   "mine_correct": [
+    false,
+    false,
+    false,
+    false
+   ],
+   "max_abs_diff_mV": 0.374,
+   "run_off_path": "IDEAL source held at 0.7138 V from t=0, i.e. a full logic HIGH before the bank rail exists",
+   "mine_off_path": "IDEAL source at the opposite level (as the run)"
+  },
+  "rail HIGH ideal-head": {
+   "run_loss_ckpt_mV": [
+    -14.05,
+    -25.342,
+    -32.822,
+    -35.942
+   ],
+   "run_correct": [
+    true,
+    true,
+    true,
+    true
+   ],
+   "mine_loss_ckpt_mV": [
+    -14.013,
+    -25.277,
+    -32.739,
+    -35.852
+   ],
+   "mine_correct": [
+    true,
+    true,
+    true,
+    true
+   ],
+   "max_abs_diff_mV": 0.09,
+   "run_off_path": "IDEAL source at 0 V -- same as a rail-powered driver before its rail arrives, so NO artifact",
+   "mine_off_path": "IDEAL source at the opposite level (as the run)"
+  },
+  "vhi  LOW  real-head": {
+   "run_loss_ckpt_mV": [
+    579.086,
+    670.265,
+    700.569,
+    710.952
+   ],
+   "run_correct": [
+    false,
+    false,
+    false,
+    false
+   ],
+   "mine_loss_ckpt_mV": [
+    25.401,
+    36.951,
+    45.126,
+    48.647
+   ],
+   "mine_correct": [
+    true,
+    true,
+    true,
+    true
+   ],
+   "max_abs_diff_mV": 662.305,
+   "run_off_path": "IDEAL source held at 0.7138 V from t=0, i.e. a full logic HIGH before the bank rail exists",
+   "mine_off_path": "a REAL rail-powered inverter"
+  },
+  "vhi  HIGH real-head": {
+   "run_loss_ckpt_mV": [
+    482.767,
+    613.967,
+    636.756,
+    643.826
+   ],
+   "run_correct": [
+    false,
+    false,
+    false,
+    false
+   ],
+   "mine_loss_ckpt_mV": [
+    482.937,
+    614.088,
+    636.872,
+    643.938
+   ],
+   "mine_correct": [
+    false,
+    false,
+    false,
+    false
+   ],
+   "max_abs_diff_mV": 0.17,
+   "run_off_path": "IDEAL source at 0 V -- same as a rail-powered driver before its rail arrives, so NO artifact",
+   "mine_off_path": "a REAL rail-powered inverter"
+  },
+  "rail LOW  real-head": {
+   "run_loss_ckpt_mV": [
+    841.579,
+    875.681,
+    895.561,
+    903.354
+   ],
+   "run_correct": [
+    false,
+    false,
+    false,
+    false
+   ],
+   "mine_loss_ckpt_mV": [
+    151.331,
+    307.189,
+    312.134,
+    295.039
+   ],
+   "mine_correct": [
+    true,
+    true,
+    true,
+    true
+   ],
+   "max_abs_diff_mV": 690.248,
+   "run_off_path": "IDEAL source held at 0.7138 V from t=0, i.e. a full logic HIGH before the bank rail exists",
+   "mine_off_path": "a REAL rail-powered inverter"
+  },
+  "rail HIGH real-head": {
+   "run_loss_ckpt_mV": [
+    147.902,
+    364.252,
+    401.609,
+    418.806
+   ],
+   "run_correct": [
+    true,
+    false,
+    false,
+    false
+   ],
+   "mine_loss_ckpt_mV": [
+    147.912,
+    364.31,
+    401.642,
+    418.843
+   ],
+   "mine_correct": [
+    true,
+    false,
+    false,
+    false
+   ],
+   "max_abs_diff_mV": 0.059,
+   "run_off_path": "IDEAL source at 0 V -- same as a rail-powered driver before its rail arrives, so NO artifact",
+   "mine_off_path": "a REAL rail-powered inverter"
+  },
+  "vhi  LOW  benign-off": {
+   "mine_loss_ckpt_mV": [
+    15.717,
+    31.235,
+    42.906,
+    47.455
+   ],
+   "mine_correct": [
+    true,
+    true,
+    true,
+    true
+   ],
+   "mine_off_path": "tied to the ON path: no data contention",
+   "run_loss_ckpt_mV": null
+  },
+  "vhi  HIGH benign-off": {
+   "mine_loss_ckpt_mV": [
+    -20.496,
+    -35.443,
+    -44.455,
+    -47.625
+   ],
+   "mine_correct": [
+    true,
+    true,
+    true,
+    true
+   ],
+   "mine_off_path": "tied to the ON path: no data contention",
+   "run_loss_ckpt_mV": null
+  },
+  "rail LOW  benign-off": {
+   "mine_loss_ckpt_mV": [
+    76.606,
+    298.313,
+    324.545,
+    295.192
+   ],
+   "mine_correct": [
+    true,
+    true,
+    true,
+    true
+   ],
+   "mine_off_path": "tied to the ON path: no data contention",
+   "run_loss_ckpt_mV": null
+  },
+  "rail HIGH benign-off": {
+   "mine_loss_ckpt_mV": [
+    -79.537,
+    -131.258,
+    -161.45,
+    -171.932
+   ],
+   "mine_correct": [
+    true,
+    true,
+    true,
+    true
+   ],
+   "mine_off_path": "tied to the ON path: no data contention",
+   "run_loss_ckpt_mV": null
+  }
+ },
+ "instrument_t90_ps": 57.14227742001569
+}

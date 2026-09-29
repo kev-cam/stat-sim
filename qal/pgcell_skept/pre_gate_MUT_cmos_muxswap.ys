@@ -1,0 +1,7 @@
+
+read_verilog /usr/local/src/stat-sim/qal/pgcell_skept/mycells.v
+read_verilog /usr/local/src/stat-sim/qal/pgcell_skept/mut_cmos_muxswap.v
+hierarchy -top sha_slice
+proc; flatten; opt -full
+rename sha_slice gate
+write_rtlil /usr/local/src/stat-sim/qal/pgcell_skept/g_MUT_cmos_muxswap_gate.il

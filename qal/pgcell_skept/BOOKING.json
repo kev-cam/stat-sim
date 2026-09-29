@@ -1,0 +1,504 @@
+{
+ "run/D_raildraw.cir": {
+  "total_ideal_sources": 102,
+  "by_class": {
+   "rail / supply ramp (the METERED bank supply)": {
+    "n": 29,
+    "examples": [
+     "VSwx00 r_wx00 0 PWL(0 0 100p 0 102p 0.7138163)",
+     "VSwx01 r_wx01 0 PWL(0 0 100p 0 102p 0.7138163)",
+     "VSwx10 r_wx10 0 PWL(0 0 100p 0 102p 0.7138163)"
+    ]
+   },
+   "cell data input": {
+    "n": 68,
+    "examples": [
+     "VDawx00 a_wx00 0 0.0000000",
+     "VDbwx00 b_wx00 0 0.0000000",
+     "VDawx01 a_wx01 0 0.0000000"
+    ]
+   },
+   "TG cell gate control (ideal -- the TG's own drive NOT charged to a rail)": {
+    "n": 4,
+    "examples": [
+     "VGpp0 gn_pp0 0 PWL(0 0 100p 0 102p 0.7138163)",
+     "VGPpp0 gp_pp0 0 0",
+     "VGpp1 gn_pp1 0 PWL(0 0 100p 0 102p 0.7138163)"
+    ]
+   },
+   "bank-1 chain-head input / inverter input": {
+    "n": 1,
+    "examples": [
+     "VIzc i_zc 0 PWL(0 1.2 100p 1.2 102p 0)"
+    ]
+   }
+  }
+ },
+ "run/D2_raildraw_vhi.cir": {
+  "total_ideal_sources": 43,
+  "by_class": {
+   "the global +1.5 V fixed-well / switch-drive supply": {
+    "n": 1,
+    "examples": [
+     "VHI vhi 0 1.5"
+    ]
+   },
+   "rail / supply ramp (the METERED bank supply)": {
+    "n": 11,
+    "examples": [
+     "VSqp0 r_qp0 0 PWL(0 0 100p 0 102p 0.7138163)",
+     "VSqp1 r_qp1 0 PWL(0 0 100p 0 102p 0.7138163)",
+     "VSqm000 r_qm000 0 PWL(0 0 100p 0 102p 0.7138163)"
+    ]
+   },
+   "TG cell gate control (ideal -- the TG's own drive NOT charged to a rail)": {
+    "n": 4,
+    "examples": [
+     "VGqp0 gn_qp0 0 PWL(0 0 100p 0 102p 0.7138163)",
+     "VGPqp0 gp_qp0 0 0",
+     "VGqp1 gn_qp1 0 PWL(0 0 100p 0 102p 0.7138163)"
+    ]
+   },
+   "cell data input": {
+    "n": 26,
+    "examples": [
+     "VDqp0 d_qp0 0 0.0000000",
+     "VDqp1 d_qp1 0 0.7138163",
+     "VDa0qm000 a0_qm000 0 0.0000000"
+    ]
+   },
+   "bank-1 chain-head input / inverter input": {
+    "n": 1,
+    "examples": [
+     "VIzc i_zc 0 PWL(0 1.2 100p 1.2 102p 0)"
+    ]
+   }
+  }
+ },
+ "run/E_level.cir": {
+  "total_ideal_sources": 143,
+  "by_class": {
+   "the global +1.5 V fixed-well / switch-drive supply": {
+    "n": 1,
+    "examples": [
+     "VHI vhi 0 1.5"
+    ]
+   },
+   "rail / supply ramp (the METERED bank supply)": {
+    "n": 21,
+    "examples": [
+     "VStgmrhi r_tgmrhi 0 PWL(0 0 100p 0 102p 0.7138163)",
+     "VStgmrhd r_tgmrhd 0 PWL(0 0 100p 0 102p 0.7138163)",
+     "VStgmrli r_tgmrli 0 PWL(0 0 100p 0 102p 0.7138163)"
+    ]
+   },
+   "cascade head": {
+    "n": 20,
+    "examples": [
+     "VHtgmrhi s_tgmrhi 0 0.7138163",
+     "VHtgmrhd h_tgmrhd 0 0.0000000",
+     "VHtgmrli s_tgmrli 0 0.0000000"
+    ]
+   },
+   "cascade off-path head": {
+    "n": 20,
+    "examples": [
+     "VOFFtgmrhi off_tgmrhi 0 0.0000000",
+     "VOFFtgmrhd off_tgmrhd 0 0.0000000",
+     "VOFFtgmrli off_tgmrli 0 0.7138163"
+    ]
+   },
+   "TG SELECT line -- drives 2 of the TG's 4 gates": {
+    "n": 48,
+    "examples": [
+     "VSELtgmrhi_1 sel_tgmrhi_1 0 0",
+     "VSELtgmrhi_2 sel_tgmrhi_2 0 0",
+     "VSELtgmrhi_3 sel_tgmrhi_3 0 0"
+    ]
+   },
+   "other ideal source": {
+    "n": 32,
+    "examples": [
+     "VBtgxrhi_1 b_tgxrhi_1 0 0",
+     "VBtgxrhi_2 b_tgxrhi_2 0 0",
+     "VBtgxrhi_3 b_tgxrhi_3 0 0"
+    ]
+   },
+   "bank-1 chain-head input / inverter input": {
+    "n": 1,
+    "examples": [
+     "VIzc i_zc 0 PWL(0 1.2 100p 1.2 102p 0)"
+    ]
+   }
+  }
+ },
+ "run/C_W.cir": {
+  "total_ideal_sources": 134,
+  "by_class": {
+   "rail / supply ramp (the METERED bank supply)": {
+    "n": 37,
+    "examples": [
+     "VSwS_x00 r_wS_x00 0 PWL(0 0 100p 0 102p 0.7138163)",
+     "VSwS_x01 r_wS_x01 0 PWL(0 0 100p 0 102p 0.7138163)",
+     "VSwS_x10 r_wS_x10 0 PWL(0 0 100p 0 102p 0.7138163)"
+    ]
+   },
+   "cell data input": {
+    "n": 96,
+    "examples": [
+     "VDAwS_x00 a_wS_x00 0 0.0000000",
+     "VDBwS_x00 b_wS_x00 0 0.0000000",
+     "VDAwS_x01 a_wS_x01 0 0.0000000"
+    ]
+   },
+   "bank-1 chain-head input / inverter input": {
+    "n": 1,
+    "examples": [
+     "VIzc i_zc 0 PWL(0 1.2 100p 1.2 102p 0)"
+    ]
+   }
+  }
+ },
+ "run/F_ALT_vhi.cir": {
+  "total_ideal_sources": 41,
+  "by_class": {
+   "the global +1.5 V fixed-well / switch-drive supply": {
+    "n": 1,
+    "examples": [
+     "VHI vhi 0 1.5"
+    ]
+   },
+   "bank ground reference": {
+    "n": 4,
+    "examples": [
+     "VMG1 gn1 0 0",
+     "VMG2 gn2 0 0",
+     "VMG3 gn3 0 0"
+    ]
+   },
+   "bank-1 chain-head input / inverter input": {
+    "n": 8,
+    "examples": [
+     "VI1_0 in1_0 0 1.2",
+     "VI1_1 in1_1 0 1.2",
+     "VI1_2 in1_2 0 1.2"
+    ]
+   },
+   "TG SELECT line -- drives 2 of the TG's 4 gates": {
+    "n": 16,
+    "examples": [
+     "VSEL2_0 sel_2_0 0 0",
+     "VSEL2_1 sel_2_1 0 0",
+     "VSEL2_2 sel_2_2 0 0"
+    ]
+   },
+   "bank transfer-switch nMOS gate drive (tg15p, committed)": {
+    "n": 4,
+    "examples": [
+     "VGT1 gt1 0 PWL(0 0 198p 0 200p 1.5 318.524p 1.5 320.524p 0 998p 0 1000p 1.5 1096.19p 1.5 1",
+     "VGT2 gt2 0 PWL(0 0 398p 0 400p 1.5 519.441p 1.5 521.441p 0 1198p 0 1200p 1.5 1341.8p 1.5 1",
+     "VGT3 gt3 0 PWL(0 0 598p 0 600p 1.5 717.966p 1.5 719.966p 0 1398p 0 1400p 1.5 1514.91p 1.5 "
+    ]
+   },
+   "bank transfer-switch pMOS gate drive (tg15p, committed)": {
+    "n": 4,
+    "examples": [
+     "VGTP1 gtp1 0 PWL(0 1.5 198p 1.5 200p 0 318.524p 0 320.524p 1.5 998p 1.5 1000p 0 1096.19p 0",
+     "VGTP2 gtp2 0 PWL(0 1.5 398p 1.5 400p 0 519.441p 0 521.441p 1.5 1198p 1.5 1200p 0 1341.8p 0",
+     "VGTP3 gtp3 0 PWL(0 1.5 598p 1.5 600p 0 717.966p 0 719.966p 1.5 1398p 1.5 1400p 0 1514.91p "
+    ]
+   },
+   "bank transfer-switch PARK gate drive (tg15p, committed)": {
+    "n": 4,
+    "examples": [
+     "VPK1 pk1 0 PWL(0 1.5 198p 1.5 200p 0 318.524p 0 320.524p 1.5 998p 1.5 1000p 0 1096.19p 0 1",
+     "VPK2 pk2 0 PWL(0 1.5 398p 1.5 400p 0 519.441p 0 521.441p 1.5 1198p 1.5 1200p 0 1341.8p 0 1",
+     "VPK3 pk3 0 PWL(0 1.5 598p 1.5 600p 0 717.966p 0 719.966p 1.5 1398p 1.5 1400p 0 1514.91p 0 "
+    ]
+   }
+  }
+ },
+ "run/F_CTL_vhi.cir": {
+  "total_ideal_sources": 25,
+  "by_class": {
+   "the global +1.5 V fixed-well / switch-drive supply": {
+    "n": 1,
+    "examples": [
+     "VHI vhi 0 1.5"
+    ]
+   },
+   "bank ground reference": {
+    "n": 4,
+    "examples": [
+     "VMG1 gn1 0 0",
+     "VMG2 gn2 0 0",
+     "VMG3 gn3 0 0"
+    ]
+   },
+   "bank-1 chain-head input / inverter input": {
+    "n": 8,
+    "examples": [
+     "VI1_0 in1_0 0 1.2",
+     "VI1_1 in1_1 0 1.2",
+     "VI1_2 in1_2 0 1.2"
+    ]
+   },
+   "bank transfer-switch nMOS gate drive (tg15p, committed)": {
+    "n": 4,
+    "examples": [
+     "VGT1 gt1 0 PWL(0 0 198p 0 200p 1.5 318.184p 1.5 320.184p 0 998p 0 1000p 1.5 1129.37p 1.5 1",
+     "VGT2 gt2 0 PWL(0 0 398p 0 400p 1.5 518.76p 1.5 520.76p 0 1198p 0 1200p 1.5 1347.1p 1.5 134",
+     "VGT3 gt3 0 PWL(0 0 598p 0 600p 1.5 717.17p 1.5 719.17p 0 1398p 0 1400p 1.5 1536.89p 1.5 15"
+    ]
+   },
+   "bank transfer-switch pMOS gate drive (tg15p, committed)": {
+    "n": 4,
+    "examples": [
+     "VGTP1 gtp1 0 PWL(0 1.5 198p 1.5 200p 0 318.184p 0 320.184p 1.5 998p 1.5 1000p 0 1129.37p 0",
+     "VGTP2 gtp2 0 PWL(0 1.5 398p 1.5 400p 0 518.76p 0 520.76p 1.5 1198p 1.5 1200p 0 1347.1p 0 1",
+     "VGTP3 gtp3 0 PWL(0 1.5 598p 1.5 600p 0 717.17p 0 719.17p 1.5 1398p 1.5 1400p 0 1536.89p 0 "
+    ]
+   },
+   "bank transfer-switch PARK gate drive (tg15p, committed)": {
+    "n": 4,
+    "examples": [
+     "VPK1 pk1 0 PWL(0 1.5 198p 1.5 200p 0 318.184p 0 320.184p 1.5 998p 1.5 1000p 0 1129.37p 0 1",
+     "VPK2 pk2 0 PWL(0 1.5 398p 1.5 400p 0 518.76p 0 520.76p 1.5 1198p 1.5 1200p 0 1347.1p 0 134",
+     "VPK3 pk3 0 PWL(0 1.5 598p 1.5 600p 0 717.17p 0 719.17p 1.5 1398p 1.5 1400p 0 1536.89p 0 15"
+    ]
+   }
+  }
+ },
+ "run/F_ALLTG_vhi.cir": {
+  "total_ideal_sources": 57,
+  "by_class": {
+   "the global +1.5 V fixed-well / switch-drive supply": {
+    "n": 1,
+    "examples": [
+     "VHI vhi 0 1.5"
+    ]
+   },
+   "bank ground reference": {
+    "n": 4,
+    "examples": [
+     "VMG1 gn1 0 0",
+     "VMG2 gn2 0 0",
+     "VMG3 gn3 0 0"
+    ]
+   },
+   "bank-1 chain-head input / inverter input": {
+    "n": 8,
+    "examples": [
+     "VI1_0 in1_0 0 1.2",
+     "VI1_1 in1_1 0 1.2",
+     "VI1_2 in1_2 0 1.2"
+    ]
+   },
+   "TG SELECT line -- drives 2 of the TG's 4 gates": {
+    "n": 32,
+    "examples": [
+     "VSEL1_0 sel_1_0 0 0",
+     "VSEL1_1 sel_1_1 0 0",
+     "VSEL1_2 sel_1_2 0 0"
+    ]
+   },
+   "bank transfer-switch nMOS gate drive (tg15p, committed)": {
+    "n": 4,
+    "examples": [
+     "VGT1 gt1 0 PWL(0 0 198p 0 200p 1.5 319.984p 1.5 321.984p 0 998p 0 1000p 1.5 1178.74p 1.5 1",
+     "VGT2 gt2 0 PWL(0 0 398p 0 400p 1.5 520.065p 1.5 522.065p 0 1198p 0 1200p 1.5 1378.34p 1.5 ",
+     "VGT3 gt3 0 PWL(0 0 598p 0 600p 1.5 720.067p 1.5 722.067p 0 1398p 0 1400p 1.5 1580.73p 1.5 "
+    ]
+   },
+   "bank transfer-switch pMOS gate drive (tg15p, committed)": {
+    "n": 4,
+    "examples": [
+     "VGTP1 gtp1 0 PWL(0 1.5 198p 1.5 200p 0 319.984p 0 321.984p 1.5 998p 1.5 1000p 0 1178.74p 0",
+     "VGTP2 gtp2 0 PWL(0 1.5 398p 1.5 400p 0 520.065p 0 522.065p 1.5 1198p 1.5 1200p 0 1378.34p ",
+     "VGTP3 gtp3 0 PWL(0 1.5 598p 1.5 600p 0 720.067p 0 722.067p 1.5 1398p 1.5 1400p 0 1580.73p "
+    ]
+   },
+   "bank transfer-switch PARK gate drive (tg15p, committed)": {
+    "n": 4,
+    "examples": [
+     "VPK1 pk1 0 PWL(0 1.5 198p 1.5 200p 0 319.984p 0 321.984p 1.5 998p 1.5 1000p 0 1178.74p 0 1",
+     "VPK2 pk2 0 PWL(0 1.5 398p 1.5 400p 0 520.065p 0 522.065p 1.5 1198p 1.5 1200p 0 1378.34p 0 ",
+     "VPK3 pk3 0 PWL(0 1.5 598p 1.5 600p 0 720.067p 0 722.067p 1.5 1398p 1.5 1400p 0 1580.73p 0 "
+    ]
+   }
+  }
+ },
+ "mine/R_rail.cir": {
+  "total_ideal_sources": 166,
+  "by_class": {
+   "the global +1.5 V fixed-well / switch-drive supply": {
+    "n": 1,
+    "examples": [
+     "VHI vhi 0 1.5"
+    ]
+   },
+   "rail / supply ramp (the METERED bank supply)": {
+    "n": 48,
+    "examples": [
+     "VScalc r_calc 0 PWL(0 0 100p 0 102p 0.7138163)",
+     "VScalo r_calo 0 PWL(0 0 100p 0 102p 0.7138163)",
+     "VSgdn r_gdn 0 PWL(0 0 100p 0 102p 0.7138163)"
+    ]
+   },
+   "bank-1 chain-head input / inverter input": {
+    "n": 4,
+    "examples": [
+     "VIgdn i_gdn 0 0",
+     "VIgdc i_gdc 0 0",
+     "VIgdm i_gdm 0 0"
+    ]
+   },
+   "second rail source (mux under the gate-drive meter)": {
+    "n": 1,
+    "examples": [
+     "VQgdm r2_gdm 0 PWL(0 0 100p 0 102p 0.7138163)"
+    ]
+   },
+   "mux data input": {
+    "n": 2,
+    "examples": [
+     "VA0gdm a0_gdm 0 0",
+     "VA1gdm a1_gdm 0 0.7138163"
+    ]
+   },
+   "cell data input": {
+    "n": 102,
+    "examples": [
+     "VDa0mv000 a0_mv000 0 0.0000000",
+     "VDa1mv000 a1_mv000 0 0.0000000",
+     "VDsmv000 s_mv000 0 0.0000000"
+    ]
+   },
+   "TG cell gate control (ideal -- the TG's own drive NOT charged to a rail)": {
+    "n": 4,
+    "examples": [
+     "VGpv0 gn_pv0 0 PWL(0 0 100p 0 102p 0.7138163)",
+     "VGpv1 gn_pv1 0 PWL(0 0 100p 0 102p 0.7138163)",
+     "VGpr0 gn_pr0 0 PWL(0 0 100p 0 102p 0.7138163)"
+    ]
+   },
+   "TG cell pMOS gate control (ideal)": {
+    "n": 4,
+    "examples": [
+     "VPpv0 gp_pv0 0 0",
+     "VPpv1 gp_pv1 0 0",
+     "VPpr0 gp_pr0 0 0"
+    ]
+   }
+  }
+ },
+ "mine/L_level.cir": {
+  "total_ideal_sources": 147,
+  "by_class": {
+   "the global +1.5 V fixed-well / switch-drive supply": {
+    "n": 1,
+    "examples": [
+     "VHI vhi 0 1.5"
+    ]
+   },
+   "rail / supply ramp (the METERED bank supply)": {
+    "n": 25,
+    "examples": [
+     "VStgcv0ai r_tgcv0ai 0 PWL(0 0 100p 0 102p 0.7138163)",
+     "VStgcv0ar r_tgcv0ar 0 PWL(0 0 100p 0 102p 0.7138163)",
+     "VStgcv0bi r_tgcv0bi 0 PWL(0 0 100p 0 102p 0.7138163)"
+    ]
+   },
+   "cascade head": {
+    "n": 24,
+    "examples": [
+     "VHtgcv0ai h_tgcv0ai 0 0.0000000",
+     "VHtgcv0ar hi_tgcv0ar 0 0.7138163",
+     "VHtgcv0bi h_tgcv0bi 0 0.0000000"
+    ]
+   },
+   "cascade off-path head": {
+    "n": 24,
+    "examples": [
+     "VOtgcv0ai ho_tgcv0ai 0 0.7138163",
+     "VOtgcv0ar hoi_tgcv0ar 0 0.0000000",
+     "VOtgcv0bi ho_tgcv0bi 0 0.7138163"
+    ]
+   },
+   "cell data input": {
+    "n": 72,
+    "examples": [
+     "VD1tgcv0ai sel_1tgcv0ai 0 0",
+     "VD2tgcv0ai sel_2tgcv0ai 0 0",
+     "VD3tgcv0ai sel_3tgcv0ai 0 0"
+    ]
+   },
+   "bank-1 chain-head input / inverter input": {
+    "n": 1,
+    "examples": [
+     "VIzc i_zc 0 PWL(0 1.2 100p 1.2 102p 0)"
+    ]
+   }
+  }
+ },
+ "mine/F_CTL_vhi.cir": {
+  "total_ideal_sources": 25,
+  "by_class": {
+   "the global +1.5 V fixed-well / switch-drive supply": {
+    "n": 1,
+    "examples": [
+     "VHI vhi 0 1.5"
+    ]
+   },
+   "bank ground reference": {
+    "n": 4,
+    "examples": [
+     "VMG1 gn1 0 0",
+     "VMG2 gn2 0 0",
+     "VMG3 gn3 0 0"
+    ]
+   },
+   "bank-1 chain-head input / inverter input": {
+    "n": 8,
+    "examples": [
+     "VI1_0 in1_0 0 1.2",
+     "VI1_1 in1_1 0 1.2",
+     "VI1_2 in1_2 0 1.2"
+    ]
+   },
+   "bank transfer-switch nMOS gate drive (tg15p, committed)": {
+    "n": 4,
+    "examples": [
+     "VGT1 gt1 0 PWL(0 0 198p 0 200p 1.5 318.184p 1.5 320.184p 0 998p 0 1000p 1.5 1129.37p 1.5 1",
+     "VGT2 gt2 0 PWL(0 0 398p 0 400p 1.5 518.76p 1.5 520.76p 0 1198p 0 1200p 1.5 1347.1p 1.5 134",
+     "VGT3 gt3 0 PWL(0 0 598p 0 600p 1.5 717.17p 1.5 719.17p 0 1398p 0 1400p 1.5 1536.89p 1.5 15"
+    ]
+   },
+   "bank transfer-switch pMOS gate drive (tg15p, committed)": {
+    "n": 4,
+    "examples": [
+     "VGTP1 gtp1 0 PWL(0 1.5 198p 1.5 200p 0 318.184p 0 320.184p 1.5 998p 1.5 1000p 0 1129.37p 0",
+     "VGTP2 gtp2 0 PWL(0 1.5 398p 1.5 400p 0 518.76p 0 520.76p 1.5 1198p 1.5 1200p 0 1347.1p 0 1",
+     "VGTP3 gtp3 0 PWL(0 1.5 598p 1.5 600p 0 717.17p 0 719.17p 1.5 1398p 1.5 1400p 0 1536.89p 0 "
+    ]
+   },
+   "bank transfer-switch PARK gate drive (tg15p, committed)": {
+    "n": 4,
+    "examples": [
+     "VPK1 pk1 0 PWL(0 1.5 198p 1.5 200p 0 318.184p 0 320.184p 1.5 998p 1.5 1000p 0 1129.37p 0 1",
+     "VPK2 pk2 0 PWL(0 1.5 398p 1.5 400p 0 518.76p 0 520.76p 1.5 1198p 1.5 1200p 0 1347.1p 0 134",
+     "VPK3 pk3 0 PWL(0 1.5 598p 1.5 600p 0 717.17p 0 719.17p 1.5 1398p 1.5 1400p 0 1536.89p 0 15"
+    ]
+   }
+  }
+ },
+ "mine/F_ALT_vhi.cir": {
+  "error": "not present"
+ },
+ "mine/F_ALTB_vhi.cir": {
+  "error": "not present"
+ },
+ "mine/F_ALT_rail.cir": {
+  "error": "not present"
+ }
+}
