@@ -1,0 +1,101 @@
+{
+  "role": "SKEPTIC / adversarial re-run of the STATIC-CMOS-STRIPPING path",
+  "own_dir": "/usr/local/src/stat-sim/qal/strip_skept",
+  "own_vae_cache": "/tmp/claude-1001/-usr-local-src/4921ad0c-f17b-4b84-986a-5917c9ebd2a6/scratchpad/vae_cache_stripskept",
+  "written_before_any_deck": true,
+  "doctrine": "Re-run, do not read. Every number below is to be produced by decks and extractors written in this directory. No number is to be copied from qal/strip/ or any other committed study; where I quote a primary or committed value it is ONLY as a target to be reproduced or refuted, and it is labelled as such.",
+
+  "S0_TOOLING_CHALLENGE_TO_THE_BRIEF_ITSELF": {
+    "claim_in_brief": "sg13_lv via qal/sg13lv_compat.sp ZEROES ad/as/pd/ps -- device numbers are LOWER bounds and junction leakage is ABSENT",
+    "my_reading_of_the_source_BEFORE_measuring": "qal/sg13lv_compat.sp declares ad/as/pd/ps as SUBCKT parameters with default 0 but its body is 'M1 d g s b sg13g2_nmos W={w} L={l}' -- ad/as/pd/ps are NEVER referenced, so they are accepted and DISCARDED. The PSP103 instance therefore runs at the MODEL's own defaults, which PSP103_module.include line 146-149 gives as ABSOURCE=ABDRAIN=1.0e-12 m^2 and LSSOURCE=LGSOURCE=1.0e-6 m. swjuncap=3 in sg13g2_psp103_tt.lib, i.e. JUNCAP200 is ENABLED.",
+    "S1_PREDICTION": "Junction leakage is NOT absent. It is present at a DEFAULT junction geometry of 1.0 um^2 bottom area and 1.0 um edge length, which is LARGER than any realistic contacted-diffusion geometry for a 0.74-1.12 um wide device. Therefore the leakage numbers are NOT lower bounds on account of the junction term; if anything that term is OVER-represented.",
+    "how_I_will_test_it": "Instantiate the raw sg13g2_nmos/sg13g2_pmos model directly on an M-card with AD/AS/PD/PS set explicitly, in three arms in ONE deck: (i) DEFAULT (= what the shim delivers), (ii) ZERO (AD=AS=PD=PS=0, what the brief believes it has), (iii) REALISTIC (AD=AS=0.2516e-12 m^2, PD=PS=2.16e-6 m, a contacted 0.34 um diffusion on the campaign-standard widths). Falsifiable: if arm (i) equals arm (ii) then the shim really does zero the junction and my S1 is wrong.",
+    "S1_PREREG_FALSIFIER": "If I(default) == I(zero) to within the measurement floor, S1 is REFUTED and the brief's framing stands."
+  },
+
+  "A_LEAKAGE_BUDGET": {
+    "beat_primary_ps": 200,
+    "beats_also_reported_ps": [150, 300],
+    "node_CL_fF": 2.0,
+    "rail_V": "the delivered QAL rail measured in this run's own bank deck; ALSO reported at a stated fixed 0.6077 V so the number is comparable",
+    "S2_PREDICTION": "Fraction of node charge lost per 200 ps beat < 0.01 % in EVERY junction arm including the realistic one, i.e. the user's premise survives. I further predict the realistic arm is HIGHER than the zero arm but that the difference does not change the order of magnitude of the verdict.",
+    "S2_PREREG_FALSIFIER": "If the realistic-junction arm loses > 1 % of node charge per 200 ps beat, the premise is materially weakened and I must say so.",
+    "S3_null_control": "A 2 fF capacitor with NOTHING attached, in the same deck, same solver options. Must droop < 1 uV over the measurement window or the droop numbers are solver drift and unquotable.",
+    "S4_resistor_calibration": "A known 1e12 ohm resistor from the node to ground, in the same deck. Must read I = V/R within 1 %; establishes the current floor of this harness.",
+    "S5_keeper_arm": "Same node with a conventional staticiser fitted, to price the keeper over one beat.",
+    "solver_floor_discipline": "RELTOL on the rail sets a voltage resolution floor. The hold window MUST be long enough that the droop is >= 20x that floor, and I will state the floor next to the number. A droop comparable to RELTOL*rail is NOISE and will be reported as 'below floor', not as a value."
+  },
+
+  "B_O21AI_ANCHOR_AND_STRIPPED": {
+    "static_control": "o21ai-equivalent hand-built from discrete campaign-standard devices (nMOS 0.74u, pMOS 1.12u, l=0.13u): Y = !(A1|A2)&B1 ... specifically the sg13g2 o21ai function Y = !((A1|A2)&B1). pMOS network: series pair (A1,A2 in parallel-source config) per the dual. Truth table VERIFIED exhaustively against the function before any timing number is quoted.",
+    "stripped_cell": "2 grounded nMOS trees (f and f_bar, factored series-parallel) + 2 cross-coupled pMOS with SOURCE AND BULK on the rail. NO keeper. NO precharge device. Device count asserted from the netlist by counting M-cards, not from intent.",
+    "wxc_widths": [0.56, 1.12],
+    "input_conventions_BOTH_REQUIRED": ["dV convention (inputs swing to the full drive amplitude dV, the committed bank convention)", "RAIL-REFERENCED (inputs swing only to the delivered rail, the real chain condition)"],
+    "S6_PREDICTION": "Static o21ai_hb NEVER reaches 90 % of the instantaneous rail within a 500 ps tail (I expect s_end near 83 %, t_valid80 near 515 ps). Stripped at wxc=1.12 DOES settle under the dV convention. Stripped FAILS under rail-referenced inputs. I predict the primary's headline 'settles where static cannot' is TRUE ONLY under the dV convention and therefore is NOT a chain-relevant result.",
+    "S7_PREDICTION": "When the cross-coupled pair actually resolves, |Vgs|/rail of the conducting pull-up >= 0.94 at the conduction instant and >= 0.96 later, with Vbs EXACTLY 0.000 V because source and bulk are the same net. When the pair does NOT resolve, |Vgs|/rail falls to <= 0.80, i.e. no better than the static series device -- the mechanism advantage is CONTINGENT.",
+    "conduction_instant_definition": "max of d(V_node - V_rail)/dt, NOT max dV/dt (which lands on the rail ramp and measures nothing). Reported ALSO at the 50 % crossing, at the freeze and at the end so no single definition carries the claim.",
+    "S8_THE_NMOS_WALL": "I predict the binding threshold is the nMOS, not the pMOS: Vtn > |Vtp| in this PDK. I will MEASURE both in this directory (Id = 100 nA * W/L at |Vds| = 0.1 V) rather than inherit them. If Vtn > |Vtp| then an nMOS-only tree has LESS headroom than the pMOS network it replaced and the |Vtp| wall is not removed, only relocated onto a worse device."
+  },
+
+  "C_DEVICE_COUNT_AUDIT": {
+    "S9_PREDICTION": "Counting only the cell, stripped - static = 2 - (inversion overhead) for a single-stage series-parallel gate. I predict the primary's table is ARITHMETICALLY right and yet UNDER-CHARGED, because dual-rail needs BOTH input polarities and a single-rail predecessor does not supply them. If the complement must be generated, each dual-rail input costs an extra inverter (2 devices) at the boundary, which for a 3-input cell is +6 devices and reverses every tie and the single mux2 win.",
+    "audit_rule": "Count M-cards in the actual netlist. Charge the complement explicitly under two accounting regimes: (i) FULLY DUAL-RAIL FABRIC (complement free from the predecessor, the primary's implicit assumption), (ii) SINGLE-RAIL BOUNDARY (complement must be generated). Report both.",
+    "also_to_charge": "the cross-coupled pair's own drive, wire count (2 nets per signal), and what is genuinely REMOVED (keeper, static holding path, precharge device) -- verified absent in the netlist by grep, not asserted."
+  },
+
+  "D_CHAIN": {
+    "topology": "tank-fed, per-bank local tank -> own inductor -> series R -> transfer gate -> that bank's rail, 6 banks, cells fed ONLY by the predecessor bank's output nets (no flop/latch/buffer/level-shifter). Peer-fed NOT tested (pre-registered exclusion, it fails for everything).",
+    "S10_PREDICTION": "Stripped chain separation goes NEGATIVE at depth >= 2 (should-be-HIGH nodes sitting BELOW should-be-LOW nodes), because the rail-referenced input levels cannot break the cross-coupled pair. Static control keeps POSITIVE separation to depth 6 but with per-gate values wrong at most depths.",
+    "pattern_guard": "For every node claimed correct, report the minimum gate drive on the devices that are supposed to be pulling it, against the MEASURED Vtn. A node that is merely UNDISTURBED (its pull device off) must NOT be scored as correct. 4/8 correct on a dual-rail bank is the by-construction score of an UNRESOLVED pair and will be called out as such, not reported as half-working."
+  },
+
+  "E_BOOKING_AUDIT": {
+    "checks": [
+      "grep every deck for ideal voltage sources and classify each as (legitimate: head stimulus / instrument ammeter / tank precharge) or (illegitimate: supplying the thing being measured)",
+      "confirm the cross-coupled pair's own drive current is inside the metered boundary, not supplied by a source outside it",
+      "confirm metering is 1F-integrator or INTEG-I(Vsrc)+PARAM only, t0-referenced, and that no '.measure INTEGRAL V(<B-source>)' appears anywhere",
+      "confirm no ideal source holds a rail that is claimed to be tank-supplied",
+      "confirm the freeze/ZCS instant has |I(L)| below 1 uA so no energy is in flight at the read"
+    ]
+  },
+
+  "ACCEPTANCE_CRITERIA_BINDING": {
+    "A1_anchor": "static o21ai_hb s_end within +/-3 pp of the committed 82.99 % and t_valid80 within +/-10 % of the committed 515.1 ps, ELSE my harness is not the campaign harness and no comparison of mine is admissible.",
+    "A2_settle": "all checked nodes simultaneously within 10 % of the INSTANTANEOUS rail and staying so to the end of the window. t_valid90 = first such time. A node still moving at the end has NOT settled.",
+    "A3_instrument": "|I(L)| at the freeze instant < 1 uA on every reported row.",
+    "A4_leak_floor": "null control < 1 uV over window AND resistor calibration within 1 %.",
+    "A5_droop": "worst-node droop over the beat compared against a receiver threshold window MEASURED IN THIS RUN at a true steady state, not inherited and not read at a settling-limited time.",
+    "A6_truth_tables": "every logic tree verified exhaustively against its function over all input vectors before any timing number from that cell is quoted."
+  },
+
+  "WHAT_WOULD_MAKE_ME_SAY_THE_STRIPPING_IDEA_FAILS": [
+    "the stripped o21ai does not settle at matched sizing under ANY input convention",
+    "the stripped chain carries no information at depth >= 2 AND the static control does",
+    "the device-count win disappears once the complement is charged",
+    "the leakage premise fails under a realistic junction estimate",
+    "the pull-up Vgs is not ~-rail even when the pair resolves"
+  ],
+
+  "WHAT_WOULD_MAKE_ME_SAY_IT_SUCCEEDS": [
+    "stripped settles at rail-referenced inputs where static cannot, AND propagates with positive separation to depth 6"
+  ],
+
+  "SIM_DISCIPLINE_COMMITMENTS": {
+    "concurrency": "<= 3 concurrent heavy Xyce jobs. The box is shared; load at start was 7.15/16 with other workflows' jobs already running. I will poll load before each launch batch.",
+    "models": "sg13_lv via qal/sg13lv_compat.sp for cell work; RAW sg13g2_nmos/pmos M-cards ONLY in the junction-geometry arms where the whole point is to set AD/AS/PD/PS, and that substitution is declared per row.",
+    "psp103": ".hdl /usr/local/share/xyce/verilog-a/psp103/psp103.va + .include /usr/local/src/kestrel/sim/models/sg13g2_psp103_tt.lib, tt corner only",
+    "reserved": "vt/gmin NOT touched. Corners only via instance-level DTA if needed (.OPTIONS DEVICE TEMP is inert here).",
+    "metering": "1F integrator or INTEG-I(Vsrc)+PARAM only; every read t0-referenced; no '.measure INTEGRAL V(<B-source>)'",
+    "runtime": "every deck < 4 min",
+    "extraction": "all speed/settle numbers read off the .prn by this directory's own extractor, no .measure in the speed path",
+    "unique_va_module_names": "not applicable -- no new .va authored in this run"
+  },
+
+  "DECLARED_MODEL_BIAS_AND_WHICH_WAY_EACH_CUTS": {
+    "junction_geometry_at_PSP103_default": "AB=1e-12 m^2 is LARGER than realistic for these widths -> OVERSTATES junction leakage -> measured leakage is an UPPER bound on that term, not a lower bound",
+    "gmin": "any gmin component ADDS to measured leakage -> upper bound",
+    "absent_drain_junction_capacitance_if_AD_were_zero": "would make the node LIGHTER than reality -> OVERSTATES the lost charge fraction; at PSP103 default AB the node is if anything HEAVIER than realistic -> understates the fraction. Direction therefore depends on the arm and I will state it per arm.",
+    "tt_only": "no corner spread claimed; every number is typical-typical",
+    "hand_built_o21ai_vs_PDK_subckt": "hand-built at campaign-standard widths uses the STRONGER device than the PDK cell -> generous to the static control -> any stripped win over it is conservative"
+  }
+}

@@ -1,0 +1,736 @@
+* SKEPT settle deck, IDEAL STIFF RAIL = 0.5217 V
+* declared: VRAIL is an ideal source.  That is the POINT of this deck
+* (it removes the tank-sizing confound); no energy claim is made here.
+.hdl "/usr/local/share/xyce/verilog-a/psp103/psp103.va"
+.include "/usr/local/src/kestrel/sim/models/sg13g2_psp103_tt.lib"
+.include "/usr/local/src/stat-sim/qal/sg13lv_compat.sp"
+.OPTIONS TIMEINT METHOD=GEAR RELTOL=1e-6 ABSTOL=1e-15 CHGTOL=1e-17
+VRAIL rail 0 0.521700
+VDVS dvs 0 1.500000
+* input-level nets
+RHI_R hi_r rail 0.001
+RHI_D hi_d dvs 0.001
+* static o21ai_hb inst=srr000
+XP0srr000 srr000n14 A1srr000 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XP1srr000 qsrr000 A2srr000 srr000n14 rail sg13_lv_pmos w=1.12u l=0.13u
+XP2srr000 qsrr000 B1srr000 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XN0srr000 srr000n1 A2srr000 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XN2srr000 srr000n1 A1srr000 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XN1srr000 qsrr000 B1srr000 srr000n1 0 sg13_lv_nmos w=0.74u l=0.13u
+Cqsrr000 qsrr000 0 2f
+RA1srr000 A1srr000 0 0.001
+RA2srr000 A2srr000 0 0.001
+RB1srr000 B1srr000 0 0.001
+* stripped o21ai inst=x56rr000 wxc=0.56u
+Xx56rr000F1 qx56rr000 B1x56rr000 x56rr000Fi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56rr000F2 x56rr000Fi0_0 A1x56rr000 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56rr000F3 x56rr000Fi0_0 A2x56rr000 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56rr000G1 nx56rr000 A1x56rr000_B x56rr000Gi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56rr000G2 x56rr000Gi0_0 A2x56rr000_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56rr000G3 nx56rr000 B1x56rr000_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XXAx56rr000 qx56rr000 nx56rr000 rail rail sg13_lv_pmos w=0.56u l=0.13u
+XXBx56rr000 nx56rr000 qx56rr000 rail rail sg13_lv_pmos w=0.56u l=0.13u
+Cqx56rr000 qx56rr000 0 2f
+Cnx56rr000 nx56rr000 0 2f
+RA1x56rr000 A1x56rr000 0 0.001
+RA1Bx56rr000 A1x56rr000_B hi_r 0.001
+RA2x56rr000 A2x56rr000 0 0.001
+RA2Bx56rr000 A2x56rr000_B hi_r 0.001
+RB1x56rr000 B1x56rr000 0 0.001
+RB1Bx56rr000 B1x56rr000_B hi_r 0.001
+* stripped o21ai inst=x112rr000 wxc=1.12u
+Xx112rr000F1 qx112rr000 B1x112rr000 x112rr000Fi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112rr000F2 x112rr000Fi0_0 A1x112rr000 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112rr000F3 x112rr000Fi0_0 A2x112rr000 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112rr000G1 nx112rr000 A1x112rr000_B x112rr000Gi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112rr000G2 x112rr000Gi0_0 A2x112rr000_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112rr000G3 nx112rr000 B1x112rr000_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XXAx112rr000 qx112rr000 nx112rr000 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XXBx112rr000 nx112rr000 qx112rr000 rail rail sg13_lv_pmos w=1.12u l=0.13u
+Cqx112rr000 qx112rr000 0 2f
+Cnx112rr000 nx112rr000 0 2f
+RA1x112rr000 A1x112rr000 0 0.001
+RA1Bx112rr000 A1x112rr000_B hi_r 0.001
+RA2x112rr000 A2x112rr000 0 0.001
+RA2Bx112rr000 A2x112rr000_B hi_r 0.001
+RB1x112rr000 B1x112rr000 0 0.001
+RB1Bx112rr000 B1x112rr000_B hi_r 0.001
+* static o21ai_hb inst=srr001
+XP0srr001 srr001n14 A1srr001 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XP1srr001 qsrr001 A2srr001 srr001n14 rail sg13_lv_pmos w=1.12u l=0.13u
+XP2srr001 qsrr001 B1srr001 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XN0srr001 srr001n1 A2srr001 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XN2srr001 srr001n1 A1srr001 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XN1srr001 qsrr001 B1srr001 srr001n1 0 sg13_lv_nmos w=0.74u l=0.13u
+Cqsrr001 qsrr001 0 2f
+RA1srr001 A1srr001 0 0.001
+RA2srr001 A2srr001 0 0.001
+RB1srr001 B1srr001 hi_r 0.001
+* stripped o21ai inst=x56rr001 wxc=0.56u
+Xx56rr001F1 qx56rr001 B1x56rr001 x56rr001Fi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56rr001F2 x56rr001Fi0_0 A1x56rr001 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56rr001F3 x56rr001Fi0_0 A2x56rr001 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56rr001G1 nx56rr001 A1x56rr001_B x56rr001Gi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56rr001G2 x56rr001Gi0_0 A2x56rr001_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56rr001G3 nx56rr001 B1x56rr001_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XXAx56rr001 qx56rr001 nx56rr001 rail rail sg13_lv_pmos w=0.56u l=0.13u
+XXBx56rr001 nx56rr001 qx56rr001 rail rail sg13_lv_pmos w=0.56u l=0.13u
+Cqx56rr001 qx56rr001 0 2f
+Cnx56rr001 nx56rr001 0 2f
+RA1x56rr001 A1x56rr001 0 0.001
+RA1Bx56rr001 A1x56rr001_B hi_r 0.001
+RA2x56rr001 A2x56rr001 0 0.001
+RA2Bx56rr001 A2x56rr001_B hi_r 0.001
+RB1x56rr001 B1x56rr001 hi_r 0.001
+RB1Bx56rr001 B1x56rr001_B 0 0.001
+* stripped o21ai inst=x112rr001 wxc=1.12u
+Xx112rr001F1 qx112rr001 B1x112rr001 x112rr001Fi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112rr001F2 x112rr001Fi0_0 A1x112rr001 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112rr001F3 x112rr001Fi0_0 A2x112rr001 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112rr001G1 nx112rr001 A1x112rr001_B x112rr001Gi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112rr001G2 x112rr001Gi0_0 A2x112rr001_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112rr001G3 nx112rr001 B1x112rr001_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XXAx112rr001 qx112rr001 nx112rr001 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XXBx112rr001 nx112rr001 qx112rr001 rail rail sg13_lv_pmos w=1.12u l=0.13u
+Cqx112rr001 qx112rr001 0 2f
+Cnx112rr001 nx112rr001 0 2f
+RA1x112rr001 A1x112rr001 0 0.001
+RA1Bx112rr001 A1x112rr001_B hi_r 0.001
+RA2x112rr001 A2x112rr001 0 0.001
+RA2Bx112rr001 A2x112rr001_B hi_r 0.001
+RB1x112rr001 B1x112rr001 hi_r 0.001
+RB1Bx112rr001 B1x112rr001_B 0 0.001
+* static o21ai_hb inst=srr010
+XP0srr010 srr010n14 A1srr010 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XP1srr010 qsrr010 A2srr010 srr010n14 rail sg13_lv_pmos w=1.12u l=0.13u
+XP2srr010 qsrr010 B1srr010 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XN0srr010 srr010n1 A2srr010 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XN2srr010 srr010n1 A1srr010 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XN1srr010 qsrr010 B1srr010 srr010n1 0 sg13_lv_nmos w=0.74u l=0.13u
+Cqsrr010 qsrr010 0 2f
+RA1srr010 A1srr010 0 0.001
+RA2srr010 A2srr010 hi_r 0.001
+RB1srr010 B1srr010 0 0.001
+* stripped o21ai inst=x56rr010 wxc=0.56u
+Xx56rr010F1 qx56rr010 B1x56rr010 x56rr010Fi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56rr010F2 x56rr010Fi0_0 A1x56rr010 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56rr010F3 x56rr010Fi0_0 A2x56rr010 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56rr010G1 nx56rr010 A1x56rr010_B x56rr010Gi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56rr010G2 x56rr010Gi0_0 A2x56rr010_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56rr010G3 nx56rr010 B1x56rr010_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XXAx56rr010 qx56rr010 nx56rr010 rail rail sg13_lv_pmos w=0.56u l=0.13u
+XXBx56rr010 nx56rr010 qx56rr010 rail rail sg13_lv_pmos w=0.56u l=0.13u
+Cqx56rr010 qx56rr010 0 2f
+Cnx56rr010 nx56rr010 0 2f
+RA1x56rr010 A1x56rr010 0 0.001
+RA1Bx56rr010 A1x56rr010_B hi_r 0.001
+RA2x56rr010 A2x56rr010 hi_r 0.001
+RA2Bx56rr010 A2x56rr010_B 0 0.001
+RB1x56rr010 B1x56rr010 0 0.001
+RB1Bx56rr010 B1x56rr010_B hi_r 0.001
+* stripped o21ai inst=x112rr010 wxc=1.12u
+Xx112rr010F1 qx112rr010 B1x112rr010 x112rr010Fi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112rr010F2 x112rr010Fi0_0 A1x112rr010 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112rr010F3 x112rr010Fi0_0 A2x112rr010 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112rr010G1 nx112rr010 A1x112rr010_B x112rr010Gi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112rr010G2 x112rr010Gi0_0 A2x112rr010_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112rr010G3 nx112rr010 B1x112rr010_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XXAx112rr010 qx112rr010 nx112rr010 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XXBx112rr010 nx112rr010 qx112rr010 rail rail sg13_lv_pmos w=1.12u l=0.13u
+Cqx112rr010 qx112rr010 0 2f
+Cnx112rr010 nx112rr010 0 2f
+RA1x112rr010 A1x112rr010 0 0.001
+RA1Bx112rr010 A1x112rr010_B hi_r 0.001
+RA2x112rr010 A2x112rr010 hi_r 0.001
+RA2Bx112rr010 A2x112rr010_B 0 0.001
+RB1x112rr010 B1x112rr010 0 0.001
+RB1Bx112rr010 B1x112rr010_B hi_r 0.001
+* static o21ai_hb inst=srr011
+XP0srr011 srr011n14 A1srr011 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XP1srr011 qsrr011 A2srr011 srr011n14 rail sg13_lv_pmos w=1.12u l=0.13u
+XP2srr011 qsrr011 B1srr011 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XN0srr011 srr011n1 A2srr011 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XN2srr011 srr011n1 A1srr011 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XN1srr011 qsrr011 B1srr011 srr011n1 0 sg13_lv_nmos w=0.74u l=0.13u
+Cqsrr011 qsrr011 0 2f
+RA1srr011 A1srr011 0 0.001
+RA2srr011 A2srr011 hi_r 0.001
+RB1srr011 B1srr011 hi_r 0.001
+* stripped o21ai inst=x56rr011 wxc=0.56u
+Xx56rr011F1 qx56rr011 B1x56rr011 x56rr011Fi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56rr011F2 x56rr011Fi0_0 A1x56rr011 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56rr011F3 x56rr011Fi0_0 A2x56rr011 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56rr011G1 nx56rr011 A1x56rr011_B x56rr011Gi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56rr011G2 x56rr011Gi0_0 A2x56rr011_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56rr011G3 nx56rr011 B1x56rr011_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XXAx56rr011 qx56rr011 nx56rr011 rail rail sg13_lv_pmos w=0.56u l=0.13u
+XXBx56rr011 nx56rr011 qx56rr011 rail rail sg13_lv_pmos w=0.56u l=0.13u
+Cqx56rr011 qx56rr011 0 2f
+Cnx56rr011 nx56rr011 0 2f
+RA1x56rr011 A1x56rr011 0 0.001
+RA1Bx56rr011 A1x56rr011_B hi_r 0.001
+RA2x56rr011 A2x56rr011 hi_r 0.001
+RA2Bx56rr011 A2x56rr011_B 0 0.001
+RB1x56rr011 B1x56rr011 hi_r 0.001
+RB1Bx56rr011 B1x56rr011_B 0 0.001
+* stripped o21ai inst=x112rr011 wxc=1.12u
+Xx112rr011F1 qx112rr011 B1x112rr011 x112rr011Fi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112rr011F2 x112rr011Fi0_0 A1x112rr011 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112rr011F3 x112rr011Fi0_0 A2x112rr011 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112rr011G1 nx112rr011 A1x112rr011_B x112rr011Gi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112rr011G2 x112rr011Gi0_0 A2x112rr011_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112rr011G3 nx112rr011 B1x112rr011_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XXAx112rr011 qx112rr011 nx112rr011 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XXBx112rr011 nx112rr011 qx112rr011 rail rail sg13_lv_pmos w=1.12u l=0.13u
+Cqx112rr011 qx112rr011 0 2f
+Cnx112rr011 nx112rr011 0 2f
+RA1x112rr011 A1x112rr011 0 0.001
+RA1Bx112rr011 A1x112rr011_B hi_r 0.001
+RA2x112rr011 A2x112rr011 hi_r 0.001
+RA2Bx112rr011 A2x112rr011_B 0 0.001
+RB1x112rr011 B1x112rr011 hi_r 0.001
+RB1Bx112rr011 B1x112rr011_B 0 0.001
+* static o21ai_hb inst=srr100
+XP0srr100 srr100n14 A1srr100 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XP1srr100 qsrr100 A2srr100 srr100n14 rail sg13_lv_pmos w=1.12u l=0.13u
+XP2srr100 qsrr100 B1srr100 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XN0srr100 srr100n1 A2srr100 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XN2srr100 srr100n1 A1srr100 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XN1srr100 qsrr100 B1srr100 srr100n1 0 sg13_lv_nmos w=0.74u l=0.13u
+Cqsrr100 qsrr100 0 2f
+RA1srr100 A1srr100 hi_r 0.001
+RA2srr100 A2srr100 0 0.001
+RB1srr100 B1srr100 0 0.001
+* stripped o21ai inst=x56rr100 wxc=0.56u
+Xx56rr100F1 qx56rr100 B1x56rr100 x56rr100Fi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56rr100F2 x56rr100Fi0_0 A1x56rr100 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56rr100F3 x56rr100Fi0_0 A2x56rr100 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56rr100G1 nx56rr100 A1x56rr100_B x56rr100Gi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56rr100G2 x56rr100Gi0_0 A2x56rr100_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56rr100G3 nx56rr100 B1x56rr100_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XXAx56rr100 qx56rr100 nx56rr100 rail rail sg13_lv_pmos w=0.56u l=0.13u
+XXBx56rr100 nx56rr100 qx56rr100 rail rail sg13_lv_pmos w=0.56u l=0.13u
+Cqx56rr100 qx56rr100 0 2f
+Cnx56rr100 nx56rr100 0 2f
+RA1x56rr100 A1x56rr100 hi_r 0.001
+RA1Bx56rr100 A1x56rr100_B 0 0.001
+RA2x56rr100 A2x56rr100 0 0.001
+RA2Bx56rr100 A2x56rr100_B hi_r 0.001
+RB1x56rr100 B1x56rr100 0 0.001
+RB1Bx56rr100 B1x56rr100_B hi_r 0.001
+* stripped o21ai inst=x112rr100 wxc=1.12u
+Xx112rr100F1 qx112rr100 B1x112rr100 x112rr100Fi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112rr100F2 x112rr100Fi0_0 A1x112rr100 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112rr100F3 x112rr100Fi0_0 A2x112rr100 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112rr100G1 nx112rr100 A1x112rr100_B x112rr100Gi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112rr100G2 x112rr100Gi0_0 A2x112rr100_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112rr100G3 nx112rr100 B1x112rr100_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XXAx112rr100 qx112rr100 nx112rr100 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XXBx112rr100 nx112rr100 qx112rr100 rail rail sg13_lv_pmos w=1.12u l=0.13u
+Cqx112rr100 qx112rr100 0 2f
+Cnx112rr100 nx112rr100 0 2f
+RA1x112rr100 A1x112rr100 hi_r 0.001
+RA1Bx112rr100 A1x112rr100_B 0 0.001
+RA2x112rr100 A2x112rr100 0 0.001
+RA2Bx112rr100 A2x112rr100_B hi_r 0.001
+RB1x112rr100 B1x112rr100 0 0.001
+RB1Bx112rr100 B1x112rr100_B hi_r 0.001
+* static o21ai_hb inst=srr101
+XP0srr101 srr101n14 A1srr101 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XP1srr101 qsrr101 A2srr101 srr101n14 rail sg13_lv_pmos w=1.12u l=0.13u
+XP2srr101 qsrr101 B1srr101 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XN0srr101 srr101n1 A2srr101 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XN2srr101 srr101n1 A1srr101 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XN1srr101 qsrr101 B1srr101 srr101n1 0 sg13_lv_nmos w=0.74u l=0.13u
+Cqsrr101 qsrr101 0 2f
+RA1srr101 A1srr101 hi_r 0.001
+RA2srr101 A2srr101 0 0.001
+RB1srr101 B1srr101 hi_r 0.001
+* stripped o21ai inst=x56rr101 wxc=0.56u
+Xx56rr101F1 qx56rr101 B1x56rr101 x56rr101Fi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56rr101F2 x56rr101Fi0_0 A1x56rr101 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56rr101F3 x56rr101Fi0_0 A2x56rr101 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56rr101G1 nx56rr101 A1x56rr101_B x56rr101Gi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56rr101G2 x56rr101Gi0_0 A2x56rr101_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56rr101G3 nx56rr101 B1x56rr101_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XXAx56rr101 qx56rr101 nx56rr101 rail rail sg13_lv_pmos w=0.56u l=0.13u
+XXBx56rr101 nx56rr101 qx56rr101 rail rail sg13_lv_pmos w=0.56u l=0.13u
+Cqx56rr101 qx56rr101 0 2f
+Cnx56rr101 nx56rr101 0 2f
+RA1x56rr101 A1x56rr101 hi_r 0.001
+RA1Bx56rr101 A1x56rr101_B 0 0.001
+RA2x56rr101 A2x56rr101 0 0.001
+RA2Bx56rr101 A2x56rr101_B hi_r 0.001
+RB1x56rr101 B1x56rr101 hi_r 0.001
+RB1Bx56rr101 B1x56rr101_B 0 0.001
+* stripped o21ai inst=x112rr101 wxc=1.12u
+Xx112rr101F1 qx112rr101 B1x112rr101 x112rr101Fi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112rr101F2 x112rr101Fi0_0 A1x112rr101 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112rr101F3 x112rr101Fi0_0 A2x112rr101 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112rr101G1 nx112rr101 A1x112rr101_B x112rr101Gi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112rr101G2 x112rr101Gi0_0 A2x112rr101_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112rr101G3 nx112rr101 B1x112rr101_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XXAx112rr101 qx112rr101 nx112rr101 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XXBx112rr101 nx112rr101 qx112rr101 rail rail sg13_lv_pmos w=1.12u l=0.13u
+Cqx112rr101 qx112rr101 0 2f
+Cnx112rr101 nx112rr101 0 2f
+RA1x112rr101 A1x112rr101 hi_r 0.001
+RA1Bx112rr101 A1x112rr101_B 0 0.001
+RA2x112rr101 A2x112rr101 0 0.001
+RA2Bx112rr101 A2x112rr101_B hi_r 0.001
+RB1x112rr101 B1x112rr101 hi_r 0.001
+RB1Bx112rr101 B1x112rr101_B 0 0.001
+* static o21ai_hb inst=srr110
+XP0srr110 srr110n14 A1srr110 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XP1srr110 qsrr110 A2srr110 srr110n14 rail sg13_lv_pmos w=1.12u l=0.13u
+XP2srr110 qsrr110 B1srr110 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XN0srr110 srr110n1 A2srr110 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XN2srr110 srr110n1 A1srr110 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XN1srr110 qsrr110 B1srr110 srr110n1 0 sg13_lv_nmos w=0.74u l=0.13u
+Cqsrr110 qsrr110 0 2f
+RA1srr110 A1srr110 hi_r 0.001
+RA2srr110 A2srr110 hi_r 0.001
+RB1srr110 B1srr110 0 0.001
+* stripped o21ai inst=x56rr110 wxc=0.56u
+Xx56rr110F1 qx56rr110 B1x56rr110 x56rr110Fi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56rr110F2 x56rr110Fi0_0 A1x56rr110 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56rr110F3 x56rr110Fi0_0 A2x56rr110 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56rr110G1 nx56rr110 A1x56rr110_B x56rr110Gi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56rr110G2 x56rr110Gi0_0 A2x56rr110_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56rr110G3 nx56rr110 B1x56rr110_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XXAx56rr110 qx56rr110 nx56rr110 rail rail sg13_lv_pmos w=0.56u l=0.13u
+XXBx56rr110 nx56rr110 qx56rr110 rail rail sg13_lv_pmos w=0.56u l=0.13u
+Cqx56rr110 qx56rr110 0 2f
+Cnx56rr110 nx56rr110 0 2f
+RA1x56rr110 A1x56rr110 hi_r 0.001
+RA1Bx56rr110 A1x56rr110_B 0 0.001
+RA2x56rr110 A2x56rr110 hi_r 0.001
+RA2Bx56rr110 A2x56rr110_B 0 0.001
+RB1x56rr110 B1x56rr110 0 0.001
+RB1Bx56rr110 B1x56rr110_B hi_r 0.001
+* stripped o21ai inst=x112rr110 wxc=1.12u
+Xx112rr110F1 qx112rr110 B1x112rr110 x112rr110Fi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112rr110F2 x112rr110Fi0_0 A1x112rr110 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112rr110F3 x112rr110Fi0_0 A2x112rr110 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112rr110G1 nx112rr110 A1x112rr110_B x112rr110Gi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112rr110G2 x112rr110Gi0_0 A2x112rr110_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112rr110G3 nx112rr110 B1x112rr110_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XXAx112rr110 qx112rr110 nx112rr110 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XXBx112rr110 nx112rr110 qx112rr110 rail rail sg13_lv_pmos w=1.12u l=0.13u
+Cqx112rr110 qx112rr110 0 2f
+Cnx112rr110 nx112rr110 0 2f
+RA1x112rr110 A1x112rr110 hi_r 0.001
+RA1Bx112rr110 A1x112rr110_B 0 0.001
+RA2x112rr110 A2x112rr110 hi_r 0.001
+RA2Bx112rr110 A2x112rr110_B 0 0.001
+RB1x112rr110 B1x112rr110 0 0.001
+RB1Bx112rr110 B1x112rr110_B hi_r 0.001
+* static o21ai_hb inst=srr111
+XP0srr111 srr111n14 A1srr111 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XP1srr111 qsrr111 A2srr111 srr111n14 rail sg13_lv_pmos w=1.12u l=0.13u
+XP2srr111 qsrr111 B1srr111 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XN0srr111 srr111n1 A2srr111 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XN2srr111 srr111n1 A1srr111 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XN1srr111 qsrr111 B1srr111 srr111n1 0 sg13_lv_nmos w=0.74u l=0.13u
+Cqsrr111 qsrr111 0 2f
+RA1srr111 A1srr111 hi_r 0.001
+RA2srr111 A2srr111 hi_r 0.001
+RB1srr111 B1srr111 hi_r 0.001
+* stripped o21ai inst=x56rr111 wxc=0.56u
+Xx56rr111F1 qx56rr111 B1x56rr111 x56rr111Fi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56rr111F2 x56rr111Fi0_0 A1x56rr111 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56rr111F3 x56rr111Fi0_0 A2x56rr111 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56rr111G1 nx56rr111 A1x56rr111_B x56rr111Gi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56rr111G2 x56rr111Gi0_0 A2x56rr111_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56rr111G3 nx56rr111 B1x56rr111_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XXAx56rr111 qx56rr111 nx56rr111 rail rail sg13_lv_pmos w=0.56u l=0.13u
+XXBx56rr111 nx56rr111 qx56rr111 rail rail sg13_lv_pmos w=0.56u l=0.13u
+Cqx56rr111 qx56rr111 0 2f
+Cnx56rr111 nx56rr111 0 2f
+RA1x56rr111 A1x56rr111 hi_r 0.001
+RA1Bx56rr111 A1x56rr111_B 0 0.001
+RA2x56rr111 A2x56rr111 hi_r 0.001
+RA2Bx56rr111 A2x56rr111_B 0 0.001
+RB1x56rr111 B1x56rr111 hi_r 0.001
+RB1Bx56rr111 B1x56rr111_B 0 0.001
+* stripped o21ai inst=x112rr111 wxc=1.12u
+Xx112rr111F1 qx112rr111 B1x112rr111 x112rr111Fi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112rr111F2 x112rr111Fi0_0 A1x112rr111 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112rr111F3 x112rr111Fi0_0 A2x112rr111 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112rr111G1 nx112rr111 A1x112rr111_B x112rr111Gi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112rr111G2 x112rr111Gi0_0 A2x112rr111_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112rr111G3 nx112rr111 B1x112rr111_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XXAx112rr111 qx112rr111 nx112rr111 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XXBx112rr111 nx112rr111 qx112rr111 rail rail sg13_lv_pmos w=1.12u l=0.13u
+Cqx112rr111 qx112rr111 0 2f
+Cnx112rr111 nx112rr111 0 2f
+RA1x112rr111 A1x112rr111 hi_r 0.001
+RA1Bx112rr111 A1x112rr111_B 0 0.001
+RA2x112rr111 A2x112rr111 hi_r 0.001
+RA2Bx112rr111 A2x112rr111_B 0 0.001
+RB1x112rr111 B1x112rr111 hi_r 0.001
+RB1Bx112rr111 B1x112rr111_B 0 0.001
+* static o21ai_hb inst=sdv000
+XP0sdv000 sdv000n14 A1sdv000 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XP1sdv000 qsdv000 A2sdv000 sdv000n14 rail sg13_lv_pmos w=1.12u l=0.13u
+XP2sdv000 qsdv000 B1sdv000 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XN0sdv000 sdv000n1 A2sdv000 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XN2sdv000 sdv000n1 A1sdv000 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XN1sdv000 qsdv000 B1sdv000 sdv000n1 0 sg13_lv_nmos w=0.74u l=0.13u
+Cqsdv000 qsdv000 0 2f
+RA1sdv000 A1sdv000 0 0.001
+RA2sdv000 A2sdv000 0 0.001
+RB1sdv000 B1sdv000 0 0.001
+* stripped o21ai inst=x56dv000 wxc=0.56u
+Xx56dv000F1 qx56dv000 B1x56dv000 x56dv000Fi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56dv000F2 x56dv000Fi0_0 A1x56dv000 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56dv000F3 x56dv000Fi0_0 A2x56dv000 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56dv000G1 nx56dv000 A1x56dv000_B x56dv000Gi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56dv000G2 x56dv000Gi0_0 A2x56dv000_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56dv000G3 nx56dv000 B1x56dv000_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XXAx56dv000 qx56dv000 nx56dv000 rail rail sg13_lv_pmos w=0.56u l=0.13u
+XXBx56dv000 nx56dv000 qx56dv000 rail rail sg13_lv_pmos w=0.56u l=0.13u
+Cqx56dv000 qx56dv000 0 2f
+Cnx56dv000 nx56dv000 0 2f
+RA1x56dv000 A1x56dv000 0 0.001
+RA1Bx56dv000 A1x56dv000_B hi_d 0.001
+RA2x56dv000 A2x56dv000 0 0.001
+RA2Bx56dv000 A2x56dv000_B hi_d 0.001
+RB1x56dv000 B1x56dv000 0 0.001
+RB1Bx56dv000 B1x56dv000_B hi_d 0.001
+* stripped o21ai inst=x112dv000 wxc=1.12u
+Xx112dv000F1 qx112dv000 B1x112dv000 x112dv000Fi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112dv000F2 x112dv000Fi0_0 A1x112dv000 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112dv000F3 x112dv000Fi0_0 A2x112dv000 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112dv000G1 nx112dv000 A1x112dv000_B x112dv000Gi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112dv000G2 x112dv000Gi0_0 A2x112dv000_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112dv000G3 nx112dv000 B1x112dv000_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XXAx112dv000 qx112dv000 nx112dv000 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XXBx112dv000 nx112dv000 qx112dv000 rail rail sg13_lv_pmos w=1.12u l=0.13u
+Cqx112dv000 qx112dv000 0 2f
+Cnx112dv000 nx112dv000 0 2f
+RA1x112dv000 A1x112dv000 0 0.001
+RA1Bx112dv000 A1x112dv000_B hi_d 0.001
+RA2x112dv000 A2x112dv000 0 0.001
+RA2Bx112dv000 A2x112dv000_B hi_d 0.001
+RB1x112dv000 B1x112dv000 0 0.001
+RB1Bx112dv000 B1x112dv000_B hi_d 0.001
+* static o21ai_hb inst=sdv001
+XP0sdv001 sdv001n14 A1sdv001 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XP1sdv001 qsdv001 A2sdv001 sdv001n14 rail sg13_lv_pmos w=1.12u l=0.13u
+XP2sdv001 qsdv001 B1sdv001 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XN0sdv001 sdv001n1 A2sdv001 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XN2sdv001 sdv001n1 A1sdv001 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XN1sdv001 qsdv001 B1sdv001 sdv001n1 0 sg13_lv_nmos w=0.74u l=0.13u
+Cqsdv001 qsdv001 0 2f
+RA1sdv001 A1sdv001 0 0.001
+RA2sdv001 A2sdv001 0 0.001
+RB1sdv001 B1sdv001 hi_d 0.001
+* stripped o21ai inst=x56dv001 wxc=0.56u
+Xx56dv001F1 qx56dv001 B1x56dv001 x56dv001Fi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56dv001F2 x56dv001Fi0_0 A1x56dv001 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56dv001F3 x56dv001Fi0_0 A2x56dv001 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56dv001G1 nx56dv001 A1x56dv001_B x56dv001Gi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56dv001G2 x56dv001Gi0_0 A2x56dv001_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56dv001G3 nx56dv001 B1x56dv001_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XXAx56dv001 qx56dv001 nx56dv001 rail rail sg13_lv_pmos w=0.56u l=0.13u
+XXBx56dv001 nx56dv001 qx56dv001 rail rail sg13_lv_pmos w=0.56u l=0.13u
+Cqx56dv001 qx56dv001 0 2f
+Cnx56dv001 nx56dv001 0 2f
+RA1x56dv001 A1x56dv001 0 0.001
+RA1Bx56dv001 A1x56dv001_B hi_d 0.001
+RA2x56dv001 A2x56dv001 0 0.001
+RA2Bx56dv001 A2x56dv001_B hi_d 0.001
+RB1x56dv001 B1x56dv001 hi_d 0.001
+RB1Bx56dv001 B1x56dv001_B 0 0.001
+* stripped o21ai inst=x112dv001 wxc=1.12u
+Xx112dv001F1 qx112dv001 B1x112dv001 x112dv001Fi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112dv001F2 x112dv001Fi0_0 A1x112dv001 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112dv001F3 x112dv001Fi0_0 A2x112dv001 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112dv001G1 nx112dv001 A1x112dv001_B x112dv001Gi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112dv001G2 x112dv001Gi0_0 A2x112dv001_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112dv001G3 nx112dv001 B1x112dv001_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XXAx112dv001 qx112dv001 nx112dv001 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XXBx112dv001 nx112dv001 qx112dv001 rail rail sg13_lv_pmos w=1.12u l=0.13u
+Cqx112dv001 qx112dv001 0 2f
+Cnx112dv001 nx112dv001 0 2f
+RA1x112dv001 A1x112dv001 0 0.001
+RA1Bx112dv001 A1x112dv001_B hi_d 0.001
+RA2x112dv001 A2x112dv001 0 0.001
+RA2Bx112dv001 A2x112dv001_B hi_d 0.001
+RB1x112dv001 B1x112dv001 hi_d 0.001
+RB1Bx112dv001 B1x112dv001_B 0 0.001
+* static o21ai_hb inst=sdv010
+XP0sdv010 sdv010n14 A1sdv010 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XP1sdv010 qsdv010 A2sdv010 sdv010n14 rail sg13_lv_pmos w=1.12u l=0.13u
+XP2sdv010 qsdv010 B1sdv010 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XN0sdv010 sdv010n1 A2sdv010 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XN2sdv010 sdv010n1 A1sdv010 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XN1sdv010 qsdv010 B1sdv010 sdv010n1 0 sg13_lv_nmos w=0.74u l=0.13u
+Cqsdv010 qsdv010 0 2f
+RA1sdv010 A1sdv010 0 0.001
+RA2sdv010 A2sdv010 hi_d 0.001
+RB1sdv010 B1sdv010 0 0.001
+* stripped o21ai inst=x56dv010 wxc=0.56u
+Xx56dv010F1 qx56dv010 B1x56dv010 x56dv010Fi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56dv010F2 x56dv010Fi0_0 A1x56dv010 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56dv010F3 x56dv010Fi0_0 A2x56dv010 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56dv010G1 nx56dv010 A1x56dv010_B x56dv010Gi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56dv010G2 x56dv010Gi0_0 A2x56dv010_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56dv010G3 nx56dv010 B1x56dv010_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XXAx56dv010 qx56dv010 nx56dv010 rail rail sg13_lv_pmos w=0.56u l=0.13u
+XXBx56dv010 nx56dv010 qx56dv010 rail rail sg13_lv_pmos w=0.56u l=0.13u
+Cqx56dv010 qx56dv010 0 2f
+Cnx56dv010 nx56dv010 0 2f
+RA1x56dv010 A1x56dv010 0 0.001
+RA1Bx56dv010 A1x56dv010_B hi_d 0.001
+RA2x56dv010 A2x56dv010 hi_d 0.001
+RA2Bx56dv010 A2x56dv010_B 0 0.001
+RB1x56dv010 B1x56dv010 0 0.001
+RB1Bx56dv010 B1x56dv010_B hi_d 0.001
+* stripped o21ai inst=x112dv010 wxc=1.12u
+Xx112dv010F1 qx112dv010 B1x112dv010 x112dv010Fi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112dv010F2 x112dv010Fi0_0 A1x112dv010 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112dv010F3 x112dv010Fi0_0 A2x112dv010 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112dv010G1 nx112dv010 A1x112dv010_B x112dv010Gi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112dv010G2 x112dv010Gi0_0 A2x112dv010_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112dv010G3 nx112dv010 B1x112dv010_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XXAx112dv010 qx112dv010 nx112dv010 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XXBx112dv010 nx112dv010 qx112dv010 rail rail sg13_lv_pmos w=1.12u l=0.13u
+Cqx112dv010 qx112dv010 0 2f
+Cnx112dv010 nx112dv010 0 2f
+RA1x112dv010 A1x112dv010 0 0.001
+RA1Bx112dv010 A1x112dv010_B hi_d 0.001
+RA2x112dv010 A2x112dv010 hi_d 0.001
+RA2Bx112dv010 A2x112dv010_B 0 0.001
+RB1x112dv010 B1x112dv010 0 0.001
+RB1Bx112dv010 B1x112dv010_B hi_d 0.001
+* static o21ai_hb inst=sdv011
+XP0sdv011 sdv011n14 A1sdv011 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XP1sdv011 qsdv011 A2sdv011 sdv011n14 rail sg13_lv_pmos w=1.12u l=0.13u
+XP2sdv011 qsdv011 B1sdv011 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XN0sdv011 sdv011n1 A2sdv011 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XN2sdv011 sdv011n1 A1sdv011 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XN1sdv011 qsdv011 B1sdv011 sdv011n1 0 sg13_lv_nmos w=0.74u l=0.13u
+Cqsdv011 qsdv011 0 2f
+RA1sdv011 A1sdv011 0 0.001
+RA2sdv011 A2sdv011 hi_d 0.001
+RB1sdv011 B1sdv011 hi_d 0.001
+* stripped o21ai inst=x56dv011 wxc=0.56u
+Xx56dv011F1 qx56dv011 B1x56dv011 x56dv011Fi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56dv011F2 x56dv011Fi0_0 A1x56dv011 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56dv011F3 x56dv011Fi0_0 A2x56dv011 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56dv011G1 nx56dv011 A1x56dv011_B x56dv011Gi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56dv011G2 x56dv011Gi0_0 A2x56dv011_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56dv011G3 nx56dv011 B1x56dv011_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XXAx56dv011 qx56dv011 nx56dv011 rail rail sg13_lv_pmos w=0.56u l=0.13u
+XXBx56dv011 nx56dv011 qx56dv011 rail rail sg13_lv_pmos w=0.56u l=0.13u
+Cqx56dv011 qx56dv011 0 2f
+Cnx56dv011 nx56dv011 0 2f
+RA1x56dv011 A1x56dv011 0 0.001
+RA1Bx56dv011 A1x56dv011_B hi_d 0.001
+RA2x56dv011 A2x56dv011 hi_d 0.001
+RA2Bx56dv011 A2x56dv011_B 0 0.001
+RB1x56dv011 B1x56dv011 hi_d 0.001
+RB1Bx56dv011 B1x56dv011_B 0 0.001
+* stripped o21ai inst=x112dv011 wxc=1.12u
+Xx112dv011F1 qx112dv011 B1x112dv011 x112dv011Fi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112dv011F2 x112dv011Fi0_0 A1x112dv011 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112dv011F3 x112dv011Fi0_0 A2x112dv011 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112dv011G1 nx112dv011 A1x112dv011_B x112dv011Gi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112dv011G2 x112dv011Gi0_0 A2x112dv011_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112dv011G3 nx112dv011 B1x112dv011_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XXAx112dv011 qx112dv011 nx112dv011 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XXBx112dv011 nx112dv011 qx112dv011 rail rail sg13_lv_pmos w=1.12u l=0.13u
+Cqx112dv011 qx112dv011 0 2f
+Cnx112dv011 nx112dv011 0 2f
+RA1x112dv011 A1x112dv011 0 0.001
+RA1Bx112dv011 A1x112dv011_B hi_d 0.001
+RA2x112dv011 A2x112dv011 hi_d 0.001
+RA2Bx112dv011 A2x112dv011_B 0 0.001
+RB1x112dv011 B1x112dv011 hi_d 0.001
+RB1Bx112dv011 B1x112dv011_B 0 0.001
+* static o21ai_hb inst=sdv100
+XP0sdv100 sdv100n14 A1sdv100 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XP1sdv100 qsdv100 A2sdv100 sdv100n14 rail sg13_lv_pmos w=1.12u l=0.13u
+XP2sdv100 qsdv100 B1sdv100 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XN0sdv100 sdv100n1 A2sdv100 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XN2sdv100 sdv100n1 A1sdv100 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XN1sdv100 qsdv100 B1sdv100 sdv100n1 0 sg13_lv_nmos w=0.74u l=0.13u
+Cqsdv100 qsdv100 0 2f
+RA1sdv100 A1sdv100 hi_d 0.001
+RA2sdv100 A2sdv100 0 0.001
+RB1sdv100 B1sdv100 0 0.001
+* stripped o21ai inst=x56dv100 wxc=0.56u
+Xx56dv100F1 qx56dv100 B1x56dv100 x56dv100Fi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56dv100F2 x56dv100Fi0_0 A1x56dv100 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56dv100F3 x56dv100Fi0_0 A2x56dv100 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56dv100G1 nx56dv100 A1x56dv100_B x56dv100Gi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56dv100G2 x56dv100Gi0_0 A2x56dv100_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56dv100G3 nx56dv100 B1x56dv100_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XXAx56dv100 qx56dv100 nx56dv100 rail rail sg13_lv_pmos w=0.56u l=0.13u
+XXBx56dv100 nx56dv100 qx56dv100 rail rail sg13_lv_pmos w=0.56u l=0.13u
+Cqx56dv100 qx56dv100 0 2f
+Cnx56dv100 nx56dv100 0 2f
+RA1x56dv100 A1x56dv100 hi_d 0.001
+RA1Bx56dv100 A1x56dv100_B 0 0.001
+RA2x56dv100 A2x56dv100 0 0.001
+RA2Bx56dv100 A2x56dv100_B hi_d 0.001
+RB1x56dv100 B1x56dv100 0 0.001
+RB1Bx56dv100 B1x56dv100_B hi_d 0.001
+* stripped o21ai inst=x112dv100 wxc=1.12u
+Xx112dv100F1 qx112dv100 B1x112dv100 x112dv100Fi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112dv100F2 x112dv100Fi0_0 A1x112dv100 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112dv100F3 x112dv100Fi0_0 A2x112dv100 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112dv100G1 nx112dv100 A1x112dv100_B x112dv100Gi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112dv100G2 x112dv100Gi0_0 A2x112dv100_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112dv100G3 nx112dv100 B1x112dv100_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XXAx112dv100 qx112dv100 nx112dv100 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XXBx112dv100 nx112dv100 qx112dv100 rail rail sg13_lv_pmos w=1.12u l=0.13u
+Cqx112dv100 qx112dv100 0 2f
+Cnx112dv100 nx112dv100 0 2f
+RA1x112dv100 A1x112dv100 hi_d 0.001
+RA1Bx112dv100 A1x112dv100_B 0 0.001
+RA2x112dv100 A2x112dv100 0 0.001
+RA2Bx112dv100 A2x112dv100_B hi_d 0.001
+RB1x112dv100 B1x112dv100 0 0.001
+RB1Bx112dv100 B1x112dv100_B hi_d 0.001
+* static o21ai_hb inst=sdv101
+XP0sdv101 sdv101n14 A1sdv101 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XP1sdv101 qsdv101 A2sdv101 sdv101n14 rail sg13_lv_pmos w=1.12u l=0.13u
+XP2sdv101 qsdv101 B1sdv101 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XN0sdv101 sdv101n1 A2sdv101 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XN2sdv101 sdv101n1 A1sdv101 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XN1sdv101 qsdv101 B1sdv101 sdv101n1 0 sg13_lv_nmos w=0.74u l=0.13u
+Cqsdv101 qsdv101 0 2f
+RA1sdv101 A1sdv101 hi_d 0.001
+RA2sdv101 A2sdv101 0 0.001
+RB1sdv101 B1sdv101 hi_d 0.001
+* stripped o21ai inst=x56dv101 wxc=0.56u
+Xx56dv101F1 qx56dv101 B1x56dv101 x56dv101Fi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56dv101F2 x56dv101Fi0_0 A1x56dv101 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56dv101F3 x56dv101Fi0_0 A2x56dv101 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56dv101G1 nx56dv101 A1x56dv101_B x56dv101Gi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56dv101G2 x56dv101Gi0_0 A2x56dv101_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56dv101G3 nx56dv101 B1x56dv101_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XXAx56dv101 qx56dv101 nx56dv101 rail rail sg13_lv_pmos w=0.56u l=0.13u
+XXBx56dv101 nx56dv101 qx56dv101 rail rail sg13_lv_pmos w=0.56u l=0.13u
+Cqx56dv101 qx56dv101 0 2f
+Cnx56dv101 nx56dv101 0 2f
+RA1x56dv101 A1x56dv101 hi_d 0.001
+RA1Bx56dv101 A1x56dv101_B 0 0.001
+RA2x56dv101 A2x56dv101 0 0.001
+RA2Bx56dv101 A2x56dv101_B hi_d 0.001
+RB1x56dv101 B1x56dv101 hi_d 0.001
+RB1Bx56dv101 B1x56dv101_B 0 0.001
+* stripped o21ai inst=x112dv101 wxc=1.12u
+Xx112dv101F1 qx112dv101 B1x112dv101 x112dv101Fi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112dv101F2 x112dv101Fi0_0 A1x112dv101 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112dv101F3 x112dv101Fi0_0 A2x112dv101 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112dv101G1 nx112dv101 A1x112dv101_B x112dv101Gi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112dv101G2 x112dv101Gi0_0 A2x112dv101_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112dv101G3 nx112dv101 B1x112dv101_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XXAx112dv101 qx112dv101 nx112dv101 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XXBx112dv101 nx112dv101 qx112dv101 rail rail sg13_lv_pmos w=1.12u l=0.13u
+Cqx112dv101 qx112dv101 0 2f
+Cnx112dv101 nx112dv101 0 2f
+RA1x112dv101 A1x112dv101 hi_d 0.001
+RA1Bx112dv101 A1x112dv101_B 0 0.001
+RA2x112dv101 A2x112dv101 0 0.001
+RA2Bx112dv101 A2x112dv101_B hi_d 0.001
+RB1x112dv101 B1x112dv101 hi_d 0.001
+RB1Bx112dv101 B1x112dv101_B 0 0.001
+* static o21ai_hb inst=sdv110
+XP0sdv110 sdv110n14 A1sdv110 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XP1sdv110 qsdv110 A2sdv110 sdv110n14 rail sg13_lv_pmos w=1.12u l=0.13u
+XP2sdv110 qsdv110 B1sdv110 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XN0sdv110 sdv110n1 A2sdv110 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XN2sdv110 sdv110n1 A1sdv110 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XN1sdv110 qsdv110 B1sdv110 sdv110n1 0 sg13_lv_nmos w=0.74u l=0.13u
+Cqsdv110 qsdv110 0 2f
+RA1sdv110 A1sdv110 hi_d 0.001
+RA2sdv110 A2sdv110 hi_d 0.001
+RB1sdv110 B1sdv110 0 0.001
+* stripped o21ai inst=x56dv110 wxc=0.56u
+Xx56dv110F1 qx56dv110 B1x56dv110 x56dv110Fi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56dv110F2 x56dv110Fi0_0 A1x56dv110 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56dv110F3 x56dv110Fi0_0 A2x56dv110 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56dv110G1 nx56dv110 A1x56dv110_B x56dv110Gi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56dv110G2 x56dv110Gi0_0 A2x56dv110_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56dv110G3 nx56dv110 B1x56dv110_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XXAx56dv110 qx56dv110 nx56dv110 rail rail sg13_lv_pmos w=0.56u l=0.13u
+XXBx56dv110 nx56dv110 qx56dv110 rail rail sg13_lv_pmos w=0.56u l=0.13u
+Cqx56dv110 qx56dv110 0 2f
+Cnx56dv110 nx56dv110 0 2f
+RA1x56dv110 A1x56dv110 hi_d 0.001
+RA1Bx56dv110 A1x56dv110_B 0 0.001
+RA2x56dv110 A2x56dv110 hi_d 0.001
+RA2Bx56dv110 A2x56dv110_B 0 0.001
+RB1x56dv110 B1x56dv110 0 0.001
+RB1Bx56dv110 B1x56dv110_B hi_d 0.001
+* stripped o21ai inst=x112dv110 wxc=1.12u
+Xx112dv110F1 qx112dv110 B1x112dv110 x112dv110Fi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112dv110F2 x112dv110Fi0_0 A1x112dv110 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112dv110F3 x112dv110Fi0_0 A2x112dv110 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112dv110G1 nx112dv110 A1x112dv110_B x112dv110Gi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112dv110G2 x112dv110Gi0_0 A2x112dv110_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112dv110G3 nx112dv110 B1x112dv110_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XXAx112dv110 qx112dv110 nx112dv110 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XXBx112dv110 nx112dv110 qx112dv110 rail rail sg13_lv_pmos w=1.12u l=0.13u
+Cqx112dv110 qx112dv110 0 2f
+Cnx112dv110 nx112dv110 0 2f
+RA1x112dv110 A1x112dv110 hi_d 0.001
+RA1Bx112dv110 A1x112dv110_B 0 0.001
+RA2x112dv110 A2x112dv110 hi_d 0.001
+RA2Bx112dv110 A2x112dv110_B 0 0.001
+RB1x112dv110 B1x112dv110 0 0.001
+RB1Bx112dv110 B1x112dv110_B hi_d 0.001
+* static o21ai_hb inst=sdv111
+XP0sdv111 sdv111n14 A1sdv111 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XP1sdv111 qsdv111 A2sdv111 sdv111n14 rail sg13_lv_pmos w=1.12u l=0.13u
+XP2sdv111 qsdv111 B1sdv111 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XN0sdv111 sdv111n1 A2sdv111 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XN2sdv111 sdv111n1 A1sdv111 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XN1sdv111 qsdv111 B1sdv111 sdv111n1 0 sg13_lv_nmos w=0.74u l=0.13u
+Cqsdv111 qsdv111 0 2f
+RA1sdv111 A1sdv111 hi_d 0.001
+RA2sdv111 A2sdv111 hi_d 0.001
+RB1sdv111 B1sdv111 hi_d 0.001
+* stripped o21ai inst=x56dv111 wxc=0.56u
+Xx56dv111F1 qx56dv111 B1x56dv111 x56dv111Fi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56dv111F2 x56dv111Fi0_0 A1x56dv111 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56dv111F3 x56dv111Fi0_0 A2x56dv111 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56dv111G1 nx56dv111 A1x56dv111_B x56dv111Gi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56dv111G2 x56dv111Gi0_0 A2x56dv111_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx56dv111G3 nx56dv111 B1x56dv111_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XXAx56dv111 qx56dv111 nx56dv111 rail rail sg13_lv_pmos w=0.56u l=0.13u
+XXBx56dv111 nx56dv111 qx56dv111 rail rail sg13_lv_pmos w=0.56u l=0.13u
+Cqx56dv111 qx56dv111 0 2f
+Cnx56dv111 nx56dv111 0 2f
+RA1x56dv111 A1x56dv111 hi_d 0.001
+RA1Bx56dv111 A1x56dv111_B 0 0.001
+RA2x56dv111 A2x56dv111 hi_d 0.001
+RA2Bx56dv111 A2x56dv111_B 0 0.001
+RB1x56dv111 B1x56dv111 hi_d 0.001
+RB1Bx56dv111 B1x56dv111_B 0 0.001
+* stripped o21ai inst=x112dv111 wxc=1.12u
+Xx112dv111F1 qx112dv111 B1x112dv111 x112dv111Fi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112dv111F2 x112dv111Fi0_0 A1x112dv111 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112dv111F3 x112dv111Fi0_0 A2x112dv111 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112dv111G1 nx112dv111 A1x112dv111_B x112dv111Gi0_0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112dv111G2 x112dv111Gi0_0 A2x112dv111_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+Xx112dv111G3 nx112dv111 B1x112dv111_B 0 0 sg13_lv_nmos w=0.74u l=0.13u
+XXAx112dv111 qx112dv111 nx112dv111 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XXBx112dv111 nx112dv111 qx112dv111 rail rail sg13_lv_pmos w=1.12u l=0.13u
+Cqx112dv111 qx112dv111 0 2f
+Cnx112dv111 nx112dv111 0 2f
+RA1x112dv111 A1x112dv111 hi_d 0.001
+RA1Bx112dv111 A1x112dv111_B 0 0.001
+RA2x112dv111 A2x112dv111 hi_d 0.001
+RA2Bx112dv111 A2x112dv111_B 0 0.001
+RB1x112dv111 B1x112dv111 hi_d 0.001
+RB1Bx112dv111 B1x112dv111_B 0 0.001
+.ic V(qsrr000)=0 V(qx56rr000)=0 V(nx56rr000)=0 V(qx112rr000)=0 V(nx112rr000)=0 V(qsrr001)=0 V(qx56rr001)=0 V(nx56rr001)=0 V(qx112rr001)=0 V(nx112rr001)=0 V(qsrr010)=0 V(qx56rr010)=0 V(nx56rr010)=0 V(qx112rr010)=0 V(nx112rr010)=0 V(qsrr011)=0 V(qx56rr011)=0 V(nx56rr011)=0 V(qx112rr011)=0 V(nx112rr011)=0 V(qsrr100)=0 V(qx56rr100)=0 V(nx56rr100)=0 V(qx112rr100)=0 V(nx112rr100)=0 V(qsrr101)=0 V(qx56rr101)=0 V(nx56rr101)=0 V(qx112rr101)=0 V(nx112rr101)=0 V(qsrr110)=0 V(qx56rr110)=0 V(nx56rr110)=0 V(qx112rr110)=0 V(nx112rr110)=0 V(qsrr111)=0 V(qx56rr111)=0 V(nx56rr111)=0 V(qx112rr111)=0 V(nx112rr111)=0 V(qsdv000)=0 V(qx56dv000)=0 V(nx56dv000)=0 V(qx112dv000)=0 V(nx112dv000)=0 V(qsdv001)=0 V(qx56dv001)=0 V(nx56dv001)=0 V(qx112dv001)=0 V(nx112dv001)=0 V(qsdv010)=0 V(qx56dv010)=0 V(nx56dv010)=0 V(qx112dv010)=0 V(nx112dv010)=0 V(qsdv011)=0 V(qx56dv011)=0 V(nx56dv011)=0 V(qx112dv011)=0 V(nx112dv011)=0 V(qsdv100)=0 V(qx56dv100)=0 V(nx56dv100)=0 V(qx112dv100)=0 V(nx112dv100)=0 V(qsdv101)=0 V(qx56dv101)=0 V(nx56dv101)=0 V(qx112dv101)=0 V(nx112dv101)=0 V(qsdv110)=0 V(qx56dv110)=0 V(nx56dv110)=0 V(qx112dv110)=0 V(nx112dv110)=0 V(qsdv111)=0 V(qx56dv111)=0 V(nx56dv111)=0 V(qx112dv111)=0 V(nx112dv111)=0
+.tran 1p 4n 0 2p
+.print tran format=noindex V(qsrr000) V(qx56rr000) V(nx56rr000) V(qx112rr000) V(nx112rr000) V(qsrr001) V(qx56rr001) V(nx56rr001) V(qx112rr001) V(nx112rr001) V(qsrr010) V(qx56rr010) V(nx56rr010) V(qx112rr010) V(nx112rr010) V(qsrr011) V(qx56rr011) V(nx56rr011) V(qx112rr011) V(nx112rr011) V(qsrr100) V(qx56rr100) V(nx56rr100) V(qx112rr100) V(nx112rr100) V(qsrr101) V(qx56rr101) V(nx56rr101) V(qx112rr101) V(nx112rr101) V(qsrr110) V(qx56rr110) V(nx56rr110) V(qx112rr110) V(nx112rr110) V(qsrr111) V(qx56rr111) V(nx56rr111) V(qx112rr111) V(nx112rr111) V(qsdv000) V(qx56dv000) V(nx56dv000) V(qx112dv000) V(nx112dv000) V(qsdv001) V(qx56dv001) V(nx56dv001) V(qx112dv001) V(nx112dv001) V(qsdv010) V(qx56dv010) V(nx56dv010) V(qx112dv010) V(nx112dv010) V(qsdv011) V(qx56dv011) V(nx56dv011) V(qx112dv011) V(nx112dv011) V(qsdv100) V(qx56dv100) V(nx56dv100) V(qx112dv100) V(nx112dv100) V(qsdv101) V(qx56dv101) V(nx56dv101) V(qx112dv101) V(nx112dv101) V(qsdv110) V(qx56dv110) V(nx56dv110) V(qx112dv110) V(nx112dv110) V(qsdv111) V(qx56dv111) V(nx56dv111) V(qx112dv111) V(nx112dv111)
+.end

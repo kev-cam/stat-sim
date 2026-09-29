@@ -1,0 +1,90 @@
+{
+  "study": "qal/strip -- STATIC-CMOS STRIPPING: nMOS tree + cross-coupled pMOS pull-up",
+  "written_before_any_deck": true,
+  "author_note": "This file is the ONLY file in qal/strip/ at the instant it is written. Its mtime precedes the mtime of every .cir, .prn, .py and result file in this directory. Verified by the mtime table in MTIMES.txt written immediately after.",
+
+  "user_proposition_under_test": "A QAL value lives ONE BEAT. Every transistor whose job is PERSISTENCE is dead weight. The static pMOS pull-up network exists to drive AND HOLD; its series stacks are what make sg13g2_o21ai_1 unable to settle on a 0.52-0.69 V QAL rail. Replace the pull-up network with a CROSS-COUPLED pMOS pair fed by an nMOS-only logic tree: the conducting pMOS is gated at ~0 V so Vgs = -rail, full drive, no series stack, no threshold-headroom problem.",
+
+  "what_this_run_will_and_will_not_claim": {
+    "will": "settle PASS/FAIL, settling time, energy/op, device count, measured pull-up Vgs, droop over the ephemeral window, chain separation and per-gate correctness -- all for the STRIPPED family against STATIC sg13g2 controls in ONE harness.",
+    "will_not": "any comparison against qal/pgcell, qal/nmux, qal/sha256 or qal/tankfed numbers taken from their files. Where this run and those disagree about the same function, BOTH numbers are quoted and the disagreement is stated, never resolved by assertion.",
+    "will_not_2": "peer-fed chain configuration is NOT tested (pre-registered exclusion: it fails for everything)."
+  },
+
+  "honest_framing_correction_stated_in_advance": "A cross-coupled pMOS pair IS a latch, i.e. IS a static holding path. So 'throw away the persistence transistors' is only PARTLY honoured by this topology. What is genuinely removed is (i) the SERIES pMOS pull-up STACK, (ii) explicit keepers such as the th22 C-element's 24.4 fJ / 55%-of-cell keeper, (iii) any separate precharge device (the ramping rail precharges both output nodes from 0). What is ADDED is a second nMOS tree and a second pMOS. This run must report the net, not the gross.",
+
+  "operating_points": {
+    "primary": {"dv_V": 1.5, "L_nH": 15.0, "tg_total_um": 30.0, "rs_ohm": 10.0, "CA_fF": 35.979, "CL_fF": 2.0, "tail_ps": 500.0, "note": "the point at which the committed static-o21ai anchor numbers live"},
+    "secondary": {"dv_V": 1.2, "L_nH": 15.0, "tg_total_um": 30.0, "note": "the headline QAL point; static o21ai reaches only 57.47% here"},
+    "beat_ps_primary": 200.0,
+    "beat_ps_also_reported": [150.0, 300.0],
+    "delivered_rail_expected_V": "0.55-0.62 (VBEND), i.e. inside the campaign's 0.52-0.69 V QAL rail band"
+  },
+
+  "device_and_model_discipline": {
+    "devices": "sg13_lv_nmos / sg13_lv_pmos via /usr/local/src/stat-sim/qal/sg13lv_compat.sp -> sg13g2_nmos / sg13g2_pmos",
+    "model": "PSP103 via .hdl psp103.va + sg13g2_psp103_tt.lib",
+    "declared_model_bias": "sg13lv_compat.sp ZEROES ad/as/pd/ps. Consequences, stated BEFORE measuring: (1) drain/source JUNCTION LEAKAGE IS ABSENT -- the measured leakage is therefore a LOWER BOUND and the leakage budget is OPTIMISTIC; (2) drain junction capacitance is absent, so every node is LIGHTER than reality -- this UNDERSTATES the charge a node holds and therefore OVERSTATES the leakage fraction, i.e. it cuts the other way; (3) the absent junction cap also removes capacitance that would help HOLD a collapsing node. The run must report which way each bias cuts for each number, not just cite the omission.",
+    "metering": "1F integrators (CX/BX/RX triple) or INTEG-I(Vsrc)+PARAM only. NEVER '.measure INTEGRAL V(<B-source>)'. Every integrator read is t0-REFERENCED at a 0.5 ps Z checkpoint (the campaign pedestal trap).",
+    "measure_lag": "every .measure tran FIND AT= is requested LAG_PS = 1.0 ps late (the measured FIND lag of this Xyce build). Speed numbers are taken from the .prn waveform by this study's own extractor, not from .measure.",
+    "corners": "tt only. Instance-level DTA if any corner is run (.OPTIONS DEVICE TEMP is INERT against PyMS-compiled PSP103).",
+    "vt_gmin": "RESERVED -- not touched.",
+    "va_modules": "unique .va module names; the shared psp103.va is included read-only.",
+    "cache": "own PYMS_VAE_CACHE at scratchpad/vae_cache_strip",
+    "concurrency": "<= 3 concurrent Xyce jobs (16-core box shared with other workflows)",
+    "runtime": "each deck targeted < 4 min"
+  },
+
+  "cell_family_to_be_built": {
+    "topology": "STRIPPED = two nMOS trees (f and f-bar, both grounded, no footer, no precharge device) + two pMOS cross-coupled (MP_Q: rail->Q gated by QB; MP_QB: rail->QB gated by Q), both pMOS with source AND bulk on the bank rail.",
+    "sizing_pre_registered": "tree nMOS w = 0.74u l = 0.13u (campaign standard). Cross-coupled pMOS w = 0.56u l = 0.13u PRIMARY (half the campaign 1.12u pMOS: the DCVSL requirement is that the tree must overpower the latch). Controls on the o21ai row ONLY: w = 0.15u (weak) and w = 1.12u (campaign-standard, the naive choice).",
+    "cells": ["inv", "nand2", "nor2", "xnor2", "mux2", "o21ai"],
+    "controls": "the corresponding static sg13g2_*_1 PDK cells, device lines verbatim from sg13g2_stdcell.spice, + one explicit 0.1 fF per internal node (the committed census convention), in the SAME harness at the SAME operating point.",
+    "bank": "4 stripped cells per bank -> 8 checked output nodes (each dual-rail cell checks one expected-HIGH and one expected-LOW node simultaneously). Static control bank = 8 cells, 4 driven to expect HIGH and 4 to expect LOW (the committed HI/LO convention), so both banks present 8 checked nodes.",
+    "vectors": "the worst-case rise vector for each static control (from qal/sha256/cells/stack_depths.json, vec_out_hi / vec_out_lo). The stripped cell is driven with the SAME input vector plus its complements."
+  },
+
+  "predictions_stated_in_advance": {
+    "P1_o21ai_equivalent_settles": "PREDICT PASS. The stripped o21ai-equivalent will settle >= 90% of the instantaneous rail within the 500 ps tail at dV = 1.5 AND at dV = 1.2, where the static sg13g2_o21ai_1 reaches 82.99% and 57.47% respectively and never reaches 90% at either. Confidence: HIGH on the DC end state (the conducting pull-up has zero body bias, no stack, Vgs = -rail), MODERATE on whether it also settles within ONE 200 ps beat.",
+    "P2_device_count_crossover": "PREDICT the crossover is NOT at 'gate complexity' but at INTERNAL-INVERTER OVERHEAD. Arithmetic stated in advance: stripped = 2*N_n + 2 (two trees of N_n literals + two pMOS); static = N_n + N_p + ovh = 2*N_n + ovh for a series-parallel CMOS gate. So stripped - static = 2 - ovh. PREDICTED per cell: inv 4 vs 2 (static wins by 2); nand2 6 vs 4 (static by 2); nor2 6 vs 4 (static by 2); o21ai 8 vs 6 (static by 2); xnor2 10 vs 10 (TIE); mux2 10 vs 12 (STRIPPED WINS by 2). PREDICTED RULE: stripping never wins on raw device count for a single-stage inverting gate, ties once the static cell carries 2 devices of internal inversion, and wins only where the static cell carries more than that. THE FUNCTION CROSSOVER IS A DIFFERENT AND LOWER BAR: predicted at pMOS-series-depth >= 2 (nor2, xnor2, o21ai, a21oi), where the static cell cannot settle at all and device count is irrelevant.",
+    "P3_pullup_Vgs": "PREDICT |Vgs| of the conducting cross-coupled pMOS >= 0.95 * rail at the instant it conducts, and |Vbs| = 0 exactly (source and bulk both on the rail). The static control's binding series pMOS will show |Vgs| substantially below rail and a non-zero reverse body bias.",
+    "P4_droop": "PREDICT < 5 mV droop over a 200 ps hold with the keeper gone -- far inside the 30-60 mV receiver transition window.",
+    "P5_leakage": "PREDICT off-state Id per device at the QAL rail in the 0.1-10 nA range for w = 1.12u / 0.74u, hence <= ~0.002 fC moved in 200 ps against ~1.4 fC of node charge, i.e. <= ~0.15%.",
+    "P6_chain": "PREDICT the stripped chain holds correct per-gate values to depth 6 in the tank-fed configuration with separation far above the 6.44 mV floor; the static o21ai control chain does not."
+  },
+
+  "pre_registered_risks_that_could_refute_the_idea": {
+    "R1_contention": "DCVSL CONTENTION. During the rail ramp both output nodes start at 0, so BOTH cross-coupled pMOS are fully on. The nMOS tree must overpower a conducting pMOS to break the symmetry. At a 0.55-0.62 V rail this may fail or settle metastably mid-rail on BOTH nodes. This is the single most likely way P1 is wrong, and it is why the pMOS width is a pre-registered sweep on the o21ai row.",
+    "R2_crowbar": "The same overlap is a DC crowbar path rail -> conducting pMOS -> output -> tree -> ground for the whole ramp. Stripped cells may therefore cost MORE energy per operation than static ones even where they settle and static does not. If so that is a reported cost, not a hidden one.",
+    "R3_nMOS_is_the_new_wall": "Vtn = 0.5239 V MEASURED is HIGHER than |Vtp| = 0.4403 V MEASURED. A 2-high nMOS tree on a 0.557 V rail (dV = 1.2) has ~33 mV of overdrive at the upper device. The pull-DOWN could become the wall the pull-UP used to be. Unlike the pMOS stack this one has a favourable end state (both tree devices reach Vgs = rail once the node is at 0), so it is predicted to be a SPEED limit, not a settling limit -- but that is a prediction, not a result.",
+    "R4_latch_is_a_holding_path": "see honest_framing_correction_stated_in_advance. If the run shows the cross-coupled pair only works because it latches, then this topology does not actually 'throw transistors away'; it MOVES the holding function into 2 devices. That is still a result, and must be stated as one.",
+    "R5_dual_rail_wiring": "device count does not capture that every net becomes 2 wires and every stage must produce both polarities. The run reports device count as asked and flags the wiring cost as UNMEASURED."
+  },
+
+  "acceptance_criteria_binding": {
+    "A1_anchor": "This study's OWN independently written static-o21ai deck must reproduce the committed anchor at dV = 1.5 / L = 15 nH / tot = 30 um: s_end of the expected-HIGH cells = 82.99% +/- 3 pp, and t_valid80 = 515.1 ps +/- 10%. IF IT DOES NOT, the harness is fixed before any stripped-cell row is run or reported.",
+    "A2_settle": "SETTLE PASS = every checked output node of the bank is simultaneously within 10% of the INSTANTANEOUS rail (settling >= 90%) at some time <= t_open + 500 ps tail, and remains so to the end. Reported as t_settle90 / t_valid90. A STRICT pass additionally requires it by t_open + 200 ps (one beat). Per gate, never aggregated.",
+    "A3_value": "every checked node on the correct side of the receiver trip measured IN THIS STUDY by its own DC sweep, at the checkpoint.",
+    "A4_instrument": "energy path identity |ea - esw - er| < 0.05 fJ at the ZCS zero; |I(L)| at the freeze instant < 1 uA. Rows failing either are reported and excluded from the verdict, and the verdict is restated without them.",
+    "A5_droop": "|dV| of a held output over the hold portion of the beat must be smaller than the measured receiver transition window (the DC input span over which the receiver output traverses 10%-90% of its rail).",
+    "A6_chain": "per-gate value correctness at every depth AND separation min(UP) - max(DN) > 0 at every depth, both reported per gate and never aggregated. Tank-fed only."
+  },
+
+  "what_would_make_me_say_the_idea_FAILS": [
+    "the stripped o21ai-equivalent does not settle >= 90% within the tail at dV = 1.5 (P1 refuted -> the wall is not the pull-up stack)",
+    "both output nodes resolve to the same side, or to mid-rail, at any operating point (R1 realised)",
+    "measured leakage over one beat exceeds ~1% of node charge even before junction leakage is added back (the ephemeral premise weakens and this run must say so)",
+    "droop over the hold window exceeds the measured receiver transition window (the keeper cannot in fact be removed)",
+    "the chain loses per-gate correctness at any depth <= 6"
+  ],
+
+  "deliverables": [
+    "(a) this file + MTIMES.txt",
+    "(b) LEAKAGE.json -- measured off-state leakage at the QAL rail, charge moved over one beat, fraction of node charge, with and without a keeper, junction-omission stated",
+    "(c) ANCHOR.json -- this study's own reproduction of the static o21ai never-settles result",
+    "(d) CELLS.json -- 6 stripped cells vs 6 static controls: settle PASS/FAIL, t_settle90, energy/op, device count, measured pull-up Vgs at conduction",
+    "(e) DROOP.json -- output droop over the ephemeral window vs the measured receiver threshold and transition window",
+    "(f) CHAIN.json -- tank-fed chain, separation by depth and per-gate correctness",
+    "RESULTS.json -- the assembled verdict, including every row that failed an instrument gate"
+  ]
+}
