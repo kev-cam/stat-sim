@@ -626,6 +626,75 @@ analysis says is **required** in any case. **QAL at SG13G2 is EXCLUDED and the q
 at this node.** Full record: `park/PRE_REGISTERED.json` + `park/RESULTS.json`,
 `amp/PRE_REGISTERED_TRACKB.json` + `amp/RESULTS_TRACKB.json`.
 
+## Swing/L optimum — `dvopt/` + `dvopt/skept2/` + `dvopt/load691/` — there is **no optimum in swing**, the L-optimum is real, and at the **real load QAL is 1.24–1.31× SLOWER than a CMOS logic level** (2026-09-28, skeptic-verified, load-corrected)
+
+The user's ask was "run it at 1.5 V too, and any others needed to see if there's an optimum."
+The **"1.2 V is the LV ceiling" premise was FALSE** — `nom_voltage` read out of all six
+`sg13g2_stdcell` liberty files gives **1.08 / 1.20 / 1.32 / 1.35 / 1.50 / 1.65 V** on the
+*identical* 84-cell library. Grid: 102 single-hop rows (54 functional) over those six swings ×
+L = 3–277.8 nH × W ∈ {15,30,60,120,240} µm, plus a 28-row skeptic re-run at 1 nH/6 µm refinement,
+plus a 9-row real-load excursion. Pre-registered (`dvopt/PRE_REGISTERED.json` 19:08:33,
+`skept2/PRE_REGISTERED_SKEPT2.json` 20:16:59, `load691/PRE_REGISTERED_LOAD.json` 21:41:04, each
+before its own first deck). Instrument: the committed robust point re-runs **rel 0.00e+00 on 9–11
+quantities in both re-runs**, and a cross-harness check at 1.8× finer timestep agrees to ≤4.6e-04,
+so the 1.5–3% optimum margins are resolvable.
+
+- **No interior optimum in dV.** Every surface falls monotonically to the envelope edge: best
+  functional level time 151.3 / 123.4 / 108.1 / 105.3 / 87.5 / 75.9 ps at dV = 1.08 → 1.65 V
+  (2 fF load). The last step 1.50 → 1.65 V still buys 1.15×. **It is the 1.65 V characterisation
+  limit, not a turning point in the physics, that stops the sweep.** `dV=1.5 was wrongly ruled
+  out` is confirmed: 1.41× faster than dV=1.2, measured.
+- **Interior optimum in L, real and bracketed** at 2 fF: at dV=1.65/W=30 µm the overlap objective
+  reads 58.4 / 54.4 / 53.1 / 54.2 / 66.4 ps at L = 3 / 6 / 8 / 10 / 15 nH. The mechanism is the
+  pre-registered one — t_hop ∝ √L against a settle floor that falls with delivered swing.
+- **The settling floor, extended to 1.50 V** (20 points, 0.489 → 1.50 V; inverter 1.12/0.74 µm,
+  2 fF, stepped supply): **51.505 → 40.417 → 32.811 ps at 1.00 / 1.20 / 1.50 V**. It flattens hard
+  above ~1.0 V — the last 50% of swing buys 1.57×. Swing saturates **twice**: in that flattening,
+  and again in the rail arrival becoming the binding term (ramp probe: the in-bank settle is 2.1%
+  above the 2 ps floor at 0.714 V but 44.4% above it at 0.896 V).
+- **THE LOAD CHANGES THE ANSWER.** Every row above is at a 2 fF cell load; the ALU's **measured
+  mean sink load is 6.91 fF**. Re-measured there (`load691/`, instrument gate reproduces the
+  committed `cl691_dv150` row to every printed digit): t_hop is unchanged (+0.26%, the load is not
+  in the resonance), 20% of the delivered swing is spent on the load (VBEND 1.011 → 0.811 V at
+  L=15), and **the post-arrival settle goes FLAT in L** (84.1–88.5 ps over L = 3–22 nH), so the
+  hop stops being the binding term. Best functional level time at dV=1.65: **121.15 ps
+  (L=10 nH, W=30 µm, drain gate at t_open+7 ps) to 115.47 ps (L=4 nH, gate at the ZCS instant) =
+  1.244×–1.305× the 92.8 ps CMOS logic level.** The sub-CMOS single-hop numbers are a 2 fF
+  artefact. Width is still not a free lever and under load it is worse: 30 → 80 µm at L=6 buys
+  swing and drain but costs the level time 116.8 → 125.2 ps, because the narrow switch's
+  overshoot (VBPK/VBEND 1.415 vs 1.208) drives the cells harder while they settle.
+- **The two objectives do NOT defensibly select different points.** The reported SUM/MAX split
+  rests on a floor-curve surrogate measured in a *different circuit*; rebuilt from the bank's own
+  measured post-arrival settle the two surfaces swap shapes, and at the real load both select the
+  smallest L the drain gate permits. The split is a light-load artefact.
+- **THE BINDING GATE IS A CHECKPOINT CHOICE.** C2 (`VA_open ≤ 0.1478 V`) binds the entire grid, and
+  `lsw.py` evaluates it at **t_open + 7 ps** where `sk.py` evaluates the same-named quantity at the
+  **ZCS instant** — 2.2×–6.9× apart (at the reported optimum V(bka) = +0.0615 at ZCS, +0.1368 at
+  +7 ps, **+0.509 at +20 ps**, −0.0005 at the end: the gate reads a fast post-open ring, not a
+  drained rail). 10 of 86 rows sit within ±10 mV of the line and two committed-FUNCTIONAL dV=1.50
+  rows clear it by 0.5%/0.9%. **Every optimum LOCATION here rests on that checkpoint; the measured
+  level times do not.** Pick one instant and justify it physically before the next track quotes L*.
+- **2-high stacks: settling is RESCUED at dV=1.65, the speed case is not.** `sg13g2_o21ai_1`'s
+  series-pMOS pull-up reaches 99.6–100% of rail at *every* characterised swing on an ideal supply —
+  **no headroom cliff anywhere in the envelope**, it is simply 3.1–3.6× slower than an inverter at
+  equal supply. In a real bank it settles inside the committed 500 ps window at dV=1.65
+  (t_valid90 = 495.5 ps at L=15/W=30, 406.2 ps at L=6/W=120) and at dV=1.5 given a 710 ps window;
+  the old "never settles at ANY operating point" was a **delivery + window** failure, not a
+  headroom failure. But 406–507 ps is **4.4×–5.5×** the CMOS level against 0.80× for the
+  shallow-stack bank at the same swing, and the convergence is 38% rail-falling-to-meet-the-output
+  (`VA_open` is NEGATIVE on every o21ai row: the unsettled stack conducts DC). **So admitting
+  2-high stacks is a CORRECTNESS option, not a speed one — QAL stays a shallow-stack
+  (inverter/NAND2-class) backend, and the next lever is DELIVERY, not more swing.**
+- **Cross-link, and it bounds everything above:** these are SINGLE hops with ideal cell gate drive.
+  In a chain (`chain3/`, `skip4/`) nothing settles at any beat period at all — t_settle is not even
+  finite — and raising dV to 1.65 V cannot fix it: scaling `skip4`'s measured rails by the
+  dV-invariant delivered fraction lifts the depth-2 rail only from 0.56–0.58 V to ≈0.62–0.64 V
+  (DERIVED), where this track's own floor curve says a cell needs ≈170–200 ps against a ~105 ps
+  beat. **The optimum located here says where to operate a hop; it does not make a pipeline run.**
+
+Full record: `dvopt/RESULTS.json` + `REPORT.txt` (102-row grid), `dvopt/skept2/REPORT_SKEPT2.txt`,
+`dvopt/load691/RESULTS_LOAD.json` + `surfaces_load.json`, amendments alongside each.
+
 ## Measurement discipline
 
 Per `QAL_PLAN §7` and `feedback_no_self_baseline`: everything in Track A runs against an
