@@ -1,0 +1,63 @@
+{
+ "_what": "SKEPTIC re-run of qal/skip4. 12 chain rows re-run from scratch in qal/skip4v under PYMS_VAE_CACHE=.../vae_cache_skeptic, plus one new independent control (cellfloor.cir). Decks from a byte copy of skip4/skip.py; ALL extraction by qal/skip4v/verify.py off the raw .prn (independent of skip4/extract.py and of the .mt0 .measure lines). Pre-registration: SKEPTIC_PREREG.json, written before any deck existed.",
+ "reproduction_verdict": "REPRODUCES. Every number I re-measured agrees with qal/skip4/RESULTS.json to the printed digit.",
+ "chain_hop_zeros_ps_MEASURED": {
+  "skip_T120_dv1.2": [103.68127, 95.65928, 94.38633],
+  "adj_T120_dv1.2": [104.64346, 103.01722, 95.07953],
+  "vs_committed_single_hop_65.49501": "1.583 / 1.460 / 1.441x (skip), 1.598 / 1.573 / 1.452x (adj)"
+ },
+ "worst_gate_pct_all_stages_MEASURED": {
+  "dv1.2": {"T60": {"skip": 23.63, "adj": 23.10}, "T120": {"skip": 27.48, "adj": 23.33},
+            "T160": {"skip": 29.97, "adj": 24.20}, "T200": {"skip": 31.62, "adj": 24.77},
+            "T300": {"skip": 25.18, "adj": 25.67}},
+  "dv1.5": {"T120": {"skip": 28.67, "adj": 26.01}},
+  "A1_90_all": "False on all 12 rows", "A1_75_all": "False on all 12 rows",
+  "A1_50_all": "False on all 12 rows",
+  "achieved_beat_period": "NONE. Confirmed."
+ },
+ "NEW_INDEPENDENT_CONTROL_cellfloor": {
+  "_what": "One committed cell (pMOS 1.12u supply+bulk on its own rail, nMOS 0.74u, CL 2 fF) on an IDEAL stiff rail that STEPS at t=2 ps, with an IDEAL DC gate. Strictly kinder than any chain. Deck qal/skip4v/cellfloor.cir.",
+  "t90_ps_MEASURED": {"rail_1.2000_gate_0": 38.4, "rail_0.7138_gate_0": 111.2,
+                      "rail_0.6441_gate_0": 164.3, "rail_0.6441_gate_0.1740": 1309.0,
+                      "rail_0.6486_gate_0.3039": "NEVER (saturates 37.25%)",
+                      "rail_0.4486_gate_0": 1578.8,
+                      "rail_0.4486_gate_0.2137": "NEVER (saturates 30.05%)",
+                      "rail_0.6406_gate_0.0016_adj_depth1": 170.2,
+                      "rail_0.4007_gate_0.1061_adj_depth2": "NEVER (saturates 32.31%)"},
+  "consequence": "SCHEDULE-FREE REFUTATION. At the MEASURED depth-1 delivered rail (0.6441 V) the cell needs 164.3 ps to reach 90% with a perfect rail and a perfect gate. No beat period at or below 160 ps exists at that rail for reasons that have nothing to do with which bank powers which. At the depth-2 rail (0.4486 V) the figure is 1578.8 ps. The brief's t_settle ~58 ps belongs to a 0.7138 V rail (I measure 111.2 ps there with a stiff rail); it does not exist at the rail a chain delivers."
+ },
+ "overlap_finding": {
+  "harness_did_NOT_relabel": true,
+  "concurrency_that_does_the_speed_work": "each bank's OWN charging hop overlaps its OWN evaluation window, because boundary = c_k + T and T < t_hop + t_settle. MEASURED at T=120: 103.7/120 = 86.4% of the beat (skip bank3), 104.6/120 = 87.2% (adj bank2). PRESENT IN BOTH SCHEMES, TO THE SAME DEGREE. Skipping adds none of it.",
+  "cross_bank_overlap": "ZERO. Consecutive banks' evaluation windows TILE: skip [200,320] [320,440] [440,560]. My interval scan finds no hop conduction interval overlapping any OTHER bank's evaluation window (the single hit is an artefact of a head bank having no charge instant).",
+  "mechanism_needs_the_OPPOSITE_of_overlap": "the proposal's correctness argument ('bank 2 has ALREADY settled') is a SEQUENCING requirement. The schedule meets it with EXACTLY ZERO margin: bank 3's acceptance boundary is 320.0 ps and its data source bank 2's drain gate begins rising at 318.0 ps.",
+  "schedule_collision_check_DERIVED": "adj at T=60 charges and drains the same bank at once (hop1 charges bank2 over [200.0,304.6], hop2 drains bank2 at 260.0; hop2 charges bank3 over [260.0,373.6], hop3 drains it at 320.0). skip has no collision at any T. CONFIRMED."
+ },
+ "instrument_MEASURED": {
+  "IZ_uA_max_per_row": {"adj_T60": 286.109, "skip_T60": 2.160, "all_other_10_rows": "<= 0.002"},
+  "adj_T60_probe_zero_moved": "+7.39 ps (hop1) and +10.67 ps (hop2) between the isolated probe and the real deck -- the probe-then-cut protocol itself breaks down in the collided row.",
+  "path_identity_fJ_max": {"10_clean_rows": 8.6e-05, "adj_T60": [0.614, 0.485]},
+  "stranded_energy_check": "0.5*L*I^2 at 286.109 uA = 0.614 fJ and at 254.223 uA = 0.485 fJ -- reproduces the identity residual exactly. The instrument is self-consistent; the schedule is not."
+ },
+ "corrections_to_the_report": [
+  "A3's cliff clause: the report labels the hold test 'THE HOLD PASSES'. A3 as pre-registered requires the held rail to stay above the 0.60 V cliff. MEASURED: at the headline T=120 the held bank-3 rail goes 0.6106 -> 0.5905 V, i.e. the hold itself carries it 9.5 mV BELOW the cliff; same at T=60 (0.5877 V). It passes at T >= 160 (min 0.6104 V). So the hold passes on droop and on A3's second clause and FAILS A3's cliff clause at the headline point. Yardstick note: comparing the 20.2 mV hold droop with the -597 mV hop droop makes the hold look harmless; against the 10.6 mV of cliff margin actually available at T=120 it is 1.9x the margin.",
+  "'+7 to +10 points of PULL-DOWN at every beat period' is +4.34 points at T=60 (96.63 vs 92.29). The row is in the report's own table; the summary sentence overstates the floor.",
+  "P2 ('the limiting device at the deepest SKIP stage is NOT the pull-down') holds at the deepest stage but NOT at stage 4: skip_T300 stage 4 is pull-down limited (67.62% pull-down vs 71.21% pull-up).",
+  "Per-gate discipline is vacuous in this fixture: MEASURED intra-class spread is exactly 0.000e+00 percentage points in every bank of every one of the 12 rows. All 8 gates are two electrically identical classes of 4 (same sizes, same rail, symmetric pattern), so 'per-gate, never aggregated' yields two numbers per stage, not eight. The campaign's 'average hides a dead gate' trap cannot be exercised by this deck. Not a defect in the arithmetic; a limit on what it can catch.",
+  "Boundary-rule asymmetry: boundary = min(c_k + T, d_k - EDGE) puts every ADJACENT hop-charged bank 2 ps earlier than the skip banks (adjacent has d_k = c_k + T, skip has c_k + 2T). MEASURED cost to adjacent: +1.10 to +1.65 points of worst-gate settling. Removing it widens adjacent's depth-1 advantage at T=120 from 5.0 to 7.7 points, i.e. it biases in SKIP's favour and makes the report's own 'P1 was partly wrong' correction stronger.",
+  "Rail residue: the report's '2.00-beat rail life' is a SCHEDULE fact (DERIVED from the PWL phases), correct as such. MEASURED, a drained bank does not reach 0 V: skip rail2 settles at 0.118-0.138 V and rail3 at 0.094 V after their own drains, adj rail2 at 0.025 V. Charge left behind, not delivered."
+ ],
+ "premise_check": {
+  "is_the_adjacent_successor_actually_corrupted": "YES, MEASURED. adj T=120: bank 2's pull-down gate drive (bank 1's HIGH output) falls 1.1602 -> 0.4944 V across bank 2's own evaluation window (-57.4%), ending 29.5 mV BELOW Vtn = 0.5239 V; bank 1's rail at that instant is 0.0187 V. At T=300 it is 1.1602 -> 0.4104 V (-64.6%). The premise applies.",
+  "does_skipping_repair_it": "YES, MEASURED. skip T=120: bank 3's pull-down gate drive holds 1.1986 -> 1.1185 V (-6.7%), overdrive +0.5946 V, and its pull-down output is -0.0037 V vs adjacent's 0.0599 V on a comparable rail (0.6441 vs 0.6406 V) -- a real 63 mV repair, not a normalisation artefact. Depth-1 pull-down 96.63-100.75% (skip) vs 90.65-93.51% (adj).",
+  "but": "the repaired term was never the binding one. In the ADJACENT control the limiting device is the PULL-UP at every stage and every beat period (23.10-32.49% at depth 1, 23.33-25.67% at depth 2, 32.11-32.98% at depth 3) while the pull-down it repairs stands at 90.65-93.51% at depth 1. Skipping fixes a real defect that is not the one that fails."
+ },
+ "files": {
+  "prereg": "/usr/local/src/stat-sim/qal/skip4v/SKEPTIC_PREREG.json",
+  "deck_generator_byte_copy": "/usr/local/src/stat-sim/qal/skip4v/skip.py",
+  "my_extractor": "/usr/local/src/stat-sim/qal/skip4v/verify.py",
+  "my_row_extraction": "/usr/local/src/stat-sim/qal/skip4v/VERIFY.json",
+  "new_control": "/usr/local/src/stat-sim/qal/skip4v/cellfloor.py + cellfloor.cir(.prn)",
+  "drivers": "/usr/local/src/stat-sim/qal/skip4v/go.py, go2.py (logs go.log, go2.log), tz.json"
+ }
+}

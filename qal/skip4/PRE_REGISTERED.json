@@ -1,0 +1,97 @@
+{
+  "_what": "STAGE-SKIPPING (interleaved) QAL POWER SCHEDULE -- pre-registration. Written BEFORE any deck, driver or probe in this directory existed. The only files in qal/skip4/ when this was written are this one.",
+  "_proposal_under_test_verbatim": "If transferring power at the same time as data doesn't work, you can try skipping stages, i.e. powering down bank 1 powers up bank 3 instead of bank 2, 2 does 4 etc.",
+  "date_written": "2026-09-29T02:03Z (container clock; 2026-09-28 local)",
+
+  "inherited_and_frozen_NOT_reopened": {
+    "cells": "sg13_lv_pmos w=1.12u / sg13_lv_nmos w=0.74u l=0.13u, CL 2 fF, supply AND pMOS bulk on the bank rail -- committed swsweep/gateb cell, verbatim",
+    "transfer_switch": "TG wn=10u / wp=20u + park 2u (30 um total) = lsw.widths(30), the measured robust point",
+    "L": "15 nH primary; RS 10 ohm; VGH 1.5 V; gate edge 2 ps; post-run tail 500 ps",
+    "dV": "1.2 V primary, 1.5 V repeat (the PDK ships the same 84-cell library characterised at typ 1.50 V)",
+    "source_side_cut": "MANDATORY, from the sibling chain3 finding d: with the committed receiving-side-only cut 42.3% of hop 1's charge is diverted into the idle next-stage inductor and the idle ring (tau=2L/R=55.6 ns) never damps. Each hop therefore carries an IDENTICAL tg15p triple on the source side sharing the same phases, and the destination park is HELD ON while a hop is idle (it pins the otherwise floating inductor island; leaving it floating aborts the run).",
+    "models": "PSP103 via .hdl + sg13g2_psp103_tt.lib; sg13_lv via qal/sg13lv_compat.sp, which ZEROES ad/as/pd/ps -- junction capacitance is ABSENT, so every capacitance, charge, energy and every hop time in this study is a LOWER BOUND / optimistic. Stated on every number it touches.",
+    "metering": "1F integrators (CX/BX/RX triple) with t0 reference; '.measure INTEGRAL V(B-source)' is NOT used (it under-reports 11-44%). Every '.measure ... FIND ... AT=T' is requested LAG_PS=1.0 ps late (the measured FIND lag in this Xyce build).",
+    "own_cache": "PYMS_VAE_CACHE=/tmp/claude-1001/-usr-local-src/4921ad0c-f17b-4b84-986a-5917c9ebd2a6/scratchpad/vae_cache_skip4, own directory qal/skip4/ -- no collision with the sibling chain3 workflow."
+  },
+
+  "BASELINES_frozen_before_any_run": {
+    "adjacent_single_hop_committed": {
+      "source": "qal/lsweep/RESULTS_LSWEEP.json rows_equal_bank_MEASURED.L15_W30_dv120 (stat-sim c662974)",
+      "t_hop_ps": 65.49500982344826,
+      "t_settle90_ps": 115.570918,
+      "t_valid90_ps": 123.44311400000001,
+      "t_level_cons_ps": 123.44311400000001,
+      "VBEND": 0.7138163,
+      "settling_end": "8/8 cells 100%"
+    },
+    "cmos_logic_level_ps": 92.8,
+    "cmos_inverter_ps": 34.81,
+    "adjacent_3_bank_chain_sibling": {
+      "source": "qal/chain3/RESULTS.json as of 2026-09-28T18:57 (workflow still in flight; re-read at report time)",
+      "answer": "NO L passes 90% at all three banks, 277.8 nH down to 3 nH, free-running or topped up; 23 rows, zero pass",
+      "best_anywhere": "worst gate 77.61% at L=60/DELTA=300 (topped up), stage time 470.93 ps",
+      "relaxed_75pct_point": "stage time 371.21 ps at L=10 (topped up), worst gate 75.3%",
+      "chain_t_zcs_penalty_vs_single_hop": 1.326,
+      "causal_control_h277_hold": "bank 3 pull-down settling 76.23% when the predecessor is drained forward vs 100.14% when it is HELD; predecessor pull-down gate drive 0.6899->0.4134 V vs 0.7013 held"
+    }
+  },
+
+  "THE_MECHANISM_THIS_TEST_IS_ABOUT": {
+    "measured_failure_being_attacked": "chain3 measured that the unbuffered adjacent chain fails because the predecessor's logic HIGH is referenced to the predecessor's RAIL, and that rail is drained forward by the very hop that powers the successor. The nMOS pull-down loses its gate drive DURING its own evaluation window. A logic LOW is ground-referenced and survives.",
+    "why_skipping_should_help_DERIVED_before_measuring": [
+      "SCHEDULING ALGEBRA. Let beats be spaced T, bank k charged at c_k and drained at d_k. Bank k's data must stay valid until its successor has finished evaluating, i.e. d_k >= c_{k+1} + t_settle. ADJACENT has d_k = c_k + T and c_{k+1} = c_k + T, so the requirement is T >= T + t_settle: INFEASIBLE at every T and every L. That is a structural statement and it predicts exactly chain3's 'there is no such L'. SKIP has d_k = c_k + 2T, so the requirement becomes T >= t_settle: feasible. This is the proposal's core claim in one line, and it is the thing to confirm or refute.",
+      "SECOND, INDEPENDENT WIN: the odd/even chains use SEPARATE inductors, and a bank receives at beat k and sends at beat k+2, so the hop gets TWO beats: 2T >= t_hop, i.e. T >= t_hop/2. Adjacent needs T >= t_hop. So the hop constraint halves (43 ps at the chain's own t_hop, not 87 ps).",
+      "THE RESIDUAL CONFLICT SKIPPING DOES NOT REMOVE: bank k+2 evaluates over [c_k+2T, c_k+2T+t_settle], and bank k's rail dies at exactly c_k+2T. Bank k+1's outputs (bank k+2's data) therefore begin to degrade at the start of bank k+2's evaluation -- but only after bank k+1's OWN gate delay, and filtered through bank k+1's gate. Skipping buys exactly ONE GATE DELAY of grace plus a slope filter. It does not buy immunity.",
+      "DEVICE-LEVEL PREDICTION: under skipping, bank k+2's pull-DOWN cells are driven by bank k+1's HIGH outputs, and bank k+1's HIGH outputs come from bank k+1's PULL-UP cells, whose inputs are ground-referenced LOWs that survive bank k's drain, on a rail (bank k+1's) that is HELD. So the pull-down gate drive should be REPAIRED. The new exposure moves to bank k+2's pull-UP cells, whose inputs are bank k+1's LOW outputs, which creep UP as bank k's drain propagates."
+    ]
+  },
+
+  "PRE_STATED_EXPECTATION_the_thing_I_can_be_wrong_about": {
+    "headline_call": "PARTIAL confirmation. I expect skipping to improve the worst-gate settling materially over the adjacent control at the same beat period, and to repair the pull-DOWN reversal at the consuming stage. I do NOT expect a 90% pass at a beat period at or below the 123.4 ps adjacent single-hop baseline, and I therefore do NOT expect the headline 'max(t_hop,t_settle) = 65.5 ps' beat period in the brief to materialise.",
+    "numeric_predictions": {
+      "P1": "SKIP worst-gate settling exceeds ADJACENT worst-gate settling at the SAME beat period T, at every T on the grid, by >= 10 percentage points at the deepest like-for-like stage.",
+      "P2": "The limiting device at the deepest SKIP stage is NOT the pull-down (chain3's reversal is repaired); if anything limits, it is the pull-up.",
+      "P3": "The achieved SKIP beat period at the pre-registered 90% gate is > 123.4 ps, or does not exist on the grid T in {45,60,75,90,120,300} ps.",
+      "P4": "A bank in the SKIP schedule holds its rail across the required ~2 beats with a droop that is small compared with the per-hop transfer droop (i.e. the hold is NOT the thing that kills the scheme). If P4 is wrong -- if the 2-beat hold is what breaks it -- that is the refutation the brief asks for and it will be reported as such, with the droop measurement that shows it.",
+      "P5": "The chain's own t_hop at L=15 nH / W=30 um exceeds the committed single-hop 65.495 ps by roughly the sibling's 1.326x (two transfer-switch terminals per chainable bank), i.e. ~87 ps, DERIVED. It is measured, not assumed."
+    },
+    "what_would_make_this_a_full_confirmation": "any SKIP row with all 8 gates >= 90% at ALL stages at a beat period T <= 123.4 ps. If additionally T <= 92.8 ps, a complete QAL logic level is faster than the CMOS logic level and the brief's hypothesis is fully confirmed.",
+    "what_would_make_it_a_refutation_of_the_proposal": "SKIP no better than ADJACENT at the same T (P1 fails), or the 2-beat hold itself destroying the rail or the held outputs (P4 fails)."
+  },
+
+  "ACCEPTANCE_CRITERIA_pre_registered": {
+    "A1_settling_all_gates_all_stages": "EVERY one of the 8 gates in EVERY bank >= 90% settled at that bank's OWN stage boundary. Settling convention inherited verbatim from chain3/lsweep: pull-DOWN cell (input HIGH) pct = 100*(1 - V(o)/rail_k); pull-UP cell (input LOW) pct = 100*V(o)/rail_k, with rail_k = V(rail k) at that bank's own boundary. NEVER aggregated: the per-gate minimum is the number, because an average is how a non-computing bank passes.",
+    "A1_stage_boundary_definition": "bank k's boundary = c_k + T, where c_k is the close of the hop that charges bank k (for the ideally seeded head banks, the instant their pre-charge gate begins to cut) and T is the beat period. One beat to become valid; this is the pipeline's own definition of a beat and it is IDENTICAL in both schemes.",
+    "A2_data_pattern_guard": "pull-DOWN output <= 0.10*rail_k AND pull-UP output >= 0.50*rail_k at the boundary (inherited). A stage that passes A1 numerically while violating A2 is not computing.",
+    "A3_hold_test": "the SKIP-specific risk. A bank charged at beat b and drained at beat b+2 must hold its rail and its outputs across the whole window. Reported: V(rail) droop over [open of its charging hop, close of its draining hop] in mV and %, the droop of its HIGH outputs over the same window, and the settling of the bank it FEEDS. PASS if the held-rail droop keeps the bank above the 0.60 V cliff AND the bank it feeds is not made worse than the corresponding adjacent stage.",
+    "A4_beat_period_headline": "the ACHIEVED BEAT PERIOD = the smallest T on the pre-registered grid at which A1+A2 pass at every stage. Reported DIRECTLY as the beat period of a running chain, NOT as a sum of parts. Compared against (i) 123.4 ps, the committed adjacent single-hop t_level_cons at this exact operating point, (ii) 115.6 ps, its settling-definition twin, and (iii) 92.8 ps, the sha_slice CMOS logic level. If no T passes, that is reported as NO ACHIEVED BEAT PERIOD, together with the worst-gate settling at every T so the shortfall is quantified.",
+    "A5_margin_budget": "accumulated rail droop stage 1 -> deepest stage, against the 120 mV budget, both ways chain3 pre-registered them: cumulative from the committed delivered rail at the same dV (0.7138163 V at dV=1.2) and compounding-only (deepest minus second). Absolute cliff floor 0.60 V (a device-Vt fact, not a fraction of dV).",
+    "A6_instrument": "per-hop |I(L)| at its own switch-open zero <= 1 uA; the path identity |ea - esw - er| at each hop's OWN zero <= 0.02 fJ; idle-inductor charge diversion < 0.1%; and the digit-check of the committed robust point (b) before any chain deck is run.",
+    "A7_energy": "REPORTED, GATES NOTHING (the user: speed is interesting regardless of power). Per-hop E and the per-bank inductor count under interleaving."
+  },
+
+  "GRID_pre_registered": {
+    "beat_periods_ps": [45, 60, 75, 90, 120, 300],
+    "why_45": "t_hop/2 at the DERIVED chain t_hop ~87 ps -- the floor the interleaved hop constraint allows, so the grid spans below the adjacent scheme's own hop floor",
+    "why_300": "a deliberately slow reference so a failure at short T can be separated from a failure at any T",
+    "primary_point": "L=15 nH, TG 30 um total, dV=1.2, RS=10, CA none (each bank IS its own 8 cells; the committed lumped CA=35.979 fF is the MEASURED secant C of one 8-cell bank, so a chain needs no lumped cap)",
+    "dV_repeat": "1.5 V at the headline T for both schemes"
+  },
+
+  "TOPOLOGY_pre_stated": {
+    "SKIP_deck": "FIVE banks. DATA: bank1 inputs from ideal sources (chain head, alternating 1,0,1,0...), then o{k}_{i} IS in of bank k+1 -- the same net, no flop/latch/buffer/level-shifter anywhere. POWER: three hops, 1->3 (beat 1), 2->4 (beat 2), 3->5 (beat 3). Banks 1 and 2 are the two power-chain heads and are ideally pre-charged by small head gates (1.0u/1.12u) that cut before their own beat; every other bank is charged ONLY by a real inductive hop. Per-bank transfer terminals: 1 out, 2 out, 3 in+out, 4 in, 5 in.",
+    "ADJACENT_control": "FOUR banks, same cells, same switch, same L, same dV, same T grid, same extraction code. Three hops 1->2, 2->3, 3->4 at beats 1,2,3. Only bank 1 seeded. Per-bank terminals: 1 out, 2 in+out, 3 in+out, 4 in.",
+    "like_for_like_stages_declared_NOW": "bank 3 carries in+out in BOTH decks -> directly comparable. The DEEPEST stage in each deck (SKIP bank 5, ADJACENT bank 4) is in-only and is fed by a hop whose SOURCE is a real, hop-delivered, two-terminal bank (bank 3 in both) -> the representative steady-state comparison, and the SKIP side carries one MORE level of accumulated data degradation there (4 data levels vs 3), i.e. the comparison is conservative for the proposal. SKIP bank 4 is lighter by one 30 um terminal than ADJACENT bank 4 and is NOT claimed as like-for-like; it is reported with that caveat.",
+    "inductors": "one inductor per transfer in both decks, so the beat-period comparison is not confounded by inductor sharing. The inductor-COUNT question the brief asks (whether interleaving changes the per-bank inductor count) is answered separately and qualitatively: under interleaving each chain's inductor is idle for 2 beats and could serve 2 transfers, at the cost of extra transfer-gate terminals on the shared island -- stated as a circuit consequence, with the measured per-terminal capacitance penalty (the 1.326x t_zcs fact) as its price."
+  },
+
+  "HONESTY_PRE_COMMITMENTS": [
+    "A refutation is worth exactly as much as a confirmation. If the hold requirement kills it, that is the result.",
+    "Every number labelled MEASURED / DERIVED / ASSUMED.",
+    "Junction caps are absent (sg13lv_compat.sp) -> all times optimistic, all charges lower bounds. Said again wherever it matters.",
+    "The cells' data is a fixed alternating pattern held constant; every bank has 4 pull-up and 4 pull-down cells at every stage, so both device types are exercised at every stage -- but the chain is not switching a CHANGING input, it is propagating a settled one. That limit is inherited from the committed harness and is stated, not hidden.",
+    "The ALU's dominant mapped cell sg13g2_o21ai_1 never settles anywhere in the PDK envelope (2-high pMOS stack). Every number here is a SHALLOW-STACK (inverter) number and is not generalised.",
+    "Banks 1 and 2 of the SKIP deck are ideally pre-charged and bank 2's rail is ideally HELD until it drains -- so the 2->4 hop is a fresh-dV hop like the committed anchor, and stages 3 and 4 are OPTIMISTIC. Stage 5 is the representative one. Stated with the result, not after it.",
+    "If a harness defect is found, it is fixed BEFORE the sweep and recorded in AMENDMENT.md with the measurement that forced it and the mtime proving it preceded the measured rows."
+  ]
+}

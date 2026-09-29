@@ -1,0 +1,360 @@
+{
+  "_doc": "STAGE-SKIPPING (INTERLEAVED) QAL POWER SCHEDULE -- measured, against an ADJACENT 4-bank control in the same harness. The user's proposal: 'powering down bank 1 powers up bank 3 instead of bank 2, 2 does 4 etc.' Pre-registration: PRE_REGISTERED.json (written before any deck existed). Protocol amendments: AMENDMENT.md. Rows: rows.json. Every figure is MEASURED unless labelled DERIVED or ASSUMED.",
+  "date": "2026-09-28",
+  "workdir": "/usr/local/src/stat-sim/qal/skip4",
+  "own_cache": "PYMS_VAE_CACHE=/tmp/claude-1001/-usr-local-src/4921ad0c-f17b-4b84-986a-5917c9ebd2a6/scratchpad/vae_cache_skip4 (no collision with the sibling chain3 workflow)",
+
+  "_provenance_mtimes_proving_order": {
+    "PRE_REGISTERED.json": "19:04:51 -- the ONLY file in qal/skip4/ at that moment",
+    "instr_anchor.cir / instr_probe.cir": "19:05:11 -- byte copies of committed lsweep decks",
+    "skip.py": "19:10:36 (harness)",
+    "extract.py": "19:12:21, go.py 19:12:43",
+    "AMENDMENT.md": "first written 19:4x with A1/A2 BEFORE any chain row; A3 filled from the probe runs; A4/A5 appended 20:10:25 and labelled as post-hoc additions",
+    "rows.json": "first row 19:47, last 20:07:34",
+    "note": "A4 (the dataheld control) and A5 (the aborted dstheld control) were added AFTER measured rows existed and say so in AMENDMENT.md. No pre-registered criterion, threshold, boundary or grid point was changed by them."
+  },
+
+  "a_PRE_REGISTERED_expectation_scored": {
+    "P1_skip_beats_adjacent_by_>=10_points_at_the_deepest_like_for_like_stage": "PARTLY WRONG. At matched power-hop depth 2 (skip bank 5 vs adj bank 3) skip's worst gate is 34.7-38.5% against 23.1-25.7%, i.e. +10 to +13 points -- P1 holds there. At matched depth 1 (skip bank 3 vs adj bank 2) it FAILS: skip 23.6-31.6% vs adj 23.1-77.8%, and adjacent is FAR BETTER at long beats (77.8% vs 25.2% at T=300). The sign of the difference depends on the beat period, which P1 did not allow for.",
+    "P2_the_pull_DOWN_reversal_is_repaired_and_the_pull_UP_becomes_the_laggard": "CONFIRMED, and it is the mechanism result of this study. At matched depth 1 and matched rails (0.61-0.66 V) the skip schedule's consuming stage reads pull-DOWN 96.6-100.8% against the adjacent control's 90.6-93.5%, while its pull-UP falls to 23.6-31.6%. The limiting device is the pull-UP at every hop-charged stage of the skip chain.",
+    "P3_no_90pct_pass_at_T_<=_123.4_ps": "CONFIRMED, and far stronger than predicted: there is no 90% pass at ANY beat period from 60 to 300 ps, in EITHER scheme, at dV = 1.2 or 1.5. There is no 75% pass and no 50% pass either. The maximum worst-gate settling over all 22 measured rows is 36.12%.",
+    "P4_the_2_beat_HOLD_is_not_what_breaks_it": "CONFIRMED. MEASURED rail life of a hop-charged, later-drained bank is exactly 2.00 beats at every T, and the passive-hold droop is -20.2 mV (-3.30%) at T=120, worst -28.6 mV (-4.70%) at T=105, and at long beats the held rail RISES slightly (+22.4 mV at T=300). Against a per-hop transfer droop of -49.4% (-597 mV), the hold costs about one twentieth as much. The hold is not the problem.",
+    "P5_chain_t_hop_~1.33x_the_committed_single_hop": "WRONG in magnitude, right in direction. MEASURED 1.44-1.58x (103.681 / 95.659 / 94.386 ps against 65.495 ps), not 1.33x. Every middle bank here carries two 30 um transfer-switch terminals where the sibling's three-bank chain had one on its last bank."
+  },
+
+  "b_INSTRUMENT_CHECK_digit_checked": {
+    "what": "the committed robust point re-run in THIS directory under MY OWN PYMS_VAE_CACHE, byte-identical deck (qal/lsweep/h_L15_W30_dv120.cir -> instr_anchor.cir, p_L15_W30_dv120.cir -> instr_probe.cir).",
+    "t_hop_ps": {"mine": 65.49500982, "committed": 65.49500982344826, "rel": 3.7e-12},
+    "VBEND": {"mine": 0.7138163, "committed": 0.7138163, "rel": 0.0},
+    "VBPK": {"mine": 0.8368896, "committed": 0.8368896, "rel": 0.0},
+    "IPK_uA": {"mine_from_prn": 971.3205, "committed_mt0_MAX": 971.3203},
+    "IZ_uA": {"mine": -0.0004958676, "committed": -0.0004958676, "rel": 0.0},
+    "cells_settled": "8/8, minimum 100.00000% (pull-down cells 100.000001%, pull-up cells 100.000000%)",
+    "mt0_keys_compared": 129,
+    "mt0_keys_BIT_IDENTICAL": 121,
+    "worst_rel_over_ALL_keys": "5.675e-07 on QGH_Z, a 1.76e-23 C quantity -- print rounding at the 7th digit, not a physics difference",
+    "VERDICT": "PASS, digit-checked."
+  },
+
+  "b2_TOPOLOGY_calibration_MEASURED": {
+    "chain_hop_zeros_at_L15_W30_dV1p2": {
+      "hop1_rail1_to_rail3": {"t_zcs_ps": 103.681, "IPK_uA": 1385.69, "x_single_hop": 1.583},
+      "hop2_rail2_to_rail4": {"t_zcs_ps": 95.659, "IPK_uA": 1230.34, "x_single_hop": 1.460},
+      "hop3_rail3_to_rail5": {"t_zcs_ps": 94.386, "IPK_uA": 676.33, "x_single_hop": 1.441}
+    },
+    "why": "a chainable bank carries TWO 30 um transfer-switch terminals (one incoming, one outgoing) where the committed single-hop destination carried one. The sibling measured 1.326x on a three-bank chain whose last bank had only an incoming terminal; a five-bank chain is heavier.",
+    "consequence_for_the_beat_period": "the hop alone occupies 0.86 of a 120 ps beat and 0.35 of a 300 ps beat. At T < ~104 ps a bank's stage boundary falls INSIDE its own charging hop; those rows are flagged boundary_inside_charging_hop and are on the record (T=60 both schemes, T=105 adjacent).",
+    "source_side_cut_inherited_not_rediscovered": "mandatory, from the sibling's finding: with the committed receiving-side-only cut 42.3% of a hop's charge is diverted into the idle next-stage inductor. Every hop here carries an identical source-side triple on the same phases and the destination park is held ON while idle.",
+    "instrument_state_A6": {
+      "_correction": "an earlier draft of this file claimed A6 passed on every row. It does not. A full re-extraction through one code path found three failures, and they are NOT noise -- they are a real property of the schedule at short beats and they produced a finding. Recorded here rather than quietly dropped.",
+      "A6_PASSES_on": "19 of the 22 measured rows, with max |IZ| 0.0252 uA against a 1.0 uA gate and max |path identity| 6.6e-05 fJ against a 0.02 fJ gate",
+      "A6_FAILS_on": {
+        "adj_free_T60_dv1200": {"T_over_t_hop": 0.53, "IZ_uA": {"hop1": 286.106, "hop2": 254.220, "hop3": -0.005}, "identity_fJ": {"hop1": 0.6139, "hop2": 0.4847}, "both_gates": "FAIL"},
+        "skip_free_T60_dv1200": {"T_over_t_hop": 0.58, "IZ_uA": {"hop1": 2.150, "hop2": -1.712, "hop3": -0.006}, "identity_fJ": {"hop1": 0.0001, "hop2": 0.0001}, "IZ_gate": "FAIL (marginal)", "identity_gate": "PASS"},
+        "skip_free_T105_dv1500": {"T_over_t_hop": 0.97, "IZ_uA": {"hop1": -1.227}, "identity_fJ": {"hop1": 0.0001}, "IZ_gate": "FAIL (marginal, 1.23 uA against a 1.0 uA gate)", "identity_gate": "PASS"}
+      },
+      "WHY_and_it_is_a_FINDING_not_an_artefact": "the true-ZCS probe-then-cut protocol measures each hop's current zero with the LATER hops idle. That is only valid if a later beat does not disturb an earlier hop. MEASURED, at a beat period BELOW the hop time the ADJACENT schedule violates it structurally: an explicit collision check over the schedule finds that at T = 60 ps hop 1 charges bank 2 over [200.0, 304.6] ps while hop 2 DRAINS bank 2 at 260.0 ps, and hop 2 charges bank 3 over [260.0, 373.6] while hop 3 drains bank 3 at 320.0. The same bank is charged and drained at once. Its switch is then forced open 286 uA and 254 uA away from any zero, stranding 0.614 and 0.485 fJ in the inductors (0.5*L*I^2 reproduces the identity residual exactly, so the instrument is self-consistent; it is the schedule that is not).",
+      "THE_SAME_CHECK_ON_THE_SKIP_SCHEDULE_FINDS_NO_COLLISION_AT_ALL": "at the identical T = 60 ps the interleaved schedule never touches the same bank twice inside one hop, and its interrupted currents are 2.15 and 1.71 uA -- 133x and 149x smaller, with 0.0000 fJ stranded to four decimals. THIS IS THE PRE-REGISTERED '2T >= t_hop instead of T >= t_hop' STRUCTURAL CLAIM, MEASURED AND CONFIRMED: interleaving genuinely allows a beat period shorter than the hop, and the adjacent schedule genuinely does not. It buys nothing here only because settling needs more than a beat anyway (measurement 1).",
+      "consequence_for_the_reported_rows": "the two T = 60 rows and skip_free_T105_dv1500 are reported with this caveat and are NOT instrument-clean. They were already flagged boundary_inside_charging_hop and they are the worst rows in the study, so no conclusion rests on them; the 90%/75%/50% 'no achieved beat period' verdict is unchanged if all three are discarded (the remaining 19 rows peak at 36.12%)."
+    },
+    "two_extraction_defects_found_and_fixed_before_any_reported_row": [
+      "the path identity was first evaluated with ea (the SOURCE RAIL) instead of ean (the inductor's NEAR node a{h}); with a source-side cut the source TG sits between them, so ea is not the right term",
+      "the 1F integrators carry a t=0 PEDESTAL and the first pass did not t0-reference the identity terms, which read -864 fJ on a ~15 fJ hop. Both fixed; the identity then closes to 5.4e-5 fJ."
+    ]
+  },
+
+  "c_NETLIST_PROOF": {
+    "i_direct_output_to_input_wiring_NO_buffering": {
+      "_what": "o{k}_{i} IS the gate terminal of bank k+1's cell i -- the same net name. No flop, latch, buffer, level shifter or source of any kind between levels.",
+      "bank3_gate_terminal_IS_bank2_output": [
+        "XP3_0 o3_0 o2_0 rail3 rail3 sg13_lv_pmos w=1.12u l=0.13u",
+        "XN3_0 o3_0 o2_0 gn3 gn3 sg13_lv_nmos w=0.74u l=0.13u",
+        "XP3_1 o3_1 o2_1 rail3 rail3 sg13_lv_pmos w=1.12u l=0.13u",
+        "XN3_1 o3_1 o2_1 gn3 gn3 sg13_lv_nmos w=0.74u l=0.13u"
+      ],
+      "bank5_gate_terminal_IS_bank4_output": [
+        "XP5_0 o5_0 o4_0 rail5 rail5 sg13_lv_pmos w=1.12u l=0.13u",
+        "XN5_0 o5_0 o4_0 gn5 gn5 sg13_lv_nmos w=0.74u l=0.13u"
+      ],
+      "the_only_ideal_sources_in_the_skip_deck": "VHI (1.5 V switch-gate supply), VDV (the dV node the two head pre-charge gates draw from), the eight bank-1 gate inputs VI1_* (the chain head), the four 0 V VMG* ground-metering sources, the switch gate phases VGT*/VGTP*/VPK*, and the two head pre-charge gate phases VTUN1/VTUP1 (cut at 160-180 ps) and VTUN2/VTUP2 (cut at 280-300 ps). Nothing else.",
+      "data_pattern": "bank 1's inputs alternate 1.2, 0, 1.2, 0, ... and every bank inverts, so EVERY bank has 4 pull-UP and 4 pull-DOWN cells at EVERY stage. Both device types exercised at every stage, held constant across the whole sweep."
+    },
+    "ii_the_transfer_paths_are_1to3_2to4_3to5_NOT_1to2_2to3": {
+      "hop1_source_side_on_rail1_destination_side_on_rail3": [
+        "L1 a1 mid1 {LT}", "R1 mid1 sw1 {RS}",
+        "XSWN1 sw1 gt1 rail3 0 sg13_lv_nmos w=10u l=0.13u",
+        "XSWP1 sw1 gtp1 rail3 vhi sg13_lv_pmos w=20u l=0.13u",
+        "XPK1 sw1 pk1 0 0 sg13_lv_nmos w=2u l=0.13u",
+        "XSWSN1 a1 gt1 rail1 0 sg13_lv_nmos w=10u l=0.13u",
+        "XSWSP1 a1 gtp1 rail1 vhi sg13_lv_pmos w=20u l=0.13u"
+      ],
+      "hop2_rail2_to_rail4": [
+        "XSWN2 sw2 gt2 rail4 0 sg13_lv_nmos w=10u l=0.13u",
+        "XSWSN2 a2 gt2 rail2 0 sg13_lv_nmos w=10u l=0.13u"
+      ],
+      "hop3_rail3_to_rail5": [
+        "XSWN3 sw3 gt3 rail5 0 sg13_lv_nmos w=10u l=0.13u",
+        "XSWSN3 a3 gt3 rail3 0 sg13_lv_nmos w=10u l=0.13u"
+      ],
+      "the_ADJACENT_control_for_contrast": [
+        "XSWN1 sw1 gt1 rail2 0 / XSWSN1 a1 gt1 rail1 0   (1 -> 2)",
+        "XSWN2 sw2 gt2 rail3 0 / XSWSN2 a2 gt2 rail2 0   (2 -> 3)",
+        "XSWN3 sw3 gt3 rail4 0 / XSWSN3 a3 gt3 rail3 0   (3 -> 4)"
+      ],
+      "two_interleaved_power_chains": "odd chain 1 -> 3 -> 5 on L1 and L3, even chain 2 -> 4 on L2. Data flows 1 -> 2 -> 3 -> 4 -> 5 through all five banks. Exactly the user's schedule.",
+      "per_bank_transfer_terminal_count": {"skip": {"1": "out", "2": "out", "3": "in+out", "4": "in", "5": "in"},
+                                            "adj": {"1": "out", "2": "in+out", "3": "in+out", "4": "in"}}
+    },
+    "iii_the_schedule_as_it_actually_ran_T120_ps": {
+      "beat1_t200": "hop1 closes: bank1 drains into bank3. Bank2 (already charged, HELD) supplies bank3's data.",
+      "beat2_t320": "hop2 closes: bank2 drains into bank4. Bank3 (charged at beat1, HELD) supplies bank4's data.",
+      "beat3_t440": "hop3 closes: bank3 drains into bank5. Bank4 (charged at beat2, HELD) supplies bank5's data.",
+      "stage_boundaries_ps": {"1": 198.0, "2": 318.0, "3": 320.0, "4": 440.0, "5": 560.0},
+      "hop_open_zeros_ps": [303.681, 415.659, 534.386],
+      "MEASURED_data_source_is_NEVER_the_draining_bank": "drain_vs_hold.data_source_is_the_draining_bank = false on all three hops of the skip deck and TRUE on all three hops of the adjacent control. The schedule does what the proposal says it does."
+    }
+  },
+
+  "d_ADJACENT_CONTROL": {
+    "same_harness": "4 banks, same cells, same 30 um TG with source-side cut, same L = 15 nH, same RS, same dV, same beat grid, same extraction code path, same probe-then-cut ZCS protocol. Only the power schedule differs.",
+    "sibling_baseline_also_used": "qal/chain3/RESULTS.json (stat-sim working tree, mtime 18:57:04, stable when read). Its 3-bank adjacent chain found NO L from 277.8 down to 3 nH at which all three banks reach 90%, free-running or topped up, 23 rows, zero pass; best anywhere 77.61% at a 470.93 ps stage time (topped up). My own 4-bank adjacent control reproduces that verdict independently at L = 15 nH."
+  },
+
+  "e_THE_SIX_MEASUREMENTS": {
+
+    "1_DOES_THE_OVERLAP_HAPPEN_and_the_ACHIEVED_BEAT_PERIOD": {
+      "does_the_SCHEDULE_deliver_the_overlap": "YES, MEASURED, and this half of the proposal is CORRECT. A hop-charged bank's rail lives exactly 2.00 beats (charge close to drain close: 240.0 ps at T = 120, 600.0 ps at T = 300) against a 1-beat data obligation. Its own charging hop occupies 0.86 beats of that at T = 120 and 0.35 at T = 300, and the remaining 1.12-1.65 beats are a passive hold. In the adjacent control the same rail lives exactly 1.00 beat, 0.86-0.87 of which is its own charging hop. The transfer of bank N and the settling of bank N+1 ARE concurrent intervals on different banks, exactly as proposed.",
+      "ACHIEVED_BEAT_PERIOD_at_the_pre_registered_90_pct_gate": "NONE. There is no beat period at which all 8 gates in all banks reach 90%, in either scheme, at any T in {60, 105, 120, 140, 160, 200, 300} ps, at dV = 1.2 or dV = 1.5.",
+      "ACHIEVED_BEAT_PERIOD_at_a_relaxed_75_pct": "NONE.",
+      "ACHIEVED_BEAT_PERIOD_at_a_relaxed_50_pct": "NONE.",
+      "max_worst_gate_settling_over_ALL_22_measured_rows_pct": 36.12,
+      "which_row": "skip_dataheld_T200_dv1200 -- and that is an IDEAL-SOURCE CONTROL row. The best row without an added ideal source is skip_free_T200_dv1200 at 31.62%.",
+      "worst_gate_vs_beat_period_MEASURED_pct": {
+        "_columns": "T_ps : skip dV1.2 / adj dV1.2 / skip dV1.5 / adj dV1.5 (hop-charged banks only)",
+        "60":  [23.63, 23.10, null, null],
+        "105": [25.94, 23.07, 27.73, null],
+        "120": [27.48, 23.33, 28.67, 26.01],
+        "140": [28.93, 23.81, null, null],
+        "160": [29.97, 24.20, 23.65, 29.73],
+        "200": [31.62, 24.77, null, null],
+        "300": [25.18, 25.67, null, null]
+      },
+      "against_the_frozen_comparators": {
+        "committed_adjacent_single_hop_t_level_cons_ps": 123.443,
+        "committed_adjacent_single_hop_t_level_settling_ps": 115.571,
+        "cmos_sha_slice_logic_level_ps": 92.8,
+        "skip_chain_beat_period_at_90_pct": "does not exist -> no comparison can be made, and none is claimed",
+        "the_brief_hypothesis_max_65.5_instead_of_123.4": "NOT SUPPORTED, and the reason is not the one the arithmetic assumed. max(t_hop, t_settle) presumes a finite t_settle. MEASURED in a chain, t_settle90 DOES NOT EXIST at the delivered rail: the deepest bank's outputs are still at 35.4% (skip, T=120) and 32.2% (adjacent, T=120) of their correct value 500 ps AFTER the last beat, with that bank's rail still up at 0.434 V / 0.300 V. There is nothing finite to overlap the hop with."
+      },
+      "why_the_number_63_ps_in_the_brief_could_not_be_reached": "the 58 ps residual settling in the brief is the committed SINGLE-HOP figure, measured with every cell gate held by an IDEAL source at the full dV and a delivered rail of 0.7138 V. A chain cannot reproduce either condition: its cell gates are the predecessor's outputs, and its delivered rail is 0.630-0.657 V at power-depth 1 and 0.442-0.477 V at power-depth 2."
+    },
+
+    "2_THE_HOLD_TEST_the_new_risk_skipping_introduces": {
+      "requirement": "a bank charged at beat b and drained at beat b+2 must hold its rail and its outputs for ~2 beats.",
+      "MEASURED_rail_life": "exactly 2.00 beats at every T (240.0 ps at T=120; 600.0 ps at T=300), of which the passive hold after the charging hop's own zero is 1.12 beats at T=120 and 1.65 beats at T=300.",
+      "MEASURED_held_rail_droop_bank3_skip_dV1p2": {
+        "T105": {"hold_ps": 104.3, "beats": 0.99, "rail_V": [0.6100, 0.5814], "droop_mV": -28.6, "droop_pct": -4.70},
+        "T120": {"hold_ps": 134.3, "beats": 1.12, "rail_V": [0.6106, 0.5905], "droop_mV": -20.2, "droop_pct": -3.30},
+        "T140": {"hold_ps": 174.3, "beats": 1.25, "rail_V": [0.6105, 0.6037], "droop_mV": -6.8, "droop_pct": -1.11},
+        "T160": {"hold_ps": 214.3, "beats": 1.34, "rail_V": [0.6104, 0.6156], "droop_mV": 5.2, "droop_pct": 0.85},
+        "T200": {"hold_ps": 294.3, "beats": 1.47, "rail_V": [0.6104, 0.6304], "droop_mV": 20.0, "droop_pct": 3.28},
+        "T300": {"hold_ps": 494.3, "beats": 1.65, "rail_V": [0.6104, 0.6328], "droop_mV": 22.4, "droop_pct": 3.67}
+      },
+      "VERDICT_the_hold_PASSES": "worst held-rail droop over the whole sweep is -28.6 mV (-4.70%), and at long beats the held rail RISES a few mV (transfer-gate-edge feedthrough and post-open charge redistribution, not a source). Against the MEASURED per-hop transfer droop of -49.4% (-597 mV) the hold costs about 1/20th as much. THE 2-BEAT HOLD IS NOT WHAT BREAKS THE SCHEME. The pre-registered worry P4 was wrong and the proposal is right about this.",
+      "what_the_hold_does_to_the_bank_it_feeds": "bank 3 holds its RAIL well and still fails to hold its DATA, because its own outputs never arrived: bank 3's HIGH outputs are at 0.160 V when its charging hop opens and 0.334 V when it is drained 134 ps later -- still climbing toward a 0.59-0.61 V rail they never reach. The bank it feeds (bank 4) therefore sees a pull-down gate drive of 0.323 V against a MEASURED Vtn of 0.5239 V, i.e. an overdrive of -0.201 V: its nMOS is OFF. The hold is sound; the thing being held is not valid.",
+      "adjacent_control_hold_for_contrast": "0.11-0.65 beats of passive hold (it does not need more), droop +33 to -47 mV."
+    },
+
+    "3_THE_DRAIN_VS_HOLD_CONFLICT_measured_in_BOTH_schemes": {
+      "_this_is_the_mechanism_the_proposal_rests_on_and_it_is_HALF_confirmed_HALF_refuted": "",
+      "ADJACENT_is_the_successor_corrupted_and_by_how_much": {
+        "data_source_IS_the_draining_bank": true,
+        "the_successor_s_HIGH_input_collapses_MEASURED": {
+          "_columns": "T_ps -> HIGH input at the successor's boundary (V) and its collapse (%)",
+          "60": [0.6952, -40.1], "105": [0.5163, -55.5], "120": [0.4944, -57.4],
+          "140": [0.4767, -58.9], "160": [0.4627, -60.1], "200": [0.4418, -61.9], "300": [0.4104, -64.6]
+        },
+        "the_successor_s_LOW_input_is_SAFE_MEASURED": {
+          "_what": "the draining bank's LOW outputs are GROUND-referenced and a dead rail cannot pull them up. Their creep SATURATES.",
+          "creep_mV_by_T": {"60": 26.1, "105": 35.9, "120": 38.1, "140": 37.7, "160": 37.5, "200": 37.2, "300": 37.0},
+          "LOW_level_at_the_boundary_V": {"120": 0.0016, "300": 0.0005}
+        },
+        "so_the_adjacent_failure_is": "pull-DOWN starved (90.6-93.5%) because the HIGH is rail-referenced and the rail is being drained; pull-UP intact in principle and it HEALS WITH TIME -- 23.1% at T=60 rising monotonically to 77.84% at T=300.",
+        "the_source_rail_at_the_successor_s_boundary_V": {"hop1": 0.0187, "hop2": 0.0337, "hop3": 0.0546}
+      },
+      "SKIP_is_the_successor_immune_as_claimed": {
+        "data_source_IS_the_draining_bank": false,
+        "PARTLY_YES_the_HIGH_input_HOLDS": {
+          "hop1_data_source_bank2_rail_V": [1.1941, 0.9412],
+          "hop1_HIGH_input_V": [1.1986, 1.1185],
+          "hop1_HIGH_collapse_pct": -6.7,
+          "consequence": "the consuming bank's pull-DOWN is REPAIRED: 100.57% at T=120 (96.6-100.8% over the whole T sweep) against the adjacent control's 90.65% (90.6-93.5%). This is the proposal's mechanism, working."
+        },
+        "BUT_THE_LOW_INPUT_IS_DESTROYED_and_this_is_the_refutation": {
+          "_mechanism": "a HELD predecessor still loses its own pull-DOWN gate drive, because ITS predecessor was drained one beat earlier. Its pMOS is then alive on a held rail with nothing opposing it, so its logic LOW is pulled UP toward that rail. Draining a bank protects its LOW (nothing can pull it up); HOLDING a bank is exactly what gives its pMOS the strength to corrupt it.",
+          "MEASURED_creep_of_the_held_data_source_s_LOW_output_by_T_ps": {
+            "60": {"creep_mV": -19.5, "LOW_at_boundary_V": -0.0249, "successor_pullup_overdrive_V": -0.0532, "successor_pullup_pct": 23.63},
+            "105": {"creep_mV": 125.9, "LOW_at_boundary_V": 0.1206, "successor_pullup_overdrive_V": 0.0688, "successor_pullup_pct": 25.94},
+            "120": {"creep_mV": 179.4, "LOW_at_boundary_V": 0.1740, "successor_pullup_overdrive_V": 0.0297, "successor_pullup_pct": 27.48},
+            "140": {"creep_mV": 245.1, "LOW_at_boundary_V": 0.2397, "successor_pullup_overdrive_V": -0.0337, "successor_pullup_pct": 28.93},
+            "160": {"creep_mV": 309.3, "LOW_at_boundary_V": 0.3039, "successor_pullup_overdrive_V": -0.0956, "successor_pullup_pct": 29.97},
+            "200": {"creep_mV": 431.6, "LOW_at_boundary_V": 0.4262, "successor_pullup_overdrive_V": -0.2137, "successor_pullup_pct": 31.62},
+            "300": {"creep_mV": 688.6, "LOW_at_boundary_V": 0.6832, "successor_pullup_overdrive_V": -0.4663, "successor_pullup_pct": 25.18}
+          },
+          "the_number_that_kills_it": "at T = 300 ps the held predecessor's logic LOW sits at 0.6832 V, which is ABOVE the successor's own rail (0.6572 V). The data is not degraded, it is inverted-out-of-existence. Overdrive rail - V(gate) - |Vtp| goes from +0.069 V at T=105 to -0.466 V at T=300.",
+          "it_is_UNBOUNDED_in_T_where_the_adjacent_failure_SATURATES": "adjacent LOW creep saturates at +37 mV; skip LOW creep grows monotonically with the beat period and has no ceiling below the held rail."
+        },
+        "so_the_user_s_sentence_scored": "'By the time bank 1 drains into bank 3, bank 2 has ALREADY settled, so bank 1 is free to collapse without corrupting anything.' -- The first clause is MEASURED TRUE (bank 2 has settled; its rail is held; its HIGH outputs hold to within -6.7%). The last clause is MEASURED FALSE: bank 1's collapse corrupts bank 2's LOW outputs by +179 mV within one 120 ps beat, and +689 mV within one 300 ps beat, because bank 2's cells are combinational gates and not latches. The corruption is displaced by one stage and changes which device it starves; it is not removed."
+      },
+      "THE_COMPLEMENTARITY_MEASURED_not_assumed": {
+        "statement": "a logic HIGH is referenced to the predecessor's RAIL; a logic LOW is referenced to GROUND. DRAINING the predecessor kills the HIGH (-40 to -65%) and protects the LOW (creep saturates at +37 mV). HOLDING the predecessor protects the HIGH (-6.7%) and kills the LOW (creep unbounded, +689 mV). The adjacent and skip schedules are the two ends of exactly this trade.",
+        "DERIVED_consequence": "no pure power SCHEDULE can protect both halves of the data, because the two halves have different references and the schedule has only one degree of freedom per bank (when its rail dies). A schedule can choose which half to sacrifice. Protecting both requires a DEVICE -- a keeper/latch on the level, or an encoding that makes both halves rail-referenced (dual-rail). That is a consequence of two measured rows, not a result in itself, and it is not claimed as one."
+      }
+    },
+
+    "4_PER_GATE_SETTLING_AT_EVERY_STAGE_never_aggregated": {
+      "_convention": "inherited verbatim: pull-DOWN cell pct = 100*(1 - V(o)/rail_k), pull-UP cell pct = 100*V(o)/rail_k, rail_k = V(rail k) at that bank's OWN boundary. Within a bank the four pull-ups are identical to the printed digit and so are the four pull-downs (the data pattern is symmetric), which is why pullup_min == pullup_max in every row -- reported, not aggregated.",
+      "SKIP_free_dV1p2_T120": {
+        "bank1_depth0": {"rail_V": 1.2076, "pullup": 99.95, "pulldown": 100.00, "worst": 99.95, "limiting": "pull-up", "guard": true},
+        "bank2_depth0_ideal_head": {"rail_V": 1.1609, "pullup": 101.63, "pulldown": 82.41, "worst": 82.41, "limiting": "pull-down", "guard": false},
+        "bank3_depth1": {"rail_V": 0.6441, "pullup": 27.48, "pulldown": 100.57, "worst": 27.48, "limiting": "pull-up", "guard": false},
+        "bank4_depth1": {"rail_V": 0.7115, "pullup": 40.03, "pulldown": 72.20, "worst": 40.03, "limiting": "pull-up", "guard": false},
+        "bank5_depth2": {"rail_V": 0.4486, "pullup": 35.10, "pulldown": 57.61, "worst": 35.10, "limiting": "pull-up", "guard": false}
+      },
+      "ADJACENT_free_dV1p2_T120": {
+        "bank1_depth0": {"rail_V": 1.2072, "pullup": 99.94, "pulldown": 100.00, "worst": 99.94, "limiting": "pull-up", "guard": true},
+        "bank2_depth1": {"rail_V": 0.6406, "pullup": 32.49, "pulldown": 90.65, "worst": 32.49, "limiting": "pull-up", "guard": false},
+        "bank3_depth2": {"rail_V": 0.4007, "pullup": 23.33, "pulldown": 73.52, "worst": 23.33, "limiting": "pull-up", "guard": false},
+        "bank4_depth3": {"rail_V": 0.3006, "pullup": 32.11, "pulldown": 68.30, "worst": 32.11, "limiting": "pull-up", "guard": false}
+      },
+      "STAGES_3_AND_4_SPECIFICALLY_as_the_brief_demanded": "skip stage 3 worst 25.94-31.62%, skip stage 4 worst 33.58-51.53% over T = 105-160; adjacent stage 3 worst 23.07-24.20%, stage 4 worst 31.98-32.40%. NO stage beyond the ideally-seeded heads reaches 90% anywhere. The 5th stage, which the sibling could only extrapolate, is MEASURED here at 34.86-38.46% and confirms its extrapolation that a deeper stage is worse.",
+      "MATCHED_POWER_HOP_DEPTH_the_primary_comparison": {
+        "_why": "bank k is n inductive hops from an ideal head; at equal n the delivered rails are matched by construction, so the difference is the SCHEDULE and nothing else.",
+        "depth_1_skip_bank3_vs_adj_bank2": {
+          "_columns": "T_ps -> [skip rail_V, skip pullup, skip pulldown] vs [adj rail_V, adj pullup, adj pulldown]",
+          "60":  [[0.3622, 23.63, 96.63], [0.3423, 23.10, 92.29]],
+          "105": [[0.6297, 25.94, 99.53], [0.6114, 27.53, 90.81]],
+          "120": [[0.6441, 27.48, 100.57], [0.6406, 32.49, 90.65]],
+          "140": [[0.6463, 28.93, 100.77], [0.6274, 39.69, 91.18]],
+          "160": [[0.6486, 29.97, 100.75], [0.6160, 46.18, 91.62]],
+          "200": [[0.6528, 31.62, 100.70], [0.5974, 57.41, 92.32]],
+          "300": [[0.6572, 25.18, 100.67], [0.5661, 77.84, 93.51]],
+          "READ_THIS_ROW_BY_ROW": "skipping buys +7 to +10 points of PULL-DOWN at every beat period, and costs pull-UP: at T=300 the adjacent control's pull-up is at 77.84% and climbing while the skip chain's is at 25.18% and falling. The rails are matched to within 30-90 mV, so this is the schedule."
+        },
+        "depth_2_skip_bank5_vs_adj_bank3": {
+          "105": [[0.4416, 35.28, 57.15], [0.3964, 23.07, 74.13]],
+          "120": [[0.4486, 35.10, 57.61], [0.4007, 23.33, 73.52]],
+          "160": [[0.4661, 34.86, 59.09], [0.3857, 24.20, 71.70]],
+          "300": [[0.4767, 35.81, 61.35], [0.3551, 25.67, 67.94]],
+          "caveat": "skip bank 5 carries ONE transfer terminal where adjacent bank 3 carries two, so skip's depth-2 rail is 40-120 mV higher and part of the +11 point difference is that, not the schedule. Stated, not hidden."
+        }
+      },
+      "THE_PATTERN_GUARD_FAILS_EVERYWHERE_BEYOND_THE_HEADS": "pull-DOWN output <= 0.10*rail AND pull-UP output >= 0.50*rail: PASS only at the ideally-seeded bank 1 in both schemes. Every hop-charged bank FAILS the guard at every T and both dV. This is the 'average settling is how a non-computing bank passes' trap in its per-gate form: a node that nothing drives sits near 0 V and reads as a well-settled LOW. Two of the high pull-down percentages in these tables (skip bank 4's 72.2%, adjacent bank 3's 73.5%) are exactly that -- the nMOS gate drive there is -0.201 V and -0.395 V below Vtn, i.e. OFF, and the node is merely undisturbed. The guard is the reason none of it is scored as a pass.",
+      "TIME_LIMITED_vs_DRIVE_LIMITED": "MEASURED on the only bank whose rail is still up at the end of the run (the deepest, which never drains): 500 ps AFTER the last beat, skip bank 5 is at 35.4% (T=120) / 37.0% (T=300) with its rail at 0.434 / 0.476 V, and adjacent bank 4 is at 32.2% / 33.0% with its rail at 0.300 / 0.266 V. They are not slow; at these rails they cannot get there at all."
+    },
+
+    "5_ACCUMULATED_LEVEL_DROOP_vs_the_120_mV_BUDGET": {
+      "_budget": "120 mV, pre-registered both ways as chain3 did: cumulative from the committed delivered rail at the same dV (0.7138163 V at dV=1.2) to the worst hop-charged bank, and compounding-only (best minus worst hop-charged bank). Absolute cliff floor 0.60 V (a device-Vt fact, not a fraction of dV).",
+      "MEASURED_cumulative_mV_and_pct_of_budget": {
+        "skip_free_dV1p2": {"T105": [272.2, 226.8], "T120": [265.3, 221.0], "T160": [247.7, 206.5], "T200": [238.3, 198.6], "T300": [237.1, 197.6], "T60": [406.5, 338.7]},
+        "adj_free_dV1p2": {"T105": [406.1, 338.4], "T120": [413.2, 344.4], "T160": [424.7, 353.9], "T200": [433.4, 361.2], "T300": [448.0, 373.4], "T60": [494.9, 412.4]},
+        "skip_free_dV1p5": {"T105": [151.2, 126.0], "T120": [138.3, 115.2], "T160": [131.3, 109.4]},
+        "adj_free_dV1p5": {"T120": [352.2, 293.5], "T160": [376.9, 314.1]}
+      },
+      "cliff_floor_PASS": "FALSE on every row. Banks below 0.60 V: skip = bank 5 only (and bank 4 as well at T=300); adjacent = banks 3 and 4 (and bank 2 as well at T>=200).",
+      "the_one_place_skipping_CLEARLY_wins": "budget. Skipping uses 1.98-2.27x the 120 mV budget at dV=1.2 where the adjacent control uses 3.38-3.73x, and at dV=1.5 skipping comes within 1.09-1.26x of the budget -- the closest any row in this study comes to passing it. MECHANISM, DERIVED and structural: in a finite segment between recharge points, two interleaved power chains each cover half the banks, so a bank at DATA depth k is only ceil(k/2) inductive hops from a head instead of k. Per-hop droop is unchanged (-49.4% hop 1, -42.5% hop 2, -28.9% hop 3); what halves is how many hops accumulate. HONEST LIMIT: this is a property of a FINITE chain with ideal heads. In an unbounded pipeline both chains are equally long and the advantage disappears. It is a statement about the spacing of recharge points, not about steady state."
+    },
+
+    "6_ENERGY_reported_NOT_a_gate": {
+      "_user": "speed is interesting regardless of power; nothing here gates on energy.",
+      "per_hop_MEASURED_fJ_free_chain_dV1p2_T120": {
+        "skip": {
+          "hop1_1to3": {"E_out_of_source": 36.671, "E_arriving_at_dest": 26.445, "E_series_R": 0.964, "E_switch_block": 4.966, "Q_through_L_fC": 89.006},
+          "hop2_2to4": {"E_out_of_source": 31.998, "E_arriving_at_dest": 24.865, "E_series_R": 0.699, "E_switch_block": 3.657, "Q_through_L_fC": 72.698},
+          "hop3_3to5": {"E_out_of_source": 10.530, "E_arriving_at_dest": 8.767, "E_series_R": 0.213, "E_switch_block": 0.876, "Q_through_L_fC": 40.137}
+        },
+        "adj": {
+          "hop1_1to2": {"E_out_of_source": 38.496, "E_arriving_at_dest": 27.286, "E_series_R": 1.046, "E_switch_block": 5.474, "Q_through_L_fC": 93.057},
+          "hop2_2to3": {"E_out_of_source": 13.348, "E_arriving_at_dest": 10.310, "E_series_R": 0.342, "E_switch_block": 1.403, "Q_through_L_fC": 53.089},
+          "hop3_3to4": {"E_out_of_source": 5.279, "E_arriving_at_dest": 4.398, "E_series_R": 0.112, "E_switch_block": 0.431, "Q_through_L_fC": 29.209}
+        },
+        "transfer_gate_drive_ideal_2ps_edges_fJ": {"skip": 3.816, "adj": 2.411},
+        "net_from_the_ideal_dV_node_after_the_head_gates_cut_fJ": {"skip": -1.243, "adj": -0.793},
+        "reading": "hop 1 loses 10.2 fJ of 36.7 fJ (72% arrives); the series R takes 0.96 fJ and the transfer switch block 4.97 fJ, i.e. the switch dissipates 5.2x what the inductor's resistance does -- the same conclusion the committed campaign reached, reproduced here in a chain. The four-way split is not fully orthogonal (the destination-side TG and the cells absorb the ~4.3 fJ remainder); reported as measured, not patched.",
+        "why_skip_s_hops_look_more_expensive": "two of skipping's three hops start from an ideally-held head at the full dV, so they move more charge. It is a property of a finite deck, not of the schedule."
+      },
+      "INDUCTOR_COUNT_the_scarcest_component": {
+        "as_built": "one inductor per transfer in BOTH decks, deliberately, so the beat-period comparison is not confounded by sharing. skip: 3 inductors for 3 transfers over 5 banks; adj: 3 for 3 over 4 banks.",
+        "does_interleaving_change_the_per_bank_count_QUALITATIVE_as_the_brief_allows": "It can HALVE it, and the price is transfer-gate terminals, which the measurements here price exactly. Under interleaving each chain's inductor is idle for a full 2 beats between its own transfers (MEASURED: bank 3's rail life is 2.00 beats and L1 conducts for only 0.86 of one of them at T=120), so one inductor can serve two transfers on the same parity chain. But sharing means the shared inductor island needs a source-side TG and a destination-side TG per served transfer -- 4 x 30 um instead of 2 x 30 um on that island. This study MEASURED what transfer-switch terminals cost: adding one per bank moved the hop time from 65.495 ps to 94.4-103.7 ps, +44 to +58%, and the sibling measured +33% for the same change on a lighter chain. So the trade is: halve the inductor count, pay roughly another 40-60% on the hop time and the corresponding delivered-rail droop. Charge is also now routed PAST a bank (bank 1's charge reaches bank 3 over a path that passes bank 2's physical position), which in wire terms means the transfer loop encloses two bank pitches instead of one: more loop inductance in series with the intended L (helpful for reaching a given L with a smaller discrete part, unhelpful because it is lossy and uncontrolled), more coupling to the skipped bank's rail, and a longer path whose series resistance adds directly to the 10 ohm RS -- against a MEASURED switch resistance that already dominates it 5:1, so the wire is not where this scheme dies. NONE of this is a layout measurement and none of it is claimed as one."
+      }
+    }
+  },
+
+  "f_THE_HEADLINE_REPEATED_AT_dV_1p5": {
+    "_why_dV1p5": "the PDK ships the same 84-cell library characterised at typ 1.50 V; the brief notes this was wrongly believed unavailable and is worth 1.68x.",
+    "MEASURED": {
+      "skip_T105": {"rails": [1.5112, 1.3962, 0.7325, 0.8714, 0.5626], "worst_pct": 27.73, "worst_stage": 3, "limiting": "pull-up"},
+      "skip_T120": {"rails": [1.5112, 1.3683, 0.8082, 0.8096, 0.5756], "worst_pct": 28.67, "worst_stage": 3, "limiting": "pull-up"},
+      "skip_T160": {"rails": [1.5112, 1.3076, 0.8121, 0.6935, 0.5825], "worst_pct": 23.65, "worst_stage": 3, "limiting": "pull-up"},
+      "adj_T120": {"rails": [1.5106, 0.7832, 0.4805, 0.3616], "worst_pct": 26.01, "worst_stage": 3, "limiting": "pull-up"},
+      "adj_T160": {"rails": [1.5106, 0.7295, 0.4479, 0.3369], "worst_pct": 29.73, "worst_stage": 3, "limiting": "pull-up"}
+    },
+    "ACHIEVED_BEAT_PERIOD_at_dV_1p5": "NONE, in either scheme, at any of the beat periods run.",
+    "the_1p68x_does_NOT_arrive_for_skipping_and_the_reason_is_MEASURED": "dV = 1.5 raises the delivered rail at depth 1 from 0.644 to 0.808 V (+25%), which widens the pull-up's voltage budget rail - |Vtp| from 0.204 to 0.368 V. But raising the rail also strengthens the HELD predecessor's pMOS, so its LOW output creeps FASTER: bank 2's own pull-down falls from 82.41% (dV=1.2, T=120) to 62.74% (dV=1.5, T=120) and to 38.75% at T=160, and bank 3's pull-up overdrive is NEGATIVE at all three dV=1.5 beat periods (-0.048, -0.108, -0.390 V) where at dV=1.2 it was still +0.030 V at T=120. The creep eats the extra budget and then some. Skipping's worst gate at dV=1.5 is 23.65-28.67%, statistically indistinguishable from its 25.94-29.97% at dV=1.2.",
+    "the_ADJACENT_control_DOES_benefit_from_dV_1p5": "its pull-up (which is not creep-limited, because its data source is drained and its LOW stays at ~0) improves from 32.49% to 41.55% at T=120 and from 46.18% to 68.04% at T=160, i.e. 1.3-1.5x. So the higher supply helps the schedule that drains and does not help the schedule that holds. That is the complementarity again, now measured in dV as well as in T."
+  },
+
+  "g_WHAT_SEPARATES_THE_TWO_FAILURE_TERMS_the_dataheld_causal_control": {
+    "design": "skip deck, identical in every other respect, with bank 2's eight gate inputs taken from ideal DC sources at the correct pattern instead of from bank 1's outputs -- i.e. bank 2's predecessor is never drained out from under it, so its LOW outputs cannot creep. Bank 1 still drains on schedule; hop 1 still charges bank 3. An IDEAL-SOURCE CONTROL, labelled, never an operating point.",
+    "it_worked_as_intended": "bank 2's own pull-down goes 82.41% -> 99.81% and bank 3's pull-up gate goes +0.174 V -> -0.035 V (creep eliminated), overdrive +0.030 V -> +0.193 V.",
+    "MEASURED_effect_on_the_consuming_stage": {
+      "T120": {"free_pullup_pct": 27.48, "dataheld_pullup_pct": 30.25, "creep_is_worth_points": 2.8},
+      "T200": {"free_pullup_pct": 31.62, "dataheld_pullup_pct": 49.98, "creep_is_worth_points": 18.4},
+      "T300": {"free_pullup_pct": 25.18, "dataheld_pullup_pct": 67.62, "creep_is_worth_points": 42.4}
+    },
+    "THE_TWO_TERMS_SEPARATED": {
+      "term_A_the_pMOS_cannot_drive_this_rail_in_this_time": "dominant at SHORT beats. With the creep removed entirely, bank 3's pull-up is still only 30.25% at T = 120 and reaches 67.62% only at T = 300. Independent cross-check against the committed lsweep cell-floor table, which measured t90 = 160.5 ps at a 0.6497 V rail and 197.0 ps at 0.6196 V for the SAME inverter with an ideal 0 V gate and a rail that STEPS: the chain is ~2x slower again than that floor, because its rail does not step, it arrives as a 104 ps resonant half-sine, so the cell only has a usable rail for the tail of its own beat.",
+      "term_B_the_held_predecessor_s_LOW_creeps": "dominant at LONG beats, worth 42.4 points at T = 300, and unbounded in T.",
+      "why_skipping_cannot_escape_between_them": "term A wants a LONGER beat, term B wants a SHORTER one. The skip chain's pull-up therefore has an interior maximum in T -- MEASURED at 31.62% around T = 200 ps -- and it is nowhere near 90%. This is the same shape as the committed lsweep verdict's interior minimum in t_level, in a different variable, and it has the same cause: THE LEVEL BINDS, NOT THE HOP. Skipping changes the schedule; it does not change the level.",
+      "AMENDMENT_A4_honesty": "this control PARTLY REFUTED my own first attribution. Seeing the creep, I attributed the pull-up failure to it; measured, the creep accounts for only 2.8 of the missing 62.5 points at T = 120. Recorded in AMENDMENT.md A4."
+    }
+  },
+
+  "h_VERDICT": {
+    "Q_does_stage_skipping_separate_power_from_data_as_proposed": "YES for the rail, NO for the data. MEASURED: the schedule gives every bank a 2.00-beat rail life against a 1-beat data obligation; the data source is never the draining bank on any hop; the held rail droops at most -28.6 mV (-4.70%) over the hold; and the consuming stage's pull-DOWN is repaired from 90.6-93.5% to 96.6-100.8% at matched rails. All four of those are the proposal working. But the held data source's own LOW outputs are corrupted by the drain of ITS predecessor -- +179 mV in one 120 ps beat, +689 mV in one 300 ps beat, ending ABOVE the successor's own rail -- because the levels are combinational gates and not latches. The conflict is displaced by one stage and changes which device starves; it is not removed.",
+    "Q_does_the_level_time_become_max_instead_of_sum": "The question does not have the answer the arithmetic assumed, because t_settle is not finite. MEASURED, the deepest bank's outputs are at 35.4% (skip) and 32.2% (adjacent) of their correct value 500 ps after the last beat with their rails still up. There is no settling time to overlap the hop with.",
+    "ACHIEVED_BEAT_PERIOD_headline": "THERE IS NONE, in either schedule, at 90%, 75% or 50% settling, at any beat period from 60 to 300 ps, at dV = 1.2 or dV = 1.5, on 22 measured rows. The maximum worst-gate settling achieved anywhere is 36.12% (and that row carries an ideal source); the best free-running row is 31.62%. No comparison against the 123.4 ps committed adjacent baseline or the 92.8 ps CMOS logic level can be made, and none is claimed.",
+    "what_skipping_DOES_buy_measured": [
+      "+7 to +10 points of pull-DOWN settling at the consuming stage, at matched rails, at every beat period -- the exact term the sibling's causal control identified as the adjacent chain's failure",
+      "a held rail for the data source, at a cost of <= 4.7% droop over ~1.1-1.65 beats of passive hold",
+      "roughly half the accumulated rail droop at a given DATA depth in a FINITE segment (1.98-2.27x the 120 mV budget vs the adjacent control's 3.38-3.73x; 1.09-1.26x at dV=1.5, the closest any row here comes to the budget), because two interleaved chains each cover half the banks -- a statement about recharge spacing, not steady state",
+      "a hop-time constraint of 2T >= t_hop instead of T >= t_hop, MEASURED at T = 60 ps (0.53-0.58 of the hop time): the adjacent schedule charges and drains the same bank at once there and its switches open 286 uA and 254 uA off their zeros, stranding 0.614 and 0.485 fJ; the interleaved schedule has no such collision anywhere and opens at 2.15 and 1.71 uA, 133x and 149x cleaner. Real, and NOT BINDING, because settling needs more than a beat anyway"
+    ],
+    "what_skipping_COSTS_measured": [
+      "the consuming stage's pull-UP, via an unbounded LOW creep on the held data source: overdrive +0.069 V at T=105 falling to -0.466 V at T=300, where the adjacent control's equivalent failure SATURATES at +37 mV of creep and its pull-up HEALS with time to 77.84%",
+      "the benefit of a higher supply: at dV=1.5 the adjacent schedule's pull-up improves 1.3-1.5x and skipping's does not improve at all, because the higher held rail drives the creep harder"
+    ],
+    "the_honest_one_line": "Stage skipping is the right diagnosis of the adjacent chain's failure and a working fix for the half of it that the sibling workflow measured -- and it is not enough, because at SG13G2's delivered QAL rail the other half of the data is just as fragile, and because the binding constraint at this operating point was never the schedule: it is that a 1.12 um pMOS cannot pull a 2 fF node to a 0.44-0.66 V rail inside a beat that must also contain a 94-104 ps hop. Skipping changes the schedule. The level still binds."
+  },
+
+  "honest_limits": [
+    "JUNCTION CAPACITANCE IS ABSENT. sg13lv_compat.sp zeroes ad/as/pd/ps, so every capacitance, charge, energy and hop time here is a LOWER BOUND and every settling percentage is OPTIMISTIC. It cuts against this study's own central mechanism in BOTH directions: the absent drain junction capacitance is part of what would have held a collapsing HIGH up (so the adjacent failure is understated) AND part of what would have slowed a creeping LOW (so the skip failure is understated too).",
+    "SHALLOW-STACK NUMBERS ONLY. Every cell here is the committed 1.12u/0.74u inverter. The ALU's dominant mapped cell sg13g2_o21ai_1 never settles anywhere in the PDK envelope (2-high pMOS stack, no headroom on a 0.52-0.69 V rail). Nothing here is generalised to a real standard-cell library.",
+    "THE HEADS ARE IDEAL AND THEY FLATTER SOME STAGES. Banks 1 and 2 of the skip deck are pre-charged by ideal supply gates, and bank 2's rail is ideally HELD at 1.13-1.18 V until it drains. That makes stages 3 and 4 OPTIMISTIC in rail terms (their hop sources are fresh) and PESSIMISTIC in creep terms (a 1.16 V held rail drives the LOW creep harder than a realistic 0.64 V one would). Stage 5 is the representative stage and is the one the verdict leans on.",
+    "THE COMPARISON IS NOT PERFECTLY MATCHED AT DEPTH 2. Skip bank 5 carries one transfer-switch terminal where adjacent bank 3 carries two, so 40-120 mV of skip's depth-2 rail advantage is parasitics, not the schedule. The depth-1 pair (skip bank 3 vs adjacent bank 2) is matched to within 30-90 mV and is the pair the mechanism claims rest on.",
+    "THE CELLS PROPAGATE A SETTLED PATTERN, THEY DO NOT SWITCH. The data pattern is constant; what moves is the rails. A real level also has to propagate a CHANGING input, and the pipeline acceptance rule used here (each bank valid by the end of its own beat) is the throughput rule a wave-per-beat pipeline needs -- which a static-pattern deck cannot fully exercise. Inherited from the committed harness; stated, not fixed.",
+    "NO TOP-UP ROW EXISTS. The sibling's per-beat top-up cannot be placed at T ~ t_hop without either clamping the destination rail during the transfer or restoring the rail a few ps before the boundary (its own measured 'moves the goalpost' artifact). So this study has NO row in the regime where the rails are held above the cliff and the pull-down is the binding term -- which is exactly the regime where skipping's measured +7 to +10 point pull-down repair would matter most. The conditional is stated in the verdict and is NOT claimed as a result.",
+    "THE dstheld IDEAL-RAIL CONTROL ABORTED at the first transfer-gate edge and was dropped (AMENDMENT A5). Its question was answered by the dataheld control instead.",
+    "ONE OPERATING POINT IN L. Everything here is at L = 15 nH / 30 um TG, the committed robust point. No L sweep. The sibling swept L over 93x on the adjacent chain and found L is not the knob; that is their measurement, cited, not re-done here."
+  ],
+
+  "files": {
+    "PRE_REGISTERED.json": "acceptance, grid, topology and the scored expectation -- written before any deck existed",
+    "AMENDMENT.md": "A1 boundary rule made strict; A2 ideal-rail control replacing the per-beat top-up (with the superseded text kept); A3 grid re-centred on the MEASURED chain hop time; A4 the dataheld control, added post-hoc and labelled; A5 the aborted dstheld control",
+    "skip.py": "the harness -- the only new thing in it is that the POWER SCHEDULE is a parameter",
+    "extract.py / reextract.py": "one extraction code path for every reported row",
+    "go.py": "grid runner, 4 concurrent",
+    "rows.json": "24 row entries (22 measured, 2 recorded ERROR)",
+    "instr_anchor.cir / instr_probe.cir": "the digit-checked instrument gate"
+  }
+}
