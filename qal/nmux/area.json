@@ -1,0 +1,191 @@
+{
+ "_doc": "(d) device count and DRC-grounded area, n-well broken out",
+ "rules_MEASURED_from_PDK": {
+  "Act.a_min_activ_width": 0.15,
+  "Act.b_min_activ_space": 0.21,
+  "Act.c_min_sd_extension": 0.23,
+  "Gat.a_min_poly_width_1p2V": 0.13,
+  "Gat.b_min_poly_space": 0.18,
+  "Gat.c_min_poly_endcap_over_activ": 0.18,
+  "Gat.d_min_poly_space_to_activ": 0.07,
+  "Cnt.a_cont_width": 0.16,
+  "Cnt.b_cont_space": 0.18,
+  "Cnt.c_activ_enclosure_of_cont": 0.07,
+  "Cnt.f_cont_on_activ_space_to_poly": 0.11,
+  "NW.a_min_nwell_width": 0.62,
+  "NW.b_min_nwell_space_same_net": 0.62,
+  "NW.c_nwell_enclosure_of_pactiv": 0.31,
+  "NW.d_nwell_space_to_ext_nactiv": 0.31,
+  "NW.e_nwell_enclosure_of_tie": 0.24
+ },
+ "rules_source": "/usr/local/src/IHP-Open-PDK/ihp-sg13g2/libs.tech/klayout/tech/drc/{feol,sg13g2_maximal}.drc",
+ "x_extent_DERIVED": {
+  "outer_sd_um": 0.34,
+  "shared_node_um": 0.38,
+  "two_input_pass_strip_x_um": 1.32,
+  "repeating_poly_pitch_um": 0.51,
+  "cross_check_vs_real_std_cell_quantum_um": 0.48,
+  "cross_check_error_pct": 6.250000000000006,
+  "_cross_check_verdict": "model is ~6 % PESSIMISTIC in x vs the foundry's own packing. x is identical for both forms, so it CANCELS in the area ratio; the ratio is a pure y result and y is where the n-well lives."
+ },
+ "std_cell_anchors_MEASURED": {
+  "row_height_um": 3.78,
+  "width_quantum_um": 0.48,
+  "sg13g2_inv_1_um2": 5.4432,
+  "sg13g2_mux2_1_um2": 18.144,
+  "sg13g2_xor2_1_um2": 14.5152,
+  "sg13g2_nand2_1_um2": 7.2576
+ },
+ "by_width": {
+  "w0.15": {
+   "w_n_um": 0.15,
+   "w_p_um": 0.15,
+   "nmos_only": {
+    "devices": 2,
+    "n_well": false,
+    "bbox_x_um": 1.32,
+    "bbox_y_um": 0.15,
+    "area_um2": 0.198
+   },
+   "transmission_gate": {
+    "devices": 4,
+    "n_well": true,
+    "bbox_x_um": 1.32,
+    "bbox_y_um": 1.23,
+    "area_um2": 1.6236000000000002,
+    "nwell_overhead_um_of_y": 0.93,
+    "_note": "n-well shared with neighbouring p-devices; no dedicated tie counted"
+   },
+   "transmission_gate_with_own_tie": {
+    "devices": 4,
+    "n_well": true,
+    "bbox_y_um": 1.8299999999999998,
+    "area_um2": 2.4156
+   },
+   "area_ratio_tg_over_nmos": 8.200000000000001,
+   "area_ratio_tg_tie_over_nmos": 12.2,
+   "device_count_ratio": 2.0
+  },
+  "w0.30": {
+   "w_n_um": 0.3,
+   "w_p_um": 0.3,
+   "nmos_only": {
+    "devices": 2,
+    "n_well": false,
+    "bbox_x_um": 1.32,
+    "bbox_y_um": 0.3,
+    "area_um2": 0.396
+   },
+   "transmission_gate": {
+    "devices": 4,
+    "n_well": true,
+    "bbox_x_um": 1.32,
+    "bbox_y_um": 1.53,
+    "area_um2": 2.0196,
+    "nwell_overhead_um_of_y": 0.9299999999999999,
+    "_note": "n-well shared with neighbouring p-devices; no dedicated tie counted"
+   },
+   "transmission_gate_with_own_tie": {
+    "devices": 4,
+    "n_well": true,
+    "bbox_y_um": 2.13,
+    "area_um2": 2.8116
+   },
+   "area_ratio_tg_over_nmos": 5.1,
+   "area_ratio_tg_tie_over_nmos": 7.1,
+   "device_count_ratio": 2.0
+  },
+  "w0.60": {
+   "w_n_um": 0.6,
+   "w_p_um": 0.6,
+   "nmos_only": {
+    "devices": 2,
+    "n_well": false,
+    "bbox_x_um": 1.32,
+    "bbox_y_um": 0.6,
+    "area_um2": 0.792
+   },
+   "transmission_gate": {
+    "devices": 4,
+    "n_well": true,
+    "bbox_x_um": 1.32,
+    "bbox_y_um": 2.13,
+    "area_um2": 2.8116,
+    "nwell_overhead_um_of_y": 0.9299999999999998,
+    "_note": "n-well shared with neighbouring p-devices; no dedicated tie counted"
+   },
+   "transmission_gate_with_own_tie": {
+    "devices": 4,
+    "n_well": true,
+    "bbox_y_um": 2.7299999999999995,
+    "area_um2": 3.6035999999999997
+   },
+   "area_ratio_tg_over_nmos": 3.55,
+   "area_ratio_tg_tie_over_nmos": 4.55,
+   "device_count_ratio": 2.0
+  },
+  "w1.20": {
+   "w_n_um": 1.2,
+   "w_p_um": 1.2,
+   "nmos_only": {
+    "devices": 2,
+    "n_well": false,
+    "bbox_x_um": 1.32,
+    "bbox_y_um": 1.2,
+    "area_um2": 1.584
+   },
+   "transmission_gate": {
+    "devices": 4,
+    "n_well": true,
+    "bbox_x_um": 1.32,
+    "bbox_y_um": 3.33,
+    "area_um2": 4.3956,
+    "nwell_overhead_um_of_y": 0.9299999999999999,
+    "_note": "n-well shared with neighbouring p-devices; no dedicated tie counted"
+   },
+   "transmission_gate_with_own_tie": {
+    "devices": 4,
+    "n_well": true,
+    "bbox_y_um": 3.9299999999999997,
+    "area_um2": 5.1876
+   },
+   "area_ratio_tg_over_nmos": 2.775,
+   "area_ratio_tg_tie_over_nmos": 3.275,
+   "device_count_ratio": 2.0
+  },
+  "w2.00": {
+   "w_n_um": 2.0,
+   "w_p_um": 2.0,
+   "nmos_only": {
+    "devices": 2,
+    "n_well": false,
+    "bbox_x_um": 1.32,
+    "bbox_y_um": 2.0,
+    "area_um2": 2.64
+   },
+   "transmission_gate": {
+    "devices": 4,
+    "n_well": true,
+    "bbox_x_um": 1.32,
+    "bbox_y_um": 4.93,
+    "area_um2": 6.5076,
+    "nwell_overhead_um_of_y": 0.9299999999999997,
+    "_note": "n-well shared with neighbouring p-devices; no dedicated tie counted"
+   },
+   "transmission_gate_with_own_tie": {
+    "devices": 4,
+    "n_well": true,
+    "bbox_y_um": 5.53,
+    "area_um2": 7.299600000000001
+   },
+   "area_ratio_tg_over_nmos": 2.465,
+   "area_ratio_tg_tie_over_nmos": 2.765,
+   "device_count_ratio": 2.0
+  }
+ },
+ "conventional_CMOS_reference_MEASURED": {
+  "sg13g2_mux2_1_um2": 18.144,
+  "sg13g2_xor2_1_um2": 14.5152,
+  "_caveat": "those cells are RESTORING and buffered (they drive a rail); a pass structure is not. The comparison bounds what the pass form saves only when a restoring stage is present anyway -- which in QAL it is, as the next bank's cell."
+ }
+}

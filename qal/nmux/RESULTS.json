@@ -1,0 +1,2280 @@
+{
+ "_doc": "qal/nmux -- nMOS-ONLY PASS LOGIC for QAL, measured against a full-transmission-gate control in one harness.",
+ "_provenance": {
+  "pre_registration": "qal/nmux/PRE_REGISTERED.json",
+  "pre_registration_sha256": "69b1ce5d716e5bbef29ed4fa3daa6dc76bea5e2202af3573611bf9b1f4a521d2",
+  "pre_registration_written": "2026-09-29T18:50:38Z",
+  "mtimes_recorded_before_first_deck": "qal/nmux/MTIME_BEFORE_FIRST_DECK.txt",
+  "amendments": "qal/nmux/AMENDMENT.md (A1 null-model cache trap, A2 gate-source addition, A3 Vt sweep range, A4 Vgs axis bug, A5 peer time step, A6 per-geometry compile cost, A7 reduced chain geometry, A8 gate G3 dropped)",
+  "model": "SG13G2 / PSP103 tt via qal/sg13lv_compat.sp",
+  "pyms_vae_cache": "scratchpad/vae_cache_nmux (own, built from scratch)",
+  "lower_bound_caveat": "sg13lv_compat.sp ZEROES ad/as/pd/ps. Junction capacitance is ABSENT, so every energy and every settle time here is OPTIMISTIC. The nMOS-only vs TG comparison is still like-for-like because both use the same shim -- but note the TG has TWICE the junction area being omitted, so the shim flatters the TG MORE than it flatters the nMOS-only cell. The area and device-count results are unaffected."
+ },
+ "instrument_gates": {
+  "G1_Vtn_zero_body": {
+   "vsb": 0.0,
+   "n_pts": 1301,
+   "vt_c100": 0.5239874244198669,
+   "vt_c10": 0.43571536181060605,
+   "vt_c1": 0.35348397882872945,
+   "Id_A_at_Vgs": {
+    "0.4": 2.10317615e-08,
+    "0.6": 2.67881165e-06,
+    "0.8": 2.49708371e-05,
+    "1.0": 6.22412939e-05,
+    "1.3": 0.000107292006
+   }
+  },
+  "G2_peer_committed_deck": {
+   "rc": 0,
+   "sec": 36.9,
+   "committed": {
+    "VBEND": 0.754572966,
+    "VBPK": 1.0881874,
+    "VA_open": 0.11745601600934541,
+    "t_hop_ps": 34.28582535896825
+   },
+   "mine": {
+    "VBEND": 0.754572951,
+    "VBPK": 1.0881874,
+    "VA_open": 0.117454442,
+    "t_hop_ps": 34.28582374332666
+   },
+   "rel_pct": {
+    "VBEND": -1.9878793298646003e-06,
+    "VBPK": 0.0,
+    "VA_open": -0.001340084057744987,
+    "t_hop_ps": -4.712272715993889e-06
+   },
+   "PASS": true
+  },
+  "G3_tank_committed_chain": "DROPPED -- see AMENDMENT A8",
+  "G_contention_anchor": "the standard 1.12p/0.74n receiver at 1.2 V and a 0.6759 V input reproduces the committed boundary study to 0.06 % (8.7856 vs 8.780 uA; 3.0890 vs 3.0896 fJ; 36.74 vs 36.75 % of hop). Not pre-registered; found and recorded as a free check."
+ },
+ "a_body_effect": {
+  "rows": {
+   "_doc": "(a) Vtn(V_sb) MEASURED, PSP103 SG13G2 tt, w=0.74u l=0.13u, Vds=0.1V. Re-extracted from the SAME .prn files with the corrected Vgs = V(g)-V(s) axis (AMENDMENT A4).",
+   "criterion_primary": "Id = 100 nA * W/L = 569.2 nA",
+   "rows": [
+    {
+     "vsb": 0.0,
+     "n_pts": 1301,
+     "vt_c100": 0.5239874244198669,
+     "vt_c10": 0.43571536181060605,
+     "vt_c1": 0.35348397882872945,
+     "Id_A_at_Vgs": {
+      "0.4": 2.10317615e-08,
+      "0.6": 2.67881165e-06,
+      "0.8": 2.49708371e-05,
+      "1.0": 6.22412939e-05,
+      "1.3": 0.000107292006
+     }
+    },
+    {
+     "vsb": 0.05,
+     "n_pts": 1301,
+     "vt_c100": 0.5303180116564106,
+     "vt_c10": 0.44227914575987753,
+     "vt_c1": 0.3603636133502894,
+     "Id_A_at_Vgs": {
+      "0.4": 1.74196455e-08,
+      "0.6": 2.39963981e-06,
+      "0.8": 2.37804179e-05,
+      "1.0": 6.07376257e-05,
+      "1.3": 0.000106202136
+     }
+    },
+    {
+     "vsb": 0.1,
+     "n_pts": 1301,
+     "vt_c100": 0.5364706878268728,
+     "vt_c10": 0.44864215240820304,
+     "vt_c1": 0.3670172103604318,
+     "Id_A_at_Vgs": {
+      "0.4": 1.44923326e-08,
+      "0.6": 2.14980614e-06,
+      "0.8": 2.2654248e-05,
+      "1.0": 5.92770297e-05,
+      "1.3": 0.000105126386
+     }
+    },
+    {
+     "vsb": 0.2,
+     "n_pts": 1301,
+     "vt_c100": 0.5482923483348233,
+     "vt_c10": 0.46083359541042157,
+     "vt_c1": 0.37970888012197146,
+     "Id_A_at_Vgs": {
+      "0.4": 1.01551306e-08,
+      "0.6": 1.72540133e-06,
+      "0.8": 2.05772451e-05,
+      "1.0": 5.64781969e-05,
+      "1.3": 0.00010301512
+     }
+    },
+    {
+     "vsb": 0.3,
+     "n_pts": 1301,
+     "vt_c100": 0.5595417770076617,
+     "vt_c10": 0.4723951684532465,
+     "vt_c1": 0.3917011773833279,
+     "Id_A_at_Vgs": {
+      "0.4": 7.22269339e-09,
+      "0.6": 1.38407425e-06,
+      "0.8": 1.87087158e-05,
+      "1.0": 5.38321134e-05,
+      "1.3": 0.000100954481
+     }
+    },
+    {
+     "vsb": 0.4,
+     "n_pts": 1301,
+     "vt_c100": 0.5702940218336867,
+     "vt_c10": 0.4834160454687672,
+     "vt_c1": 0.40309502274889497,
+     "Id_A_at_Vgs": {
+      "0.4": 5.20586265e-09,
+      "0.6": 1.10931605e-06,
+      "0.8": 1.70226404e-05,
+      "1.0": 5.13275349e-05,
+      "1.3": 9.89414293e-05
+     }
+    },
+    {
+     "vsb": 0.5,
+     "n_pts": 1301,
+     "vt_c100": 0.5806066211096723,
+     "vt_c10": 0.49396554584185154,
+     "vt_c1": 0.413967213380798,
+     "Id_A_at_Vgs": {
+      "0.4": 3.79739807e-09,
+      "0.6": 8.88206449e-07,
+      "0.8": 1.54971005e-05,
+      "1.0": 4.89544056e-05,
+      "1.3": 9.69734422e-05
+     }
+    },
+    {
+     "vsb": 0.6,
+     "n_pts": 1301,
+     "vt_c100": 0.5905288510038189,
+     "vt_c10": 0.504091924634709,
+     "vt_c1": 0.42437850458806536,
+     "Id_A_at_Vgs": {
+      "0.4": 2.80018378e-09,
+      "0.6": 7.10468703e-07,
+      "0.8": 1.4113512e-05,
+      "1.0": 4.6703671e-05,
+      "1.3": 9.50483954e-05
+     }
+    },
+    {
+     "vsb": 0.7,
+     "n_pts": 1301,
+     "vt_c100": 0.6001023772543698,
+     "vt_c10": 0.5138439550035822,
+     "vt_c1": 0.4343873123432565,
+     "Id_A_at_Vgs": {
+      "0.4": 2.08531999e-09,
+      "0.6": 5.67829999e-07,
+      "0.8": 1.2856022e-05,
+      "1.0": 4.45671319e-05,
+      "1.3": 9.3164471e-05
+     }
+    },
+    {
+     "vsb": 0.75,
+     "n_pts": 1301,
+     "vt_c100": 0.6047668535164255,
+     "vt_c10": 0.5185903641315475,
+     "vt_c1": 0.4392540422346427,
+     "Id_A_at_Vgs": {
+      "0.4": 1.80575109e-09,
+      "0.6": 5.07523348e-07,
+      "0.8": 1.22702376e-05,
+      "1.0": 4.35393287e-05,
+      "1.3": 9.22374288e-05
+     }
+    },
+    {
+     "vsb": 0.8,
+     "n_pts": 1301,
+     "vt_c100": 0.6093563347068516,
+     "vt_c10": 0.5232590137687962,
+     "vt_c1": 0.4440364402641028,
+     "Id_A_at_Vgs": {
+      "0.4": 1.56705051e-09,
+      "0.6": 4.53577188e-07,
+      "0.8": 1.17110328e-05,
+      "1.0": 4.25373299e-05,
+      "1.3": 9.13200915e-05
+     }
+    },
+    {
+     "vsb": 0.9,
+     "n_pts": 1301,
+     "vt_c100": 0.6183239241911324,
+     "vt_c10": 0.5323693939216041,
+     "vt_c1": 0.4533529114505646,
+     "Id_A_at_Vgs": {
+      "0.4": 1.18742411e-09,
+      "0.6": 3.62238616e-07,
+      "0.8": 1.06668197e-05,
+      "1.0": 4.06074541e-05,
+      "1.3": 8.95138691e-05
+     }
+    },
+    {
+     "vsb": 1.0,
+     "n_pts": 1301,
+     "vt_c100": 0.6270301441185019,
+     "vt_c10": 0.5412034882975912,
+     "vt_c1": 0.462375573515228,
+     "Id_A_at_Vgs": {
+      "0.4": 9.06718466e-10,
+      "0.6": 2.89348306e-07,
+      "0.8": 9.71322347e-06,
+      "1.0": 3.8771265e-05,
+      "1.3": 8.77445679e-05
+     }
+    },
+    {
+     "vsb": 1.1,
+     "n_pts": 1301,
+     "vt_c100": 0.6354904349314795,
+     "vt_c10": 0.5497820355300387,
+     "vt_c1": 0.47112951511314605,
+     "Id_A_at_Vgs": {
+      "0.4": 6.97350162e-10,
+      "0.6": 2.31264918e-07,
+      "0.8": 8.8414e-06,
+      "1.0": 3.70230309e-05,
+      "1.3": 8.60110732e-05
+     }
+    },
+    {
+     "vsb": 1.2,
+     "n_pts": 1301,
+     "vt_c100": 0.6437303395842332,
+     "vt_c10": 0.5581273135416462,
+     "vt_c1": 0.4796317335739265,
+     "Id_A_at_Vgs": {
+      "0.4": 5.39935524e-10,
+      "0.6": 1.85028051e-07,
+      "0.8": 8.04361504e-06,
+      "1.0": 3.5357474e-05,
+      "1.3": 8.43123696e-05
+     }
+    },
+    {
+     "vsb": 1.26,
+     "n_pts": 1301,
+     "vt_c100": 0.6485732756690843,
+     "vt_c10": 0.5630302268429851,
+     "vt_c1": 0.48462316584376897,
+     "Id_A_at_Vgs": {
+      "0.4": 4.64518145e-10,
+      "0.6": 1.61954771e-07,
+      "0.8": 7.59762171e-06,
+      "1.0": 3.43957832e-05,
+      "1.3": 8.33094554e-05
+     }
+    },
+    {
+     "vsb": 1.3,
+     "n_pts": 1301,
+     "vt_c100": 0.6517631265462355,
+     "vt_c10": 0.5662542652426562,
+     "vt_c1": 0.487909229464721,
+     "Id_A_at_Vgs": {
+      "0.4": 4.20702907e-10,
+      "0.6": 1.48240841e-07,
+      "0.8": 7.31307514e-06,
+      "1.0": 3.37697243e-05,
+      "1.3": 8.26475222e-05
+     }
+    }
+   ]
+  },
+  "fit": {
+   "_doc": "(a) body effect fit + self-consistent nMOS pass ceiling",
+   "MEASURED_curve": {
+    "vt_c100": {
+     "criterion": "100nA*W/L (campaign criterion)",
+     "Vsb_V": [
+      0.0,
+      0.05,
+      0.1,
+      0.2,
+      0.3,
+      0.4,
+      0.5,
+      0.6,
+      0.7,
+      0.75,
+      0.8,
+      0.9,
+      1.0,
+      1.1,
+      1.2,
+      1.26,
+      1.3
+     ],
+     "Vtn_V": [
+      0.5239874244198669,
+      0.5303180116564106,
+      0.5364706878268728,
+      0.5482923483348233,
+      0.5595417770076617,
+      0.5702940218336867,
+      0.5806066211096723,
+      0.5905288510038189,
+      0.6001023772543698,
+      0.6047668535164255,
+      0.6093563347068516,
+      0.6183239241911324,
+      0.6270301441185019,
+      0.6354904349314795,
+      0.6437303395842332,
+      0.6485732756690843,
+      0.6517631265462355
+     ],
+     "dVt_total_mV": 127.77570212636857
+    },
+    "vt_c10": {
+     "criterion": "10nA*W/L",
+     "Vsb_V": [
+      0.0,
+      0.05,
+      0.1,
+      0.2,
+      0.3,
+      0.4,
+      0.5,
+      0.6,
+      0.7,
+      0.75,
+      0.8,
+      0.9,
+      1.0,
+      1.1,
+      1.2,
+      1.26,
+      1.3
+     ],
+     "Vtn_V": [
+      0.43571536181060605,
+      0.44227914575987753,
+      0.44864215240820304,
+      0.46083359541042157,
+      0.4723951684532465,
+      0.4834160454687672,
+      0.49396554584185154,
+      0.504091924634709,
+      0.5138439550035822,
+      0.5185903641315475,
+      0.5232590137687962,
+      0.5323693939216041,
+      0.5412034882975912,
+      0.5497820355300387,
+      0.5581273135416462,
+      0.5630302268429851,
+      0.5662542652426562
+     ],
+     "dVt_total_mV": 130.53890343205015
+    },
+    "vt_c1": {
+     "criterion": "1nA*W/L",
+     "Vsb_V": [
+      0.0,
+      0.05,
+      0.1,
+      0.2,
+      0.3,
+      0.4,
+      0.5,
+      0.6,
+      0.7,
+      0.75,
+      0.8,
+      0.9,
+      1.0,
+      1.1,
+      1.2,
+      1.26,
+      1.3
+     ],
+     "Vtn_V": [
+      0.35348397882872945,
+      0.3603636133502894,
+      0.3670172103604318,
+      0.37970888012197146,
+      0.3917011773833279,
+      0.40309502274889497,
+      0.413967213380798,
+      0.42437850458806536,
+      0.4343873123432565,
+      0.4392540422346427,
+      0.4440364402641028,
+      0.4533529114505646,
+      0.462375573515228,
+      0.47112951511314605,
+      0.4796317335739265,
+      0.48462316584376897,
+      0.487909229464721
+     ],
+     "dVt_total_mV": 134.42525063599155
+    }
+   },
+   "fits": {
+    "vt_c100": {
+     "two_phi_F_V": 0.8,
+     "gamma_V_sqrt": 0.23038484801762873,
+     "Vt0_V": 0.5239874244198669,
+     "rms_residual_mV": 0.012721963126260592,
+     "max_residual_mV": 0.0211883359865217
+    },
+    "vt_c10": {
+     "two_phi_F_V": 0.735,
+     "gamma_V_sqrt": 0.22935994569710924,
+     "Vt0_V": 0.43571536181060605,
+     "rms_residual_mV": 0.014176939935957238,
+     "max_residual_mV": 0.027086774628259924
+    },
+    "vt_c1": {
+     "two_phi_F_V": 0.67,
+     "gamma_V_sqrt": 0.22982596200830926,
+     "Vt0_V": 0.35348397882872945,
+     "rms_residual_mV": 0.01729715790773339,
+     "max_residual_mV": 0.030201380102845565
+    }
+   },
+   "ceilings": {
+    "vt_c100": {
+     "pass_ceiling_V": 0.8831840602532777,
+     "how": "bisection on the measured curve",
+     "_meaning": "the highest level an nMOS with its gate at 1.50 V can hold on its source; body effect is included because Vtn is read AT that source level",
+     "margin_peer_fed_0.755_mV": 128.18406025327766,
+     "margin_tank_fed_1.26_mV": -376.81593974672234,
+     "margin_tank_fed_1.326_mV": -442.8159397467224
+    },
+    "vt_c10": {
+     "pass_ceiling_V": 0.9621410105593875,
+     "how": "bisection on the measured curve",
+     "_meaning": "the highest level an nMOS with its gate at 1.50 V can hold on its source; body effect is included because Vtn is read AT that source level",
+     "margin_peer_fed_0.755_mV": 207.1410105593875,
+     "margin_tank_fed_1.26_mV": -297.8589894406125,
+     "margin_tank_fed_1.326_mV": -363.85898944061256
+    },
+    "vt_c1": {
+     "pass_ceiling_V": 1.0345959198645653,
+     "how": "bisection on the measured curve",
+     "_meaning": "the highest level an nMOS with its gate at 1.50 V can hold on its source; body effect is included because Vtn is read AT that source level",
+     "margin_peer_fed_0.755_mV": 279.59591986456536,
+     "margin_tank_fed_1.26_mV": -225.40408013543467,
+     "margin_tank_fed_1.326_mV": -291.40408013543475
+    }
+   }
+  },
+  "writeup": "MEASURED_a_body.md"
+ },
+ "bd_cells": {
+  "designs": [
+   {
+    "tag": "m_peer_nmux_v15",
+    "mode": "peer",
+    "design": "nmux",
+    "w_um": 0.6,
+    "gate_src": "v15",
+    "t_open_ps": 84.29236347036701,
+    "t_hop_ps": 34.29236347036701,
+    "rail_end_V": 0.6781818981258001,
+    "rail_peak_V": 1.08525154,
+    "src_high_loaded_V": 0.674306531366,
+    "src_low_loaded_V": -8.175894393325605e-06,
+    "ref_high_unloaded_V": 0.67887095330092,
+    "ref_low_unloaded_V": -7.479662838113205e-06,
+    "capacitive_tax_mV": 4.5644219349199044,
+    "pass_HIGH_V": 0.6725874297495,
+    "pass_LOW_V": -8.800788412495006e-06,
+    "shortfall_HIGH_mV": 1.7191016165000184,
+    "shortfall_LOW_mV": -0.0006248940191694008,
+    "t90_pass_abs_ps": 306.82509864618754,
+    "t90_pass_after_close_ps": 256.82509864618754,
+    "t50_pass_after_close_ps": 72.63354335225166,
+    "t90_src_after_close_ps": 236.12445541191846,
+    "pass_delay_90_ps": 20.70064323426908,
+    "select_injection_peak_mV": 30.9948899,
+    "select_injection_residue_mV": 30.9951225,
+    "E_in_HIGH_fJ": 2.081466490143152,
+    "Q_in_HIGH_fC": 5.706997418625241,
+    "E_in_LOW_fJ": 0.468558213857815,
+    "Q_in_LOW_fC": 1.457394213636723,
+    "E_gate_total_fJ": -1.0667346975339953,
+    "Q_gate_total_fC": -1.0953282343459987,
+    "E_gate_hop_only_fJ": -1.0617006257949948,
+    "Q_gate_hop_only_fC": -1.0555079462340033,
+    "E_SUPPLY_fJ": 0.0,
+    "Q_SUPPLY_fC": 0.0,
+    "E_bank_fJ": 26.716822669009563,
+    "E_R_fJ": 2.2817161681808,
+    "Q_through_L_fC": 59.36500000000032,
+    "Q_onto_load_fC": 1.345174859499,
+    "Q_into_pass_device_fC": 4.3618225591262405,
+    "pct_of_input_charge_that_reaches_the_load": 23.5706232336625,
+    "E_per_operation_fJ": 2.081466490143152
+   },
+   {
+    "tag": "m_peer_nmux_rail",
+    "mode": "peer",
+    "design": "nmux",
+    "w_um": 0.6,
+    "gate_src": "rail",
+    "t_open_ps": 84.28967077031662,
+    "t_hop_ps": 34.28967077031662,
+    "rail_end_V": 0.70960029247072,
+    "rail_peak_V": 1.08631884,
+    "src_high_loaded_V": 0.70662280617394,
+    "src_low_loaded_V": -1.4466929043728003e-05,
+    "ref_high_unloaded_V": 0.7099690480884,
+    "ref_low_unloaded_V": -8.049481484346403e-06,
+    "capacitive_tax_mV": 3.3462419144599798,
+    "pass_HIGH_V": 0.16893577884365998,
+    "pass_LOW_V": -4.5923253689677996e-05,
+    "shortfall_HIGH_mV": 537.6870273302801,
+    "shortfall_LOW_mV": -0.031456324645949996,
+    "t90_pass_abs_ps": 446.20442296168704,
+    "t90_pass_after_close_ps": 396.20442296168704,
+    "t50_pass_after_close_ps": 176.2546579786559,
+    "t90_src_after_close_ps": 119.6107912304692,
+    "pass_delay_90_ps": 276.59363173121784,
+    "select_injection_peak_mV": 5.05013265e-06,
+    "select_injection_residue_mV": 5.05365523e-06,
+    "E_in_HIGH_fJ": 1.0505292184223916,
+    "Q_in_HIGH_fC": 2.1828311698196337,
+    "E_in_LOW_fJ": 0.5059823349266712,
+    "Q_in_LOW_fC": 1.0106640160589353,
+    "E_gate_total_fJ": 0.2502050596061,
+    "Q_gate_total_fC": 0.47797179254261263,
+    "E_gate_hop_only_fJ": 0.2502050596060958,
+    "Q_gate_hop_only_fC": 0.47797171511524866,
+    "E_SUPPLY_fJ": 0.0,
+    "Q_SUPPLY_fC": 0.0,
+    "E_bank_fJ": 28.68448962083347,
+    "E_R_fJ": 2.2813213881808,
+    "Q_through_L_fC": 59.36500000000032,
+    "Q_onto_load_fC": 0.33787155768731997,
+    "Q_into_pass_device_fC": 1.8449596121323137,
+    "pct_of_input_charge_that_reaches_the_load": 15.478593230608768,
+    "E_per_operation_fJ": 1.3007342780284916
+   },
+   {
+    "tag": "m_peer_tgmux_v15",
+    "mode": "peer",
+    "design": "tgmux",
+    "w_um": 0.6,
+    "gate_src": "v15",
+    "t_open_ps": 84.29285810999258,
+    "t_hop_ps": 34.29285810999258,
+    "rail_end_V": 0.65958330161452,
+    "rail_peak_V": 1.08442366,
+    "src_high_loaded_V": 0.64187722932786,
+    "src_low_loaded_V": -3.677290070316803e-05,
+    "ref_high_unloaded_V": 0.662002319743,
+    "ref_low_unloaded_V": -3.3568812136962025e-05,
+    "capacitive_tax_mV": 20.12509041513999,
+    "pass_HIGH_V": 0.63640628312514,
+    "pass_LOW_V": -3.9664317537648036e-05,
+    "shortfall_HIGH_mV": 5.4709462027199285,
+    "shortfall_LOW_mV": -0.0028914168344800085,
+    "t90_pass_abs_ps": 370.89589663933015,
+    "t90_pass_after_close_ps": 320.89589663933015,
+    "t50_pass_after_close_ps": 81.51492652511635,
+    "t90_src_after_close_ps": 299.80224879264046,
+    "pass_delay_90_ps": 21.09364784668969,
+    "select_injection_peak_mV": 53.1688835,
+    "select_injection_residue_mV": 53.1715238,
+    "E_in_HIGH_fJ": 3.0242783232289994,
+    "Q_in_HIGH_fC": 8.259844812419912,
+    "E_in_LOW_fJ": 0.809948753532011,
+    "Q_in_LOW_fC": 1.8929611823600498,
+    "E_gate_total_fJ": -1.2140663341759965,
+    "Q_gate_total_fC": -1.4169247392839952,
+    "E_gate_hop_only_fJ": -1.2547196170740076,
+    "Q_gate_hop_only_fC": -1.4531140227184025,
+    "E_SUPPLY_fJ": -5.1205308165969265,
+    "Q_SUPPLY_fC": -3.4137364123996856,
+    "E_bank_fJ": 24.9166616602375,
+    "E_R_fJ": 2.2834566281808,
+    "Q_through_L_fC": 59.36500000000032,
+    "Q_onto_load_fC": 1.27281256625028,
+    "Q_into_pass_device_fC": 6.9870322461696315,
+    "pct_of_input_charge_that_reaches_the_load": 15.409642616244025,
+    "E_per_operation_fJ": 3.0242783232289994
+   },
+   {
+    "tag": "m_peer_tgmux_rail",
+    "mode": "peer",
+    "design": "tgmux",
+    "w_um": 0.6,
+    "gate_src": "rail",
+    "t_open_ps": 84.28993934956704,
+    "t_hop_ps": 34.289939349567035,
+    "rail_end_V": 0.69436760641738,
+    "rail_peak_V": 1.08545508,
+    "src_high_loaded_V": 0.67958397750638,
+    "src_low_loaded_V": 0.0019727558638656015,
+    "ref_high_unloaded_V": 0.69607403671166,
+    "ref_low_unloaded_V": -4.1940739798006006e-05,
+    "capacitive_tax_mV": 16.490059205280016,
+    "pass_HIGH_V": 0.47448371437931997,
+    "pass_LOW_V": 0.027281037584524024,
+    "shortfall_HIGH_mV": 205.10026312706003,
+    "shortfall_LOW_mV": 25.308281720658425,
+    "t90_pass_abs_ps": 461.6935262458009,
+    "t90_pass_after_close_ps": 411.6935262458009,
+    "t50_pass_after_close_ps": null,
+    "t90_src_after_close_ps": 105.28328010798847,
+    "pass_delay_90_ps": 306.41024613781246,
+    "select_injection_peak_mV": 263.057594,
+    "select_injection_residue_mV": 263.057594,
+    "E_in_HIGH_fJ": 1.977884107264002,
+    "Q_in_HIGH_fC": 3.714044736599989,
+    "E_in_LOW_fJ": 0.8295404544960027,
+    "Q_in_LOW_fC": -0.6865050771999346,
+    "E_gate_total_fJ": 0.5118626292516401,
+    "Q_gate_total_fC": 1.0497585542169534,
+    "E_gate_hop_only_fJ": 0.5118626292516312,
+    "Q_gate_hop_only_fC": 1.049758391839063,
+    "E_SUPPLY_fJ": -2.974500000001322,
+    "Q_SUPPLY_fC": -1.9830000000008812,
+    "E_bank_fJ": 28.67860651234475,
+    "E_R_fJ": 2.2827021581807996,
+    "Q_through_L_fC": 59.36500000000032,
+    "Q_onto_load_fC": 0.9489674287586399,
+    "Q_into_pass_device_fC": 2.765077307841349,
+    "pct_of_input_charge_that_reaches_the_load": 25.550780781045983,
+    "E_per_operation_fJ": 2.489746736515642
+   },
+   {
+    "tag": "m_tank_nmux_v15",
+    "mode": "tank",
+    "design": "nmux",
+    "w_um": 0.6,
+    "gate_src": "v15",
+    "t_open_ps": 341.5251799037713,
+    "t_hop_ps": 141.5251799037713,
+    "rail_end_V": 1.2996205008064,
+    "rail_peak_V": 1.42411475,
+    "src_high_loaded_V": 1.2988861062046,
+    "src_low_loaded_V": -8.771162064929e-06,
+    "ref_high_unloaded_V": 1.2996747402066,
+    "ref_low_unloaded_V": -8.5574177480376e-06,
+    "capacitive_tax_mV": 0.7886340020000215,
+    "pass_HIGH_V": 0.89507712293766,
+    "pass_LOW_V": -8.9207742678816e-06,
+    "shortfall_HIGH_mV": 403.80898326694006,
+    "shortfall_LOW_mV": -0.00014961220295259974,
+    "t90_pass_abs_ps": 460.79388662596443,
+    "t90_pass_after_close_ps": 260.79388662596443,
+    "t50_pass_after_close_ps": 118.69798290180609,
+    "t90_src_after_close_ps": 163.11988572757906,
+    "pass_delay_90_ps": 97.67400089838537,
+    "select_injection_peak_mV": 39.948608300000004,
+    "select_injection_residue_mV": 39.948793,
+    "E_in_HIGH_fJ": 5.3027543013620395,
+    "Q_in_HIGH_fC": 8.153481575936002,
+    "E_in_LOW_fJ": 1.55726042305392,
+    "Q_in_LOW_fC": 2.60782575891744,
+    "E_gate_total_fJ": -1.5140490199599996,
+    "Q_gate_total_fC": -1.601505231955999,
+    "E_gate_hop_only_fJ": -1.5195655728400037,
+    "Q_gate_hop_only_fC": -1.5526245053960053,
+    "E_SUPPLY_fJ": 0.0,
+    "Q_SUPPLY_fC": 0.0,
+    "E_bank_fJ": 39.89767466251598,
+    "E_R_fJ": 3.010445636630952,
+    "Q_through_L_fC": 156.91964003744005,
+    "Q_onto_load_fC": 1.79015424587532,
+    "Q_into_pass_device_fC": 6.363327330060683,
+    "pct_of_input_charge_that_reaches_the_load": 21.95570357525232,
+    "E_per_operation_fJ": 5.3027543013620395
+   },
+   {
+    "tag": "m_tank_nmux_rail",
+    "mode": "tank",
+    "design": "nmux",
+    "w_um": 0.6,
+    "gate_src": "rail",
+    "t_open_ps": 341.2130105707226,
+    "t_hop_ps": 141.2130105707226,
+    "rail_end_V": 1.3028851030058,
+    "rail_peak_V": 1.43069511,
+    "src_high_loaded_V": 1.302159320004,
+    "src_low_loaded_V": -1.4850160878664001e-05,
+    "ref_high_unloaded_V": 1.3029342730058,
+    "ref_low_unloaded_V": -7.7236667572228e-06,
+    "capacitive_tax_mV": 0.7749530017999717,
+    "pass_HIGH_V": 0.72523964432124,
+    "pass_LOW_V": -1.8978476860066e-05,
+    "shortfall_HIGH_mV": 576.91967568276,
+    "shortfall_LOW_mV": -0.004128315981402,
+    "t90_pass_abs_ps": 495.13932347276256,
+    "t90_pass_after_close_ps": 295.13932347276256,
+    "t50_pass_after_close_ps": 153.57691164965036,
+    "t90_src_after_close_ps": 156.89147646412215,
+    "pass_delay_90_ps": 138.2478470086404,
+    "select_injection_peak_mV": 2.80953359e-06,
+    "select_injection_residue_mV": 2.81007795e-06,
+    "E_in_HIGH_fJ": 6.007458412401797,
+    "Q_in_HIGH_fC": 6.332063270707951,
+    "E_in_LOW_fJ": 1.5543800620131965,
+    "Q_in_LOW_fC": 1.42849475220442,
+    "E_gate_total_fJ": 0.8631149994464401,
+    "Q_gate_total_fC": 0.898073135361139,
+    "E_gate_hop_only_fJ": 0.8631149994464381,
+    "Q_gate_hop_only_fC": 0.8980730874806803,
+    "E_SUPPLY_fJ": 0.0,
+    "Q_SUPPLY_fC": 0.0,
+    "E_bank_fJ": 41.21289333023748,
+    "E_R_fJ": 3.019725289788152,
+    "Q_through_L_fC": 156.49617496336,
+    "Q_onto_load_fC": 1.45047928864248,
+    "Q_into_pass_device_fC": 4.881583982065471,
+    "pct_of_input_charge_that_reaches_the_load": 22.90689821992746,
+    "E_per_operation_fJ": 6.870573411848237
+   },
+   {
+    "tag": "m_tank_tgmux_v15",
+    "mode": "tank",
+    "design": "tgmux",
+    "w_um": 0.6,
+    "gate_src": "v15",
+    "t_open_ps": 341.81005801296646,
+    "t_hop_ps": 141.81005801296646,
+    "rail_end_V": 1.1850559,
+    "rail_peak_V": 1.41347154,
+    "src_high_loaded_V": 1.1850426735998,
+    "src_low_loaded_V": -1.1226158307134e-07,
+    "ref_high_unloaded_V": 1.1850569564002,
+    "ref_low_unloaded_V": -1.329966889517e-07,
+    "capacitive_tax_mV": 0.014282800399945117,
+    "pass_HIGH_V": 1.1850246307994001,
+    "pass_LOW_V": -9.6532295106192e-08,
+    "shortfall_HIGH_mV": 0.01804280039996442,
+    "shortfall_LOW_mV": 1.5729287965148002e-05,
+    "t90_pass_abs_ps": 467.4761922613742,
+    "t90_pass_after_close_ps": 267.4761922613742,
+    "t50_pass_after_close_ps": 159.2380409769679,
+    "t90_src_after_close_ps": 185.99815099447494,
+    "pass_delay_90_ps": 81.47804126689925,
+    "select_injection_peak_mV": 50.6630253,
+    "select_injection_residue_mV": 50.6644024,
+    "E_in_HIGH_fJ": 11.9328209122608,
+    "Q_in_HIGH_fC": 16.237710681599964,
+    "E_in_LOW_fJ": 2.596681451460004,
+    "Q_in_LOW_fC": 3.7893861099998998,
+    "E_gate_total_fJ": -2.139027299999999,
+    "Q_gate_total_fC": -3.0294913999999977,
+    "E_gate_hop_only_fJ": -2.1844168746800072,
+    "Q_gate_hop_only_fC": -3.0648578576400007,
+    "E_SUPPLY_fJ": -10.68492244400113,
+    "Q_SUPPLY_fC": -7.123248296001811,
+    "E_bank_fJ": 34.560801909118204,
+    "E_R_fJ": 2.996129795879552,
+    "Q_through_L_fC": 157.28120491058002,
+    "Q_onto_load_fC": 2.3700492615988002,
+    "Q_into_pass_device_fC": 13.867661420001163,
+    "pct_of_input_charge_that_reaches_the_load": 14.595956955215748,
+    "E_per_operation_fJ": 11.9328209122608
+   },
+   {
+    "tag": "m_tank_tgmux_rail",
+    "mode": "tank",
+    "design": "tgmux",
+    "w_um": 0.6,
+    "gate_src": "rail",
+    "t_open_ps": 341.69875974263863,
+    "t_hop_ps": 141.69875974263863,
+    "rail_end_V": 1.2024367242001999,
+    "rail_peak_V": 1.41619359,
+    "src_high_loaded_V": 1.2024198757998001,
+    "src_low_loaded_V": -5.941863417659202e-07,
+    "ref_high_unloaded_V": 1.2024379242002,
+    "ref_low_unloaded_V": -1.4964613189438004e-07,
+    "capacitive_tax_mV": 0.018048400399761633,
+    "pass_HIGH_V": 1.2023972331991999,
+    "pass_LOW_V": -9.309075916350002e-07,
+    "shortfall_HIGH_mV": 0.02264260060025336,
+    "shortfall_LOW_mV": -0.00033672124986908,
+    "t90_pass_abs_ps": 473.8771014249867,
+    "t90_pass_after_close_ps": 273.8771014249867,
+    "t50_pass_after_close_ps": 173.558980236502,
+    "t90_src_after_close_ps": 153.06342931947916,
+    "pass_delay_90_ps": 120.81367210550752,
+    "select_injection_peak_mV": 263.0576,
+    "select_injection_residue_mV": 263.0576,
+    "E_in_HIGH_fJ": 12.58097848999,
+    "Q_in_HIGH_fC": 12.725899999999942,
+    "E_in_LOW_fJ": 2.3725051000000006,
+    "Q_in_LOW_fC": 0.17411000000001814,
+    "E_gate_total_fJ": 1.1925963810009999,
+    "Q_gate_total_fC": 0.7905067169657944,
+    "E_gate_hop_only_fJ": 1.1925963810009836,
+    "Q_gate_hop_only_fC": 0.7905065225052088,
+    "E_SUPPLY_fJ": -9.42489999999937,
+    "Q_SUPPLY_fC": -6.283300000001753,
+    "E_bank_fJ": 41.16285364199266,
+    "E_R_fJ": 2.995532626066752,
+    "Q_through_L_fC": 157.01775133238004,
+    "Q_onto_load_fC": 2.4047944663983998,
+    "Q_into_pass_device_fC": 10.321105533601543,
+    "pct_of_input_charge_that_reaches_the_load": 18.89685182500578,
+    "E_per_operation_fJ": 13.773574870991
+   }
+  ],
+  "widths": [
+   {
+    "tag": "w_tank_nmux_015",
+    "mode": "tank",
+    "design": "nmux",
+    "w_um": 0.15,
+    "gate_src": "v15",
+    "t_open_ps": 341.5251799037713,
+    "t_hop_ps": 141.5251799037713,
+    "rail_end_V": 1.3270377608064,
+    "rail_peak_V": 1.43400365,
+    "src_high_loaded_V": 1.3263059756048001,
+    "src_low_loaded_V": -8.553128159573802e-06,
+    "ref_high_unloaded_V": 1.3270918102066,
+    "ref_low_unloaded_V": -8.362693242046e-06,
+    "capacitive_tax_mV": 0.7858346017999285,
+    "pass_HIGH_V": 0.64214784803296,
+    "pass_LOW_V": -8.982869290877401e-06,
+    "shortfall_HIGH_mV": 684.1581275718402,
+    "shortfall_LOW_mV": -0.00042974113130359916,
+    "t90_pass_abs_ps": 517.5312678326038,
+    "t90_pass_after_close_ps": 317.5312678326038,
+    "t50_pass_after_close_ps": 120.53803441099893,
+    "t90_src_after_close_ps": 155.6022496279469,
+    "pass_delay_90_ps": 161.92901820465693,
+    "select_injection_peak_mV": 9.466858760000001,
+    "select_injection_residue_mV": 9.4688425,
+    "E_in_HIGH_fJ": 4.216247012671117,
+    "Q_in_HIGH_fC": 6.106794223139856,
+    "E_in_LOW_fJ": 1.47734555332822,
+    "Q_in_LOW_fC": 2.362095518153316,
+    "E_gate_total_fJ": -0.34470684198599816,
+    "Q_gate_total_fC": -0.3592391419859976,
+    "E_gate_hop_only_fJ": -0.3446418679579993,
+    "Q_gate_hop_only_fC": -0.3561487212060014,
+    "E_SUPPLY_fJ": 0.0,
+    "Q_SUPPLY_fC": 0.0,
+    "E_bank_fJ": 40.769252648536586,
+    "E_R_fJ": 3.022295997800552,
+    "Q_through_L_fC": 156.65322138166005,
+    "Q_onto_load_fC": 1.28429569606592,
+    "Q_into_pass_device_fC": 4.822498527073936,
+    "pct_of_input_charge_that_reaches_the_load": 21.030603769150574,
+    "E_per_operation_fJ": 4.216247012671117
+   },
+   {
+    "tag": "w_tank_nmux_030",
+    "mode": "tank",
+    "design": "nmux",
+    "w_um": 0.3,
+    "gate_src": "v15",
+    "t_open_ps": 341.5251799037713,
+    "t_hop_ps": 141.5251799037713,
+    "rail_end_V": 1.3145893978074,
+    "rail_peak_V": 1.4299063,
+    "src_high_loaded_V": 1.3137507238053998,
+    "src_low_loaded_V": -9.9813525974758e-06,
+    "ref_high_unloaded_V": 1.3146513278074001,
+    "ref_low_unloaded_V": -9.751620087368802e-06,
+    "capacitive_tax_mV": 0.9006040020003159,
+    "pass_HIGH_V": 0.78192839872206,
+    "pass_LOW_V": -1.032307023653e-05,
+    "shortfall_HIGH_mV": 531.8223250833398,
+    "shortfall_LOW_mV": -0.00034171763905420057,
+    "t90_pass_abs_ps": 506.27311932269396,
+    "t90_pass_after_close_ps": 306.27311932269396,
+    "t50_pass_after_close_ps": 120.88491371289689,
+    "t90_src_after_close_ps": 158.42137859262613,
+    "pass_delay_90_ps": 147.85174073006783,
+    "select_injection_peak_mV": 20.113866899999998,
+    "select_injection_residue_mV": 20.115147699999998,
+    "E_in_HIGH_fJ": 4.837200000225136,
+    "Q_in_HIGH_fC": 7.0765215764086005,
+    "E_in_LOW_fJ": 1.4989986271320401,
+    "Q_in_LOW_fC": 2.4381975919706798,
+    "E_gate_total_fJ": -0.7373671779739994,
+    "Q_gate_total_fC": -0.7656142839720033,
+    "E_gate_hop_only_fJ": -0.7381450550939995,
+    "Q_gate_hop_only_fC": -0.7530310622920039,
+    "E_SUPPLY_fJ": 0.0,
+    "Q_SUPPLY_fC": 0.0,
+    "E_bank_fJ": 40.34057101070599,
+    "E_R_fJ": 3.017061479413352,
+    "Q_through_L_fC": 156.75760571988008,
+    "Q_onto_load_fC": 1.56385679744412,
+    "Q_into_pass_device_fC": 5.5126647789644805,
+    "pct_of_input_charge_that_reaches_the_load": 22.099230258233614,
+    "E_per_operation_fJ": 4.837200000225136
+   },
+   {
+    "tag": "w_tank_nmux_120",
+    "mode": "tank",
+    "design": "nmux",
+    "w_um": 1.2,
+    "gate_src": "v15",
+    "t_open_ps": 341.5251799037713,
+    "t_hop_ps": 141.5251799037713,
+    "rail_end_V": 1.2675638414062,
+    "rail_peak_V": 1.41509817,
+    "src_high_loaded_V": 1.2668296468044,
+    "src_low_loaded_V": -8.7720087455452e-06,
+    "ref_high_unloaded_V": 1.2676179308064,
+    "ref_low_unloaded_V": -8.5278037916794e-06,
+    "capacitive_tax_mV": 0.7882840019999282,
+    "pass_HIGH_V": 0.96358880456912,
+    "pass_LOW_V": -8.8498499623364e-06,
+    "shortfall_HIGH_mV": 303.24084223528,
+    "shortfall_LOW_mV": -7.784121679119985e-05,
+    "t90_pass_abs_ps": 433.1262766507478,
+    "t90_pass_after_close_ps": 233.1262766507478,
+    "t50_pass_after_close_ps": 121.11700480972593,
+    "t90_src_after_close_ps": 171.6797192832247,
+    "pass_delay_90_ps": 61.4465573675231,
+    "select_injection_peak_mV": 70.838106,
+    "select_injection_residue_mV": 70.8381117,
+    "E_in_HIGH_fJ": 6.366083316576326,
+    "Q_in_HIGH_fC": 10.06688026494108,
+    "E_in_LOW_fJ": 1.7929730435506197,
+    "Q_in_LOW_fC": 3.1881868763889,
+    "E_gate_total_fJ": -2.9507399919359942,
+    "Q_gate_total_fC": -3.264815115927999,
+    "E_gate_hop_only_fJ": -2.9835240096259965,
+    "Q_gate_hop_only_fC": -3.091931975014003,
+    "E_SUPPLY_fJ": 0.0,
+    "Q_SUPPLY_fC": 0.0,
+    "E_bank_fJ": 38.881945616788535,
+    "E_R_fJ": 3.0016857892567517,
+    "Q_through_L_fC": 157.18672495380005,
+    "Q_onto_load_fC": 1.92717760913824,
+    "Q_into_pass_device_fC": 8.13970265580284,
+    "pct_of_input_charge_that_reaches_the_load": 19.143742236110917,
+    "E_per_operation_fJ": 6.366083316576326
+   }
+  ],
+  "stepcheck": [
+   {
+    "tag": "sc_relaxed",
+    "mode": "peer",
+    "design": "nmux",
+    "w_um": 0.6,
+    "gate_src": "v15",
+    "t_open_ps": 84.29236347036701,
+    "t_hop_ps": 34.29236347036701,
+    "rail_end_V": 0.6781818981258001,
+    "rail_peak_V": 1.08525154,
+    "src_high_loaded_V": 0.674306531366,
+    "src_low_loaded_V": -8.175894393325605e-06,
+    "ref_high_unloaded_V": 0.67887095330092,
+    "ref_low_unloaded_V": -7.479662838113205e-06,
+    "capacitive_tax_mV": 4.5644219349199044,
+    "pass_HIGH_V": 0.6725874297495,
+    "pass_LOW_V": -8.800788412495006e-06,
+    "shortfall_HIGH_mV": 1.7191016165000184,
+    "shortfall_LOW_mV": -0.0006248940191694008,
+    "t90_pass_abs_ps": 306.82509864618754,
+    "t90_pass_after_close_ps": 256.82509864618754,
+    "t50_pass_after_close_ps": 72.63354335225166,
+    "t90_src_after_close_ps": 236.12445541191846,
+    "pass_delay_90_ps": 20.70064323426908,
+    "select_injection_peak_mV": 30.9948899,
+    "select_injection_residue_mV": 30.9951225,
+    "E_in_HIGH_fJ": 2.081466490143152,
+    "Q_in_HIGH_fC": 5.706997418625241,
+    "E_in_LOW_fJ": 0.468558213857815,
+    "Q_in_LOW_fC": 1.457394213636723,
+    "E_gate_total_fJ": -1.0667346975339953,
+    "Q_gate_total_fC": -1.0953282343459987,
+    "E_gate_hop_only_fJ": -1.0617006257949948,
+    "Q_gate_hop_only_fC": -1.0555079462340033,
+    "E_SUPPLY_fJ": 0.0,
+    "Q_SUPPLY_fC": 0.0,
+    "E_bank_fJ": 26.716822669009563,
+    "E_R_fJ": 2.2817161681808,
+    "Q_through_L_fC": 59.36500000000032,
+    "Q_onto_load_fC": 1.345174859499,
+    "Q_into_pass_device_fC": 4.3618225591262405,
+    "pct_of_input_charge_that_reaches_the_load": 23.5706232336625,
+    "E_per_operation_fJ": 2.081466490143152,
+    "dt_ps": 0.02,
+    "maxstep_ps": 0.05
+   },
+   {
+    "tag": "sc_committed",
+    "mode": "peer",
+    "design": "nmux",
+    "w_um": 0.6,
+    "gate_src": "v15",
+    "t_open_ps": 84.2922029618091,
+    "t_hop_ps": 34.292202961809096,
+    "rail_end_V": 0.6781812127214905,
+    "rail_peak_V": 1.08525173,
+    "src_high_loaded_V": 0.674305795242148,
+    "src_low_loaded_V": -8.175976464906007e-06,
+    "ref_high_unloaded_V": 0.6788702777567264,
+    "ref_low_unloaded_V": -7.479738884618943e-06,
+    "capacitive_tax_mV": 4.564482514578416,
+    "pass_HIGH_V": 0.6725866896487673,
+    "pass_LOW_V": -8.800875940482954e-06,
+    "shortfall_HIGH_mV": 1.719105593380621,
+    "shortfall_LOW_mV": -0.0006248994755769468,
+    "t90_pass_abs_ps": 306.8255004134463,
+    "t90_pass_after_close_ps": 256.8255004134463,
+    "t50_pass_after_close_ps": 72.63353061011712,
+    "t90_src_after_close_ps": 236.12495820544683,
+    "pass_delay_90_ps": 20.70054220799949,
+    "select_injection_peak_mV": 30.9951013,
+    "select_injection_residue_mV": 30.9951875,
+    "E_in_HIGH_fJ": 2.0814654955358973,
+    "Q_in_HIGH_fC": 5.706990666906418,
+    "E_in_LOW_fJ": 0.46856058222856073,
+    "Q_in_LOW_fC": 1.4573920603402504,
+    "E_gate_total_fJ": -1.0666507343127254,
+    "Q_gate_total_fC": -1.095327161927274,
+    "E_gate_hop_only_fJ": -1.0616992060597967,
+    "Q_gate_hop_only_fC": -1.055506691920577,
+    "E_SUPPLY_fJ": 0.0,
+    "Q_SUPPLY_fC": 0.0,
+    "E_bank_fJ": 26.717974725852216,
+    "E_R_fJ": 2.2817112581808,
+    "Q_through_L_fC": 59.36500000000032,
+    "Q_onto_load_fC": 1.3451733792975347,
+    "Q_into_pass_device_fC": 4.361817287608884,
+    "pct_of_input_charge_that_reaches_the_load": 23.570625182513417,
+    "E_per_operation_fJ": 2.0814654955358973,
+    "dt_ps": 0.00888317,
+    "maxstep_ps": 0.0177663
+   }
+  ],
+  "locus_rate_probe": {
+   "_doc": "The pass ceiling is a RATE LIMIT, not a DC wall -- measure the rate directly.",
+   "load_fF": 2.0,
+   "rows": [
+    {
+     "tag": "mux_tank",
+     "label": "MUX2 select on the 1.5 V control rail, tank-fed data",
+     "VGH_V": 1.5,
+     "rail_V": 1.326,
+     "w_um": 0.6,
+     "sec": 12.4,
+     "I_uA_at_Vout": {
+      "0.00": 556.754514,
+      "0.20": 330.638511,
+      "0.40": 149.76060099999998,
+      "0.60": 41.2429453,
+      "0.80": 3.9339353399999997,
+      "1.00": 0.0168158596,
+      "1.20": 1.5663167800000002e-05
+     },
+     "level_reached_V": {
+      "50ps": 0.814,
+      "100ps": 0.862,
+      "150ps": 0.884,
+      "200ps": 0.898,
+      "300ps": 0.916,
+      "500ps": 0.936,
+      "1000ps": 0.96,
+      "5000ps": 1.01
+     },
+     "level_where_I_falls_to_100nA*W/L": 0.898,
+     "level_where_I_falls_to_10nA*W/L": 0.972,
+     "level_where_I_falls_to_1nA*W/L": 1.038
+    },
+    {
+     "tag": "mux_peer",
+     "label": "MUX2 select on the 1.5 V control rail, peer-fed data",
+     "VGH_V": 1.5,
+     "rail_V": 0.755,
+     "w_um": 0.6,
+     "sec": 19.1,
+     "I_uA_at_Vout": {
+      "0.00": 454.006899,
+      "0.20": 262.99349,
+      "0.40": 113.683251,
+      "0.60": 26.059243900000002
+     },
+     "level_reached_V": {
+      "50ps": 0.738,
+      "100ps": 0.752,
+      "150ps": 0.752,
+      "200ps": 0.752,
+      "300ps": 0.752,
+      "500ps": 0.752,
+      "1000ps": 0.752,
+      "5000ps": 0.752
+     },
+     "level_where_I_falls_to_100nA*W/L": 0.75,
+     "level_where_I_falls_to_10nA*W/L": null,
+     "level_where_I_falls_to_1nA*W/L": null
+    },
+    {
+     "tag": "xor_tank",
+     "label": "XOR2: an OPERAND drives the gate, tank-fed",
+     "VGH_V": 1.326,
+     "rail_V": 1.326,
+     "w_um": 0.6,
+     "sec": 12.1,
+     "I_uA_at_Vout": {
+      "0.00": 394.997511,
+      "0.20": 192.861307,
+      "0.40": 61.040700099999995,
+      "0.60": 8.19368928,
+      "0.80": 0.0889744639,
+      "1.00": 9.90694396e-05,
+      "1.20": 1.41652826e-06
+     },
+     "level_reached_V": {
+      "50ps": 0.664,
+      "100ps": 0.712,
+      "150ps": 0.734,
+      "200ps": 0.748,
+      "300ps": 0.766,
+      "500ps": 0.786,
+      "1000ps": 0.81,
+      "5000ps": 0.86
+     },
+     "level_where_I_falls_to_100nA*W/L": 0.748,
+     "level_where_I_falls_to_10nA*W/L": 0.82,
+     "level_where_I_falls_to_1nA*W/L": 0.89
+    },
+    {
+     "tag": "xor_peer",
+     "label": "XOR2: an OPERAND drives the gate, peer-fed",
+     "VGH_V": 0.755,
+     "rail_V": 0.755,
+     "w_um": 0.6,
+     "sec": 15.0,
+     "I_uA_at_Vout": {
+      "0.00": 22.174031199999998,
+      "0.20": 0.822802544,
+      "0.40": 0.00132081135,
+      "0.60": 2.03699301e-06
+     },
+     "level_reached_V": {
+      "50ps": 0.158,
+      "100ps": 0.194,
+      "150ps": 0.214,
+      "200ps": 0.226,
+      "300ps": 0.242,
+      "500ps": 0.262,
+      "1000ps": 0.284,
+      "5000ps": 0.336
+     },
+     "level_where_I_falls_to_100nA*W/L": 0.222,
+     "level_where_I_falls_to_10nA*W/L": 0.296,
+     "level_where_I_falls_to_1nA*W/L": 0.364
+    },
+    {
+     "tag": "mux_tank_w015",
+     "label": "as mux_tank, minimum-width pass device",
+     "VGH_V": 1.5,
+     "rail_V": 1.326,
+     "w_um": 0.15,
+     "sec": 15.3,
+     "I_uA_at_Vout": {
+      "0.00": 180.022772,
+      "0.20": 80.68615700000001,
+      "0.40": 20.2908513,
+      "0.60": 1.28192138,
+      "0.80": 0.0030550534599999997,
+      "1.00": 4.21100518e-06,
+      "1.20": 1.34161353e-06
+     },
+     "level_reached_V": {
+      "50ps": 0.548,
+      "100ps": 0.6,
+      "150ps": 0.624,
+      "200ps": 0.64,
+      "300ps": 0.66,
+      "500ps": 0.682,
+      "1000ps": 0.708,
+      "5000ps": 0.76
+     },
+     "level_where_I_falls_to_100nA*W/L": 0.692,
+     "level_where_I_falls_to_10nA*W/L": 0.762,
+     "level_where_I_falls_to_1nA*W/L": 0.83
+    },
+    {
+     "tag": "mux_tank_w120",
+     "label": "as mux_tank, 1.2 um pass device",
+     "VGH_V": 1.5,
+     "rail_V": 1.326,
+     "w_um": 1.2,
+     "sec": 16.9,
+     "I_uA_at_Vout": {
+      "0.00": 1201.47186,
+      "0.20": 756.770117,
+      "0.40": 378.05779,
+      "0.60": 123.35921300000001,
+      "0.80": 16.8596309,
+      "1.00": 0.16633143900000003,
+      "1.20": 0.000140568948
+     },
+     "level_reached_V": {
+      "50ps": 0.912,
+      "100ps": 0.948,
+      "150ps": 0.964,
+      "200ps": 0.976,
+      "300ps": 0.99,
+      "500ps": 1.008,
+      "1000ps": 1.03,
+      "5000ps": 1.078
+     },
+     "level_where_I_falls_to_100nA*W/L": 0.946,
+     "level_where_I_falls_to_10nA*W/L": 1.018,
+     "level_where_I_falls_to_1nA*W/L": 1.084
+    }
+   ]
+  },
+  "gate_drive_derivation": "DERIVED_gate_drive.md",
+  "writeup": "MEASURED_bd_cells.md",
+  "_note": "rows re-extracted by reextract.py (AMENDMENT A10); the raw first-pass files cells_*.json are kept but their energy columns are UNSCALED and must not be used"
+ },
+ "d_area": {
+  "model": {
+   "_doc": "(d) device count and DRC-grounded area, n-well broken out",
+   "rules_MEASURED_from_PDK": {
+    "Act.a_min_activ_width": 0.15,
+    "Act.b_min_activ_space": 0.21,
+    "Act.c_min_sd_extension": 0.23,
+    "Gat.a_min_poly_width_1p2V": 0.13,
+    "Gat.b_min_poly_space": 0.18,
+    "Gat.c_min_poly_endcap_over_activ": 0.18,
+    "Gat.d_min_poly_space_to_activ": 0.07,
+    "Cnt.a_cont_width": 0.16,
+    "Cnt.b_cont_space": 0.18,
+    "Cnt.c_activ_enclosure_of_cont": 0.07,
+    "Cnt.f_cont_on_activ_space_to_poly": 0.11,
+    "NW.a_min_nwell_width": 0.62,
+    "NW.b_min_nwell_space_same_net": 0.62,
+    "NW.c_nwell_enclosure_of_pactiv": 0.31,
+    "NW.d_nwell_space_to_ext_nactiv": 0.31,
+    "NW.e_nwell_enclosure_of_tie": 0.24
+   },
+   "rules_source": "/usr/local/src/IHP-Open-PDK/ihp-sg13g2/libs.tech/klayout/tech/drc/{feol,sg13g2_maximal}.drc",
+   "x_extent_DERIVED": {
+    "outer_sd_um": 0.34,
+    "shared_node_um": 0.38,
+    "two_input_pass_strip_x_um": 1.32,
+    "repeating_poly_pitch_um": 0.51,
+    "cross_check_vs_real_std_cell_quantum_um": 0.48,
+    "cross_check_error_pct": 6.250000000000006,
+    "_cross_check_verdict": "model is ~6 % PESSIMISTIC in x vs the foundry's own packing. x is identical for both forms, so it CANCELS in the area ratio; the ratio is a pure y result and y is where the n-well lives."
+   },
+   "std_cell_anchors_MEASURED": {
+    "row_height_um": 3.78,
+    "width_quantum_um": 0.48,
+    "sg13g2_inv_1_um2": 5.4432,
+    "sg13g2_mux2_1_um2": 18.144,
+    "sg13g2_xor2_1_um2": 14.5152,
+    "sg13g2_nand2_1_um2": 7.2576
+   },
+   "by_width": {
+    "w0.15": {
+     "w_n_um": 0.15,
+     "w_p_um": 0.15,
+     "nmos_only": {
+      "devices": 2,
+      "n_well": false,
+      "bbox_x_um": 1.32,
+      "bbox_y_um": 0.15,
+      "area_um2": 0.198
+     },
+     "transmission_gate": {
+      "devices": 4,
+      "n_well": true,
+      "bbox_x_um": 1.32,
+      "bbox_y_um": 1.23,
+      "area_um2": 1.6236000000000002,
+      "nwell_overhead_um_of_y": 0.93,
+      "_note": "n-well shared with neighbouring p-devices; no dedicated tie counted"
+     },
+     "transmission_gate_with_own_tie": {
+      "devices": 4,
+      "n_well": true,
+      "bbox_y_um": 1.8299999999999998,
+      "area_um2": 2.4156
+     },
+     "area_ratio_tg_over_nmos": 8.200000000000001,
+     "area_ratio_tg_tie_over_nmos": 12.2,
+     "device_count_ratio": 2.0
+    },
+    "w0.30": {
+     "w_n_um": 0.3,
+     "w_p_um": 0.3,
+     "nmos_only": {
+      "devices": 2,
+      "n_well": false,
+      "bbox_x_um": 1.32,
+      "bbox_y_um": 0.3,
+      "area_um2": 0.396
+     },
+     "transmission_gate": {
+      "devices": 4,
+      "n_well": true,
+      "bbox_x_um": 1.32,
+      "bbox_y_um": 1.53,
+      "area_um2": 2.0196,
+      "nwell_overhead_um_of_y": 0.9299999999999999,
+      "_note": "n-well shared with neighbouring p-devices; no dedicated tie counted"
+     },
+     "transmission_gate_with_own_tie": {
+      "devices": 4,
+      "n_well": true,
+      "bbox_y_um": 2.13,
+      "area_um2": 2.8116
+     },
+     "area_ratio_tg_over_nmos": 5.1,
+     "area_ratio_tg_tie_over_nmos": 7.1,
+     "device_count_ratio": 2.0
+    },
+    "w0.60": {
+     "w_n_um": 0.6,
+     "w_p_um": 0.6,
+     "nmos_only": {
+      "devices": 2,
+      "n_well": false,
+      "bbox_x_um": 1.32,
+      "bbox_y_um": 0.6,
+      "area_um2": 0.792
+     },
+     "transmission_gate": {
+      "devices": 4,
+      "n_well": true,
+      "bbox_x_um": 1.32,
+      "bbox_y_um": 2.13,
+      "area_um2": 2.8116,
+      "nwell_overhead_um_of_y": 0.9299999999999998,
+      "_note": "n-well shared with neighbouring p-devices; no dedicated tie counted"
+     },
+     "transmission_gate_with_own_tie": {
+      "devices": 4,
+      "n_well": true,
+      "bbox_y_um": 2.7299999999999995,
+      "area_um2": 3.6035999999999997
+     },
+     "area_ratio_tg_over_nmos": 3.55,
+     "area_ratio_tg_tie_over_nmos": 4.55,
+     "device_count_ratio": 2.0
+    },
+    "w1.20": {
+     "w_n_um": 1.2,
+     "w_p_um": 1.2,
+     "nmos_only": {
+      "devices": 2,
+      "n_well": false,
+      "bbox_x_um": 1.32,
+      "bbox_y_um": 1.2,
+      "area_um2": 1.584
+     },
+     "transmission_gate": {
+      "devices": 4,
+      "n_well": true,
+      "bbox_x_um": 1.32,
+      "bbox_y_um": 3.33,
+      "area_um2": 4.3956,
+      "nwell_overhead_um_of_y": 0.9299999999999999,
+      "_note": "n-well shared with neighbouring p-devices; no dedicated tie counted"
+     },
+     "transmission_gate_with_own_tie": {
+      "devices": 4,
+      "n_well": true,
+      "bbox_y_um": 3.9299999999999997,
+      "area_um2": 5.1876
+     },
+     "area_ratio_tg_over_nmos": 2.775,
+     "area_ratio_tg_tie_over_nmos": 3.275,
+     "device_count_ratio": 2.0
+    },
+    "w2.00": {
+     "w_n_um": 2.0,
+     "w_p_um": 2.0,
+     "nmos_only": {
+      "devices": 2,
+      "n_well": false,
+      "bbox_x_um": 1.32,
+      "bbox_y_um": 2.0,
+      "area_um2": 2.64
+     },
+     "transmission_gate": {
+      "devices": 4,
+      "n_well": true,
+      "bbox_x_um": 1.32,
+      "bbox_y_um": 4.93,
+      "area_um2": 6.5076,
+      "nwell_overhead_um_of_y": 0.9299999999999997,
+      "_note": "n-well shared with neighbouring p-devices; no dedicated tie counted"
+     },
+     "transmission_gate_with_own_tie": {
+      "devices": 4,
+      "n_well": true,
+      "bbox_y_um": 5.53,
+      "area_um2": 7.299600000000001
+     },
+     "area_ratio_tg_over_nmos": 2.465,
+     "area_ratio_tg_tie_over_nmos": 2.765,
+     "device_count_ratio": 2.0
+    }
+   },
+   "conventional_CMOS_reference_MEASURED": {
+    "sg13g2_mux2_1_um2": 18.144,
+    "sg13g2_xor2_1_um2": 14.5152,
+    "_caveat": "those cells are RESTORING and buffered (they drive a rail); a pass structure is not. The comparison bounds what the pass form saves only when a restoring stage is present anyway -- which in QAL it is, as the next bank's cell."
+   }
+  },
+  "writeup": "MEASURED_d_area.md"
+ },
+ "c_chain": {
+  "rows": [
+   {
+    "tag": "ch_wire_std_w060",
+    "pass": "wire",
+    "rest": "std",
+    "w_um": 0.6,
+    "sec": 54.7,
+    "tz_ps": [
+     134.7941579240316,
+     132.7836428676045,
+     127.84775836550818,
+     123.43910316692222,
+     119.51027983072049,
+     116.16752263947319
+    ],
+    "zero_shift_ps": [
+     -9.279603432332806e-07,
+     0.014917645002128666,
+     0.026613958290681694,
+     0.03170332889112615,
+     0.03364341931751369,
+     0.02285467448405143
+    ],
+    "separation_mV": [
+     1502.7308455527711,
+     1225.6846928912205,
+     1049.3606179550754,
+     883.8507296757155,
+     730.9488434150057,
+     639.5877164295259
+    ],
+    "rail_at_boundary_V": [
+     1.5033360290203237,
+     1.2259554820338983,
+     1.0495078470385093,
+     0.8841460435555556,
+     0.7348950015285861,
+     0.6472667544095
+    ],
+    "out_high_V": [
+     1.502283049381283,
+     1.2254240545762713,
+     1.0492733431329189,
+     0.8838893805099849,
+     0.730879801705973,
+     0.6389830585299999
+    ],
+    "out_low_V": [
+     -0.0004477961714880515,
+     -0.000260638314949086,
+     -8.727482215657667e-05,
+     3.8650834269484114e-05,
+     -6.904170903274874e-05,
+     -0.0006046578995260034
+    ],
+    "pass_out_high_low_V": [],
+    "margin_over_floor_x": [
+     233.3432989988775,
+     190.32371007627646,
+     162.94419533463903,
+     137.24390212355829,
+     113.50137320108784,
+     99.31486279961582
+    ],
+    "depth_above_floor_correct_sign": 6
+   },
+   {
+    "tag": "ch_nmos_std_w060",
+    "pass": "nmos",
+    "rest": "std",
+    "w_um": 0.6,
+    "sec": 87.4,
+    "tz_ps": [
+     136.60802406851957,
+     132.2319026753055,
+     127.34510627372481,
+     123.0993107413035,
+     119.25134510837188,
+     115.29644127490474
+    ],
+    "zero_shift_ps": [
+     -0.00011583653451907594,
+     0.0226045282653331,
+     0.040731653628654385,
+     0.042316144955293566,
+     0.03592794069413685,
+     0.02194782513743121
+    ],
+    "separation_mV": [
+     1278.2437858881735,
+     980.7763008368954,
+     786.2021811517267,
+     610.0617576084315,
+     394.9475374546812,
+     399.24231957309973
+    ],
+    "rail_at_boundary_V": [
+     1.2837336059104187,
+     0.9892947059459217,
+     0.8078993383931813,
+     0.6919573950030068,
+     0.6304103203416336,
+     0.6487851639234
+    ],
+    "out_high_V": [
+     1.277956904641188,
+     0.9798785089268001,
+     0.784358080730439,
+     0.6071598908859935,
+     0.41591551507669317,
+     0.6249846540673498
+    ],
+    "out_low_V": [
+     -0.0002868812469853457,
+     -0.0008977919100953092,
+     -0.001844100421287712,
+     -0.002901866722437985,
+     0.020967977622011958,
+     0.22574233449425005
+    ],
+    "pass_out_high_low_V": [
+     [
+      0.9196172805979982,
+      -0.0006129804525531819
+     ],
+     [
+      0.8760475092104489,
+      -0.00013875562361025185
+     ],
+     [
+      0.7950944325735404,
+      -0.0006237647665560009
+     ],
+     [
+      0.6586776360717131,
+      -0.0006421938916095608
+     ],
+     [
+      0.53513467433485,
+      0.025854227759450038
+     ]
+    ],
+    "margin_over_floor_x": [
+     198.48505992052384,
+     152.29445665169183,
+     122.08108402977122,
+     94.73008658516017,
+     61.32725736873931,
+     61.99414900203411
+    ],
+    "depth_above_floor_correct_sign": 6
+   },
+   {
+    "tag": "ch_tg_std_w060",
+    "pass": "tg",
+    "rest": "std",
+    "w_um": 0.6,
+    "sec": 102.0,
+    "tz_ps": [
+     136.75796335078047,
+     132.4976989915516,
+     127.49291076837994,
+     123.15304805027085,
+     119.347191151586,
+     115.13858570246316
+    ],
+    "zero_shift_ps": [
+     -0.00011756064913015507,
+     0.010763593163460428,
+     0.03301719088540267,
+     0.03508280350479254,
+     0.03287962505351061,
+     0.01670202539685306
+    ],
+    "separation_mV": [
+     1048.9264199647496,
+     856.9948600998948,
+     772.7501696868578,
+     634.067603300717,
+     401.62871178492605,
+     388.98872008399985
+    ],
+    "rail_at_boundary_V": [
+     1.0733218676145162,
+     0.8852451051883663,
+     0.8049169998068764,
+     0.7056032316663358,
+     0.6373261705990148,
+     0.6485167209892001
+    ],
+    "out_high_V": [
+     1.0477344919161533,
+     0.8554922068145,
+     0.7730524947715192,
+     0.6395796411523196,
+     0.48524774290492606,
+     0.5715458911147999
+    ],
+    "out_low_V": [
+     -0.0011919280485963226,
+     -0.0015026532853947454,
+     0.00030232508466130096,
+     0.005512037851602569,
+     0.08361903112,
+     0.18255717103080002
+    ],
+    "pass_out_high_low_V": [
+     [
+      1.0604012752118905,
+      -0.0018185630732185127
+     ],
+     [
+      0.8601074932989515,
+      -0.0013092619020409657
+     ],
+     [
+      0.7835263299558423,
+      -0.00045702198160134117
+     ],
+     [
+      0.6708710721413793,
+      0.0007977546778059122
+     ],
+     [
+      0.55746046839,
+      0.05141373133750002
+     ]
+    ],
+    "margin_over_floor_x": [
+     162.8767732864518,
+     133.07373604035632,
+     119.99226237373568,
+     98.45770237588772,
+     62.36470679890156,
+     60.401975168322956
+    ],
+    "depth_above_floor_correct_sign": 6
+   },
+   {
+    "tag": "ch_wire_skew_w060",
+    "pass": "wire",
+    "rest": "skew",
+    "w_um": 0.6,
+    "sec": 51.6,
+    "tz_ps": [
+     128.38957120722074,
+     126.8289631723469,
+     123.60725946737978,
+     120.27287218348374,
+     117.01534467328884,
+     113.94069530532852
+    ],
+    "zero_shift_ps": [
+     -3.720820046737572e-05,
+     0.015412858597755985,
+     0.014712116339069325,
+     0.007558874406413452,
+     0.019475497268103936,
+     -0.0015507833666106308
+    ],
+    "separation_mV": [
+     1182.4031322893827,
+     901.4383826330087,
+     699.1179641293342,
+     511.6330617214425,
+     331.5913789493161,
+     49.43323872499991
+    ],
+    "rail_at_boundary_V": [
+     1.5297697786540396,
+     1.3214588996992915,
+     1.1681839727005077,
+     1.022226527882353,
+     0.875998606709338,
+     0.7551698110795
+    ],
+    "out_high_V": [
+     1.1818776363846968,
+     0.901139703973078,
+     0.6989093256142134,
+     0.5116816443835293,
+     0.3322824329096975,
+     0.26425588595849997
+    ],
+    "out_low_V": [
+     -0.0005254959046858899,
+     -0.00029867865993074495,
+     -0.0002086385151207638,
+     4.858266208676607e-05,
+     0.0006910539603813603,
+     0.21482264723350006
+    ],
+    "pass_out_high_low_V": [],
+    "margin_over_floor_x": [
+     183.6029708523886,
+     139.97490413556034,
+     108.55869008219474,
+     79.44612759649728,
+     51.489344557347216,
+     7.675968746117998
+    ],
+    "depth_above_floor_correct_sign": 6
+   },
+   {
+    "tag": "ch_nmos_skew_w060",
+    "pass": "nmos",
+    "rest": "skew",
+    "w_um": 0.6,
+    "sec": 73.8,
+    "tz_ps": [
+     128.6543421065901,
+     126.89354839391422,
+     123.59994013826122,
+     120.25620523951602,
+     117.1523601709182,
+     113.90016302382787
+    ],
+    "zero_shift_ps": [
+     -8.06477220294255e-06,
+     0.020706542251332394,
+     0.012551394892739154,
+     0.011757735126593616,
+     0.004568616688857219,
+     -0.0015157126435951795
+    ],
+    "separation_mV": [
+     571.9319016656584,
+     410.3767517423546,
+     266.47079524384384,
+     110.34711963295597,
+     29.218665626509292,
+     3.1780743649000023
+    ],
+    "rail_at_boundary_V": [
+     1.4811481597083964,
+     1.2813164624101645,
+     1.1367610325043007,
+     1.0049541654591194,
+     0.8902359256357764,
+     0.7664091625935
+    ],
+    "out_high_V": [
+     0.5710276714847361,
+     0.40956159787092467,
+     0.30529855870852796,
+     0.21508358148955975,
+     0.12312371123776396,
+     0.23152067662109999
+    ],
+    "out_low_V": [
+     -0.0009042301809223854,
+     -0.0008151538714299235,
+     0.038827763464684154,
+     0.10473646185660378,
+     0.09390504561125466,
+     0.22834260225619998
+    ],
+    "pass_out_high_low_V": [
+     [
+      0.7905308010617745,
+      0.00037321815423503585
+     ],
+     [
+      0.6474593838323913,
+      9.778092377026294e-05
+     ],
+     [
+      0.4873183649245283,
+      0.000265805836
+     ],
+     [
+      0.3375474122275776,
+      0.04893715669525466
+     ],
+     [
+      0.19720690587529993,
+      0.10246123769900001
+     ]
+    ],
+    "margin_over_floor_x": [
+     88.80930150087863,
+     63.72309809663891,
+     41.3774526776155,
+     17.134645905738502,
+     4.537059879892747,
+     0.49348980821428606
+    ],
+    "depth_above_floor_correct_sign": 5
+   }
+  ],
+  "writeup": "MEASURED_c_chain.md",
+  "_geometry": "REDUCED -- see AMENDMENT A7; compare only against the `wire` control in this same file"
+ },
+ "f_contention": {
+  "rows": {
+   "_doc": "(f) static contention into a following static CMOS cell",
+   "hold_ps": 293.0,
+   "hop_fJ": 8.408270111148767,
+   "committed_anchor": {
+    "receiver": "1.12p/0.74n @1.2V",
+    "vin": 0.6759,
+    "I_uA": 8.780026706089604,
+    "E_fJ": 3.089638717712695,
+    "pct_of_hop": 36.745236259906235
+   },
+   "levels_probed_V": {
+    "committed_QAL_high_0.6759": 0.6759,
+    "nmos_pass_ceiling_100nA_0.8832": 0.8832,
+    "nmos_pass_ceiling_10nA_0.9621": 0.9621,
+    "nmos_pass_ceiling_1nA_1.0346": 1.0346,
+    "peer_rail_0.755": 0.755,
+    "tank_rail_1.326": 1.326
+   },
+   "rows": [
+    {
+     "rx": "skew",
+     "wp_um": 0.15,
+     "wn_um": 1.48,
+     "vdd_V": 0.9,
+     "trip_V": 0.3404901984255392,
+     "sec": 12.3,
+     "at_level": {
+      "committed_QAL_high_0.6759": {
+       "Vin": 0.6759,
+       "I_uA": 2.6644410860000004e-05,
+       "E_hold_fJ": 7.026131143782002e-06,
+       "pct_of_hop": 8.356214834803955e-05,
+       "reads_as": "1"
+      },
+      "nmos_pass_ceiling_100nA_0.8832": {
+       "Vin": 0.8832,
+       "I_uA": 2.42507628e-05,
+       "E_hold_fJ": 6.394926150360001e-06,
+       "pct_of_hop": 7.605519406281661e-05,
+       "reads_as": "1"
+      },
+      "nmos_pass_ceiling_10nA_0.9621": {
+       "Vin": 0.9621,
+       "I_uA": 2.424665638e-05,
+       "E_hold_fJ": 6.3938432874059995e-06,
+       "pct_of_hop": 7.604231551657955e-05,
+       "reads_as": "1"
+      },
+      "nmos_pass_ceiling_1nA_1.0346": {
+       "Vin": 1.0346,
+       "I_uA": 2.424686776e-05,
+       "E_hold_fJ": 6.3938990283120005e-06,
+       "pct_of_hop": 7.604297844611517e-05,
+       "reads_as": "1"
+      },
+      "peer_rail_0.755": {
+       "Vin": 0.755,
+       "I_uA": 2.44638012e-05,
+       "E_hold_fJ": 6.4511043764399995e-06,
+       "pct_of_hop": 7.672332466920033e-05,
+       "reads_as": "1"
+      },
+      "tank_rail_1.326": {
+       "Vin": 1.326,
+       "I_uA": 2.42948845e-05,
+       "E_hold_fJ": 6.40656104265e-06,
+       "pct_of_hop": 7.619356845060623e-05,
+       "reads_as": "1"
+      }
+     }
+    },
+    {
+     "rx": "skew",
+     "wp_um": 0.15,
+     "wn_um": 1.48,
+     "vdd_V": 1.2,
+     "trip_V": 0.4665368657137698,
+     "sec": 12.2,
+     "at_level": {
+      "committed_QAL_high_0.6759": {
+       "Vin": 0.6759,
+       "I_uA": 0.0338095562500001,
+       "E_hold_fJ": 0.011887439977500035,
+       "pct_of_hop": 0.14137795075990886,
+       "reads_as": "1"
+      },
+      "nmos_pass_ceiling_100nA_0.8832": {
+       "Vin": 0.8832,
+       "I_uA": 9.933684286000004e-05,
+       "E_hold_fJ": 3.4926833949576005e-05,
+       "pct_of_hop": 0.0004153866786851378,
+       "reads_as": "1"
+      },
+      "nmos_pass_ceiling_10nA_0.9621": {
+       "Vin": 0.9621,
+       "I_uA": 4.874978769e-05,
+       "E_hold_fJ": 1.7140425351804e-05,
+       "pct_of_hop": 0.00020385198293138818,
+       "reads_as": "1"
+      },
+      "nmos_pass_ceiling_1nA_1.0346": {
+       "Vin": 1.0346,
+       "I_uA": 4.437150374e-05,
+       "E_hold_fJ": 1.5601020714984e-05,
+       "pct_of_hop": 0.0001855437623762605,
+       "reads_as": "1"
+      },
+      "peer_rail_0.755": {
+       "Vin": 0.755,
+       "I_uA": 0.00299627189,
+       "E_hold_fJ": 0.0010534891965239999,
+       "pct_of_hop": 0.01252920258980677,
+       "reads_as": "1"
+      },
+      "tank_rail_1.326": {
+       "Vin": 1.326,
+       "I_uA": 4.38942009e-05,
+       "E_hold_fJ": 1.543320103644e-05,
+       "pct_of_hop": 0.00018354787408621278,
+       "reads_as": "1"
+      }
+     }
+    },
+    {
+     "rx": "skew",
+     "wp_um": 0.15,
+     "wn_um": 1.48,
+     "vdd_V": 1.26,
+     "trip_V": 0.4853633762015365,
+     "sec": 12.2,
+     "at_level": {
+      "committed_QAL_high_0.6759": {
+       "Vin": 0.6759,
+       "I_uA": 0.19134776550000046,
+       "E_hold_fJ": 0.07064176806729018,
+       "pct_of_hop": 0.8401462742452129,
+       "reads_as": "1"
+      },
+      "nmos_pass_ceiling_100nA_0.8832": {
+       "Vin": 0.8832,
+       "I_uA": 0.0004257558222000003,
+       "E_hold_fJ": 0.0001571805344397961,
+       "pct_of_hop": 0.0018693563879612519,
+       "reads_as": "1"
+      },
+      "nmos_pass_ceiling_10nA_0.9621": {
+       "Vin": 0.9621,
+       "I_uA": 8.161510848000002e-05,
+       "E_hold_fJ": 3.0130665748646405e-05,
+       "pct_of_hop": 0.0003583455972554365,
+       "reads_as": "1"
+      },
+      "nmos_pass_ceiling_1nA_1.0346": {
+       "Vin": 1.0346,
+       "I_uA": 5.22560985e-05,
+       "E_hold_fJ": 1.929190644423e-05,
+       "pct_of_hop": 0.00022943966106239033,
+       "reads_as": "1"
+      },
+      "peer_rail_0.755": {
+       "Vin": 0.755,
+       "I_uA": 0.020127122999999997,
+       "E_hold_fJ": 0.007430531269139999,
+       "pct_of_hop": 0.08837170037256112,
+       "reads_as": "1"
+      },
+      "tank_rail_1.326": {
+       "Vin": 1.326,
+       "I_uA": 4.8759293e-05,
+       "E_hold_fJ": 1.8000955789739997e-05,
+       "pct_of_hop": 0.0002140863168260022,
+       "reads_as": "1"
+      }
+     }
+    },
+    {
+     "rx": "skew",
+     "wp_um": 0.15,
+     "wn_um": 1.48,
+     "vdd_V": 1.33,
+     "trip_V": 0.5053291010533921,
+     "sec": 12.2,
+     "at_level": {
+      "committed_QAL_high_0.6759": {
+       "Vin": 0.6759,
+       "I_uA": 0.8408539897000014,
+       "E_hold_fJ": 0.3276723912461935,
+       "pct_of_hop": 3.897025035051185,
+       "reads_as": "1"
+      },
+      "nmos_pass_ceiling_100nA_0.8832": {
+       "Vin": 0.8832,
+       "I_uA": 0.0036166194420000027,
+       "E_hold_fJ": 0.001409360430352981,
+       "pct_of_hop": 0.016761597947290843,
+       "reads_as": "1"
+      },
+      "nmos_pass_ceiling_10nA_0.9621": {
+       "Vin": 0.9621,
+       "I_uA": 0.0003618537376000001,
+       "E_hold_fJ": 0.00014101078300534403,
+       "pct_of_hop": 0.001677048681135657,
+       "reads_as": "1"
+      },
+      "nmos_pass_ceiling_1nA_1.0346": {
+       "Vin": 1.0346,
+       "I_uA": 8.749718394e-05,
+       "E_hold_fJ": 3.40967776095786e-05,
+       "pct_of_hop": 0.00040551477484493165,
+       "reads_as": "1"
+      },
+      "peer_rail_0.755": {
+       "Vin": 0.755,
+       "I_uA": 0.161343262,
+       "E_hold_fJ": 0.06287385576877999,
+       "pct_of_hop": 0.7477620834922244,
+       "reads_as": "1"
+      },
+      "tank_rail_1.326": {
+       "Vin": 1.326,
+       "I_uA": 5.48737099e-05,
+       "E_hold_fJ": 2.1383736010931e-05,
+       "pct_of_hop": 0.000254317900451101,
+       "reads_as": "1"
+      }
+     }
+    },
+    {
+     "rx": "std",
+     "wp_um": 1.12,
+     "wn_um": 0.74,
+     "vdd_V": 0.9,
+     "trip_V": 0.4935917285304452,
+     "sec": 13.3,
+     "at_level": {
+      "committed_QAL_high_0.6759": {
+       "Vin": 0.6759,
+       "I_uA": 0.005710634259000017,
+       "E_hold_fJ": 0.0015058942540983047,
+       "pct_of_hop": 0.01790967980561895,
+       "reads_as": "1"
+      },
+      "nmos_pass_ceiling_100nA_0.8832": {
+       "Vin": 0.8832,
+       "I_uA": 1.6105041020000008e-05,
+       "E_hold_fJ": 4.246899316974003e-06,
+       "pct_of_hop": 5.05085976168025e-05,
+       "reads_as": "1"
+      },
+      "nmos_pass_ceiling_10nA_0.9621": {
+       "Vin": 0.9621,
+       "I_uA": 3.3232398390000004e-06,
+       "E_hold_fJ": 8.763383455443003e-07,
+       "pct_of_hop": 1.042233817372658e-05,
+       "reads_as": "1"
+      },
+      "nmos_pass_ceiling_1nA_1.0346": {
+       "Vin": 1.0346,
+       "I_uA": 2.0075421199999997e-06,
+       "E_hold_fJ": 5.293888570440001e-07,
+       "pct_of_hop": 6.296049604092383e-06,
+       "reads_as": "1"
+      },
+      "peer_rail_0.755": {
+       "Vin": 0.755,
+       "I_uA": 0.000574125834,
+       "E_hold_fJ": 0.0001513969824258,
+       "pct_of_hop": 0.0018005722987545132,
+       "reads_as": "1"
+      },
+      "tank_rail_1.326": {
+       "Vin": 1.326,
+       "I_uA": 2.24591592e-06,
+       "E_hold_fJ": 5.922480281039999e-07,
+       "pct_of_hop": 7.043637041568411e-06,
+       "reads_as": "1"
+      }
+     }
+    },
+    {
+     "rx": "std",
+     "wp_um": 1.12,
+     "wn_um": 0.74,
+     "vdd_V": 1.2,
+     "trip_V": 0.6428026057053677,
+     "sec": 12.3,
+     "at_level": {
+      "committed_QAL_high_0.6759": {
+       "Vin": 0.6759,
+       "I_uA": 8.785550081000007,
+       "E_hold_fJ": 3.0889994084796024,
+       "pct_of_hop": 36.73763292147108,
+       "reads_as": "1"
+      },
+      "nmos_pass_ceiling_100nA_0.8832": {
+       "Vin": 0.8832,
+       "I_uA": 0.11859980400000009,
+       "E_hold_fJ": 0.04169969108640003,
+       "pct_of_hop": 0.49593662590726256,
+       "reads_as": "1"
+      },
+      "nmos_pass_ceiling_10nA_0.9621": {
+       "Vin": 0.9621,
+       "I_uA": 0.011764816910000003,
+       "E_hold_fJ": 0.004136509625556002,
+       "pct_of_hop": 0.04919572719329372,
+       "reads_as": "1"
+      },
+      "nmos_pass_ceiling_1nA_1.0346": {
+       "Vin": 1.0346,
+       "I_uA": 0.001422820144,
+       "E_hold_fJ": 0.0005002635626304,
+       "pct_of_hop": 0.005949660941161799,
+       "reads_as": "1"
+      },
+      "peer_rail_0.755": {
+       "Vin": 0.755,
+       "I_uA": 2.9036062,
+       "E_hold_fJ": 1.02090793992,
+       "pct_of_hop": 12.141711986230662,
+       "reads_as": "1"
+      },
+      "tank_rail_1.326": {
+       "Vin": 1.326,
+       "I_uA": 3.33793979e-06,
+       "E_hold_fJ": 1.1736196301640001e-06,
+       "pct_of_hop": 1.3957920174422848e-05,
+       "reads_as": "1"
+      }
+     }
+    },
+    {
+     "rx": "std",
+     "wp_um": 1.12,
+     "wn_um": 0.74,
+     "vdd_V": 1.26,
+     "trip_V": 0.6709023805517147,
+     "sec": 12.6,
+     "at_level": {
+      "committed_QAL_high_0.6759": {
+       "Vin": 0.6759,
+       "I_uA": 13.602263189999999,
+       "E_hold_fJ": 5.021683524484199,
+       "pct_of_hop": 59.7231470695239,
+       "reads_as": "1"
+      },
+      "nmos_pass_ceiling_100nA_0.8832": {
+       "Vin": 0.8832,
+       "I_uA": 0.6782245398000004,
+       "E_hold_fJ": 0.25038693560336417,
+       "pct_of_hop": 2.977865033990392,
+       "reads_as": "1"
+      },
+      "nmos_pass_ceiling_10nA_0.9621": {
+       "Vin": 0.9621,
+       "I_uA": 0.07281201717000002,
+       "E_hold_fJ": 0.02688074049882061,
+       "pct_of_hop": 0.3196940648133873,
+       "reads_as": "1"
+      },
+      "nmos_pass_ceiling_1nA_1.0346": {
+       "Vin": 1.0346,
+       "I_uA": 0.008702631058000001,
+       "E_hold_fJ": 0.0032128373339924397,
+       "pct_of_hop": 0.03821044390251506,
+       "reads_as": "1"
+      },
+      "peer_rail_0.755": {
+       "Vin": 0.755,
+       "I_uA": 7.56948768,
+       "E_hold_fJ": 2.7945034617024,
+       "pct_of_hop": 33.23517709067276,
+       "reads_as": "1"
+      },
+      "tank_rail_1.326": {
+       "Vin": 1.326,
+       "I_uA": 5.115867310000001e-06,
+       "E_hold_fJ": 1.8886758935058001e-06,
+       "pct_of_hop": 2.2462122036274152e-05,
+       "reads_as": "1"
+      }
+     }
+    },
+    {
+     "rx": "std",
+     "wp_um": 1.12,
+     "wn_um": 0.74,
+     "vdd_V": 1.33,
+     "trip_V": 0.702692027567638,
+     "sec": 13.0,
+     "at_level": {
+      "committed_QAL_high_0.6759": {
+       "Vin": 0.6759,
+       "I_uA": 17.675272579999987,
+       "E_hold_fJ": 6.887876971700194,
+       "pct_of_hop": 81.91788418603917,
+       "reads_as": "0"
+      },
+      "nmos_pass_ceiling_100nA_0.8832": {
+       "Vin": 0.8832,
+       "I_uA": 3.323229766000001,
+       "E_hold_fJ": 1.2950294075125406,
+       "pct_of_hop": 15.401853061254824,
+       "reads_as": "1"
+      },
+      "nmos_pass_ceiling_10nA_0.9621": {
+       "Vin": 0.9621,
+       "I_uA": 0.5764932200000001,
+       "E_hold_fJ": 0.2246536429018001,
+       "pct_of_hop": 2.6718176263619955,
+       "reads_as": "1"
+      },
+      "nmos_pass_ceiling_1nA_1.0346": {
+       "Vin": 1.0346,
+       "I_uA": 0.07297552298,
+       "E_hold_fJ": 0.0284378315500762,
+       "pct_of_hop": 0.33821263082842284,
+       "reads_as": "1"
+      },
+      "peer_rail_0.755": {
+       "Vin": 0.755,
+       "I_uA": 16.4189246,
+       "E_hold_fJ": 6.398290727374001,
+       "pct_of_hop": 76.09520915473831,
+       "reads_as": "1"
+      },
+      "tank_rail_1.326": {
+       "Vin": 1.326,
+       "I_uA": 1.8824644299999998e-05,
+       "E_hold_fJ": 7.335775637267e-06,
+       "pct_of_hop": 8.724476664397692e-05,
+       "reads_as": "1"
+      }
+     }
+    }
+   ]
+  },
+  "writeup": "MEASURED_f_contention.md"
+ },
+ "g_transfer_switch_mechanism": {
+  "writeup": "MEASURED_g_mechanism.md"
+ }
+}

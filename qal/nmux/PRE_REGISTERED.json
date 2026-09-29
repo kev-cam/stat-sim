@@ -1,0 +1,81 @@
+{
+ "_doc": "TRACK nmux -- nMOS-ONLY PASS LOGIC for QAL. User's suggestion: 'n-chan only muxes might work too.' Written BEFORE any deck exists in qal/nmux/. The deciding physics is BODY EFFECT on the pass nMOS, because when an nMOS passes a HIGH its source is the rising output node, so V_sb > 0 and Vtn rises. The classic threshold-drop objection is weakened here because the switch GATE rail is VGH = 1.5 V while the QAL signal swing is only 0.68-1.33 V -- but body effect may claw the margin back, and the campaign's own record contains an nMOS-only TRANSFER SWITCH that FAILED at every width, whose mechanism must be established before deciding whether it transfers to a logic pass structure.",
+ "date": "2026-09-29",
+ "workdir": "/usr/local/src/stat-sim/qal/nmux",
+ "environment": {
+  "Xyce": "/usr/local/src/xyce-build/src/Xyce",
+  "model": "SG13G2 / PSP103 tt via .hdl psp103.va + sg13g2_psp103_tt.lib + qal/sg13lv_compat.sp",
+  "PYMS_VAE_CACHE": "scratchpad/vae_cache_nmux (OWN, built from scratch)",
+  "PYMS_DIR": "/usr/local/share/xyce/PyMS",
+  "concurrency": "<= 3 heavy Xyce jobs (16-core box shared with other workflows)",
+  "lower_bound_caveat": "sg13lv_compat.sp ZEROES ad/as/pd/ps, so junction capacitance is ABSENT. Every device-level energy and every settle time here is a LOWER BOUND / OPTIMISTIC. This matters MORE for the nMOS-only cell than for the TG control in one direction (fewer junctions to omit) and less in the other; the comparison is like-for-like because both sides use the same shim.",
+  "discipline": "1F-integrator metering only, ALWAYS t0-referenced (the campaign's pedestal trap). vt/gmin reserved. Unique .va module names. Corners only via instance-level DTA. Runs < 4 min."
+ },
+
+ "questions": {
+  "Q_a": "Vtn(V_sb) MEASURED on the PSP103 nMOS across V_sb = 0 .. 1.3 V, with an extracted body-effect coefficient.",
+  "Q_b": "nMOS-only MUX2 and nMOS-only XOR2, sized and justified, against a full-TRANSMISSION-GATE control of the same function in the SAME harness.",
+  "Q_d": "Pass level BOTH polarities at the peer-fed (~0.75 V) and tank-fed (~1.26 V) rails; settle time to 90%; energy per operation with the supply draw metered SEPARATELY from the input-charge draw; transistor count and area including the n-well saving.",
+  "Q_c": "Does a following restoring cell repair the degraded high? Alternating pass/restore chain, TANK-FED only, separation by depth over 6 banks.",
+  "Q_f": "Static contention current a degraded nMOS-pass high causes in a following static CMOS cell, and whether the boundary study's skewed receiver (0.15u pMOS / 1.48u nMOS, trip 0.4595 V) removes it.",
+  "Q_g": "Mechanism of the committed nMOS-only TRANSFER SWITCH failure (qal/swsweep) and whether it applies to a logic pass structure."
+ },
+
+ "inherited_MEASURED_anchors_this_study_leans_on": {
+  "Vtn_zero_body_V": 0.5239460152201223,
+  "Vtp_abs_V": 0.4402734454819182,
+  "Vt_criterion": "Id = 100 nA * (W/L) at |Vds| = 0.1 V  (qal/chain3/vt.cir)",
+  "VGH_switch_gate_rail_V": 1.5,
+  "committed_transfer_switch": "nMOS w=5u + pMOS w=10u (tg15p) + 1u park; owns ~6.66 fJ of the 8.408 fJ hop",
+  "gate_charge_linear_fC_per_um": 0.155,
+  "peer_fed_reference": "qal/resv h_I2_load691_L4: CA=35.979fF at dV=1.65, L=4nH, RS=10, 8 cells -> VBEND 0.754572966, VBPK 1.0881874, t_hop 34.2858 ps, VA_open 0.11745601600934541, t_valid90 115.467185 ps",
+  "tank_fed_reference": "qal/resv ch_res20 bank 1: CRES=719.58fF at 1.2V, L=15nH, RS=10, switch 10u/20u -> rail_at_own_boundary 1.32574378 V, rail_peak 1.4502807 V; chain separation by depth 1325.7/1048.9/879.3/721.1/562.1/282.3 mV, all correct sign, 43.8-205.9x the 6.44 mV sigma floor",
+  "sigma_floor_mV": 6.44,
+  "receiver_trips_MEASURED": {"1.12p/0.74n @1.2V": 0.6451630261834231, "1.12p/0.74n @0.9V": 0.4958921397750707, "0.15p/1.48n @1.2V": 0.45948054259979987},
+  "boundary_contention_MEASURED": "QAL high 0.6759 V into the standard 1.12p/0.74n @1.2V receiver: 8.780 uA DC, 3.0896 fJ over a 293 ps hold = 36.75% of the 8.408 fJ hop",
+  "nmos_only_transfer_switch_FAILURE": {"nm40": 0.6414575168848811, "nm20": 0.4924261374690705, "nm10": 0.38744823369187564, "nm5": 0.33634342255204486, "_units": "VA_open (V) -- the SENDING rail failed to drain; target ~0.098 (tg15p) / 0.095 (tg60 anchor)"}
+ },
+
+ "PRE_STATED_EXPECTATIONS": {
+  "_status": "These are my predictions, written before any number exists in this directory. Where they are refuted I will say so explicitly.",
+  "E1_instrument": "Vtn at V_sb = 0 reproduces the committed 0.5239460 V within 1 mV. If it does not, the extractor is wrong and nothing downstream is trusted.",
+  "E2_body_coefficient": "ASSUMED prior for bulk 130 nm: gamma in [0.35, 0.65] V^0.5 with 2*phi_F ~ 0.85 V. Predicted Vtn(0.75) ~ 0.69 V and Vtn(1.3) ~ 0.78 V. I expect the PSP103 curve to be SUB-sqrt (flatter than the textbook law) at high V_sb.",
+  "E3_pass_ceiling": "The self-consistent nMOS pass ceiling V* solves V* = VGH - Vtn(V*) with VGH = 1.5 V. With E2 that gives V* ~ 0.80 V. This single number decides the whole study.",
+  "E4_peer_fed_rail": "At the peer-fed rail (~0.75 V) the margin is OPEN BUT THIN: predicted pass HIGH >= 0.72 V, i.e. within ~40 mV of the rail; predicted headroom V* - V_rail ~ +50 mV.",
+  "E5_tank_fed_rail": "At the tank-fed rail (~1.26-1.33 V) the margin is CLOSED: predicted pass HIGH CLAMPS at ~0.80 V, a shortfall of >= 0.45 V against the rail. PREDICTED CROSSOVER RAIL ~ 0.80 V: below it the nMOS passes the level, above it the nMOS passes only V*.",
+  "E6_low_polarity": "Pass LOW is undegraded at both rails: predicted <= 5 mV above ground. The asymmetry is the entire story.",
+  "E7_TG_control": "The full-TG control reaches the rail within 10 mV at both rails and both polarities, at the cost of 2x the devices and the n-well.",
+  "E8_supply_meter": "The pass structure has NO static supply connection. The only supply-side draw is the SELECT GATE DRIVE off the 1.5 V control rail (plus, for the TG, the n-well bias VHI). Predicted: gate-drive energy ~ 0.155 fC/um * W * 1.5 V per transition; VHI n-well draw ~ 0 (displacement only). I will verify that a dedicated bank/supply meter reads ZERO for the nMOS-only cell -- if it does not, the harness has an unintended path and the run is an instrument failure.",
+  "E9_restoration_chain": "Tank-fed alternating pass/restore, 6 banks. PREDICTION: the chain SURVIVES with a SKEWED restoring cell (0.15p/1.48n) -- the clamped ~0.80 V high is ~340 mV above that cell's measured 0.4595 V trip -- but FAILS by depth 2-3 with the STANDARD 1.12p/0.74n cell, because that cell's trip at a ~1.3 V rail is predicted ~0.70 V, leaving only ~100 mV that the per-hop rail decline eats. I therefore predict the skewed receiver is NOT optional for nMOS-only pass logic.",
+  "E10_contention_DIRECTION_SURPRISE": "Counter-intuitively I predict LESS contention, not more, than the committed boundary case. Contention needs |Vgs,p| = VDD - V_in > |Vtp| = 0.4403 V. The committed case had V_in = 0.6759 at VDD = 1.2 -> |Vgs,p| = 0.524 > 0.4403 -> 8.78 uA. A clamped pass high of ~0.80 V at VDD = 1.2 gives |Vgs,p| = 0.40 < 0.4403 -> SUBTHRESHOLD only. Predicted < 1 uA and < 0.35 fJ per 293 ps hold, i.e. < 5% of the hop. At a 1.26-1.33 V receiver rail the margin reverses slightly (|Vgs,p| ~ 0.46-0.53) and contention returns; I will measure the receiver rail at which it crosses. The skewed 0.15p/1.48n cell is predicted to remove it at every rail because its pMOS is 7.5x smaller.",
+  "E11_area": "Device count halves (MUX2: 2 vs 4). DRC-grounded area prediction from the IHP SG13G2 rule deck (NW.a 0.62 width, NW.c 0.31 enclosure of P+Activ, NW.d 0.31 space to external N+Activ, NW.e 0.24 tie enclosure): the TG cell's bounding box is predicted 2.5-3.5x the nMOS-only cell's at equal device widths.",
+  "E12_transfer_switch_mechanism": "I predict the swsweep nMOS-only TRANSFER SWITCH failure does NOT carry over, and that it has three parts of which only one is shared: (i) UNCANCELLED GATE-CHARGE INJECTION -- a 5-40 um nMOS switching a 1.5 V gate dumps 9-16 fC into a 36 fF bank; a TG cancels this to first order because the n and p gate transitions are complementary and inject opposite sign. SHARED IN KIND, but scaled by W and by the load: a 0.15-1 um pass device onto 2 fF is a much smaller relative kick, and I predict a measurable but tolerable step (order 10-40 mV). (ii) TOP-OF-SWING CONDUCTANCE COLLAPSE as the source approaches VGH - Vtn(V_sb). SHARED -- this IS the pass-level question. (iii) FAILURE TO DRAIN THE SENDING RAIL and the inability to interrupt a resonant inductor current bidirectionally at ZCS. NOT SHARED: a logic mux is unidirectional into a small gate capacitance, is never asked to leave its source drained, and interrupts no inductor."
+ },
+
+ "protocol": {
+  "P0_instrument_gates": {
+   "G1": "Vtn at V_sb = 0 within 1 mV of the committed 0.5239460 (same criterion, same device geometry w=0.74u l=0.13u).",
+   "G2": "My own copy of the committed peer-fed single-bank deck (resv h_I2_load691_L4 topology) reproduces VBEND 0.754572966 / VBPK 1.0881874 / t_hop 34.2858 ps / VA_open 0.117456016 within 0.1%.",
+   "G3": "My own copy of the committed tank-fed bank-1 arrangement (resv ch_res20) reproduces rail_at_own_boundary 1.32574378 V and rail_peak 1.4502807 V within 0.1%.",
+   "G4": "Charge/energy closure on every metered run: 1F integrators t0-referenced at a pre-hop Z checkpoint; integrator-derived input charge must agree with C*dV on the output node within 2%.",
+   "_rule": "A design that fails a gate is an INSTRUMENT failure for that run, not a data point."
+  },
+  "P1_Vt_body": "One DC deck per V_sb in {0, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.75, 0.8, 0.9, 1.0, 1.1, 1.2, 1.26, 1.3}. Source and bulk are SEPARATE nodes: bulk at 0, source at V_sb, drain at V_sb + 0.1, gate swept RELATIVE to the source by a floating source VG(g,s) so the sweep axis IS Vgs. V(g) and V(s) are PRINTED EXPLICITLY -- for a .DC run Xyce's .prn column 1 is the first printed variable, NOT the swept source (the vtreq A2 trap). Threshold at the campaign criterion Id = 100 nA * W/L at Vds = 0.1 V, reported also at 10 nA*W/L and 1 nA*W/L so the conclusion cannot rest on a criterion choice. gamma and 2*phi_F fitted by least squares to Vt(V_sb) = Vt0 + gamma*(sqrt(2*phi_F + V_sb) - sqrt(2*phi_F)).",
+  "P2_cells": "Four designs in ONE harness: nmux (2 pass nMOS), tgmux (2 TGs = 4 devices), nxor (2 pass nMOS selecting B/Bbar by A/Abar), tgxor (2 TGs). Like-for-like control = EQUAL nMOS WIDTH (the TG is 'the nMOS-only cell plus a pMOS'); an equal-TOTAL-width TG row is also reported so neither framing is privileged. Pass-device width swept {0.15, 0.30, 0.60, 1.20} um; the primary width is chosen by settle-to-90% inside the measured valid window, then held fixed across all comparisons. Complementary inputs are ASSUMED available (the QAL bank produces alternating polarities natively); the TG control needs them too, so this does not bias the comparison.",
+  "P3_rails": "PEER-FED = my copy of resv h_I2_load691_L4 (VBEND ~0.755). TANK-FED = my copy of resv ch_res20 bank 1 (rail ~1.326). Both actual delivered rail levels are REPORTED, not assumed. Probe-then-hop per configuration: the ZCS zero moves when the mux load is added, so each configuration finds its own zero before its measured run.",
+  "P4_metering": "THREE separate meters per run: (i) SUPPLY = any static rail the cell touches (for nMOS-only there is none besides the select drive; the meter must read zero and that is a pre-registered check), (ii) GATE DRIVE = the 1.5 V select rail, (iii) INPUT CHARGE = charge drawn from the driving QAL cell output / its rail. All 1F integrators, all t0-referenced.",
+  "P5_chain": "6 banks, tank-fed, alternating [QAL cell bank] -> [pass structure] -> [restoring cell bank]. Separation = V(out_high) - V(out_low) at each depth, against the 6.44 mV sigma floor, sign checked at every depth. Two restoring-cell variants: standard 1.12p/0.74n and skewed 0.15p/1.48n. NOT tested peer-fed (the campaign record says peer-fed fails for everything).",
+  "P6_contention": "DC sweep: hold a static input at the MEASURED pass level, measure the receiver's supply current, for both receiver sizings and across receiver VDD in {0.9, 1.2, 1.26, 1.33}. Energy over the campaign's 293 ps hold.",
+  "P7_charge_injection": "Measure the select-edge feedthrough step on the pass output before the rail rises -- the scaled-down form of the swsweep 'feedthrough pump'."
+ },
+
+ "ACCEPTANCE": {
+  "A1_pass_level_peer": "nMOS-only MUX2 PASSES at the peer-fed rail if the delivered HIGH is >= the following restoring cell's MEASURED trip point plus 100 mV, with the delivered LOW <= 50 mV, at the end of the valid window.",
+  "A2_pass_level_tank": "Same test at the tank-fed rail.",
+  "A3_crossover": "If A1 passes and A2 fails, the deliverable is the RAIL VOLTAGE AT WHICH IT CROSSES OVER, measured -- not argued.",
+  "A4_chain": "The alternating chain SURVIVES if separation stays above 6.44 mV with the CORRECT SIGN at all 6 depths. The depth at which it fails, if it fails, is the answer.",
+  "A5_contention": "The static-contention verdict is a measured current and a measured fJ over a 293 ps hold, stated as a percentage of the 8.408 fJ committed hop, for both receiver sizings.",
+  "A6_cost": "Device count and DRC-grounded bounding-box area for both forms, with the n-well contribution broken out.",
+  "A7_honesty": "Every reported number labelled MEASURED / DERIVED / ASSUMED. Refuted expectations called out by name (E1..E12). Any protocol change recorded in AMENDMENT.md with what was pre-registered, what the data showed, and when the change was made relative to the runs it affects."
+ }
+}
