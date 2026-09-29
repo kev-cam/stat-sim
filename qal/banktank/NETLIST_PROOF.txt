@@ -1,0 +1,100 @@
+NETLIST PROOF -- read directly out of the measured deck c_m10_T200_H4_dv1200_free.cir
+(the headline row: m=10, T=200 ps, H=4, dV=1.2, free-running)
+
+=== 1. NO BUFFERING BETWEEN BANKS. Bank 1 is the only bank with ideal input
+   sources.  Bank 2 cell 0 takes its gate input from the literal net
+   o1_0 -- bank 1 cell 0's OUTPUT.  Same for banks 3 and 4.  There is no
+   flop, latch, buffer, keeper or level shifter anywhere in the file. ===
+VI1_0 in1_0 0 1.2
+XP1_0 o1_0 in1_0 rail1 rail1 sg13_lv_pmos w=1.12u l=0.13u
+XN1_0 o1_0 in1_0 gn1 gn1 sg13_lv_nmos w=0.74u l=0.13u
+CL1_0 o1_0 gn1 2f
+XP2_0 o2_0 o1_0 rail2 rail2 sg13_lv_pmos w=1.12u l=0.13u
+XN2_0 o2_0 o1_0 gn2 gn2 sg13_lv_nmos w=0.74u l=0.13u
+CL2_0 o2_0 gn2 2f
+XP3_0 o3_0 o2_0 rail3 rail3 sg13_lv_pmos w=1.12u l=0.13u
+XN3_0 o3_0 o2_0 gn3 gn3 sg13_lv_nmos w=0.74u l=0.13u
+XP4_0 o4_0 o3_0 rail4 rail4 sg13_lv_pmos w=1.12u l=0.13u
+XN4_0 o4_0 o3_0 gn4 gn4 sg13_lv_nmos w=0.74u l=0.13u
+
+=== 2. EACH BANK ITS OWN TANK, ITS OWN INDUCTOR, ITS OWN SWITCH.
+   CT{k} is C_tank = m * C_bank = 10 * 35.979 fF = 359.79 fF on node tnk{k}.
+   NOTHING but bank k touches tnk{k}: grep tnk1 and you get exactly these. ===
+CT1 tnk1 0 359.79f
+L1 tnk1 mid1 15n
+R1 mid1 sw1 10
+XSWN1 sw1 gt1 rail1 0 sg13_lv_nmos w=10u l=0.13u
+XSWP1 sw1 gtp1 rail1 vhi sg13_lv_pmos w=20u l=0.13u
+XPK1 sw1 pk1 tnk1 tnk1 sg13_lv_nmos w=2u l=0.13u
+CT2 tnk2 0 359.79f
+L2 tnk2 mid2 15n
+R2 mid2 sw2 10
+XSWN2 sw2 gt2 rail2 0 sg13_lv_nmos w=10u l=0.13u
+XSWP2 sw2 gtp2 rail2 vhi sg13_lv_pmos w=20u l=0.13u
+XPK2 sw2 pk2 tnk2 tnk2 sg13_lv_nmos w=2u l=0.13u
+CT3 tnk3 0 359.79f
+L3 tnk3 mid3 15n
+R3 mid3 sw3 10
+XSWN3 sw3 gt3 rail3 0 sg13_lv_nmos w=10u l=0.13u
+XSWP3 sw3 gtp3 rail3 vhi sg13_lv_pmos w=20u l=0.13u
+XPK3 sw3 pk3 tnk3 tnk3 sg13_lv_nmos w=2u l=0.13u
+CT4 tnk4 0 359.79f
+L4 tnk4 mid4 15n
+R4 mid4 sw4 10
+XSWN4 sw4 gt4 rail4 0 sg13_lv_nmos w=10u l=0.13u
+XSWP4 sw4 gtp4 rail4 vhi sg13_lv_pmos w=20u l=0.13u
+XPK4 sw4 pk4 tnk4 tnk4 sg13_lv_nmos w=2u l=0.13u
+
+   every line in the deck mentioning tnk1:
+   CT1 tnk1 0 359.79f
+   L1 tnk1 mid1 15n
+   XPK1 sw1 pk1 tnk1 tnk1 sg13_lv_nmos w=2u l=0.13u
+   BXea1 0 xea1 I={ V(tnk1)*I(L1) }
+   .ic V(tnk1)=0.66 V(rail1)=0 V(sw1)=0.66 V(tnk2)=0.66 V(rail2)=0 V(sw2)=0.66 V(tnk3)=0.66 V(rail3)=0 V(sw3)=0.66 V(tnk4)=0.66 V(rail4)=0 V(sw4)=0.66
+   .measure tran VT1Z FIND V(tnk1) AT=1.500000p
+   .measure tran VT1O1 FIND V(tnk1) AT=319.183551p
+   .measure tran VT1B1 FIND V(tnk1) AT=401.000000p
+   .measure tran VT1R1 FIND V(tnk1) AT=999.000000p
+   .measure tran VT1Q1 FIND V(tnk1) AT=1130.373816p
+   .measure tran VT1O2 FIND V(tnk1) AT=519.760139p
+   .measure tran VT1B2 FIND V(tnk1) AT=601.000000p
+   .measure tran VT1R2 FIND V(tnk1) AT=1199.000000p
+   .measure tran VT1Q2 FIND V(tnk1) AT=1348.096333p
+   .measure tran VT1O3 FIND V(tnk1) AT=718.170115p
+   .measure tran VT1B3 FIND V(tnk1) AT=801.000000p
+   .measure tran VT1R3 FIND V(tnk1) AT=1399.000000p
+   .measure tran VT1Q3 FIND V(tnk1) AT=1537.891932p
+   .measure tran VT1O4 FIND V(tnk1) AT=918.267130p
+   .measure tran VT1B4 FIND V(tnk1) AT=1001.000000p
+   .measure tran VT1R4 FIND V(tnk1) AT=1599.000000p
+   .measure tran VT1Q4 FIND V(tnk1) AT=1742.767749p
+   .measure tran VT1D FIND V(tnk1) AT=2237.767749p
+   .print tran V(rail1) V(rail2) V(rail3) V(rail4) V(tnk1) V(tnk2) V(tnk3) V(tnk4) I(L1) I(L2) I(L3) I(L4) V(sw1) V(sw2) V(sw3) V(sw4) V(o1_0) V(o1_1) V(o1_2) V(o1_3) V(o1_4) V(o1_5) V(o1_6) V(o1_7) V(o2_0) V(o2_1) V(o2_2) V(o2_3) V(o2_4) V(o2_5) V(o2_6) V(o2_7) V(o3_0) V(o3_1) V(o3_2) V(o3_3) V(o3_4) V(o3_5) V(o3_6) V(o3_7) V(o4_0) V(o4_1) V(o4_2) V(o4_3) V(o4_4) V(o4_5) V(o4_6) V(o4_7)
+
+=== 3. THE RETURN PATH TO THAT SAME TANK.  The SAME transfer gate closes a
+   SECOND time and the rail is rung back down into tnk{k} through the SAME
+   L{k}.  Bank 1: rise window 200 -> 318.18 ps, return window 1000 -> 1129.29 ps,
+   both on gt1/gtp1; the park (tank-referenced, A6) is the exact anti-phase. ===
+VGT1 gt1 0 PWL(0 0 198p 0 200p 1.5 318.184p 1.5 320.184p 0 998p 0 1000p 1.5 1129.37p 1.5 1131.37p 0)
+VGTP1 gtp1 0 PWL(0 1.5 198p 1.5 200p 0 318.184p 0 320.184p 1.5 998p 1.5 1000p 0 1129.37p 0 1131.37p 1.5)
+VPK1 pk1 0 PWL(0 1.5 198p 1.5 200p 0 318.184p 0 320.184p 1.5 998p 1.5 1000p 0 1129.37p 0 1131.37p 1.5)
+
+=== 4. WHERE THE CHARGE COMES FROM in the free-running rows: the tanks are
+   pre-charged by .ic and NOTHING refills them.  The measured tank droop
+   over one cycle IS the recharge requirement.  There is no supply node in
+   this deck except vhi, which drives the switch gates and the pMOS bulk. ===
+VHI vhi 0 1.5
+.ic V(tnk1)=0.66 V(rail1)=0 V(sw1)=0.66 V(tnk2)=0.66 V(rail2)=0 V(sw2)=0.66 V(tnk3)=0.66 V(rail3)=0 V(sw3)=0.66 V(tnk4)=0.66 V(rail4)=0 V(sw4)=0.66
+
+=== 5. WHERE THE RECHARGE COMES FROM in the COSTED rows (mode=topup) ===
+VTK vrch 0 0.66
+XTUN1 tnk1 tun1 vrch 0 sg13_lv_nmos w=10u l=0.13u
+XTUP1 tnk1 tup1 vrch vhi sg13_lv_pmos w=20u l=0.13u
+VTUN1 tun1 0 PWL(0 0 1131.37p 0 1133.37p 1.5 1191.37p 1.5 1193.37p 0)
+VTUP1 tup1 0 PWL(0 1.5 1131.37p 1.5 1133.37p 0 1191.37p 0 1193.37p 1.5)
+BXetu 0 xetu I={ -V(vrch)*I(VTK) }
+BXqtu 0 xqtu I={ -I(VTK) }
+   -- a real tg15p-class transmission gate from an ideal rail at the tank's
+      own operating voltage (0.66 V) into each tank, conducting for 60 ps
+      after that tank's return completes, with the supply current metered
+      by its own 1F integrator so the switch loss is INSIDE the number.

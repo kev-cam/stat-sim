@@ -1,0 +1,133 @@
+{
+ "_what": "PER-BANK TANK CAPACITORS (each bank raises its own rail from its OWN local tank through its OWN inductor and returns the charge to that same tank) -- pre-registration. Written BEFORE any deck, driver, probe or extractor in qal/banktank/ existed. This file is the ONLY file in qal/banktank/ at the instant it is written.",
+
+ "_proposal_under_test_verbatim": "Another area/speed trade is to give each bank its own tank capacitor, rather than feeding the next stage, so the following stage can start sooner.",
+
+ "date_written": "2026-09-29T15:43Z (container clock)",
+
+ "_why_this_is_a_new_lever": "Every hop measured in this campaign charges bank N+1 FROM bank N (CA_MULT = 1.0 at qal_hop_gates.py:79; swsweep/lsweep model the source as a lumped CA = 35.979 fF, the MEASURED secant C of one 8-cell bank). That places the charge transfer IN SERIES with evaluation. Per-bank tanks cut that dependency in three distinct ways which this study must keep separate: (i) SCHEDULE -- a bank's rail can rise without waiting for its predecessor to give it one; (ii) LEVEL -- the source is a pre-charged m x C_bank linear tank, not a collapsing 8-cell bank, so the delivered rail does not fade with depth; (iii) TERMINAL COUNT -- a bank's tank island touches only that bank, so a bank needs ONE transfer terminal, not the two that chain3/skip4 middle banks carried.",
+
+ "inherited_and_frozen_NOT_reopened": {
+  "cells": "sg13_lv_pmos w=1.12u / sg13_lv_nmos w=0.74u l=0.13u, CL 2 fF per output, supply AND pMOS bulk on the bank rail -- the committed swsweep/gateb/lsweep/chain3/skip4 cell, verbatim",
+  "transfer_switch": "tg15p class: TG wn=10u / wp=20u + park 2u = 30 um total = lsw.widths(30). VGH = 1.5 V. Gate edge 2 ps.",
+  "L": "15 nH primary, RS = 10 ohm (committed skip4/chain3 primary point)",
+  "dV": "1.2 V primary, 1.65 V cross-check (the PDK characterises the identical 84-cell library over 1.08-1.65 V)",
+  "models": "PSP103 via .hdl + sg13g2_psp103_tt.lib; sg13_lv via qal/sg13lv_compat.sp, which ZEROES ad/as/pd/ps. Junction capacitance is ABSENT -> every capacitance, charge, energy and every hop time here is a LOWER BOUND / optimistic. Restated on every number it touches. Switch-node capacitance is therefore explicit where it matters.",
+  "metering": "1F integrator triples (CX/BX/RX) with t0 reference ONLY. '.measure INTEGRAL V(<B-source>)' is NOT used (it under-reports 11-44%). Every '.measure ... FIND ... AT=T' is requested LAG_PS = 1.0 ps late (the MEASURED FIND lag of this Xyce build).",
+  "zcs": "the true current zero is RE-PROBED per L, per m and per hop from I(L) in a probe run where the switch closes and never opens. The analytic pi*sqrt(LC) is NOT used for timing (measured 33% early in a chain: 266.76 predicted vs 353.79 ps measured).",
+  "own_cache": "PYMS_VAE_CACHE=/tmp/claude-1001/-usr-local-src/4921ad0c-f17b-4b84-986a-5917c9ebd2a6/scratchpad/vae_cache_banktank, own directory qal/banktank/. Nothing is written into qal/resv/ or qal/tsweep/ (a separate in-flight SHARED-reservoir study, which is NOT this).",
+  "concurrency": "<= 4 concurrent Xyce jobs; two other workflows share this 16-core box."
+ },
+
+ "TOPOLOGY_pre_stated": {
+  "banks": "FOUR banks, 8 committed inverter cells each (32 cells).",
+  "no_buffering": "DATA: bank 1's 8 gate inputs are ideal DC sources (it is the chain head, and ONLY it). For k > 1 the gate input net of bank k cell i IS the net o{k-1}_{i} -- literally the predecessor's output node. No flop, latch, buffer, keeper or level shifter anywhere in the deck.",
+  "per_bank_tank": "Bank k owns tank node tnk{k} carrying C_tank = m * 35.979 fF (35.979 fF = the committed MEASURED secant capacitance of one 8-cell bank, so m is literally 'tank = m banks'). tnk{k} is connected to rail{k} through inductor L{k} (15 nH) + series R{k} (10 ohm) + a tg15p-class transmission gate + park. NOTHING else touches tnk{k}: no other bank, no other inductor, and (in the free-running rows) no supply.",
+  "return_to_the_same_tank": "the SAME switch closes a second time at the end of bank k's hold window, and the rail is rung back down into tnk{k} through the SAME L{k}. Energy recycles locally; it does not propagate forward.",
+  "recharge": "two variants are run. (R1) FREE-RUNNING: the tank is pre-charged by .ic and never refilled -- the tank's own voltage droop over the cycle is the MEASURED recharge requirement. (R2) COSTED: a real tg15p-class top-up device from the +dV supply into tnk{k}, conducting in a window after the return, with the supply current METERED by its own 1F integrator so the recharge energy is measured with its switch loss included. An ideal source refilling the tank silently would be a BOOKING and is explicitly refused: this campaign has had three verdicts overturned by exactly that (the cells' gate burn, the ideal PWL gate drives that hid two orders of magnitude, and the park driver booked at 2.4 fJ when the cheapest real one measures 15.0 fJ).",
+  "tank_precharge_voltage": "V_tank0 = dV*(m+1)/(2m), the lossless linear-LC value that lands the rail at dV for a tank of m banks (for m = 1 this is exactly dV, i.e. the COMMITTED lsweep/swsweep hop deck, which carries CA = 35.979 fF at V = dV -- so the m = 1 row IS the committed anchor topology and acts as a built-in control). This is stated as DERIVED and the DELIVERED rail is MEASURED, not forced.",
+  "data_pattern": "bank 1's 8 inputs are the fixed bit vector P = [1,1,1,0,1,0,0,1] (5 HIGH, 3 LOW) rather than the committed alternating 1,0,1,0.... DECLARED DEVIATION, with reason: the committed alternating pattern makes every bank 4 pull-up / 4 pull-down and gives only TWO electrically distinct cell classes, and skip4 measured intra-class spread of exactly 0.000e+00 pp -- 'per gate, never aggregated' then yields two numbers per stage and cannot catch a single-gate outlier. P makes the rail loading differ by depth (odd banks 5 pull-down / 3 pull-up, even banks 3/5) and gives a real 8-bit value to check. It does NOT create more than two electrical classes WITHIN a bank -- every cell is the same inverter with the same 2 fF load -- and that limit is stated here, not discovered later.",
+  "inductors": "ONE inductor per bank, dedicated. Because a tank island touches exactly one rail there is no idle downstream inductor to divert into, so the chain3 finding-(d) source-side cut is NOT required and each bank carries ONE 30 um transfer terminal (chain3/skip4 middle banks carried TWO, which cost them 1.33-1.58x on the hop time). This is a claimed structural advantage and it is MEASURED, not assumed."
+ },
+
+ "THE_SUBTLETY_pre_stated": {
+  "statement": "A settling gate settles to WHATEVER ITS INPUT IS AS THE RAIL RISES. Bank N+1's rail therefore cannot start arbitrarily early if the rail's arrival is what latches the value. What can overlap is the RAMP: the rail may begin rising while the predecessor is still resolving, provided the predecessor's output is valid before the value is committed.",
+  "my_pre_stated_physical_reading_which_may_be_WRONG": "In THIS cell the gates are RESTORING static CMOS on a HELD rail, not pass transistors. After the ramp completes the rail is isolated but still at dV and the pull-up/pull-down devices remain conducting, so a gate that settled to a stale value while its input was still moving is expected to RE-SETTLE once the input becomes valid. If that is right, an early ramp start costs ENERGY (the gate switches twice, non-adiabatically) rather than CORRECTNESS, and the correctness limit is set instead by (a) the bank's own settling time from a VALID input and (b) the RETURN schedule -- a rail rung back down before its successor has captured is unambiguously fatal. If it is wrong -- if an early start produces a fast, stable, WRONG value -- that is the headline and it will be reported as a failure row, never as a fast row.",
+  "how_it_is_caught": "every offset is value-checked against the expected pattern at every stage, per gate, in addition to the settling percentage. A row that settles fast to the wrong bit pattern FAILS."
+ },
+
+ "THE_HOLD_PROBLEM_pre_stated": {
+  "statement": "There is no latch anywhere in this deck, so bank k's OUTPUT is valid only while bank k's rail is up AND bank k's INPUT is valid -- and bank k's input validity recursively requires bank k-1 powered. Returning bank k's charge to its tank kills bank k's HIGH outputs (they are rail-referenced), which turns bank k+1's pull-down cells off, which lets bank k+1's LOW outputs creep up toward bank k+1's still-held rail, which corrupts bank k+2. Per-bank tanks remove the rail-depth and the serial charge dependency; they do NOT by themselves remove this.",
+  "therefore_HOLD_DEPTH_H_is_a_swept_parameter": "bank k's return closes at t_rise_k + H*T. H = 2 is the minimum that lets the successor evaluate; H = nbank holds every bank until the whole wave has landed. BOTH are run at every headline point.",
+  "the_race_I_expect": "corruption from bank k's return must traverse one drain (t_hop) plus one gate delay to reach bank k+2's inputs. At SMALL T bank k+2's boundary may arrive first and H = 2 passes; at LARGE T it will not. So I expect H = 2 to pass at short beat periods and fail at long ones -- an inversion of the usual 'slower is safer' and a falsifiable prediction.",
+  "the_throughput_consequence_stated_now": "if H > 1 the wave occupies a bank for H beats, so the INITIATION INTERVAL of an unreplicated pipeline is H*T even when the rail-start spacing is T. The beat period T reported here is the WAVE's stage time. Any throughput claim must state H, and will."
+ },
+
+ "MEASUREMENTS_pre_registered": {
+  "M1_rail_start_offset_sweep": "beat period T (= the spacing of successive banks' rail starts) swept; the DERIVED rail-start offset relative to the predecessor's measured data-valid instant is OFF = T - t_valid_pred. The headline is the EARLIEST CORRECT start -- the smallest T at which A1 (settling) and A2 (value) pass at EVERY gate of EVERY bank -- and the BEAT PERIOD measured DIRECTLY off the running 4-bank chain, never composed from parts.",
+  "M2_interval_scan": "exhaustive scan over every (bank k rail-ramp interval) x (bank j evaluation interval) pair, all k != j, reporting the actual intersection in picoseconds -- the same instrument with which the stage-skipping study DISPROVED its own concurrency claim (it found the evaluation windows TILE with zero intersection). A concurrency claim the intervals do not show is withdrawn.",
+  "M3_correctness": "per-gate settling at EVERY stage, NEVER aggregated (min over gates is the number), AND a value check against the expected pattern. Conventions inherited verbatim: pull-DOWN cell pct = 100*(1 - V(o)/rail_k), pull-UP cell pct = 100*V(o)/rail_k, rail_k = V(rail k) at that bank's OWN boundary; guard pull-DOWN <= 0.10*rail_k, pull-UP >= 0.50*rail_k. Plus the gate-drive-vs-Vt check that skip4 needed to catch 'the nMOS is off and the node is merely undisturbed'.",
+  "M4_fade": "HIGH/LOW separation min(HIGH outputs) - max(LOW outputs) by bank depth, against the CORRECTED 6.44 mV 1-sigma floor (qal/vtaudit/AUDIT.md; NOT 3.42 mV, which was wrong by device geometry in the direction that hurts QAL). With local tanks there should be NO depth dependence at all; confirm or refute.",
+  "M5_trade_curve_HEADLINE": "CONCURRENT INDUCTOR COUNT vs OVERLAP vs BEAT PERIOD. The concurrent inductor count at a schedule is the maximum over time of the number of transfer switches simultaneously conducting -- computed exactly from the deck's own phase definitions and the MEASURED zeros, and cross-checked against the number of |I(L)| simultaneously above 1 uA in the .prn. Tank area in um^2 is reported as well and is NOT allowed to stand in for the inductor count: the inductor is this campaign's scarcest component and the sigma0 architecture shares ONE across banks precisely because of that.",
+  "M6_energy": "energy per hop vs m, REPORTED and NOT A GATE. Whether local recycling preserves adiabatic behaviour, and what recharging a tank that is no longer fed by its predecessor costs. The tank recharge is COSTED (variant R2) or explicitly labelled a BOUND."
+ },
+
+ "ACCEPTANCE_CRITERIA_pre_registered": {
+  "A1_settling": "EVERY one of the 8 gates in EVERY one of the 4 banks >= 90% settled at that bank's OWN stage boundary. The per-gate MINIMUM is the number; an average is how a non-computing bank passes.",
+  "A2_value": "EVERY gate's output at its bank's boundary carries the CORRECT bit of the expected pattern under the committed guard (pull-DOWN <= 0.10*rail_k, pull-UP >= 0.50*rail_k). A1 without A2 is a FAILURE, not a fast row.",
+  "A3_boundary_definition": "bank k's boundary = min(c_k + T, r_{k-1} - EDGE), where c_k is the instant bank k's rail-raise switch closes, T the beat period, r_{k-1} the instant bank k-1's return switch closes. The 'one beat to become valid' rule of chain3/skip4, made STRICT by the last-undisturbed-instant clause (which can only move a checkpoint EARLIER).",
+  "A4_earliest_correct_offset": "the smallest T on the grid at which A1 AND A2 pass at every gate of every bank, reported as a beat period AND as the derived rail-start offset OFF = T - t_valid_pred. Compared against (i) the committed peer chain, which has NO achievable beat at any T from 60 to 300 ps, and (ii) the 94.174 ps same-convention CMOS logic level.",
+  "A5_fade": "separation by depth POSITIVE and >= 6.44 mV at every bank; and, the specific claim of this topology, NO systematic decline with depth (bank 4 separation within 10% of bank 1).",
+  "A6_instrument": "per-switch |I(L)| at its own commanded open <= 1 uA (ZCS actually achieved); energy path identity |E_in - E_out - E_R - E_sw| <= 1% of the hop at each metering checkpoint; the committed anchors reproduced digit-for-digit.",
+  "NOT_gates": "energy per hop, tank area, inductor count and the recharge cost are REPORTED, not pass/fail. The trade curve is the deliverable whether the answer is positive or negative."
+ },
+
+ "GRID_pre_registered": {
+  "m": [1, 2, 5, 10, 20],
+  "beat_periods_ps": [45, 60, 75, 90, 120, 160, 300],
+  "hold_depth_H": [2, 4],
+  "dV": [1.2, 1.65],
+  "L_nH": 15.0,
+  "primary_point": "m = 10, dV = 1.2, L = 15 nH, TG 30 um; the m sweep runs at the beat period that the m = 10 offset sweep identifies, and the offset sweep runs at m = 10 first.",
+  "why_45": "below any hop time this campaign has measured, so the grid spans past the floor rather than stopping at it",
+  "why_300": "a deliberately slow reference, so a failure at short T can be told apart from a failure at every T -- and the instrument that should expose the H = 2 hold race predicted above"
+ },
+
+ "PRE_STATED_EXPECTATION_the_thing_I_can_be_wrong_ABOUT": {
+  "headline_call": "I expect per-bank tanks to FIX CORRECTNESS -- to produce the first >= 90% all-gates-all-stages pass this campaign has seen in an unbuffered multi-bank chain -- and to do it for a reason that has nothing to do with scheduling: the binding inequality that killed chain3 (predecessor's HIGH strands at |Vtp| = 0.4403 V while the successor needs ~0.59 x rail) exists ONLY because the predecessor's rail is drained forward to power the successor. A bank powered from its own tank is never drained by its successor, so its HIGH stays rail-referenced at a rail that never fades. I expect the SPEED gain to be real but MUCH smaller than the correctness gain, and the PRICE to be one inductor per bank plus a hold requirement.",
+  "numeric_predictions": {
+   "P1": "A1+A2 pass at every gate of every one of the 4 banks at at least one (m, T, H) point. chain3 and skip4 never passed at any point. If P1 fails the proposal is refuted on its own terms and that is the result.",
+   "P2": "The delivered rail rises monotonically with m and shows NO depth dependence: |rail_bank4 - rail_bank1| < 10 mV at m >= 5, against chain3's measured 0.61-0.66 collapse PER HOP. Fade (M4) is flat in depth.",
+   "P3": "The earliest correct beat period is between 60 and 110 ps at m >= 10, i.e. FASTER than the 123.44 ps committed adjacent single-hop level and plausibly faster than the 94.174 ps CMOS logic level. I am deliberately putting a number I can miss on the record: my single most likely value is 75 ps. If the answer is > 94.174 ps then per-bank tanks buy correctness but NOT speed, and I will say exactly that.",
+   "P4": "Real overlap EXISTS and the interval scan SHOWS it -- specifically ramp_k intersects eval_{k-1} by more than 20 ps at the earliest correct T. This is the prediction the stage-skipping study made and lost (its windows tiled with ZERO intersection); it is the single most important thing this study can be wrong about, and the interval scan is run the same exhaustive way so that it CAN lose the same way.",
+   "P5": "Concurrent inductors at the earliest correct T is 2, not 1 and not 4: ceil(t_hop / T) with t_hop ~ 65-70 ps (the committed SINGLE-terminal hop time, which I predict this topology recovers because each bank carries one transfer terminal, not two) and T ~ 75 ps gives 1 for the ramps alone, but the returns of older banks overlap the ramps of newer ones, which I expect to push the simultaneous total to 2.",
+   "P6": "H = 2 passes at short T and FAILS at T = 300 ps, because the corruption released by an early return needs a drain plus a gate delay to arrive and a long beat gives it time. If H = 2 fails everywhere, the hold is depth-proportional, the initiation interval is H*T, and the throughput claim must be divided by H -- which I will state as the price.",
+   "P7": "Energy per hop RISES with m at fixed T, because a stiffer tank delivers a higher rail (more CV^2 moved into the same gates) -- so the area/speed trade the user names is also an area/ENERGY trade, and the recharge of a big tank is the term that pays for it. I expect the measured tank droop per cycle to be roughly independent of m in ENERGY and therefore to shrink in VOLTS as m grows."
+  },
+  "what_would_make_this_a_clean_NEGATIVE_worth_reporting": "per-bank tanks pass correctness but the earliest correct beat period is no better than the committed level, or the required concurrent inductor count at any useful beat is >= one per bank with no sharing possible. Either way the trade curve is the deliverable and it is attached."
+ },
+
+ "HONESTY_PRE_COMMITMENTS": [
+  "A refutation is worth exactly as much as a confirmation. If the serial dependency does not break, or breaks only at an inductor count nobody would build, that is said plainly with the curve attached.",
+  "Every number labelled MEASURED / DERIVED / ASSUMED.",
+  "Anything modelled as an ideal source is a BOOKING and is labelled a BOUND, not a result. That specifically covers the tank recharge, which is why variant R2 exists.",
+  "sg13lv_compat.sp zeroes ad/as/pd/ps: junction capacitance is absent, so every time is optimistic and every charge a lower bound. The absent drain junction cap is part of what would HOLD a collapsing HIGH up and part of what would SLOW a creeping LOW -- it cuts both ways and is restated where it matters.",
+  "ALL numbers are SHALLOW-STACK (inverter) numbers. The ALU's dominant mapped cell sg13g2_o21ai_1 never settles at any operating point in the PDK envelope. Nothing here is generalised to it.",
+  "The committed fixture gives only TWO electrically distinct cell classes per bank; the 8-bit value check is the guard that actually catches a non-computing bank, and that is stated with the result rather than after it.",
+  "Bank 1 is an ideal-source-driven head. Its stage is OPTIMISTIC by construction; bank 4 is the representative one and comparisons are drawn there.",
+  "A result that contradicts circuit physics is a defect until proven otherwise. In particular: a tank that gives back more than it stored, a delivered rail above the tank's own lossless LC bound, or an energy per hop below the measured pi/Q floor, is a bug to be hunted, not a finding.",
+  "If a harness defect is found it is fixed BEFORE the sweep and recorded in AMENDMENT.md with the measurement that forced it and the mtime proving it preceded the measured rows."
+ ],
+
+ "BASELINES_frozen_before_any_run": {
+  "committed_single_hop_L15_W30_dv120": {
+   "source": "qal/lsweep/rows.json key L15_W30 (stat-sim c662974)",
+   "t_hop_ps": 65.49500982344826,
+   "VBEND": 0.7138163,
+   "VBPK": 0.8368896,
+   "VA_open": 0.1276800355763028,
+   "IPK_uA": 971.3203,
+   "IZ_uA": -0.0004958676,
+   "t_level_cons_ps": 123.44311400000001,
+   "t_settle90_ps": 115.570918
+  },
+  "committed_real_load_level": {
+   "source": "qal/dvopt/load691/rowd/cl_d165_L4_W30.json",
+   "L_nH": 4.0, "dv": 1.65,
+   "t_level_ps_committed": 115.467185,
+   "VBEND": 0.754572966,
+   "VA_open": 0.11745601600934541,
+   "t_hop_ps": 34.28582535896825
+  },
+  "cmos_logic_level_ps": 94.174,
+  "cmos_logic_level_provenance": "qal/vtreq device-level comparator at DELVTO = 0 on the identical 1.12/0.74 um cell and the identical 6.91 fF load; lands within 1.5% of the committed 92.8 ps synthesis/STA figure",
+  "peer_chain_negative": {
+   "source": "qal/chain3 (committed ca219bf) and qal/skip4",
+   "answer": "NO beat period at ANY T in 60-300 ps, either schedule, dV 1.2 or 1.5; 22 rows in skip4, 23 in chain3, zero passes at 90%, 75% OR 50%; max worst-gate anywhere 36.12%",
+   "per_hop_rail_collapse": "0.61-0.66 x per hop (chain3/vtreq)",
+   "binding_inequality": "predecessor's stranded HIGH clamps at |Vtp| = 0.336-0.455 V while the successor needs ~0.59 x rail; short by 34.7 mV at the best point"
+  },
+  "sigma_floor_mV": 6.44,
+  "sigma_floor_provenance": "qal/vtaudit/AUDIT.md corrected 1-sigma floor (supersedes 3.42 mV, which was wrong by device geometry in the direction that hurts QAL)"
+ }
+}
