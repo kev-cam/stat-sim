@@ -1,0 +1,215 @@
+{
+ "_what": "SKEPTIC audit of qal/fcrit (the functional commit criterion). Own dir, own PYMS_VAE_CACHE, every number re-derived from my own decks or my own analysis code. Nothing in qal/fcrit or any other committed qal/ directory was written to.",
+ "A_THRESHOLD_REDERIVED": {
+  "_status": "CONFIRMED. My own DC deck (sk_trip.cir, 0.5 mV step, both receivers in one run) reproduces the committed bound/dc_rows and the primary's TRIP.json.",
+  "instrument_check_vs_committed_bound_dc_rows": {
+   "S@1.20V": {
+    "mine": 0.6451618,
+    "committed": 0.645163,
+    "rel": 1.95e-06
+   },
+   "S@1.00V": {
+    "mine": 0.5466752,
+    "committed": 0.5466961,
+    "rel": 3.81e-05
+   },
+   "S@0.90V": {
+    "mine": 0.4958682,
+    "committed": 0.4958921,
+    "rel": 4.83e-05
+   },
+   "S@0.80V": {
+    "mine": 0.4452225,
+    "committed": 0.4452317,
+    "rel": 2.08e-05
+   },
+   "A@1.20V": {
+    "mine": 0.4594609,
+    "committed": 0.4594805,
+    "rel": 4.26e-05
+   }
+  },
+  "primary_correction_1_trip_is_not_0.59_of_rail": "CONFIRMED. MEASURED frac: 0.7281@0.20, 0.6299@0.35, 0.5903@0.50, 0.5642@0.70, 0.5510@0.90, 0.5376@1.20, 0.5179@1.50 V. Monotonically decreasing; 0.59 is right only near a 0.50 V rail.",
+  "primary_correction_2_window_is_not_30_60mV": "CONFIRMED and slightly sharpened. MEASURED 10-90 window min is 27.155 mV at a 0.40 V rail (primary quoted 27.17 at 0.35); 31.98@0.20, 30.10@0.60, 36.05@0.80, 49.01@1.00, 64.82@1.20, 99.80@1.50.",
+  "primary_correction_3_the_0.6452_0.6548_spread_is_two_fixtures": "ACCEPTED, not independently re-run (I did not re-simulate skept/rxdc.cir). My DC deck lands on 0.6451618, i.e. the DC family, to 2e-06."
+ },
+ "B_NOISE_BUDGET_CHALLENGED": {
+  "sigma_trip_6.441mV": "CONFIRMED as arithmetic over MEASURED terms: sqrt((0.4779*5.766)^2+(0.4630*12.574)^2)=6.4409 mV, and qal/vtaudit/AUDIT.md states on its face it is a LOWER bound (dw/dl excluded). Every PASS in this work inherits lower-bound status.",
+  "brief_319.9mV_not_in_tankfed": "CONFIRMED independently. I grepped every JSON/MD/PY/TXT under qal/ for 319.9: the only near hits in tankfed are a tank area 319.3 um^2, loop resistances 319.3/322.8 ohm, a source capacitance 318.36 fF and an injection slope 316.0 V/ns. Largest substantiated step_at_logic_mV in tankfed is 248.997.",
+  "MY_FINDING_1_the_coupling_term_is_taken_from_the_WRONG_POLARITY": {
+   "what": "qal/tankfed/coupling.py scans only ONE polarity of logic node (its gate loop skips gates by tf.is_hi). I reimplemented the committed free-vs-clamp differential from scratch and it reproduces the committed numbers EXACTLY (matched m2 o3_0 250.745 vs committed 248.997, rel 0.7%; uniform m6 o2_1 31.411 vs committed 31.411). On the UNSCANNED polarity of the SAME configuration and the SAME window I measure a +218.380 mV excursion on o3_1, a node intended LOW pushed UP -- the harmful direction.",
+   "numbers_mV": {
+    "uniform_m6_primary_used": 31.1,
+    "uniform_m6_worst_HARMFUL_measured": 218.38,
+    "matched_m2_primary_used": 249.0,
+    "matched_m2_worst_HARMFUL_measured": 184.671
+   },
+   "so": "the coupling term is wrong in BOTH configurations and in OPPOSITE directions: 7.0x too small for m6, 1.35x conservative for m2.",
+   "verdict_impact": "banktank insensitive (57 -> 55 rows under my harshest scheme). chain3 unaffected in direction (still 0)."
+  },
+  "MY_FINDING_2_the_configuration_matching_is_inverted_in_two_places": {
+   "banktank_vfull": "got topup_m6 (79.023 mV, containing a 31.1 mV coupling term) although I verified the vfull decks contain NO top-up device at all (grep for XTU/tun/tup = 0). Harsh, therefore safe.",
+   "chain3_topup": "got topup_worst (296.923 mV) built from a coupling step measured in a PER-BANK-TANK topology chain3 does not have. This single imported number carries chain3's entire verdict."
+  },
+  "MY_FINDING_3_the_budget_DOUBLE_COUNTS_deterministic_terms_already_in_the_waveform": {
+   "what": "the criterion reads the ACTUAL signal against the ACTUAL receiver rail at the ACTUAL instant, on the committed transient. Held-rail droop is therefore already in that waveform, and so is any top-up coupling whose window precedes the commit instant. Adding them to the budget charges the row twice.",
+   "steelman_for_the_primary": "for chain3 the top-up window (e.g. c_g100_topup bank2 [426.0,446.0] ps) falls AFTER the commit instant of link 1->2 (rail2 peaks near 420 ps), so for THAT link the step is genuinely absent from the reading and a budget term is justified. The term is defensible; its MAGNITUDE, imported from a foreign topology, is not.",
+   "measured_impact_chain3": "rows passing functionally: 13 at NB=0, 11 at 3*sigma only, 10 at 3*sigma+droop, 7 at the primary's topup_m6, 0 at the primary's topup_worst. The whole 'chain3 changes nothing' headline is that one term."
+  }
+ },
+ "C_TWO_DATASETS_RESCORED_INDEPENDENTLY": {
+  "_method": "my own scorer (skscore.py) shares no code with fcrit/rescore.py: the commit instant is read OFF THE RECEIVING RAIL (first local max after half-peak, no inductor identification), the intended logic value is DERIVED FROM THE DECK (bank-1 source values + inverter parity, verified to match the committed oh_pat/oh_alt on every deck), the trip curve is my own DC sweep.",
+  "instant_cross_check": "my rail-peak instant vs the primary's ZCS over 328 (deck,bank) pairs: median |diff| 2.013 ps, mean 6.866, p95 45.7, max 123.2 ps. Same physical object.",
+  "banktank_VERDICT_CHANGED": {
+   "primary": "30 pass90 -> 57 functional, 27 flips, 0 lost",
+   "mine": "57 rows pass at the config-matched budget; links pass90=1555 (primary 1555, EXACT); census PASS/budget/late/never = 2188/10/63/11 (primary 2172/18/71/11)",
+   "agreement": "CONFIRMED"
+  },
+  "chain3_VERDICT_UNCHANGED": {
+   "primary": "0 of 23 flip",
+   "mine": "0 of 23 at the config-matched budget; links pass90=284 (primary 284, EXACT); census 252/240/12/48 (primary 248/244/8/52)",
+   "agreement": "CONFIRMED -- but see B/MY_FINDING_3: 11 rows pass once the imported coupling term is removed."
+  },
+  "also_rescored_for_the_self_test": {
+   "skip4": "0 rows, links pass90=392 (primary 392 EXACT)",
+   "skiptu": "1 row (primary 2), links pass90=980 (EXACT)",
+   "resv": "1 row = res20 (primary 1 EXACT), links pass90=12 (EXACT)",
+   "restore5": "4 rows (primary 4 EXACT), links pass90=52 (EXACT)",
+   "pgcell": "NOT re-scored -- my deck-derived intended-value propagation does not handle the pass-gate banks; I verify only that a VALUE failure cannot be re-scored into a pass, which is the primary's own position."
+  }
+ },
+ "D_THE_TWO_FAILURE_MODES_POLICED": {
+  "both_live": "CONFIRMED. At the config-matched budget I count chain3 FAIL_budget=240 FAIL_late=12, banktank FAIL_budget=10 FAIL_late=63, skip4 16/40, skiptu 168/80, resv 0/2, restore5 0/3.",
+  "the_beat_boundary_reproduced_link_by_link": {
+   "T=150": "32/32 PASS, worst margin +74.44 mV (primary +74.4)",
+   "T=140": "27/32, the 5 failures are FAIL_budget at +13.14 mV -- CORRECT side, INSIDE the 19.323 mV budget (primary +13.1). RECORDED AS A FAIL, as it must be.",
+   "T=130": "the SAME 5 links fail the OTHER way, -53.02 mV at the commit instant, correct only later (FAIL_late).",
+   "T=120": "same 5 links, -122.45 mV, FAIL_late.",
+   "verdict": "CONFIRMED -- both modes appear adjacent in the one configuration that computes, and neither was taken."
+  },
+  "MY_FINDING_4_the_entire_beat_is_decided_by_the_generously_scored_TERMINAL_bank": "at T=120/130/140 ALL FIVE binding failures are bank 4 (last=True), the bank with no receiver in the deck. The primary disclosed this; I confirm it, and I confirm the strict alternative is broken: scoring the last bank at its own rail peak fails EVERY iso-swing dv1200 free row at EVERY beat including T=300 (worst -68.13 mV), a row the committed VALUE check passes 32/32. The generous treatment is forced, not flattering.",
+  "MY_FINDING_5_worst_over_window_is_ILL_POSED_not_merely_strict": "I tested the stricter 'margin must hold throughout the receiving rail's charging window'. It passes ZERO rows in either dataset (worst window margin -194.7 mV chain3, -190.7 mV banktank). It cannot be right: a HIGH link is structurally below any threshold before its own rail has risen. So the primary's single-instant criterion is the correct choice, and the level.cir 33.3 mV worst-over-ramp margin cannot be promoted into a chain criterion. This check VINDICATES the primary."
+ },
+ "E_AGREEMENT_WITH_EVERY_INDEPENDENT_VALUE_CHECK": {
+  "row_level": "ZERO rows where the committed VALUE guard PASSES and my functional criterion FAILS, in every dataset I re-scored (chain3 0, banktank 0, skip4 0, skiptu 0, resv 0, restore5 0). The primary's central self-test claim is CONFIRMED on independent machinery.",
+  "the_guard_is_itself_a_fraction_of_rail_proxy": "CONFIRMED from my own sweep. The guard's LOW arm (0.10 x own rail) is 5.2-7.3x stricter than the MEASURED trip fraction (0.518-0.728); its HIGH arm (0.50 x own rail) is LOOSER than the measured trip at every rail I swept (min trip fraction 0.5179 at 1.50 V). The primary's diagnosis stands."
+ },
+ "F_CHAIN3_VERDICT_DOES_CHANGE": {
+  "_headline": "THE PRIMARY'S PHASE-1 HEADLINE IS WRONG FOR chain3. 'chain3 carries no coupling measurement of its own' was true of the committed files but not of the circuit: the number is one deck away, and I ran it.",
+  "the_experiment": "I copied two chain3 topped-up decks into my own directory and changed EXACTLY FOUR LINES each -- the two top-up gate PWLs for banks 2 and 3 -- to park the top-up devices OFF while leaving them physically present and the whole resonant schedule byte-identical. That is qal/tankfed/coupling.py's own stated convention ('the same top-up devices PHYSICALLY PRESENT, parked off'). Decks: fcrit_skept/park_g100_topup.cir, park_g10_topup.cir.",
+  "schedule_match_verified": "max |V(rail1..3)_topped - V(rail1..3)_parked| over the whole window BEFORE the first top-up fires = 0.00000 mV in both decks. The pair differs only by the top-up FIRING.",
+  "method_validated_first": "my differential implementation reproduces the committed tankfed numbers exactly before I used it: matched m2 o3_0 250.745 mV vs committed 248.997 (rel 0.7%); uniform m6 o2_1 31.411 mV vs committed 31.411 (exact).",
+  "CHAIN3_OWN_MEASURED_harmful_coupling_step_mV": {
+   "c_g100_topup": {
+    "feeder1": 32.919,
+    "feeder2": 119.26,
+    "max_abs_feeder2": 131.976
+   },
+   "c_g10_topup": {
+    "feeder1": 37.364,
+    "feeder2": 124.837,
+    "max_abs_feeder2": 383.677
+   },
+   "note": "the two rows agree to within 6 mV, so the family value is ~33-37 mV at feeder 1 and ~119-125 mV at feeder 2. The primary imported 249.0 mV."
+  },
+  "ROWS_THAT_FLIP": {
+   "primary_with_the_imported_249.0": 0,
+   "3sigma_only_coupling_already_in_the_waveform": 11,
+   "3sigma_plus_chain3_own_per_stage_coupling": 7,
+   "3sigma_plus_g10_own_per_stage_coupling": 6,
+   "3sigma_plus_WORST_of_both_uniformly": 4,
+   "3sigma_plus_own_coupling_plus_the_double_counted_droop": 3,
+   "3sigma_plus_WORST_uniformly_plus_double_counted_droop": 2,
+   "rows_that_pass_under_EVERY_variant_I_tried": [
+    "g10_topup",
+    "m10_d180"
+   ],
+   "typical_flipping_set": [
+    "g10_topup",
+    "g30_topup",
+    "g45_topup",
+    "g60_topup",
+    "m10_d120",
+    "m10_d180",
+    "m45_d150"
+   ]
+  },
+  "VERDICT": "between 2 and 11 of chain3's 23 rows flip from FAIL to PASS -- never 0. The committed 'chain3 does not compute' verdict DOES change under the functional criterion, and the user's reframing is vindicated there specifically: these rows sit at 65-77% settled (worst_gate_pct 68.5-77.6) and fail a 90% bar, yet their pull-DOWN outputs are far below the receiver's measured trip.",
+  "what_does_NOT_change": "the 8 free rows plus a277_ctrl fail by 100-140 mV and are nowhere near passing. The collapse of the unassisted chain is real. So is skip4's wall, restore5's k=1 ceiling, and pgcell's value failure."
+ },
+ "G_PHASE2_FAIRNESS_THE_VERDICT_REVERSES": {
+  "_what_IS_fair": "the BARS are genuinely identical on both sides -- I read both committed decks and both use 0.664485 V rise / 0.625839 V fall, and my own single-run deck reproduces every committed number: comparator 94.1745 -> 51.8985, 2 fF cell 57.1428 -> 32.9288, QAL settle 40.4171 -> 16.2030, pull-down peak 287.266 mV. The budget is the same 3*sigma on both sides. The DELVTO error is NOT repeated.",
+  "_what_is_NOT_fair": "the criterion is applied to the identical BAR but not to the identical OBJECT. The QAL side is scored as a PIPELINE BEAT (pass/fail over every link at a fixed schedule). The CMOS side is scored as ONE GATE's rise time from an ideal 2 ps step. Those two have structurally different exposure to a bar change: in the single-gate measurement only the FAR END of the interval moves with the bar, so ~46% of the measured interval is tail and the bar change cuts it. In a pipeline both ends move together.",
+  "THE_ARM_THE_PRIMARY_DID_NOT_BUILD": "fcrit_skept/sk_chain.cir (depth 12, 2 fF/node) and sk_chain691.cir (depth 10, 6.91 fF/node -- iso-load with the committed comparator). Same cell, same supply, same 2 ps launch edge, same bars.",
+  "MEASURED_CMOS_gain_depends_entirely_on_depth": {
+   "steady_state_per_logic_level_2fF": {
+    "t90_ps": 52.51,
+    "tcommit_ps": 52.51,
+    "GAIN": 1.0
+   },
+   "steady_state_per_logic_level_6p91fF": {
+    "t90_ps": 76.6193,
+    "tcommit_ps": 76.6097,
+    "GAIN": 1.00012
+   },
+   "depth8_end_to_end_2fF": {
+    "t90_ps": 432.9864,
+    "tcommit_ps": 394.006,
+    "GAIN": 1.0989
+   },
+   "depth8_end_to_end_6p91fF": {
+    "t90_ps": 629.8874,
+    "tcommit_ps": 573.3247,
+    "GAIN": 1.0987
+   },
+   "depth1_from_an_ideal_step_6p91fF_THE_PRIMARYS_NUMBER": {
+    "t90_ps": 94.1745,
+    "tcommit_ps": 51.8985,
+    "GAIN": 1.8146
+   },
+   "gain_vs_depth_2fF": {
+    "1": 2.0488,
+    "2": 1.493,
+    "4": 1.2119,
+    "6": 1.1349,
+    "8": 1.0989,
+    "10": 1.0781,
+    "12": 1.0428
+   }
+  },
+  "QAL_gain_MEASURED_by_me_end_to_end_on_the_running_chain": {
+   "beat_H4": {
+    "t90_ps": 200,
+    "functional_ps": 150,
+    "GAIN": 1.3333
+   },
+   "II_H2": {
+    "t90_ps": 500,
+    "functional_ps": 320,
+    "GAIN": 1.5625
+   },
+   "reproduces_the_primary_exactly": "H=2 250->160, H=3 200->200, H=4 200->150; II 500->320 / 600->600 / 800->600"
+  },
+  "THE_ANSWER_TO_THE_BRIEFS_QUESTION": "YES, QAL gains more -- at the beat as well as at the level. QAL 1.3333x against a CMOS PIPELINE STAGE's 1.0989x (depth 8, the campaign's own committed sha_slice depth) and against a steady-state per-logic-level gain of 1.00000x. The primary's 'CMOS gains 1.8146x, more than QAL' compares a QAL pipeline against a CMOS single gate.",
+  "THE_RATIO_CORRECTED": {
+   "QAL_beat_per_logic_level_vs_CMOS_per_logic_level_2fF_iso_load": {
+    "at_90pct_bar": 3.8088,
+    "at_commit_bar": 2.8566,
+    "change": "NARROWS 25.0%"
+   },
+   "the_primarys_framing_QAL_beat_vs_CMOS_single_gate": {
+    "at_90pct_bar": 2.1237,
+    "at_commit_bar": 2.8903,
+    "change": "WIDENS 36.1%"
+   },
+   "so": "the sign of the headline is set entirely by which CMOS object is in the denominator. The bar-invariant one (per-logic-level propagation) is the one a beat is made of."
+  },
+  "my_correction_is_CONSERVATIVE_against_QAL": "the CMOS chain I built has NO register tax, no clock, no setup/skew -- pure combinational propagation, the most CMOS-favourable pipeline analogue available. The QAL beat carries its whole resonant schedule. The conclusion flips anyway.",
+  "what_SURVIVES_of_the_primarys_Phase_2": [
+   "the level result (QAL 2.4944x vs CMOS 1.7353x, advantage 1.414x -> 2.032x) -- reproduced exactly",
+   "the mechanism (t_commit/t_90 = 0.401 QAL vs 0.576/0.536 CMOS) -- the brief's 0.39 is right for QAL and wrong for CMOS",
+   "the transfer/schedule are threshold-invariant and cap QAL's gain -- correct, and it is why QAL's gain is 1.33x and not 2.49x",
+   "the refusal to quote the 40.4 ps cell settle as the chain level -- correct discipline, held"
+  ]
+ }
+}

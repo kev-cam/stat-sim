@@ -1,0 +1,94 @@
+{
+  "_what": "qal/fcrit -- THE FUNCTIONAL COMMIT CRITERION. Replaces the >=90%-settled PROXY with a real receiver-referenced commit test, then re-scores every committed chain dataset under it. Written BEFORE the first deck in this directory; DISK_STATE_BEFORE.txt (mtime-stamped, same directory) is the witness.",
+  "_author_note": "Phase 1 is re-analysis of committed .prn/.json. No committed result directory is written to. My only writes are under qal/fcrit/.",
+
+  "THE_CRITERION": {
+    "_statement": "A signal is GOOD ENOUGH if, at the instant the receiver commits, it is on the correct side of THAT receiver's measured decision threshold, at THAT receiver's delivered rail, by at least the noise budget.",
+    "scope": "Scored per LINK, never per bank in isolation. In every chain deck in this campaign bank k cell i drives bank k+1 cell i (bt.in_net / chain.in_net: k>1 -> literally o{k-1}_{i}). So a link is (sender = bank k, gate i) -> (receiver = bank k+1 cell i). Bank N's outputs have NO receiver inside any deck and are therefore OUT OF SCOPE of the link criterion; that exclusion is reported, not hidden.",
+
+    "a_THRESHOLD": {
+      "definition": "V_trip(Vdd_rx) = the input voltage at which the ACTUAL receiver cell, supplied at the ACTUAL delivered rail Vdd_rx, has Vout = Vdd_rx/2. Measured by DC sweep of that cell at that rail. NOT 0.59 x rail, NOT any fixed fraction.",
+      "why_not_a_constant": "The campaign's own committed DC data already shows the trip is neither a constant voltage nor a constant fraction: bound/dc_rows.json A1 (std 1.12p/0.74n) trips at 0.64516 V on a 1.2 V rail = 0.5376 of rail, and rows B1/B2/B3 give 0.54670/0.49589/0.44523 V at 1.0/0.9/0.8 V = 0.5467/0.5510/0.5565 of rail. The FRACTION moves 0.538 -> 0.557 over that range, so the receiver-dependence is real and the rail-dependence is real.",
+      "receivers_to_measure": [
+        {"id": "S", "cell": "1.12u pMOS / 0.74u nMOS, L=0.13u", "committed_trip_at_1.2V": 0.6451630261834231, "committed_source": "qal/bound/dc_rows.json:A1 (0.64516) and qal/skept/trips.json:std (0.65482, a chain-loaded variant) -- the 0.6452-0.6548 spread in the brief is these two, and I will say which is which"},
+        {"id": "A", "cell": "0.15u pMOS / 1.48u nMOS, L=0.13u (the skewed boundary receiver)", "committed_trip_at_1.2V": 0.45948054259979987, "committed_source": "qal/bound/dc_rows.json:A4"}
+      ],
+      "to_be_measured_here": "trip vs rail for BOTH receivers over Vdd_rx = 0.20..1.50 V, fine enough to interpolate at every delivered rail that appears in the datasets; plus the TRANSITION WINDOW width (Vin at Vout=0.9*Vdd minus Vin at Vout=0.1*Vdd) at each rail, since the brief asserts it is only 30-60 mV and that assertion must itself be checked.",
+      "which_receiver_is_the_headline": "S. It is the receiver the chains are actually built from -- every cell in every chain deck in chain3/skip4/skiptu/banktank/resv/restore5 IS the 1.12p/0.74n cell. A is a DESIGN LEVER (a receiver you could choose to build the next bank out of) and is scored as a counterfactual, clearly labelled."
+    },
+
+    "b_COMMIT_INSTANT": {
+      "definition": "t_commit for link (k -> k+1) = the instant the RECEIVING bank k+1 stops being charged: the first stationary point of V(rail_{k+1}) after its own charging hop opens (equivalently the ZCS instant of that hop, I(L_k+1) first zero crossing after the peak). This is the receiving bank's OWN boundary instant, the same instant every committed extractor already samples bank k+1 at.",
+      "why_this_is_the_commit": "It is the point of no return for the receiver in the only sense available to a gate on a resonant rail: after it, (i) no further charge enters the receiving island, so its rail is monotone non-increasing for the rest of the stage, and (ii) the receiving cells' pull-up path can no longer reach any level it has not already reached, so a receiver output on the wrong side of its own successor's threshold can only get relatively worse. Both (i) and (ii) are MEASURABLE and will be measured on the waveform, per dataset, and reported as the JUSTIFICATION -- if they do not hold, the definition is wrong and I will say so.",
+      "the_users_time_window": "This is the 'given time window' in the user's phrase: the window is [hop open, t_commit], set by the circuit's own resonance, not by a clock.",
+      "falsifiable_alternative_rejected_in_advance": "'the receiver commits when its own pull path becomes irreversible in the latch sense' has no referent here -- a static CMOS inverter on a floating rail has no regeneration. The charge-island cut is the only irreversibility the topology actually contains."
+    },
+
+    "c_NOISE_BUDGET": {
+      "_rule": "NB = 3*sigma_trip (random, per-receiver) + coupling_step (deterministic, config-matched) + held_rail_droop (deterministic, config-matched). Summed, not RSS'd, because only the first term is random.",
+      "sigma_trip_mV": 6.441,
+      "sigma_trip_provenance": "qal/vtaudit/AUDIT.md section (d): sigma_trip = sqrt((0.4779*5.766)^2 + (0.4630*12.574)^2) = 6.441 mV 1-sigma, built from the per-geometry Pelgrom sigmas of the 1.12u pMOS and 0.74u nMOS and MEASURED trip sensitivities. AUDIT.md states on its face that this is a LOWER BOUND (dw/dl mismatch excluded). Every budget below therefore inherits LOWER-BOUND status.",
+      "sigma_multiplier": 3,
+      "sigma_multiplier_why": "The random term is a per-receiver draw over millions of receivers; 1-sigma is not a margin. 1-sigma is reported alongside as a sensitivity, never as the headline.",
+      "coupling_step_provenance": "qal/tankfed step_at_logic_mV, the measured step a top-up injects onto a LOGIC node: 31.1 mV (uniform m=6 tank; COUPLING_m6.json rows 0 and 2 give 31.411 / 30.903) and 249.0 mV (matched m=2; COUPLING_m2.json rows 1 and 5 give 248.997 / 247.858).",
+      "coupling_step_CAVEAT_PRE_STATED": "The brief also cites '319.9 mV (no tank)' as a qal/tankfed number. I scanned every JSON in qal/tankfed for any value in [315,325] before writing this file: the only hits are a tank AREA (319.3 um^2/bank), a loop resistance (319.3 / 322.8 ohm), a source capacitance (318.36 fF) and an injection slope (316.0 V/ns). There is NO 319.9 mV coupling step in qal/tankfed. Unless I find it elsewhere, the largest substantiated step_at_logic is 249.0 mV and I will use that for the no-tank/worst case and report the discrepancy as a correction to the brief.",
+      "held_rail_droop_mV": 28.6,
+      "held_rail_droop_provenance": "qal/skip4/RESULTS.json e_THE_SIX_MEASUREMENTS/2/MEASURED_held_rail_droop_bank3_skip_dV1p2/T105/droop_mV = -28.6 (the worst over that sweep; at T>=160 ps the held rail RISES).",
+      "BUDGETS_ADOPTED": {
+        "NB_notopup_mV": 19.323,
+        "NB_notopup_config": "free-running chain, no top-up, no tank: 3*6.441 only. The coupling term is ZERO by construction (there is no top-up device to couple) and the held-rail droop term is ZERO because the free chain has no multi-beat hold. Applies to: chain3 f-rows, skip4 adjacent/free rows, skiptu free rows, banktank free rows, resv, restore5 free segments.",
+        "NB_topup_tank_m6_mV": 79.023,
+        "NB_topup_tank_m6_config": "3*6.441 + 31.1 (uniform m=6 tank) + 28.6 (held-rail droop). Applies to topped-up / tank-fed / held configurations at a well-sized uniform tank.",
+        "NB_topup_worst_mV": 296.923,
+        "NB_topup_worst_config": "3*6.441 + 249.0 (matched m=2, the worst measured step at a logic node) + 28.6. The worst-case budget; if a topped-up row passes THIS it passes anything.",
+        "NB_1sigma_sensitivity_mV": 6.441,
+        "which_is_the_headline": "Each dataset is scored at the budget matched to ITS configuration, and every table also carries the score at NB=0 (pure threshold crossing, no margin at all) so the reader can see exactly how much of the verdict the budget is doing."
+      }
+    },
+
+    "d_VERDICT_AND_THE_TWO_FAILURE_MODES": {
+      "PASS": "intended HIGH: v(t_commit) >= V_trip(rail_rx(t_commit)) + NB ; intended LOW: v(t_commit) <= V_trip(rail_rx(t_commit)) - NB",
+      "FAIL_budget": "correct side of the threshold but |v - V_trip| < NB. This is a FAIL. The relaxation MUST NOT be allowed to pass these.",
+      "FAIL_late": "wrong side at t_commit, correct side at some later instant in the run. This is a FAIL however good it looks later. Counted and reported separately.",
+      "FAIL_never": "wrong side at t_commit and never correct.",
+      "the_thing_that_must_not_happen": "relaxing the criterion into a pass. A row is functionally PASS only if EVERY link in it passes. No aggregation, no 'worst gate excluded', no averaging."
+    }
+  },
+
+  "MY_PRE_STATED_EXPECTATION_OF_HOW_MANY_ROWS_FLIP": {
+    "_why_this_is_pre_stated": "So that a large flip count cannot be claimed as a discovery after the fact, and a zero flip count cannot be quietly dropped.",
+    "chain3": {
+      "rows_total": 20,
+      "rows_failing_the_90pct_bar": 20,
+      "predicted_to_flip_to_functional_PASS": 0,
+      "predicted_split": "The TOPPED-UP rows (g-rows) asymptote at worst_gate_pct 77.6%, i.e. a pull-DOWN output sitting at 0.224*rail. At rail ~0.74 V that is ~166 mV, comfortably BELOW a trip of ~0.40-0.42 V, so the LOW side should pass on threshold. My worry is the PULL-UP side and the fact that the receiver's rail (bank k+1's) is DEEPER than the sender's, which raises the required level relative to the sender's own rail. chain3's free rows collapse to settling 34-36% and will fail outright. I predict 0 of 20 rows flip, but I predict a substantial number of individual LINKS in the topped-up rows flip, and I expect the binding failure to be the pull-UP link, not the pull-DOWN one.",
+      "predicted_links_flipping": "between 20% and 60% of the individual links in the 8 topped-up rows; 0-5% in the free rows"
+    },
+    "skip4":    {"predicted_to_flip_to_functional_PASS": 0, "why": "skip4's own record says bank 3's HIGH outputs are at 0.160 V climbing toward a 0.59-0.61 V rail, and the successor's nMOS overdrive is -0.201 V. A HIGH at 0.160 V is below any plausible trip at any plausible rail. This should fail on threshold, not merely on settling."},
+    "skiptu":   {"predicted_to_flip_to_functional_PASS": 0, "why": "same mechanism plus a top-up; the committed verdict is that the wall is |Vtp| = 0.4403 V, a device constant, which a threshold relaxation cannot move."},
+    "banktank": {"predicted_to_flip_to_functional_PASS": "some -- this is the one configuration that already COMPUTES, so rows that fail A1(90%) but pass A2(value) are exactly the candidates. I predict between 5 and 20 of the 38 currently-failing rows flip, and I predict every row that already PASSES stays passing (that is part of the self-test)."},
+    "resv":     {"predicted_to_flip_to_functional_PASS": 0, "why": "the ctl chain's separation goes NEGATIVE at depth 2 (-22.9 mV): the LOW output is above the HIGH output. No threshold can rescue inverted data. res20 has 282-1326 mV separations and should pass on threshold, but res20 is a reservoir, not an unbuffered chain."},
+    "pgcell":   {"predicted_to_flip_to_functional_PASS": 0, "why": "PRE-STATED PLAINLY, as the brief demands: pgcell is reported value-wrong. If the VALUE check already failed there, a relaxation of the SETTLING bar cannot save it, because the value check is the stricter of the two on the quantity that matters. I expect to report pgcell as un-rescuable and I will say so in exactly those terms rather than re-scoring it into a pass."},
+    "restore5": {"predicted_to_flip_to_functional_PASS": 0, "why": "k=1 (a restoring buffer between EVERY bank) is already the max; the unrestored cascade carries NO DATA, which is a separation result, not a settling result."},
+    "GLOBAL": "I expect the relaxation to change the VERDICT of exactly one dataset family (banktank, where it should shorten the beat) and to change NO dataset's pass/fail verdict from FAIL to PASS where the committed record reports the data itself is wrong. If the relaxation changes nothing anywhere, I will report that as the result."
+  },
+
+  "PHASE_2_THE_FAIRNESS_TRAP": {
+    "_the_error_not_to_repeat": "The DELVTO sweep shifted QAL and left the CMOS comparator unshifted. That must not happen again.",
+    "REQUIRED": "The identical criterion is applied to CMOS. The committed 94.174 ps comparator is a worst-of-rise/fall at 90%. Under the commit criterion CMOS is scored at ITS receiver's measured trip on ITS fixed 1.2 V supply, with the SAME noise budget form (3*sigma_trip; coupling and droop terms are zero for a hard-supplied CMOS inverter, and that asymmetry is stated, not smuggled).",
+    "THE_QUESTION": "not 'does QAL get faster' (it must) but 'does QAL gain MORE than CMOS does'. The reported quantity is the RATIO before and after, and the CHANGE in that ratio.",
+    "pre_stated_expectation": "QAL should gain more, because it settles on a ramping rail with a long tail while CMOS switches hard against a fixed supply. DERIVED from an RC tail, t59/t90 ~ 0.39, so a 40.4 ps settle floor should fall toward ~16 ps. I pre-state that I do NOT trust the composed 0.39: it will be MEASURED end to end on the running chain, never composed, because a composed t_settle in this campaign already over-stated the real one by 1.29-1.84x once.",
+    "the_beat": "the achievable beat for the configuration that actually computes (banktank, per-bank tanks, committed 200 ps at the 90% bar) re-measured end to end on the committed running chain under the functional criterion."
+  },
+
+  "SIM_DISCIPLINE": {
+    "own_cache": "PYMS_VAE_CACHE=/tmp/claude-1001/-usr-local-src/4921ad0c-f17b-4b84-986a-5917c9ebd2a6/scratchpad/vae_cache_fcrit",
+    "own_dir": "/usr/local/src/stat-sim/qal/fcrit -- no writes into any existing qal/ result directory",
+    "concurrency": "<= 3 heavy jobs",
+    "model": "sg13_lv via qal/sg13lv_compat.sp (ZEROES ad/as/pd/ps -> every device number is a LOWER BOUND); PSP103 via .hdl + sg13g2_psp103_tt.lib",
+    "reserved": "vt and gmin are not touched",
+    "phase1_rule": "Phase 1 re-simulates NOTHING that is already on disk."
+  },
+
+  "LABELS": "Every number in RESULTS carries MEASURED / DERIVED / ASSUMED."
+}
