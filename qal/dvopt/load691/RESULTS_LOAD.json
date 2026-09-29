@@ -1,0 +1,95 @@
+{
+ "_track": "load691 -- the dvopt (dV,L,W) optimum map re-measured at the Vortex ALU's MEASURED mean sink load, 6.91 fF, instead of the 2.0 fF the dvopt pre-registration fixed. 9 points (1 instrument gate + 8 new), 18 decks, ZERO instrument failures.",
+ "_pre_registration": "PRE_REGISTERED_LOAD.json written 21:41:04 before any deck of this excursion existed; input sha256/mtimes frozen in it. AMENDMENT_LOAD.md records the one post-hoc grid change (L1, extend DOWN in L, not up) and the reason, and scores the prediction it refuted.",
+ "_harness": "qal/dvopt/skept2/s2sk.py run_pt IMPORTED (which imports qal/skept/sk.py). Own PYMS_VAE_CACHE=vae_cache_load691, seeded by copy from vae_cache_sk2b. 3 concurrent Xyce jobs maximum; every point under 90 s.",
+ "INSTRUMENT_GATE": {
+  "deck": "gate_cl691_d150 (L=15 nH, W=30 um, dV=1.50, cl=6.91 fF)",
+  "committed_reference": "qal/skept/rows.json cl691_dv150",
+  "t_valid90_ps": [
+   150.882787,
+   150.882787
+  ],
+  "VBEND": [
+   0.717138,
+   0.717138446
+  ],
+  "t_hop_ps": [
+   66.3331,
+   66.33305711880327
+  ],
+  "verdict": "PASS -- reproduces the committed row to every printed digit (rel 0 on t_valid90, <=1e-6 on VBEND/t_hop). Charge/energy closure 0.0007%/0.0015% on every row."
+ },
+ "THE_ANSWER": {
+  "headline": "At the ALU's real mean sink load the best FUNCTIONAL single-hop QAL level time at the 1.65 V envelope edge is 115.47-121.15 ps = 1.244x-1.305x the 92.8 ps CMOS logic level, depending on which rail-drain checkpoint convention is accepted. On BOTH conventions QAL is SLOWER than a CMOS logic level, everywhere in the characterised envelope. The sub-CMOS single-hop numbers (74.5 ps = 0.80x) are a 2 fF-load artefact.",
+  "under_the_dvopt_grid_convention_C2_at_t_open_plus_7ps": {
+   "tag": "cl_d165_L10_W30",
+   "L_nH": 10.0,
+   "W_um": 30.0,
+   "dv": 1.65,
+   "t_valid90_ps": 121.148023,
+   "x_CMOS": 1.3055,
+   "VA_open_C7": 0.126508,
+   "note": "smallest L that still passes the 0.1478 V drain gate at this checkpoint; L=8 fails at 0.1587"
+  },
+  "under_the_sk_ZCS_convention": {
+   "tag": "cl_d165_L4_W30",
+   "L_nH": 4.0,
+   "W_um": 30.0,
+   "dv": 1.65,
+   "t_valid90_ps": 115.467185,
+   "x_CMOS": 1.2443,
+   "VA_open_ZCS": 0.117456,
+   "note": "a GENUINE BRACKETED interior optimum: L=6 gives 116.755 and L=3 gives 115.703, so the minimum has real points either side. It is shallow -- 1.1% over L=3..6."
+  },
+  "dV_still_monotone_at_the_real_load": "L=15/W=30: 150.883 ps at dV=1.50 -> 127.005 ps at dV=1.65, a further 1.188x. No interior optimum in swing at the real load either; the 1.65 V characterisation limit, not the physics, stops the sweep."
+ },
+ "WHAT_THE_LOAD_DOES": {
+  "t_hop_UNCHANGED_prediction_P1_HIT": "the load hangs on the cell outputs, not on the resonant node: t_hop 66.607 ps at 6.91 fF vs 66.436 ps at 2 fF (L=15/W=30/dV=1.65), +0.26%. Predicted <1%.",
+  "delivered_swing_prediction_P2_HIT": "VBEND 0.810959 V measured against 0.809 V predicted from the committed dV=1.5 load pair (+0.24%). The 4 pull-up cells now sink 27.6 fF instead of 8 fF out of the same 36 fF bank, so 20% of the delivered swing is spent on the load.",
+  "level_time_prediction_P3_HIT_IN_DIRECTION_MISSED_IN_MAGNITUDE": "predicted 136.9 +-10 ps at L=15/W=30/dV=1.65 from the committed 1.5866x load ratio; MEASURED 127.005 ps, i.e. the ratio at dV=1.65 is 1.472 not 1.587. The load penalty SHRINKS with swing because the pull-up has more overdrive. Recorded as a miss in magnitude.",
+  "prediction_P4_REFUTED": "I predicted the optimum would move to LARGER L under load. It moves to SMALLER L. Cause, MEASURED: the post-arrival settle STOPS depending on the delivered swing once the load dominates -- 84.20 / 84.09 / 84.33 ps at L = 10 / 15 / 22 and 85.19 / 86.80 / 88.48 at L = 6 / 4 / 3, i.e. flat to +-3% over a 7x range in L. With t_settle flat, the objective is carried entirely by t_hop, which falls as sqrt(L), so the optimum runs down to the drain boundary.",
+  "prediction_P5_HIT": "the drain constraint RELAXES under load: VA_open at the ZCS instant is 0.0516 V (6.91 fF) vs 0.0615 V (2 fF) at L=10/W=30, and 0.0269 vs 0.0382 at L=15. The heavier cell load pulls more charge out of the source bank, so bank A empties more completely. Under the +7 ps convention the boundary is L=10 at W=30; under the ZCS convention every point down to L=3 passes.",
+  "WIDTH_IS_STILL_NOT_A_FREE_LEVER_and_under_load_it_is_WORSE": "at L=6/dV=1.65 widening the switch 30 -> 80 um raises the delivered swing 0.7724 -> 0.8230 V and improves the drain, but the level time gets WORSE: 116.755 -> 125.177 ps. MECHANISM, measured: the narrow switch rings harder (VBPK/VBEND 1.415 vs 1.208) and the overshoot drives the cells ABOVE the settled rail during settling, so the post-arrival settle is 85.19 ps at W=30 against 100.97 ps at W=80. Under load the overshoot is worth more than the extra 50 mV of delivered swing."
+ },
+ "SURFACES_AT_THE_REAL_LOAD_measured_intervals_only": {
+  "MAX_overlapped_stage_skipping": "FLAT and settle-bound: max(t_hop, post-arrival settle) = 88.48 / 86.80 / 85.19 / 84.49 / 84.20 / 84.09 / 84.33 ps at L = 3 / 4 / 6 / 8 / 10 / 15 / 22 nH. t_hop is BELOW the settle term at every point in the functional region, so the hop is never the binding term at the real load and the overlap objective has almost nothing left to overlap. Shallow minimum at L=15 (84.09 ps = 0.906x CMOS as a THROUGHPUT beat only) -- and that beat requires the skip schedule that qal/skip4 measured to corrupt the held predecessor's LOW outputs, so it is not a usable operating point today.",
+  "SUM_adjacent_serial": "monotone to the smallest L run: 118.17 / 121.09 / 127.20 / 133.03 / 138.50 / 150.69 / 165.15 ps at L = 3 / 4 / 6 / 8 / 10 / 15 / 22. No interior optimum, same as at 2 fF.",
+  "END_TO_END_the_number_to_quote": "t_valid90 from switch close, all 8 cells within 10% of the instantaneous rail: 115.70 / 115.47 / 116.75 / 118.85 / 121.15 / 127.00 / 134.79 ps at L = 3 / 4 / 6 / 8 / 10 / 15 / 22. Interior minimum at L=4, bracketed.",
+  "consequence": "at 2 fF the two objectives appeared to select different points; at the real load BOTH select the smallest L the drain gate permits, and the difference between them collapses because the hop is no longer the binding term. The SUM/MAX split is a property of the light-load regime."
+ },
+ "ENERGY_reported_NOT_a_gate": {
+  "E_out_of_bank_A_fJ": {
+   "cl_d165_L4_W30": 48.9764,
+   "cl_d165_L10_W30": 48.9764,
+   "cl_d165_L15_W30": 48.9762,
+   "gate_cl691_d150": 40.476
+  },
+  "E_switchblock_fJ": {
+   "L4": 7.6804,
+   "L10": 5.1738,
+   "L15": 4.3378
+  },
+  "E_series_R_fJ": {
+   "L4": 1.1031,
+   "L10": 0.7587,
+   "L15": 0.6376
+  },
+  "E_gate_drive_fJ": {
+   "L4": 11.295,
+   "L10": 10.4453,
+   "L15": 9.9191
+  },
+  "note": "the real load roughly doubles the per-hop energy against the 2 fF grid (27-30 fJ there), and the switch block still dissipates 5-8x what the inductor's series R does. The energy EXCLUSION verdict (complete timer ledger 23.213 fJ/bank/hop vs a pre-stated <= 12.7467 fJ, stat-sim c814e52) is NOT reopened and NOT affected: these hops are still ideal-source driven."
+ },
+ "LIMITS": "sg13lv_compat.sp zeroes ad/as/pd/ps, so junction capacitance is absent and every time and energy here is a LOWER bound on a real layout. LT is ideal with a lumped RS=10 ohm. No interconnect, no bank-to-bank routing, no inductor self-capacitance. Shallow-stack (inverter) bank; no o21ai row at load. ONE hop with a real bank and ideal cell gate drive -- a chain is qal/chain3 and qal/skip4, where nothing settles at all.",
+ "FILES": {
+  "pre_registration": "PRE_REGISTERED_LOAD.json",
+  "amendment": "AMENDMENT_LOAD.md",
+  "harness": "s3.py (imports skept2/s2sk.py -> skept/sk.py)",
+  "post": "post.py",
+  "rows": "rows.json + rowd/",
+  "surfaces": "surfaces_load.json",
+  "decks": "p_*.cir / h_*.cir with .prn/.mt0 retained",
+  "logs": "log_*.txt"
+ }
+}

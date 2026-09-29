@@ -1,0 +1,79 @@
+.hdl "/usr/local/share/xyce/verilog-a/psp103/psp103.va"
+.include "/usr/local/src/kestrel/sim/models/sg13g2_psp103_tt.lib"
+.include "/usr/local/src/stat-sim/qal/sg13lv_compat.sp"
+.OPTIONS TIMEINT METHOD=GEAR RELTOL=1e-6 ABSTOL=1e-15 CHGTOL=1e-17
+.param LT=6n RS=10 CA=35.979f
+CA bka 0 {CA}
+VHI vhi 0 1.65
+VGT  gt  0 PWL(0 0 48p 0 50p 1.65 95.0543p 1.65 97.0543p 0)
+VGTP gtp 0 PWL(0 1.65 48p 1.65 50p 0 95.0543p 0 97.0543p 1.65)
+XSWN sw gt bkb 0 sg13_lv_nmos w=40u l=0.13u
+XSWP sw gtp bkb vhi sg13_lv_pmos w=80u l=0.13u
+XPK sw pk 0 0 sg13_lv_nmos w=8u l=0.13u
+VPK pk 0 PWL(0 0 97.0543p 0 99.0543p 1.65)
+LT bka mid {LT}
+RT mid sw {RS}
+VMGH gnh 0 0
+VMGL gnl 0 0
+VI0 in0 0 1.65
+XP0 o0 in0 bkb bkb sg13_lv_pmos w=1.12u l=0.13u
+XN0 o0 in0 gnh gnh sg13_lv_nmos w=0.74u l=0.13u
+CL0 o0 gnh 2f
+VI1 in1 0 0
+XP1 o1 in1 bkb bkb sg13_lv_pmos w=1.12u l=0.13u
+XN1 o1 in1 gnl gnl sg13_lv_nmos w=0.74u l=0.13u
+CL1 o1 gnl 2f
+VI2 in2 0 1.65
+XP2 o2 in2 bkb bkb sg13_lv_pmos w=1.12u l=0.13u
+XN2 o2 in2 gnh gnh sg13_lv_nmos w=0.74u l=0.13u
+CL2 o2 gnh 2f
+VI3 in3 0 0
+XP3 o3 in3 bkb bkb sg13_lv_pmos w=1.12u l=0.13u
+XN3 o3 in3 gnl gnl sg13_lv_nmos w=0.74u l=0.13u
+CL3 o3 gnl 2f
+VI4 in4 0 1.65
+XP4 o4 in4 bkb bkb sg13_lv_pmos w=1.12u l=0.13u
+XN4 o4 in4 gnh gnh sg13_lv_nmos w=0.74u l=0.13u
+CL4 o4 gnh 2f
+VI5 in5 0 0
+XP5 o5 in5 bkb bkb sg13_lv_pmos w=1.12u l=0.13u
+XN5 o5 in5 gnl gnl sg13_lv_nmos w=0.74u l=0.13u
+CL5 o5 gnl 2f
+VI6 in6 0 1.65
+XP6 o6 in6 bkb bkb sg13_lv_pmos w=1.12u l=0.13u
+XN6 o6 in6 gnh gnh sg13_lv_nmos w=0.74u l=0.13u
+CL6 o6 gnh 2f
+VI7 in7 0 0
+XP7 o7 in7 bkb bkb sg13_lv_pmos w=1.12u l=0.13u
+XN7 o7 in7 gnl gnl sg13_lv_nmos w=0.74u l=0.13u
+CL7 o7 gnl 2f
+CXqlt xqlt 0 1
+BXqlt 0 xqlt I={ I(LT) }
+RXqlt xqlt 0 0.01
+CXea xea 0 1
+BXea 0 xea I={ V(bka)*I(LT) }
+RXea xea 0 0.01
+CXeb xeb 0 1
+BXeb 0 xeb I={ V(bkb)*I(LT) }
+RXeb xeb 0 0.01
+CXer xer 0 1
+BXer 0 xer I={ I(LT)*I(LT)*10 }
+RXer xer 0 0.01
+CXesw xesw 0 1
+BXesw 0 xesw I={ V(sw)*I(LT) }
+RXesw xesw 0 0.01
+CXebk xebk 0 1
+BXebk 0 xebk I={ V(bkb)*((I(VMGH)+I(VI0)+I(VI2)+I(VI4)+I(VI6))+(I(VMGL)+I(VI1)+I(VI3)+I(VI5)+I(VI7))) }
+RXebk xebk 0 0.01
+CXeih xeih 0 1
+BXeih 0 xeih I={ -(V(in0)*I(VI0)+V(in2)*I(VI2)+V(in4)*I(VI4)+V(in6)*I(VI6)) }
+RXeih xeih 0 0.01
+CXegt xegt 0 1
+BXegt 0 xegt I={ -V(gt)*I(VGT)-V(gtp)*I(VGTP)-V(pk)*I(VPK) }
+RXegt xegt 0 0.01
+.ic V(bka)=1.65 V(bkb)=0
+.print tran V(bka) V(bkb) V(sw) I(LT) V(o0) V(o1) V(o2) V(o3)
++ V(o4) V(o5) V(o6) V(o7) V(xqlt) V(xea) V(xeb) V(xer)
++ V(xesw) V(xebk) V(xeih) V(xegt)
+.tran 0.0108796p 595.054p 0 0.0217592p
+.end

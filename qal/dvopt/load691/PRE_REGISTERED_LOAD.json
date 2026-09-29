@@ -1,0 +1,119 @@
+{
+ "_track": "load691 -- REAL-LOAD EXCURSION on the dvopt (dV,L,W) optimum map. POST-HOC by construction: the dvopt pre-registration fixed the cell load at 2 fF. This file is written BEFORE any deck of this excursion exists.",
+ "_written_at": "2026-09-28 21:41:04",
+ "WHY": "every level time in the dvopt optimum map is at a 2.0 fF per-cell load. The Vortex ALU's MEASURED mean sink load is 6.91 fF, and the campaign already holds ONE committed pair at that load (qal/skept/rows.json cl691_dv150, dV=1.5 L=15 W=30: VBEND 0.717138446 vs 0.8961157 at 2 fF, t_valid90 150.882787 vs 95.099713, t_hop 66.33305711880327 vs 66.222). If that 1.587x carries to the envelope edge, the sub-CMOS single-hop headline does NOT survive load matching, and the OPTIMUM LOCATION may move because the load lengthens t_settle without lengthening t_hop.",
+ "HARNESS": "qal/dvopt/skept2/s2sk.py run_pt, IMPORTED not copied (it already carries a cl_fF argument and amendment P1 VGH=max(1.5,dV)). Rebound: HERE and ROWD to this directory, PYMS_VAE_CACHE to my own vae_cache_load691 (seeded by copy from vae_cache_sk2b -- my own directory, no sharing).",
+ "GATE_G_instrument": {
+  "deck": "gate_cl691_d150 = L 15 nH, W 30 um, dV 1.50, cl 6.91 fF, tail 500 ps",
+  "must_reproduce_committed_cl691_dv150": {
+   "t_valid90_ps": 150.882787,
+   "VBEND": 0.717138446,
+   "t_hop_ps": 66.33305711880327
+  },
+  "tolerance": "rel <= 1e-6 on all three; if it fails, NOTHING from this excursion is reported"
+ },
+ "POINTS_pre_stated": [
+  [
+   "cl_d165_L15_W30",
+   15.0,
+   30.0,
+   1.65
+  ],
+  [
+   "cl_d165_L10_W30",
+   10.0,
+   30.0,
+   1.65
+  ],
+  [
+   "cl_d165_L6_W80",
+   6.0,
+   80.0,
+   1.65
+  ],
+  [
+   "cl_d165_L22_W30",
+   22.0,
+   30.0,
+   1.65
+  ]
+ ],
+ "CONDITIONAL": "if L=22 is still improving on MAX or on t_valid90, add L=30 W=30 and (if needed) L=45 W=30. No other points.",
+ "GATES": "inherited VERBATIM from the dvopt pre-registration: C1 all 8 cells >=90% at t_open+495ps and t_valid90 must EXIST; C2 VA_open <= 0.1478 V absolute; C3 VBEND >= 0.60 V absolute. NOTE the sk path evaluates VA_open at the ZCS instant, not at t_open+7 ps -- both are recorded per row and the C2 verdict is reported under BOTH conventions.",
+ "PREDICTIONS": {
+  "P1_t_hop_unchanged": "the load is NOT in the resonance (it hangs on the cell outputs, referenced to the 0 V metering nodes), so t_hop at 6.91 fF stays within 1% of the 2 fF value at the same (L,W,dV). Measured support at dV=1.5: 66.222 -> 66.333 = +0.17%.",
+  "P2_VBEND_scales": "delivered swing falls by the SAME factor as the committed dV=1.5 pair, 0.717138/0.896116 = 0.8003. Predict VBEND(6.91 fF, dV=1.65, L=15, W=30) = 0.800 x 1.01067 = 0.809 V, +-0.02 V.",
+  "P3_level_time": "t_valid90 scales by the committed 150.882787/95.099713 = 1.5866. Predict at dV=1.65/L=15/W=30: 1.5866 x 86.2633 = 136.9 ps, +-10 ps. Predict the BEST real-load functional level time at dV=1.65 is 120-145 ps = 1.29x-1.56x the 92.8 ps CMOS logic level, i.e. the sub-CMOS single-hop result does NOT survive load matching.",
+  "P4_optimum_moves_UP_in_L": "t_settle grows with load while t_hop does not, so the balance t_hop = t_settle moves to LARGER L. Predict the MAX optimum at 6.91 fF lies at L = 15-25 nH (against L = 9-10 nH at 2 fF) with W = 30 um.",
+  "P5_drain_gate_relaxes": "heavier cell load draws MORE charge out of the rail, so bank A should end up MORE fully drained: predict VA_open(6.91 fF) < VA_open(2 fF) at the same point, i.e. the C2 boundary moves to SMALLER L under load. This competes with P4 and the measurement decides which wins.",
+  "P6_a_miss_is_a_finding": "if P3 is wrong in the direction that the real-load level time stays under 92.8 ps, that is the more valuable result and it is reported as such."
+ },
+ "NOT_IN_SCOPE": "no new dV values, no chain, no o21ai at load, no energy verdict. The energy EXCLUSION verdict (complete timer ledger 23.213 fJ/bank/hop vs a pre-stated <= 12.7467 fJ, stat-sim c814e52) is NOT reopened and is NOT affected.",
+ "INPUTS_FROZEN": {
+  "skept/sk.py": {
+   "sha256_16": "a7f90b3c44c0ffe3",
+   "mtime": "2026-09-28 18:30:16",
+   "bytes": 20822
+  },
+  "dvopt/skept2/s2sk.py": {
+   "sha256_16": "1934b1c7a1a9a541",
+   "mtime": "2026-09-28 20:30:06",
+   "bytes": 7467
+  },
+  "skept/rows.json": {
+   "sha256_16": "a49a48127d23df24",
+   "mtime": "2026-09-28 18:37:11",
+   "bytes": 33785
+  },
+  "dvopt/rows.json": {
+   "sha256_16": "9cac6fe97a3691c7",
+   "mtime": "2026-09-28 19:57:47",
+   "bytes": 288705
+  },
+  "dvopt/skept2/rows.json": {
+   "sha256_16": "7eaf8cece4efa612",
+   "mtime": "2026-09-28 21:25:40",
+   "bytes": 98410
+  },
+  "dvopt/skept2/skrows.json": {
+   "sha256_16": "5144c4df33e816d3",
+   "mtime": "2026-09-28 21:29:47",
+   "bytes": 26297
+  },
+  "dvopt/surfaces.json": {
+   "sha256_16": "d95a0950fe8a80b5",
+   "mtime": "2026-09-28 20:08:01",
+   "bytes": 70659
+  },
+  "dvopt/floor.json": {
+   "sha256_16": "a5a9af1147d1f64a",
+   "mtime": "2026-09-28 20:01:31",
+   "bytes": 71308
+  },
+  "sg13lv_compat.sp": {
+   "sha256_16": "0ddc486635f716d7",
+   "mtime": "2026-09-23 13:56:32",
+   "bytes": 325
+  },
+  "skip4/RESULTS.json": {
+   "sha256_16": "fd542974ef866a85",
+   "mtime": "2026-09-28 20:17:17",
+   "bytes": 47544
+  },
+  "chain3/RESULTS.json": {
+   "sha256_16": "3542938d00fa3da2",
+   "mtime": "2026-09-28 18:57:04",
+   "bytes": 45166
+  },
+  "lsweep/RESULTS_LSWEEP.json": {
+   "sha256_16": "3cdaa04d87e3b88f",
+   "mtime": "2026-09-28 17:45:46",
+   "bytes": 191286
+  },
+  "lsweep/lsw.py": {
+   "sha256_16": "aff8a89b05a78ed2",
+   "mtime": "2026-09-28 17:36:41",
+   "bytes": 31283
+  }
+ }
+}

@@ -1,0 +1,69 @@
+.hdl "/usr/local/share/xyce/verilog-a/psp103/psp103.va"
+.include "/usr/local/src/kestrel/sim/models/sg13g2_psp103_tt.lib"
+.include "/usr/local/src/stat-sim/qal/sg13lv_compat.sp"
+.OPTIONS TIMEINT METHOD=GEAR RELTOL=1e-6 ABSTOL=1e-15 CHGTOL=1e-17
+V1 a 0 0.5
+V2 b 0 0.5
+XWN0 d0 a 0 0 sg13_lv_nmos w=0.74u l=0.13u
+RN0 d0 b 1k
+XWN1 d1 a 0 0 sg13_lv_nmos w=1u l=0.13u
+RN1 d1 b 1k
+XWN2 d2 a 0 0 sg13_lv_nmos w=1.33333u l=0.13u
+RN2 d2 b 1k
+XWN3 d3 a 0 0 sg13_lv_nmos w=1.6u l=0.13u
+RN3 d3 b 1k
+XWN4 d4 a 0 0 sg13_lv_nmos w=2u l=0.13u
+RN4 d4 b 1k
+XWN5 d5 a 0 0 sg13_lv_nmos w=4u l=0.13u
+RN5 d5 b 1k
+XWN6 d6 a 0 0 sg13_lv_nmos w=5u l=0.13u
+RN6 d6 b 1k
+XWN7 d7 a 0 0 sg13_lv_nmos w=5.33333u l=0.13u
+RN7 d7 b 1k
+XWN8 d8 a 0 0 sg13_lv_nmos w=6u l=0.13u
+RN8 d8 b 1k
+XWN9 d9 a 0 0 sg13_lv_nmos w=6.66667u l=0.13u
+RN9 d9 b 1k
+XWN10 d10 a 0 0 sg13_lv_nmos w=8u l=0.13u
+RN10 d10 b 1k
+XWN11 d11 a 0 0 sg13_lv_nmos w=10u l=0.13u
+RN11 d11 b 1k
+XWN12 d12 a 0 0 sg13_lv_nmos w=16u l=0.13u
+RN12 d12 b 1k
+XWN13 d13 a 0 0 sg13_lv_nmos w=20u l=0.13u
+RN13 d13 b 1k
+XWN14 d14 a 0 0 sg13_lv_nmos w=26.6667u l=0.13u
+RN14 d14 b 1k
+XWN15 d15 a 0 0 sg13_lv_nmos w=30u l=0.13u
+RN15 d15 b 1k
+XWN16 d16 a 0 0 sg13_lv_nmos w=40u l=0.13u
+RN16 d16 b 1k
+XWN17 d17 a 0 0 sg13_lv_nmos w=50u l=0.13u
+RN17 d17 b 1k
+XWN18 d18 a 0 0 sg13_lv_nmos w=80u l=0.13u
+RN18 d18 b 1k
+XWP19 e19 a b b sg13_lv_pmos w=1.12u l=0.13u
+RP19 e19 0 1k
+XWP20 e20 a b b sg13_lv_pmos w=10u l=0.13u
+RP20 e20 0 1k
+XWP21 e21 a b b sg13_lv_pmos w=13.3333u l=0.13u
+RP21 e21 0 1k
+XWP22 e22 a b b sg13_lv_pmos w=16u l=0.13u
+RP22 e22 0 1k
+XWP23 e23 a b b sg13_lv_pmos w=20u l=0.13u
+RP23 e23 0 1k
+XWP24 e24 a b b sg13_lv_pmos w=40u l=0.13u
+RP24 e24 0 1k
+XWP25 e25 a b b sg13_lv_pmos w=53.3333u l=0.13u
+RP25 e25 0 1k
+XWP26 e26 a b b sg13_lv_pmos w=60u l=0.13u
+RP26 e26 0 1k
+XWP27 e27 a b b sg13_lv_pmos w=80u l=0.13u
+RP27 e27 0 1k
+XWP28 e28 a b b sg13_lv_pmos w=100u l=0.13u
+RP28 e28 0 1k
+XWP29 e29 a b b sg13_lv_pmos w=160u l=0.13u
+RP29 e29 0 1k
+.tran 1p 10p
+.print tran V(a)
+.end

@@ -1,0 +1,558 @@
+{
+ "_doc": "TRACK 1c RESULT: the (dV, L, W) OPTIMUM SWEEP of the QAL bank-to-bank hop on SG13G2 (PSP103, sg13lv_compat.sp). Answers the user's 'run it at 1.5 V too, and any others needed to see if there's an optimum'. Pre-registration: PRE_REGISTERED.json, written before any deck of this track existed. Amendments + instrument defects: AMENDMENT.md. Full printed grid: REPORT.txt. Every figure MEASURED unless labelled DERIVED or ASSUMED.",
+ "date": "2026-09-28",
+ "comparator_ps": {
+  "CMOS_logic_level": 92.8,
+  "note": "sha_slice generic, 0.928 ns over depth 10. Every ratio uses 92.8 ps. The mapped depth-8 figure of 116.0 ps/level flatters QAL and is quoted only as a note."
+ },
+ "envelope_MEASURED_from_PDK": {
+  "swings_V": [
+   1.08,
+   1.2,
+   1.32,
+   1.35,
+   1.5,
+   1.65
+  ],
+  "evidence": "nom_voltage read from all 6 sg13g2_stdcell liberty files in /usr/local/src/IHP-Open-PDK/ihp-sg13g2/libs.ref/sg13g2_stdcell/lib/: slow_1p08V_125C 1.08, typ_1p20V_25C 1.2, fast_1p32V_m40C 1.32, slow_1p35V_125C 1.35, typ_1p50V_25C 1.5, fast_1p65V_m40C 1.65. The SAME 84-cell library is characterised at typ 1.50 V, so the campaign's 'dV=1.2 is the LV ceiling' premise was FALSE. Nothing above 1.65 V was run."
+ },
+ "instrument_check": {
+  "G0a": "PASS rel 0.00e+00 on all eight committed tg15p headlines, imported extractor vs the committed swsweep/sw_tg15p_z.cir.mt0.",
+  "G0e": "PASS. The committed ROBUST POINT (L=15 nH, TG 10/20 + 2 um park = 30 um, dV=1.2) re-run end to end in this directory under a private PYMS_VAE_CACHE reproduces ELEVEN committed quantities at rel <= 1.4e-11, eight of them exactly 0: t_hop 65.49500982 ps, VBEND 0.7138163, VBPK 0.8368896, VA_open 0.1276800356, IPK 971.3203 uA, E_hop_open 14.84322445 fJ, t_rail90 40.8870478, t_settle90 115.570918, t_valid90 123.443114, t_level 115.570918, t_level_cons 123.443114.",
+  "G0_floor": "PASS. Three committed floor points reproduce at rel <= 1.3e-07 (0.4885216 -> 801.2662 vs 801.2661; 0.5883760 -> 252.7525 vs 252.7525; 0.6754250 -> 137.7453 vs 137.7454) and the committed 1.2 V CMOS reference bc112 57.1432 ps reproduces per-deck on all three groups.",
+  "G0_o21": "PASS. The committed skept row o21_dv150 reproduces at rel <= 2.2e-14 on VBEND, t_hop, VA_open, t_valid80 and IPK, s_end(min) 82.9884 vs 82.99, and t_valid90 None as committed.",
+  "C4_per_point": "PASS on all 102 grid rows. Worst |waveform path identity at B| 7.5e-03 fJ (gate 0.02), worst |E closure| 0.0272% (gate 1.0), worst |mt0-vs-waveform E_hop| 0.0533% (gate 1.0), worst |I(LT) at the switch-open zero| 0.0298 uA."
+ },
+ "c_cell_floor_MEASURED": {
+  "what": "t90 of the 1.12u/0.74u inverter with a 2 fF load when its supply is stepped (2 ps edge) to V. L-INDEPENDENT by construction: a function of delivered supply only.",
+  "curve_V_to_t90_ps": {
+   "0.48852": 801.266,
+   "0.58838": 252.752,
+   "0.60000": 229.272,
+   "0.65000": 160.174,
+   "0.67543": 137.745,
+   "0.70000": 121.028,
+   "0.71382": 113.241,
+   "0.75000": 96.909,
+   "0.80000": 81.043,
+   "0.85000": 70.043,
+   "0.89612": 62.619,
+   "0.90000": 62.082,
+   "0.95000": 56.115,
+   "1.00000": 51.505,
+   "1.05000": 47.854,
+   "1.10000": 44.898,
+   "1.20000": 40.417,
+   "1.30000": 37.184,
+   "1.40000": 34.736,
+   "1.50000": 32.811
+  },
+  "extension": "the committed curve stopped at 1.2 V and had gaps at 0.9 and 1.1 V; it now runs 0.60 -> 1.50 V in 20 points, covering everything dV=1.08..1.65 delivers.",
+  "saturation": "the curve FLATTENS hard above ~1.0 V: 51.505 -> 40.417 -> 32.811 ps across 1.00 -> 1.20 -> 1.50 V. The last 50% of swing buys only 1.57x.",
+  "ramp_probe": {
+   "_doc": "the pre-registered explanation of why an ideal-step floor under-predicts the in-bank settle, MEASURED by stretching the supply edge.",
+   "at_0p7138163_V": {
+    "edge2": 113.241,
+    "edge25": 132.816,
+    "edge50": 154.102,
+    "in_bank_t_rail90": 40.89,
+    "in_bank_t_settle90": 115.571,
+    "in_bank_t_valid90": 123.443,
+    "reading": "in-bank settle is only 2.1% above the 2 ps floor: the 40.9 ps rail arrival is ABSORBED, because the cell is nowhere near settled when the rail completes."
+   },
+   "at_0p8961157_V": {
+    "edge2": 62.619,
+    "edge25": 81.224,
+    "edge50": 101.464,
+    "in_bank_t_rail90": 51.09,
+    "in_bank_t_settle90": 90.451,
+    "in_bank_t_valid90": 95.1,
+    "reading": "in-bank settle is 44.4% above the 2 ps floor and matches a ~35 ps effective edge: the 51.1 ps rail arrival is NO LONGER absorbed, because the floor has shrunk to the same order."
+   },
+   "consequence": "the floor-based t_settle is a LOWER BOUND whose error GROWS with dV. The value of swing saturates twice over: once in the flattening floor curve, again in the rail arrival becoming the binding term."
+  }
+ },
+ "e_SUM_objective_ADJACENT": {
+  "definition": "argmin (t_hop + t_settle): bank N -> N+1, the bank must drain and hold its outputs in series. DERIVED from two MEASURED pieces.",
+  "optimum": {
+   "dv": 1.65,
+   "L_nH": 6,
+   "W_um": 120,
+   "TG": "40/80 + 8 um park",
+   "tag": "d165_L6_W120",
+   "level_ps": 103.344,
+   "ratio_to_CMOS": 1.1136,
+   "t_hop_ps": 45.054,
+   "t_settle_ps": 58.29,
+   "VBEND": 0.93017,
+   "VA_open": 0.12244,
+   "E_hop_open_fJ": 29.949,
+   "E_gate_drive_fJ": 30.731
+  },
+  "measured_upper_bound": {
+   "tag": "d165_L6_W120",
+   "level_ps": 119.02,
+   "ratio_to_CMOS": 1.2825,
+   "note": "t_hop + t_settle90, and t_settle90 is timed from CLOSE, so the overlap is counted twice -- an UPPER bound where the model SUM is a LOWER bound."
+  },
+  "bracket": "the adjacent-transfer level time is bracketed 103.34 - 119.02 ps = 1.11x - 1.28x the 92.8 ps CMOS logic level. QAL does NOT beat CMOS on the adjacent schedule at any characterised swing.",
+  "per_dV": {
+   "1.08": {
+    "L_nH": 15.0,
+    "W_um": 30.0,
+    "ps": 233.82,
+    "ratio_to_CMOS": 2.5196,
+    "tag": "d108_L15_W30"
+   },
+   "1.20": {
+    "L_nH": 6.0,
+    "W_um": 60.0,
+    "ps": 176.149,
+    "ratio_to_CMOS": 1.8982,
+    "tag": "COM_L6_W60_dv120"
+   },
+   "1.32": {
+    "L_nH": 6.0,
+    "W_um": 120.0,
+    "ps": 147.505,
+    "ratio_to_CMOS": 1.5895,
+    "tag": "d132_L6_W120"
+   },
+   "1.35": {
+    "L_nH": 6.0,
+    "W_um": 120.0,
+    "ps": 140.661,
+    "ratio_to_CMOS": 1.5157,
+    "tag": "d135_L6_W120"
+   },
+   "1.50": {
+    "L_nH": 4.0,
+    "W_um": 240.0,
+    "ps": 112.907,
+    "ratio_to_CMOS": 1.2167,
+    "tag": "d150_L4_W240"
+   },
+   "1.65": {
+    "L_nH": 6.0,
+    "W_um": 120.0,
+    "ps": 103.344,
+    "ratio_to_CMOS": 1.1136,
+    "tag": "d165_L6_W120"
+   }
+  },
+  "shape": "NO interior optimum. At fixed W the SUM falls monotonically to the smallest L run, at every dV and every width -- exactly as PRE-REGISTERED (expectation 2). The unconstrained optimum lies outside the functional region, so the FUNCTIONAL SUM optimum sits ON the C2 rail-drain boundary, at the smallest L that still drains. In dV it is MONOTONE to the 1.65 V envelope edge."
+ },
+ "e_MAX_objective_SKIPPING": {
+  "definition": "argmin max(t_hop, t_settle): bank N -> N+2, transfer and settle involve different banks and OVERLAP, so the beat period is set by the slower of the two and is minimised where they BALANCE. DERIVED from two MEASURED pieces.",
+  "optimum": {
+   "dv": 1.65,
+   "L_nH": 10,
+   "W_um": 30,
+   "TG": "10/20 + 2 um park",
+   "tag": "d165_L10_W30",
+   "beat_period_ps": 54.194,
+   "ratio_to_CMOS": 0.584,
+   "t_hop_ps": 54.194,
+   "t_settle_ps": 52.17,
+   "VBEND": 0.992,
+   "VA_open": 0.1369,
+   "E_hop_open_fJ": 27.665,
+   "E_gate_drive_fJ": 8.735,
+   "balance": "t_hop 54.194 vs t_settle 52.170 -- balanced to 3.9%, which is what the objective asks for"
+  },
+  "measured_form": {
+   "tag": "d165_L6_W120",
+   "level_ps": 75.882,
+   "ratio_to_CMOS": 0.8177,
+   "also": "d165_L10_W30 measures 78.152 ps = 0.8422x",
+   "note": "t_level_cons = max(t_hop, t_settle90, t_valid90), measured from close, is the no-model analogue of the MAX objective. It is 30-44% ABOVE the model form and it RANKS THE GRID DIFFERENTLY -- see model_vs_measured_disagreement."
+  },
+  "per_dV": {
+   "1.08": {
+    "L_nH": 45.0,
+    "W_um": 15.0,
+    "ps": 132.152,
+    "ratio_to_CMOS": 1.4241,
+    "tag": "d108_L45_W15"
+   },
+   "1.20": {
+    "L_nH": 30.0,
+    "W_um": 30.0,
+    "ps": 105.396,
+    "ratio_to_CMOS": 1.1357,
+    "tag": "COM_L30_W30_dv120"
+   },
+   "1.32": {
+    "L_nH": 20.0,
+    "W_um": 30.0,
+    "ps": 82.355,
+    "ratio_to_CMOS": 0.8874,
+    "tag": "d132_L20_W30"
+   },
+   "1.35": {
+    "L_nH": 22.0,
+    "W_um": 30.0,
+    "ps": 79.847,
+    "ratio_to_CMOS": 0.8604,
+    "tag": "d135_L22_W30"
+   },
+   "1.50": {
+    "L_nH": 15.0,
+    "W_um": 30.0,
+    "ps": 66.222,
+    "ratio_to_CMOS": 0.7136,
+    "tag": "d150_L15_W30"
+   },
+   "1.65": {
+    "L_nH": 10.0,
+    "W_um": 30.0,
+    "ps": 54.194,
+    "ratio_to_CMOS": 0.584,
+    "tag": "d165_L10_W30"
+   }
+  },
+  "shape": "GENUINE INTERIOR OPTIMUM IN L, bracketed on both sides. dV=1.65, W=30: MAX = 58.35 / 54.41 / 53.09 / 54.19 / 66.44 ps at L = 3 / 6 / 8 / 10 / 15 nH -- a clean interior minimum at L=8. Interior minima also at dV=1.08 (L=70), 1.20 (L=30), 1.32 (L=20), 1.50 (L=10) for W=30, and at W=15 for every dV. At W>=60 the minimum runs to the smallest L instead. In dV the surface is MONOTONE to the 1.65 V envelope edge.",
+  "constraint_costs_almost_nothing": "the unconstrained interior minimum (L=8, 53.09 ps) fails the drain gate; the FUNCTIONAL optimum (L=10, 54.19 ps) is only 2.0% worse. For the MAX objective the balance point and the drain boundary very nearly coincide at dV=1.65.",
+  "dV_speedups_MEASURED": {
+   "model_MAX": {
+    "dv120_to_150": 1.592,
+    "dv120_to_165": 1.945,
+    "dv150_to_165": 1.222
+   },
+   "in_bank_level": {
+    "dv120_to_150": 1.41,
+    "dv120_to_165": 1.627,
+    "dv150_to_165": 1.153
+   },
+   "note": "the return on swing is decelerating but has NOT flattened at the envelope edge: the last step 1.50 -> 1.65 V still buys 1.15x measured. It is the 1.65 V characterisation limit, not a turning point in the physics, that ends the sweep."
+  }
+ },
+ "model_vs_measured_disagreement": {
+  "_doc": "PRE-REGISTERED as the thing to check, and it happened.",
+  "finding": "the floor-based t_settle under-predicts the in-bank time by 30% at d165_L6_W120 (58.29 model vs 75.88 measured) and by 44% at d165_L10_W30 (54.19 vs 78.15), and the two forms pick DIFFERENT optima: the model MAX picks L=10/W=30, the measured form picks L=6/W=120.",
+  "why": "MEASURED by the ramp probe: in a bank the cells cannot start settling until the rail arrives, and as dV rises the floor shrinks toward the rail-arrival time so the arrival stops being absorbed.",
+  "which_to_trust": "the MEASURED form for any schedule claim; the model form only as the lower bound it is. Both are reported on every row."
+ },
+ "robustness_to_the_stricter_relative_gates": {
+  "gates": "C2 <= 0.1478*dV and C3 >= 0.60*dV instead of the absolute 0.1478 V / 0.60 V",
+  "n_functional": "22 of 102 (vs 54 under the absolute gates)",
+  "result": "MAX optimum UNCHANGED at dV=1.65 L=10 W=30 (54.19 ps). SUM and MEASURED optima MOVE from L=6/W=120 to L=10/W=30 (106.36 and 78.152 ps). So dV=1.65 / L=10 nH / W=30 um is the optimum that survives BOTH gate forms AND both objectives -- and it is also by far the cheaper switch: 8.735 fJ of gate drive against 30.731 fJ at W=120."
+ },
+ "prediction_vs_measurement": {
+  "_doc": "PRE_REGISTERED.json carried numeric balance-point predictions built only from committed data. They are compared here without adjustment.",
+  "W30_L_balance_nH": {
+   "predicted": [
+    70.78,
+    40.92,
+    24.41,
+    22.15,
+    15.42,
+    10.82
+   ],
+   "refined_with_the_measured_floor": [
+    70.77,
+    38.69,
+    24.22,
+    21.93,
+    14.4,
+    10.47
+   ],
+   "measured_interior": [
+    70,
+    30,
+    20,
+    "22 (edge of range)",
+    10,
+    8
+   ],
+   "dv": [
+    1.08,
+    1.2,
+    1.32,
+    1.35,
+    1.5,
+    1.65
+   ]
+  },
+  "verdict": "the prediction LANDED at dV=1.08 (70.8 predicted vs 70 measured, +1%) and is HIGH by +21% to +44% in L at every dV >= 1.20. It got the SHAPE right (interior optimum in L, monotone in dV) and the level time right to a few per cent (e.g. 55.50 predicted vs 53.09 measured at dV=1.65).",
+  "cause_of_the_miss": "MEASURED: the delivered-swing fit VBEND/dV = 0.54214 + 0.01846*ln(L) was built on dV <= 1.2 rows and UNDER-predicts high-dV delivery -- at dV=1.65/L=15/W=30 it says 0.9661 V where the measurement is 1.0107 V. A higher delivered swing means a smaller t_settle, which moves the balance to smaller L. Part of that surplus is the amendment-P1 gate drive, sized separately by the VGH control."
+ },
+ "minimum_sufficient_W_MEASURED": {
+  "_doc": "smallest W in {15,30,60,120,240} um that is FUNCTIONAL at that (dV, L); marked * in REPORT.txt. Width is not a free speed lever: it buys drain and costs hop time and swing.",
+  "drain_boundary_smallest_FUNCTIONAL_L_nH": {
+   "1.08": {
+    "15": 45,
+    "30": 15,
+    "60": 10
+   },
+   "1.20": {
+    "15": 45,
+    "30": 15,
+    "60": 6,
+    "120": 4
+   },
+   "1.32": {
+    "15": 45,
+    "30": 15,
+    "60": 10,
+    "120": 6
+   },
+   "1.35": {
+    "30": 15,
+    "60": 10,
+    "120": 6
+   },
+   "1.50": {
+    "30": 15,
+    "60": 8,
+    "120": 5,
+    "240": 4
+   },
+   "1.65": {
+    "30": 10,
+    "60": 8,
+    "120": 6,
+    "240": 6
+   }
+  },
+  "reading": "raising dV moves the drain boundary to smaller L, which is what lets the optimum improve. At W=15 no point below L=45 nH drains at any dV."
+ },
+ "energy_reported_gates_nothing": {
+  "E_hop_open_fJ_at_the_best_measured_point_per_dV": {
+   "1.08": 11.942,
+   "1.20": 14.843,
+   "1.32": 17.999,
+   "1.35": 18.826,
+   "1.50": 24.979,
+   "1.65": 29.949
+  },
+  "level_ps": [
+   151.33,
+   123.44,
+   108.11,
+   105.34,
+   87.53,
+   75.88
+  ],
+  "reading": "the 2.0x speedup from dV=1.08 to 1.65 costs 2.5x the hop energy (11.9 -> 29.9 fJ). Consistent with the campaign's crossover map: FASTER or CHEAPER, not both.",
+  "switch_gate_charge_warning": "the W=120 um optimum pays 30.731 fJ of gate drive, MORE than its own 29.949 fJ hop; the W=30 um optimum pays 8.735 fJ. On total energy the W=30 point wins by 36.4 fJ to 60.7 fJ."
+ },
+ "f_two_high_stack": {
+  "question": "does raising dV to 1.5/1.65 V bring sg13g2_o21ai_1 (2-high pMOS series pull-up, 855 of 4027 cells in the mapped Vortex ALU) into settling, or does the stack fail at every characterised swing?",
+  "answer": "YES -- IT SETTLES. The pre-registered confound is broken and the previous 'never settles' reading was a DELIVERY failure plus too short a measurement window, NOT a headroom failure of the stack.",
+  "part1_ideal_supply_MEASURED": {
+   "_doc": "the stack's OWN requirement, no bank in the loop: supply stepped to V, A1=A2=0 so the pull-up is the 2-high series stack.",
+   "V_to_t90_ps_and_settled_pct": {
+    "0.60": {
+     "t90_ps": 715.433,
+     "settled_end_pct": 99.779
+    },
+    "0.70": {
+     "t90_ps": 393.545,
+     "settled_end_pct": 99.896
+    },
+    "0.80": {
+     "t90_ps": 270.592,
+     "settled_end_pct": 99.938
+    },
+    "0.90": {
+     "t90_ps": 210.851,
+     "settled_end_pct": 99.957
+    },
+    "1.00": {
+     "t90_ps": 177.001,
+     "settled_end_pct": 99.968
+    },
+    "1.10": {
+     "t90_ps": 155.678,
+     "settled_end_pct": 99.974
+    },
+    "1.20": {
+     "t90_ps": 141.166,
+     "settled_end_pct": 99.979
+    },
+    "1.32": {
+     "t90_ps": 128.919,
+     "settled_end_pct": 99.983
+    },
+    "1.35": {
+     "t90_ps": 126.448,
+     "settled_end_pct": 99.984
+    },
+    "1.50": {
+     "t90_ps": 116.458,
+     "settled_end_pct": 99.987
+    },
+    "1.65": {
+     "t90_ps": 109.149,
+     "settled_end_pct": 99.989
+    }
+   },
+   "finding": "the 2-high stack reaches 99.78% to 99.99% of its rail at EVERY characterised swing from 0.60 V up. There is NO headroom cliff. It is simply SLOW: t90 = 715.4 ps at 0.60 V falling to 109.1 ps at 1.65 V.",
+   "penalty_vs_inverter": "a near-constant 3.12x -> 3.55x the inverter's t90 at the SAME supply (3.12x at 0.60 V, 3.44x at 1.00 V, 3.55x at 1.50 V). The ratio WORSENS slightly with swing, so raising dV does not differentially rescue the stack.",
+   "input_level_control": "driving B1 at 1.65 V instead of at the supply makes it SLOWER, not faster: +54.8% at a 0.80 V supply, +21.6% at 1.20 V, 0.0% at 1.65 V (identical case). The series nMOS XN1 is gated by B1, so a higher input couples the internal node onto the output. The committed bank deck drives inputs at the pre-charge level dV, which is therefore PESSIMISTIC for o21ai, not generous."
+  },
+  "part2_real_bank_MEASURED": {
+   "rows": {
+    "i0_o21_dv150": {
+     "dv": 1.5,
+     "L_nH": 15.0,
+     "W_um": 30.0,
+     "VGH": 1.5,
+     "tail_ps": 500.0,
+     "t_hop_ps": 67.317,
+     "VBEND": 0.60767,
+     "VA_open": -0.17395,
+     "t_valid80_ps": 515.148911,
+     "t_valid90_ps": null,
+     "settled_end_pct": 82.99
+    },
+    "o21_d132_L15_W30": {
+     "dv": 1.32,
+     "L_nH": 15.0,
+     "W_um": 30.0,
+     "VGH": 1.5,
+     "tail_ps": 500.0,
+     "t_hop_ps": 66.965,
+     "VBEND": 0.577,
+     "VA_open": -0.14003,
+     "t_valid80_ps": null,
+     "t_valid90_ps": null,
+     "settled_end_pct": 68.05
+    },
+    "o21_d135_L15_W30": {
+     "dv": 1.35,
+     "L_nH": 15.0,
+     "W_um": 30.0,
+     "VGH": 1.5,
+     "tail_ps": 500.0,
+     "t_hop_ps": 67.032,
+     "VBEND": 0.5819,
+     "VA_open": -0.1461,
+     "t_valid80_ps": null,
+     "t_valid90_ps": null,
+     "settled_end_pct": 70.69
+    },
+    "o21_d150_L15_W30_tail2000": {
+     "dv": 1.5,
+     "L_nH": 15.0,
+     "W_um": 30.0,
+     "VGH": 1.5,
+     "tail_ps": 2000.0,
+     "t_hop_ps": 67.317,
+     "VBEND": 0.56718,
+     "VA_open": -0.17395,
+     "t_valid80_ps": 515.148911,
+     "t_valid90_ps": 710.118646,
+     "settled_end_pct": 99.97
+    },
+    "o21_d165_L10_W30": {
+     "dv": 1.65,
+     "L_nH": 10.0,
+     "W_um": 30.0,
+     "VGH": 1.65,
+     "tail_ps": 500.0,
+     "t_hop_ps": 55.211,
+     "VBEND": 0.64123,
+     "VA_open": -0.20179,
+     "t_valid80_ps": 373.197596,
+     "t_valid90_ps": 506.93932300000006,
+     "settled_end_pct": 92.09
+    },
+    "o21_d165_L15_W30": {
+     "dv": 1.65,
+     "L_nH": 15.0,
+     "W_um": 30.0,
+     "VGH": 1.65,
+     "tail_ps": 500.0,
+     "t_hop_ps": 67.495,
+     "VBEND": 0.6463,
+     "VA_open": -0.22771,
+     "t_valid80_ps": 367.90405699999997,
+     "t_valid90_ps": 495.50997699999994,
+     "settled_end_pct": 93.18
+    },
+    "o21_d165_L15_W30_tail2000": {
+     "dv": 1.65,
+     "L_nH": 15.0,
+     "W_um": 30.0,
+     "VGH": 1.65,
+     "tail_ps": 2000.0,
+     "t_hop_ps": 67.495,
+     "VBEND": 0.62822,
+     "VA_open": -0.22771,
+     "t_valid80_ps": 367.90405699999997,
+     "t_valid90_ps": 495.50997699999994,
+     "settled_end_pct": 100.0
+    },
+    "o21_d165_L6_W120": {
+     "dv": 1.65,
+     "L_nH": 6.0,
+     "W_um": 120.0,
+     "VGH": 1.65,
+     "tail_ps": 500.0,
+     "t_hop_ps": 45.223,
+     "VBEND": 0.73155,
+     "VA_open": -0.11253,
+     "t_valid80_ps": 307.79715000000004,
+     "t_valid90_ps": 406.17049299999996,
+     "settled_end_pct": 96.41
+    }
+   },
+   "dV_1p32_and_1p35": "does NOT settle in a 500 ps tail: 68.05% and 70.69% of rail, t_valid90 never, t_valid80 never.",
+   "dV_1p50": "82.99% at 500 ps with t_valid80 = 515.1 ps and t_valid90 never -- the committed reading. Extend the tail to 2000 ps and t_valid90 DOES exist, at 710.1 ps, reaching 99.97%. The committed 'never settles' was partly a 500 ps WINDOW.",
+   "dV_1p65": "SETTLES INSIDE THE COMMITTED 500 ps WINDOW: t_valid90 = 495.5 ps at L=15/W=30 (93.18% at freeze), 506.9 ps at L=10/W=30, and 406.2 ps at L=6/W=120 (96.41%). Confirmed tail-independent: with a 2000 ps tail the same point reports the same 495.5 ps and reaches 100.00%.",
+   "the_real_mechanism": "the o21ai bank DELIVERS far less swing than the inverter bank at the same dV: at dV=1.65/L=15/W=30 VBEND is 0.6463 V against 1.0107 V for inverters -- only 64% -- and VA_open is NEGATIVE on every o21ai row (-0.113 to -0.228 V), i.e. bank A gives up MORE charge than it stored because the unsettled stack conducts DC. The rail then DROOPS: at dV=1.5 the 2000 ps row's VBEND falls 0.60767 -> 0.56718. So part of 'settling' is the rail coming DOWN to the output, not only the output coming UP: from 500 to 2000 ps the output rises 0.5043 -> 0.5670 V (+12%) while the rail falls 0.6077 -> 0.5672 V (-6.7%).",
+   "honest_caveat": "a one-sided C2 gate cannot see a negative VA_open, so C2-as-written is vacuous for o21ai (AMENDMENT.md A4). The o21ai rows are judged on the sign and the two-sided magnitude.",
+   "absolute_logic_level_delivered": {
+    "dv150_tail500": {
+     "rail": 0.60767,
+     "lo_output": 0.5043,
+     "ratio": 0.8299
+    },
+    "dv150_tail2000": {
+     "rail": 0.56718,
+     "lo_output": 0.56699,
+     "ratio": 0.9997
+    },
+    "dv165_tail500": {
+     "rail": 0.6463,
+     "lo_output": 0.60222,
+     "ratio": 0.9318
+    },
+    "dv165_tail2000": {
+     "rail": 0.62822,
+     "lo_output": 0.62828,
+     "ratio": 1.0001
+    },
+    "dv165_L6_W120_tail500": {
+     "rail": 0.73155,
+     "lo_output": 0.70529,
+     "ratio": 0.9641
+    },
+    "reading": "the ratio reaching 100% is achieved partly by the rail FALLING: at dV=1.5 from 500 to 2000 ps the output rises 0.50430 -> 0.56699 V (+12.4%) while the rail falls 0.60767 -> 0.56718 V (-6.7%). At dV=1.65 the delivered logic level is 0.60-0.71 V, against 1.01 V for the shallow-stack bank at the same dV."
+   }
+  },
+  "verdict_for_the_library_restriction": "PRE-REGISTERED outcome (A): the stack settles above some swing AND a bank delivers it -- so the shallow-stack restriction RELAXES on CORRECTNESS at dV=1.65 V. It does NOT relax on SPEED. The o21ai level time is 406-507 ps against 75.9 ps for the shallow-stack bank at the same swing: 4.4x to 5.5x the 92.8 ps CMOS logic level, where the shallow-stack optimum is 0.82x. Decomposed, MEASURED: ~3.5x because a 2-high stack is intrinsically that much slower than an inverter at equal supply, and a further ~1.6x because the o21ai bank only delivers 0.65 V where the inverter bank delivers 1.01 V, which lands on the steep part of the floor curve. CONSEQUENCE: QAL remains a shallow-stack-library backend. Admitting 2-high stacks is now a correctness option rather than an impossibility, but it costs the entire speed case, so the lever worth pulling is DELIVERY (a larger CA / unequal bank, i.e. the ca72/ca144 excursion already in lsweep) rather than swing."
+ },
+ "headline": "At the top of the PDK's characterised envelope the QAL bank hop has an optimum, and on the STAGE-SKIPPING schedule it is FASTER than a CMOS logic level. MAX objective (skipping): dV=1.65 V, L=10 nH, W=30 um -> beat period 54.19 ps = 0.584x the 92.8 ps CMOS level by the model, 78.15 ps = 0.842x measured in the bank. SUM objective (adjacent): dV=1.65 V, L=6 nH, W=120 um -> 103.34-119.02 ps = 1.11x-1.28x, i.e. adjacent transfer does NOT beat CMOS at any characterised swing. In L there is a GENUINE INTERIOR optimum for the skipping objective (bracketed: 58.35/54.41/53.09/54.19/66.44 ps at L=3/6/8/10/15 nH) and NONE for the adjacent objective, which runs monotonically into the rail-drain constraint. In dV both surfaces are MONOTONE to the envelope edge: there is no interior optimum in swing, the answer is 'go to the highest characterised swing', and it is the 1.65 V envelope rather than the physics that stops the sweep. dV=1.5 was indeed wrongly ruled out -- MEASURED it is 1.41x faster than dV=1.2 on the in-bank level time (1.59x on the model MAX) -- but 1.65 V is better still, by a further 1.15x measured. Every number is a LOWER BOUND: junction capacitance is absent.",
+ "verdict_caveats": [
+  "sg13lv_compat.sp zeroes ad/as/pd/ps: junction capacitance absent, every time is a LOWER BOUND.",
+  "the dV=1.65 rows carry VGH=1.65 V (amendment P1, physically unavoidable at that swing); the control measures that ~0.02 V of their drain margin is gate drive, not swing, and that margin is the same size as the margin by which the optimum clears the drain gate.",
+  "the model t_settle is an ideal-step floor and under-predicts the in-bank time by 30-44% at the optimum; the measured form is reported alongside on every row and is the one to quote.",
+  "the speed gain is bought with energy: 2.0x faster from dV=1.08 to 1.65 costs 2.5x the hop energy, and the W=120 um optimum's switch gate drive alone exceeds its hop energy.",
+  "one hop with a real bank, not a chain: this locates WHERE to operate, it does not re-derive the topology or the overlap."
+ ],
+ "deliverables": {
+  "pre_registration": "PRE_REGISTERED.json",
+  "predictions": "predictions.json",
+  "refined_predictions": "plan.json",
+  "amendments": "AMENDMENT.md",
+  "printed_grid": "REPORT.txt",
+  "grid_rows": "rows.json (86) + rows_committed.json (16 imported)",
+  "surfaces": "surfaces.json, surfaces_extra.json",
+  "floor": "floor.json",
+  "o21": "o21.json",
+  "harnesses": "dvo.py (wraps lsweep/lsw.py), floor.py, o21bank.py (wraps skept/sk.py), analyse.py"
+ }
+}

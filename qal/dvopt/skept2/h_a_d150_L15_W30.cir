@@ -1,0 +1,248 @@
+.hdl "/usr/local/share/xyce/verilog-a/psp103/psp103.va"
+.include "/usr/local/src/kestrel/sim/models/sg13g2_psp103_tt.lib"
+.include "/usr/local/src/stat-sim/qal/sg13lv_compat.sp"
+.OPTIONS TIMEINT METHOD=GEAR RELTOL=1e-6 ABSTOL=1e-15 CHGTOL=1e-17
+.param LT=15n RS=10 CA=35.979f
+CA bka 0 {CA}
+VHI vhi 0 1.5
+VGT  gt  0 PWL(0 0 48p 0 50p 1.5 116.222p 1.5 118.222p 0)
+VGTP gtp 0 PWL(0 1.5 48p 1.5 50p 0 116.222p 0 118.222p 1.5)
+XSWN sw gt bkb 0 sg13_lv_nmos w=10u l=0.13u
+XSWP sw gtp bkb vhi sg13_lv_pmos w=20u l=0.13u
+XPK sw pk 0 0 sg13_lv_nmos w=2u l=0.13u
+VPK pk 0 PWL(0 0 118.222p 0 120.222p 1.5)
+LT bka mid {LT}
+RT mid sw {RS}
+VMGH gnh 0 0
+VMGL gnl 0 0
+VI0 in0 0 1.5
+XP0 o0 in0 bkb bkb sg13_lv_pmos w=1.12u l=0.13u
+XN0 o0 in0 gnh gnh sg13_lv_nmos w=0.74u l=0.13u
+CL0 o0 gnh 2f
+VI1 in1 0 0
+XP1 o1 in1 bkb bkb sg13_lv_pmos w=1.12u l=0.13u
+XN1 o1 in1 gnl gnl sg13_lv_nmos w=0.74u l=0.13u
+CL1 o1 gnl 2f
+VI2 in2 0 1.5
+XP2 o2 in2 bkb bkb sg13_lv_pmos w=1.12u l=0.13u
+XN2 o2 in2 gnh gnh sg13_lv_nmos w=0.74u l=0.13u
+CL2 o2 gnh 2f
+VI3 in3 0 0
+XP3 o3 in3 bkb bkb sg13_lv_pmos w=1.12u l=0.13u
+XN3 o3 in3 gnl gnl sg13_lv_nmos w=0.74u l=0.13u
+CL3 o3 gnl 2f
+VI4 in4 0 1.5
+XP4 o4 in4 bkb bkb sg13_lv_pmos w=1.12u l=0.13u
+XN4 o4 in4 gnh gnh sg13_lv_nmos w=0.74u l=0.13u
+CL4 o4 gnh 2f
+VI5 in5 0 0
+XP5 o5 in5 bkb bkb sg13_lv_pmos w=1.12u l=0.13u
+XN5 o5 in5 gnl gnl sg13_lv_nmos w=0.74u l=0.13u
+CL5 o5 gnl 2f
+VI6 in6 0 1.5
+XP6 o6 in6 bkb bkb sg13_lv_pmos w=1.12u l=0.13u
+XN6 o6 in6 gnh gnh sg13_lv_nmos w=0.74u l=0.13u
+CL6 o6 gnh 2f
+VI7 in7 0 0
+XP7 o7 in7 bkb bkb sg13_lv_pmos w=1.12u l=0.13u
+XN7 o7 in7 gnl gnl sg13_lv_nmos w=0.74u l=0.13u
+CL7 o7 gnl 2f
+CXqsh xqsh 0 1
+BXqsh 0 xqsh I={ I(VMGH)+I(VI0)+I(VI2)+I(VI4)+I(VI6) }
+RXqsh xqsh 0 0.01
+CXqsl xqsl 0 1
+BXqsl 0 xqsl I={ I(VMGL)+I(VI1)+I(VI3)+I(VI5)+I(VI7) }
+RXqsl xqsl 0 0.01
+CXesh xesh 0 1
+BXesh 0 xesh I={ V(bkb)*(I(VMGH)+I(VI0)+I(VI2)+I(VI4)+I(VI6)) }
+RXesh xesh 0 0.01
+CXesl xesl 0 1
+BXesl 0 xesl I={ V(bkb)*(I(VMGL)+I(VI1)+I(VI3)+I(VI5)+I(VI7)) }
+RXesl xesl 0 0.01
+CXqgh xqgh 0 1
+BXqgh 0 xqgh I={ I(VMGH) }
+RXqgh xqgh 0 0.01
+CXqgl xqgl 0 1
+BXqgl 0 xqgl I={ I(VMGL) }
+RXqgl xqgl 0 0.01
+CXqih xqih 0 1
+BXqih 0 xqih I={ -(I(VI0)+I(VI2)+I(VI4)+I(VI6)) }
+RXqih xqih 0 0.01
+CXeih xeih 0 1
+BXeih 0 xeih I={ -(V(in0)*I(VI0)+V(in2)*I(VI2)+V(in4)*I(VI4)+V(in6)*I(VI6)) }
+RXeih xeih 0 0.01
+CXqil xqil 0 1
+BXqil 0 xqil I={ -(I(VI1)+I(VI3)+I(VI5)+I(VI7)) }
+RXqil xqil 0 0.01
+CXqlt xqlt 0 1
+BXqlt 0 xqlt I={ I(LT) }
+RXqlt xqlt 0 0.01
+CXea xea 0 1
+BXea 0 xea I={ V(bka)*I(LT) }
+RXea xea 0 0.01
+CXeb xeb 0 1
+BXeb 0 xeb I={ V(bkb)*I(LT) }
+RXeb xeb 0 0.01
+CXqbk xqbk 0 1
+BXqbk 0 xqbk I={ (I(VMGH)+I(VI0)+I(VI2)+I(VI4)+I(VI6))+(I(VMGL)+I(VI1)+I(VI3)+I(VI5)+I(VI7)) }
+RXqbk xqbk 0 0.01
+CXebk xebk 0 1
+BXebk 0 xebk I={ V(bkb)*((I(VMGH)+I(VI0)+I(VI2)+I(VI4)+I(VI6))+(I(VMGL)+I(VI1)+I(VI3)+I(VI5)+I(VI7))) }
+RXebk xebk 0 0.01
+CXer xer 0 1
+BXer 0 xer I={ I(LT)*I(LT)*10 }
+RXer xer 0 0.01
+CXesw xesw 0 1
+BXesw 0 xesw I={ V(sw)*I(LT) }
+RXesw xesw 0 0.01
+CXqgt xqgt 0 1
+BXqgt 0 xqgt I={ -I(VGT) }
+RXqgt xqgt 0 0.01
+CXqgtp xqgtp 0 1
+BXqgtp 0 xqgtp I={ -I(VGTP) }
+RXqgtp xqgtp 0 0.01
+CXqhi xqhi 0 1
+BXqhi 0 xqhi I={ -I(VHI) }
+RXqhi xqhi 0 0.01
+CXegt xegt 0 1
+BXegt 0 xegt I={ -V(gt)*I(VGT)-V(gtp)*I(VGTP)-V(pk)*I(VPK) }
+RXegt xegt 0 0.01
+CXehi xehi 0 1
+BXehi 0 xehi I={ -1.5*I(VHI) }
+RXehi xehi 0 0.01
+Bpa pa 0 V={ V(bka)*I(LT) }
+Bpb pb 0 V={ V(bkb)*I(LT) }
+Bqt qt 0 V={ I(LT) }
+.ic V(bka)=1.5 V(bkb)=0
+.tran 0.0309929p 616.222p 0 0.0619858p
+.measure tran VBPK  MAX V(bkb) FROM=50p TO=616.222p
+.measure tran VBEND FIND V(bkb) AT=612.221785p
+.measure tran VAEND FIND V(bka) AT=612.221785p
+.measure tran IPK   MAX I(LT) FROM=0 TO=616.222p
+.measure tran IZ    FIND I(LT) AT=117.221785p
+.measure tran VBOPEN FIND V(bkb) AT=117.221785p
+.measure tran VSWPK MAX V(sw) FROM=0 TO=616.222p
+.measure tran VSWMN MIN V(sw) FROM=50p TO=616.222p
+.measure tran QSH_Z FIND V(xqsh) AT=1.500000p
+.measure tran QSH_A FIND V(xqsh) AT=52.239717p
+.measure tran QSH_B FIND V(xqsh) AT=117.221785p
+.measure tran QSH_C FIND V(xqsh) AT=124.221785p
+.measure tran QSH_D FIND V(xqsh) AT=612.221785p
+.measure tran QSL_Z FIND V(xqsl) AT=1.500000p
+.measure tran QSL_A FIND V(xqsl) AT=52.239717p
+.measure tran QSL_B FIND V(xqsl) AT=117.221785p
+.measure tran QSL_C FIND V(xqsl) AT=124.221785p
+.measure tran QSL_D FIND V(xqsl) AT=612.221785p
+.measure tran ESH_Z FIND V(xesh) AT=1.500000p
+.measure tran ESH_A FIND V(xesh) AT=52.239717p
+.measure tran ESH_B FIND V(xesh) AT=117.221785p
+.measure tran ESH_C FIND V(xesh) AT=124.221785p
+.measure tran ESH_D FIND V(xesh) AT=612.221785p
+.measure tran ESL_Z FIND V(xesl) AT=1.500000p
+.measure tran ESL_A FIND V(xesl) AT=52.239717p
+.measure tran ESL_B FIND V(xesl) AT=117.221785p
+.measure tran ESL_C FIND V(xesl) AT=124.221785p
+.measure tran ESL_D FIND V(xesl) AT=612.221785p
+.measure tran QGH_Z FIND V(xqgh) AT=1.500000p
+.measure tran QGH_A FIND V(xqgh) AT=52.239717p
+.measure tran QGH_B FIND V(xqgh) AT=117.221785p
+.measure tran QGH_C FIND V(xqgh) AT=124.221785p
+.measure tran QGH_D FIND V(xqgh) AT=612.221785p
+.measure tran QGL_Z FIND V(xqgl) AT=1.500000p
+.measure tran QGL_A FIND V(xqgl) AT=52.239717p
+.measure tran QGL_B FIND V(xqgl) AT=117.221785p
+.measure tran QGL_C FIND V(xqgl) AT=124.221785p
+.measure tran QGL_D FIND V(xqgl) AT=612.221785p
+.measure tran QIH_Z FIND V(xqih) AT=1.500000p
+.measure tran QIH_A FIND V(xqih) AT=52.239717p
+.measure tran QIH_B FIND V(xqih) AT=117.221785p
+.measure tran QIH_C FIND V(xqih) AT=124.221785p
+.measure tran QIH_D FIND V(xqih) AT=612.221785p
+.measure tran EIH_Z FIND V(xeih) AT=1.500000p
+.measure tran EIH_A FIND V(xeih) AT=52.239717p
+.measure tran EIH_B FIND V(xeih) AT=117.221785p
+.measure tran EIH_C FIND V(xeih) AT=124.221785p
+.measure tran EIH_D FIND V(xeih) AT=612.221785p
+.measure tran QIL_Z FIND V(xqil) AT=1.500000p
+.measure tran QIL_A FIND V(xqil) AT=52.239717p
+.measure tran QIL_B FIND V(xqil) AT=117.221785p
+.measure tran QIL_C FIND V(xqil) AT=124.221785p
+.measure tran QIL_D FIND V(xqil) AT=612.221785p
+.measure tran QLT_Z FIND V(xqlt) AT=1.500000p
+.measure tran QLT_A FIND V(xqlt) AT=52.239717p
+.measure tran QLT_B FIND V(xqlt) AT=117.221785p
+.measure tran QLT_C FIND V(xqlt) AT=124.221785p
+.measure tran QLT_D FIND V(xqlt) AT=612.221785p
+.measure tran EA_Z FIND V(xea) AT=1.500000p
+.measure tran EA_A FIND V(xea) AT=52.239717p
+.measure tran EA_B FIND V(xea) AT=117.221785p
+.measure tran EA_C FIND V(xea) AT=124.221785p
+.measure tran EA_D FIND V(xea) AT=612.221785p
+.measure tran EB_Z FIND V(xeb) AT=1.500000p
+.measure tran EB_A FIND V(xeb) AT=52.239717p
+.measure tran EB_B FIND V(xeb) AT=117.221785p
+.measure tran EB_C FIND V(xeb) AT=124.221785p
+.measure tran EB_D FIND V(xeb) AT=612.221785p
+.measure tran QBK_Z FIND V(xqbk) AT=1.500000p
+.measure tran QBK_A FIND V(xqbk) AT=52.239717p
+.measure tran QBK_B FIND V(xqbk) AT=117.221785p
+.measure tran QBK_C FIND V(xqbk) AT=124.221785p
+.measure tran QBK_D FIND V(xqbk) AT=612.221785p
+.measure tran EBK_Z FIND V(xebk) AT=1.500000p
+.measure tran EBK_A FIND V(xebk) AT=52.239717p
+.measure tran EBK_B FIND V(xebk) AT=117.221785p
+.measure tran EBK_C FIND V(xebk) AT=124.221785p
+.measure tran EBK_D FIND V(xebk) AT=612.221785p
+.measure tran ER_Z FIND V(xer) AT=1.500000p
+.measure tran ER_A FIND V(xer) AT=52.239717p
+.measure tran ER_B FIND V(xer) AT=117.221785p
+.measure tran ER_C FIND V(xer) AT=124.221785p
+.measure tran ER_D FIND V(xer) AT=612.221785p
+.measure tran ESW_Z FIND V(xesw) AT=1.500000p
+.measure tran ESW_A FIND V(xesw) AT=52.239717p
+.measure tran ESW_B FIND V(xesw) AT=117.221785p
+.measure tran ESW_C FIND V(xesw) AT=124.221785p
+.measure tran ESW_D FIND V(xesw) AT=612.221785p
+.measure tran QGT_Z FIND V(xqgt) AT=1.500000p
+.measure tran QGT_A FIND V(xqgt) AT=52.239717p
+.measure tran QGT_B FIND V(xqgt) AT=117.221785p
+.measure tran QGT_C FIND V(xqgt) AT=124.221785p
+.measure tran QGT_D FIND V(xqgt) AT=612.221785p
+.measure tran QGTP_Z FIND V(xqgtp) AT=1.500000p
+.measure tran QGTP_A FIND V(xqgtp) AT=52.239717p
+.measure tran QGTP_B FIND V(xqgtp) AT=117.221785p
+.measure tran QGTP_C FIND V(xqgtp) AT=124.221785p
+.measure tran QGTP_D FIND V(xqgtp) AT=612.221785p
+.measure tran QHI_Z FIND V(xqhi) AT=1.500000p
+.measure tran QHI_A FIND V(xqhi) AT=52.239717p
+.measure tran QHI_B FIND V(xqhi) AT=117.221785p
+.measure tran QHI_C FIND V(xqhi) AT=124.221785p
+.measure tran QHI_D FIND V(xqhi) AT=612.221785p
+.measure tran EGT_Z FIND V(xegt) AT=1.500000p
+.measure tran EGT_A FIND V(xegt) AT=52.239717p
+.measure tran EGT_B FIND V(xegt) AT=117.221785p
+.measure tran EGT_C FIND V(xegt) AT=124.221785p
+.measure tran EGT_D FIND V(xegt) AT=612.221785p
+.measure tran EHI_Z FIND V(xehi) AT=1.500000p
+.measure tran EHI_A FIND V(xehi) AT=52.239717p
+.measure tran EHI_B FIND V(xehi) AT=117.221785p
+.measure tran EHI_C FIND V(xehi) AT=124.221785p
+.measure tran EHI_D FIND V(xehi) AT=612.221785p
+.measure tran O0Z FIND V(o0) AT=117.221785p
+.measure tran O0E FIND V(o0) AT=612.221785p
+.measure tran O1Z FIND V(o1) AT=117.221785p
+.measure tran O1E FIND V(o1) AT=612.221785p
+.measure tran O2Z FIND V(o2) AT=117.221785p
+.measure tran O2E FIND V(o2) AT=612.221785p
+.measure tran O3Z FIND V(o3) AT=117.221785p
+.measure tran O3E FIND V(o3) AT=612.221785p
+.measure tran O4Z FIND V(o4) AT=117.221785p
+.measure tran O4E FIND V(o4) AT=612.221785p
+.measure tran O5Z FIND V(o5) AT=117.221785p
+.measure tran O5E FIND V(o5) AT=612.221785p
+.measure tran O6Z FIND V(o6) AT=117.221785p
+.measure tran O6E FIND V(o6) AT=612.221785p
+.measure tran O7Z FIND V(o7) AT=117.221785p
+.measure tran O7E FIND V(o7) AT=612.221785p
+.print tran V(bka) V(bkb) V(sw) I(LT) V(o0) V(o1) V(xea) V(xesw) V(xer) V(xeb) V(xebk) V(xeih) V(xqlt)
+.end

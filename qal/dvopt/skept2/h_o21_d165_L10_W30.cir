@@ -1,0 +1,143 @@
+.hdl "/usr/local/share/xyce/verilog-a/psp103/psp103.va"
+.include "/usr/local/src/kestrel/sim/models/sg13g2_psp103_tt.lib"
+.include "/usr/local/src/stat-sim/qal/sg13lv_compat.sp"
+.OPTIONS TIMEINT METHOD=GEAR RELTOL=1e-6 ABSTOL=1e-15 CHGTOL=1e-17
+.param LT=10n RS=10 CA=35.979f
+CA bka 0 {CA}
+VHI vhi 0 1.65
+VGT  gt  0 PWL(0 0 48p 0 50p 1.65 105.211p 1.65 107.211p 0)
+VGTP gtp 0 PWL(0 1.65 48p 1.65 50p 0 105.211p 0 107.211p 1.65)
+XSWN sw gt bkb 0 sg13_lv_nmos w=10u l=0.13u
+XSWP sw gtp bkb vhi sg13_lv_pmos w=20u l=0.13u
+XPK sw pk 0 0 sg13_lv_nmos w=2u l=0.13u
+VPK pk 0 PWL(0 0 107.211p 0 109.211p 1.65)
+LT bka mid {LT}
+RT mid sw {RS}
+VMGH gnh 0 0
+VMGL gnl 0 0
+VA1_0 a1_0 0 1.65
+VA2_0 a2_0 0 0
+VB1_0 b1_0 0 1.65
+XP0_0 nt0 a1_0 bkb bkb sg13_lv_pmos w=1.12u l=0.13u
+XP1_0 o0 a2_0 nt0 bkb sg13_lv_pmos w=1.12u l=0.13u
+XP2_0 o0 b1_0 bkb bkb sg13_lv_pmos w=1.12u l=0.13u
+XN0_0 ns0 a2_0 gnh gnh sg13_lv_nmos w=0.74u l=0.13u
+XN2_0 ns0 a1_0 gnh gnh sg13_lv_nmos w=0.74u l=0.13u
+XN1_0 o0 b1_0 ns0 gnh sg13_lv_nmos w=0.74u l=0.13u
+CX1_0 nt0 bkb 0.1f
+CX2_0 ns0 gnh 0.1f
+CL0 o0 gnh 2f
+VA1_1 a1_1 0 0
+VA2_1 a2_1 0 0
+VB1_1 b1_1 0 1.65
+XP0_1 nt1 a1_1 bkb bkb sg13_lv_pmos w=1.12u l=0.13u
+XP1_1 o1 a2_1 nt1 bkb sg13_lv_pmos w=1.12u l=0.13u
+XP2_1 o1 b1_1 bkb bkb sg13_lv_pmos w=1.12u l=0.13u
+XN0_1 ns1 a2_1 gnl gnl sg13_lv_nmos w=0.74u l=0.13u
+XN2_1 ns1 a1_1 gnl gnl sg13_lv_nmos w=0.74u l=0.13u
+XN1_1 o1 b1_1 ns1 gnl sg13_lv_nmos w=0.74u l=0.13u
+CX1_1 nt1 bkb 0.1f
+CX2_1 ns1 gnl 0.1f
+CL1 o1 gnl 2f
+VA1_2 a1_2 0 1.65
+VA2_2 a2_2 0 0
+VB1_2 b1_2 0 1.65
+XP0_2 nt2 a1_2 bkb bkb sg13_lv_pmos w=1.12u l=0.13u
+XP1_2 o2 a2_2 nt2 bkb sg13_lv_pmos w=1.12u l=0.13u
+XP2_2 o2 b1_2 bkb bkb sg13_lv_pmos w=1.12u l=0.13u
+XN0_2 ns2 a2_2 gnh gnh sg13_lv_nmos w=0.74u l=0.13u
+XN2_2 ns2 a1_2 gnh gnh sg13_lv_nmos w=0.74u l=0.13u
+XN1_2 o2 b1_2 ns2 gnh sg13_lv_nmos w=0.74u l=0.13u
+CX1_2 nt2 bkb 0.1f
+CX2_2 ns2 gnh 0.1f
+CL2 o2 gnh 2f
+VA1_3 a1_3 0 0
+VA2_3 a2_3 0 0
+VB1_3 b1_3 0 1.65
+XP0_3 nt3 a1_3 bkb bkb sg13_lv_pmos w=1.12u l=0.13u
+XP1_3 o3 a2_3 nt3 bkb sg13_lv_pmos w=1.12u l=0.13u
+XP2_3 o3 b1_3 bkb bkb sg13_lv_pmos w=1.12u l=0.13u
+XN0_3 ns3 a2_3 gnl gnl sg13_lv_nmos w=0.74u l=0.13u
+XN2_3 ns3 a1_3 gnl gnl sg13_lv_nmos w=0.74u l=0.13u
+XN1_3 o3 b1_3 ns3 gnl sg13_lv_nmos w=0.74u l=0.13u
+CX1_3 nt3 bkb 0.1f
+CX2_3 ns3 gnl 0.1f
+CL3 o3 gnl 2f
+VA1_4 a1_4 0 1.65
+VA2_4 a2_4 0 0
+VB1_4 b1_4 0 1.65
+XP0_4 nt4 a1_4 bkb bkb sg13_lv_pmos w=1.12u l=0.13u
+XP1_4 o4 a2_4 nt4 bkb sg13_lv_pmos w=1.12u l=0.13u
+XP2_4 o4 b1_4 bkb bkb sg13_lv_pmos w=1.12u l=0.13u
+XN0_4 ns4 a2_4 gnh gnh sg13_lv_nmos w=0.74u l=0.13u
+XN2_4 ns4 a1_4 gnh gnh sg13_lv_nmos w=0.74u l=0.13u
+XN1_4 o4 b1_4 ns4 gnh sg13_lv_nmos w=0.74u l=0.13u
+CX1_4 nt4 bkb 0.1f
+CX2_4 ns4 gnh 0.1f
+CL4 o4 gnh 2f
+VA1_5 a1_5 0 0
+VA2_5 a2_5 0 0
+VB1_5 b1_5 0 1.65
+XP0_5 nt5 a1_5 bkb bkb sg13_lv_pmos w=1.12u l=0.13u
+XP1_5 o5 a2_5 nt5 bkb sg13_lv_pmos w=1.12u l=0.13u
+XP2_5 o5 b1_5 bkb bkb sg13_lv_pmos w=1.12u l=0.13u
+XN0_5 ns5 a2_5 gnl gnl sg13_lv_nmos w=0.74u l=0.13u
+XN2_5 ns5 a1_5 gnl gnl sg13_lv_nmos w=0.74u l=0.13u
+XN1_5 o5 b1_5 ns5 gnl sg13_lv_nmos w=0.74u l=0.13u
+CX1_5 nt5 bkb 0.1f
+CX2_5 ns5 gnl 0.1f
+CL5 o5 gnl 2f
+VA1_6 a1_6 0 1.65
+VA2_6 a2_6 0 0
+VB1_6 b1_6 0 1.65
+XP0_6 nt6 a1_6 bkb bkb sg13_lv_pmos w=1.12u l=0.13u
+XP1_6 o6 a2_6 nt6 bkb sg13_lv_pmos w=1.12u l=0.13u
+XP2_6 o6 b1_6 bkb bkb sg13_lv_pmos w=1.12u l=0.13u
+XN0_6 ns6 a2_6 gnh gnh sg13_lv_nmos w=0.74u l=0.13u
+XN2_6 ns6 a1_6 gnh gnh sg13_lv_nmos w=0.74u l=0.13u
+XN1_6 o6 b1_6 ns6 gnh sg13_lv_nmos w=0.74u l=0.13u
+CX1_6 nt6 bkb 0.1f
+CX2_6 ns6 gnh 0.1f
+CL6 o6 gnh 2f
+VA1_7 a1_7 0 0
+VA2_7 a2_7 0 0
+VB1_7 b1_7 0 1.65
+XP0_7 nt7 a1_7 bkb bkb sg13_lv_pmos w=1.12u l=0.13u
+XP1_7 o7 a2_7 nt7 bkb sg13_lv_pmos w=1.12u l=0.13u
+XP2_7 o7 b1_7 bkb bkb sg13_lv_pmos w=1.12u l=0.13u
+XN0_7 ns7 a2_7 gnl gnl sg13_lv_nmos w=0.74u l=0.13u
+XN2_7 ns7 a1_7 gnl gnl sg13_lv_nmos w=0.74u l=0.13u
+XN1_7 o7 b1_7 ns7 gnl sg13_lv_nmos w=0.74u l=0.13u
+CX1_7 nt7 bkb 0.1f
+CX2_7 ns7 gnl 0.1f
+CL7 o7 gnl 2f
+CXqlt xqlt 0 1
+BXqlt 0 xqlt I={ I(LT) }
+RXqlt xqlt 0 0.01
+CXea xea 0 1
+BXea 0 xea I={ V(bka)*I(LT) }
+RXea xea 0 0.01
+CXeb xeb 0 1
+BXeb 0 xeb I={ V(bkb)*I(LT) }
+RXeb xeb 0 0.01
+CXer xer 0 1
+BXer 0 xer I={ I(LT)*I(LT)*10 }
+RXer xer 0 0.01
+CXesw xesw 0 1
+BXesw 0 xesw I={ V(sw)*I(LT) }
+RXesw xesw 0 0.01
+CXebk xebk 0 1
+BXebk 0 xebk I={ V(bkb)*(I(VMGH)+I(VMGL)) }
+RXebk xebk 0 0.01
+CXeih xeih 0 1
+BXeih 0 xeih I={ 0 }
+RXeih xeih 0 0.01
+CXegt xegt 0 1
+BXegt 0 xegt I={ -V(gt)*I(VGT)-V(gtp)*I(VGTP)-V(pk)*I(VPK) }
+RXegt xegt 0 0.01
+.ic V(bka)=1.65 V(bkb)=0
+.print tran V(bka) V(bkb) V(sw) I(LT) V(o0) V(o1) V(o2) V(o3)
++ V(o4) V(o5) V(o6) V(o7) V(xqlt) V(xea) V(xeb) V(xer)
++ V(xesw) V(xebk) V(xeih) V(xegt)
+.tran 0.0140455p 605.211p 0 0.0280911p
+.end

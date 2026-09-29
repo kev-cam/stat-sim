@@ -1,0 +1,13 @@
+.hdl "/usr/local/share/xyce/verilog-a/psp103/psp103.va"
+.include "/usr/local/src/kestrel/sim/models/sg13g2_psp103_tt.lib"
+.include "/usr/local/src/stat-sim/qal/sg13lv_compat.sp"
+.OPTIONS TIMEINT METHOD=GEAR RELTOL=1e-6 ABSTOL=1e-15 CHGTOL=1e-17
+VSt s_t 0 PWL(0 0 100p 0 102p 1.5000000)
+VIt i_t 0 0
+XPt o_t i_t s_t s_t sg13_lv_pmos w=1.12u l=0.13u
+XNt o_t i_t 0 0 sg13_lv_nmos w=0.74u l=0.13u
+CLt o_t 0 2f
+.tran 0.05p 1600p 0 0.2p
+.measure tran T90t WHEN V(o_t)=1.0 RISE=1
+.print tran V(o_t)
+.end

@@ -1,0 +1,27 @@
+.hdl "/usr/local/share/xyce/verilog-a/psp103/psp103.va"
+.include "/usr/local/src/kestrel/sim/models/sg13g2_psp103_tt.lib"
+.include "/usr/local/src/stat-sim/qal/sg13lv_compat.sp"
+.OPTIONS TIMEINT METHOD=GEAR RELTOL=1e-6 ABSTOL=1e-15 CHGTOL=1e-17
+V1 a 0 0.5
+V2 b 0 0.5
+XWN0 d0 a 0 0 sg13_lv_nmos w=2.4u l=0.13u
+RN0 d0 b 1k
+XWN1 d1 a 0 0 sg13_lv_nmos w=2.66667u l=0.13u
+RN1 d1 b 1k
+XWN2 d2 a 0 0 sg13_lv_nmos w=3u l=0.13u
+RN2 d2 b 1k
+XWN3 d3 a 0 0 sg13_lv_nmos w=12u l=0.13u
+RN3 d3 b 1k
+XWN4 d4 a 0 0 sg13_lv_nmos w=13.3333u l=0.13u
+RN4 d4 b 1k
+XWN5 d5 a 0 0 sg13_lv_nmos w=15u l=0.13u
+RN5 d5 b 1k
+XWP6 e6 a b b sg13_lv_pmos w=24u l=0.13u
+RP6 e6 0 1k
+XWP7 e7 a b b sg13_lv_pmos w=26.6667u l=0.13u
+RP7 e7 0 1k
+XWP8 e8 a b b sg13_lv_pmos w=30u l=0.13u
+RP8 e8 0 1k
+.tran 1p 10p
+.print tran V(a)
+.end

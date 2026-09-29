@@ -1,0 +1,82 @@
+{
+ "_doc": "TRACK 1c PRE-REGISTRATION -- the (dV, L, W) OPTIMUM SWEEP of the QAL bank-to-bank hop on SG13G2. Written BEFORE any deck of this track was generated or run. QUESTION (user): 'Run it at 1.5 V too, and any others needed to see if there's an optimum.' The complete QAL level time is t_hop (rail transfer, MEASURED to follow pi*sqrt(LC) within 1.7% over 278x in L) plus t_settle (cells reaching their answer at the DELIVERED swing). ADJACENT bank-to-bank transfer makes those two SERIAL -> minimise (t_hop + t_settle). STAGE-SKIPPING (N -> N+2) lets them OVERLAP -> minimise max(t_hop, t_settle). Both are computed from ONE grid, so the grid is measured once and both surfaces are reported.",
+ "date": "2026-09-28",
+ "status_when_written": "no deck of this track exists; predictions below are built ONLY from already-committed measurements (qal/lsweep/RESULTS_LSWEEP.json, qal/lsweep/cellcmp*.json, qal/skept/rows.json).",
+
+ "envelope_MEASURED_from_the_PDK": {
+  "claim": "dV is swept over exactly the swings the PDK characterises, and no others.",
+  "evidence": "ls /usr/local/src/IHP-Open-PDK/ihp-sg13g2/libs.ref/sg13g2_stdcell/lib/ -> 6 liberty files, nom_voltage read from each: sg13g2_stdcell_slow_1p08V_125C.lib 1.08 | sg13g2_stdcell_typ_1p20V_25C.lib 1.2 | sg13g2_stdcell_fast_1p32V_m40C.lib 1.32 | sg13g2_stdcell_slow_1p35V_125C.lib 1.35 | sg13g2_stdcell_typ_1p50V_25C.lib 1.5 | sg13g2_stdcell_fast_1p65V_m40C.lib 1.65. The SAME 84-cell stdcell library is characterised at typ 1.50 V, so the campaign's 'dV=1.2 is the LV ceiling' premise was FALSE.",
+  "grid_dV_V": [1.08, 1.2, 1.32, 1.35, 1.5, 1.65],
+  "out_of_envelope_rule": "no point above 1.65 V is run; if one is ever added it is labelled OUT-OF-ENVELOPE and excluded from every verdict."
+ },
+
+ "protocol": {
+  "inherited_VERBATIM": "The deck generator, extractor, integrator metering, .OPTIONS, TRUE-ZCS timing, CA=35.979 fF, RS=10 ohm, 8 metered inverters (1.12u/0.74u, 4 hi-input / 4 lo-input, 2 fF loads), T0=50 ps close, 2 ps gate edges, 500 ps post-open tail, the LAG_PS=1.0 ps FIND correction, and the A2 robust energy metric are qal/lsweep/lsw.py UNCHANGED, imported not copied. dvopt/dvo.py is a thin wrapper that only rebinds lsw.HERE (output directory), lsw.ENV (own PYMS_VAE_CACHE) and lsw.VGH (see amendment P1). Every dV=1.2 and dV=1.0 row already committed in lsweep/rows.json is REUSED as-is: it was produced by this same code under this same protocol.",
+  "amendment_P1_VGH": "THE ONLY ELECTRICAL CHANGE. The committed harness fixes the switch gate drive and the transfer pMOS BULK at VGH = 1.5 V ('VHI vhi 0 VGH'). At dV = 1.65 V the bank node starts ABOVE that bulk, forward-biasing the pMOS source-bulk junction: the deck would be unphysical. RULE, pre-stated: VGH = max(1.5, dV). It therefore binds at dV=1.65 ONLY (1.65 V) and is bit-identical to the committed 1.5 V at every other dV including 1.50. Consequence declared up front: the dV=1.65 rows carry a 10% higher gate drive, so their gate-charge and gate-drive-energy columns are NOT comparable across dV; the speed columns (t_hop, VBEND, settling) are affected only through the switch's slightly lower Ron, and the dV=1.65 rows are flagged VGH_AMENDED=true.",
+  "amendment_P2_calib": "Each new dV needs its OWN static Q/E reference curve (lsw.stage_calib), because the cells' hi inputs sit at dV and the E_sup/E_in references would otherwise be read at the wrong input level. Five new curves: calib_dv108/132/135/150/165. dV=1.2 reuses the committed lsweep/calib_dv120.cir.prn; dV=1.0 (fits only) reuses the G1-gated swsweep/sw_calib.cir.prn.",
+  "per_point": "probe (switch held closed, find the true I(LT) zero by interpolation after the current peak) -> hop with the switch opened exactly at that zero -> full ledger + waveform cross-check. The zero moves with L, W and dV, so it is re-probed at EVERY point -- the analytic value was measured 36% early with real gate loads and is used only to size timesteps."
+ },
+
+ "acceptance_gates_per_point_PRE_STATED": {
+  "C1_settle_end": "all 8 cells >= 90% settled at the settle checkpoint (t_open + 495 ps), committed convention. lo-input cell s = V(o)/V(bkb); hi-input cell s = 1 - V(o)/V(bkb).",
+  "C1_valid90_reached": "t_valid90 must EXIST in the run window, i.e. all 8 outputs must simultaneously reach 90% of the instantaneous rail and stay there.",
+  "C1_open_raw": "the open-checkpoint settling percentages are reported as RAW DATA on every row and gate nothing -- lsweep AMENDMENT A2 established that the committed shipped optimum itself reads 82.09% there, so an open-checkpoint binary gate would throw away its own anchor.",
+  "C2_rail_drain_abs": "VA_open = dV - qlt_C/CA <= 0.1478 V (committed tg15p anchor 0.09778 + 0.05). PRIMARY.",
+  "C2_rail_drain_rel": "VA_open <= 0.1478*dV. Reported alongside; looser than the absolute gate at every dV > 1.0, so it is the SENSITIVITY form, not the verdict form.",
+  "C3_swing_abs": "VBEND >= 0.60 V. The MEASURED functional cliff: at a 0.6 V delivered rail the cell pMOS barely clears Vt and settling collapses. PRIMARY.",
+  "C3_swing_rel": "VBEND >= 0.60*dV. Reported alongside as the stricter sensitivity form.",
+  "C4_instrument": "per point: |Q closure| <= 1%, |E closure| <= 1%, |waveform path identity ea-esw-er at checkpoint B (the switch-open zero)| <= 0.02 fJ, and |mt0-vs-waveform E_hop| <= 1%. A point failing C4 is an INSTRUMENT FAILURE, not a data point, and is reported as such.",
+  "FUNCTIONAL": "C1_settle_end AND C1_valid90_reached AND C2_abs AND C3_abs AND C4. Only FUNCTIONAL points are eligible to be an optimum.",
+  "minimum_sufficient_W": "at each (dV, L) the reported width is the SMALLEST W in {15, 30, 60, 120, 240} um that is FUNCTIONAL. Width is NOT a free speed lever -- MEASURED at L=30 nH, 15->120 um improves VA_open 0.1624->0.0236 but WORSENS VBEND 0.6196->0.5594, t_hop 86.2->99.2 ps and t_valid90 166.4->324.1 ps, because the switch's own capacitance joins the resonance."
+ },
+
+ "definitions_of_the_two_intervals_PRE_STATED": {
+  "t_hop": "MEASURED. Switch close (T0) to the probe-located true current zero at which the switch opens. The rail transfer.",
+  "t_settle": "MEASURED, on a SEPARATE ideal-supply deck, at the MEASURED delivered swing of each grid point: the cell floor t90 = time for the 1.12u/0.74u inverter with a 2 fF load to reach 90% of its supply when that supply is stepped (2 ps edge) to V. L-INDEPENDENT by construction -- it is a function of delivered supply only. This is the brief's definition and the quantity whose curve step (c) extends upward.",
+  "SUM_objective": "t_hop + t_settle -- ADJACENT transfer (bank N -> N+1), where the bank must drain and hold its outputs in series.",
+  "MAX_objective": "max(t_hop, t_settle) -- STAGE-SKIPPING (N -> N+2), where transfer and settle involve different banks and overlap; minimised where the two are BALANCED.",
+  "also_reported_because_it_is_the_honest_check": "the DIRECTLY MEASURED in-bank times on the same rows: t_rail90 (rail reaches 90% of final), t_settle90 (all 8 outputs within 90% of the FINAL rail), t_valid90 (all 8 within 90% of the INSTANTANEOUS rail, and staying there -- the committed, stricter metric) and t_level = max(t_hop, t_valid90). PRE-STATED EXPECTATION: the floor-based t_settle will UNDER-predict the in-bank t_valid90, because in the bank the cells cannot start settling until the rail arrives, and the rail overshoots and then decays so that '90% of the instantaneous rail' is a moving target. Committed evidence already in hand: at L=15 nH / W=30 / dV=1.2, floor(VBEND=0.7138) ~ 110 ps vs MEASURED t_settle90 115.6 ps (+5%) and t_valid90 123.4 ps (+12%); at dV=1.5, floor(VBEND=0.8961) ~ 65 ps vs MEASURED t_settle90 90.5 ps (+39%) and t_valid90 95.1 ps (+46%). The gap GROWS with dV because the rail arrival time stops being negligible against the cell floor. BOTH surfaces are therefore reported in a MODEL form (from t_settle) and a MEASURED form (from t_valid90); if the two forms put the optimum in different places, that is the headline finding, not a footnote."
+ },
+
+ "predicted_balance_points_PRE_REGISTERED": {
+  "how": "predictions.json, built from committed data only: (i) the committed 9-point cell floor curve t90(V) [0.4885216 -> 801.2661 ps, 0.5422147 -> 397.8699, 0.5883760 -> 252.7525, 0.6196049 -> 197.0207, 0.6496840 -> 160.4934, 0.6754250 -> 137.7454, 0.8 -> 81.0429, 1.0 -> 51.5050, 1.2 -> 40.4175], log-t interpolated; (ii) t_hop = a_W*sqrt(L_nH) fitted per width on the committed equal-bank rows: a_15 = 15.8597, a_30 = 16.8684, a_60 = 17.6916, a_120 = 18.3181 (n = 26/10/6/4 rows); (iii) the delivered-swing fraction VBEND/dV = p + q*ln(L_nH), fitted per width: W15 0.51068+0.03126lnL, W30 0.54214+0.01846lnL, W60 0.55165+0.00903lnL. Support for treating VBEND/dV as dV-INDEPENDENT: MEASURED 0.5948 at dV=1.2 vs 0.5974 at dV=1.5, same L=15 nH and W=30 um -- 0.4% apart.",
+  "MAX_objective_balance_L_nH_and_level_time_ps": {
+   "W=15um": {"dv1.08": [65.2, 128.0], "dv1.20": [39.7, 99.9], "dv1.32": [25.3, 79.7], "dv1.35": [23.6, 77.0], "dv1.50": [16.7, 64.9], "dv1.65": [12.0, 55.0]},
+   "W=30um": {"dv1.08": [70.8, 141.9], "dv1.20": [40.9, 107.9], "dv1.32": [24.4, 83.3], "dv1.35": [22.2, 79.4], "dv1.50": [15.4, 66.3], "dv1.65": [10.8, 55.5]},
+   "W=60um": {"dv1.08": [93.8, 171.4], "dv1.20": [47.6, 122.1], "dv1.32": [27.6, 93.0], "dv1.35": [24.1, 86.9], "dv1.50": [15.7, 70.0], "dv1.65": [10.8, 58.3]}
+  },
+  "SUM_objective_unconstrained_optimum_L_nH_and_level_time_ps": {
+   "W=15um": {"dv1.08": [18.3, 228.3], "dv1.20": [7.0, 173.7], "dv1.32": [5.3, 139.9], "dv1.35": [4.9, 132.6], "dv1.50": [2.1, 103.8], "dv1.65": [1.1, 89.4]},
+   "W=30um": {"dv1.08": [8.8, 235.0], "dv1.20": [3.1, 167.3], "dv1.32": [1.8, 131.8], "dv1.35": [1.7, 124.4], "dv1.50": [1.0, 95.5], "dv1.65": [1.0, 82.3]},
+   "W=60um": {"dv1.08": [3.6, 249.2], "dv1.20": [1.2, 166.8], "dv1.32": [1.0, 127.7], "dv1.35": [1.0, 120.2], "dv1.50": [1.0, 93.8], "dv1.65": [1.0, 80.8]}
+  },
+  "PRE_STATED_expectation_1": "The MAX surface has a GENUINE INTERIOR optimum in L at every dV (t_hop rises as sqrt(L) while t_settle falls with L through the delivered swing), and is MONOTONE in dV to the envelope edge: the balanced level time falls all the way to dV=1.65. So the MAX optimum is predicted to sit at the dV ENVELOPE EDGE in dV and INTERIOR in L.",
+  "PRE_STATED_expectation_2": "The SUM surface's UNCONSTRAINED optimum is predicted at L = 1-18 nH, which is OUTSIDE the functional region: MEASURED, no width in {15,30,60,120,240} um satisfies drain and swing together below ~6 nH at dV=1.2 or ~30 nH at dV=1.0. The SUM optimum is therefore predicted to be CONSTRAINED -- to sit exactly ON the C2 rail-drain boundary, at the smallest L that still drains at the minimum sufficient W -- and NOT to be a stationary interior point. If it turns out interior, the prediction is wrong and that is a finding.",
+  "PRE_STATED_expectation_3": "Higher dV is predicted to RELAX the drain constraint in absolute volts (committed evidence: at L=15 nH / W=30, VA_open falls from 0.1277 V at dV=1.2 to 0.0733 V at dV=1.5 in the independent skeptic harness), so the drain boundary should move to smaller L as dV rises, and both optima should improve monotonically with dV.",
+  "comparator": "92.8 ps per CMOS logic level (sha_slice generic, 0.928 ns over depth 10). Every ratio in the verdict uses 92.8 ps. The mapped netlist's depth-8 / 116.0 ps-per-level figure FLATTERS QAL and is mentioned only as a note."
+ },
+
+ "two_high_stack_question_PRE_STATED": {
+  "why_it_gates_everything": "The bank measured here is the inverter/NAND2-class SHALLOW-STACK bank. The Vortex ALU's dominant mapped cell sg13g2_o21ai_1 (855 of 4027) has a 2-HIGH pMOS series pull-up and MEASURED never settles: 25.3% of rail at freeze and 49.5% after a 500 ps tail at dV=1.0, 82.99% at dV=1.5 with t_valid80 first existing at 515.1 ps and t_valid90 never. If a higher swing rescues 2-high stacks the shallow-stack library restriction relaxes, which would be the most valuable result of this run.",
+  "decisive_measurement_pre_stated": "The o21ai bank at dV=1.5 delivers only VBEND = 0.6077 V (vs 0.8961 V for the inverter bank at the SAME dV, L and W) because the o21ai bank is a far heavier, DC-conducting load -- VA_open goes NEGATIVE (-0.174 V), i.e. bank A loses more charge than it stored. So 'the stack fails' and 'the bank cannot deliver to the stack' are CONFOUNDED in every measurement so far. This track separates them: (i) an IDEAL-SUPPLY o21ai floor deck sweeping the supply from 0.60 to 1.65 V finds the swing at which a 2-high stack DOES reach 90%, if any -- that is the stack's own requirement, free of any delivery question; (ii) the o21ai BANK at dV=1.32/1.35/1.50/1.65 measures what a real bank actually delivers. The verdict is then one of three: (A) the stack settles above some swing AND a bank can deliver it -> the shallow-stack restriction RELAXES; (B) the stack settles above some swing but no in-envelope bank delivers it -> the restriction stands, and the binding constraint is named as DELIVERY (with the unequal-bank / larger-CA lever identified); (C) the stack does not settle at ANY characterised swing even from an ideal supply -> the restriction is fundamental at this node.",
+  "generosity_declared": "the o21ai bank uses l=0.13u (the cached geometry) where the mapped netlist uses the stdcell 0.15u. 0.13u is the STRONGER device, so every o21ai number here is GENEROUS to QAL."
+ },
+
+ "known_limitations_declared_up_front": {
+  "junction_capacitance_absent": "sg13lv_compat.sp ZEROES ad/as/pd/ps, so junction capacitance is absent from every device. EVERY t_hop, settling time and energy here is a LOWER BOUND on a real layout. Stated again on every headline.",
+  "ideal_inductor": "LT is an ideal inductor with a lumped series RS = 10 ohm. MEASURED, the TG channel resistance during the hop is 96-130 ohm, so RS is NOT the loss limiter and the fast points are switch-conduction limited, not inductor limited.",
+  "no_layout_parasitics": "no interconnect, no bank-to-bank routing, no inductor self-capacitance.",
+  "single_hop": "this is ONE hop with a real bank. It measures WHERE to operate; the 4-bank chain runs confirm the topology and the overlap. It does not re-derive them."
+ },
+
+ "deliverables": ["PRE_REGISTERED.json (this file)", "predictions.json", "RESULTS.json", "rows.json", "floor.json", "o21.json", "AMENDMENT.md if any protocol change is needed after the instrument check"],
+
+ "environment": {
+  "xyce": "/usr/local/src/xyce-build/src/Xyce",
+  "psp103_va": "/usr/local/share/xyce/verilog-a/psp103/psp103.va",
+  "model": "/usr/local/src/kestrel/sim/models/sg13g2_psp103_tt.lib",
+  "shim": "/usr/local/src/stat-sim/qal/sg13lv_compat.sp",
+  "own_cache": "/tmp/claude-1001/-usr-local-src/4921ad0c-f17b-4b84-986a-5917c9ebd2a6/scratchpad/vae_cache_dvopt",
+  "concurrency": "<= 4 heavy Xyce jobs; two other workflows share this 16-core box"
+ }
+}
