@@ -1,0 +1,422 @@
+{
+ "_doc": "MEASUREMENT 4, from the WAVEFORM: are the hop and the settle actually CONCURRENT?\n\nThe claim being tested is that a level costs max(t_hop, t_settle) rather than their\nsum, i.e. that while hop h is moving charge into bank h+2, the stage that FEEDS bank\nh+2 is settling at the same time.  This reads both intervals out of the .prn and\nreports whether they overlap, with the overlap fraction.  Nothing is assembled from\nparts -- both intervals come from the same trace.",
+ "_I_threshold_uA": 5.0,
+ "rows": {
+  "r_s4_free_T200_dv1000_L1_W10_t20_f0": {
+   "scheme": "s4",
+   "mode": "free",
+   "dv": 1.0,
+   "T_ps": 200,
+   "evidence": [
+    {
+     "hop": 1,
+     "src": 1,
+     "dst": 3,
+     "hop_current_interval_ps": [
+      200.45,
+      299.99
+     ],
+     "hop_duration_ps": 99.54,
+     "feeder_stage": 2,
+     "feeder_is_a_HEAD_bank": true,
+     "CONCURRENT": null,
+     "note": "feeder is a HEAD bank: its rail is up from t=0 and the data pattern is STATIC, so its outputs are at their DC solution from t=0 and there is no settling transition to overlap with. Not an overlap failure -- the quantity does not exist for this stage."
+    },
+    {
+     "hop": 2,
+     "src": 2,
+     "dst": 4,
+     "hop_current_interval_ps": [
+      400.49,
+      498.15
+     ],
+     "hop_duration_ps": 97.66,
+     "feeder_stage": 3,
+     "feeder_is_a_HEAD_bank": false,
+     "feeder_settle_search_from_ps": 200.0,
+     "feeder_boundary_ps": 400.0,
+     "feeder_settle": {
+      "gate": 1,
+      "t10": 200.0,
+      "t90": null,
+      "fmax": 0.3933,
+      "kind": "never_reaches_90",
+      "span": null
+     },
+     "CONCURRENT": null,
+     "note": "the feeder stage never_reaches_90, so there is no 10-90 settle interval to place against the hop. max fraction attained = 0.3933"
+    }
+   ]
+  },
+  "r_s4_free_T200_dv1200_L5_W10_t12_f0": {
+   "scheme": "s4",
+   "mode": "free",
+   "dv": 1.2,
+   "T_ps": 200,
+   "evidence": [
+    {
+     "hop": 1,
+     "src": 1,
+     "dst": 3,
+     "hop_current_interval_ps": [
+      200.57,
+      302.91
+     ],
+     "hop_duration_ps": 102.34,
+     "feeder_stage": 2,
+     "feeder_is_a_HEAD_bank": true,
+     "CONCURRENT": null,
+     "note": "feeder is a HEAD bank: its rail is up from t=0 and the data pattern is STATIC, so its outputs are at their DC solution from t=0 and there is no settling transition to overlap with. Not an overlap failure -- the quantity does not exist for this stage."
+    },
+    {
+     "hop": 2,
+     "src": 2,
+     "dst": 4,
+     "hop_current_interval_ps": [
+      400.57,
+      499.88
+     ],
+     "hop_duration_ps": 99.32,
+     "feeder_stage": 3,
+     "feeder_is_a_HEAD_bank": false,
+     "feeder_settle_search_from_ps": 200.0,
+     "feeder_boundary_ps": 400.0,
+     "feeder_settle": {
+      "gate": 1,
+      "t10": 200.0,
+      "t90": null,
+      "fmax": 0.3922,
+      "kind": "never_reaches_90",
+      "span": null
+     },
+     "CONCURRENT": null,
+     "note": "the feeder stage never_reaches_90, so there is no 10-90 settle interval to place against the hop. max fraction attained = 0.3922"
+    }
+   ]
+  },
+  "r_s4_free_T120_dv1500_L5_W10_t12_f0": {
+   "scheme": "s4",
+   "mode": "free",
+   "dv": 1.5,
+   "T_ps": 120,
+   "evidence": [
+    {
+     "hop": 1,
+     "src": 1,
+     "dst": 3,
+     "hop_current_interval_ps": [
+      200.73,
+      307.34
+     ],
+     "hop_duration_ps": 106.61,
+     "feeder_stage": 2,
+     "feeder_is_a_HEAD_bank": true,
+     "CONCURRENT": null,
+     "note": "feeder is a HEAD bank: its rail is up from t=0 and the data pattern is STATIC, so its outputs are at their DC solution from t=0 and there is no settling transition to overlap with. Not an overlap failure -- the quantity does not exist for this stage."
+    },
+    {
+     "hop": 2,
+     "src": 2,
+     "dst": 4,
+     "hop_current_interval_ps": [
+      320.72,
+      423.6
+     ],
+     "hop_duration_ps": 102.88,
+     "feeder_stage": 3,
+     "feeder_is_a_HEAD_bank": false,
+     "feeder_settle_search_from_ps": 200.0,
+     "feeder_boundary_ps": 320.0,
+     "feeder_settle": {
+      "gate": 1,
+      "t10": 200.0,
+      "t90": null,
+      "fmax": 0.3125,
+      "kind": "never_reaches_90",
+      "span": null
+     },
+     "CONCURRENT": null,
+     "note": "the feeder stage never_reaches_90, so there is no 10-90 settle interval to place against the hop. max fraction attained = 0.3125"
+    }
+   ]
+  },
+  "r_s4_rtu_T200_dv1000_L1_W10_t20_f0": {
+   "scheme": "s4",
+   "mode": "rtu",
+   "dv": 1.0,
+   "T_ps": 200,
+   "evidence": [
+    {
+     "hop": 1,
+     "src": 1,
+     "dst": 3,
+     "hop_current_interval_ps": [
+      200.45,
+      306.2
+     ],
+     "hop_duration_ps": 105.75,
+     "feeder_stage": 2,
+     "feeder_is_a_HEAD_bank": true,
+     "CONCURRENT": null,
+     "note": "feeder is a HEAD bank: its rail is up from t=0 and the data pattern is STATIC, so its outputs are at their DC solution from t=0 and there is no settling transition to overlap with. Not an overlap failure -- the quantity does not exist for this stage."
+    },
+    {
+     "hop": 2,
+     "src": 2,
+     "dst": 4,
+     "hop_current_interval_ps": [
+      400.44,
+      504.59
+     ],
+     "hop_duration_ps": 104.15,
+     "feeder_stage": 3,
+     "feeder_is_a_HEAD_bank": false,
+     "feeder_settle_search_from_ps": 200.0,
+     "feeder_boundary_ps": 400.0,
+     "feeder_settle": {
+      "gate": 1,
+      "t10": 200.11245599999998,
+      "t90": null,
+      "fmax": 0.5948,
+      "kind": "never_reaches_90",
+      "span": null
+     },
+     "CONCURRENT": null,
+     "note": "the feeder stage never_reaches_90, so there is no 10-90 settle interval to place against the hop. max fraction attained = 0.5948"
+    }
+   ]
+  },
+  "r_s4_rtu_T200_dv1200_L1_W10_t20_f0": {
+   "scheme": "s4",
+   "mode": "rtu",
+   "dv": 1.2,
+   "T_ps": 200,
+   "evidence": [
+    {
+     "hop": 1,
+     "src": 1,
+     "dst": 3,
+     "hop_current_interval_ps": [
+      200.58,
+      308.67
+     ],
+     "hop_duration_ps": 108.1,
+     "feeder_stage": 2,
+     "feeder_is_a_HEAD_bank": true,
+     "CONCURRENT": null,
+     "note": "feeder is a HEAD bank: its rail is up from t=0 and the data pattern is STATIC, so its outputs are at their DC solution from t=0 and there is no settling transition to overlap with. Not an overlap failure -- the quantity does not exist for this stage."
+    },
+    {
+     "hop": 2,
+     "src": 2,
+     "dst": 4,
+     "hop_current_interval_ps": [
+      400.56,
+      506.01
+     ],
+     "hop_duration_ps": 105.45,
+     "feeder_stage": 3,
+     "feeder_is_a_HEAD_bank": false,
+     "feeder_settle_search_from_ps": 200.0,
+     "feeder_boundary_ps": 400.0,
+     "feeder_settle": {
+      "gate": 1,
+      "t10": 200.366002,
+      "t90": null,
+      "fmax": 0.497,
+      "kind": "never_reaches_90",
+      "span": null
+     },
+     "CONCURRENT": null,
+     "note": "the feeder stage never_reaches_90, so there is no 10-90 settle interval to place against the hop. max fraction attained = 0.497"
+    }
+   ]
+  },
+  "r_s4_rtu_T120_dv1500_L1_W10_t20_f0": {
+   "scheme": "s4",
+   "mode": "rtu",
+   "dv": 1.5,
+   "T_ps": 120,
+   "evidence": [
+    {
+     "hop": 1,
+     "src": 1,
+     "dst": 3,
+     "hop_current_interval_ps": [
+      200.74,
+      312.64
+     ],
+     "hop_duration_ps": 111.9,
+     "feeder_stage": 2,
+     "feeder_is_a_HEAD_bank": true,
+     "CONCURRENT": null,
+     "note": "feeder is a HEAD bank: its rail is up from t=0 and the data pattern is STATIC, so its outputs are at their DC solution from t=0 and there is no settling transition to overlap with. Not an overlap failure -- the quantity does not exist for this stage."
+    },
+    {
+     "hop": 2,
+     "src": 2,
+     "dst": 4,
+     "hop_current_interval_ps": [
+      320.67,
+      429.49
+     ],
+     "hop_duration_ps": 108.82,
+     "feeder_stage": 3,
+     "feeder_is_a_HEAD_bank": false,
+     "feeder_settle_search_from_ps": 200.0,
+     "feeder_boundary_ps": 320.0,
+     "feeder_settle": {
+      "gate": 1,
+      "t10": 211.784466,
+      "t90": null,
+      "fmax": 0.2915,
+      "kind": "never_reaches_90",
+      "span": null
+     },
+     "CONCURRENT": null,
+     "note": "the feeder stage never_reaches_90, so there is no 10-90 settle interval to place against the hop. max fraction attained = 0.2915"
+    }
+   ]
+  },
+  "r_s5_free_T200_dv1200_L1_W10_t20_f0": {
+   "scheme": "s5",
+   "mode": "free",
+   "dv": 1.2,
+   "T_ps": 200,
+   "evidence": [
+    {
+     "hop": 1,
+     "src": 1,
+     "dst": 3,
+     "hop_current_interval_ps": [
+      200.58,
+      308.62
+     ],
+     "hop_duration_ps": 108.04,
+     "feeder_stage": 2,
+     "feeder_is_a_HEAD_bank": true,
+     "CONCURRENT": null,
+     "note": "feeder is a HEAD bank: its rail is up from t=0 and the data pattern is STATIC, so its outputs are at their DC solution from t=0 and there is no settling transition to overlap with. Not an overlap failure -- the quantity does not exist for this stage."
+    },
+    {
+     "hop": 2,
+     "src": 2,
+     "dst": 4,
+     "hop_current_interval_ps": [
+      400.54,
+      499.93
+     ],
+     "hop_duration_ps": 99.39,
+     "feeder_stage": 3,
+     "feeder_is_a_HEAD_bank": false,
+     "feeder_settle_search_from_ps": 200.0,
+     "feeder_boundary_ps": 400.0,
+     "feeder_settle": {
+      "gate": 1,
+      "t10": 200.366895,
+      "t90": null,
+      "fmax": 0.3167,
+      "kind": "never_reaches_90",
+      "span": null
+     },
+     "CONCURRENT": null,
+     "note": "the feeder stage never_reaches_90, so there is no 10-90 settle interval to place against the hop. max fraction attained = 0.3167"
+    },
+    {
+     "hop": 3,
+     "src": 3,
+     "dst": 5,
+     "hop_current_interval_ps": [
+      600.46,
+      699.61
+     ],
+     "hop_duration_ps": 99.15,
+     "feeder_stage": 4,
+     "feeder_is_a_HEAD_bank": false,
+     "feeder_settle_search_from_ps": 400.0,
+     "feeder_boundary_ps": 600.0,
+     "feeder_settle": {
+      "gate": 0,
+      "t10": 400.0,
+      "t90": null,
+      "fmax": 0.5908,
+      "kind": "never_reaches_90",
+      "span": null
+     },
+     "CONCURRENT": null,
+     "note": "the feeder stage never_reaches_90, so there is no 10-90 settle interval to place against the hop. max fraction attained = 0.5908"
+    }
+   ]
+  },
+  "r_s5_rtu_T200_dv1200_L1_W10_t20_f0": {
+   "scheme": "s5",
+   "mode": "rtu",
+   "dv": 1.2,
+   "T_ps": 200,
+   "evidence": [
+    {
+     "hop": 1,
+     "src": 1,
+     "dst": 3,
+     "hop_current_interval_ps": [
+      200.57,
+      313.21
+     ],
+     "hop_duration_ps": 112.64,
+     "feeder_stage": 2,
+     "feeder_is_a_HEAD_bank": true,
+     "CONCURRENT": null,
+     "note": "feeder is a HEAD bank: its rail is up from t=0 and the data pattern is STATIC, so its outputs are at their DC solution from t=0 and there is no settling transition to overlap with. Not an overlap failure -- the quantity does not exist for this stage."
+    },
+    {
+     "hop": 2,
+     "src": 2,
+     "dst": 4,
+     "hop_current_interval_ps": [
+      400.5,
+      505.84
+     ],
+     "hop_duration_ps": 105.34,
+     "feeder_stage": 3,
+     "feeder_is_a_HEAD_bank": false,
+     "feeder_settle_search_from_ps": 200.0,
+     "feeder_boundary_ps": 400.0,
+     "feeder_settle": {
+      "gate": 1,
+      "t10": 213.938741,
+      "t90": null,
+      "fmax": 0.3625,
+      "kind": "never_reaches_90",
+      "span": null
+     },
+     "CONCURRENT": null,
+     "note": "the feeder stage never_reaches_90, so there is no 10-90 settle interval to place against the hop. max fraction attained = 0.3625"
+    },
+    {
+     "hop": 3,
+     "src": 3,
+     "dst": 5,
+     "hop_current_interval_ps": [
+      600.49,
+      715.52
+     ],
+     "hop_duration_ps": 115.03,
+     "feeder_stage": 4,
+     "feeder_is_a_HEAD_bank": false,
+     "feeder_settle_search_from_ps": 400.0,
+     "feeder_boundary_ps": 600.0,
+     "feeder_settle": {
+      "gate": 0,
+      "t10": 400.0,
+      "t90": null,
+      "fmax": 0.8617,
+      "kind": "never_reaches_90",
+      "span": null
+     },
+     "CONCURRENT": null,
+     "note": "the feeder stage never_reaches_90, so there is no 10-90 settle interval to place against the hop. max fraction attained = 0.8617"
+    }
+   ]
+  }
+ }
+}

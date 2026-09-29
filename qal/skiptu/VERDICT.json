@@ -1,0 +1,227 @@
+{
+  "_doc": "THE SUSTAINED SKIP CHAIN: skip schedule (1->3, 2->4) WITH TOP-UP ON THE HELD BANKS. Top-level verdict. Pre-registration PRE_REGISTERED.json (20:29:39, sole file on disk); protocol corrections AMENDMENT.md (A1a-A1d, A2-A8); per-row data rows.json; scored RESULTS.json; waveform overlap OVERLAP.json; top-up-cell fixture TUCELL.json; instrument check INSTRUMENT.json.",
+  "date": "2026-09-28",
+  "n_rows_measured": 24,
+  "n_rows_error": 0,
+  "A6_instrument": "24/24 rows PASS the pre-registered 1.0 uA interrupted-current gate, max |IZ| 0.019 uA (after A4 and A8 were fixed; all rows measured under the defective zeros were discarded and re-measured)",
+
+  "INSTRUMENT_CHECK_A5": {
+    "verdict": "PASS, digit-checked",
+    "t_hop_ps": {"mine": 65.49500982, "committed": 65.49500982344826, "rel": 4.2e-12},
+    "VBEND": {"mine": 0.7138163, "committed": 0.7138163, "rel": 0.0},
+    "VBPK": {"mine": 0.8368896, "committed": 0.8368896, "rel": 0.0},
+    "cells_settled": "8/8, minimum 100.000000%",
+    "mt0_keys": "117/129 BIT-IDENTICAL, worst rel 1.13e-06 on QGH_Z (a t=0 pedestal charge, print rounding)",
+    "decks": "md5-identical byte copies of committed qal/lsweep/h_L15_W30_dv120.cir and p_L15_W30_dv120.cir; own PYMS_VAE_CACHE, sibling .so deliberately NOT copied"
+  },
+
+  "INDEPENDENT_CROSS_VALIDATION_against_the_sibling_skip4_run": {
+    "_why": "my harness was built separately (own deck assembly, own extractor) and reuses only skip.py's pure builders. Its 5-bank rows reproduce the sibling's numbers to 4 significant figures on FOUR independent quantities.",
+    "s5_hop1_true_zero_ps": {"mine": 103.68, "skip4": 103.681},
+    "s5_free_T200_dv1200_worst_gate_pct": {"mine": 31.62, "skip4": 31.62},
+    "s5_free_T300_dv1200_worst_gate_pct": {"mine": 25.18, "skip4": 25.18},
+    "s5_best_row_worst_gate_pct": {"mine": 36.12, "skip4_max_over_22_rows": 36.12}
+  },
+
+  "HEADLINE": {
+    "Q1_does_every_gate_in_all_four_stages_reach_90pct": "NO. Not at any beat period, any dV, any top-up strength or timing, in either the 4-bank or the 5-bank topology.",
+    "max_worst_gate_over_all_24_rows_pct": 59.48,
+    "which_row": "r_s4_rtu_T200_dv1000 -- bounding resistive top-up, dV=1.0, T=200 ps",
+    "best_without_any_top_up_pct": 39.31,
+    "achieved_beat_period_at_90pct": "NONE",
+    "achieved_beat_period_at_75pct": "NONE",
+    "achieved_beat_period_at_50pct": "T = 200 ps, dV = 1.0, bounding top-up (59.48%) -- the only row above 50%",
+    "Q2_does_the_delivered_input_HIGH_clear_0.4400_V": "YES, and this is the run's positive result. The skip schedule clears it at EVERY stage WITHOUT any top-up at short beats, which is exactly what the adjacent chain could not do.",
+    "best_min_delivered_HIGH_V": 0.531571,
+    "adjacent_chain_comparator_V": 0.4053,
+    "improvement_over_adjacent_mV": 126.3,
+    "margin_over_the_0.4400_requirement_mV": 91.6,
+    "Q3_is_the_hold_sustained": "The hold never needed sustaining. MEASURED: over the FULL two-beat charge-then-drain window the passive held rail RISES 42.4-77.4 mV, it does not droop. Top-up restores the rail by +434 mV and still cannot reach 90%, because the binding term is not the hold."
+  },
+
+  "m1_THRESHOLD_TEST_the_headline": {
+    "gate_V": 0.44,
+    "_note": "reported PER STAGE, never as a chain minimum. In the 4-bank topology stages 2 and 3 are fed by HEAD banks (ideally pre-charged) so their delivered HIGH is structurally high; only STAGE 4 has a predecessor whose rail came from a real inductive hop, so stage 4 is the binding number (AMENDMENT A2).",
+    "stage4_delivered_HIGH_V_by_beat_dV1p2": {
+      "free": {"120": 0.487566, "160": 0.448344, "200": 0.399561, "300": 0.299635},
+      "bounding_topup": {"120": 0.4919, "160": 0.4726, "200": 0.884658, "300": 0.4313}
+    },
+    "clears_0p4400_at_every_stage": {
+      "free_dV1p2": ["T=120 (+47.6 mV)", "T=160 (+8.3 mV)"],
+      "free_dV1p5": ["T=120"],
+      "bounding_topup_dV1p2": ["T=120", "T=160", "T=200"],
+      "bounding_topup_dV1p5": ["T=120", "T=160"]
+    },
+    "fails": "free dV1.2 at T>=200 (-40.4 mV at 200, -140.4 mV at 300); topped dV1.2 at T=300 (-8.7 mV); all dV1.5 at T>=200",
+    "VERDICT": "CLEARED. The 0.4400 V number the adjacent chain missed by 34.7 mV is cleared by the skip schedule with up to +91.6 mV of margin. Stage-skipping does repair the HIGH-level collapse it was proposed to repair."
+  },
+
+  "m2_PER_GATE_SETTLING_and_which_device_binds": {
+    "_convention": "worst gate, never an average; V(o)/V(rail) for a pull-UP cell and 1 - V(o)/V(rail) for a pull-DOWN cell, at that stage's own boundary",
+    "free_dV1p2_T200_by_stage_pct": {"1": 99.95, "2": 60.65, "3": 39.2, "4": 63.52},
+    "free_dV1p2_T200_stage3_split": {"pull_up_pct": 39.2, "pull_down_pct": 100.68,
+      "rail_V": 0.765884, "Vtp_abs_V": 0.4403, "pMOS_overdrive_V": 0.3256},
+    "topped_dV1p2_T200_by_stage_pct": {"1": 99.95, "2": 50.76, "3": 52.04, "4": 96.8},
+    "topped_dV1p0_T200_by_stage_pct": {"1": 99.95, "2": 76.04, "3": 59.48, "4": 88.96},
+    "WHAT_BINDS_and_it_MOVES": {
+      "without_top_up": "STAGE 3, PULL-UP limited. Its rail is the hop-delivered 0.766 V and |Vtp| is 0.4403 V, so the cell pMOS has only 0.326 V of overdrive to charge its output within one beat. Its pull-DOWN is at 100.68% -- the nMOS is fine.",
+      "with_top_up": "the binding stage MOVES to STAGE 2, PULL-DOWN limited, and the deepest stage RECOVERS (stage 4 reaches 96.80%). Top-up fixes the stage it powers and the one after it, and degrades the stage that FEEDS it.",
+      "why_top_up_hurts_the_feeding_stage": "the topped bank's rail STEP couples backward through its own cell gate capacitance into the predecessor's output nodes, lifting the predecessor's LOW outputs. That is the pull-DOWN margin of the feeding stage. MEASURED: stage 2 goes 60.65% -> 50.76% at dV=1.2/T=200 while stage 4 goes 63.52% -> 96.80%.",
+      "depth_is_NOT_the_limit": "the deepest stage is the BEST stage once the rail is held up, so the chain is not limited by how many hops deep it runs."
+    },
+    "VERDICT": "FAIL. No row reaches 90% at all four stages. The limit is a DEVICE limit -- pMOS drive at a hop-delivered rail on a shallow stack -- and once that is relieved by holding the rail up, a SECOND device limit (backward gate coupling into the predecessor's LOW outputs) takes over."
+  },
+
+  "m3_THE_HOLD_with_and_without_top_up": {
+    "_the_only_topology_where_the_full_window_exists": "the 5-bank chain (hops 1->3, 2->4, 3->5): bank 3 is charged at beat 1 and DRAINED at beat 3. In the 4-bank chain the ask names, no hop-charged bank ever drains, so the charge-then-drain window does not exist there.",
+    "bank3_rail_life_beats": 2.0,
+    "hold_window_ps": {"T200": 296.32, "T300": 496.32},
+    "FREE_droop_over_the_full_window": {
+      "T200": {"rail_at_hop_zero_V": 0.610411, "rail_at_boundary_V": 0.65283, "change_mV": 42.42, "change_pct": 6.95},
+      "T300": {"rail_at_hop_zero_V": 0.610411, "rail_at_boundary_V": 0.657173, "change_mV": 46.76, "change_pct": 7.66}
+    },
+    "_the_sign_is_the_point": "the held rail RISES, it does not droop. +42.4 mV at T=200 and +46.8 mV at T=300 over a 296-496 ps hold. The 4-bank chain agrees: bank 3 +77.4 mV (+11.24%), bank 4 -7.4 mV (-1.15%).",
+    "TOPPED_UP_same_window": {
+      "T200": {"rail_at_hop_zero_V": 0.542083, "rail_at_boundary_V": 0.97625, "change_mV": 434.17},
+      "_reading": "the top-up works as a rail restorer -- +434 mV -- so this is not a case of the top-up failing to fire."
+    },
+    "does_the_bank_it_feeds_still_settle_at_the_END_of_the_window": {
+      "stage4_T200_free_pct": 59.08, "stage4_T200_topped_pct": 76.82,
+      "stage5_T200_free_pct": 34.74, "stage5_T200_topped_pct": 70.22,
+      "answer": "better with top-up, but still NOT 90% at either stage"
+    },
+    "VERDICT": "The brief's premise is REFUTED on this node. The held rail does sit still -- it drifts UPWARD by 42-77 mV across the full two-beat window -- so there is no hold droop for a top-up to repair. This is why a +434 mV rail restoration buys only +4.5 points at stage 3 (31.62% -> 36.12%). The 0.455 -> 0.403 V bleed the brief cites is a STRANDED HIGH ON A DATA NODE in the ADJACENT scheme, a different quantity from the held rail, and skipping already removes its cause. The sibling skip4 run measured the same thing independently (-28.6 mV worst, rising at long beats)."
+  },
+
+  "m4_BEAT_PERIOD_and_the_OVERLAP_claim": {
+    "measured_chain_hop_ps": {
+      "dV1p2": [97.977, 94.946], "dV1p5": [102.403, 98.037],
+      "with_topup_devices_on_the_rail": [103.681, 100.783],
+      "x_committed_single_hop": [1.496, 1.45],
+      "committed_single_hop_ps": 65.49500982344826
+    },
+    "_the_idle_devices_cost_5.70_ps": "adding the top-up transmission gates to the destination rail moves hop 1's zero from 97.977 to 103.681 ps WITHOUT them conducting -- pure loading (AMENDMENT A8)",
+    "T_over_t_hop_at_the_best_row": 2.041,
+    "OVERLAP_from_the_waveform": {
+      "answer": "NOT DEMONSTRATED, and the reason is not a scheduling failure",
+      "what_the_trace_shows": "the hop's own current interval is resolved cleanly (e.g. hop2 over [400.44, 504.59] ps), but the FEEDER stage never reaches 90% settled, so there is no 10-90% settle interval to place against it. Max settled fraction attained by the feeder: 0.317-0.595.",
+      "second_reason_reported_honestly": "the harness's data pattern is STATIC (bank 1's inputs are DC sources), so head-fed stages have NO settling transition at all -- their outputs are at their DC solution from t=0. What this harness measures is the response to the RAIL moving, not to a data edge. Reported rather than papered over.",
+      "consequence": "the max(t_hop, t_settle) claim -- 65.5 ps instead of 123.4 ps, the 1.4x win over a 92.8 ps CMOS level -- CANNOT be confirmed or refuted here, because t_settle does not terminate. It is not that the two intervals fail to overlap; it is that one of them has no end."
+    },
+    "VERDICT": "The beat binds on the MEASURED chain hop (94.9-103.7 ps), not on the top-up, so no sub-95 ps beat is admissible. There is no achieved beat period at 90% or 75%; the only row above 50% is T = 200 ps."
+  },
+
+  "m5_ACCUMULATED_DROOP_vs_the_120_mV_budget": {
+    "_measured_at_the_budget_s_own_dV": "dV = 1.0, T = 200 ps, so the comparison is apples-to-apples with the ~120 mV budget (cliff + 44 mV)",
+    "free": {"rails_V": {"1": 1.004961, "2": 0.981888, "3": 0.606415, "4": 0.583164},
+             "accumulated_mV": 421.8, "vs_budget": "OVER by 3.5x"},
+    "bounding_topup": {"rails_V": {"1": 1.004961, "2": 0.986851, "3": 0.847912, "4": 0.824663},
+                       "accumulated_mV": 180.3, "vs_budget": "OVER by 1.5x"},
+    "VERDICT": "OVER BUDGET in both cases. Top-up cuts the accumulated droop by 57% (421.8 -> 180.3 mV) but does not bring it inside 120 mV. At dV = 1.2 the free chain accumulates 567.7 mV and the topped chain 221.3 mV."
+  },
+
+  "m6_COST_reported_NOT_gated": {
+    "_units": "fJ and fC; sg13lv_compat.sp zeroes ad/as/pd/ps so junction capacitance is ABSENT and every charge and energy number is a LOWER BOUND",
+    "_metering": "1F integrators only, every one t0-referenced at 0.5 ps; gate cost is Q_gate*VGH with Q_gate MEASURED as half the |I| integral over every gate source, because an IDEAL PWL source reclaims the discharge energy and its net integral would understate a real driver by design",
+    "THE_ARCHITECTURE_S_PREFERRED_FORM_pulsed_inductor": {
+      "verdict": "NOT DEMONSTRATED at this scale on this node",
+      "on_a_clean_small_fixture_28.98_fF_bank_at_0.700_V": {
+        "q_delivered_fC": [-2.56, -1.203],
+        "q_from_supply_fC": [57.173, 65.52],
+        "charge_multiplication": [-0.045, -0.018],
+        "required_for_buck_action": "> 1",
+        "bank_V0_to_Vf": ["0.7000 -> 0.6474", "0.7000 -> 0.6762"]
+      },
+      "E_switch_gate_drive_fJ_per_beat_two_banks": [139.52, 146.36],
+      "driven_gates_per_topped_bank": 4,
+      "devices_added_per_topped_bank": 5,
+      "inductors_added_per_topped_bank": 1,
+      "gate_drive_over_energy_delivered": "INFINITE -- the gate drive is 139-146 fJ and the delivery is zero",
+      "vs_committed_single_hop_dissipation_8.3828_fJ": "~17x the hop it is meant to assist, for zero delivery",
+      "two_measured_reasons": [
+        "the switch node is UNHOLDABLE in this model: with ad/as/pd/ps = 0 its only capacitance is gate overlap, so its own gate drive moves it hundreds of mV (measured -0.30 to -0.42 V) and reverses the inductor",
+        "the path is RESISTANCE-dominated, not inductance-dominated: at Ltu = 5 nH the current peaks 103.7 ps AFTER the high side shut off, an RL/RC curve rather than a resonant ring-down, so the inductor performs no voltage conversion and buck action is absent"
+      ],
+      "_the_committed_record_predicted_this_corner": "qal_pulse_topup.py: 'Small Q + small L = unswitchably short pulse. Relief comes from a BIGGER BANK and a LARGER inductor.' An 8-cell 29 fF bank is that corner."
+    },
+    "THE_BOUNDING_FORM_used_for_every_reported_topup_row": {
+      "form": "chain3's resistive transmission gate to the supply, device and 20 ps window placement VERBATIM, fired at the START of the hold",
+      "_why_it_bounds": "charge-conserving and therefore inefficient, but it restores the rail as hard as a supply can, so it upper-bounds what ANY top-up can do for settling",
+      "_ideal_source_booking": "YES, labelled, never quoted as a QAL operating point",
+      "Q_gate_total_fC": 126.4725,
+      "E_switch_gate_drive_fJ_per_beat_two_banks": 189.7087,
+      "E_switch_gate_drive_fJ_per_bank_per_beat": 94.85,
+      "q_from_dV_node_fC": 71.294,
+      "driven_gates_per_topped_bank": 2,
+      "devices_added_per_topped_bank": 2,
+      "inductors_added": 0,
+      "vs_committed_single_hop_dissipation_8.3828_fJ": "the gate drive ALONE is ~11x the hop, per bank per beat",
+      "chain3_independent_booking_fJ_per_bank_per_hop": [15.2, 29.1],
+      "chain3_ratio_to_the_loss_it_repairs": [1.8, 3.5]
+    },
+    "INDUCTOR_COUNT_the_scarcest_component": {
+      "transfer_paths": 2,
+      "resistive_topup_adds": 0,
+      "pulsed_inductor_topup_would_add": 2,
+      "_note": "the record calls the inductor the scarcest component and the sigma0 architecture shares ONE across banks; a per-bank top-up inductor doubles the count in a 4-bank chain"
+    },
+    "THE_RECURSION_TRAP_counted": {
+      "statement": "the top-up switch has its own gate and something must drive it, and that drive is NOT recovered",
+      "measured": "2 driven gates per bank (bounding form) or 4 (pulsed-inductor form), each switched twice per beat",
+      "amortisation": "over the GATES INSIDE a bank -- bank size is a first-order energy parameter -- but NEVER over the bank COUNT: every bank needs its own pair. That is the B-invariant cost the brief names, and it is confirmed here.",
+      "width_tracking": "the switch width is a real strength knob because the path is resistance-dominated, and a width that must track the bank load makes the per-bank gate cost track the load too"
+    }
+  },
+
+  "SHAPE_OF_THE_SWEEPS": {
+    "strength_window_width_at_T200_dV1p2": {"10_ps": 39.52, "20_ps": 49.65, "40_ps": 47.02,
+      "shape": "INTERIOR OPTIMUM at 20 ps -- NOT monotone, and NOT saturating"},
+    "_why_an_interior_optimum": "too short and the rail is not restored; too long and the restoration lands close to the stage boundary, which is chain3's own measured A5 artefact -- it moves the goalpost the settling ratio is read against",
+    "beat_period_dV1p2_bounding_topup": {"120": 26.29, "160": 42.59, "200": 49.65, "300": 27.21,
+      "shape": "INTERIOR OPTIMUM at T = 200 ps"},
+    "dV": {"1.0": 59.48, "1.2": 49.65, "1.5": 0.51,
+      "shape": "MONOTONE DECREASING in dV at T = 200 -- lower dV is better",
+      "dV1p5_collapses": "at T >= 200, both free (5.18%, -0.49%) and topped (0.51%, -0.41%)",
+      "consequence_for_the_1.68x_dV1p5_claim": "the measured 1.68x worth of dV = 1.5 at a light single-hop load does NOT carry into the chain. In the chain dV = 1.5 is WORSE than dV = 1.2 at every beat period, and it collapses at long beats. A bigger swing raises the rail step, which worsens the backward gate coupling into the predecessor's LOW outputs."
+    }
+  },
+
+  "PRE_REGISTERED_EXPECTATIONS_SCORED": {
+    "P1_topup_helps_>=30_points_via_the_RAIL_not_the_hold": "PARTLY WRONG in magnitude, RIGHT in mechanism. Best gain is +20.17 points (dV=1.0, T=200: 39.31 -> 59.48), short of the >=30 I predicted, and at dV=1.5 and at T=120 the top-up HURTS (32.87 -> 26.29 at dV1.2/T120). The mechanism half is confirmed: the gain tracks the restored rail, and hold droop was never the term.",
+    "P2_0.4400_V_cleared_only_WITH_top_up": "WRONG, in the interesting direction. The skip schedule clears 0.4400 V at every stage WITHOUT any top-up at T = 120 and 160 (dV = 1.2) and at T = 120 (dV = 1.5). I predicted it would fail without top-up; it does not. This is the run's positive result and I had it backwards.",
+    "P3_monotone_then_saturating_in_strength_interior_optimum_in_time": "HALF WRONG. There IS an interior optimum in STRENGTH too (20 ps window, 39.52/49.65/47.02), not monotone-then-saturating. The interior optimum in time/beat is confirmed (T = 200).",
+    "P4_it_dies_on_COST_not_function": "CONFIRMED, and more strongly than predicted. Pulsed-inductor: 139-146 fJ of gate drive for ZERO net delivery. Bounding form: 94.9 fJ per bank per beat against an 8.38 fJ hop, ~11x.",
+    "P5_the_beat_binds_on_t_hop": "CONFIRMED. Measured chain hop 94.9-103.7 ps (1.45-1.50x the committed 65.495 ps single hop); no sub-95 ps beat admissible; T/t_hop = 2.04 at the best row.",
+    "P6_what_would_make_me_wrong_in_the_interesting_direction": "NOT TRIGGERED. No row reached 90% at all four stages at any top-up strength or timing, so the hold-limited hypothesis is not resurrected."
+  },
+
+  "WHAT_THIS_CLOSES": {
+    "statement": "This closes the unbuffered-QAL-pipeline question on SG13G2 for a shallow-stack bank, in the direction the brief said would be a result worth having.",
+    "what_stage_skipping_DOES_fix": "the HIGH-level collapse. A predecessor's logic HIGH is no longer referenced to a rail that the powering event drains, so the delivered HIGH clears the 0.4400 V device threshold with up to +91.6 mV of margin against the adjacent chain's -34.7 mV shortfall. That half of the proposal is CORRECT and MEASURED.",
+    "what_it_does_NOT_fix": "SETTLING. No gate configuration reaches 90% at all four stages at any beat period, dV, or top-up setting. The binding term is the cell pMOS's drive at a hop-delivered rail (0.326 V of overdrive over |Vtp| = 0.4403 V), and when a top-up relieves that, the binding term becomes the rail step coupling backward into the predecessor's LOW outputs.",
+    "what_top_up_does_and_does_not_do": "It restores the rail (+434 mV measured) and it moves the worst gate from 39.31% to 59.48%. It does not sustain anything, because nothing was decaying: the passive held rail RISES 42-77 mV across the full two-beat window. Top-up is repairing the HOP's 49% transfer loss, not the hold -- which is the inductive transfer's own job being done by a supply, and therefore not a QAL operating point.",
+    "the_honest_shape_of_the_negative_result": "an unbuffered pipeline on this node fails on DEVICE DRIVE at the delivered rail, not on schedule and not on hold. Changing the power schedule (skip vs adjacent) fixes the threshold and leaves the settling untouched. That is why no timing knob, no dV, and no top-up strength rescues it."
+  },
+
+  "SCOPE_AND_LABELS": {
+    "shallow_stack_only": "inverter/NAND2-class cells ONLY (pMOS 1.12 um / nMOS 0.74 um, l = 0.13 um, CL 2 fF). The ALU's dominant mapped cell sg13g2_o21ai_1 never settles at any operating point in the PDK envelope, so EVERY number here is a SHALLOW-STACK number and none of it generalises to a 2-high pMOS stack.",
+    "lower_bounds": "sg13lv_compat.sp zeroes ad/as/pd/ps, so junction capacitance is absent from every device. Charges and energies are LOWER BOUNDS. For the pulsed-inductor top-up this is not merely conservative -- the missing switch-node capacitance is FIRST-ORDER and makes that topology unsimulatable without an ASSUMED value (AMENDMENT A6).",
+    "ideal_source_bookings": "the chain head's 8 data inputs, the two power-chain heads' soft pre-charge gates, the switch-gate supply, and the bounding top-up's dV node. All labelled; the bounding top-up rows are never quoted as a QAL operating point.",
+    "assumed_values": "the top-up switch-node capacitance Cna (DERIVED ~8 fF, SWEPT 2/8/20 fF) is the only ASSUMED electrical value in the run, and it appears only in the pulsed-inductor fixture, not in any reported chain row.",
+    "corners": "instance-level DTA only; vt/gmin reserved and not used"
+  },
+
+  "MY_OWN_DEFECTS_found_and_corrected": {
+    "_why_listed": "six distinct defects in my own top-up plus two in my own instrument protocol. Every one was caught by running the free control FIRST and disbelieving any top-up that made the chain worse; none by inspecting the schematic. Three would have produced publishable-looking numbers.",
+    "A1a": "freewheel window ASSUMED rather than measured -> delivered charge -53.8 fC, settling -31.75%",
+    "A1b": "inductor permanently tied to the rail, so the park drained the bank through it",
+    "A1c": "the pulse's PREPARATION landed inside the charging hop",
+    "A1d": "OUT switch closed 2 ps before the high side -> 272 uA predicted / 268 uA measured reverse current",
+    "A5a": "releasing the park early kicked the inductor node to -0.33 V (0.0 uA -> -577 uA in 3 ps)",
+    "A5b": "delivered charge metered in the inductor branch instead of at the rail",
+    "A4": "hop zeros reused across beat periods -> 12-29 uA stranded (0.83 ps of zero error is worth ~35 uA/ps)",
+    "A8": "hop zeros reused across MODES -> 221 uA stranded; idle top-up gates shift the zero 5.70 ps by loading alone",
+    "_all_affected_rows": "discarded and re-measured, never annotated; the discarded numbers are named in AMENDMENT.md",
+    "_one_retraction": "I wrote in AMENDMENT.md that the dV=1.5/T=200 collapse was an instrument artefact of A4. The re-measurement REFUTED that: it reads 5.18% both before and after the fix. The collapse is real; the correction is recorded beside the original claim."
+  }
+}
