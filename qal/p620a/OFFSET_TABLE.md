@@ -1,5 +1,12 @@
 # On-host engine offset table: P620A-XYCE vs P620A-VACASK (tg15p anchor)
 
+> AMENDED 2026-09-30 after the independent skeptic pass (SKEPTIC_AMENDMENTS.md):
+> the VAEND row is VOID as originally recorded (it mixed Xyce's lagged FIND-AT
+> sample with VACASK's interp-at-AT; like-for-like it is +0.897% — outside
+> band), and the IZ footnote's cause is corrected to the measured Xyce FIND-AT
+> lag. 8 of 9 rows stand as recorded and were reproduced exactly on fresh
+> runs of both engines.
+
 Same host (P620a WSL2), same circuit (tg15p anchor; port per
 vacask_port/CORRESPONDENCE.md), same model source (PSP 103.4.0 CMC), same
 card (kestrel tt, verbatim minus the 10 params Xyce itself ignores). The
@@ -16,14 +23,14 @@ VACASK run: final port deck (gear, reltol=1e-5, op-forced 4-node island).
 |---|---|---|---|---|---|
 | VBEND (V) | 0.6758936 | 0.6760236 | +0.019% | 0.5% | PASS |
 | VBPK (V, ringing peak) | 0.7374377 | 0.7407486 | +0.449% | 0.5% | PASS (worst row) |
-| VAEND (V) | -0.09025661 | -0.09037411 | +0.130% | 0.5% | PASS |
+| VAEND (V) | -0.09025661 (mt0, LAGGED FIND-AT) | -0.09037411 (interp-at-AT) | +0.130% (mixed-method — VOID) | 0.5% | **VOID (Amendment 2): like-for-like offline both sides = +0.897%, OUTSIDE band. Ringing-instant instantaneous samples (VAEND/IZ class) are NOT cross-engine interchangeable; Xyce-only.** |
 | O1E = delivered cell rail (V) | 0.6758936 | 0.6760236 | +0.019% | 0.5% | PASS |
 | t_zcs (ps, this deck's own I(LT) zero, offline both sides) | 265.598 | 265.674 | +0.028% | 1% | PASS |
 | IPK (A) | 1.943655e-4 | 1.943464e-4 | -0.010% | (timing/current class, 1%) | PASS |
 | EOUTA (J) | 1.785814e-14 | 1.785569e-14 | -0.014% | 2% | PASS |
 | EINB (J) | 2.149297e-14 | 2.151458e-14 | +0.101% | 2% | PASS |
 | QTR (C) | 3.905386e-14 | 3.908256e-14 | +0.073% | 2% | PASS |
-| IZ (A, near-zero crossing sample) | -3.793985e-7 (mt0) / -2.412e-6 (offline prn) | -2.255e-6 | n/a | none pre-stated | reported only: zero-crossing sample, denominator ~0; method-dependent (mt0 uses solver grid, offline uses print grid); NOT a certified quantity |
+| IZ (A, near-zero crossing sample) | -3.793985e-7 (mt0) / -2.412e-6 (offline prn) | -2.255e-6 | n/a | none pre-stated | reported only: zero-crossing sample, denominator ~0; method-dependent — CAUSE CORRECTED (Amendment 3): Xyce mt0 FIND-AT returns a LAGGED sample (~0.86–0.98 ps early on this deck; mt0 IZ = prn value at t=315.780p vs AT=316.755p; the prn IS the solver grid, so the earlier "solver grid vs print grid" attribution was wrong); NOT a certified quantity |
 
 Notes, all MEASURED:
 - t_zcs here is the z-deck's own interpolated I(LT) downward zero (265.6 ps),

@@ -1,4 +1,16 @@
 # P620a Phase-2 certification + VACASK stand-up — RESULTS
+
+> AMENDED 2026-09-30: an independent skeptic pass (own driver, own fresh
+> caches) UPHELD the certification — tg15p mt0 BYTE-IDENTICAL to the
+> committed record, banktank row 62/62 exact, headline bit-equal — with
+> THREE amendments folded into this record: (1) the four banktank "movers"
+> are run-to-run noise-floor jitter, not a host offset (p620a_xyce_offset.json
+> re-labeled); (2) the VAEND offset row is VOID as recorded — like-for-like
+> it is +0.897%, so ringing-instant instantaneous samples are Xyce-only;
+> (3) Xyce mt0 FIND-AT returns a LAGGED sample on moving signals (measured),
+> correcting the IZ footnote. Full detail: SKEPTIC_AMENDMENTS.md; raw
+> skeptic outputs: skeptic/.
+
 Run 2026-09-29 ~22:44–00:xx PDT. Pre-stated acceptance: PRE_STATED_ACCEPTANCE.md
 (mtime 22:44:09, before the first result-producing run; AMENDMENT 1 added
 23:05, before any accepted gate result). All labels (host, engine). Committed
