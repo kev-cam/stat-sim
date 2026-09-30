@@ -1,0 +1,26 @@
+{
+ "_what": "qal/rfast_skept -- SKEPTIC re-run of the qal/rfast claims. Written BEFORE any deck, cache or harness file in this directory (DISK_STATE_BEFORE.txt is the witness). Re-run, not read: own empty-start PYMS_VAE_CACHE (scratchpad/vae_cache_skept), own directory, rf.py/bt.py/eyecalc.py used VERBATIM as the instrument (they are IC1/IC2-anchored), lanes seeded INDEPENDENTLY (sqrt-scaled qal/eye zeros, NOT the record's converged zeros.json -- a different Newton path that must land on the same physics).",
+ "cells_rerun_from_scratch": {
+  "A_frontier": "L=3 W=60 T=105, P0/P1/P2 + P3 (a guard the record did NOT run at 105; it guarded 110)",
+  "B_failing_knife_edge": "L=10 W=15 T=115, P0/P1/P2 (claimed G3 FAIL by 0.9 ps)",
+  "B2_frontier_lower_neighbor": "L=3 W=60 T=100, P0/P1/P2 (claimed G3 FAIL 17.7 < 20.3)",
+  "C_anomaly_single_lever": "L=15 W=30 T=150, P0/P1/P2 (claimed floor -38.2 mV vs committed -17.8)",
+  "D1_scaling_anchor": "L=15 W=15 T=130, P0/P1/P2 (claimed sustainable, opening ~107, floor negative)",
+  "D2_scaling_anchor": "L=6 W=30 T=110, P0/P1/P2 (claimed sustainable all-strict)",
+  "seq_A6": "seqprobe L=15 W=30 T=140 (claimed PASS 0.0261 uA vs committed VGH=1.5 fail 2.9486)"
+ },
+ "acceptance_pre_stated": {
+  "T1_openings": "EYE2 0mV worst-bank opening within +/-0.5 ps of the record's EYEBEAT.json value per cell (different Newton seed path; A6-level zero differences move the opening < 0.2 ps at these slopes).",
+  "T2_verdicts": "every G1/G2/G3 pass-fail verdict MUST match the record exactly; any flip is a finding.",
+  "T3_A6_raw": "|I(L_k)| at every commanded open read from the RAW final .prn by interpolation (not the .mt0 measure) <= 1 uA on A6-pass lanes, and the .mt0 IZ/IZQ value must agree with the raw read within 0.05 uA.",
+  "T4_value_raw": "all 32 gates per pattern re-checked from the RAW .prn at the boundary instants (independent interpolation, no .measure): verdict must match 32/32.",
+  "T5_floor": "post-return floor within +/-2 mV of the record per cell; the anomaly lane must reproduce sign and depth class (-38.2 mV claimed; 2x depth band = worse than -19 mV and deeper than the committed -17.8).",
+  "T6_seq_A6": "seqprobe at T=140 passes (<= 1 uA) as claimed; worst return within 0.5 uA of the record's 0.0261.",
+  "T7_P3_guard_at_105": "4-pattern intersection opening minus 3-pattern opening <= 0.5 ps (the record claims <= 0.07 at its six guard cells; 105 was not one of them -- this is new).",
+  "T8_drive_audit": "every kept .cir in the record and in my re-runs: VGT/VGTP/VPK PWL amplitudes, idle-park holds, VHI rail and the ehi integrator constant all carry 2.174 (not 1.5); bank-1 inputs carry dv=1.65. Any 1.5-V gate line is a finding.",
+  "T9_scaling": "k re-derived as t_zcs_rise/sqrt(C_series), C_series = (m/(m+1))*CBANK = 32.708 fF DERIVED; compare vs widebank 12.70-13.55 ps/sqrt(fF) at the committed W=30/L=15 point; sqrt(L) tested on t_zcs at FIXED W across my cells, and on the opening (the claim is: t_zcs scales, the opening floors)."
+ },
+ "budget_audit_pre_stated": "mismatch term: recompute opening@3sig_total - opening@0mV from my own EYEBEAT margins and check budget = mism + 7.272 arithmetic; timer 7.272 ps and sigma_total 23.308 mV are INHERITED (the record says so) -- audit point is whether the label is carried, not whether the number moved; data term: measure the per-pattern opening spread (P0..P3) at the frontier cell at the NEW drive and set it against the inherited 61.612 ps worst-case and the 16.93%-of-hop fractional reading.",
+ "energy_audit_pre_stated": "egt/ehi integrals from my own .mt0 (expect net-negative, the ideal-source booking); conventional-driver cost re-derived independently at W=60: Q/um MEASURED 3.635-3.739 fC/um at VGH=1.5, scaled ~linearly in V to 2.174, times gate-um cycled per bank-beat (rise cycle + return cycle, wn+wp+park), times VGH; check the record's 0.5-0.75 pJ/bank-beat and x2.10 V^2 factor.",
+ "verdict_rule": "the defensible beat floor = the fastest re-run cell that passes every strict gate in MY re-run AND whose lower-T neighbor fails in MY re-run, with the VGH=2.174 reliability caveat (ASSUMED) attached verbatim."
+}

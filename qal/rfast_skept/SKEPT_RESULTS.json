@@ -1,0 +1,74 @@
+{
+ "_what": "qal/rfast_skept -- SKEPTIC verdicts on the qal/rfast run (re-run, not read). Own uniquely-named empty-start cache (vae_cache_rfskept_20260930; two stale same-name caches from a Sep-28 session caught and abandoned), independent Newton seed path (sqrt-scaled qal/eye zeros), rf.py/bt.py/eyecalc.py verbatim as the anchored instrument.",
+ "RERUN_VERDICTS": {
+  "frontier_3_60_105": {
+   "openings": [
+    75.9225,
+    77.8489,
+    82.1895
+   ],
+   "slack": 22.8105,
+   "budget": 20.3083,
+   "floors_mV": [
+    83.238,
+    84.696,
+    92.252
+   ],
+   "A6_worst_uA": 0.8646,
+   "value": "32/32 all 4 patterns (raw-waveform check)",
+   "match": "digit-for-digit vs record; converged zeros within 0.007 ps of record's from a 7-ps-distant independent seed",
+   "PASS": true
+  },
+  "failing_3_60_100": {
+   "bank3_slack": 17.726,
+   "budget": 20.328,
+   "verdict": "G3 FAIL reproduced digit-for-digit"
+  },
+  "knife_edge_10_15_115": {
+   "bank3_slack": 21.644,
+   "bank3_budget": 22.427,
+   "verdict": "G3 FAIL by 0.78 ps reproduced (record 0.9-1.0); floors +16/+19/+19 match"
+  },
+  "sustainable_15_15_130": {
+   "opening": 107.243,
+   "budget": 20.172,
+   "verdict": "G3 PASS reproduced; floors -20.5/-16.0/-12.6 (record -20.5/-16.0/-12.7)"
+  },
+  "sustainable_6_30_110": {
+   "opening": 87.933,
+   "budget": 19.349,
+   "verdict": "G3 PASS reproduced digit-for-digit; floors +21.3/+22.7/+28.9"
+  },
+  "raw_waveform_police": "value and A6 re-read by interpolation from final .prn (no .measure): 32/32 and <=0.88 uA at every commanded open on ALL my lanes AND the record's kept frontier/anomaly/knife-edge lanes; mt0 IZ/IZQ vs raw <=0.057 uA; true zero within +-0.05 ps of commanded open everywhere"
+ },
+ "P3_GUARD_AT_FRONTIER": {
+  "delta_ps": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "note": "new guard the record did not run at 105 itself; 4-pattern intersection identical to 3-pattern"
+ },
+ "SEQ_A6_T140": {
+  "worst_rise_uA": 0.0087,
+  "worst_return_uA": 0.0261,
+  "A6_pass": true,
+  "record": {
+   "worst_rise_uA": 0.0087,
+   "worst_return_uA": 0.0261,
+   "A6_pass": true
+  },
+  "committed_VGH1p5": {
+   "T140_worst_return_uA": 2.9486,
+   "A6_pass": false
+  },
+  "zeros_vs_record_ps": "all eight sequential zeros within 0.21 ps of the record's",
+  "verdict": "EXACT reproduction: the lower-Ron switch (34 vs 103-190 ohm) fixes the return-ZCS at T=140; committed 2.9486-uA fail becomes 0.0261-uA pass"
+ },
+ "CACHE_TRAP_CAUGHT": "scratchpad/vae_cache_skept AND vae_cache_skept2 pre-existed (Sep-28 session, same names, 5+24 stale .so). Abandoned for vae_cache_rfskept_20260930 (verified nonexistent, then 22 files all built today in private per-geometry caches). Same-hash .so from Sep 28 byte-DIFFER from today's rebuild: the PyMS build is not byte-reproducible, so a name-collided cache cannot be verified by content.",
+ "RECORD_NITS": [
+  "verdict text says '-115 fJ/deck vhi'; the frontier cell integrator reads -117.0 fJ (minor mis-round)",
+  "A5 'every cell re-extracted' -- the 13 single-pattern W-ladder screen cells at T=200 retain pre-A5 extractor output (P0-only by design, so no material effect)",
+  "energy: 0.5-0.75 pJ/bank-beat conventional-driver figure books ONE on/off cycle of the 64-um triple; the deck commands TWO per bank-beat (rise+return), honest per-beat ~1.0-1.5 pJ (x2); reported-not-gated, verdict unaffected"
+ ]
+}

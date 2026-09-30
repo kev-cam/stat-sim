@@ -1,0 +1,163 @@
+.hdl "/usr/local/share/xyce/verilog-a/psp103/psp103.va"
+.include "/usr/local/src/kestrel/sim/models/sg13g2_psp103_tt.lib"
+.include "/usr/local/src/stat-sim/qal/sg13lv_compat.sp"
+.OPTIONS TIMEINT METHOD=GEAR RELTOL=1e-6 ABSTOL=1e-15 CHGTOL=1e-17
+.param LT=6n RS=10 CA=52.7679f
+CA bka 0 {CA}
+VHI vhi 0 2.174
+VGT  gt  0 PWL(0 0 48p 0 50p 2.174 98.3679p 2.174 100.368p 0)
+VGTP gtp 0 PWL(0 2.174 48p 2.174 50p 0 98.3679p 0 100.368p 2.174)
+VPK pk 0 PWL(0 0 100.368p 0 102.368p 2.174)
+XSWN sw gt bkb 0 sg13_lv_nmos w=10u l=0.13u
+XSWP sw gtp bkb vhi sg13_lv_pmos w=20u l=0.13u
+XPK  sw pk 0 0 sg13_lv_nmos w=1u l=0.13u
+LT bka mid {LT}
+RT mid sw {RS}
+VMG gcell 0 0
+XPIA0 ab0 a0 bkb bkb sg13_lv_pmos w=1.12u l=0.13u
+XNIA0 ab0 a0 gcell gcell sg13_lv_nmos w=0.74u l=0.13u
+XPIB0 bb0 b0 bkb bkb sg13_lv_pmos w=1.12u l=0.13u
+XNIB0 bb0 b0 gcell gcell sg13_lv_nmos w=0.74u l=0.13u
+XTN10 a0 bb0 y0 gcell sg13_lv_nmos w=0.74u l=0.13u
+XTP10 a0 b0 y0 vhi sg13_lv_pmos w=1.12u l=0.13u
+XTN20 ab0 b0 y0 gcell sg13_lv_nmos w=0.74u l=0.13u
+XTP20 ab0 bb0 y0 vhi sg13_lv_pmos w=1.12u l=0.13u
+CL0 y0 gcell 2f
+VA0 a0 gcell 0
+VB0 b0 gcell 1.2
+XPIA1 ab1 a1 bkb bkb sg13_lv_pmos w=1.12u l=0.13u
+XNIA1 ab1 a1 gcell gcell sg13_lv_nmos w=0.74u l=0.13u
+XPIB1 bb1 b1 bkb bkb sg13_lv_pmos w=1.12u l=0.13u
+XNIB1 bb1 b1 gcell gcell sg13_lv_nmos w=0.74u l=0.13u
+XTN11 a1 bb1 y1 gcell sg13_lv_nmos w=0.74u l=0.13u
+XTP11 a1 b1 y1 vhi sg13_lv_pmos w=1.12u l=0.13u
+XTN21 ab1 b1 y1 gcell sg13_lv_nmos w=0.74u l=0.13u
+XTP21 ab1 bb1 y1 vhi sg13_lv_pmos w=1.12u l=0.13u
+CL1 y1 gcell 2f
+VA1 a1 gcell 1.2
+VB1 b1 gcell 1.2
+XPIA2 ab2 a2 bkb bkb sg13_lv_pmos w=1.12u l=0.13u
+XNIA2 ab2 a2 gcell gcell sg13_lv_nmos w=0.74u l=0.13u
+XPIB2 bb2 b2 bkb bkb sg13_lv_pmos w=1.12u l=0.13u
+XNIB2 bb2 b2 gcell gcell sg13_lv_nmos w=0.74u l=0.13u
+XTN12 a2 bb2 y2 gcell sg13_lv_nmos w=0.74u l=0.13u
+XTP12 a2 b2 y2 vhi sg13_lv_pmos w=1.12u l=0.13u
+XTN22 ab2 b2 y2 gcell sg13_lv_nmos w=0.74u l=0.13u
+XTP22 ab2 bb2 y2 vhi sg13_lv_pmos w=1.12u l=0.13u
+CL2 y2 gcell 2f
+VA2 a2 gcell 1.2
+VB2 b2 gcell 0
+XPIA3 ab3 a3 bkb bkb sg13_lv_pmos w=1.12u l=0.13u
+XNIA3 ab3 a3 gcell gcell sg13_lv_nmos w=0.74u l=0.13u
+XPIB3 bb3 b3 bkb bkb sg13_lv_pmos w=1.12u l=0.13u
+XNIB3 bb3 b3 gcell gcell sg13_lv_nmos w=0.74u l=0.13u
+XTN13 a3 bb3 y3 gcell sg13_lv_nmos w=0.74u l=0.13u
+XTP13 a3 b3 y3 vhi sg13_lv_pmos w=1.12u l=0.13u
+XTN23 ab3 b3 y3 gcell sg13_lv_nmos w=0.74u l=0.13u
+XTP23 ab3 bb3 y3 vhi sg13_lv_pmos w=1.12u l=0.13u
+CL3 y3 gcell 2f
+VA3 a3 gcell 0
+VB3 b3 gcell 0
+VSzc s_zc 0 1.2
+VIzc i_zc 0 PWL(0 0 50p 0 52p 1.2)
+XPzc o_zc i_zc s_zc s_zc sg13_lv_pmos w=1.12u l=0.13u
+XNzc o_zc i_zc 0 0 sg13_lv_nmos w=0.74u l=0.13u
+CLzc o_zc 0 2f
+CXqlt xqlt 0 1
+BXqlt 0 xqlt I={ I(LT) }
+RXqlt xqlt 0 0.01
+CXea xea 0 1
+BXea 0 xea I={ V(bka)*I(LT) }
+RXea xea 0 0.01
+CXeb xeb 0 1
+BXeb 0 xeb I={ V(bkb)*I(LT) }
+RXeb xeb 0 0.01
+CXesw xesw 0 1
+BXesw 0 xesw I={ V(sw)*I(LT) }
+RXesw xesw 0 0.01
+CXer xer 0 1
+BXer 0 xer I={ I(LT)*I(LT)*10 }
+RXer xer 0 0.01
+CXqbk xqbk 0 1
+BXqbk 0 xqbk I={ I(VMG)+I(VA0)+I(VB0)+I(VA1)+I(VB1)+I(VA2)+I(VB2)+I(VA3)+I(VB3) }
+RXqbk xqbk 0 0.01
+CXebk xebk 0 1
+BXebk 0 xebk I={ V(bkb)*(I(VMG)+I(VA0)+I(VB0)+I(VA1)+I(VB1)+I(VA2)+I(VB2)+I(VA3)+I(VB3)) }
+RXebk xebk 0 0.01
+CXqgt xqgt 0 1
+BXqgt 0 xqgt I={ -I(VGT) }
+RXqgt xqgt 0 0.01
+CXqgtp xqgtp 0 1
+BXqgtp 0 xqgtp I={ -I(VGTP) }
+RXqgtp xqgtp 0 0.01
+CXegt xegt 0 1
+BXegt 0 xegt I={ -V(gt)*I(VGT)-V(gtp)*I(VGTP)-V(pk)*I(VPK) }
+RXegt xegt 0 0.01
+CXehi xehi 0 1
+BXehi 0 xehi I={ -2.174*I(VHI) }
+RXehi xehi 0 0.01
+.ic V(bka)=1.65 V(bkb)=0
+.tran 0.25p 498.368p 0 0.25p
+.measure tran VBPK  MAX V(bkb) FROM=50p TO=498.368p
+.measure tran VBEND FIND V(bkb) AT=494.367943p
+.measure tran VAEND FIND V(bka) AT=494.367943p
+.measure tran IPK   MAX I(LT) FROM=0 TO=498.368p
+.measure tran TIPK  WHEN I(LT)=0 FROM=50p TO=498.368p FALL=1
+.measure tran IZ    FIND I(LT) AT=99.367943p
+.measure tran VBOPEN FIND V(bkb) AT=99.367943p
+.measure tran VSWPK MAX V(sw) FROM=0 TO=498.368p
+.measure tran T90ZC WHEN V(o_zc)=1.08 RISE=1
+.measure tran QLT_Z FIND V(xqlt) AT=1.500000p
+.measure tran QLT_B FIND V(xqlt) AT=99.367943p
+.measure tran QLT_C FIND V(xqlt) AT=106.367943p
+.measure tran QLT_D FIND V(xqlt) AT=494.367943p
+.measure tran EA_Z FIND V(xea) AT=1.500000p
+.measure tran EA_B FIND V(xea) AT=99.367943p
+.measure tran EA_C FIND V(xea) AT=106.367943p
+.measure tran EA_D FIND V(xea) AT=494.367943p
+.measure tran EB_Z FIND V(xeb) AT=1.500000p
+.measure tran EB_B FIND V(xeb) AT=99.367943p
+.measure tran EB_C FIND V(xeb) AT=106.367943p
+.measure tran EB_D FIND V(xeb) AT=494.367943p
+.measure tran ESW_Z FIND V(xesw) AT=1.500000p
+.measure tran ESW_B FIND V(xesw) AT=99.367943p
+.measure tran ESW_C FIND V(xesw) AT=106.367943p
+.measure tran ESW_D FIND V(xesw) AT=494.367943p
+.measure tran ER_Z FIND V(xer) AT=1.500000p
+.measure tran ER_B FIND V(xer) AT=99.367943p
+.measure tran ER_C FIND V(xer) AT=106.367943p
+.measure tran ER_D FIND V(xer) AT=494.367943p
+.measure tran QBK_Z FIND V(xqbk) AT=1.500000p
+.measure tran QBK_B FIND V(xqbk) AT=99.367943p
+.measure tran QBK_C FIND V(xqbk) AT=106.367943p
+.measure tran QBK_D FIND V(xqbk) AT=494.367943p
+.measure tran EBK_Z FIND V(xebk) AT=1.500000p
+.measure tran EBK_B FIND V(xebk) AT=99.367943p
+.measure tran EBK_C FIND V(xebk) AT=106.367943p
+.measure tran EBK_D FIND V(xebk) AT=494.367943p
+.measure tran QGT_Z FIND V(xqgt) AT=1.500000p
+.measure tran QGT_B FIND V(xqgt) AT=99.367943p
+.measure tran QGT_C FIND V(xqgt) AT=106.367943p
+.measure tran QGT_D FIND V(xqgt) AT=494.367943p
+.measure tran QGTP_Z FIND V(xqgtp) AT=1.500000p
+.measure tran QGTP_B FIND V(xqgtp) AT=99.367943p
+.measure tran QGTP_C FIND V(xqgtp) AT=106.367943p
+.measure tran QGTP_D FIND V(xqgtp) AT=494.367943p
+.measure tran EGT_Z FIND V(xegt) AT=1.500000p
+.measure tran EGT_B FIND V(xegt) AT=99.367943p
+.measure tran EGT_C FIND V(xegt) AT=106.367943p
+.measure tran EGT_D FIND V(xegt) AT=494.367943p
+.measure tran EHI_Z FIND V(xehi) AT=1.500000p
+.measure tran EHI_B FIND V(xehi) AT=99.367943p
+.measure tran EHI_C FIND V(xehi) AT=106.367943p
+.measure tran EHI_D FIND V(xehi) AT=494.367943p
+.measure tran Y0B FIND V(y0) AT=99.367943p
+.measure tran Y0E FIND V(y0) AT=494.367943p
+.measure tran Y1B FIND V(y1) AT=99.367943p
+.measure tran Y1E FIND V(y1) AT=494.367943p
+.measure tran Y2B FIND V(y2) AT=99.367943p
+.measure tran Y2E FIND V(y2) AT=494.367943p
+.measure tran Y3B FIND V(y3) AT=99.367943p
+.measure tran Y3E FIND V(y3) AT=494.367943p
+.print tran V(bka) V(bkb) V(sw) I(LT) V(o_zc) V(y0) V(y1) V(y2) V(y3) V(xea) V(xesw) V(xer) V(xeb) V(xqlt)
+.end

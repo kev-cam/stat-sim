@@ -1,0 +1,77 @@
+{
+ "_what": "qal/rfast -- THE (L, T) SWEEP ON RESTORING BANKS AT THE 2.174 V GATE DRIVE.  Composes the two findings that ended the last round: (1) restoring (inverter-class) banktank banks are the architecture that waves (qal/fastwave: the pass-gate corner died at depth 3; qal/banktank+eyebeat: the inverter banks sustain the beat), and (2) the spec that binds is the gate drive, an INTERIOR optimum VGH = dV + Vtn = 1.65 + 0.524 = 2.174 V (qal/fastwave H_THE_GATE_DRIVE_SPEC: Ron 103-190 ohm at the committed 1.5 V with the transfer nMOS CUT OFF over the top of the swing; ~34 ohm at 2.174 V; 2.4 and 2.8 V are WORSE).  Every committed wave number (150/120 ps beats, 129.6 ps opening) was taken at the OLD 1.5 V drive.  This run asks what the wave does when the switch is actually on.",
+ "_written": "2026-09-30, after DISK_STATE_BEFORE.txt and BEFORE any deck, netlist, cache or harness file existed in this directory.  Mtimes are the witness.",
+ "_direction": "SPEED-FIRST.  Energy is reported on every row and gates NOTHING.",
+
+ "ARRANGEMENT_pre_stated": {
+  "base": "qal/banktank/bt.py VERBATIM (sha256 5b3582bea9e398e40d3aa93fc6fe44428d4eb1dfbde56c5d122604c5c35576c0): 4 banks x 8 campaign-standard inverters (pMOS 1.12u with supply AND bulk on the bank rail, nMOS 0.74u, CL 2 fF -- RESTORING cells), per-bank tanks m = 10 pre-charged to dV(m+1)/2m, mode 'free', dV = 1.65 V, H = 4, tg15p-class transfer triple widths(W) = (W/3 nMOS, 2W/3 pMOS, W/15 tank-referenced park -- banktank AMENDMENT A6), chain-legal source-side arrangement (each bank one transfer terminal), 2 ps edges, GEAR RELTOL=1e-6 ABSTOL=1e-15 CHGTOL=1e-17, 0.1/0.25 ps steps, .measure LAG_PS=1.0.",
+  "lever_1_THE_ONLY_CELL_CHANGE_IS_NONE": "The bank cell is NOT changed.  The pass-gate TG-XOR cell is dead (fastwave); the inverter bank is what waves.",
+  "lever_2_gate_drive": "bt.VGH = 2.174 V, applied exactly where bt.py applies VGH: the VGT/VGTP/VPK PWL amplitudes of ALL transfer-switch and park gates, the VHI n-well rail of the switch pMOS, and the ehi integrator constant.  The CELL rails are untouched (cell pMOS bulk rides the bank rail, as committed).",
+  "lever_3_inductance": "L = 15 / 10 / 6 / 3 nH, W re-optimised per L by measurement (fastwave measured the constant-Q law over-sizing >= 2x at low N and widening non-monotone under load, so W is NOT scaled by formula).",
+  "everything_else": "VERBATIM.  No flop, latch, buffer, keeper or level shifter anywhere.  Bank 1's inputs are ideal DC; bank k>1's input net IS o{k-1}_{i}."
+ },
+
+ "MECHANISM_AND_THE_PREDICTION": {
+  "mechanism": "The beat floor (~120-130 ps at L = 15 nH) is ~90% LC-RAIL-RAMP-SET: qal/eyebeat measured the opening at 129.6 +/- 0.1 ps across T = 150-300 (fixed lag off the power schedule), and it moved only -5/+13 ps over a 4x cell-R_on span -- a POWER-DELIVERY property, t_hop = k*sqrt(L*C_bank), k = 12.70-13.55 ps/sqrt(fF) at L = 15 nH (qal/widebank measured law; the ideal-LC value is 12.17).  At the old drive smaller L was INFEASIBLE (fastwave: the VGH=1.5 frontier is EMPTY, 0/76 rows; at 2.174 V L = 6 nH became functional on the pass-gate bank).  Restoring banks at 2.174 V should therefore admit smaller L, and the opening should scale ~sqrt(L).",
+  "P1_THE_SQRT_L_OPENING": {
+   "statement": "The worst-measured-bank EYE2 0mV opening (open - c, intersection over patterns, banks 1-3) scales as 129.6 * sqrt(L/15) ps:",
+   "expected_ps": {"L15": 129.6, "L10": 105.8, "L6": 82.0, "L3": 58.0},
+   "band": "+/- 8 ps at each L, PLUS an allowed fixed (non-scaling) residue of up to +13 ps at the small-L end: the eyebeat R_on span measurement (-5/+13 ps) says up to ~10% of the opening is cell-RC, not rail ramp, and that part does NOT shrink with L.  The prediction FAILS if the measured opening at any L sits outside [pure-sqrt - 8, pure-sqrt + 21] ps, or if the L-trend is not monotone in sqrt(L).",
+   "where_it_should_break": "If completeness breaks first (rail-drain VA_open-class or value errors at small L), the breaking mechanism -- not the scaling -- is the deliverable."
+  },
+  "P2_L15_MOVES_LITTLE": "At L = 15 nH the new drive changes the opening by at most -5/0 ps vs the committed 129.6 (the opening is rail-ramp-set, and the eyebeat cell-Ron span already brackets the switch-Ron effect).  A large move (> 10 ps either way) REFUTES the '~90% rail-ramp-set' reading and is itself a finding.",
+  "P3_A6_AT_LOW_T": "qal/eye/p2 A6_VS_BEAT (dV=1.65, L=15, VGH=1.5): the sequential return-ZCS protocol fails A6 below ~150 ps -- worst RETURN residual 1.4023 uA at T=145, 2.9486 uA at T=140 (rise side clean).  A lower-Ron switch (34 vs 103-190 ohm) should place the return zero better: PREDICT the same protocol at VGH=2.174 passes A6 (<= 1 uA worst return residual in the row built from its zeros) at T = 145 AND 140, and at 120 (test).  The Newton-on-the-row protocol (eyebeat B2, A6 gate unchanged) remains the row instrument either way.",
+  "P4_THE_T150_ANOMALY": "qal/eyebeat: T = 150 is the ONLY beat whose post-return EYE2 margin floor goes negative (-17.8 mV, reproduced, banks systematic, never root-caused; closing mechanism M3+M5 = HIGH output tracking the draining rail through trip+3sigma while the return switch conducts, coinciding with the receiver-boundary rail at its highest).  EXPECTATION, stated before any row: the anomaly is a SCHEDULE/DRAIN coincidence, not a switch-cutoff artefact, so at VGH = 2.174 / L = 15 it should PERSIST at T ~ 150 with similar depth (within ~2x of -17.8 mV); if it is instead drive-set (the partially-cut-off switch shaping the return), it vanishes.  If it is LC-schedule-set it should MOVE ~sqrt(L): appear near T ~ 122 at L = 10, ~ 95 at L = 6, ~ 67 at L = 3.  Persist / move / vanish -- each is a finding; whichever happens is reported with the same M-code decomposition."
+ },
+
+ "ACCEPTANCE_pre_stated": {
+  "per_row_gates": {
+   "G1_value": "32/32 gates value-correct at the committed boundary guard (HIGH >= 0.50*rail_at_own_boundary, LOW <= 0.10*rail), EVERY pattern in the lane set, every bank.",
+   "G2_A6": "|I(L_k)| <= 1 uA at EVERY commanded switch-open (rise and return, all 4 banks), per lane, after Newton-on-the-row (eyebeat B2; seed zeros scaled by sqrt(L/15) from qal/eye's measured T=200 zeros; trust region +/-10 ps/iter; max 4 iterations, else the row is EXCLUDED as an instrument failure F1, never estimated).",
+   "G3_slack_vs_budget": "setup slack = T - (worst bank 1-3 EYE2 0mV opening - c) must be >= the composed budget.  Budget = MISMATCH term (opening at the 3*sigma_total = 69.924 mV threshold minus opening at 0 mV, RE-MEASURED per row from this row's own margin curves; sigma_total = 23.308 mV inherited MEASURED = 6.441 receiver trip + 22.4 driver delivered-level, qal/eye/p2 U3) + TIMER term 7.272 ps (INHERITED qal/eye/p2 U2: 0.454 ps/K x +/-16 K recalibration, ASSUMED unchanged by the drive -- the timer is a separate circuit; re-derived only if the row's own margin slopes move it).  The committed L=15 reference value of this budget is 16.507 ps (9.235 + 7.272).  Equivalent form: T >= opening@3sigma_total + 7.272 ps.",
+   "G4_settle_report": "per-gate settling vs the instantaneous rail and the value check reported at every bank (settling_end-class numbers); the post-return EYE2 floor reported per bank per T.  These REPORT; G1-G3 gate."
+  },
+  "sustainable_beat_per_L": "the smallest swept T at which G1, G2 and G3 all pass.  Where G3's two budget readings (worst-case-data 61.6+4.6 = 66.2 ps vs measured-local 16.507-class) disagree, BOTH are reported as in eyebeat; the HEADLINE uses the measured-local (16.507-class) budget, the eye/p2 precedent, with the worst-case number alongside.",
+  "frontier": "the fastest (L, W, T) passing everything, with the VGH caveat attached verbatim."
+ },
+
+ "SWEEP_pre_stated": {
+  "W_selection": "Per L, a screening ladder at T_screen = 200 ps, pattern P0 only, Newton-to-A6: W in {30, 45} at L=15; {30, 45, 60} at L=10; {30, 45, 60} at L=6; {45, 60, 90} at L=3.  Pick W* = the W minimising the worst-bank EYE2 0mV opening subject to G1+G2; ties to the SMALLER W (less gate charge).  The ladder numbers are published, the choice stated.  Points may be ADDED to a ladder by amendment (never removed).",
+  "T_grid": {
+   "L15": [200, 150, 140, 130, 120, 110],
+   "L10": [200, 150, 130, 120, 110, 100],
+   "L6": [200, 130, 110, 100, 90, 85],
+   "L3": [200, 100, 90, 80, 70, 65],
+   "rule": "swept DOWN per L at W*; a lane set may stop early once G1 or G2 has failed at two consecutive T; T points may be ADDED (refinement), never removed."
+  },
+  "patterns": "{P0 [11101001], P1 [00000000], P2 [11111111]} intersection -- the eyebeat reduction, whose GUARD (mid-weight P3 opens 1.6-24 ps EARLIER than the {P0,P1,P2} intersection at every bank, both T extremes) showed the weight extremes bind.  RE-GUARDED HERE at the new drive: one P3 [10101010] lane at each L's frontier T; if P3's intersection-side opening is LATER than the {P0,P1,P2} intersection at any bank, the full 9-weight set is run at that L before any frontier claim.  Both polarities are inside the intersection (HIGH and LOW margin curves).",
+  "sequential_A6_test": "target (d): the COMMITTED full-8 sequential probe protocol (bt.do_probe, own-T, H=4) run at L=15/W* for T = 145, 140, 120; its zeros applied to a P0 row; worst rise/return residual reported against the committed 1.4023/2.9486 uA.  AMENDED WINDOW, declared now: the probe transient window multiplier is raised 2.6 -> 4.0 x TZ_ANCH*sqrt(L/15) because the dv1650 return zeros run 144-170+ ps and fall OUTSIDE the committed dv1.2-anchored 170 ps window (eyebeat B2 measured this).  A WINDOW change only; the A6 criterion is untouched."
+ },
+
+ "INSTRUMENT_ANCHORS_pre_stated": {
+  "IC1_banktank_old_drive": "Regenerate the committed banktank headline row c_m10_T200_H4_dv1200_free.cir (sha256 ec034e16...) BYTE-IDENTICALLY from bt.py + the committed own-T zeros file, run it under THIS study's own empty-start PYMS_VAE_CACHE, digit-check every .mt0 key: PASS = >= 99% of keys within 1e-6 relative, rails reproduce 0.7544238/0.6767239/0.7312457/0.7200878.",
+  "IC2_fastwave_new_drive": "Re-run fastwave point fg2174_n4_L6_W30 (probe + hop, vgh=2.174, ca=52.767867 fF) under this study's own cache with fw.py unmodified; digit-check against the committed ROWS.json: t_hop 48.36794344921701, VBEND 0.9934658, VA_open 0.23439493110455878, t_level_fcrit 130.914848, Ron 34.25524483933855.  PASS = <= 1e-4 relative on VBEND/t_hop, <= 1e-3 on the rest (the point re-probes its own zero; solver path identical).",
+  "why_both": "The two levers are anchored separately BEFORE being composed: IC1 pins the restoring-bank arrangement at the old drive, IC2 pins the 2.174 V drive on the harness that measured it."
+ },
+
+ "COMPARISONS_pre_stated": {
+  "cmos_level_load_matched": "52.510 ps at 2 fF (qal/fcrit_skept CHAIN_SKEPT per_stage_90/commit -- the corrected comparator.  NOT 57.14, NOT 94.17: those are the uncorrected and the 6.91 fF numbers).",
+  "flop_tax": "t_reg MEASURED 307.1 / 335.7 / 390.0 ps at 0 / 6.91 / 20 fF (liberty 1.11-1.21x optimistic); t_reg(2 fF) = 315.4 ps DERIVED by interpolation.  Crossover depth quoted BOTH ways: D_flop-every-level = t_reg/(T - 52.510), and the vs-best-iso-D-CMOS convention of qal/eye/p2 (which at T~150, H=4 gave D >= 8-9 at an ideal clock).  THROUGHPUT only; per-level latency cannot beat CMOS and no latency win is claimed.",
+  "energy": "Reported per row from the row's own integrators (E_gate_drive at the ACTUAL 2.174 V PWLs, E_vhi, tank energy) -- so the V^2 cost of the higher drive is measured, not modeled.  Cross-check note carried on every energy line: the committed 0.155 fC/um switch-gate-charge fit is WRONG 24x; the measured figure is 3.635-3.739 fC/um (qal/widebank).  ENERGY GATES NOTHING."
+ },
+
+ "THE_CAVEAT_THAT_RIDES_EVERY_NUMBER": "VGH = 2.174 V puts >= 2.17 V of Vgs on 1.5 V-class sg13_lv devices.  The PDK carries no HV/thick-oxide card, so RELIABILITY AT THIS DRIVE IS UNTESTED AND UNTESTABLE HERE -- it is ASSUMED, as the nmux and fastwave records already label it.  Every number this run produces is what the physics allows IF the drive is buildable; the buildable driver (thick-oxide or cascoded) is a NAMED FOLLOW-UP, not a footnote.",
+
+ "SIM_DISCIPLINE": {
+  "cache": "own PYMS_VAE_CACHE (scratchpad/vae_cache_rfast), built from empty; every geometry pre-warmed in a private per-lane cache and merged by filename (the .so name is a parameter hash); no concurrent builds into one cache (the skeptic's measured 6.6% VBEND contamination).",
+  "dir": "everything under qal/rfast/; nothing written into any sibling study directory.",
+  "zeros": "re-probed per L, per hop AND per T via Newton-on-the-row in each lane's own environment (zeros move with all three).",
+  "metering": "1F integrators t0-referenced; bt.py's committed .OPTIONS untouched; vt/gmin reserved; unique .va module names via the committed shim.",
+  "model": "sg13_lv via qal/sg13lv_compat.sp (DECLARES ad/as/pd/ps and DISCARDS them; JUNCAP200 via model defaults; pMOS STI-edge clips to zero) -- leakage and junction figures are LOWER BOUNDS.  PSP103 via .hdl + sg13g2_psp103_tt.lib.  Binding threshold Vtn = 0.5240 V.",
+  "language": "tracking lag / eye / margin at the sampling instant.  No settling vocabulary in deliverables.",
+  "labels": "every number MEASURED / DERIVED / ASSUMED.",
+  "disk": "Newton-intermediate and probe .prn files are deleted after their zeros are read (the box's root fs is at 99%); the FINAL .prn of every lane is kept for the eye extraction and the record."
+ },
+
+ "FAILURE_IS_A_DELIVERABLE": "If the sqrt(L) scaling breaks -- completeness, the anomaly, or something new -- the breaking mechanism is the deliverable.  A beat floor that does NOT move at the new drive is as important as one that does: it would mean the rail ramp is not the whole story."
+}

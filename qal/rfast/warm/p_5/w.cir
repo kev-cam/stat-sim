@@ -1,0 +1,11 @@
+.hdl "/usr/local/share/xyce/verilog-a/psp103/psp103.va"
+.include "/usr/local/src/kestrel/sim/models/sg13g2_psp103_tt.lib"
+.include "/usr/local/src/stat-sim/qal/sg13lv_compat.sp"
+.OPTIONS TIMEINT METHOD=GEAR RELTOL=1e-6 ABSTOL=1e-15 CHGTOL=1e-17
+V1 a 0 0.5
+V2 b 0 0.5
+XW e a b b sg13_lv_pmos w=5u l=0.13u
+RP e 0 1k
+.tran 1p 10p
+.print tran V(a)
+.end

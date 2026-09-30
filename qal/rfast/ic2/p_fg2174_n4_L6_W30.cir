@@ -1,0 +1,69 @@
+.hdl "/usr/local/share/xyce/verilog-a/psp103/psp103.va"
+.include "/usr/local/src/kestrel/sim/models/sg13g2_psp103_tt.lib"
+.include "/usr/local/src/stat-sim/qal/sg13lv_compat.sp"
+.OPTIONS TIMEINT METHOD=GEAR RELTOL=1e-6 ABSTOL=1e-15 CHGTOL=1e-17
+.param LT=6n RS=10 CA=52.7679f
+CA bka 0 {CA}
+VHI vhi 0 2.174
+VGT  gt  0 PWL(0 0 48p 0 50p 2.174 416.217p 2.174)
+VGTP gtp 0 PWL(0 2.174 48p 2.174 50p 0 416.217p 0)
+VPK pk 0 0
+XSWN sw gt bkb 0 sg13_lv_nmos w=10u l=0.13u
+XSWP sw gtp bkb vhi sg13_lv_pmos w=20u l=0.13u
+XPK  sw pk 0 0 sg13_lv_nmos w=1u l=0.13u
+LT bka mid {LT}
+RT mid sw {RS}
+VMG gcell 0 0
+XPIA0 ab0 a0 bkb bkb sg13_lv_pmos w=1.12u l=0.13u
+XNIA0 ab0 a0 gcell gcell sg13_lv_nmos w=0.74u l=0.13u
+XPIB0 bb0 b0 bkb bkb sg13_lv_pmos w=1.12u l=0.13u
+XNIB0 bb0 b0 gcell gcell sg13_lv_nmos w=0.74u l=0.13u
+XTN10 a0 bb0 y0 gcell sg13_lv_nmos w=0.74u l=0.13u
+XTP10 a0 b0 y0 vhi sg13_lv_pmos w=1.12u l=0.13u
+XTN20 ab0 b0 y0 gcell sg13_lv_nmos w=0.74u l=0.13u
+XTP20 ab0 bb0 y0 vhi sg13_lv_pmos w=1.12u l=0.13u
+CL0 y0 gcell 2f
+VA0 a0 gcell 0
+VB0 b0 gcell 1.2
+XPIA1 ab1 a1 bkb bkb sg13_lv_pmos w=1.12u l=0.13u
+XNIA1 ab1 a1 gcell gcell sg13_lv_nmos w=0.74u l=0.13u
+XPIB1 bb1 b1 bkb bkb sg13_lv_pmos w=1.12u l=0.13u
+XNIB1 bb1 b1 gcell gcell sg13_lv_nmos w=0.74u l=0.13u
+XTN11 a1 bb1 y1 gcell sg13_lv_nmos w=0.74u l=0.13u
+XTP11 a1 b1 y1 vhi sg13_lv_pmos w=1.12u l=0.13u
+XTN21 ab1 b1 y1 gcell sg13_lv_nmos w=0.74u l=0.13u
+XTP21 ab1 bb1 y1 vhi sg13_lv_pmos w=1.12u l=0.13u
+CL1 y1 gcell 2f
+VA1 a1 gcell 1.2
+VB1 b1 gcell 1.2
+XPIA2 ab2 a2 bkb bkb sg13_lv_pmos w=1.12u l=0.13u
+XNIA2 ab2 a2 gcell gcell sg13_lv_nmos w=0.74u l=0.13u
+XPIB2 bb2 b2 bkb bkb sg13_lv_pmos w=1.12u l=0.13u
+XNIB2 bb2 b2 gcell gcell sg13_lv_nmos w=0.74u l=0.13u
+XTN12 a2 bb2 y2 gcell sg13_lv_nmos w=0.74u l=0.13u
+XTP12 a2 b2 y2 vhi sg13_lv_pmos w=1.12u l=0.13u
+XTN22 ab2 b2 y2 gcell sg13_lv_nmos w=0.74u l=0.13u
+XTP22 ab2 bb2 y2 vhi sg13_lv_pmos w=1.12u l=0.13u
+CL2 y2 gcell 2f
+VA2 a2 gcell 1.2
+VB2 b2 gcell 0
+XPIA3 ab3 a3 bkb bkb sg13_lv_pmos w=1.12u l=0.13u
+XNIA3 ab3 a3 gcell gcell sg13_lv_nmos w=0.74u l=0.13u
+XPIB3 bb3 b3 bkb bkb sg13_lv_pmos w=1.12u l=0.13u
+XNIB3 bb3 b3 gcell gcell sg13_lv_nmos w=0.74u l=0.13u
+XTN13 a3 bb3 y3 gcell sg13_lv_nmos w=0.74u l=0.13u
+XTP13 a3 b3 y3 vhi sg13_lv_pmos w=1.12u l=0.13u
+XTN23 ab3 b3 y3 gcell sg13_lv_nmos w=0.74u l=0.13u
+XTP23 ab3 bb3 y3 vhi sg13_lv_pmos w=1.12u l=0.13u
+CL3 y3 gcell 2f
+VA3 a3 gcell 0
+VB3 b3 gcell 0
+VSzc s_zc 0 1.2
+VIzc i_zc 0 PWL(0 0 50p 0 52p 1.2)
+XPzc o_zc i_zc s_zc s_zc sg13_lv_pmos w=1.12u l=0.13u
+XNzc o_zc i_zc 0 0 sg13_lv_nmos w=0.74u l=0.13u
+CLzc o_zc 0 2f
+.ic V(bka)=1.65 V(bkb)=0
+.print tran I(LT) V(bkb) V(bka) V(sw) V(o_zc)
+.tran 0.25p 208.109p 0 0.25p
+.end
