@@ -1,0 +1,104 @@
+{
+ "study": "qal/mesh -- RESONANT MESH CLOCKING, whole-design, phase/antiphase. PURE SPEED.",
+ "date": "2026-09-30",
+ "written_before_any_deck": "This file is the ONLY file in qal/mesh/ at its mtime. Every deck, harness line and acceptance below is fixed BEFORE the first simulation.",
+
+ "ASSUMED_by_user_license": {
+  "mesh_in_place": "Resonant clock meshes are established art (rotary travelling-wave, standing-wave, resonant H-tree). The user licenses the assumption: the mesh EXISTS, two phases in exact antiphase, zero mesh jitter, and this run does not design it. Each phase is modeled as a DRIVEN RAIL WAVEFORM (ideal source behind a uniform small series R; ONE stiffness sensitivity bounds the idealisation, labeled SENSITIVITY).",
+  "mesh_interface_spec": "The charge the mesh must source/sink per bank per phase is REPORTED (fC, plus fJ alongside) as the spec handed to the mesh designer. Mesh Q, drive loss, wiring: the mesh designer's problem BY ASSUMPTION. Nothing is gated on energy.",
+  "mesh_to_mesh_parasitic_coupling": "ASSUMED handled by the mesh; the coupling measured here is the through-DEVICE / data-path coupling of a phase edge into antiphase banks' logic nodes, which no mesh design can remove."
+ },
+
+ "COSTS_DELETED_vs_campaign": {
+  "transfer_switch": "GONE (was the 6.6 fJ owner and the 24x gate-charge problem). Cells hang DIRECTLY off the mesh phase: supply AND pMOS bulk on the phase node.",
+  "per_bank_inductor": "GONE (the mesh is the inductor).",
+  "timer": "GONE (23.213 fJ ledger, 7.272 ps budget term, calibration, tracking-ratio failure). The antiphase IS the schedule.",
+  "return_ZCS_schedule": "GONE (the antiphase IS the return; the mesh reabsorbs the bank charge).",
+  "budget_remaining_with_timer_gone": "Deterministic budget that SURVIVES: (a) voltage domain: 3*sigma_total = 69.924 mV at the commit sample (sigma_total 23.308 mV MEASURED qal/eye/p2 U3: 6.441 mV trip + 22.4 mV driver, rss); (b) time domain: mesh jitter = 0 ASSUMED (licensed), so no ps term remains -- the handoff overlap is reported raw and must be > 0; (c) instrument: the +1.0 ps Xyce .measure-FIND lag convention (bt.py LAG_PS, MEASURED)."
+ },
+
+ "architecture": {
+  "banks": 6,
+  "phasing": "odd banks (1,3,5) on phase A, even (2,4,6) on antiphase B. A-bank outputs wire DIRECTLY to B-bank inputs. No flop, latch, buffer, keeper, level shifter anywhere.",
+  "cell_netlist": "Campaign-standard RESTORING inverter VERBATIM from qal/banktank/bt.py bank_cells(): pMOS sg13_lv_pmos w=1.12u l=0.13u with source AND bulk on the bank's phase node; nMOS sg13_lv_nmos w=0.74u l=0.13u source+bulk on the bank's metered ground (VMG{k} 0V source); CL 2 fF per cell output. Inverter-class chosen (the committed cell); nand2-class would change the pattern algebra and is out of scope -- stated per the task's 'state the netlist'.",
+  "depth": "d = 1/2/3/4 series inverter levels per bank, 8 parallel chains (MGATE=8, the campaign bank word). All d levels inside a bank hang on the SAME phase node.",
+  "head": "Bank 1's inputs are ideal full-swing PWL word sources (chain-head convention, banktank verbatim), transitioning with 2 ps edges at phase-A troughs (t = n*T). The WORD ALTERNATES every period: wave n = PAT for n even, complement(PAT) for n odd -- every gate sees both polarities and every wave is a real transition.",
+  "PAT_default": [1,1,1,0,1,0,0,1],
+  "spatial_pattern_confirm": "P2-alt run (all-ones alternating with all-zeros -- both extreme words in one run) at each per-(waveform,T_half) frontier point. Eye/value intersection is over {waves 2,3,4} x {P0-alt run, P2-alt run}."
+ },
+
+ "waveforms": {
+  "sine": "V_A(t) = (dV/2)*(1 - cos(2*pi*t/T)), dV = 1.65 V, T = 2*T_half. V_B = dV - V_A. Xyce SIN sources; smoke test digit-checks V_A(0)~0, V_A(T/2)=1.65, V_B(0)=1.65.",
+  "sawtooth": "Voltage PWL per phase: linear ramp 0 -> dV over (1-f)*T, linear flyback dV -> 0 over f*T; antiphase = shifted T/2. Flyback fraction f swept {0.10, 0.20, 0.30}.",
+  "sawtooth_modeling_choice_DECLARED": "The SWEEP models the sawtooth as a VOLTAGE waveform (the user's 'model each phase as a driven rail waveform' license). WHY: it makes the flyback dV/dt a controlled aggressor for the coupling sweep, and it assumes the current-driven mesh scales I with bank load (stiff mesh) -- an assumption the stiffness sensitivity then bounds. The LOAD-DEPENDENT ramp of a true fixed-I drive is measured in a dedicated side experiment SAW-I: ONE bank, ideal current source I fixed at the value calibrated so the d=1 bank reaches dV exactly at ramp end (T_half=92, f=0.20), then d=2/3/4 run at the SAME I; the measured ramp-rate deficit vs d is the correction the mesh designer must budget (either I scales per bank by that factor, or the active fraction stretches by it). Reported, not gated.",
+  "timeline": "slot_start(bank k, wave n) = n*T + (k-1)*T_half for both waveforms; crest offset = T_half (sine) or (1-f)*T (saw). Bank k processes wave n in its slot; at any instant banks hold a marching wave sequence. tran end = 8.25*T; waves 0,1 are warmup; waves 2,3,4 are the >=3 steady-state periods scored."
+ },
+
+ "frequency_definition_from_campaign_measurements": {
+  "t_level_ps": {"value": 52.510, "label": "MEASURED", "source": "qal/fcrit_skept/CHAIN_SKEPT.json (bar-invariant comparator chain, 2 fF)"},
+  "t_reg_ps": {"value": 315.378, "label": "DERIVED", "source": "interpolated from MEASURED 307.1/335.7 (qal/fcrit_skept SKSCORE family, 2 fF) per the task spec"},
+  "t_CMOS_ps": 367.888, "f_CMOS_max_GHz": 2.718,
+  "corner_100ps_good_tree": {"t_ps": 467.888, "f_GHz": 2.137},
+  "mesh_2x": {"T_period_ps": 183.944, "T_half_ps": 91.972, "corner_T_period_ps": 233.944, "corner_T_half_ps": 116.972},
+  "T_half_sweep_ps": [70, 80, 92, 105, 117, 130]
+ },
+
+ "sweep_grid": {
+  "core": "waveform {sine, saw f=0.20} x T_half {70,80,92,105,117,130} x d {1,2,3,4}, P0-alt word, d ascended per lane with early stop when the VALUE check fails (deeper is strictly harder at fixed T_half).",
+  "flyback": "f {0.10, 0.30} x d {1..4} at T_half = 92 (the 2x point), P0-alt.",
+  "pattern_confirm": "P2-alt at each (waveform, T_half) frontier d.",
+  "stiffness": "series R_s in {1, 3, 10, 30, 100} ohm per bank between ideal source and rail at the BEST accepted point (highest throughput ratio); for sine each R_s is also quoted as the DERIVED equivalent Q = 1/(2*pi*f*C_bank_meas*R_s) with C_bank_meas = Q_rise/dV from this study's own charge metering. SENSITIVITY, labeled; the main sweep runs R_s = 0.001 ohm (topology-preserving).",
+  "SAW_I_side_experiment": "as declared under waveforms.",
+  "concurrency": "<= 4 Xyce concurrent (9 rfast jobs live on the box at pre-registration time; 16 cores); every .prn extracted then DELETED (root disk at 99%); one gzipped exemplar .prn kept at the headline point."
+ },
+
+ "scoring_definitions": {
+  "trip": "Trip_S: linear interpolation on the 27 MEASURED points of qal/fcrit/TRIP.json cell S at the receiver's INSTANTANEOUS rail (trip fraction 0.7281 at 0.20 V ... 0.5179 at 1.50 V -- NOT a constant). DEVIATION from the tank-campaign EYE1 rule, pre-registered here: the mesh rail's domain [0,1.65] exceeds the table crest 1.50 V BY DESIGN, so above 1.50 V the trip uses the Trip class's built-in ratio extension (0.7768*V_rail/1.50) LABELED EXTRAPOLATED, and the fraction of each eye that used extrapolated trip is reported. Below 0.20 V the eye is simply CLOSED (in-table-from-below required). The binding edges sit at low rail, inside the measured table.",
+  "margin": "mgn(link k, gate i, t) = +/-1000*(V(o_k_level-d_i) - Trip_S(V(rail_{k+1})(t))) mV, sign by the wave-n expected bit; expected bit at bank k level j, wave n, gate i = PAT[i] XOR (n&1) XOR (((k-1)*d+j)&1).",
+  "eye": "per link k, wave n: contiguous runs of min-over-8-gates margin > threshold within the receiver's window, receiver rail >= 0.20 V required. Link 6's receiver rail is the DERIVED ideal A-phase waveform (labeled DERIVED). Eye edges by linear interpolation on the 0.10 ps common grid (qal/eye AMENDMENT E1 rule). Reported at thresholds 0 mV and 69.924 mV, polarities HIGH / LOW / all.",
+  "commit": "t_commit(bank b, wave n) = opening edge of the eye of LINK b (bank b's outputs vs its receiver's instantaneous trip) whose run contains bank b's crest instant; NO-COMMIT if no run contains the crest.",
+  "die": "t_die(bank k, wave n) = closing edge of that same link-k eye run (when the falling outputs stop being good at the receiver's trip).",
+  "handoff_overlap": "overlap(link k) = t_die(k) - t_commit(k+1), defined for links 1..5 (bank 7 does not exist). THE quantity that carries the whole scheme; reported per waveform per config.",
+  "commit_sample_margin": "margin_at_commit(link k) = min-gate margin of link k evaluated AT t_commit(k+1), links 1..5, per wave, per polarity.",
+  "value_check": "per-gate, EVERY level of EVERY bank, at the bank's crest instant, waves 2,3,4 (steady state, >= 3 full periods): HIGH iff V >= 0.50*V(rail at crest), LOW iff V <= 0.10*V(rail at crest) (the committed rf.py criterion). Xyce .measure FIND with the +1.0 ps lag convention.",
+  "coupling": "SAW: victim = antiphase banks' expected-LOW last-level outputs; bump = max V(victim) inside the aggressor flyback window minus max V(victim) over the same slot excluding the window +/-5 ps; plus the HIGH-margin dip coincident with the edge. SINE: same metric in a window centered on the antiphase's max |dV/dt| instants (phase-feedthrough). Reported in mV vs flyback fraction and vs the sine baseline. Prior art anchor: +113.6 mV at a logic node from a 227 V/ns edge (campaign measured).",
+  "crowbar_check": "measured, not assumed: I(VMG{k}) and I(VPH{k}) of interior banks 3 (A) and 4 (B) in windows around their rail TROUGHS while their inputs are driven by the antiphase crest: peak and mean over trough +/-2 ps and over the rail<10%-of-dV window, plus the net charge from the per-bank 1F integrators. Sustained conduction = crowbar; displacement-only = clear.",
+  "no_settling_vocabulary": "tracking lag / eye / margin at the sampling instant throughout.",
+  "no_reprobe": "all commits, windows, coupling, crowbar extracted from ONE dense transient per configuration (0.10 ps print grid)."
+ },
+
+ "acceptance": {
+  "A_value": "ALL d*8 gates of ALL 6 banks value-correct at every crest of waves 2,3,4 (both runs where a P2-alt confirm exists).",
+  "B_eye": "links 1..5: margin_at_commit >= 69.924 mV (3*sigma_total, the budget that remains with the timer gone) for EVERY wave 2..4, BOTH polarities scored (LOW side explicitly verified, not assumed vacuous -- the tank-chain vacuous-LOW finding must be re-established or refuted on the full-swing rail).",
+  "C_handoff": "overlap(link k) > 0 for links 1..5, every wave 2..4.",
+  "frontier": "max d meeting A+B+C at each (waveform, T_half). If d=1 is all that fits at T_half=92, the throughput ratio is still 2.0x and that is a result; if even d=1 fails everywhere, the breaking MECHANISM is the deliverable."
+ },
+
+ "throughput_metric": {
+  "headline": "ratio(d, T_half) = (d / T_period) / (1 / t_CMOS) = d * 367.888 / (2*T_half) -- throughput per LEVEL per STAGE: a bank commits d levels once per mesh period; the CMOS pipeline commits 1 level per stage per 367.888 ps. This reproduces the task's own example: d=2 at T_half=92 -> 4.0x. Corner ratio uses 467.888 ps.",
+  "alternate_reported": "chain-advance convention: a wave traverses d levels per T_half -> d*367.888/T_half (exactly 2x the headline); reported alongside, never as the headline.",
+  "latency": "latency per level = T_half/d, reported alongside vs CMOS 367.888 ps per level. NO latency claim (the standing rule stands)."
+ },
+
+ "PRE_STATED_EXPECTATIONS": {
+  "sine_frontier": "d=1 at T_half=70-80; d=2 at 92-105; d=3 at 117-130. Headline at the 2x point: 4.0x (d=2 @ 92). Mechanism limiting: the 1-cos flat spot (~15% of the half-period dead for cell drive) plus d compounding of the rising-side tracking lag.",
+  "saw_frontier": "saw f=0.20 fits >= sine's d at every T_half (earlier useful voltage at the LOW-rail end where commits bind, AND the ramp occupies (1-f)*T = 1.6x the sine's T/2 rise); expected d=3 @ 92 -> 6.0x.",
+  "sawtooth_beats_sine": "EXPECTED YES at f=0.20-0.30 for T_half >= 92; EXPECTED taken back at f=0.10 and short T_half by flyback coupling: predicted bump, linear in edge rate from the campaign's 113.6 mV @ 227 V/ns: f=0.20, T_half=92 -> edge 1.65V/36.8ps = 44.8 V/ns -> ~22 mV (below the 69.9 mV gate, NOT binding); f=0.10, T_half=70 -> 117.9 V/ns -> ~59 mV (approaching binding). Second take-back channel: the saw's structural input-valid overlap ~ (0.5-f)*T shrinks as f grows -- f=0.30 may lose the handoff at T_half <= 80.",
+  "handoff": "sine overlap expected LARGER (the measured 60-90 ps drain-side tracking lag is an ABSOLUTE time, comparable to the whole half-period at T_half <= 92, so A's outputs barely fall before B commits); saw overlap expected structural (0.5-f)*T + drain lag - commit delay.",
+  "crowbar": "expected NO sustained trough crowbar for restoring banks (input HIGH onto an inverter whose rail is at trough: nMOS pulls low, pMOS Vgs positive = off, no DC path) -- but the pMOS drain-well junction of a still-charged output CAN conduct into the falling rail (that is the drain-side tracking mechanism, not a crowbar). CHECKED not assumed.",
+  "LOW_side": "expected NON-vacuous on the full-swing mesh rail: as a bank's HIGH inputs die with the antiphase fall, its expected-LOW outputs lift -- the LOW margin should be the one that closes the eye on the die side. Verify.",
+  "level_restoration": "rail crest 1.65 V > 0.9642 V (the Vtn=0.5240 V cascade requirement), so the chain is level-restoring by construction at crest -- VERIFIED at T_half=70 where crest time is shortest.",
+  "stiffness": "expect acceptance intact through R_s ~ 10-30 ohm (sag ~ I_pk*R_s, I_pk ~ 0.5-1 mA -> 20-30 mV at 30 ohm), collapse by 100 ohm. Sine equivalent-Q quoted per R_s.",
+  "charge_spec": "Q_rise per bank per phase expected ~ d-scaled tens of fC (8 cells/level: 2 fF CL on switching HIGH outputs + junction/gate load at 1.65 V).",
+  "SAW_I": "ramp-rate deficit vs d expected sublinear in d (only the HIGH-output CLs and junctions load the rail, and deeper levels' outputs lag), quantified as the I-scaling factor the mesh must budget."
+ },
+
+ "sim_discipline": {
+  "cache": "own PYMS_VAE_CACHE = scratchpad/vae_cache_mesh; PYMS_DIR=/usr/local/share/xyce/PyMS",
+  "models": "sg13_lv via qal/sg13lv_compat.sp; PSP103 via .hdl /usr/local/share/xyce/verilog-a/psp103/psp103.va + sg13g2_psp103_tt.lib (bt.py head_lines VERBATIM, .OPTIONS TIMEINT METHOD=GEAR RELTOL=1e-6 ABSTOL=1e-15 CHGTOL=1e-17)",
+  "metering": "t0-referenced 1F integrators ONLY (bt.py integ() verbatim: 1F cap + B-source current + 0.01 ohm bleed); per bank: q_phase = -I(VPH_k), e_phase = -V(rail_k)*I(VPH_k), q_gnd = I(VMG_k)",
+  "steps": ".tran 0.1p tend 0 0.25p (banktank committed steps); print grid 0.10 ps",
+  "vt_gmin": "reserved, untouched",
+  "anchors": "IC-A: the committed banktank row c_m10_T200_H4_dv1200_free.cir regenerated byte-identical and digit-checked against the committed .mt0 (rf.py cmd_ic1 protocol, own cache). IC-B: single-bank mesh smoke at the LARGEST half-period (130 ps, sine, d=1): waveform digit-check (V_A(0), V_A(T/2), V_B(0)), integrator sign vs C*dV, extractor trip values hand-checked (trip(1.65) = 0.85446 V EXTRAPOLATED flag true, trip(1.20) = 0.64516 in-table)."
+ }
+}
