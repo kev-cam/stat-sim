@@ -1,0 +1,9 @@
+read_verilog /usr/local/src/stat-sim/qal/synth/threeway/sha_slice.v
+hierarchy -check -top sha_slice
+proc
+opt
+techmap
+opt
+abc -liberty /usr/local/src/stat-sim/qal/sha256/syn/t.lib
+opt_clean
+stat

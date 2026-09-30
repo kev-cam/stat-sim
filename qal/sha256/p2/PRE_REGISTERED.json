@@ -1,0 +1,99 @@
+{
+ "_doc": "PHASE 2 of the SHA-256 QAL block: BUILD AND MEASURE the QAL sha_slice on the Phase-1 remapped netlist, with per-bank matched tanks, chain-legal cuts and the FIXED buck feeding the tanks. Written BEFORE any SPICE deck of this track exists. Every acceptance criterion, every prediction and every declared correction below is fixed at the timestamp of this file.",
+ "track": "qal/sha256 Phase 2",
+ "written_local": "2026-09-29T12:45-0700",
+ "owner_dir": "/usr/local/src/stat-sim/qal/sha256/p2",
+ "private_cache": "/tmp/claude-1001/-usr-local-src/4921ad0c-f17b-4b84-986a-5917c9ebd2a6/scratchpad/vae_cache_sha256p2",
+
+ "what_had_been_read_before_writing_this": {
+  "_doc": "FULL disclosure. Nothing below is a prediction; it is all prior committed fact or STATIC (non-simulated) analysis of a committed netlist.",
+  "phase1_output": "qal/sha256/syn/sw_nand_sc_resyn2.v -- 161 cells {sg13g2_inv_1 x46, sg13g2_nand2_1 x115}, DEPTH 14, profile 41/32/26/21/6/5/3/7/4/7/3/4/1/1, formally equivalent to sha_slice.v by two engines and 155,600 vectors.",
+  "phase1_census": "qal/sha256/CENSUS_TABLE.json -- inv t_level 75.889 ps, nand2 60.0 ps at dV=1.65/L=6nH/TG120um/CL 2fF.",
+  "committed_banktank": "qal/banktank/RESULTS.json + row_m10_T200_H4_dv1200_free.json -- the instrument-check anchor.",
+  "committed_resv": "qal/resv/RESULTS.json -- reservoir feeding stops the fade; chain-legal (source-side-cut) level time 103.377652 ps at 6.91 fF (skept_rt/rowd/R_SC_m20_L3.json).",
+  "committed_buckfix": "qal/buckfix/VERDICT.json -- the C9 diode-freewheel fixed sequencing.",
+  "static_structure": "p2/STRUCT_sw_nand_sc_resyn2.json, produced by p2/struct.py BEFORE this file. It is a STATIC PROPERTY OF A COMMITTED NETLIST (the same class of object as Phase 1's stacks.py), not an experimental outcome, so having it in hand does not contaminate the pre-registration -- but it is disclosed, with its mtime, because it already forces a declared correction (see declared_correction_1).",
+  "pdk_cells": "cells/census_cells.sp -- sg13g2_inv_1 is XP0 w=1.12u / XN0 w=0.74u at l=130nm, i.e. DEVICE-IDENTICAL to the banktank hand-built cell. sg13g2_nand2_1 is two parallel 1.12u pMOS and two series 0.74u nMOS with a 0.1 fF internal node."
+ },
+
+ "declared_correction_1_THE_HOLD_IS_NOT_A_FREE_PARAMETER": {
+  "what_the_brief_and_every_prior_deck_assumed": "H (the number of beats a bank is occupied) is a tuning knob, swept over {2,3,4} in qal/banktank, and II = H*T is therefore a design choice.",
+  "what_the_REAL_netlist_says_STATICALLY": "In qal/banktank every bank fed ONLY the next bank, because all 8 gates were inverters in lockstep. A real mapped netlist is a DAG with cross-level edges. In sw_nand_sc_resyn2.v the maximum SIGNAL LIFETIME -- deepest consumer level minus producer level -- is 11 (a cell in bank 3 is read by bank 14). The per-bank hold H_k = lifetime_k + 1 is therefore FORCED by the netlist: {1:11, 2:4, 3:12, 4:11, 5:5, 6:9, 7:2, 8:7, 9:2, 10:5, 11:2, 12:3, 13:2, 14:1}.",
+  "consequence": "an unbuffered QAL wave pipeline cannot launch a new operation until every bank has released, so II = max_k(H_k) * T = 12*T, not 4*T. This is a property of the DESIGN, not of the circuit, and it was invisible to every 8-inverter deck in this campaign.",
+  "the_alternative_and_its_static_price": "retime the DAG so every signal is consumed by the very next bank, by inserting relay cells. Cell-to-cell edges alone need 296 extra cells: 161 -> 457 (2.84x), before counting relay of the 48 primary inputs. That is the price of II = 2*T.",
+  "status": "STATIC (MEASURED-from-netlist). Both architectures are costed; the 161-cell HOLD form is the one that is SIMULATED, because the 457-cell retimed form is out of reach of this deck budget and I will say so rather than shrink it silently."
+ },
+
+ "declared_correction_2_THE_BRIEFS_BUCK_NUMBER": {
+  "brief_said": "the fixed buck 'raises the rail +219 mV above the no-top-up control'.",
+  "committed_record_says": "qal/buckfix/VERDICT.json F_THE_RE_MEASURED_HEADLINE: rail3 free control 0.765884 V, FIXED_C9 0.949960 V -> rise_above_the_no_top_up_control_mV = 184.076. The string 219 does not occur in qal/buckfix. I use the committed 184.076 mV and the committed C9 sequencing (diode freewheel: FW gate held at 0 for the whole run, HS break-before-make with an 8 ps settle, OUT switch closed at t_fire, L_TU 10 nH, t_on 35 ps).",
+  "status": "DECLARED, not adjudicated. If the 219 figure exists somewhere I did not find, this is a citation correction and nothing in Phase 2 depends on which is right."
+ },
+
+ "declared_correction_3_WHAT_CHAIN_LEGAL_MEANS_HERE": {
+  "brief_said": "THE TOPOLOGY MUST BE CHAIN-LEGAL: source-side cut on every hop (chain3/restore5 A3).",
+  "why_it_is_not_a_straight_import": "the A3 source-side cut exists because in a PEER-FED chain the source is the PREVIOUS BANK'S RAIL, and cutting only at the receiving side leaves that rail wired to an idle downstream inductor to divert into. In the per-bank-tank architecture the source is a PRIVATE tank and the tank/L/R/switch island touches exactly ONE rail (qal/banktank bt.py docstring), so there is no second terminal to divert into.",
+  "how_this_is_settled": "BY MEASUREMENT, not by argument. The headline deck uses the committed banktank cut (rail side, tank-referenced park, AMENDMENT A6) because that is the configuration the instrument check anchors to. A DOUBLE-CUT control -- an additional transmission gate between the tank and L, opened at the same measured zero -- is run at the headline beat period, and the difference is reported. If the double cut changes the verdict, the double cut is the headline and the banktank form is reported as the optimistic bound."
+ },
+
+ "phase2a_INSTRUMENT_CHECK": {
+  "target": "qal/banktank row m=10, T=200 ps, H=4, dV=1.2, mode=free, using the COMMITTED zeros file zeros_m10_dv1200_T200_H4.json, re-run in MY OWN directory under MY OWN cache.",
+  "digits_that_must_reproduce": {
+   "worst_gate_pct": 90.54454610810019,
+   "worst_gate_where": [3, "o3"],
+   "per_bank_worst_pct": {"1": 94.71062551313996, "2": 91.15563969293828, "3": 90.54454610810019, "4": 92.65559005443504},
+   "rail_at_own_boundary_V": {"1": 0.7544238, "2": 0.6767239, "3": 0.7312457, "4": 0.7200878},
+   "separation_min_mV": 612.378631,
+   "IPK_uA": {"1": 937.4588, "2": 840.0785999999999, "3": 814.6336, "4": 826.186},
+   "value_fail_list": [],
+   "n_gates_value_checked": 32,
+   "PASS": true
+  },
+  "tolerance": "rel <= 1e-6 on every float above; value_fail_list must be EMPTY and all 32 gates must be checked. A failure here VOIDS every Phase 2 number and I stop and report that."
+ },
+
+ "phase2b_THE_BLOCK": {
+  "netlist": "syn/sw_nand_sc_resyn2.v, all 161 cells, 14 banks.",
+  "cells": "the PDK sg13g2_inv_1 / sg13g2_nand2_1 subckts from cells/census_cells.sp VERBATIM (Phase 1's own generated file, device lines verbatim from sg13g2_stdcell.spice + 0.1 fF per internal node), supply AND bulk on the bank's own rail, VSS on a per-bank 0 V ammeter.",
+  "load": "CL = 2.0 fF per cell output to the bank's own ground reference, the committed convention. DECLARED BOUND: the shim zeroes ad/as/pd/ps, so all times are LOWER bounds on a real layout; no wire capacitance is modelled.",
+  "data": "the 48 primary inputs are ideal DC sources at 0 or dV. DECLARED BOOKING: they are held for the whole run, so the block is charged nothing for relaying a primary input to a deep bank. A real pipeline would need relay banks for them too; that cost is reported in the retiming table, not in the measured row.",
+  "tanks": "PER-BANK MATCHED: C_tank(k) = m * C_bank(k) with C_bank(k) MEASURED per bank by its own secant deck (charge integrated while the rail is ramped 0 -> dV with that bank's real input levels applied), NOT scaled from the committed 8-inverter 35.979 fF.",
+  "inductors": "two variants, both measured: (U) UNIFORM L on every bank; (T) TUNED L_k proportional to 1/C_bank(k) so that L_k*C_bank(k) is constant, which is the only way sqrt(L*C) can be equal across a 41:1 profile.",
+  "switches": "the committed tg15p triple (wn=tot/3, wp=2tot/3, park=tot/15, park tank-referenced per banktank A6), with tot QUANTIZED to {7.5, 30, 120} um by bank size so the number of distinct device geometries stays bounded.",
+  "top_up": "the FIXED buck (buckfix C9: diode freewheel, break-before-make at both edges, OUT switch closed at t_fire) feeding the TANK, one per bank, with its supply current metered by its own 1 F integrator so its switching loss is INSIDE the measured energy. DECLARED BOUND: the generation of the buck's own input rail is NOT costed.",
+  "schedule": "bank k's rail-raise closes at T1 + (k-1)*T and opens at ITS OWN measured ZCS; the return closes at c_k + H_k*T with H_k forced by the netlist (declared_correction_1) and opens at its own measured ZCS.",
+  "metering": "1 F integrators ONLY, every one t0-referenced at 0.5 ps to remove the pedestal. Current zeros RE-PROBED per bank and per L."
+ },
+
+ "phase2c_ACCEPTANCE": {
+  "A1_SETTLE": "every one of the 161 gate outputs is within 10 percent of its own bank's INSTANTANEOUS rail at that bank's boundary (the committed banktank rule, applied per gate, never aggregated).",
+  "A2_VALUE": "every one of the 161 gates is on the CORRECT side of half the delivered rail at its own bank boundary, against the logic value computed for the applied input vector by an independent Python evaluation of the netlist. Settling alone is NOT correctness. A2 is the gate that decides PASS.",
+  "A3_BEAT": "the earliest beat period T at which A1 and A2 both hold for ALL 14 banks. Swept downward from a T that works.",
+  "A4_II": "the initiation interval = max_k(H_k) * T, reported in ps and as ops/ns, and compared to the CMOS block time on the same axis.",
+  "A5_ENERGY": "energy per operation = (charge-weighted supply energy of every buck) + (net tank energy lost) + (all gate-drive energy of every switch) + (any ideal-source energy), every term from its own 1 F integrator, t0-referenced. Reported with the timing hardware INCLUDED and also broken out so the logic-only number is visible.",
+  "A6_ZCS": "|I(L_k)| <= 1 uA at every commanded switch open, on every bank, on any row that is quoted. A row failing A6 is not a measurement of the intended circuit and is discarded with its number shown.",
+  "A7_HOP_SPREAD": "t_hop per bank, reported across the 41:1 profile for both the uniform-L and the tuned-L variant, with the ratio max/min stated. This answers 'either L is tuned per bank or the wave is incoherent' with a number.",
+  "VERDICT_RULE": "PASS = A1 and A2 and A6 on all 14 banks. The headline is the earliest PASSING T."
+ },
+
+ "PRE_STATED_PREDICTIONS": {
+  "_doc": "written now, to be scored later. These are the genuinely unknown outcomes.",
+  "instrument_check": "reproduces to rel <= 1e-6. High confidence; it is the same code on the same deck.",
+  "earliest_correct_T_ps": {"point": 240, "range": [200, 400]},
+  "worst_gate_pct_at_that_T": {"point": 88.0, "range": [80.0, 95.0]},
+  "A2_all_161_pass_at_the_earliest_correct_T": "YES",
+  "hop_spread_uniform_L": {"point": 6.4, "range": [3.0, 8.0], "reasoning": "t_hop ~ sqrt(L*C_bank) and C_bank spans 41:1, so sqrt(41) = 6.40 if C_bank is proportional to cell count. It will NOT be exactly proportional because a nand2 loads differently from an inv and the 2 fF CL is a fixed per-cell term, so the measured spread is the test of the sqrt law, not an assumption of it."},
+  "hop_spread_tuned_L": {"point": 1.15, "range": [1.0, 1.6]},
+  "energy_per_op_fJ_with_timing_hardware": {"point": 520, "range": [250, 1200], "reasoning": "the Phase-1 width-scaled projection is 199.1 fJ for logic alone; qal/banktank measures tank and gate-drive losses of the same order as the logic energy, and qal/buckfix measures a buck efficiency of 0.196, so the timing hardware is expected to DOMINATE."},
+  "II_ps_at_the_earliest_correct_T": {"point": 2880, "reasoning": "12 beats x 240 ps, forced by declared_correction_1."},
+  "THE_HEADLINE_PREDICTION": "QAL sha_slice will WIN on energy per operation against the 232 fJ CMOS number and LOSE on both latency and throughput. Predicted latency 14*T + settle ~ 3.6 ns against CMOS 0.928 ns (3.9x slower); predicted II 2.88 ns against a CMOS block that can be pipelined to far less. I am predicting the composed Phase-1 1.04x block-time figure will NOT survive contact with the chain-legal cut, the per-bank tanks and the real bank capacitances.",
+  "pre_registered_NEGATIVE_condition": "if the block does not compute correctly (A2) at ANY beat period, or if the measured energy per operation with the timing hardware included EXCEEDS the committed CMOS 232 fJ, then the QAL sha_slice loses on BOTH axes and the composed 136.8 fJ projection is refuted by measurement. That is a publishable answer and it will be stated plainly with the numbers."
+ },
+
+ "SIM_DISCIPLINE_DECLARED_IN_ADVANCE": {
+  "budget": "<= 4 concurrent heavy Xyce jobs; other workflows are running on this box.",
+  "if_the_full_block_will_not_run": "a REPRESENTATIVE SLICE is substituted ONLY as: the widest bank (bank 1, 41 cells) plus the full critical path (one cell per level, levels 1..14). It will be labelled a SLICE in every table, with an explicit statement of what it does and does not cover -- in particular that it does not exercise the full per-bank capacitance of banks 2-4. The full block is attempted FIRST and its wall time reported either way.",
+  "input_vector": "PRIMARY: a=0x5A b=0xA6 c=0x3C e=0x69 f=0x96 g=0xC3 -- chosen before any run because 0x5A+0xA6 = 0x100 exercises a full 8-bit carry propagation through the CPA, and the maj/ch inputs are pairwise-distinct so no bit slice is degenerate. A SECOND vector is run as a control if the budget allows.",
+  "labels": "every row is labelled MEASURED / DERIVED / ASSUMED, and anything modelled as an ideal source is a BOOKING whose row is a BOUND."
+ }
+}

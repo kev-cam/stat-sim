@@ -1,0 +1,3390 @@
+{
+ "_doc": "PHASE 1 of the SHA-256 QAL block: the per-family QAL settling CENSUS, the shallow-stack REMAP of sha_slice and its measured cost, and the formal + vector EQUIVALENCE of that remap. Pre-registration: PRE_REGISTERED.json. Protocol amendments and instrument defects: AMENDMENT.md. Every figure MEASURED unless labelled DERIVED or ASSUMED.",
+ "date": "2026-09-29",
+ "pre_registration": {
+  "file": "PRE_REGISTERED.json",
+  "sha256": "85de9785eceb6f84277789dad1fa9257758391ae14770db2ad574bfe688396b3",
+  "written": "2026-09-29 11:29:41.945663531",
+  "first_deck_of_this_track": "2026-09-29 11:31:22.099101761",
+  "static_analysis_predates_it_by_design": {
+   "stacks.py": "2026-09-29 11:27:13.767536110",
+   "cells/stack_depths.json": "2026-09-29 11:27:17.043583139",
+   "note": "static PDK-netlist analysis, disclosed inside the pre-registration; no SPICE deck existed when the pre-registration was written."
+  }
+ },
+ "G0_instrument_MEASURED": {
+  "_doc": "the brief's own o21ai anchor, reproduced with the committed sk.py hand-built topology before any census row was believed.",
+  "verdict": "PASS",
+  "reproduced": {
+   "VBEND": 0.607670193222473,
+   "t_hop_ps": 67.31716163004208,
+   "VA_open": -0.17394619083354046,
+   "t_valid80_ps": 515.148911,
+   "IPK_uA": 1435.09869,
+   "s_end_min_pct": 82.988377554491,
+   "t_valid90_ps": null
+  },
+  "worst_rel_error": "2.24e-14 (t_hop); VA_open, t_valid80 and IPK exactly 0",
+  "reading": "the brief's anchor numbers -- 82.99 percent of rail at a 500 ps freeze, t_valid80 first existing at 515.1 ps, t_valid90 never -- are reproduced bit-for-bit."
+ },
+ "G0b_PDK_vs_HANDBUILT_MEASURED": {
+  "handbuilt": {
+   "t_hop_ps": 67.31716163004208,
+   "VBEND": 0.607670193222473,
+   "VBPK": 0.817712094,
+   "VA_open": -0.17394619083354046,
+   "IPK_uA": 1435.09869,
+   "t_valid80_ps": 515.148911,
+   "t_valid90_ps": null
+  },
+  "pdk": {
+   "t_hop_ps": 67.55901112869319,
+   "VBEND": 0.6180439647167967,
+   "VBPK": 0.789025132,
+   "VA_open": -0.20618722032296377,
+   "IPK_uA": 1458.07885,
+   "t_valid80_ps": null,
+   "t_valid90_ps": null
+  },
+  "s_end_min_handbuilt": 82.988377554491,
+  "s_end_min_pdk": 77.35645757781427,
+  "reading": "the PDK cell (l=0.150u) is SLOWER than the committed hand-built one (l=0.130u), exactly as pre-registered: 77.36%% of rail at freeze against 82.99%%, and t_valid80 does not exist at all where the hand-built one has it at 515.1 ps. The VERDICT is unchanged (neither settles at the committed anchor point) -- the committed anchor is the GENEROUS one."
+ },
+ "CENSUS_MEASURED": {
+  "operating_point": {
+   "dV_V": 1.65,
+   "L_nH": 6.0,
+   "TG_total_um": 120.0,
+   "VGH_V": 1.65,
+   "tail_ps": 500.0,
+   "CL_fF": 2.0,
+   "why": "the committed dvopt grid's measured optimum, and the top of the PDK's characterised envelope -- the point most GENEROUS to the deep-stack families."
+  },
+  "gates": {
+   "C1_VALUE": "all 8 outputs on the correct side of half the end rail",
+   "C2_SETTLE": "t_valid90 exists inside the 500 ps tail",
+   "C3_SPEED": "t_level <= 2.0x the inv family at the same point"
+  },
+  "table": {
+   "inv": {
+    "cell": "sg13g2_inv_1",
+    "binding_pmos_rise_depth": 1,
+    "t_hop_ps": 45.05430268276672,
+    "t_valid80_ps": 63.203042999999994,
+    "t_valid90_ps": 75.88865700000001,
+    "t_level_meas_ps": 75.88865700000001,
+    "x_vs_inv": 1.0,
+    "VBEND": 0.930173617,
+    "VA_open": 0.017884043469805544,
+    "settled_min_pct": 100.00000089877261,
+    "C1_VALUE": true,
+    "C2_SETTLE": true,
+    "C3_SPEED": true,
+    "verdict": "PASS",
+    "vec_out_hi": {
+     "A": 0
+    },
+    "vec_out_lo": {
+     "A": 1
+    },
+    "value_check": {
+     "o0": {
+      "want_hi": false,
+      "v_end": -8.36014564907161e-09,
+      "correct": true
+     },
+     "o1": {
+      "want_hi": true,
+      "v_end": 0.930173808073915,
+      "correct": true
+     },
+     "o2": {
+      "want_hi": false,
+      "v_end": -8.36014564907161e-09,
+      "correct": true
+     },
+     "o3": {
+      "want_hi": true,
+      "v_end": 0.930173808073915,
+      "correct": true
+     },
+     "o4": {
+      "want_hi": false,
+      "v_end": -8.36014564907161e-09,
+      "correct": true
+     },
+     "o5": {
+      "want_hi": true,
+      "v_end": 0.930173808073915,
+      "correct": true
+     },
+     "o6": {
+      "want_hi": false,
+      "v_end": -8.36014564907161e-09,
+      "correct": true
+     },
+     "o7": {
+      "want_hi": true,
+      "v_end": 0.930173808073915,
+      "correct": true
+     }
+    },
+    "v_end": {
+     "o0": -8.36014564907161e-09,
+     "o1": 0.930173808073915,
+     "o2": -8.36014564907161e-09,
+     "o3": 0.930173808073915,
+     "o4": -8.36014564907161e-09,
+     "o5": 0.930173808073915,
+     "o6": -8.36014564907161e-09,
+     "o7": 0.930173808073915
+    },
+    "wall_s": 75.4
+   },
+   "buf": {
+    "cell": "sg13g2_buf_1",
+    "binding_pmos_rise_depth": 1,
+    "t_hop_ps": 45.17571349948352,
+    "t_valid80_ps": 95.48661799999999,
+    "t_valid90_ps": 113.48147600000001,
+    "t_level_meas_ps": 113.48147600000001,
+    "x_vs_inv": 1.4953680890676455,
+    "VBEND": 0.846400792,
+    "VA_open": -0.019671197087131942,
+    "settled_min_pct": 100.00000665788144,
+    "C1_VALUE": true,
+    "C2_SETTLE": true,
+    "C3_SPEED": true,
+    "verdict": "PASS",
+    "vec_out_hi": {
+     "A": 1
+    },
+    "vec_out_lo": {
+     "A": 0
+    },
+    "value_check": {
+     "o0": {
+      "want_hi": false,
+      "v_end": -5.6352361259429086e-08,
+      "correct": true
+     },
+     "o1": {
+      "want_hi": true,
+      "v_end": 0.846400984,
+      "correct": true
+     },
+     "o2": {
+      "want_hi": false,
+      "v_end": -5.6352361259429086e-08,
+      "correct": true
+     },
+     "o3": {
+      "want_hi": true,
+      "v_end": 0.846400984,
+      "correct": true
+     },
+     "o4": {
+      "want_hi": false,
+      "v_end": -5.6352361259429086e-08,
+      "correct": true
+     },
+     "o5": {
+      "want_hi": true,
+      "v_end": 0.846400984,
+      "correct": true
+     },
+     "o6": {
+      "want_hi": false,
+      "v_end": -5.6352361259429086e-08,
+      "correct": true
+     },
+     "o7": {
+      "want_hi": true,
+      "v_end": 0.846400984,
+      "correct": true
+     }
+    },
+    "v_end": {
+     "o0": -5.6352361259429086e-08,
+     "o1": 0.846400984,
+     "o2": -5.6352361259429086e-08,
+     "o3": 0.846400984,
+     "o4": -5.6352361259429086e-08,
+     "o5": 0.846400984,
+     "o6": -5.6352361259429086e-08,
+     "o7": 0.846400984
+    },
+    "wall_s": 664.0
+   },
+   "nand2": {
+    "cell": "sg13g2_nand2_1",
+    "binding_pmos_rise_depth": 1,
+    "t_hop_ps": 45.22894676573151,
+    "t_valid80_ps": 49.97720020000001,
+    "t_valid90_ps": 59.98643199999999,
+    "t_level_meas_ps": 59.98643199999999,
+    "x_vs_inv": 0.7904532030392893,
+    "VBEND": 0.876354357,
+    "VA_open": -0.06397481864422105,
+    "settled_min_pct": 100.00000439444301,
+    "C1_VALUE": true,
+    "C2_SETTLE": true,
+    "C3_SPEED": true,
+    "verdict": "PASS",
+    "vec_out_hi": {
+     "A": 0,
+     "B": 0
+    },
+    "vec_out_lo": {
+     "A": 1,
+     "B": 1
+    },
+    "value_check": {
+     "o0": {
+      "want_hi": false,
+      "v_end": -3.851089278331975e-08,
+      "correct": true
+     },
+     "o1": {
+      "want_hi": true,
+      "v_end": 0.87635447,
+      "correct": true
+     },
+     "o2": {
+      "want_hi": false,
+      "v_end": -3.851089278331975e-08,
+      "correct": true
+     },
+     "o3": {
+      "want_hi": true,
+      "v_end": 0.87635447,
+      "correct": true
+     },
+     "o4": {
+      "want_hi": false,
+      "v_end": -3.851089278331975e-08,
+      "correct": true
+     },
+     "o5": {
+      "want_hi": true,
+      "v_end": 0.87635447,
+      "correct": true
+     },
+     "o6": {
+      "want_hi": false,
+      "v_end": -3.851089278331975e-08,
+      "correct": true
+     },
+     "o7": {
+      "want_hi": true,
+      "v_end": 0.87635447,
+      "correct": true
+     }
+    },
+    "v_end": {
+     "o0": -3.851089278331975e-08,
+     "o1": 0.87635447,
+     "o2": -3.851089278331975e-08,
+     "o3": 0.87635447,
+     "o4": -3.851089278331975e-08,
+     "o5": 0.87635447,
+     "o6": -3.851089278331975e-08,
+     "o7": 0.87635447
+    },
+    "wall_s": 351.5
+   },
+   "and2": {
+    "cell": "sg13g2_and2_1",
+    "binding_pmos_rise_depth": 1,
+    "t_hop_ps": 45.278348812177185,
+    "t_valid80_ps": 87.061847,
+    "t_valid90_ps": 103.99050500000001,
+    "t_level_meas_ps": 103.99050500000001,
+    "x_vs_inv": 1.3703036673847055,
+    "VBEND": 0.805692499,
+    "VA_open": -0.07508685622164513,
+    "settled_min_pct": 100.00000786543477,
+    "C1_VALUE": true,
+    "C2_SETTLE": true,
+    "C3_SPEED": true,
+    "verdict": "PASS",
+    "vec_out_hi": {
+     "A": 1,
+     "B": 1
+    },
+    "vec_out_lo": {
+     "A": 0,
+     "B": 0
+    },
+    "value_check": {
+     "o0": {
+      "want_hi": false,
+      "v_end": -6.337121803074916e-08,
+      "correct": true
+     },
+     "o1": {
+      "want_hi": true,
+      "v_end": 0.8056926892700118,
+      "correct": true
+     },
+     "o2": {
+      "want_hi": false,
+      "v_end": -6.337121803074916e-08,
+      "correct": true
+     },
+     "o3": {
+      "want_hi": true,
+      "v_end": 0.8056926892700118,
+      "correct": true
+     },
+     "o4": {
+      "want_hi": false,
+      "v_end": -6.337121803074916e-08,
+      "correct": true
+     },
+     "o5": {
+      "want_hi": true,
+      "v_end": 0.8056926892700118,
+      "correct": true
+     },
+     "o6": {
+      "want_hi": false,
+      "v_end": -6.337121803074916e-08,
+      "correct": true
+     },
+     "o7": {
+      "want_hi": true,
+      "v_end": 0.8056926892700118,
+      "correct": true
+     }
+    },
+    "v_end": {
+     "o0": -6.337121803074916e-08,
+     "o1": 0.8056926892700118,
+     "o2": -6.337121803074916e-08,
+     "o3": 0.8056926892700118,
+     "o4": -6.337121803074916e-08,
+     "o5": 0.8056926892700118,
+     "o6": -6.337121803074916e-08,
+     "o7": 0.8056926892700118
+    },
+    "wall_s": 643.5
+   },
+   "nor2": {
+    "cell": "sg13g2_nor2_1",
+    "binding_pmos_rise_depth": 2,
+    "t_hop_ps": 45.07339865693696,
+    "t_valid80_ps": 153.37378800000002,
+    "t_valid90_ps": 196.174135,
+    "t_level_meas_ps": 196.174135,
+    "x_vs_inv": 2.5850257832339816,
+    "VBEND": 0.8428198931476472,
+    "VA_open": -0.018848494955396644,
+    "settled_min_pct": 99.97693171592077,
+    "C1_VALUE": true,
+    "C2_SETTLE": true,
+    "C3_SPEED": false,
+    "verdict": "MARGINAL",
+    "vec_out_hi": {
+     "A": 0,
+     "B": 0
+    },
+    "vec_out_lo": {
+     "A": 0,
+     "B": 1
+    },
+    "value_check": {
+     "o0": {
+      "want_hi": false,
+      "v_end": -7.61390556099394e-07,
+      "correct": true
+     },
+     "o1": {
+      "want_hi": true,
+      "v_end": 0.8426254690604196,
+      "correct": true
+     },
+     "o2": {
+      "want_hi": false,
+      "v_end": -7.61390556099394e-07,
+      "correct": true
+     },
+     "o3": {
+      "want_hi": true,
+      "v_end": 0.8426254690604196,
+      "correct": true
+     },
+     "o4": {
+      "want_hi": false,
+      "v_end": -7.61390556099394e-07,
+      "correct": true
+     },
+     "o5": {
+      "want_hi": true,
+      "v_end": 0.8426254690604196,
+      "correct": true
+     },
+     "o6": {
+      "want_hi": false,
+      "v_end": -7.61390556099394e-07,
+      "correct": true
+     },
+     "o7": {
+      "want_hi": true,
+      "v_end": 0.8426254690604196,
+      "correct": true
+     }
+    },
+    "v_end": {
+     "o0": -7.61390556099394e-07,
+     "o1": 0.8426254690604196,
+     "o2": -7.61390556099394e-07,
+     "o3": 0.8426254690604196,
+     "o4": -7.61390556099394e-07,
+     "o5": 0.8426254690604196,
+     "o6": -7.61390556099394e-07,
+     "o7": 0.8426254690604196
+    },
+    "wall_s": 105.5
+   },
+   "or2": {
+    "cell": "sg13g2_or2_1",
+    "binding_pmos_rise_depth": 2,
+    "t_hop_ps": 45.20700633954698,
+    "t_valid80_ps": 253.578983,
+    "t_valid90_ps": 287.37102,
+    "t_level_meas_ps": 287.37102,
+    "x_vs_inv": 3.786745363012551,
+    "VBEND": 0.7880811348113671,
+    "VA_open": -0.05159537507995804,
+    "settled_min_pct": 99.9858323504242,
+    "C1_VALUE": true,
+    "C2_SETTLE": true,
+    "C3_SPEED": false,
+    "verdict": "MARGINAL",
+    "vec_out_hi": {
+     "A": 0,
+     "B": 1
+    },
+    "vec_out_lo": {
+     "A": 0,
+     "B": 0
+    },
+    "value_check": {
+     "o0": {
+      "want_hi": false,
+      "v_end": 0.00011165257355308631,
+      "correct": true
+     },
+     "o1": {
+      "want_hi": true,
+      "v_end": 0.7882174137861728,
+      "correct": true
+     },
+     "o2": {
+      "want_hi": false,
+      "v_end": 0.00011165257355308631,
+      "correct": true
+     },
+     "o3": {
+      "want_hi": true,
+      "v_end": 0.7882174137861728,
+      "correct": true
+     },
+     "o4": {
+      "want_hi": false,
+      "v_end": 0.00011165257355308631,
+      "correct": true
+     },
+     "o5": {
+      "want_hi": true,
+      "v_end": 0.7882174137861728,
+      "correct": true
+     },
+     "o6": {
+      "want_hi": false,
+      "v_end": 0.00011165257355308631,
+      "correct": true
+     },
+     "o7": {
+      "want_hi": true,
+      "v_end": 0.7882174137861728,
+      "correct": true
+     }
+    },
+    "v_end": {
+     "o0": 0.00011165257355308631,
+     "o1": 0.7882174137861728,
+     "o2": 0.00011165257355308631,
+     "o3": 0.7882174137861728,
+     "o4": 0.00011165257355308631,
+     "o5": 0.7882174137861728,
+     "o6": 0.00011165257355308631,
+     "o7": 0.7882174137861728
+    },
+    "wall_s": 628.2
+   },
+   "nor2b": {
+    "cell": "sg13g2_nor2b_1",
+    "binding_pmos_rise_depth": 2,
+    "t_hop_ps": 45.20659397178329,
+    "t_valid80_ps": 174.657964,
+    "t_valid90_ps": 225.683288,
+    "t_level_meas_ps": 225.683288,
+    "x_vs_inv": 2.973873789860321,
+    "VBEND": 0.7752930813390576,
+    "VA_open": -0.05124517079410218,
+    "settled_min_pct": 99.89376102697844,
+    "C1_VALUE": true,
+    "C2_SETTLE": true,
+    "C3_SPEED": false,
+    "verdict": "MARGINAL",
+    "vec_out_hi": {
+     "A": 0,
+     "B_N": 1
+    },
+    "vec_out_lo": {
+     "A": 0,
+     "B_N": 0
+    },
+    "value_check": {
+     "o0": {
+      "want_hi": false,
+      "v_end": 0.0008236634075218993,
+      "correct": true
+     },
+     "o1": {
+      "want_hi": true,
+      "v_end": 0.7747674201137321,
+      "correct": true
+     },
+     "o2": {
+      "want_hi": false,
+      "v_end": 0.0008236634075218993,
+      "correct": true
+     },
+     "o3": {
+      "want_hi": true,
+      "v_end": 0.7747674201137321,
+      "correct": true
+     },
+     "o4": {
+      "want_hi": false,
+      "v_end": 0.0008236634075218993,
+      "correct": true
+     },
+     "o5": {
+      "want_hi": true,
+      "v_end": 0.7747674201137321,
+      "correct": true
+     },
+     "o6": {
+      "want_hi": false,
+      "v_end": 0.0008236634075218993,
+      "correct": true
+     },
+     "o7": {
+      "want_hi": true,
+      "v_end": 0.7747674201137321,
+      "correct": true
+     }
+    },
+    "v_end": {
+     "o0": 0.0008236634075218993,
+     "o1": 0.7747674201137321,
+     "o2": 0.0008236634075218993,
+     "o3": 0.7747674201137321,
+     "o4": 0.0008236634075218993,
+     "o5": 0.7747674201137321,
+     "o6": 0.0008236634075218993,
+     "o7": 0.7747674201137321
+    },
+    "wall_s": 150.5
+   },
+   "xnor2": {
+    "cell": "sg13g2_xnor2_1",
+    "binding_pmos_rise_depth": 2,
+    "t_hop_ps": 45.37017183445934,
+    "t_valid80_ps": 374.375187,
+    "t_valid90_ps": 441.00185799999997,
+    "t_level_meas_ps": 441.00185799999997,
+    "x_vs_inv": 5.8111696191961855,
+    "VBEND": 0.690687333999374,
+    "VA_open": -0.14979154506793346,
+    "settled_min_pct": 97.74005159043526,
+    "C1_VALUE": true,
+    "C2_SETTLE": true,
+    "C3_SPEED": false,
+    "verdict": "MARGINAL",
+    "vec_out_hi": {
+     "A": 0,
+     "B": 0
+    },
+    "vec_out_lo": {
+     "A": 0,
+     "B": 1
+    },
+    "value_check": {
+     "o0": {
+      "want_hi": false,
+      "v_end": 0.015609177419783933,
+      "correct": true
+     },
+     "o1": {
+      "want_hi": true,
+      "v_end": 0.6861796914566443,
+      "correct": true
+     },
+     "o2": {
+      "want_hi": false,
+      "v_end": 0.015609177419783933,
+      "correct": true
+     },
+     "o3": {
+      "want_hi": true,
+      "v_end": 0.6861796914566443,
+      "correct": true
+     },
+     "o4": {
+      "want_hi": false,
+      "v_end": 0.015609177419783933,
+      "correct": true
+     },
+     "o5": {
+      "want_hi": true,
+      "v_end": 0.6861796914566443,
+      "correct": true
+     },
+     "o6": {
+      "want_hi": false,
+      "v_end": 0.015609177419783933,
+      "correct": true
+     },
+     "o7": {
+      "want_hi": true,
+      "v_end": 0.6861796914566443,
+      "correct": true
+     }
+    },
+    "v_end": {
+     "o0": 0.015609177419783933,
+     "o1": 0.6861796914566443,
+     "o2": 0.015609177419783933,
+     "o3": 0.6861796914566443,
+     "o4": 0.015609177419783933,
+     "o5": 0.6861796914566443,
+     "o6": 0.015609177419783933,
+     "o7": 0.6861796914566443
+    },
+    "wall_s": 220.4
+   },
+   "xor2": {
+    "cell": "sg13g2_xor2_1",
+    "binding_pmos_rise_depth": 2,
+    "t_hop_ps": 45.36449442785582,
+    "t_valid80_ps": 386.228251,
+    "t_valid90_ps": 504.097838,
+    "t_level_meas_ps": 504.097838,
+    "x_vs_inv": 6.642597957689513,
+    "VBEND": 0.6693187528592863,
+    "VA_open": -0.1533741904999939,
+    "settled_min_pct": 91.98888515517314,
+    "C1_VALUE": true,
+    "C2_SETTLE": true,
+    "C3_SPEED": false,
+    "verdict": "MARGINAL",
+    "vec_out_hi": {
+     "A": 0,
+     "B": 1
+    },
+    "vec_out_lo": {
+     "A": 0,
+     "B": 0
+    },
+    "value_check": {
+     "o0": {
+      "want_hi": false,
+      "v_end": 0.006263707990630826,
+      "correct": true
+     },
+     "o1": {
+      "want_hi": true,
+      "v_end": 0.615698858889766,
+      "correct": true
+     },
+     "o2": {
+      "want_hi": false,
+      "v_end": 0.006263707990630826,
+      "correct": true
+     },
+     "o3": {
+      "want_hi": true,
+      "v_end": 0.615698858889766,
+      "correct": true
+     },
+     "o4": {
+      "want_hi": false,
+      "v_end": 0.006263707990630826,
+      "correct": true
+     },
+     "o5": {
+      "want_hi": true,
+      "v_end": 0.615698858889766,
+      "correct": true
+     },
+     "o6": {
+      "want_hi": false,
+      "v_end": 0.006263707990630826,
+      "correct": true
+     },
+     "o7": {
+      "want_hi": true,
+      "v_end": 0.615698858889766,
+      "correct": true
+     }
+    },
+    "v_end": {
+     "o0": 0.006263707990630826,
+     "o1": 0.615698858889766,
+     "o2": 0.006263707990630826,
+     "o3": 0.615698858889766,
+     "o4": 0.006263707990630826,
+     "o5": 0.615698858889766,
+     "o6": 0.006263707990630826,
+     "o7": 0.615698858889766
+    },
+    "wall_s": 210.5
+   },
+   "mux2": {
+    "cell": "sg13g2_mux2_1",
+    "binding_pmos_rise_depth": 2,
+    "t_hop_ps": 45.51798281328536,
+    "t_valid80_ps": 415.934226,
+    "t_valid90_ps": 507.08351500000003,
+    "t_level_meas_ps": 507.08351500000003,
+    "x_vs_inv": 6.681940820220339,
+    "VBEND": 0.6880399091618765,
+    "VA_open": -0.20176908752335398,
+    "settled_min_pct": 93.17507582922121,
+    "C1_VALUE": true,
+    "C2_SETTLE": true,
+    "C3_SPEED": false,
+    "verdict": "MARGINAL",
+    "vec_out_hi": {
+     "A0": 0,
+     "A1": 1,
+     "S": 1
+    },
+    "vec_out_lo": {
+     "A0": 0,
+     "A1": 0,
+     "S": 0
+    },
+    "value_check": {
+     "o0": {
+      "want_hi": false,
+      "v_end": 0.0469582020649933,
+      "correct": true
+     },
+     "o1": {
+      "want_hi": true,
+      "v_end": 0.6892332985695048,
+      "correct": true
+     },
+     "o2": {
+      "want_hi": false,
+      "v_end": 0.0469582020649933,
+      "correct": true
+     },
+     "o3": {
+      "want_hi": true,
+      "v_end": 0.6892332985695048,
+      "correct": true
+     },
+     "o4": {
+      "want_hi": false,
+      "v_end": 0.0469582020649933,
+      "correct": true
+     },
+     "o5": {
+      "want_hi": true,
+      "v_end": 0.6892332985695048,
+      "correct": true
+     },
+     "o6": {
+      "want_hi": false,
+      "v_end": 0.0469582020649933,
+      "correct": true
+     },
+     "o7": {
+      "want_hi": true,
+      "v_end": 0.6892332985695048,
+      "correct": true
+     }
+    },
+    "v_end": {
+     "o0": 0.0469582020649933,
+     "o1": 0.6892332985695048,
+     "o2": 0.0469582020649933,
+     "o3": 0.6892332985695048,
+     "o4": 0.0469582020649933,
+     "o5": 0.6892332985695048,
+     "o6": 0.0469582020649933,
+     "o7": 0.6892332985695048
+    },
+    "wall_s": 262.5
+   },
+   "a21oi": {
+    "cell": "sg13g2_a21oi_1",
+    "binding_pmos_rise_depth": 2,
+    "t_hop_ps": 45.20036819967356,
+    "t_valid80_ps": 132.700027,
+    "t_valid90_ps": 165.295308,
+    "t_level_meas_ps": 165.295308,
+    "x_vs_inv": 2.1781293085737436,
+    "VBEND": 0.8152082152737167,
+    "VA_open": -0.06257677510238713,
+    "settled_min_pct": 99.99851342981182,
+    "C1_VALUE": true,
+    "C2_SETTLE": true,
+    "C3_SPEED": false,
+    "verdict": "MARGINAL",
+    "vec_out_hi": {
+     "A1": 0,
+     "A2": 0,
+     "B1": 0
+    },
+    "vec_out_lo": {
+     "A1": 0,
+     "A2": 0,
+     "B1": 1
+    },
+    "value_check": {
+     "o0": {
+      "want_hi": false,
+      "v_end": -6.763415143154752e-08,
+      "correct": true
+     },
+     "o1": {
+      "want_hi": true,
+      "v_end": 0.8151960966314168,
+      "correct": true
+     },
+     "o2": {
+      "want_hi": false,
+      "v_end": -6.763415150417586e-08,
+      "correct": true
+     },
+     "o3": {
+      "want_hi": true,
+      "v_end": 0.8151960966314168,
+      "correct": true
+     },
+     "o4": {
+      "want_hi": false,
+      "v_end": -6.763415150417586e-08,
+      "correct": true
+     },
+     "o5": {
+      "want_hi": true,
+      "v_end": 0.8151960966314168,
+      "correct": true
+     },
+     "o6": {
+      "want_hi": false,
+      "v_end": -6.763415150417586e-08,
+      "correct": true
+     },
+     "o7": {
+      "want_hi": true,
+      "v_end": 0.8151960966314168,
+      "correct": true
+     }
+    },
+    "v_end": {
+     "o0": -6.763415143154752e-08,
+     "o1": 0.8151960966314168,
+     "o2": -6.763415150417586e-08,
+     "o3": 0.8151960966314168,
+     "o4": -6.763415150417586e-08,
+     "o5": 0.8151960966314168,
+     "o6": -6.763415150417586e-08,
+     "o7": 0.8151960966314168
+    },
+    "wall_s": 174.4
+   },
+   "a21o": {
+    "cell": "sg13g2_a21o_1",
+    "binding_pmos_rise_depth": 2,
+    "t_hop_ps": 45.333027079472615,
+    "t_valid80_ps": 218.95553999999998,
+    "t_valid90_ps": 251.79017300000004,
+    "t_level_meas_ps": 251.79017300000004,
+    "x_vs_inv": 3.3178894310911313,
+    "VBEND": 0.7605451415231383,
+    "VA_open": -0.10058784290840572,
+    "settled_min_pct": 99.99764482732677,
+    "C1_VALUE": true,
+    "C2_SETTLE": true,
+    "C3_SPEED": false,
+    "verdict": "MARGINAL",
+    "vec_out_hi": {
+     "A1": 0,
+     "A2": 0,
+     "B1": 1
+    },
+    "vec_out_lo": {
+     "A1": 0,
+     "A2": 0,
+     "B1": 0
+    },
+    "value_check": {
+     "o0": {
+      "want_hi": false,
+      "v_end": 1.7912151340760237e-05,
+      "correct": true
+     },
+     "o1": {
+      "want_hi": true,
+      "v_end": 0.7605650906912235,
+      "correct": true
+     },
+     "o2": {
+      "want_hi": false,
+      "v_end": 1.7912151340760237e-05,
+      "correct": true
+     },
+     "o3": {
+      "want_hi": true,
+      "v_end": 0.7605650906912235,
+      "correct": true
+     },
+     "o4": {
+      "want_hi": false,
+      "v_end": 1.7912151340760237e-05,
+      "correct": true
+     },
+     "o5": {
+      "want_hi": true,
+      "v_end": 0.7605650906912235,
+      "correct": true
+     },
+     "o6": {
+      "want_hi": false,
+      "v_end": 1.7912151340760237e-05,
+      "correct": true
+     },
+     "o7": {
+      "want_hi": true,
+      "v_end": 0.7605650906912235,
+      "correct": true
+     }
+    },
+    "v_end": {
+     "o0": 1.7912151340760237e-05,
+     "o1": 0.7605650906912235,
+     "o2": 1.7912151340760237e-05,
+     "o3": 0.7605650906912235,
+     "o4": 1.7912151340760237e-05,
+     "o5": 0.7605650906912235,
+     "o6": 1.7912151340760237e-05,
+     "o7": 0.7605650906912235
+    },
+    "wall_s": 243.6
+   },
+   "o21ai": {
+    "cell": "sg13g2_o21ai_1",
+    "binding_pmos_rise_depth": 2,
+    "t_hop_ps": 45.265142373309715,
+    "t_valid80_ps": 363.020581,
+    "t_valid90_ps": 479.105913,
+    "t_level_meas_ps": 479.105913,
+    "x_vs_inv": 6.31327436720879,
+    "VBEND": 0.7323631003845806,
+    "VA_open": -0.13383779426880738,
+    "settled_min_pct": 93.2155120025781,
+    "C1_VALUE": true,
+    "C2_SETTLE": true,
+    "C3_SPEED": false,
+    "verdict": "MARGINAL",
+    "vec_out_hi": {
+     "A1": 0,
+     "A2": 0,
+     "B1": 1
+    },
+    "vec_out_lo": {
+     "A1": 0,
+     "A2": 1,
+     "B1": 1
+    },
+    "value_check": {
+     "o0": {
+      "want_hi": false,
+      "v_end": -0.00041352945021348806,
+      "correct": true
+     },
+     "o1": {
+      "want_hi": true,
+      "v_end": 0.6826760137414418,
+      "correct": true
+     },
+     "o2": {
+      "want_hi": false,
+      "v_end": -0.00041352945021348806,
+      "correct": true
+     },
+     "o3": {
+      "want_hi": true,
+      "v_end": 0.6826760137414418,
+      "correct": true
+     },
+     "o4": {
+      "want_hi": false,
+      "v_end": -0.00041352945021348806,
+      "correct": true
+     },
+     "o5": {
+      "want_hi": true,
+      "v_end": 0.6826760137414418,
+      "correct": true
+     },
+     "o6": {
+      "want_hi": false,
+      "v_end": -0.00041352945021348806,
+      "correct": true
+     },
+     "o7": {
+      "want_hi": true,
+      "v_end": 0.6826760137414418,
+      "correct": true
+     }
+    },
+    "v_end": {
+     "o0": -0.00041352945021348806,
+     "o1": 0.6826760137414418,
+     "o2": -0.00041352945021348806,
+     "o3": 0.6826760137414418,
+     "o4": -0.00041352945021348806,
+     "o5": 0.6826760137414418,
+     "o6": -0.00041352945021348806,
+     "o7": 0.6826760137414418
+    },
+    "wall_s": 205.4
+   }
+  },
+  "separation": {
+   "depth1_families": {
+    "inv": 1.0,
+    "buf": 1.4953680890676455,
+    "nand2": 0.7904532030392893,
+    "and2": 1.3703036673847055
+   },
+   "depth2_families": {
+    "nor2": 2.5850257832339816,
+    "or2": 3.786745363012551,
+    "nor2b": 2.973873789860321,
+    "xnor2": 5.8111696191961855,
+    "xor2": 6.642597957689513,
+    "mux2": 6.681940820220339,
+    "a21oi": 2.1781293085737436,
+    "a21o": 3.3178894310911313,
+    "o21ai": 6.31327436720879
+   },
+   "depth1_slowest": [
+    "buf",
+    1.4953680890676455
+   ],
+   "depth2_fastest": [
+    "a21oi",
+    2.1781293085737436
+   ],
+   "gap": "the slowest depth-1 family (buf, 1.50x the inverter) and the fastest depth-2 family (a21oi, 2.18x) do not overlap. The pre-registered C3 threshold of 2.0x sits INSIDE that gap, so every verdict in this census is unchanged for any threshold between 1.51x and 2.17x. The PASS/MARGINAL split is not an artefact of where the gate was drawn.",
+   "the_static_metric_is_confirmed": "binding_pmos_rise_depth, read out of the PDK netlist before any deck was run, partitions the census EXACTLY: all four depth-1 families PASS, all nine depth-2 families are MARGINAL, with a clean gap between them. That is the direct confirmation of declared_correction_1 -- nor2 (depth 2) lands at 2.59x with the deep-stack group, not with nand2 (depth 1) at 0.79x, so the brief's grouping of inv+nand2+nor2 as the shallow set is REFUTED by measurement, and and2 (depth 1, 1.37x) belongs in it instead.",
+   "no_family_FAILED": "every one of the thirteen families is value-correct (C1) and settles inside the 500 ps tail (C2) at dV=1.65 V. Nothing in this census is un-QAL-able on CORRECTNESS. The entire separation is SPEED -- which is exactly what the committed dvopt result predicted and what the brief's 'never settles' framing would have hidden."
+  }
+ },
+ "REMAP_MEASURED": {
+  "flow": "yosys 0.58 git sha1 157aabb58 -- the same version that produced the committed sha_slice.cmos.v. Liberty subsetted by cell name from sg13g2_stdcell_typ_1p20V_25C.lib. Seven abc variants per library; both Pareto ends reported.",
+  "control": "the FULL-library flow reproduces the committed netlist exactly: 56 cells, DEPTH 8, profile 32/12/3/2/2/2/2/1, and the identical cell-type histogram. The remap cost is therefore attributable to the library restriction, not to the flow.",
+  "mappings": {
+   "committed": {
+    "cells": 56,
+    "devices": 406,
+    "W_tot_um": 352.65,
+    "depth": 8,
+    "types": {
+     "sg13g2_inv_1": 3,
+     "sg13g2_nand2_1": 5,
+     "sg13g2_o21ai_1": 5,
+     "sg13g2_nor2_1": 5,
+     "sg13g2_or2_1": 3,
+     "sg13g2_and2_1": 3,
+     "sg13g2_a21o_1": 3,
+     "sg13g2_a21oi_1": 6,
+     "sg13g2_mux2_1": 8,
+     "sg13g2_nor2b_1": 3,
+     "sg13g2_xnor2_1": 10,
+     "sg13g2_xor2_1": 2
+    },
+    "area_um2": 627.782
+   },
+   "full_mincell": {
+    "cells": 56,
+    "devices": 406,
+    "W_tot_um": 352.65,
+    "depth": 8,
+    "types": {
+     "sg13g2_inv_1": 3,
+     "sg13g2_nand2_1": 5,
+     "sg13g2_o21ai_1": 5,
+     "sg13g2_nor2_1": 5,
+     "sg13g2_or2_1": 3,
+     "sg13g2_and2_1": 3,
+     "sg13g2_a21o_1": 3,
+     "sg13g2_a21oi_1": 6,
+     "sg13g2_mux2_1": 8,
+     "sg13g2_nor2b_1": 3,
+     "sg13g2_xnor2_1": 10,
+     "sg13g2_xor2_1": 2
+    },
+    "area_um2": 627.782
+   },
+   "shallow_mincell": {
+    "cells": 131,
+    "devices": 510,
+    "W_tot_um": 460.62,
+    "depth": 17,
+    "types": {
+     "sg13g2_inv_1": 25,
+     "sg13g2_nand2_1": 88,
+     "sg13g2_and2_1": 18
+    },
+    "area_um2": 938.045
+   },
+   "nand_mincell": {
+    "cells": 138,
+    "devices": 470,
+    "W_tot_um": 437.1,
+    "depth": 19,
+    "types": {
+     "sg13g2_inv_1": 41,
+     "sg13g2_nand2_1": 97
+    },
+    "area_um2": 927.158
+   },
+   "d2ok_mincell": {
+    "cells": 101,
+    "devices": 424,
+    "W_tot_um": 379.92,
+    "depth": 16,
+    "types": {
+     "sg13g2_inv_1": 8,
+     "sg13g2_nor2_1": 49,
+     "sg13g2_and2_1": 14,
+     "sg13g2_nand2_1": 26,
+     "sg13g2_or2_1": 4
+    },
+    "area_um2": 751.162
+   },
+   "shallow_mindepth": {
+    "cells": 146,
+    "devices": 534,
+    "W_tot_um": 485.22,
+    "depth": 13,
+    "types": {
+     "sg13g2_inv_1": 40,
+     "sg13g2_nand2_1": 91,
+     "sg13g2_and2_1": 15
+    },
+    "area_um2": 1014.25
+   },
+   "nand_mindepth": {
+    "cells": 161,
+    "devices": 552,
+    "W_tot_um": 513.36,
+    "depth": 14,
+    "types": {
+     "sg13g2_inv_1": 46,
+     "sg13g2_nand2_1": 115
+    },
+    "area_um2": 1085.011
+   },
+   "d2ok_mindepth": {
+    "cells": 111,
+    "devices": 456,
+    "W_tot_um": 409.32,
+    "depth": 12,
+    "types": {
+     "sg13g2_nor2_1": 75,
+     "sg13g2_and2_1": 12,
+     "sg13g2_nand2_1": 6,
+     "sg13g2_inv_1": 12,
+     "sg13g2_or2_1": 6
+    },
+    "area_um2": 816.48
+   },
+   "full_mindepth": {
+    "cells": 56,
+    "devices": 406,
+    "W_tot_um": 352.65,
+    "depth": 8,
+    "types": {
+     "sg13g2_inv_1": 3,
+     "sg13g2_nand2_1": 5,
+     "sg13g2_o21ai_1": 5,
+     "sg13g2_nor2_1": 5,
+     "sg13g2_or2_1": 3,
+     "sg13g2_and2_1": 3,
+     "sg13g2_a21o_1": 3,
+     "sg13g2_a21oi_1": 6,
+     "sg13g2_mux2_1": 8,
+     "sg13g2_nor2b_1": 3,
+     "sg13g2_xnor2_1": 10,
+     "sg13g2_xor2_1": 2
+    },
+    "area_um2": 627.782
+   }
+  }
+ },
+ "REMAP_CONSEQUENCE_DERIVED": {
+  "_doc": "DERIVED (not measured here): what the shallow-stack remap does to the COMMITTED composed QAL projection. The MEASURED inputs are the cell/device/width counts and the depth of each mapping; everything else is the committed campaign's own per-gate energy (qal_hop_corrected.json dV=1.0/L=400nH: 1.30308 fJ/gate, 400.41 ps/level) and the committed chain-legal level time (resv SC_m20_L3, source-side cut, 6.91 fF load: 103.377652 ps).",
+  "committed_reference": {
+   "CMOS_E_fJ": 232.0,
+   "CMOS_T_ps": 928.0,
+   "QAL_projection_E_fJ": 136.8,
+   "QAL_projection_T_ps": 4004.1,
+   "projection_basis": "1.30308 fJ/gate x 105 GENERIC gates; 10 GENERIC levels x 400.41 ps",
+   "note": "the projection counts GENERIC gates ($_AND_/$_OR_/$_XOR_/$_NOT_). A generic $_XOR_ is not a shallow-stack cell, so the projection's depth 10 was never reachable on a QAL-able library either -- that is the gap this remap prices."
+  },
+  "rows": {
+   "committed": {
+    "MEASURED": {
+     "cells": 56,
+     "devices": 406,
+     "W_tot_um": 352.65,
+     "depth": 8,
+     "x_cells": 1.0,
+     "x_devices": 1.0,
+     "x_width": 1.0,
+     "x_depth": 1.0
+    },
+    "DERIVED": {
+     "E_scaled_by_width_fJ": 136.8,
+     "E_adv_vs_CMOS_after_remap": 1.696,
+     "E_adv_before_remap": 1.696,
+     "T_chainlegal_ps": 827.0,
+     "T_chainlegal_x_CMOS_block": 0.891,
+     "T_chainlegal_x_CMOS_cellconv": 1.098
+    }
+   },
+   "shallow_mincell": {
+    "MEASURED": {
+     "cells": 131,
+     "devices": 510,
+     "W_tot_um": 460.62,
+     "depth": 17,
+     "x_cells": 2.339,
+     "x_devices": 1.256,
+     "x_width": 1.306,
+     "x_depth": 2.125
+    },
+    "DERIVED": {
+     "E_scaled_by_width_fJ": 178.7,
+     "E_adv_vs_CMOS_after_remap": 1.298,
+     "E_adv_before_remap": 1.696,
+     "T_chainlegal_ps": 1757.4,
+     "T_chainlegal_x_CMOS_block": 1.894,
+     "T_chainlegal_x_CMOS_cellconv": 2.333
+    }
+   },
+   "nand_mincell": {
+    "MEASURED": {
+     "cells": 138,
+     "devices": 470,
+     "W_tot_um": 437.1,
+     "depth": 19,
+     "x_cells": 2.464,
+     "x_devices": 1.158,
+     "x_width": 1.239,
+     "x_depth": 2.375
+    },
+    "DERIVED": {
+     "E_scaled_by_width_fJ": 169.6,
+     "E_adv_vs_CMOS_after_remap": 1.368,
+     "E_adv_before_remap": 1.696,
+     "T_chainlegal_ps": 1964.2,
+     "T_chainlegal_x_CMOS_block": 2.117,
+     "T_chainlegal_x_CMOS_cellconv": 2.607
+    }
+   },
+   "d2ok_mincell": {
+    "MEASURED": {
+     "cells": 101,
+     "devices": 424,
+     "W_tot_um": 379.92,
+     "depth": 16,
+     "x_cells": 1.804,
+     "x_devices": 1.044,
+     "x_width": 1.077,
+     "x_depth": 2.0
+    },
+    "DERIVED": {
+     "E_scaled_by_width_fJ": 147.4,
+     "E_adv_vs_CMOS_after_remap": 1.574,
+     "E_adv_before_remap": 1.696,
+     "T_chainlegal_ps": 1654.0,
+     "T_chainlegal_x_CMOS_block": 1.782,
+     "T_chainlegal_x_CMOS_cellconv": 2.195
+    }
+   },
+   "shallow_mindepth": {
+    "MEASURED": {
+     "cells": 146,
+     "devices": 534,
+     "W_tot_um": 485.22,
+     "depth": 13,
+     "x_cells": 2.607,
+     "x_devices": 1.315,
+     "x_width": 1.376,
+     "x_depth": 1.625
+    },
+    "DERIVED": {
+     "E_scaled_by_width_fJ": 188.2,
+     "E_adv_vs_CMOS_after_remap": 1.233,
+     "E_adv_before_remap": 1.696,
+     "T_chainlegal_ps": 1343.9,
+     "T_chainlegal_x_CMOS_block": 1.448,
+     "T_chainlegal_x_CMOS_cellconv": 1.784
+    }
+   },
+   "nand_mindepth": {
+    "MEASURED": {
+     "cells": 161,
+     "devices": 552,
+     "W_tot_um": 513.36,
+     "depth": 14,
+     "x_cells": 2.875,
+     "x_devices": 1.36,
+     "x_width": 1.456,
+     "x_depth": 1.75
+    },
+    "DERIVED": {
+     "E_scaled_by_width_fJ": 199.1,
+     "E_adv_vs_CMOS_after_remap": 1.165,
+     "E_adv_before_remap": 1.696,
+     "T_chainlegal_ps": 1447.3,
+     "T_chainlegal_x_CMOS_block": 1.56,
+     "T_chainlegal_x_CMOS_cellconv": 1.921
+    }
+   },
+   "d2ok_mindepth": {
+    "MEASURED": {
+     "cells": 111,
+     "devices": 456,
+     "W_tot_um": 409.32,
+     "depth": 12,
+     "x_cells": 1.982,
+     "x_devices": 1.123,
+     "x_width": 1.161,
+     "x_depth": 1.5
+    },
+    "DERIVED": {
+     "E_scaled_by_width_fJ": 158.8,
+     "E_adv_vs_CMOS_after_remap": 1.461,
+     "E_adv_before_remap": 1.696,
+     "T_chainlegal_ps": 1240.5,
+     "T_chainlegal_x_CMOS_block": 1.337,
+     "T_chainlegal_x_CMOS_cellconv": 1.647
+    }
+   },
+   "full_mindepth": {
+    "MEASURED": {
+     "cells": 56,
+     "devices": 406,
+     "W_tot_um": 352.65,
+     "depth": 8,
+     "x_cells": 1.0,
+     "x_devices": 1.0,
+     "x_width": 1.0,
+     "x_depth": 1.0
+    },
+    "DERIVED": {
+     "E_scaled_by_width_fJ": 136.8,
+     "E_adv_vs_CMOS_after_remap": 1.696,
+     "E_adv_before_remap": 1.696,
+     "T_chainlegal_ps": 827.0,
+     "T_chainlegal_x_CMOS_block": 0.891,
+     "T_chainlegal_x_CMOS_cellconv": 1.098
+    }
+   }
+  }
+ },
+ "BLOCK_TIME_COMPOSED_FROM_THE_CENSUS": {
+  "_doc": "Per-LEVEL block-time composition.\n\ncompose.py uses one global maximum over the cell types a mapping contains, which is\nan UPPER bound: a level that happens to hold only fast cells is charged for the\nslowest cell anywhere in the design.  This composes level by level -- each QAL bank\nopens when the slowest cell IN THAT BANK has settled -- so\n\n    T_block = sum over levels of max(t_level of the cell types in that level)\n\nwhich is the correct composition and is <= the global-max form.  Both are reported.\n",
+  "rows": {
+   "committed": {
+    "MEASURED": {
+     "cells": 56,
+     "devices": 406,
+     "W_tot_um": 352.65,
+     "area_um2": 627.782,
+     "depth": 8,
+     "per_level": [
+      {
+       "level": 1,
+       "limiter": "mux2",
+       "t_level_ps": 507.084,
+       "families": {
+        "inv": 3,
+        "nand2": 4,
+        "o21ai": 1,
+        "nor2": 4,
+        "or2": 3,
+        "and2": 3,
+        "a21oi": 1,
+        "mux2": 8,
+        "xnor2": 3,
+        "xor2": 2
+       }
+      },
+      {
+       "level": 2,
+       "limiter": "o21ai",
+       "t_level_ps": 479.106,
+       "families": {
+        "nand2": 1,
+        "o21ai": 4,
+        "a21o": 3,
+        "nor2": 1,
+        "nor2b": 3
+       }
+      },
+      {
+       "level": 3,
+       "limiter": "xnor2",
+       "t_level_ps": 441.002,
+       "families": {
+        "xnor2": 2,
+        "a21oi": 1
+       }
+      },
+      {
+       "level": 4,
+       "limiter": "xnor2",
+       "t_level_ps": 441.002,
+       "families": {
+        "xnor2": 1,
+        "a21oi": 1
+       }
+      },
+      {
+       "level": 5,
+       "limiter": "xnor2",
+       "t_level_ps": 441.002,
+       "families": {
+        "xnor2": 1,
+        "a21oi": 1
+       }
+      },
+      {
+       "level": 6,
+       "limiter": "xnor2",
+       "t_level_ps": 441.002,
+       "families": {
+        "xnor2": 1,
+        "a21oi": 1
+       }
+      },
+      {
+       "level": 7,
+       "limiter": "xnor2",
+       "t_level_ps": 441.002,
+       "families": {
+        "xnor2": 1,
+        "a21oi": 1
+       }
+      },
+      {
+       "level": 8,
+       "limiter": "xnor2",
+       "t_level_ps": 441.002,
+       "families": {
+        "xnor2": 1
+       }
+      }
+     ]
+    },
+    "DERIVED": {
+     "T_block_perlevel_ps": 3632.2,
+     "T_block_globalmax_ps": 4056.7,
+     "T_x_CMOS_block": 3.914,
+     "x_width": 1.0,
+     "x_area": 1.0,
+     "E_scaled_by_width_fJ": 136.8,
+     "E_adv_vs_CMOS": 1.696
+    }
+   },
+   "full_mincell": {
+    "MEASURED": {
+     "cells": 56,
+     "devices": 406,
+     "W_tot_um": 352.65,
+     "area_um2": 627.782,
+     "depth": 8,
+     "per_level": [
+      {
+       "level": 1,
+       "limiter": "mux2",
+       "t_level_ps": 507.084,
+       "families": {
+        "inv": 3,
+        "nand2": 4,
+        "o21ai": 1,
+        "nor2": 4,
+        "or2": 3,
+        "and2": 3,
+        "a21oi": 1,
+        "mux2": 8,
+        "xnor2": 3,
+        "xor2": 2
+       }
+      },
+      {
+       "level": 2,
+       "limiter": "o21ai",
+       "t_level_ps": 479.106,
+       "families": {
+        "nand2": 1,
+        "o21ai": 4,
+        "a21o": 3,
+        "nor2": 1,
+        "nor2b": 3
+       }
+      },
+      {
+       "level": 3,
+       "limiter": "xnor2",
+       "t_level_ps": 441.002,
+       "families": {
+        "xnor2": 2,
+        "a21oi": 1
+       }
+      },
+      {
+       "level": 4,
+       "limiter": "xnor2",
+       "t_level_ps": 441.002,
+       "families": {
+        "xnor2": 1,
+        "a21oi": 1
+       }
+      },
+      {
+       "level": 5,
+       "limiter": "xnor2",
+       "t_level_ps": 441.002,
+       "families": {
+        "xnor2": 1,
+        "a21oi": 1
+       }
+      },
+      {
+       "level": 6,
+       "limiter": "xnor2",
+       "t_level_ps": 441.002,
+       "families": {
+        "xnor2": 1,
+        "a21oi": 1
+       }
+      },
+      {
+       "level": 7,
+       "limiter": "xnor2",
+       "t_level_ps": 441.002,
+       "families": {
+        "xnor2": 1,
+        "a21oi": 1
+       }
+      },
+      {
+       "level": 8,
+       "limiter": "xnor2",
+       "t_level_ps": 441.002,
+       "families": {
+        "xnor2": 1
+       }
+      }
+     ]
+    },
+    "DERIVED": {
+     "T_block_perlevel_ps": 3632.2,
+     "T_block_globalmax_ps": 4056.7,
+     "T_x_CMOS_block": 3.914,
+     "x_width": 1.0,
+     "x_area": 1.0,
+     "E_scaled_by_width_fJ": 136.8,
+     "E_adv_vs_CMOS": 1.696
+    }
+   },
+   "shallow_mincell": {
+    "MEASURED": {
+     "cells": 131,
+     "devices": 510,
+     "W_tot_um": 460.62,
+     "area_um2": 938.045,
+     "depth": 17,
+     "per_level": [
+      {
+       "level": 1,
+       "limiter": "inv",
+       "t_level_ps": 75.889,
+       "families": {
+        "inv": 24,
+        "nand2": 16
+       }
+      },
+      {
+       "level": 2,
+       "limiter": "inv",
+       "t_level_ps": 75.889,
+       "families": {
+        "nand2": 16,
+        "inv": 1
+       }
+      },
+      {
+       "level": 3,
+       "limiter": "and2",
+       "t_level_ps": 103.991,
+       "families": {
+        "nand2": 23,
+        "and2": 8
+       }
+      },
+      {
+       "level": 4,
+       "limiter": "nand2",
+       "t_level_ps": 59.986,
+       "families": {
+        "nand2": 10
+       }
+      },
+      {
+       "level": 5,
+       "limiter": "and2",
+       "t_level_ps": 103.991,
+       "families": {
+        "and2": 2,
+        "nand2": 1
+       }
+      },
+      {
+       "level": 6,
+       "limiter": "nand2",
+       "t_level_ps": 59.986,
+       "families": {
+        "nand2": 2
+       }
+      },
+      {
+       "level": 7,
+       "limiter": "and2",
+       "t_level_ps": 103.991,
+       "families": {
+        "and2": 2,
+        "nand2": 1
+       }
+      },
+      {
+       "level": 8,
+       "limiter": "nand2",
+       "t_level_ps": 59.986,
+       "families": {
+        "nand2": 3
+       }
+      },
+      {
+       "level": 9,
+       "limiter": "and2",
+       "t_level_ps": 103.991,
+       "families": {
+        "nand2": 2,
+        "and2": 1
+       }
+      },
+      {
+       "level": 10,
+       "limiter": "nand2",
+       "t_level_ps": 59.986,
+       "families": {
+        "nand2": 2
+       }
+      },
+      {
+       "level": 11,
+       "limiter": "and2",
+       "t_level_ps": 103.991,
+       "families": {
+        "and2": 2,
+        "nand2": 1
+       }
+      },
+      {
+       "level": 12,
+       "limiter": "nand2",
+       "t_level_ps": 59.986,
+       "families": {
+        "nand2": 3
+       }
+      },
+      {
+       "level": 13,
+       "limiter": "and2",
+       "t_level_ps": 103.991,
+       "families": {
+        "nand2": 2,
+        "and2": 1
+       }
+      },
+      {
+       "level": 14,
+       "limiter": "nand2",
+       "t_level_ps": 59.986,
+       "families": {
+        "nand2": 2
+       }
+      },
+      {
+       "level": 15,
+       "limiter": "and2",
+       "t_level_ps": 103.991,
+       "families": {
+        "and2": 2,
+        "nand2": 1
+       }
+      },
+      {
+       "level": 16,
+       "limiter": "nand2",
+       "t_level_ps": 59.986,
+       "families": {
+        "nand2": 2
+       }
+      },
+      {
+       "level": 17,
+       "limiter": "nand2",
+       "t_level_ps": 59.986,
+       "families": {
+        "nand2": 1
+       }
+      }
+     ]
+    },
+    "DERIVED": {
+     "T_block_perlevel_ps": 1359.6,
+     "T_block_globalmax_ps": 1767.8,
+     "T_x_CMOS_block": 1.465,
+     "x_width": 1.306,
+     "x_area": 1.494,
+     "E_scaled_by_width_fJ": 178.7,
+     "E_adv_vs_CMOS": 1.298
+    }
+   },
+   "nand_mincell": {
+    "MEASURED": {
+     "cells": 138,
+     "devices": 470,
+     "W_tot_um": 437.1,
+     "area_um2": 927.158,
+     "depth": 19,
+     "per_level": [
+      {
+       "level": 1,
+       "limiter": "inv",
+       "t_level_ps": 75.889,
+       "families": {
+        "inv": 24,
+        "nand2": 16
+       }
+      },
+      {
+       "level": 2,
+       "limiter": "inv",
+       "t_level_ps": 75.889,
+       "families": {
+        "nand2": 16,
+        "inv": 1
+       }
+      },
+      {
+       "level": 3,
+       "limiter": "nand2",
+       "t_level_ps": 59.986,
+       "families": {
+        "nand2": 24
+       }
+      },
+      {
+       "level": 4,
+       "limiter": "inv",
+       "t_level_ps": 75.889,
+       "families": {
+        "nand2": 9,
+        "inv": 8
+       }
+      },
+      {
+       "level": 5,
+       "limiter": "nand2",
+       "t_level_ps": 59.986,
+       "families": {
+        "nand2": 1
+       }
+      },
+      {
+       "level": 6,
+       "limiter": "nand2",
+       "t_level_ps": 59.986,
+       "families": {
+        "nand2": 2
+       }
+      },
+      {
+       "level": 7,
+       "limiter": "inv",
+       "t_level_ps": 75.889,
+       "families": {
+        "inv": 2,
+        "nand2": 1
+       }
+      },
+      {
+       "level": 8,
+       "limiter": "nand2",
+       "t_level_ps": 59.986,
+       "families": {
+        "nand2": 2
+       }
+      },
+      {
+       "level": 9,
+       "limiter": "inv",
+       "t_level_ps": 75.889,
+       "families": {
+        "nand2": 3,
+        "inv": 1
+       }
+      },
+      {
+       "level": 10,
+       "limiter": "inv",
+       "t_level_ps": 75.889,
+       "families": {
+        "inv": 1,
+        "nand2": 3
+       }
+      },
+      {
+       "level": 11,
+       "limiter": "nand2",
+       "t_level_ps": 59.986,
+       "families": {
+        "nand2": 3
+       }
+      },
+      {
+       "level": 12,
+       "limiter": "nand2",
+       "t_level_ps": 59.986,
+       "families": {
+        "nand2": 2
+       }
+      },
+      {
+       "level": 13,
+       "limiter": "inv",
+       "t_level_ps": 75.889,
+       "families": {
+        "nand2": 3,
+        "inv": 1
+       }
+      },
+      {
+       "level": 14,
+       "limiter": "inv",
+       "t_level_ps": 75.889,
+       "families": {
+        "inv": 1,
+        "nand2": 3
+       }
+      },
+      {
+       "level": 15,
+       "limiter": "nand2",
+       "t_level_ps": 59.986,
+       "families": {
+        "nand2": 3
+       }
+      },
+      {
+       "level": 16,
+       "limiter": "nand2",
+       "t_level_ps": 59.986,
+       "families": {
+        "nand2": 2
+       }
+      },
+      {
+       "level": 17,
+       "limiter": "inv",
+       "t_level_ps": 75.889,
+       "families": {
+        "nand2": 2,
+        "inv": 1
+       }
+      },
+      {
+       "level": 18,
+       "limiter": "inv",
+       "t_level_ps": 75.889,
+       "families": {
+        "inv": 1,
+        "nand2": 1
+       }
+      },
+      {
+       "level": 19,
+       "limiter": "nand2",
+       "t_level_ps": 59.986,
+       "families": {
+        "nand2": 1
+       }
+      }
+     ]
+    },
+    "DERIVED": {
+     "T_block_perlevel_ps": 1298.8,
+     "T_block_globalmax_ps": 1441.9,
+     "T_x_CMOS_block": 1.4,
+     "x_width": 1.239,
+     "x_area": 1.477,
+     "E_scaled_by_width_fJ": 169.6,
+     "E_adv_vs_CMOS": 1.368
+    }
+   },
+   "d2ok_mincell": {
+    "MEASURED": {
+     "cells": 101,
+     "devices": 424,
+     "W_tot_um": 379.92,
+     "area_um2": 751.162,
+     "depth": 16,
+     "per_level": [
+      {
+       "level": 1,
+       "limiter": "nor2",
+       "t_level_ps": 196.174,
+       "families": {
+        "inv": 8,
+        "nor2": 8,
+        "and2": 8,
+        "nand2": 8
+       }
+      },
+      {
+       "level": 2,
+       "limiter": "nor2",
+       "t_level_ps": 196.174,
+       "families": {
+        "nor2": 16,
+        "nand2": 8
+       }
+      },
+      {
+       "level": 3,
+       "limiter": "nor2",
+       "t_level_ps": 196.174,
+       "families": {
+        "nor2": 9,
+        "nand2": 8,
+        "and2": 1
+       }
+      },
+      {
+       "level": 4,
+       "limiter": "or2",
+       "t_level_ps": 287.371,
+       "families": {
+        "nor2": 1,
+        "or2": 1
+       }
+      },
+      {
+       "level": 5,
+       "limiter": "nor2",
+       "t_level_ps": 196.174,
+       "families": {
+        "and2": 1,
+        "nor2": 1
+       }
+      },
+      {
+       "level": 6,
+       "limiter": "or2",
+       "t_level_ps": 287.371,
+       "families": {
+        "nor2": 1,
+        "or2": 1
+       }
+      },
+      {
+       "level": 7,
+       "limiter": "nor2",
+       "t_level_ps": 196.174,
+       "families": {
+        "nor2": 2,
+        "and2": 1
+       }
+      },
+      {
+       "level": 8,
+       "limiter": "nor2",
+       "t_level_ps": 196.174,
+       "families": {
+        "nor2": 2
+       }
+      },
+      {
+       "level": 9,
+       "limiter": "nor2",
+       "t_level_ps": 196.174,
+       "families": {
+        "and2": 1,
+        "nor2": 1
+       }
+      },
+      {
+       "level": 10,
+       "limiter": "or2",
+       "t_level_ps": 287.371,
+       "families": {
+        "nor2": 1,
+        "or2": 1
+       }
+      },
+      {
+       "level": 11,
+       "limiter": "nor2",
+       "t_level_ps": 196.174,
+       "families": {
+        "nor2": 2,
+        "and2": 1
+       }
+      },
+      {
+       "level": 12,
+       "limiter": "nor2",
+       "t_level_ps": 196.174,
+       "families": {
+        "nor2": 2
+       }
+      },
+      {
+       "level": 13,
+       "limiter": "nor2",
+       "t_level_ps": 196.174,
+       "families": {
+        "and2": 1,
+        "nor2": 1
+       }
+      },
+      {
+       "level": 14,
+       "limiter": "nor2",
+       "t_level_ps": 196.174,
+       "families": {
+        "nor2": 2
+       }
+      },
+      {
+       "level": 15,
+       "limiter": "or2",
+       "t_level_ps": 287.371,
+       "families": {
+        "or2": 1,
+        "nand2": 1
+       }
+      },
+      {
+       "level": 16,
+       "limiter": "nand2",
+       "t_level_ps": 59.986,
+       "families": {
+        "nand2": 1
+       }
+      }
+     ]
+    },
+    "DERIVED": {
+     "T_block_perlevel_ps": 3367.4,
+     "T_block_globalmax_ps": 4597.9,
+     "T_x_CMOS_block": 3.629,
+     "x_width": 1.077,
+     "x_area": 1.197,
+     "E_scaled_by_width_fJ": 147.4,
+     "E_adv_vs_CMOS": 1.574
+    }
+   },
+   "shallow_mindepth": {
+    "MEASURED": {
+     "cells": 146,
+     "devices": 534,
+     "W_tot_um": 485.22,
+     "area_um2": 1014.25,
+     "depth": 13,
+     "per_level": [
+      {
+       "level": 1,
+       "limiter": "and2",
+       "t_level_ps": 103.991,
+       "families": {
+        "inv": 25,
+        "and2": 2,
+        "nand2": 14
+       }
+      },
+      {
+       "level": 2,
+       "limiter": "inv",
+       "t_level_ps": 75.889,
+       "families": {
+        "nand2": 23,
+        "inv": 3
+       }
+      },
+      {
+       "level": 3,
+       "limiter": "and2",
+       "t_level_ps": 103.991,
+       "families": {
+        "nand2": 22,
+        "and2": 4
+       }
+      },
+      {
+       "level": 4,
+       "limiter": "and2",
+       "t_level_ps": 103.991,
+       "families": {
+        "nand2": 8,
+        "inv": 7,
+        "and2": 4
+       }
+      },
+      {
+       "level": 5,
+       "limiter": "nand2",
+       "t_level_ps": 59.986,
+       "families": {
+        "nand2": 2
+       }
+      },
+      {
+       "level": 6,
+       "limiter": "and2",
+       "t_level_ps": 103.991,
+       "families": {
+        "and2": 1,
+        "inv": 1,
+        "nand2": 2
+       }
+      },
+      {
+       "level": 7,
+       "limiter": "nand2",
+       "t_level_ps": 59.986,
+       "families": {
+        "nand2": 3
+       }
+      },
+      {
+       "level": 8,
+       "limiter": "and2",
+       "t_level_ps": 103.991,
+       "families": {
+        "and2": 1,
+        "inv": 2,
+        "nand2": 3
+       }
+      },
+      {
+       "level": 9,
+       "limiter": "nand2",
+       "t_level_ps": 59.986,
+       "families": {
+        "nand2": 4
+       }
+      },
+      {
+       "level": 10,
+       "limiter": "and2",
+       "t_level_ps": 103.991,
+       "families": {
+        "nand2": 3,
+        "and2": 1,
+        "inv": 2
+       }
+      },
+      {
+       "level": 11,
+       "limiter": "and2",
+       "t_level_ps": 103.991,
+       "families": {
+        "nand2": 3,
+        "and2": 1
+       }
+      },
+      {
+       "level": 12,
+       "limiter": "and2",
+       "t_level_ps": 103.991,
+       "families": {
+        "nand2": 3,
+        "and2": 1
+       }
+      },
+      {
+       "level": 13,
+       "limiter": "nand2",
+       "t_level_ps": 59.986,
+       "families": {
+        "nand2": 1
+       }
+      }
+     ]
+    },
+    "DERIVED": {
+     "T_block_perlevel_ps": 1147.8,
+     "T_block_globalmax_ps": 1351.9,
+     "T_x_CMOS_block": 1.237,
+     "x_width": 1.376,
+     "x_area": 1.616,
+     "E_scaled_by_width_fJ": 188.2,
+     "E_adv_vs_CMOS": 1.233
+    }
+   },
+   "nand_mindepth": {
+    "MEASURED": {
+     "cells": 161,
+     "devices": 552,
+     "W_tot_um": 513.36,
+     "area_um2": 1085.011,
+     "depth": 14,
+     "per_level": [
+      {
+       "level": 1,
+       "limiter": "inv",
+       "t_level_ps": 75.889,
+       "families": {
+        "inv": 25,
+        "nand2": 16
+       }
+      },
+      {
+       "level": 2,
+       "limiter": "inv",
+       "t_level_ps": 75.889,
+       "families": {
+        "nand2": 29,
+        "inv": 3
+       }
+      },
+      {
+       "level": 3,
+       "limiter": "nand2",
+       "t_level_ps": 59.986,
+       "families": {
+        "nand2": 26
+       }
+      },
+      {
+       "level": 4,
+       "limiter": "inv",
+       "t_level_ps": 75.889,
+       "families": {
+        "nand2": 13,
+        "inv": 8
+       }
+      },
+      {
+       "level": 5,
+       "limiter": "inv",
+       "t_level_ps": 75.889,
+       "families": {
+        "nand2": 2,
+        "inv": 4
+       }
+      },
+      {
+       "level": 6,
+       "limiter": "inv",
+       "t_level_ps": 75.889,
+       "families": {
+        "nand2": 4,
+        "inv": 1
+       }
+      },
+      {
+       "level": 7,
+       "limiter": "nand2",
+       "t_level_ps": 59.986,
+       "families": {
+        "nand2": 3
+       }
+      },
+      {
+       "level": 8,
+       "limiter": "inv",
+       "t_level_ps": 75.889,
+       "families": {
+        "nand2": 5,
+        "inv": 2
+       }
+      },
+      {
+       "level": 9,
+       "limiter": "nand2",
+       "t_level_ps": 59.986,
+       "families": {
+        "nand2": 4
+       }
+      },
+      {
+       "level": 10,
+       "limiter": "inv",
+       "t_level_ps": 75.889,
+       "families": {
+        "nand2": 5,
+        "inv": 2
+       }
+      },
+      {
+       "level": 11,
+       "limiter": "nand2",
+       "t_level_ps": 59.986,
+       "families": {
+        "nand2": 3
+       }
+      },
+      {
+       "level": 12,
+       "limiter": "inv",
+       "t_level_ps": 75.889,
+       "families": {
+        "nand2": 3,
+        "inv": 1
+       }
+      },
+      {
+       "level": 13,
+       "limiter": "nand2",
+       "t_level_ps": 59.986,
+       "families": {
+        "nand2": 1
+       }
+      },
+      {
+       "level": 14,
+       "limiter": "nand2",
+       "t_level_ps": 59.986,
+       "families": {
+        "nand2": 1
+       }
+      }
+     ]
+    },
+    "DERIVED": {
+     "T_block_perlevel_ps": 967.0,
+     "T_block_globalmax_ps": 1062.4,
+     "T_x_CMOS_block": 1.042,
+     "x_width": 1.456,
+     "x_area": 1.728,
+     "E_scaled_by_width_fJ": 199.1,
+     "E_adv_vs_CMOS": 1.165
+    }
+   },
+   "d2ok_mindepth": {
+    "MEASURED": {
+     "cells": 111,
+     "devices": 456,
+     "W_tot_um": 409.32,
+     "area_um2": 816.48,
+     "depth": 12,
+     "per_level": [
+      {
+       "level": 1,
+       "limiter": "nor2",
+       "t_level_ps": 196.174,
+       "families": {
+        "nor2": 16,
+        "and2": 6,
+        "nand2": 2,
+        "inv": 8
+       }
+      },
+      {
+       "level": 2,
+       "limiter": "nor2",
+       "t_level_ps": 196.174,
+       "families": {
+        "nor2": 22,
+        "inv": 2
+       }
+      },
+      {
+       "level": 3,
+       "limiter": "or2",
+       "t_level_ps": 287.371,
+       "families": {
+        "nor2": 19,
+        "and2": 1,
+        "or2": 2
+       }
+      },
+      {
+       "level": 4,
+       "limiter": "nor2",
+       "t_level_ps": 196.174,
+       "families": {
+        "nor2": 4,
+        "inv": 2,
+        "nand2": 2
+       }
+      },
+      {
+       "level": 5,
+       "limiter": "nor2",
+       "t_level_ps": 196.174,
+       "families": {
+        "nor2": 2,
+        "and2": 1
+       }
+      },
+      {
+       "level": 6,
+       "limiter": "nor2",
+       "t_level_ps": 196.174,
+       "families": {
+        "nor2": 3
+       }
+      },
+      {
+       "level": 7,
+       "limiter": "nor2",
+       "t_level_ps": 196.174,
+       "families": {
+        "nor2": 3,
+        "and2": 2
+       }
+      },
+      {
+       "level": 8,
+       "limiter": "or2",
+       "t_level_ps": 287.371,
+       "families": {
+        "or2": 2,
+        "nor2": 2
+       }
+      },
+      {
+       "level": 9,
+       "limiter": "nor2",
+       "t_level_ps": 196.174,
+       "families": {
+        "nor2": 2,
+        "and2": 2
+       }
+      },
+      {
+       "level": 10,
+       "limiter": "or2",
+       "t_level_ps": 287.371,
+       "families": {
+        "or2": 1,
+        "nor2": 2
+       }
+      },
+      {
+       "level": 11,
+       "limiter": "or2",
+       "t_level_ps": 287.371,
+       "families": {
+        "or2": 1,
+        "nand2": 1
+       }
+      },
+      {
+       "level": 12,
+       "limiter": "nand2",
+       "t_level_ps": 59.986,
+       "families": {
+        "nand2": 1
+       }
+      }
+     ]
+    },
+    "DERIVED": {
+     "T_block_perlevel_ps": 2582.7,
+     "T_block_globalmax_ps": 3448.5,
+     "T_x_CMOS_block": 2.783,
+     "x_width": 1.161,
+     "x_area": 1.301,
+     "E_scaled_by_width_fJ": 158.8,
+     "E_adv_vs_CMOS": 1.461
+    }
+   },
+   "full_mindepth": {
+    "MEASURED": {
+     "cells": 56,
+     "devices": 406,
+     "W_tot_um": 352.65,
+     "area_um2": 627.782,
+     "depth": 8,
+     "per_level": [
+      {
+       "level": 1,
+       "limiter": "mux2",
+       "t_level_ps": 507.084,
+       "families": {
+        "inv": 3,
+        "nand2": 4,
+        "o21ai": 1,
+        "nor2": 4,
+        "or2": 3,
+        "and2": 3,
+        "a21oi": 1,
+        "mux2": 8,
+        "xnor2": 3,
+        "xor2": 2
+       }
+      },
+      {
+       "level": 2,
+       "limiter": "o21ai",
+       "t_level_ps": 479.106,
+       "families": {
+        "nand2": 1,
+        "o21ai": 4,
+        "a21o": 3,
+        "nor2": 1,
+        "nor2b": 3
+       }
+      },
+      {
+       "level": 3,
+       "limiter": "xnor2",
+       "t_level_ps": 441.002,
+       "families": {
+        "xnor2": 2,
+        "a21oi": 1
+       }
+      },
+      {
+       "level": 4,
+       "limiter": "xnor2",
+       "t_level_ps": 441.002,
+       "families": {
+        "xnor2": 1,
+        "a21oi": 1
+       }
+      },
+      {
+       "level": 5,
+       "limiter": "xnor2",
+       "t_level_ps": 441.002,
+       "families": {
+        "xnor2": 1,
+        "a21oi": 1
+       }
+      },
+      {
+       "level": 6,
+       "limiter": "xnor2",
+       "t_level_ps": 441.002,
+       "families": {
+        "xnor2": 1,
+        "a21oi": 1
+       }
+      },
+      {
+       "level": 7,
+       "limiter": "xnor2",
+       "t_level_ps": 441.002,
+       "families": {
+        "xnor2": 1,
+        "a21oi": 1
+       }
+      },
+      {
+       "level": 8,
+       "limiter": "xnor2",
+       "t_level_ps": 441.002,
+       "families": {
+        "xnor2": 1
+       }
+      }
+     ]
+    },
+    "DERIVED": {
+     "T_block_perlevel_ps": 3632.2,
+     "T_block_globalmax_ps": 4056.7,
+     "T_x_CMOS_block": 3.914,
+     "x_width": 1.0,
+     "x_area": 1.0,
+     "E_scaled_by_width_fJ": 136.8,
+     "E_adv_vs_CMOS": 1.696
+    }
+   }
+  },
+  "global_max_form_for_comparison": {
+   "_doc": "per-mapping block time composed from the MEASURED census: T = DEPTH x max(t_level over the cell types the mapping uses). Energy scaled by MEASURED total device width against the committed mapping. CMOS reference 232 fJ @ 0.928 ns (committed).",
+   "rows": {
+    "committed": {
+     "MEASURED": {
+      "cells": 56,
+      "devices": 406,
+      "W_tot_um": 352.65,
+      "depth": 8,
+      "cell_types": [
+       "a21o",
+       "a21oi",
+       "and2",
+       "inv",
+       "mux2",
+       "nand2",
+       "nor2",
+       "nor2b",
+       "o21ai",
+       "or2",
+       "xnor2",
+       "xor2"
+      ],
+      "t_level_by_family_ps": {
+       "a21o": 251.79017300000004,
+       "a21oi": 165.295308,
+       "and2": 103.99050500000001,
+       "inv": 75.88865700000001,
+       "mux2": 507.08351500000003,
+       "nand2": 59.98643199999999,
+       "nor2": 196.174135,
+       "nor2b": 225.683288,
+       "o21ai": 479.105913,
+       "or2": 287.37102,
+       "xnor2": 441.00185799999997,
+       "xor2": 504.097838
+      },
+      "bank_t_level_ps": 507.08351500000003,
+      "bank_limiting_family": "mux2"
+     },
+     "DERIVED": {
+      "T_block_ps": 4056.7,
+      "T_x_CMOS_block": 4.371,
+      "x_width_vs_committed": 1.0,
+      "E_scaled_fJ": 136.8,
+      "E_adv_vs_CMOS": 1.696
+     }
+    },
+    "full_mincell": {
+     "MEASURED": {
+      "cells": 56,
+      "devices": 406,
+      "W_tot_um": 352.65,
+      "depth": 8,
+      "cell_types": [
+       "a21o",
+       "a21oi",
+       "and2",
+       "inv",
+       "mux2",
+       "nand2",
+       "nor2",
+       "nor2b",
+       "o21ai",
+       "or2",
+       "xnor2",
+       "xor2"
+      ],
+      "t_level_by_family_ps": {
+       "a21o": 251.79017300000004,
+       "a21oi": 165.295308,
+       "and2": 103.99050500000001,
+       "inv": 75.88865700000001,
+       "mux2": 507.08351500000003,
+       "nand2": 59.98643199999999,
+       "nor2": 196.174135,
+       "nor2b": 225.683288,
+       "o21ai": 479.105913,
+       "or2": 287.37102,
+       "xnor2": 441.00185799999997,
+       "xor2": 504.097838
+      },
+      "bank_t_level_ps": 507.08351500000003,
+      "bank_limiting_family": "mux2"
+     },
+     "DERIVED": {
+      "T_block_ps": 4056.7,
+      "T_x_CMOS_block": 4.371,
+      "x_width_vs_committed": 1.0,
+      "E_scaled_fJ": 136.8,
+      "E_adv_vs_CMOS": 1.696
+     }
+    },
+    "shallow_mincell": {
+     "MEASURED": {
+      "cells": 131,
+      "devices": 510,
+      "W_tot_um": 460.62,
+      "depth": 17,
+      "cell_types": [
+       "and2",
+       "inv",
+       "nand2"
+      ],
+      "t_level_by_family_ps": {
+       "and2": 103.99050500000001,
+       "inv": 75.88865700000001,
+       "nand2": 59.98643199999999
+      },
+      "bank_t_level_ps": 103.99050500000001,
+      "bank_limiting_family": "and2"
+     },
+     "DERIVED": {
+      "T_block_ps": 1767.8,
+      "T_x_CMOS_block": 1.905,
+      "x_width_vs_committed": 1.306,
+      "E_scaled_fJ": 178.7,
+      "E_adv_vs_CMOS": 1.298
+     }
+    },
+    "nand_mincell": {
+     "MEASURED": {
+      "cells": 138,
+      "devices": 470,
+      "W_tot_um": 437.1,
+      "depth": 19,
+      "cell_types": [
+       "inv",
+       "nand2"
+      ],
+      "t_level_by_family_ps": {
+       "inv": 75.88865700000001,
+       "nand2": 59.98643199999999
+      },
+      "bank_t_level_ps": 75.88865700000001,
+      "bank_limiting_family": "inv"
+     },
+     "DERIVED": {
+      "T_block_ps": 1441.9,
+      "T_x_CMOS_block": 1.554,
+      "x_width_vs_committed": 1.239,
+      "E_scaled_fJ": 169.6,
+      "E_adv_vs_CMOS": 1.368
+     }
+    },
+    "d2ok_mincell": {
+     "MEASURED": {
+      "cells": 101,
+      "devices": 424,
+      "W_tot_um": 379.92,
+      "depth": 16,
+      "cell_types": [
+       "and2",
+       "inv",
+       "nand2",
+       "nor2",
+       "or2"
+      ],
+      "t_level_by_family_ps": {
+       "and2": 103.99050500000001,
+       "inv": 75.88865700000001,
+       "nand2": 59.98643199999999,
+       "nor2": 196.174135,
+       "or2": 287.37102
+      },
+      "bank_t_level_ps": 287.37102,
+      "bank_limiting_family": "or2"
+     },
+     "DERIVED": {
+      "T_block_ps": 4597.9,
+      "T_x_CMOS_block": 4.955,
+      "x_width_vs_committed": 1.077,
+      "E_scaled_fJ": 147.4,
+      "E_adv_vs_CMOS": 1.574
+     }
+    },
+    "shallow_mindepth": {
+     "MEASURED": {
+      "cells": 146,
+      "devices": 534,
+      "W_tot_um": 485.22,
+      "depth": 13,
+      "cell_types": [
+       "and2",
+       "inv",
+       "nand2"
+      ],
+      "t_level_by_family_ps": {
+       "and2": 103.99050500000001,
+       "inv": 75.88865700000001,
+       "nand2": 59.98643199999999
+      },
+      "bank_t_level_ps": 103.99050500000001,
+      "bank_limiting_family": "and2"
+     },
+     "DERIVED": {
+      "T_block_ps": 1351.9,
+      "T_x_CMOS_block": 1.457,
+      "x_width_vs_committed": 1.376,
+      "E_scaled_fJ": 188.2,
+      "E_adv_vs_CMOS": 1.233
+     }
+    },
+    "nand_mindepth": {
+     "MEASURED": {
+      "cells": 161,
+      "devices": 552,
+      "W_tot_um": 513.36,
+      "depth": 14,
+      "cell_types": [
+       "inv",
+       "nand2"
+      ],
+      "t_level_by_family_ps": {
+       "inv": 75.88865700000001,
+       "nand2": 59.98643199999999
+      },
+      "bank_t_level_ps": 75.88865700000001,
+      "bank_limiting_family": "inv"
+     },
+     "DERIVED": {
+      "T_block_ps": 1062.4,
+      "T_x_CMOS_block": 1.145,
+      "x_width_vs_committed": 1.456,
+      "E_scaled_fJ": 199.1,
+      "E_adv_vs_CMOS": 1.165
+     }
+    },
+    "d2ok_mindepth": {
+     "MEASURED": {
+      "cells": 111,
+      "devices": 456,
+      "W_tot_um": 409.32,
+      "depth": 12,
+      "cell_types": [
+       "and2",
+       "inv",
+       "nand2",
+       "nor2",
+       "or2"
+      ],
+      "t_level_by_family_ps": {
+       "and2": 103.99050500000001,
+       "inv": 75.88865700000001,
+       "nand2": 59.98643199999999,
+       "nor2": 196.174135,
+       "or2": 287.37102
+      },
+      "bank_t_level_ps": 287.37102,
+      "bank_limiting_family": "or2"
+     },
+     "DERIVED": {
+      "T_block_ps": 3448.5,
+      "T_x_CMOS_block": 3.716,
+      "x_width_vs_committed": 1.161,
+      "E_scaled_fJ": 158.8,
+      "E_adv_vs_CMOS": 1.461
+     }
+    },
+    "full_mindepth": {
+     "MEASURED": {
+      "cells": 56,
+      "devices": 406,
+      "W_tot_um": 352.65,
+      "depth": 8,
+      "cell_types": [
+       "a21o",
+       "a21oi",
+       "and2",
+       "inv",
+       "mux2",
+       "nand2",
+       "nor2",
+       "nor2b",
+       "o21ai",
+       "or2",
+       "xnor2",
+       "xor2"
+      ],
+      "t_level_by_family_ps": {
+       "a21o": 251.79017300000004,
+       "a21oi": 165.295308,
+       "and2": 103.99050500000001,
+       "inv": 75.88865700000001,
+       "mux2": 507.08351500000003,
+       "nand2": 59.98643199999999,
+       "nor2": 196.174135,
+       "nor2b": 225.683288,
+       "o21ai": 479.105913,
+       "or2": 287.37102,
+       "xnor2": 441.00185799999997,
+       "xor2": 504.097838
+      },
+      "bank_t_level_ps": 507.08351500000003,
+      "bank_limiting_family": "mux2"
+     },
+     "DERIVED": {
+      "T_block_ps": 4056.7,
+      "T_x_CMOS_block": 4.371,
+      "x_width_vs_committed": 1.0,
+      "E_scaled_fJ": 136.8,
+      "E_adv_vs_CMOS": 1.696
+     }
+    }
+   }
+  }
+ },
+ "HEADLINE": {
+  "_doc": "the Phase 1 answer. MEASURED: the census t_level of every family, the cell/device/width/area/depth of every mapping. DERIVED: the block time (sum over levels of the slowest cell in that level) and the energy (committed 136.8 fJ projection scaled by MEASURED total device width). No timing hardware is counted in either -- that is Phase 2.",
+  "the_restriction_is_not_a_cost_it_is_the_ENABLER": "Running the COMMITTED 56-cell mapping on a QAL rail is MEASURED to work -- every one of its twelve cell families is value-correct and settles inside the 500 ps tail at dV=1.65 V -- but its banks are paced by mux2 at 507.1 ps and o21ai at 479.1 ps, so the block composes to 3632 ps, 3.91x the CMOS 928 ps. The {inv, nand2} remap costs 2.88x the cells and 1.75x the depth and composes to 967 ps, 1.04x CMOS. The remap BUYS 3.76x of block time.",
+  "best_shallow_mapping": "nand_mindepth: {sg13g2_inv_1, sg13g2_nand2_1}, 161 cells, DEPTH 14, 967.0 ps (1.04x CMOS), 199.1 fJ DERIVED (1.17x better than CMOS 232 fJ). Formally equivalent to sha_slice.v by two engines and 155,600 vectors / 0 mismatches.",
+  "the_counterintuitive_part": "the MOST restrictive library gives the FASTEST block. {inv,nand2} has MORE cells (161 vs 146) and MORE depth (14 vs 13) than {inv,nand2,and2}, but it is faster (967 vs 1148 ps) because a QAL bank opens on its SLOWEST cell, and and2 settles in 104.0 ps where inv takes 75.9 ps and nand2 only 60.0 ps. Cell count is the wrong objective for a QAL backend; the bank's worst-cell settling time is the right one.",
+  "admitting_2_high_stacks_is_decisively_bad": "the {inv,nand2,and2,nor2,or2} mapping is the SMALLEST remap (101-111 cells, depth 12-16) and the SLOWEST (2583-3367 ps, 2.8-3.6x CMOS), because or2 paces its banks at 287.4 ps.",
+  "pre_registered_negative_did_NOT_fire": "PRE_REGISTERED.json said: 'If the shallow-stack remap more than doubles both cell count and depth, then QAL's per-level advantage is spent by the remap alone.' Cell count did more than double (2.88x) and depth did not quite (1.75x) -- and the composed block time shows the premise was wrong anyway: the remap is what makes the block fast, not what makes it slow."
+ },
+ "CROSSCHECKS": {
+  "area_sum_reproduces_committed_cmos_stat": {
+   "committed_cmos_stat_txt_um2": 627.7824,
+   "my_liberty_area_sum_um2": 627.782,
+   "match": true,
+   "note": "stored rounded to 3 dp; the unrounded sum is 627.7824 exactly"
+  },
+  "full_library_control_reproduces_committed_netlist": {
+   "cells": [
+    56,
+    56
+   ],
+   "depth": [
+    8,
+    8
+   ],
+   "devices": [
+    406,
+    406
+   ],
+   "types_identical": true
+  },
+  "inv_reference_reproduces_committed_dvopt_optimum": {
+   "committed_dvopt_d165_L6_W120_t_level_cons_ps": 75.88,
+   "my_PDK_inv_family_t_level_ps": 75.88865700000001,
+   "note": "the committed row used a HAND-BUILT 1.12u/740n inverter; sg13g2_inv_1 carries the identical widths, so this is a tight harness cross-check."
+  },
+  "committed_projection_arithmetic": {
+   "per_gate_fJ": 1.30308,
+   "generic_gates": 105,
+   "product_fJ": 136.82,
+   "brief_says_fJ": 136.8,
+   "per_level_ps": 400.41,
+   "generic_depth": 10,
+   "product_ps": 4004.1,
+   "brief_says_ps": 4004.0,
+   "source": "qal/qal_hop_corrected.json row dV=1.0 / L=400 nH"
+  },
+  "committed_async_costs_verified": {
+   "QDI_direct": [
+    2711.71,
+    2533.41
+   ],
+   "QDI_plus_CD": [
+    4303.66,
+    4021.06
+   ],
+   "DIMS": [
+    6972.06,
+    5574.52
+   ],
+   "source": "qal/synth/threeway/work/async_recost.json",
+   "note": "the brief quotes 2712 fJ @ 2.533 ns, 4385.7 fJ @ 4.021 ns and 6972 fJ @ 5.575 ns. Two of three match this file exactly; the +completion-detection ENERGY in the brief (4385.7 fJ) is 1.9 percent above this file's 4303.66 fJ, so the brief is quoting a different (later) cost pass for that one row. Not used in any Phase 1 conclusion."
+  }
+ },
+ "EQUIVALENCE": {
+  "formal": {
+   "sha_slice.cmos": {
+    "E5_PORT_FIDELITY": true,
+    "E1_SAT_MITER": true,
+    "E2_EQUIV": true
+   },
+   "sha_slice.shallow": {
+    "E5_PORT_FIDELITY": true,
+    "E1_SAT_MITER": true,
+    "E2_EQUIV": true
+   },
+   "sw_d2ok_sc_del": {
+    "E5_PORT_FIDELITY": true,
+    "E1_SAT_MITER": true,
+    "E2_EQUIV": true
+   },
+   "sw_full_default": {
+    "E5_PORT_FIDELITY": true,
+    "E1_SAT_MITER": true,
+    "E2_EQUIV": true
+   },
+   "sw_nand_sc_resyn2": {
+    "E5_PORT_FIDELITY": true,
+    "E1_SAT_MITER": true,
+    "E2_EQUIV": true
+   },
+   "sw_shallow_sc_resyn2": {
+    "E5_PORT_FIDELITY": true,
+    "E1_SAT_MITER": true,
+    "E2_EQUIV": true
+   }
+  },
+  "vectors": {
+   "sha_slice.cmos": {
+    "vectors": 155600,
+    "mismatches": 0,
+    "E3_VECTORS": true
+   },
+   "sha_slice.shallow": {
+    "vectors": 155600,
+    "mismatches": 0,
+    "E3_VECTORS": true
+   },
+   "sw_d2ok_sc_del": {
+    "vectors": 155600,
+    "mismatches": 0,
+    "E3_VECTORS": true
+   },
+   "sw_full_default": {
+    "vectors": 155600,
+    "mismatches": 0,
+    "E3_VECTORS": true
+   },
+   "sw_nand_sc_resyn2": {
+    "vectors": 155600,
+    "mismatches": 0,
+    "E3_VECTORS": true
+   },
+   "sw_shallow_sc_resyn2": {
+    "vectors": 155600,
+    "mismatches": 0,
+    "E3_VECTORS": true
+   }
+  },
+  "standard": "the committed QDI form: 151,584 vectors / 0 mismatches",
+  "E4_LIBRARY_CLOSURE": {
+   "shallow_mincell": {
+    "sg13g2_and2_1": true,
+    "sg13g2_inv_1": true,
+    "sg13g2_nand2_1": true,
+    "ALL_CELLS_ARE_CENSUS_PASS": true
+   },
+   "nand_mincell": {
+    "sg13g2_inv_1": true,
+    "sg13g2_nand2_1": true,
+    "ALL_CELLS_ARE_CENSUS_PASS": true
+   },
+   "d2ok_mincell": {
+    "sg13g2_and2_1": true,
+    "sg13g2_inv_1": true,
+    "sg13g2_nand2_1": true,
+    "sg13g2_nor2_1": false,
+    "sg13g2_or2_1": false,
+    "ALL_CELLS_ARE_CENSUS_PASS": false
+   },
+   "shallow_mindepth": {
+    "sg13g2_and2_1": true,
+    "sg13g2_inv_1": true,
+    "sg13g2_nand2_1": true,
+    "ALL_CELLS_ARE_CENSUS_PASS": true
+   },
+   "nand_mindepth": {
+    "sg13g2_inv_1": true,
+    "sg13g2_nand2_1": true,
+    "ALL_CELLS_ARE_CENSUS_PASS": true
+   },
+   "d2ok_mindepth": {
+    "sg13g2_and2_1": true,
+    "sg13g2_inv_1": true,
+    "sg13g2_nand2_1": true,
+    "sg13g2_nor2_1": false,
+    "sg13g2_or2_1": false,
+    "ALL_CELLS_ARE_CENSUS_PASS": false
+   }
+  },
+  "note": "the vector run reads the REAL, unmodified PDK sg13g2_stdcell.v and sg13g2_udp.v under iverilog; only the yosys-side model file is transformed (AMENDMENT R4)."
+ },
+ "PREDICTION_SCORING": {
+  "census": {
+   "per_family": {
+    "inv": {
+     "predicted": "PASS",
+     "measured": "PASS",
+     "hit": true
+    },
+    "nand2": {
+     "predicted": "PASS",
+     "measured": "PASS",
+     "hit": true
+    },
+    "and2": {
+     "predicted": "PASS",
+     "measured": "PASS",
+     "hit": true
+    },
+    "nor2": {
+     "predicted": "MARGINAL",
+     "measured": "MARGINAL",
+     "hit": true
+    },
+    "or2": {
+     "predicted": "MARGINAL",
+     "measured": "MARGINAL",
+     "hit": true
+    },
+    "nor2b": {
+     "predicted": "MARGINAL",
+     "measured": "MARGINAL",
+     "hit": true
+    },
+    "xnor2": {
+     "predicted": "MARGINAL",
+     "measured": "MARGINAL",
+     "hit": true
+    },
+    "xor2": {
+     "predicted": "MARGINAL",
+     "measured": "MARGINAL",
+     "hit": true
+    },
+    "mux2": {
+     "predicted": "FAIL",
+     "measured": "MARGINAL",
+     "hit": false
+    },
+    "a21oi": {
+     "predicted": "MARGINAL",
+     "measured": "MARGINAL",
+     "hit": true
+    },
+    "a21o": {
+     "predicted": "MARGINAL",
+     "measured": "MARGINAL",
+     "hit": true
+    },
+    "o21ai": {
+     "predicted": "MARGINAL",
+     "measured": "MARGINAL",
+     "hit": true
+    }
+   },
+   "hits": 11,
+   "of": 12,
+   "the_one_miss": "mux2 was predicted FAIL (not settling inside 500 ps). MEASURED MARGINAL: it is the SLOWEST cell in the census at 507.1 ps, 6.68x the inverter, but it does settle and it is value-correct. I was wrong in the conservative direction and the correct call is recorded as a MISS."
+  },
+  "remap_cost": {
+   "cells_predicted": 135,
+   "cells_range": [
+    110,
+    175
+   ],
+   "cells_measured_mincell": 131,
+   "cells_measured_mindepth": 146,
+   "cells_verdict": "HIT -- 131 and 146 both inside the predicted [110,175]; the point prediction of 135 is within 3 percent of the min-cell result.",
+   "depth_predicted": 19,
+   "depth_range": [
+    15,
+    24
+   ],
+   "depth_measured_mincell": 17,
+   "depth_measured_mindepth": 13,
+   "depth_verdict": "PARTIAL MISS -- the min-cell depth of 17 is inside [15,24], but the min-DEPTH result of 13 is BELOW the predicted range. I under-estimated how much delay-targeted synthesis recovers in a NAND basis. My prediction was pessimistic.",
+   "figure_of_merit_verdict": "MISS, and in the direction that matters. I pre-stated 'the remap alone will at least DOUBLE the logic depth ... this predicts the shallow-stack restriction erases most of the per-level advantage on its own.' Depth did not quite double at best effort (1.63x/1.75x), and more importantly the premise was wrong: the per-level time is not a constant of the technology, it is set by the SLOWEST CELL IN THE BANK, and the restriction removes exactly those cells. The restriction BUYS 3.76x of block time rather than spending it."
+  },
+  "equivalence": {
+   "predicted": "E1 and E2 both SUCCEED and E3 reports 0 mismatches. A yosys-mapped combinational netlist that failed equivalence against its own source would indicate a flow error, not a design finding; I am pre-stating that so that a failure is reported as MY error rather than dressed up.",
+   "measured": "E1, E2, E3 and E5 all pass on all six netlists; 155,600 vectors / 0 mismatches each. HIT."
+  }
+ },
+ "BANK_PROFILE": {
+  "_doc": "the per-level cell counts -- what the QAL banks would have to be sized for.",
+  "committed_GENERIC_105_gates": {
+   "profile": [
+    48,
+    22,
+    19,
+    3,
+    2,
+    4,
+    2,
+    3,
+    1,
+    1
+   ],
+   "depth": 10,
+   "spread": "48:1"
+  },
+  "committed_MAPPED_56_cells": {
+   "profile": [
+    32,
+    12,
+    3,
+    2,
+    2,
+    2,
+    2,
+    1
+   ],
+   "depth": 8,
+   "spread": "32:1 = 32.0"
+  },
+  "remaps": {
+   "shallow_mincell": {
+    "profile": [
+     40,
+     17,
+     31,
+     10,
+     3,
+     2,
+     3,
+     3,
+     3,
+     2,
+     3,
+     3,
+     3,
+     2,
+     3,
+     2,
+     1
+    ],
+    "depth": 17,
+    "spread": "40:1 = 40.0"
+   },
+   "shallow_mindepth": {
+    "profile": [
+     41,
+     26,
+     26,
+     19,
+     2,
+     4,
+     3,
+     6,
+     4,
+     6,
+     4,
+     4,
+     1
+    ],
+    "depth": 13,
+    "spread": "41:1 = 41.0"
+   },
+   "nand_mincell": {
+    "profile": [
+     40,
+     17,
+     24,
+     17,
+     1,
+     2,
+     3,
+     2,
+     4,
+     4,
+     3,
+     2,
+     4,
+     4,
+     3,
+     2,
+     3,
+     2,
+     1
+    ],
+    "depth": 19,
+    "spread": "40:1 = 40.0"
+   },
+   "nand_mindepth": {
+    "profile": [
+     41,
+     32,
+     26,
+     21,
+     6,
+     5,
+     3,
+     7,
+     4,
+     7,
+     3,
+     4,
+     1,
+     1
+    ],
+    "depth": 14,
+    "spread": "41:1 = 41.0"
+   },
+   "d2ok_mincell": {
+    "profile": [
+     32,
+     24,
+     18,
+     2,
+     2,
+     2,
+     3,
+     2,
+     2,
+     2,
+     3,
+     2,
+     2,
+     2,
+     2,
+     1
+    ],
+    "depth": 16,
+    "spread": "32:1 = 32.0"
+   },
+   "d2ok_mindepth": {
+    "profile": [
+     32,
+     24,
+     22,
+     8,
+     3,
+     3,
+     5,
+     4,
+     4,
+     3,
+     2,
+     1
+    ],
+    "depth": 12,
+    "spread": "32:1 = 32.0"
+   }
+  },
+  "reading": "the shallow remap does NOT flatten the profile. The committed generic netlist spans 48:1 and the best shallow remap still spans 41:1 (41 cells in level 1, 1 in the last). t_hop scales as sqrt(C_bank), so a 41:1 bank-capacitance spread means either L is tuned per bank or the wave is incoherent -- that question survives the remap intact and is Phase 2's to answer. The per-level composition in BLOCK_TIME_COMPOSED_FROM_THE_CENSUS assumes a FIXED per-cell settling time and therefore does NOT model the bank-size dependence of t_hop; it is a DERIVED lower bound on the block time in that respect."
+ },
+ "STANDING_CAVEATS": [
+  "NO TIMING HARDWARE is counted in any number here -- no tanks, no reservoir, no buck top-up, no switch gate drive beyond what the committed bank deck already meters. Phase 2 must add it; every time and energy in this file is a BOUND without it.",
+  "sg13lv_compat.sp ZEROES ad/as/pd/ps. Junction capacitance is absent from every device: every census time is a LOWER BOUND on a real layout.",
+  "The census measures ONE bank of 8 identical cells per family at ONE operating point (dV=1.65 V, L=6 nH, TG 120 um, CL=2 fF, 500 ps tail). A real bank is MIXED and its capacitance is set by its own cell mix; the per-level composition uses the census t_level of the slowest family in that level and does NOT re-solve the hop for the real bank capacitance. DERIVED, not measured, at the block level.",
+  "The block ENERGY is the committed 136.8 fJ projection scaled by MEASURED total device width. That is a proxy: it assumes energy per unit switched width is constant across cell topologies. DERIVED.",
+  "The chain-legality of the topology (source-side cut) is NOT exercised here. The census uses the committed single-bank hop. The committed chain-legal level time is 103.378 ps (resv SC_m20_L3, 6.91 fF load) against the 75.889 ps this census measures at 2 fF -- so a chain-legal block will be SLOWER than the composition above by roughly that ratio. Phase 2's number, not this one's."
+ ]
+}

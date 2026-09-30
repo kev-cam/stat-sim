@@ -1,0 +1,1229 @@
+{
+ "_doc": "Per-LEVEL block-time composition.\n\ncompose.py uses one global maximum over the cell types a mapping contains, which is\nan UPPER bound: a level that happens to hold only fast cells is charged for the\nslowest cell anywhere in the design.  This composes level by level -- each QAL bank\nopens when the slowest cell IN THAT BANK has settled -- so\n\n    T_block = sum over levels of max(t_level of the cell types in that level)\n\nwhich is the correct composition and is <= the global-max form.  Both are reported.\n",
+ "rows": {
+  "committed": {
+   "MEASURED": {
+    "cells": 56,
+    "devices": 406,
+    "W_tot_um": 352.65,
+    "area_um2": 627.782,
+    "depth": 8,
+    "per_level": [
+     {
+      "level": 1,
+      "limiter": "mux2",
+      "t_level_ps": 507.084,
+      "families": {
+       "inv": 3,
+       "nand2": 4,
+       "o21ai": 1,
+       "nor2": 4,
+       "or2": 3,
+       "and2": 3,
+       "a21oi": 1,
+       "mux2": 8,
+       "xnor2": 3,
+       "xor2": 2
+      }
+     },
+     {
+      "level": 2,
+      "limiter": "o21ai",
+      "t_level_ps": 479.106,
+      "families": {
+       "nand2": 1,
+       "o21ai": 4,
+       "a21o": 3,
+       "nor2": 1,
+       "nor2b": 3
+      }
+     },
+     {
+      "level": 3,
+      "limiter": "xnor2",
+      "t_level_ps": 441.002,
+      "families": {
+       "xnor2": 2,
+       "a21oi": 1
+      }
+     },
+     {
+      "level": 4,
+      "limiter": "xnor2",
+      "t_level_ps": 441.002,
+      "families": {
+       "xnor2": 1,
+       "a21oi": 1
+      }
+     },
+     {
+      "level": 5,
+      "limiter": "xnor2",
+      "t_level_ps": 441.002,
+      "families": {
+       "xnor2": 1,
+       "a21oi": 1
+      }
+     },
+     {
+      "level": 6,
+      "limiter": "xnor2",
+      "t_level_ps": 441.002,
+      "families": {
+       "xnor2": 1,
+       "a21oi": 1
+      }
+     },
+     {
+      "level": 7,
+      "limiter": "xnor2",
+      "t_level_ps": 441.002,
+      "families": {
+       "xnor2": 1,
+       "a21oi": 1
+      }
+     },
+     {
+      "level": 8,
+      "limiter": "xnor2",
+      "t_level_ps": 441.002,
+      "families": {
+       "xnor2": 1
+      }
+     }
+    ]
+   },
+   "DERIVED": {
+    "T_block_perlevel_ps": 3632.2,
+    "T_block_globalmax_ps": 4056.7,
+    "T_x_CMOS_block": 3.914,
+    "x_width": 1.0,
+    "x_area": 1.0,
+    "E_scaled_by_width_fJ": 136.8,
+    "E_adv_vs_CMOS": 1.696
+   }
+  },
+  "full_mincell": {
+   "MEASURED": {
+    "cells": 56,
+    "devices": 406,
+    "W_tot_um": 352.65,
+    "area_um2": 627.782,
+    "depth": 8,
+    "per_level": [
+     {
+      "level": 1,
+      "limiter": "mux2",
+      "t_level_ps": 507.084,
+      "families": {
+       "inv": 3,
+       "nand2": 4,
+       "o21ai": 1,
+       "nor2": 4,
+       "or2": 3,
+       "and2": 3,
+       "a21oi": 1,
+       "mux2": 8,
+       "xnor2": 3,
+       "xor2": 2
+      }
+     },
+     {
+      "level": 2,
+      "limiter": "o21ai",
+      "t_level_ps": 479.106,
+      "families": {
+       "nand2": 1,
+       "o21ai": 4,
+       "a21o": 3,
+       "nor2": 1,
+       "nor2b": 3
+      }
+     },
+     {
+      "level": 3,
+      "limiter": "xnor2",
+      "t_level_ps": 441.002,
+      "families": {
+       "xnor2": 2,
+       "a21oi": 1
+      }
+     },
+     {
+      "level": 4,
+      "limiter": "xnor2",
+      "t_level_ps": 441.002,
+      "families": {
+       "xnor2": 1,
+       "a21oi": 1
+      }
+     },
+     {
+      "level": 5,
+      "limiter": "xnor2",
+      "t_level_ps": 441.002,
+      "families": {
+       "xnor2": 1,
+       "a21oi": 1
+      }
+     },
+     {
+      "level": 6,
+      "limiter": "xnor2",
+      "t_level_ps": 441.002,
+      "families": {
+       "xnor2": 1,
+       "a21oi": 1
+      }
+     },
+     {
+      "level": 7,
+      "limiter": "xnor2",
+      "t_level_ps": 441.002,
+      "families": {
+       "xnor2": 1,
+       "a21oi": 1
+      }
+     },
+     {
+      "level": 8,
+      "limiter": "xnor2",
+      "t_level_ps": 441.002,
+      "families": {
+       "xnor2": 1
+      }
+     }
+    ]
+   },
+   "DERIVED": {
+    "T_block_perlevel_ps": 3632.2,
+    "T_block_globalmax_ps": 4056.7,
+    "T_x_CMOS_block": 3.914,
+    "x_width": 1.0,
+    "x_area": 1.0,
+    "E_scaled_by_width_fJ": 136.8,
+    "E_adv_vs_CMOS": 1.696
+   }
+  },
+  "shallow_mincell": {
+   "MEASURED": {
+    "cells": 131,
+    "devices": 510,
+    "W_tot_um": 460.62,
+    "area_um2": 938.045,
+    "depth": 17,
+    "per_level": [
+     {
+      "level": 1,
+      "limiter": "inv",
+      "t_level_ps": 75.889,
+      "families": {
+       "inv": 24,
+       "nand2": 16
+      }
+     },
+     {
+      "level": 2,
+      "limiter": "inv",
+      "t_level_ps": 75.889,
+      "families": {
+       "nand2": 16,
+       "inv": 1
+      }
+     },
+     {
+      "level": 3,
+      "limiter": "and2",
+      "t_level_ps": 103.991,
+      "families": {
+       "nand2": 23,
+       "and2": 8
+      }
+     },
+     {
+      "level": 4,
+      "limiter": "nand2",
+      "t_level_ps": 59.986,
+      "families": {
+       "nand2": 10
+      }
+     },
+     {
+      "level": 5,
+      "limiter": "and2",
+      "t_level_ps": 103.991,
+      "families": {
+       "and2": 2,
+       "nand2": 1
+      }
+     },
+     {
+      "level": 6,
+      "limiter": "nand2",
+      "t_level_ps": 59.986,
+      "families": {
+       "nand2": 2
+      }
+     },
+     {
+      "level": 7,
+      "limiter": "and2",
+      "t_level_ps": 103.991,
+      "families": {
+       "and2": 2,
+       "nand2": 1
+      }
+     },
+     {
+      "level": 8,
+      "limiter": "nand2",
+      "t_level_ps": 59.986,
+      "families": {
+       "nand2": 3
+      }
+     },
+     {
+      "level": 9,
+      "limiter": "and2",
+      "t_level_ps": 103.991,
+      "families": {
+       "nand2": 2,
+       "and2": 1
+      }
+     },
+     {
+      "level": 10,
+      "limiter": "nand2",
+      "t_level_ps": 59.986,
+      "families": {
+       "nand2": 2
+      }
+     },
+     {
+      "level": 11,
+      "limiter": "and2",
+      "t_level_ps": 103.991,
+      "families": {
+       "and2": 2,
+       "nand2": 1
+      }
+     },
+     {
+      "level": 12,
+      "limiter": "nand2",
+      "t_level_ps": 59.986,
+      "families": {
+       "nand2": 3
+      }
+     },
+     {
+      "level": 13,
+      "limiter": "and2",
+      "t_level_ps": 103.991,
+      "families": {
+       "nand2": 2,
+       "and2": 1
+      }
+     },
+     {
+      "level": 14,
+      "limiter": "nand2",
+      "t_level_ps": 59.986,
+      "families": {
+       "nand2": 2
+      }
+     },
+     {
+      "level": 15,
+      "limiter": "and2",
+      "t_level_ps": 103.991,
+      "families": {
+       "and2": 2,
+       "nand2": 1
+      }
+     },
+     {
+      "level": 16,
+      "limiter": "nand2",
+      "t_level_ps": 59.986,
+      "families": {
+       "nand2": 2
+      }
+     },
+     {
+      "level": 17,
+      "limiter": "nand2",
+      "t_level_ps": 59.986,
+      "families": {
+       "nand2": 1
+      }
+     }
+    ]
+   },
+   "DERIVED": {
+    "T_block_perlevel_ps": 1359.6,
+    "T_block_globalmax_ps": 1767.8,
+    "T_x_CMOS_block": 1.465,
+    "x_width": 1.306,
+    "x_area": 1.494,
+    "E_scaled_by_width_fJ": 178.7,
+    "E_adv_vs_CMOS": 1.298
+   }
+  },
+  "nand_mincell": {
+   "MEASURED": {
+    "cells": 138,
+    "devices": 470,
+    "W_tot_um": 437.1,
+    "area_um2": 927.158,
+    "depth": 19,
+    "per_level": [
+     {
+      "level": 1,
+      "limiter": "inv",
+      "t_level_ps": 75.889,
+      "families": {
+       "inv": 24,
+       "nand2": 16
+      }
+     },
+     {
+      "level": 2,
+      "limiter": "inv",
+      "t_level_ps": 75.889,
+      "families": {
+       "nand2": 16,
+       "inv": 1
+      }
+     },
+     {
+      "level": 3,
+      "limiter": "nand2",
+      "t_level_ps": 59.986,
+      "families": {
+       "nand2": 24
+      }
+     },
+     {
+      "level": 4,
+      "limiter": "inv",
+      "t_level_ps": 75.889,
+      "families": {
+       "nand2": 9,
+       "inv": 8
+      }
+     },
+     {
+      "level": 5,
+      "limiter": "nand2",
+      "t_level_ps": 59.986,
+      "families": {
+       "nand2": 1
+      }
+     },
+     {
+      "level": 6,
+      "limiter": "nand2",
+      "t_level_ps": 59.986,
+      "families": {
+       "nand2": 2
+      }
+     },
+     {
+      "level": 7,
+      "limiter": "inv",
+      "t_level_ps": 75.889,
+      "families": {
+       "inv": 2,
+       "nand2": 1
+      }
+     },
+     {
+      "level": 8,
+      "limiter": "nand2",
+      "t_level_ps": 59.986,
+      "families": {
+       "nand2": 2
+      }
+     },
+     {
+      "level": 9,
+      "limiter": "inv",
+      "t_level_ps": 75.889,
+      "families": {
+       "nand2": 3,
+       "inv": 1
+      }
+     },
+     {
+      "level": 10,
+      "limiter": "inv",
+      "t_level_ps": 75.889,
+      "families": {
+       "inv": 1,
+       "nand2": 3
+      }
+     },
+     {
+      "level": 11,
+      "limiter": "nand2",
+      "t_level_ps": 59.986,
+      "families": {
+       "nand2": 3
+      }
+     },
+     {
+      "level": 12,
+      "limiter": "nand2",
+      "t_level_ps": 59.986,
+      "families": {
+       "nand2": 2
+      }
+     },
+     {
+      "level": 13,
+      "limiter": "inv",
+      "t_level_ps": 75.889,
+      "families": {
+       "nand2": 3,
+       "inv": 1
+      }
+     },
+     {
+      "level": 14,
+      "limiter": "inv",
+      "t_level_ps": 75.889,
+      "families": {
+       "inv": 1,
+       "nand2": 3
+      }
+     },
+     {
+      "level": 15,
+      "limiter": "nand2",
+      "t_level_ps": 59.986,
+      "families": {
+       "nand2": 3
+      }
+     },
+     {
+      "level": 16,
+      "limiter": "nand2",
+      "t_level_ps": 59.986,
+      "families": {
+       "nand2": 2
+      }
+     },
+     {
+      "level": 17,
+      "limiter": "inv",
+      "t_level_ps": 75.889,
+      "families": {
+       "nand2": 2,
+       "inv": 1
+      }
+     },
+     {
+      "level": 18,
+      "limiter": "inv",
+      "t_level_ps": 75.889,
+      "families": {
+       "inv": 1,
+       "nand2": 1
+      }
+     },
+     {
+      "level": 19,
+      "limiter": "nand2",
+      "t_level_ps": 59.986,
+      "families": {
+       "nand2": 1
+      }
+     }
+    ]
+   },
+   "DERIVED": {
+    "T_block_perlevel_ps": 1298.8,
+    "T_block_globalmax_ps": 1441.9,
+    "T_x_CMOS_block": 1.4,
+    "x_width": 1.239,
+    "x_area": 1.477,
+    "E_scaled_by_width_fJ": 169.6,
+    "E_adv_vs_CMOS": 1.368
+   }
+  },
+  "d2ok_mincell": {
+   "MEASURED": {
+    "cells": 101,
+    "devices": 424,
+    "W_tot_um": 379.92,
+    "area_um2": 751.162,
+    "depth": 16,
+    "per_level": [
+     {
+      "level": 1,
+      "limiter": "nor2",
+      "t_level_ps": 196.174,
+      "families": {
+       "inv": 8,
+       "nor2": 8,
+       "and2": 8,
+       "nand2": 8
+      }
+     },
+     {
+      "level": 2,
+      "limiter": "nor2",
+      "t_level_ps": 196.174,
+      "families": {
+       "nor2": 16,
+       "nand2": 8
+      }
+     },
+     {
+      "level": 3,
+      "limiter": "nor2",
+      "t_level_ps": 196.174,
+      "families": {
+       "nor2": 9,
+       "nand2": 8,
+       "and2": 1
+      }
+     },
+     {
+      "level": 4,
+      "limiter": "or2",
+      "t_level_ps": 287.371,
+      "families": {
+       "nor2": 1,
+       "or2": 1
+      }
+     },
+     {
+      "level": 5,
+      "limiter": "nor2",
+      "t_level_ps": 196.174,
+      "families": {
+       "and2": 1,
+       "nor2": 1
+      }
+     },
+     {
+      "level": 6,
+      "limiter": "or2",
+      "t_level_ps": 287.371,
+      "families": {
+       "nor2": 1,
+       "or2": 1
+      }
+     },
+     {
+      "level": 7,
+      "limiter": "nor2",
+      "t_level_ps": 196.174,
+      "families": {
+       "nor2": 2,
+       "and2": 1
+      }
+     },
+     {
+      "level": 8,
+      "limiter": "nor2",
+      "t_level_ps": 196.174,
+      "families": {
+       "nor2": 2
+      }
+     },
+     {
+      "level": 9,
+      "limiter": "nor2",
+      "t_level_ps": 196.174,
+      "families": {
+       "and2": 1,
+       "nor2": 1
+      }
+     },
+     {
+      "level": 10,
+      "limiter": "or2",
+      "t_level_ps": 287.371,
+      "families": {
+       "nor2": 1,
+       "or2": 1
+      }
+     },
+     {
+      "level": 11,
+      "limiter": "nor2",
+      "t_level_ps": 196.174,
+      "families": {
+       "nor2": 2,
+       "and2": 1
+      }
+     },
+     {
+      "level": 12,
+      "limiter": "nor2",
+      "t_level_ps": 196.174,
+      "families": {
+       "nor2": 2
+      }
+     },
+     {
+      "level": 13,
+      "limiter": "nor2",
+      "t_level_ps": 196.174,
+      "families": {
+       "and2": 1,
+       "nor2": 1
+      }
+     },
+     {
+      "level": 14,
+      "limiter": "nor2",
+      "t_level_ps": 196.174,
+      "families": {
+       "nor2": 2
+      }
+     },
+     {
+      "level": 15,
+      "limiter": "or2",
+      "t_level_ps": 287.371,
+      "families": {
+       "or2": 1,
+       "nand2": 1
+      }
+     },
+     {
+      "level": 16,
+      "limiter": "nand2",
+      "t_level_ps": 59.986,
+      "families": {
+       "nand2": 1
+      }
+     }
+    ]
+   },
+   "DERIVED": {
+    "T_block_perlevel_ps": 3367.4,
+    "T_block_globalmax_ps": 4597.9,
+    "T_x_CMOS_block": 3.629,
+    "x_width": 1.077,
+    "x_area": 1.197,
+    "E_scaled_by_width_fJ": 147.4,
+    "E_adv_vs_CMOS": 1.574
+   }
+  },
+  "shallow_mindepth": {
+   "MEASURED": {
+    "cells": 146,
+    "devices": 534,
+    "W_tot_um": 485.22,
+    "area_um2": 1014.25,
+    "depth": 13,
+    "per_level": [
+     {
+      "level": 1,
+      "limiter": "and2",
+      "t_level_ps": 103.991,
+      "families": {
+       "inv": 25,
+       "and2": 2,
+       "nand2": 14
+      }
+     },
+     {
+      "level": 2,
+      "limiter": "inv",
+      "t_level_ps": 75.889,
+      "families": {
+       "nand2": 23,
+       "inv": 3
+      }
+     },
+     {
+      "level": 3,
+      "limiter": "and2",
+      "t_level_ps": 103.991,
+      "families": {
+       "nand2": 22,
+       "and2": 4
+      }
+     },
+     {
+      "level": 4,
+      "limiter": "and2",
+      "t_level_ps": 103.991,
+      "families": {
+       "nand2": 8,
+       "inv": 7,
+       "and2": 4
+      }
+     },
+     {
+      "level": 5,
+      "limiter": "nand2",
+      "t_level_ps": 59.986,
+      "families": {
+       "nand2": 2
+      }
+     },
+     {
+      "level": 6,
+      "limiter": "and2",
+      "t_level_ps": 103.991,
+      "families": {
+       "and2": 1,
+       "inv": 1,
+       "nand2": 2
+      }
+     },
+     {
+      "level": 7,
+      "limiter": "nand2",
+      "t_level_ps": 59.986,
+      "families": {
+       "nand2": 3
+      }
+     },
+     {
+      "level": 8,
+      "limiter": "and2",
+      "t_level_ps": 103.991,
+      "families": {
+       "and2": 1,
+       "inv": 2,
+       "nand2": 3
+      }
+     },
+     {
+      "level": 9,
+      "limiter": "nand2",
+      "t_level_ps": 59.986,
+      "families": {
+       "nand2": 4
+      }
+     },
+     {
+      "level": 10,
+      "limiter": "and2",
+      "t_level_ps": 103.991,
+      "families": {
+       "nand2": 3,
+       "and2": 1,
+       "inv": 2
+      }
+     },
+     {
+      "level": 11,
+      "limiter": "and2",
+      "t_level_ps": 103.991,
+      "families": {
+       "nand2": 3,
+       "and2": 1
+      }
+     },
+     {
+      "level": 12,
+      "limiter": "and2",
+      "t_level_ps": 103.991,
+      "families": {
+       "nand2": 3,
+       "and2": 1
+      }
+     },
+     {
+      "level": 13,
+      "limiter": "nand2",
+      "t_level_ps": 59.986,
+      "families": {
+       "nand2": 1
+      }
+     }
+    ]
+   },
+   "DERIVED": {
+    "T_block_perlevel_ps": 1147.8,
+    "T_block_globalmax_ps": 1351.9,
+    "T_x_CMOS_block": 1.237,
+    "x_width": 1.376,
+    "x_area": 1.616,
+    "E_scaled_by_width_fJ": 188.2,
+    "E_adv_vs_CMOS": 1.233
+   }
+  },
+  "nand_mindepth": {
+   "MEASURED": {
+    "cells": 161,
+    "devices": 552,
+    "W_tot_um": 513.36,
+    "area_um2": 1085.011,
+    "depth": 14,
+    "per_level": [
+     {
+      "level": 1,
+      "limiter": "inv",
+      "t_level_ps": 75.889,
+      "families": {
+       "inv": 25,
+       "nand2": 16
+      }
+     },
+     {
+      "level": 2,
+      "limiter": "inv",
+      "t_level_ps": 75.889,
+      "families": {
+       "nand2": 29,
+       "inv": 3
+      }
+     },
+     {
+      "level": 3,
+      "limiter": "nand2",
+      "t_level_ps": 59.986,
+      "families": {
+       "nand2": 26
+      }
+     },
+     {
+      "level": 4,
+      "limiter": "inv",
+      "t_level_ps": 75.889,
+      "families": {
+       "nand2": 13,
+       "inv": 8
+      }
+     },
+     {
+      "level": 5,
+      "limiter": "inv",
+      "t_level_ps": 75.889,
+      "families": {
+       "nand2": 2,
+       "inv": 4
+      }
+     },
+     {
+      "level": 6,
+      "limiter": "inv",
+      "t_level_ps": 75.889,
+      "families": {
+       "nand2": 4,
+       "inv": 1
+      }
+     },
+     {
+      "level": 7,
+      "limiter": "nand2",
+      "t_level_ps": 59.986,
+      "families": {
+       "nand2": 3
+      }
+     },
+     {
+      "level": 8,
+      "limiter": "inv",
+      "t_level_ps": 75.889,
+      "families": {
+       "nand2": 5,
+       "inv": 2
+      }
+     },
+     {
+      "level": 9,
+      "limiter": "nand2",
+      "t_level_ps": 59.986,
+      "families": {
+       "nand2": 4
+      }
+     },
+     {
+      "level": 10,
+      "limiter": "inv",
+      "t_level_ps": 75.889,
+      "families": {
+       "nand2": 5,
+       "inv": 2
+      }
+     },
+     {
+      "level": 11,
+      "limiter": "nand2",
+      "t_level_ps": 59.986,
+      "families": {
+       "nand2": 3
+      }
+     },
+     {
+      "level": 12,
+      "limiter": "inv",
+      "t_level_ps": 75.889,
+      "families": {
+       "nand2": 3,
+       "inv": 1
+      }
+     },
+     {
+      "level": 13,
+      "limiter": "nand2",
+      "t_level_ps": 59.986,
+      "families": {
+       "nand2": 1
+      }
+     },
+     {
+      "level": 14,
+      "limiter": "nand2",
+      "t_level_ps": 59.986,
+      "families": {
+       "nand2": 1
+      }
+     }
+    ]
+   },
+   "DERIVED": {
+    "T_block_perlevel_ps": 967.0,
+    "T_block_globalmax_ps": 1062.4,
+    "T_x_CMOS_block": 1.042,
+    "x_width": 1.456,
+    "x_area": 1.728,
+    "E_scaled_by_width_fJ": 199.1,
+    "E_adv_vs_CMOS": 1.165
+   }
+  },
+  "d2ok_mindepth": {
+   "MEASURED": {
+    "cells": 111,
+    "devices": 456,
+    "W_tot_um": 409.32,
+    "area_um2": 816.48,
+    "depth": 12,
+    "per_level": [
+     {
+      "level": 1,
+      "limiter": "nor2",
+      "t_level_ps": 196.174,
+      "families": {
+       "nor2": 16,
+       "and2": 6,
+       "nand2": 2,
+       "inv": 8
+      }
+     },
+     {
+      "level": 2,
+      "limiter": "nor2",
+      "t_level_ps": 196.174,
+      "families": {
+       "nor2": 22,
+       "inv": 2
+      }
+     },
+     {
+      "level": 3,
+      "limiter": "or2",
+      "t_level_ps": 287.371,
+      "families": {
+       "nor2": 19,
+       "and2": 1,
+       "or2": 2
+      }
+     },
+     {
+      "level": 4,
+      "limiter": "nor2",
+      "t_level_ps": 196.174,
+      "families": {
+       "nor2": 4,
+       "inv": 2,
+       "nand2": 2
+      }
+     },
+     {
+      "level": 5,
+      "limiter": "nor2",
+      "t_level_ps": 196.174,
+      "families": {
+       "nor2": 2,
+       "and2": 1
+      }
+     },
+     {
+      "level": 6,
+      "limiter": "nor2",
+      "t_level_ps": 196.174,
+      "families": {
+       "nor2": 3
+      }
+     },
+     {
+      "level": 7,
+      "limiter": "nor2",
+      "t_level_ps": 196.174,
+      "families": {
+       "nor2": 3,
+       "and2": 2
+      }
+     },
+     {
+      "level": 8,
+      "limiter": "or2",
+      "t_level_ps": 287.371,
+      "families": {
+       "or2": 2,
+       "nor2": 2
+      }
+     },
+     {
+      "level": 9,
+      "limiter": "nor2",
+      "t_level_ps": 196.174,
+      "families": {
+       "nor2": 2,
+       "and2": 2
+      }
+     },
+     {
+      "level": 10,
+      "limiter": "or2",
+      "t_level_ps": 287.371,
+      "families": {
+       "or2": 1,
+       "nor2": 2
+      }
+     },
+     {
+      "level": 11,
+      "limiter": "or2",
+      "t_level_ps": 287.371,
+      "families": {
+       "or2": 1,
+       "nand2": 1
+      }
+     },
+     {
+      "level": 12,
+      "limiter": "nand2",
+      "t_level_ps": 59.986,
+      "families": {
+       "nand2": 1
+      }
+     }
+    ]
+   },
+   "DERIVED": {
+    "T_block_perlevel_ps": 2582.7,
+    "T_block_globalmax_ps": 3448.5,
+    "T_x_CMOS_block": 2.783,
+    "x_width": 1.161,
+    "x_area": 1.301,
+    "E_scaled_by_width_fJ": 158.8,
+    "E_adv_vs_CMOS": 1.461
+   }
+  },
+  "full_mindepth": {
+   "MEASURED": {
+    "cells": 56,
+    "devices": 406,
+    "W_tot_um": 352.65,
+    "area_um2": 627.782,
+    "depth": 8,
+    "per_level": [
+     {
+      "level": 1,
+      "limiter": "mux2",
+      "t_level_ps": 507.084,
+      "families": {
+       "inv": 3,
+       "nand2": 4,
+       "o21ai": 1,
+       "nor2": 4,
+       "or2": 3,
+       "and2": 3,
+       "a21oi": 1,
+       "mux2": 8,
+       "xnor2": 3,
+       "xor2": 2
+      }
+     },
+     {
+      "level": 2,
+      "limiter": "o21ai",
+      "t_level_ps": 479.106,
+      "families": {
+       "nand2": 1,
+       "o21ai": 4,
+       "a21o": 3,
+       "nor2": 1,
+       "nor2b": 3
+      }
+     },
+     {
+      "level": 3,
+      "limiter": "xnor2",
+      "t_level_ps": 441.002,
+      "families": {
+       "xnor2": 2,
+       "a21oi": 1
+      }
+     },
+     {
+      "level": 4,
+      "limiter": "xnor2",
+      "t_level_ps": 441.002,
+      "families": {
+       "xnor2": 1,
+       "a21oi": 1
+      }
+     },
+     {
+      "level": 5,
+      "limiter": "xnor2",
+      "t_level_ps": 441.002,
+      "families": {
+       "xnor2": 1,
+       "a21oi": 1
+      }
+     },
+     {
+      "level": 6,
+      "limiter": "xnor2",
+      "t_level_ps": 441.002,
+      "families": {
+       "xnor2": 1,
+       "a21oi": 1
+      }
+     },
+     {
+      "level": 7,
+      "limiter": "xnor2",
+      "t_level_ps": 441.002,
+      "families": {
+       "xnor2": 1,
+       "a21oi": 1
+      }
+     },
+     {
+      "level": 8,
+      "limiter": "xnor2",
+      "t_level_ps": 441.002,
+      "families": {
+       "xnor2": 1
+      }
+     }
+    ]
+   },
+   "DERIVED": {
+    "T_block_perlevel_ps": 3632.2,
+    "T_block_globalmax_ps": 4056.7,
+    "T_x_CMOS_block": 3.914,
+    "x_width": 1.0,
+    "x_area": 1.0,
+    "E_scaled_by_width_fJ": 136.8,
+    "E_adv_vs_CMOS": 1.696
+   }
+  }
+ }
+}

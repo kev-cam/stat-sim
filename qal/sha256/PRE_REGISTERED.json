@@ -1,0 +1,118 @@
+{
+ "_doc": "PHASE 1 of the SHA-256 QAL block: (b) a per-family CELL SETTLING CENSUS on a QAL rail, and (c/d) a SHALLOW-STACK REMAP of sha_slice with formal equivalence. Written BEFORE any SPICE deck of this track exists. Every acceptance criterion, every prediction, and every declared correction below is fixed at the timestamp of this file.",
+ "track": "qal/sha256 Phase 1",
+ "written_utc": "2026-09-29T18:31Z",
+ "owner_dir": "/usr/local/src/stat-sim/qal/sha256",
+ "private_cache": "/tmp/claude-1001/-usr-local-src/4921ad0c-f17b-4b84-986a-5917c9ebd2a6/scratchpad/vae_cache_sha256",
+
+ "what_had_been_read_before_writing_this": {
+  "_doc": "FULL disclosure of the state of knowledge at pre-registration. Nothing below is a prediction; it is all prior committed fact or static (non-simulated) analysis.",
+  "committed_rtl": "qal/synth/threeway/sha_slice.v -- maj/ch/8-bit CPA, 6x8 inputs, 3x8 outputs.",
+  "committed_mapped": "qal/synth/threeway/work/sha_slice.cmos.v -- 56 cells, re-levelized here with the committed levelize_mapped.py: DEPTH 8, profile 32/12/3/2/2/2/2/1.",
+  "committed_generic": "work/levels.json -- 105 generic gates, DEPTH 10, profile 48/22/19/3/2/4/2/3/1/1.",
+  "pdk_spice": "IHP-Open-PDK sg13g2_stdcell.spice, all 12 census cells parsed.",
+  "static_stack_analysis": "cells/stack_depths.json, produced by stacks.py BEFORE this file. It is a STATIC PROPERTY OF THE PDK NETLIST, not an experimental outcome, so having it in hand does not contaminate the pre-registration -- but it is disclosed, with its mtime, because it already CORRECTS the brief (see declared_correction_1).",
+  "prior_committed_measurement": "qal/dvopt/RESULTS.json section f_two_high_stack (dated 2026-09-28) -- see declared_correction_2."
+ },
+
+ "declared_correction_1_STACK_CENSUS": {
+  "brief_said": "Only inv + nand2 + nor2 (13 of 56) are unambiguously shallow.",
+  "static_analysis_says": "Only inv + nand2 + and2 (11 of 56) are shallow. sg13g2_nor2_1 is NOT shallow: its pull-up is XP0(net1<-A<-VDD) in series with XP1(Y<-B<-net1), a 2-HIGH pMOS SERIES STACK -- exactly the o21ai pathology, because NOR is the CMOS dual of NAND and the dual puts the stack on the p-side. sg13g2_and2_1 IS shallow: it is nand2+inv, every rise path is depth 1.",
+  "metric_used": "binding_pmos_rise_depth = the maximum, over all 2^n input vectors, of the series pMOS count between VDD (the QAL rail) and any node that must RISE and that either IS the output or GATES a device. Pure series-internal nodes are excluded because they need not settle. On a QAL rail the pull-up network is what drags the output up as the rail rises, so it is the p-side depth that binds, not the n-side.",
+  "consequence_for_the_remap": "the shallow-stack basis is {inv, nand2, and2}. {inv, nand2} alone is already Boolean-complete, and and2 = nand2+inv is free, so the remap library is not further restricted by dropping nor2.",
+  "status": "MEASURED-from-netlist (static). Will be CONFIRMED or REFUTED by the settling census: if nor2 settles as well as nand2 does, the static metric is wrong and that will be reported as such."
+ },
+
+ "declared_correction_2_THE_o21ai_ANCHOR": {
+  "brief_said": "sg13g2_o21ai_1 is the exact cell MEASURED to NEVER SETTLE at any operating point inside the PDK envelope.",
+  "prior_committed_result_supersedes_it": "qal/dvopt/RESULTS.json f_two_high_stack, 2026-09-28: 'YES -- IT SETTLES. The pre-registered confound is broken and the previous never-settles reading was a DELIVERY failure plus too short a measurement window, NOT a headroom failure of the stack.' At dV=1.65 V the o21ai bank reaches t_valid90 = 495.5 ps INSIDE the committed 500 ps window (L=15/W=30), 406.2 ps at L=6/W=120. At dV=1.50 with a 2000 ps tail, t_valid90 = 710.1 ps. On an IDEAL supply the 2-high stack reaches 99.78-99.99 percent of rail at EVERY characterised swing from 0.60 V up; it is 3.1-3.6x SLOWER than an inverter, not broken.",
+  "what_survives_of_the_brief": "the CONCLUSION, by a different mechanism. The committed verdict is 'QAL remains a shallow-stack-library backend': admitting 2-high stacks is a CORRECTNESS option at dV=1.65 but costs 4.4x-5.5x the 92.8 ps CMOS logic level where the shallow-stack optimum is 0.82x. So the remap is still the right Phase 1 question; the reason is SPEED, not impossibility.",
+  "effect_on_this_pre_registration": "the census gates are therefore SPLIT: correctness (C1/C2) and speed (C3) are judged separately, and a family may be MARGINAL (correct but too slow). A census that reported only PASS/FAIL on settling would reproduce the superseded claim."
+ },
+
+ "phase1b_CENSUS": {
+  "families": ["inv", "nand2", "nor2", "and2", "or2", "nor2b", "xnor2", "xor2",
+               "mux2", "a21oi", "a21o", "o21ai"],
+  "device_source": "the PDK subckt VERBATIM from sg13g2_stdcell.spice (real widths, real l: 130 nm for eleven families, 150 nm for o21ai), instantiated through qal/sg13lv_compat.sp. ad/as/pd/ps are ZEROED by that shim, so every time here is a LOWER BOUND.",
+  "bank_topology": "the committed qal/skept/sk.py bank: 8 metered cells on bank node bkb, CA=35.979 fF, ideal L with RS=10 ohm, TG switch (wn=tot/3, wp=2tot/3, park=tot/15), true-ZCS probe then hop, 1 F integrators, t0-referenced. IMPORTED, not re-implemented.",
+  "operating_point_BEST_IN_ENVELOPE": {
+   "dV_V": 1.65,
+   "L_nH": 6.0,
+   "TG_total_um": 120.0,
+   "VGH_V": 1.65,
+   "rule": "VGH = max(1.5, dV), the committed dvopt amendment P1",
+   "tail_ps": 500.0,
+   "CL_fF": 2.0,
+   "why": "this is the committed dvopt grid's MEASURED optimum under the measured (no-model) level-time form: t_hop 45.223 ps, and the best o21ai row in the whole committed grid (t_valid90 406.2 ps). 1.65 V is the top of the PDK's characterised envelope (sg13g2_stdcell_fast_1p65V_m40C.lib). Choosing the point most GENEROUS to the deep-stack families is deliberate: a FAIL there is a strong FAIL."
+  },
+  "stimulus": "per family, the two WORST-CASE input vectors from stack_depths.json: vec_out_hi (output must rise, through the deepest conducting pull-up) and vec_out_lo (output must stay low while the deepest BINDING internal node rises). 4 cells of each in the 8-cell bank, so every bank carries both polarities.",
+  "acceptance": {
+   "C1_VALUE": "all 8 outputs land on the CORRECT side of half the end-of-window rail at tE = tend-5 ps: v_end > 0.5*VBEND where the vector expects HIGH, v_end < 0.5*VBEND where it expects LOW. This is a VALUE check; settling alone is not correctness.",
+   "C2_SETTLE": "t_valid90 EXISTS inside the 500 ps tail: all 8 outputs simultaneously within 10 percent of the INSTANTANEOUS rail and staying there to the end of the window.",
+   "C3_SPEED": "t_level = max(t_hop, t_valid90) <= 2.0 x the inv-family t_level measured at the SAME (dV, L, W) in this same census. Reported separately from C1/C2.",
+   "verdict": "PASS = C1 and C2 and C3. MARGINAL = C1 and C2 and not C3. FAIL = not C1 or not C2.",
+   "reporting": "a family with a NEGATIVE VA_open is flagged: bank A gave up more charge than it stored, i.e. the unsettled stack conducted DC. dvopt A4 already established that the one-sided C2 rail-drain gate is vacuous for such rows, so VA_open is reported two-sided and by sign, never as a pass/fail."
+  },
+  "instrument_checks": {
+   "G0_committed_o21ai": "reproduce the committed row i0_o21_dv150 (sk.py HAND-BUILT o21ai topology, l=0.13u, WP/WN 1.12/0.74, L=15 nH, TG 30 um, dV=1.5, tail 500 ps) to rel <= 1e-6 on VBEND 0.6076701932224732, t_hop_ps 67.31716163004057, VA_open -0.17394619083354046, t_valid80_ps 515.148911, IPK_uA 1435.09869; s_end(min) 82.99 to rel <= 1e-3; t_valid90 is None. This is the brief's anchor and it must reproduce BEFORE any census row is believed.",
+   "G0b_PDK_vs_HANDBUILT": "the census instantiates the PDK o21ai subckt (l=0.15u) where the committed anchor used a hand-built one (l=0.13u). Run the PDK o21ai at the identical committed point and report the delta EXPLICITLY. This is a declared methodology difference, not a failure: 0.13u is the stronger device, so the committed anchor is the GENEROUS one and the PDK row is expected to be slower. A delta is a measurement; only a DISAGREEMENT IN VERDICT would be a problem.",
+   "G0c_inv_reference": "the inv family row at the census point is the C3 denominator and must be a QAL-settling bank in its own right (C1 and C2 pass). If inv fails C2 the operating point is wrong and the census is void."
+  }
+ },
+
+ "phase1c_REMAP": {
+  "library": "restricted liberty containing ONLY the cells whose census verdict is PASS. Primary target {sg13g2_inv_1, sg13g2_nand2_1, sg13g2_and2_1} (drive strength _1 only, matching the committed mapping's exclusive use of _1). If the census PASSES more families the restriction is RELAXED to them and BOTH mappings are reported.",
+  "tool": "yosys 0.58 (the same version that produced the committed sha_slice.cmos.v, git sha1 157aabb58), abc-based techmap, liberty subsetted by cell name from sg13g2_stdcell_typ_1p20V_25C.lib -- the same corner family the committed mapping used.",
+  "controls_that_must_also_be_run": [
+   "the SAME flow with the FULL 84-cell library, to prove the flow reproduces the committed 56 cells / DEPTH 8 / profile 32/12/3/2/2/2/2/1. If the unrestricted control does not reproduce the committed netlist's size and depth, the remap cost is not attributable to the restriction.",
+   "a {inv,nand2} only mapping (drop and2), to show whether and2 buys anything.",
+   "an all-2-high-allowed mapping {inv,nand2,and2,nor2,or2}, to price the nor2 exclusion specifically."
+  ],
+  "cost_metrics_reported": ["cell count", "DEPTH by levelize_mapped.py", "per-level bank profile", "cell-type histogram"],
+  "baseline_for_comparison": "committed 56 cells / DEPTH 8 / profile 32/12/3/2/2/2/2/1 (mapped) and 105 generic gates / DEPTH 10 / profile 48/22/19/3/2/4/2/3/1/1 (generic). Both are quoted; the MAPPED pair is the like-for-like one."
+ },
+
+ "phase1d_EQUIVALENCE": {
+  "E1_SAT_MITER": "yosys miter -equiv between the remapped gate netlist (with sg13g2 cell models) and the committed behavioural sha_slice.v, then 'sat -verify -prove-asserts -set-init-zero -tempinduct' on the miter: must report SUCCESS (no distinguishing input assignment exists). A combinational block admits a complete proof; anything less is a shortfall and must be said.",
+  "E2_INDEPENDENT_PROOF": "a second, structurally different proof: yosys equiv_make + equiv_simple + equiv_induct + equiv_status -assert. Two proofs by different engines, because one green light from one engine on a netlist I generated is not evidence.",
+  "E3_VECTORS": "iverilog simulation of the remapped netlist against the behavioural reference. Standard to match: the committed QDI form's 151,584 vectors / 0 mismatches. Plan: ALL 65,536 (a,b) pairs exhaustively (the 8-bit CPA is then complete), with c/e/f/g stepped so that every (a_i,b_i,c_i) and (e_i,f_i,g_i) bit-triple is covered at every bit position, PLUS pseudo-random vectors to exceed 151,584 in total. ACCEPTANCE: >= 151,584 vectors, 0 mismatches.",
+  "E4_LIBRARY_CLOSURE": "the remapped netlist's cell-type histogram must be a SUBSET of the census PASS set. Any cell outside it voids the remap.",
+  "E5_PORT_FIDELITY": "the remap's port list and widths must match sha_slice.v exactly (6x8 in, 3x8 out); a proof against a different interface is not a proof."
+ },
+
+ "PRE_STATED_PREDICTIONS": {
+  "_doc": "written now, to be scored later. These are the genuinely unknown outcomes.",
+  "census_verdicts": {
+   "inv": "PASS", "nand2": "PASS", "and2": "PASS",
+   "nor2": "MARGINAL -- C1/C2 pass at dV=1.65, C3 fails. Predicted to behave like o21ai, i.e. 2-3x the inv t_level, because its binding rise depth is also 2.",
+   "o21ai": "MARGINAL", "a21oi": "MARGINAL", "xnor2": "MARGINAL", "xor2": "MARGINAL",
+   "nor2b": "MARGINAL", "or2": "MARGINAL", "a21o": "MARGINAL",
+   "mux2": "FAIL -- predicted to miss C2 inside 500 ps. Twelve devices, the largest internal-node capacitance in the census, and a binding 2-high rise on net6 that then has to drive an output inverter.",
+   "confidence": "the inv/nand2/and2 PASS calls are high confidence (depth 1, and the committed inverter bank at this point already settles in 75.9 ps). The MARGINAL/FAIL split among the depth-2 families is genuinely uncertain: I am predicting FAIL for exactly one family and could easily be wrong in either direction."
+  },
+  "remap_cost": {
+   "cells_predicted": 135,
+   "cells_range": [110, 175],
+   "cells_vs_committed": "committed 56 -> predicted 2.4x",
+   "depth_predicted": 19,
+   "depth_range": [15, 24],
+   "depth_vs_committed": "committed mapped DEPTH 8 -> predicted 2.4x",
+   "reasoning_DERIVED": "20 of the 56 cells are xnor2(10)/xor2(2)/mux2(8). In a NAND basis an XOR2 is 4 NAND2 and 2 extra levels; a MUX2 is 4 NAND2 plus an inverter on S and 2-3 extra levels. That is 20 cells -> ~85 cells and +2 levels each wherever they sit on the critical path. The 8-bit carry chain already carries 4 of the a21oi cells in series; each becomes ~3 NAND2 and +2 levels. The remaining 36 cells are mostly AOI/OAI/NOR forms that cost 2-3 NAND2 each with +1 level.",
+   "figure_of_merit_prediction": "the remap alone, BEFORE any QAL timing hardware is counted, will at least DOUBLE the logic depth. Since QAL's whole time budget is depth x per-level time, this predicts the shallow-stack restriction erases most of the per-level advantage on its own."
+  },
+  "equivalence": "E1 and E2 both SUCCEED and E3 reports 0 mismatches. A yosys-mapped combinational netlist that failed equivalence against its own source would indicate a flow error, not a design finding; I am pre-stating that so that a failure is reported as MY error rather than dressed up."
+ },
+
+ "STANDING_DECLARATIONS_repeated_from_the_committed_campaign": [
+  "sg13lv_compat.sp ZEROES ad/as/pd/ps: junction capacitance is absent from every device. Every time and every energy here is a LOWER BOUND on a real layout.",
+  "LT is an ideal inductor with a lumped RS = 10 ohm. No interconnect, no bank-to-bank routing, no inductor self-capacitance.",
+  "Anything modelled as an ideal source is a BOOKING and its row is a BOUND.",
+  "1 F integrators carry a t=0 PEDESTAL; every integral here is t0-referenced.",
+  "The true current zero is RE-PROBED per L and per operating point; no ZCS time is reused across points.",
+  "vt and gmin continuation are reserved and not used.",
+  "Concurrency is held to <= 4 heavy Xyce jobs; two other workflows share this box. PYMS_VAE_CACHE is private to this directory.",
+  "Every figure is labelled MEASURED, DERIVED, or ASSUMED."
+ ],
+
+ "WHAT_WOULD_MAKE_THIS_TRACK_REPORT_A_NEGATIVE": "If the shallow-stack remap more than doubles both cell count and depth, then QAL's per-level advantage at this operating point (0.82x of the 92.8 ps CMOS logic level, committed) is spent by the remap alone and the block is SLOWER than CMOS before a single piece of timing hardware is added. That is a legitimate answer and it will be stated in exactly those terms, with the numbers, not buried."
+}

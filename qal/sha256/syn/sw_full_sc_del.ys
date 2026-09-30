@@ -1,0 +1,13 @@
+read_verilog /usr/local/src/stat-sim/qal/synth/threeway/sha_slice.v
+hierarchy -check -top sha_slice
+proc
+opt
+fsm
+opt
+memory
+opt
+techmap
+opt
+abc -liberty /usr/local/src/IHP-Open-PDK/ihp-sg13g2/libs.ref/sg13g2_stdcell/lib/sg13g2_stdcell_typ_1p20V_25C.lib -script +strash;dch,-f;amap;topo;stime,-c
+opt_clean
+write_verilog -noattr /usr/local/src/stat-sim/qal/sha256/syn/sw_full_sc_del.v

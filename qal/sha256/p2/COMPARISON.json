@@ -1,0 +1,653 @@
+{
+ "_doc": "THE DELIVERABLE: the measured QAL sha_slice block against the committed\nCMOS / QDI / DIMS numbers, load-matched and said so.\n\nCOMMITTED REFERENCES (all from qal/synth/threeway, quoted not re-derived):\n  CMOS  56 cells : 232 fJ/op @ 0.928 ns, i.e. DEPTH 10 x 92.8 ps/level.  The\n                   same-convention cell comparator is 94.174 ps at a 6.91 fF load\n                   and 57.143 ps at 2 fF.\n  QDI direct-threshold : 113 cells, 2712 fJ @ 2.533 ns\n       + completion detection : 4385.7 fJ @ 4.021 ns\n  DIMS  : 524 cells, 6972 fJ @ 5.575 ns\n  QAL (COMPOSED PROJECTION, what this run replaces) : 136.8 fJ @ 4.004 ns\n        = 1.303 fJ/gate x 105 gates, depth 10 x 400.4 ps, TIMING HARDWARE EXCLUDED.\n\nLOAD MATCHING.  This deck loads every cell output with CL = 2.0 fF (the committed\nbanktank/skept convention).  The load-matched CMOS comparator is therefore the\n2 fF one, 57.143 ps/level -> DEPTH 10 x 57.143 = 571.4 ps for the CMOS block.\nThe committed 928 ps figure is the 6.91 fF convention.  BOTH are reported and the\nload-matched one is the one the verdict uses, because quoting the 6.91 fF CMOS\nnumber against a 2 fF QAL deck would flatter QAL by 1.62x.\n",
+ "committed_references": {
+  "CMOS_56cell": {
+   "cells": 56,
+   "E_fJ": 232.0,
+   "T_ps": 928.0,
+   "T_ps_loadmatched": 571.4300000000001
+  },
+  "QDI_direct_threshold": {
+   "cells": 113,
+   "E_fJ": 2712.0,
+   "T_ps": 2533.0
+  },
+  "QDI_plus_completion": {
+   "cells": 113,
+   "E_fJ": 4385.7,
+   "T_ps": 4021.0
+  },
+  "DIMS": {
+   "cells": 524,
+   "E_fJ": 6972.0,
+   "T_ps": 5575.0
+  },
+  "QAL_COMPOSED_PROJECTION": {
+   "cells": 105,
+   "E_fJ": 136.8,
+   "T_ps": 4004.0,
+   "note": "EXCLUDES the timing hardware"
+  }
+ },
+ "load_matching": {
+  "this_deck_CL_fF": 2.0,
+  "CMOS_level_at_2fF_ps": 57.143,
+  "CMOS_level_at_6p91fF_ps": 94.174,
+  "CMOS_block_loadmatched_ps": 571.4300000000001,
+  "CMOS_block_as_committed_ps": 928.0,
+  "which_the_verdict_uses": "the 2 fF load-matched 571.4 ps"
+ },
+ "ROWS": [
+  {
+   "tag": "H200",
+   "beat_ps": 200.0,
+   "PASS": false,
+   "A1": false,
+   "A2": false,
+   "A6": false,
+   "A6_worst_uA": 87.8264,
+   "worst_gate_pct": 77.94,
+   "worst_where": [
+    1,
+    "_177_"
+   ],
+   "n_value_fail": 2,
+   "n_gates": 161,
+   "block_answer_correct": true,
+   "sep_min_mV": 679.571,
+   "latency_ps": 2798.0,
+   "II_beats": 12,
+   "II_ps": 2400.0,
+   "dv": 1.65,
+   "E_per_op_tank_fJ": 1248.13,
+   "E_per_op_wall_fJ": null,
+   "E_ledger": {
+    "tank_energy_taken_per_operation_MEASURED": 1248.13,
+    "tank_energy_lost_to_end_of_run": 1141.09,
+    "switch_gate_drive_all_banks_RAW_signed": -21.94,
+    "vhi_rail_RAW_signed": -355.7,
+    "primary_input_sources_RAW_signed_BOOKING": -142.89
+   },
+   "A6_trapped_fJ": 0.0581
+  },
+  {
+   "tag": "H250",
+   "beat_ps": 250.0,
+   "PASS": false,
+   "A1": false,
+   "A2": true,
+   "A6": false,
+   "A6_worst_uA": 88.4431,
+   "worst_gate_pct": 89.437,
+   "worst_where": [
+    1,
+    "_177_"
+   ],
+   "n_value_fail": 0,
+   "n_gates": 161,
+   "block_answer_correct": true,
+   "sep_min_mV": 761.293,
+   "latency_ps": 3498.0,
+   "II_beats": 12,
+   "II_ps": 3000.0,
+   "dv": 1.65,
+   "E_per_op_tank_fJ": 1248.64,
+   "E_per_op_wall_fJ": null,
+   "E_ledger": {
+    "tank_energy_taken_per_operation_MEASURED": 1248.64,
+    "tank_energy_lost_to_end_of_run": 1141.73,
+    "switch_gate_drive_all_banks_RAW_signed": -22.01,
+    "vhi_rail_RAW_signed": -355.6,
+    "primary_input_sources_RAW_signed_BOOKING": -142.88
+   },
+   "A6_trapped_fJ": 0.0567
+  },
+  {
+   "tag": "HF250",
+   "beat_ps": 250.0,
+   "PASS": false,
+   "A1": false,
+   "A2": true,
+   "A6": false,
+   "A6_worst_uA": 88.3558,
+   "worst_gate_pct": 89.457,
+   "worst_where": [
+    1,
+    "_177_"
+   ],
+   "n_value_fail": 0,
+   "n_gates": 161,
+   "block_answer_correct": true,
+   "sep_min_mV": 763.333,
+   "latency_ps": 3498.0,
+   "II_beats": 12,
+   "II_ps": 3000.0,
+   "dv": 1.65,
+   "E_per_op_tank_fJ": 1248.28,
+   "E_per_op_wall_fJ": null,
+   "E_ledger": {
+    "tank_energy_taken_per_operation_MEASURED": 1248.28,
+    "tank_energy_lost_to_end_of_run": 1141.48,
+    "switch_gate_drive_all_banks_RAW_signed": -22.46,
+    "vhi_rail_RAW_signed": -355.5,
+    "primary_input_sources_RAW_signed_BOOKING": -142.81
+   },
+   "A6_trapped_fJ": 0.0423
+  },
+  {
+   "tag": "T260",
+   "beat_ps": 260.0,
+   "PASS": false,
+   "A1": false,
+   "A2": false,
+   "A6": false,
+   "A6_worst_uA": 56.7457,
+   "worst_gate_pct": 33.901,
+   "worst_where": [
+    5,
+    "_274_"
+   ],
+   "n_value_fail": 59,
+   "n_gates": 161,
+   "block_answer_correct": true,
+   "sep_min_mV": 36.585,
+   "latency_ps": 3638.0,
+   "II_beats": 12,
+   "II_ps": 3120.0,
+   "dv": 1.2,
+   "E_per_op_tank_fJ": 642.56,
+   "E_per_op_wall_fJ": null,
+   "E_ledger": {
+    "tank_energy_taken_per_operation_MEASURED": 642.56,
+    "tank_energy_lost_to_end_of_run": 578.08,
+    "switch_gate_drive_all_banks_RAW_signed": -39.58,
+    "vhi_rail_RAW_signed": -242.42,
+    "primary_input_sources_RAW_signed_BOOKING": -62.18
+   },
+   "A6_trapped_fJ": 0.013
+  },
+  {
+   "tag": "T300",
+   "beat_ps": 300.0,
+   "PASS": false,
+   "A1": false,
+   "A2": false,
+   "A6": false,
+   "A6_worst_uA": 43.6201,
+   "worst_gate_pct": 34.342,
+   "worst_where": [
+    7,
+    "_254_"
+   ],
+   "n_value_fail": 54,
+   "n_gates": 161,
+   "block_answer_correct": true,
+   "sep_min_mV": 167.662,
+   "latency_ps": 4198.0,
+   "II_beats": 12,
+   "II_ps": 3600.0,
+   "dv": 1.2,
+   "E_per_op_tank_fJ": 643.15,
+   "E_per_op_wall_fJ": null,
+   "E_ledger": {
+    "tank_energy_taken_per_operation_MEASURED": 643.15,
+    "tank_energy_lost_to_end_of_run": 578.7,
+    "switch_gate_drive_all_banks_RAW_signed": -39.64,
+    "vhi_rail_RAW_signed": -242.32,
+    "primary_input_sources_RAW_signed_BOOKING": -62.19
+   },
+   "A6_trapped_fJ": 0.01
+  },
+  {
+   "tag": "H300",
+   "beat_ps": 300.0,
+   "PASS": true,
+   "A1": true,
+   "A2": true,
+   "A6": false,
+   "A6_worst_uA": 356.4128,
+   "worst_gate_pct": 95.044,
+   "worst_where": [
+    1,
+    "_177_"
+   ],
+   "n_value_fail": 0,
+   "n_gates": 161,
+   "block_answer_correct": true,
+   "sep_min_mV": 803.733,
+   "latency_ps": 4198.0,
+   "II_beats": 12,
+   "II_ps": 3600.0,
+   "dv": 1.65,
+   "E_per_op_tank_fJ": 1262.34,
+   "E_per_op_wall_fJ": null,
+   "E_ledger": {
+    "tank_energy_taken_per_operation_MEASURED": 1262.34,
+    "tank_energy_lost_to_end_of_run": 1155.14,
+    "switch_gate_drive_all_banks_RAW_signed": -23.78,
+    "vhi_rail_RAW_signed": -360.4,
+    "primary_input_sources_RAW_signed_BOOKING": -144.23
+   },
+   "A6_trapped_fJ": 0.9338
+  },
+  {
+   "tag": "HF300",
+   "beat_ps": 300.0,
+   "PASS": true,
+   "A1": true,
+   "A2": true,
+   "A6": false,
+   "A6_worst_uA": 88.2669,
+   "worst_gate_pct": 95.069,
+   "worst_where": [
+    1,
+    "_177_"
+   ],
+   "n_value_fail": 0,
+   "n_gates": 161,
+   "block_answer_correct": true,
+   "sep_min_mV": 805.91,
+   "latency_ps": 4198.0,
+   "II_beats": 12,
+   "II_ps": 3600.0,
+   "dv": 1.65,
+   "E_per_op_tank_fJ": 1248.67,
+   "E_per_op_wall_fJ": null,
+   "E_ledger": {
+    "tank_energy_taken_per_operation_MEASURED": 1248.67,
+    "tank_energy_lost_to_end_of_run": 1141.93,
+    "switch_gate_drive_all_banks_RAW_signed": -22.47,
+    "vhi_rail_RAW_signed": -355.5,
+    "primary_input_sources_RAW_signed_BOOKING": -142.81
+   },
+   "A6_trapped_fJ": 0.0436
+  },
+  {
+   "tag": "K300",
+   "beat_ps": 300.0,
+   "PASS": false,
+   "A1": false,
+   "A2": false,
+   "A6": false,
+   "A6_worst_uA": 60.1029,
+   "worst_gate_pct": 34.343,
+   "worst_where": [
+    7,
+    "_254_"
+   ],
+   "n_value_fail": 54,
+   "n_gates": 161,
+   "block_answer_correct": true,
+   "sep_min_mV": 174.48,
+   "latency_ps": 4198.0,
+   "II_beats": 12,
+   "II_ps": 3600.0,
+   "dv": 1.2,
+   "E_per_op_tank_fJ": 633.68,
+   "E_per_op_wall_fJ": 1746.8,
+   "E_ledger": {
+    "tank_energy_taken_per_operation_MEASURED": 633.68,
+    "tank_energy_lost_to_end_of_run": 315.43,
+    "switch_gate_drive_all_banks_RAW_signed": -54.14,
+    "vhi_rail_RAW_signed": -337.23,
+    "primary_input_sources_RAW_signed_BOOKING": -62.25,
+    "buck_supply_delivered": 877.29,
+    "buck_gate_drive_RAW_signed": 64.39
+   },
+   "A6_trapped_fJ": 0.0299
+  },
+  {
+   "tag": "KH300",
+   "beat_ps": 300.0,
+   "PASS": true,
+   "A1": true,
+   "A2": true,
+   "A6": false,
+   "A6_worst_uA": 358.1339,
+   "worst_gate_pct": 95.061,
+   "worst_where": [
+    1,
+    "_177_"
+   ],
+   "n_value_fail": 0,
+   "n_gates": 161,
+   "block_answer_correct": true,
+   "sep_min_mV": 804.467,
+   "latency_ps": 4198.0,
+   "II_beats": 12,
+   "II_ps": 3600.0,
+   "dv": 1.65,
+   "E_per_op_tank_fJ": 1243.8,
+   "E_per_op_wall_fJ": 2987.01,
+   "E_ledger": {
+    "tank_energy_taken_per_operation_MEASURED": 1243.8,
+    "tank_energy_lost_to_end_of_run": 922.71,
+    "switch_gate_drive_all_banks_RAW_signed": -32.1,
+    "vhi_rail_RAW_signed": -484.6,
+    "primary_input_sources_RAW_signed_BOOKING": -144.37,
+    "buck_supply_delivered": 771.11,
+    "buck_gate_drive_RAW_signed": 70.83
+   },
+   "A6_trapped_fJ": 0.9962
+  }
+ ],
+ "PASSING": [
+  {
+   "tag": "H300",
+   "beat_ps": 300.0,
+   "PASS": true,
+   "A1": true,
+   "A2": true,
+   "A6": false,
+   "A6_worst_uA": 356.4128,
+   "worst_gate_pct": 95.044,
+   "worst_where": [
+    1,
+    "_177_"
+   ],
+   "n_value_fail": 0,
+   "n_gates": 161,
+   "block_answer_correct": true,
+   "sep_min_mV": 803.733,
+   "latency_ps": 4198.0,
+   "II_beats": 12,
+   "II_ps": 3600.0,
+   "dv": 1.65,
+   "E_per_op_tank_fJ": 1262.34,
+   "E_per_op_wall_fJ": null,
+   "E_ledger": {
+    "tank_energy_taken_per_operation_MEASURED": 1262.34,
+    "tank_energy_lost_to_end_of_run": 1155.14,
+    "switch_gate_drive_all_banks_RAW_signed": -23.78,
+    "vhi_rail_RAW_signed": -360.4,
+    "primary_input_sources_RAW_signed_BOOKING": -144.23
+   },
+   "A6_trapped_fJ": 0.9338
+  },
+  {
+   "tag": "HF300",
+   "beat_ps": 300.0,
+   "PASS": true,
+   "A1": true,
+   "A2": true,
+   "A6": false,
+   "A6_worst_uA": 88.2669,
+   "worst_gate_pct": 95.069,
+   "worst_where": [
+    1,
+    "_177_"
+   ],
+   "n_value_fail": 0,
+   "n_gates": 161,
+   "block_answer_correct": true,
+   "sep_min_mV": 805.91,
+   "latency_ps": 4198.0,
+   "II_beats": 12,
+   "II_ps": 3600.0,
+   "dv": 1.65,
+   "E_per_op_tank_fJ": 1248.67,
+   "E_per_op_wall_fJ": null,
+   "E_ledger": {
+    "tank_energy_taken_per_operation_MEASURED": 1248.67,
+    "tank_energy_lost_to_end_of_run": 1141.93,
+    "switch_gate_drive_all_banks_RAW_signed": -22.47,
+    "vhi_rail_RAW_signed": -355.5,
+    "primary_input_sources_RAW_signed_BOOKING": -142.81
+   },
+   "A6_trapped_fJ": 0.0436
+  },
+  {
+   "tag": "KH300",
+   "beat_ps": 300.0,
+   "PASS": true,
+   "A1": true,
+   "A2": true,
+   "A6": false,
+   "A6_worst_uA": 358.1339,
+   "worst_gate_pct": 95.061,
+   "worst_where": [
+    1,
+    "_177_"
+   ],
+   "n_value_fail": 0,
+   "n_gates": 161,
+   "block_answer_correct": true,
+   "sep_min_mV": 804.467,
+   "latency_ps": 4198.0,
+   "II_beats": 12,
+   "II_ps": 3600.0,
+   "dv": 1.65,
+   "E_per_op_tank_fJ": 1243.8,
+   "E_per_op_wall_fJ": 2987.01,
+   "E_ledger": {
+    "tank_energy_taken_per_operation_MEASURED": 1243.8,
+    "tank_energy_lost_to_end_of_run": 922.71,
+    "switch_gate_drive_all_banks_RAW_signed": -32.1,
+    "vhi_rail_RAW_signed": -484.6,
+    "primary_input_sources_RAW_signed_BOOKING": -144.37,
+    "buck_supply_delivered": 771.11,
+    "buck_gate_drive_RAW_signed": 70.83
+   },
+   "A6_trapped_fJ": 0.9962
+  }
+ ],
+ "EARLIEST_CORRECT_BEAT": {
+  "tag": "H300",
+  "beat_ps": 300.0,
+  "PASS": true,
+  "A1": true,
+  "A2": true,
+  "A6": false,
+  "A6_worst_uA": 356.4128,
+  "worst_gate_pct": 95.044,
+  "worst_where": [
+   1,
+   "_177_"
+  ],
+  "n_value_fail": 0,
+  "n_gates": 161,
+  "block_answer_correct": true,
+  "sep_min_mV": 803.733,
+  "latency_ps": 4198.0,
+  "II_beats": 12,
+  "II_ps": 3600.0,
+  "dv": 1.65,
+  "E_per_op_tank_fJ": 1262.34,
+  "E_per_op_wall_fJ": null,
+  "E_ledger": {
+   "tank_energy_taken_per_operation_MEASURED": 1262.34,
+   "tank_energy_lost_to_end_of_run": 1155.14,
+   "switch_gate_drive_all_banks_RAW_signed": -23.78,
+   "vhi_rail_RAW_signed": -360.4,
+   "primary_input_sources_RAW_signed_BOOKING": -144.23
+  },
+  "A6_trapped_fJ": 0.9338
+ },
+ "HOP_SPREAD": {
+  "uniform_L_4nH": {
+   "min_ps": 29.785010645062528,
+   "max_ps": 132.84820498305595,
+   "spread_x": 4.4602369482476,
+   "per_bank": {
+    "1": 132.8482,
+    "2": 128.5606,
+    "3": 121.6294,
+    "4": 113.0303,
+    "5": 61.2664,
+    "6": 58.1002,
+    "7": 36.3789,
+    "8": 61.8283,
+    "9": 57.8181,
+    "10": 62.3481,
+    "11": 36.3869,
+    "12": 55.8741,
+    "13": 30.7589,
+    "14": 29.785
+   }
+  },
+  "tuned_L_k_inv_C": {
+   "min_ps": 130.10244808610219,
+   "max_ps": 198.4740965216019,
+   "spread_x": 1.5255216134768743,
+   "per_bank": {
+    "1": 131.4651,
+    "2": 135.0778,
+    "3": 145.9738,
+    "4": 163.6663,
+    "5": 152.5126,
+    "6": 171.7204,
+    "7": 130.1024,
+    "8": 154.6654,
+    "9": 170.9772,
+    "10": 154.6654,
+    "11": 130.1024,
+    "12": 181.8598,
+    "13": 182.5977,
+    "14": 198.4741
+   },
+   "L_nH": {
+    "1": 4.0,
+    "2": 4.24,
+    "3": 5.436,
+    "4": 8.064,
+    "5": 22.804,
+    "6": 32.492,
+    "7": 44.16,
+    "8": 22.83,
+    "9": 33.12,
+    "10": 22.83,
+    "11": 44.16,
+    "12": 40.226,
+    "13": 132.48,
+    "14": 169.009
+   }
+  },
+  "uniform_L_4nH_dV1p65": {
+   "min_ps": 31.795602858769456,
+   "max_ps": 145.15032666624649,
+   "spread_x": 4.565106920946868,
+   "per_bank": {
+    "1": 145.1503,
+    "2": 139.9139,
+    "3": 131.8238,
+    "4": 120.39,
+    "5": 65.7322,
+    "6": 62.9177,
+    "7": 38.9879,
+    "8": 67.3638,
+    "9": 61.5858,
+    "10": 67.3638,
+    "11": 38.9879,
+    "12": 60.0172,
+    "13": 32.3207,
+    "14": 31.7956
+   }
+  },
+  "VERDICT": "t_hop spans 4.460x with a uniform 4 nH inductor across a 42.2:1 C_bank range -- NOT the sqrt(42.2)=6.50x the sqrt(L*C) law predicts, because the quantised transfer-gate width makes the small banks Ron-limited rather than LC-limited. Tuning L_k ~ 1/C_bank collapses the spread to 1.526x but does it by making the SMALL banks SLOW (bank 14: 29.8 -> 198.5 ps), which RAISES the beat-setting maximum from 132.8 to 198.5 ps. The wave is therefore left INCOHERENT on purpose: coherence is not needed, because every bank is cut at its OWN measured zero, and buying it costs 49% of the beat period."
+ },
+ "ARCHITECTURE_COST": {
+  "pi_relay": 34,
+  "cell_relay": 296,
+  "retimed_cells": 491,
+  "hold_II_beats": 12,
+  "tank_C_total_fF": 10935.551233333344,
+  "tank_area_um2": 7290.367488888896
+ },
+ "RESTORING_THRESHOLD": {
+  "Vtn_measured": 0.5239,
+  "Vtp_abs_measured": 0.4403,
+  "sum_V": 0.9642,
+  "source": "qal/chain3/vt.json, MEASURED device constants",
+  "rows": {
+   "T300": {
+    "dv": 1.2,
+    "rail_peak_min_V": 0.7403784,
+    "rail_peak_max_V": 0.8748922,
+    "banks_clearing_Vtn_plus_Vtp": 0,
+    "n_value_fail": 54,
+    "worst_gate_pct": 34.3422883182774,
+    "sep_min_mV": 167.6624
+   },
+   "H300": {
+    "dv": 1.65,
+    "rail_peak_min_V": 1.032155,
+    "rail_peak_max_V": 1.212055,
+    "banks_clearing_Vtn_plus_Vtp": 14,
+    "n_value_fail": 0,
+    "worst_gate_pct": 95.04420345853597,
+    "sep_min_mV": 803.7327999999999
+   }
+  },
+  "VERDICT": "a static CMOS stage has no gain at mid-rail unless its supply exceeds Vtn+|Vtp| = 0.9642 V, so a cascade below that is NOT LEVEL-RESTORING.  At dV=1.20 the QAL rail PEAKS at 0.740-0.875 V and 0 of 14 banks clear it: 54 of 161 gates are on the wrong side of the guard at their own boundary and six banks never reach it at ANY offset out to 2000 ps.  At dV=1.65 the rail peaks at 1.032-1.212 V and 14 of 14 banks clear it: 0 of 161 gates fail. The failures are 88% of NAND2 pull-downs and 42% of inverter pull-downs -- the n-side -- because on a QAL rail a pull-down's gate drive is the PREVIOUS bank's delivered rail, not a full supply.  Phase 1 selected {inv,nand2} on binding_pmos_rise_depth, the p-side, measured with IDEAL full-dV inputs.  The shallow-stack remap did not remove the 2-high stack; it moved it to the side that binds in a cascade."
+ },
+ "WALL_SOURCE": {
+  "tag": "KH300",
+  "E_per_op_wall_fJ": 2987.01,
+  "E_per_op_tank_fJ": 1243.8
+ },
+ "THREE_WAY_COMPARISON": {
+  "CMOS_56cell": {
+   "their_E_fJ": 232.0,
+   "their_T_ps": 928.0,
+   "QAL_E_fJ": 1262.34,
+   "QAL_latency_ps": 4198.0,
+   "QAL_II_ps": 3600.0,
+   "E_ratio_QAL_over_them": 5.441,
+   "E_ratio_WALL_over_them": 12.875,
+   "latency_ratio_QAL_over_them": 4.524,
+   "throughput_ratio_QAL_II_over_them": 3.879,
+   "latency_ratio_LOADMATCHED": 7.346,
+   "throughput_ratio_LOADMATCHED": 6.3
+  },
+  "QDI_direct_threshold": {
+   "their_E_fJ": 2712.0,
+   "their_T_ps": 2533.0,
+   "QAL_E_fJ": 1262.34,
+   "QAL_latency_ps": 4198.0,
+   "QAL_II_ps": 3600.0,
+   "E_ratio_QAL_over_them": 0.465,
+   "E_ratio_WALL_over_them": 1.101,
+   "latency_ratio_QAL_over_them": 1.657,
+   "throughput_ratio_QAL_II_over_them": 1.421
+  },
+  "QDI_plus_completion": {
+   "their_E_fJ": 4385.7,
+   "their_T_ps": 4021.0,
+   "QAL_E_fJ": 1262.34,
+   "QAL_latency_ps": 4198.0,
+   "QAL_II_ps": 3600.0,
+   "E_ratio_QAL_over_them": 0.288,
+   "E_ratio_WALL_over_them": 0.681,
+   "latency_ratio_QAL_over_them": 1.044,
+   "throughput_ratio_QAL_II_over_them": 0.895
+  },
+  "DIMS": {
+   "their_E_fJ": 6972.0,
+   "their_T_ps": 5575.0,
+   "QAL_E_fJ": 1262.34,
+   "QAL_latency_ps": 4198.0,
+   "QAL_II_ps": 3600.0,
+   "E_ratio_QAL_over_them": 0.181,
+   "E_ratio_WALL_over_them": 0.428,
+   "latency_ratio_QAL_over_them": 0.753,
+   "throughput_ratio_QAL_II_over_them": 0.646
+  },
+  "QAL_COMPOSED_PROJECTION": {
+   "their_E_fJ": 136.8,
+   "their_T_ps": 4004.0,
+   "QAL_E_fJ": 1262.34,
+   "QAL_latency_ps": 4198.0,
+   "QAL_II_ps": 3600.0,
+   "E_ratio_QAL_over_them": 9.228,
+   "E_ratio_WALL_over_them": 21.835,
+   "latency_ratio_QAL_over_them": 1.048,
+   "throughput_ratio_QAL_II_over_them": 0.899
+  }
+ },
+ "AREA": {
+  "tank_MIM_um2": 7290.367488888896,
+  "CMOS_logic_um2": 627.7824,
+  "tank_vs_CMOS_logic_x": 11.61,
+  "n_inductors": 14
+ }
+}

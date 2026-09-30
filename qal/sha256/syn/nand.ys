@@ -1,0 +1,9 @@
+read_verilog /usr/local/src/stat-sim/qal/synth/threeway/sha_slice.v
+hierarchy -check -top sha_slice
+proc; opt; fsm; opt; memory; opt
+techmap; opt
+dfflibmap -liberty /usr/local/src/stat-sim/qal/sha256/syn/lib_nand.lib
+abc -liberty /usr/local/src/stat-sim/qal/sha256/syn/lib_nand.lib
+opt_clean
+write_verilog -noattr /usr/local/src/stat-sim/qal/sha256/syn/sha_slice.nand.v
+stat -liberty /usr/local/src/stat-sim/qal/sha256/syn/lib_nand.lib

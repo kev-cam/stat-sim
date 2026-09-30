@@ -1,0 +1,68 @@
+{
+ "_doc": "SKEPTIC audit of the qal/sha256 SHA-256 QAL block (Phase 1 REMAP + Phase 2 BUILD). Written BEFORE the skeptic's first SPICE deck and before the skeptic's first yosys invocation. Acceptance criteria and predictions are fixed at this file's mtime.",
+ "role": "skeptic / independent re-run",
+ "own_dir": "/usr/local/src/stat-sim/qal/sha256/sk3",
+ "own_cache": "/tmp/claude-1001/-usr-local-src/4921ad0c-f17b-4b84-986a-5917c9ebd2a6/scratchpad/vae_cache_sk3",
+ "cache_note": "SEEDED by copying the track's warm vae_cache_sha256 (42 entries) so the cold-start build tax is not re-paid. This is a cache of compiled device .so files keyed by geometry; it carries no circuit result. Disclosed because it is a shared-input dependency.",
+
+ "what_i_had_read_before_writing_this": [
+  "the two reported summaries (REMAP + BUILD) handed to me, including their headline numbers",
+  "qal/sha256/PRE_REGISTERED.json and p2/PRE_REGISTERED.json (sha256 verified: 85de9785... and a580f3d2...)",
+  "census.py source, and the file listings of qal/sha256 and qal/sha256/p2",
+  "the PDK sg13g2_stdcell.spice subckts for inv/nand2/nor2/and2/o21ai (STATIC, re-derived independently)",
+  "NOT read before this file: CENSUS_TABLE.json, RESULTS.json, BLOCK_COMPOSE*.json, p2/ROW_*.json, p2/COMPARISON.json, p2/AMENDMENT.md. Those are the outputs I am auditing and I read them only after my own runs land."
+ ],
+
+ "A_static_structure_ALREADY_CONFIRMED_BEFORE_THIS_FILE": {
+  "sg13g2_nor2_1": "pMOS XP0(net1<-A<-VDD) IN SERIES WITH XP1(Y<-B<-net1) => p-side rise depth 2. The brief's claim that nor2 is 'unambiguously shallow' is WRONG. REMAP's Correction 1 CONFIRMED.",
+  "sg13g2_and2_1": "all three pull-ups are single devices to VDD => p-side depth 1. REMAP's Correction 1 CONFIRMED.",
+  "sg13g2_nand2_1": "pMOS XP0,XP1 both Y<-VDD (parallel, p-depth 1); nMOS XN1(net1<-B<-VSS) IN SERIES WITH XN0(Y<-A<-net1) => N-SIDE DEPTH 2. BUILD's central claim CONFIRMED structurally: the {inv,nand2} remap did not remove the 2-high stack, it moved it to the n-side, and Phase 1's p-side-only selection metric could not see it.",
+  "sg13g2_o21ai_1": "p-side XP0(net14<-A1<-VDD) series XP1(Y<-A2<-net14) => depth 2; l=150n (weaker than the 130n hand-built anchor).",
+  "status": "MEASURED-from-netlist (static). Recorded here so it cannot be back-fitted."
+ },
+
+ "B_CENSUS_RECHECK": {
+  "families_i_will_re_run": ["nand2", "nor2", "o21ai"],
+  "why_these": "the brief asks for >=3 families including one PASS and one FAIL. The track reports NO FAIL, so I substitute the PASS/MARGINAL boundary and say so: nand2 = the fastest PASS and 115 of the 161 block cells; nor2 = the family the BRIEF called shallow and the track called MARGINAL (the disputed one); o21ai = the brief's own anchor and the slowest-but-one.",
+  "method": "MY OWN deck generator and MY OWN waveform extractor, not census.py's. Same physical configuration (PDK subckt verbatim + 0.1 fF per internal node, 8 cells, ideal L=6 nH with 10 ohm series, TG 120 um, dV=1.65, VGH=1.65, CL=2 fF, 500 ps tail, true-ZCS cut) so the numbers are comparable, but the code path is independent.",
+  "acceptance_reproduce": "t_valid90 within 5% of the reported 60.0 / 196.2 / 479.1 ps, and the C1 VALUE verdict identical on all 8 cells of each bank.",
+  "acceptance_ordering": "the SPEED ORDERING nand2 < inv < nor2 < o21ai must hold. This is the load-bearing claim (it is what selects the remap library), and an ordering that survives an independent harness is worth more than three matching digits.",
+  "my_prediction": "the ordering reproduces and the depth-1 / depth-2 gap is real. I expect my absolute t_valid90 to differ by more than 5% on at least one family because t_valid90 is a threshold-crossing on a slowly-settling tail and is therefore sensitive to the extractor's sampling and hold-to-end rule; a >5% absolute delta with the ordering intact would NOT overturn the remap choice and I will say so rather than score it as a refutation."
+ },
+
+ "C_EQUIVALENCE_RECHECK": {
+  "target": "syn/sw_nand_sc_resyn2.v (the netlist Phase 2 actually simulated) against qal/synth/threeway/sha_slice.v",
+  "method": "MY OWN yosys script, written from scratch, using a DIFFERENT proof route from either of theirs where possible, plus MY OWN iverilog vector harness with MY OWN independent Python/C reference model of maj/ch/CPA -- NOT their reference, because a proof against a wrong reference is not a proof.",
+  "acceptance": "(1) a complete SAT/equiv proof with no distinguishing assignment; (2) >= 151584 vectors, 0 mismatches, against a reference I wrote; (3) the cell histogram is a subset of {sg13g2_inv_1, sg13g2_nand2_1}; (4) the port list matches sha_slice.v exactly.",
+  "my_prediction": "all four pass. The failure mode I am actually hunting is not a wrong netlist but a PROOF AGAINST THE WRONG THING -- e.g. an equivalence run against a re-synthesised gold rather than the committed RTL, or a vector harness whose reference is derived from the same netlist it is checking."
+ },
+
+ "D_BLOCK_CORRECTNESS_POLICING": {
+  "method": "re-extract the per-gate boundary values for the headline row DIRECTLY from the committed .prn/.mt0 waveform files with MY OWN parser, and compare against MY OWN independent logic evaluation of the gate netlist for the stated input vector. I will not accept their value_fail_list.",
+  "acceptance": "every one of the 161 gates is on the correct side of half its own bank's delivered rail at its own bank boundary, AND the three primary outputs match my own Python evaluation of sha_slice.v's FUNCTION (not of the netlist), so the check covers the remap and the circuit together.",
+  "explicit_trap_i_am_looking_for": "a block that settles to the wrong answer; a value check taken at the END of the run (where a slow combinational network gets the right answer anyway) rather than at the bank BOUNDARY (where a pipeline must be correct). BUILD itself flags this distinction at dV=1.2; I will check the dV=1.65 headline row does not quietly rely on it."
+ },
+
+ "E_BOOKING_AUDIT": {
+  "checks": [
+   "enumerate EVERY independent source in the headline deck and classify: ideal DC (a BOOKING), ideal PWL gate driver (a BOOKING, and in which direction), metered supply.",
+   "is the timing hardware inside the reported energy? specifically: tank charge, buck supply charge, switch gate drive, inductor loss.",
+   "is the TANK RECHARGE costed, i.e. does the reported per-operation number pay to put back what the operation took out, or only report what it took?",
+   "are the 48 primary inputs ideal sources held all run, and what does that excuse the block from paying?",
+   "does any reported total sum signed integrals with abs()?"
+  ],
+  "acceptance": "every row in the deliverable is labelled MEASURED / DERIVED / BOUND with a direction. A row that depends on an ideal source is a BOUND and must say so."
+  },
+
+ "F_TIMING_RECHECK": {
+  "method": "re-derive the levelization and the per-signal lifetime from syn/sw_nand_sc_resyn2.v with MY OWN levelizer, independently of struct.py, and recompute H_k and II = max_k H_k.",
+  "acceptance": "my depth, my bank profile, my max lifetime and my II agree with BUILD's 14 / 41-32-26-21-6-5-3-7-4-7-3-4-1-1 / 11 / 12. Any throughput claim must use II*T, not T, and must not use depth*T.",
+  "my_prediction": "the depth and profile reproduce. The II=12 claim is the one I most expect to find under-stated rather than over-stated, because H_k is a property of the DAG and BUILD derived it from the same netlist; the risk is in the direction of the CONSEQUENCE (whether 12 beats is the right throughput denominator for a block whose inputs are held by ideal sources all run -- if the inputs never change, the deck never actually exercises a second operation, and II is a STATIC claim, not a measured one)."
+ },
+
+ "G_PRE_STATED_VERDICT_EXPECTATION": {
+  "my_headline_prediction": "the block is value-correct at dV=1.65 and loses to CMOS on BOTH axes. I expect the energy comparison to be the soft spot: 1262 fJ is a MEASURED tank number but the 2987 fJ wall figure is DERIVED from a single-pulse efficiency, and the true steady-state wall-plug number could be worse than 2987 fJ, not better.",
+  "the_negative_condition_that_would_change_my_verdict": "if the block's value check turns out to be taken at end-of-run rather than at bank boundaries, or if the primary-output check is against a reference derived from the netlist under test, then the CORRECTNESS claim collapses and nothing downstream is worth quoting.",
+  "what_would_make_me_report_a_weaker_result_than_they_did": "an II that is not actually exercised by any deck, i.e. one operation simulated and a throughput number derived statically."
+ }
+}

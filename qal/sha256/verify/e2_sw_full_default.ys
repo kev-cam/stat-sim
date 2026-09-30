@@ -1,0 +1,16 @@
+read_verilog /usr/local/src/stat-sim/qal/synth/threeway/sha_slice.v
+rename sha_slice gold
+prep -flatten -top gold
+design -stash gold
+read_verilog /usr/local/src/stat-sim/qal/sha256/verify/cells_min.v
+read_verilog syn/sw_full_default.v
+rename sha_slice gate
+prep -flatten -top gate
+design -stash gate
+design -copy-from gold -as gold gold
+design -copy-from gate -as gate gate
+equiv_make gold gate equiv
+hierarchy -top equiv
+equiv_simple -short
+equiv_induct
+equiv_status -assert

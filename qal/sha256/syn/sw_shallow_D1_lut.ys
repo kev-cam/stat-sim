@@ -1,0 +1,13 @@
+read_verilog /usr/local/src/stat-sim/qal/synth/threeway/sha_slice.v
+hierarchy -check -top sha_slice
+proc
+opt
+fsm
+opt
+memory
+opt
+techmap
+opt
+abc -liberty /usr/local/src/stat-sim/qal/sha256/syn/lib_shallow.lib -D 1 -dff
+opt_clean
+write_verilog -noattr /usr/local/src/stat-sim/qal/sha256/syn/sw_shallow_D1_lut.v
