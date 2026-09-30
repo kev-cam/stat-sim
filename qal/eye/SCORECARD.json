@@ -1,0 +1,274 @@
+{
+ "_scored_from": "EYE.json",
+ "_n_patterns": 10,
+ "_patterns": [
+  "P0",
+  "P1",
+  "P2",
+  "P3",
+  "P4",
+  "P5",
+  "W2",
+  "W3",
+  "W6",
+  "W7"
+ ],
+ "expectations": {
+  "EX1_width_vs_jitter": {
+   "predicted": "banks 2 and 3 intersection eye WIDER than the 61.6 ps jitter; point estimate 300-600 ps; and I stated the width would be H-INFLATED and not a speed result",
+   "measured": {
+    "pipelined_width_ps": {
+     "2": 670.3586,
+     "3": 670.618
+    },
+    "deck_width_ps": {
+     "2": 1710.2586,
+     "3": 1510.518
+    },
+    "deck_width_is_lower_bound": {
+     "2": true,
+     "3": true
+    },
+    "wider_than_61_6_ps": true
+   },
+   "verdict": "PARTIAL",
+   "why": "DIRECTION CORRECT and the H-inflation caveat was correct -- in fact UNDERSTATED: at zero margin the eye does not close inside the deck at all, so the deck width is only a lower bound. The POINT ESTIMATE IS WRONG: the pipelined width is 670.4/670.6 ps, above my 300-600 ps band."
+  },
+  "EX2_opening_instant": {
+   "predicted": "eye OPENING after own rail start = 130-160 ps, and EARLIER than banktank's own 90%-settled data_valid ({1: 150.219843, 2: 150.711174, 3: 151.292777, 4: 137.381717} ps)",
+   "measured": {
+    "opening_after_own_rail_start_ps": {
+     "1": 128.599,
+     "2": 129.6414,
+     "3": 129.382,
+     "4": 99.7978
+    },
+    "banktank_data_valid_ps": {
+     "1": 150.219843,
+     "2": 150.711174,
+     "3": 151.292777,
+     "4": 137.381717
+    },
+    "earlier_than_banktank": true,
+    "inside_130_160_band": false
+   },
+   "verdict": "PARTIAL",
+   "why": "The COMPARATIVE claim is CORRECT: the eye opens 21.6-21.9 ps EARLIER than banktank's 90%-settled criterion on banks 1-3, for the reason predicted (an eye only needs the correct side of the receiver's trip, not 90% settling). The ABSOLUTE band is missed, narrowly and on the low side: 128.599 ps vs a 130 ps floor."
+  },
+  "EX3_intersection_and_binding_pattern": {
+   "predicted": "intersection width 60-90%% of the P0-only width; binding pattern at the EARLY edge is the one with the most simultaneous pull-UPS on the driving bank, because free-running chains bind on the pMOS",
+   "measured": {
+    "binding_pattern": {
+     "1": "P1",
+     "2": "P2",
+     "3": "P1"
+    },
+    "binding_polarity": {
+     "1": "HIGH",
+     "2": "HIGH",
+     "3": "HIGH"
+    },
+    "pattern_with_most_pullups": {
+     "1": {
+      "pattern_with_most_pullups": "P1",
+      "n_pullups": 8
+     },
+     "2": {
+      "pattern_with_most_pullups": "P2",
+      "n_pullups": 8
+     },
+     "3": {
+      "pattern_with_most_pullups": "P1",
+      "n_pullups": 8
+     }
+    },
+    "binding_pattern_is_the_max_pullup_pattern": true,
+    "intersection_width_over_P0_width": {
+     "1": 0.9637,
+     "2": 0.971,
+     "3": 0.9693
+    }
+   },
+   "verdict": "SPLIT: binding pattern HIT, width ratio MISS",
+   "why": "The MECHANISM prediction is exactly right: the early edge binds on the pattern that puts the most cells pulling UP simultaneously ({1: 'P1', 2: 'P2', 3: 'P1'}), and the binding gate's polarity is HIGH at every bank -- the pMOS pull-up, as predicted. The WIDTH RATIO is wrong and too pessimistic: measured {1: 0.9637, 2: 0.971, 3: 0.9693}, not 0.60-0.90."
+  },
+  "EX4_polarity_separation": {
+   "predicted": "the LOW (pull-down) eye opens EARLIER than the HIGH (pull-up) eye at every bank, because the nMOS source is the hard 0 V rail while the pMOS source is the bank's own ramping rail; separation 20-80 ps",
+   "measured": {
+    "per_reference": {
+     "EYE2_DATA_FIXED": {
+      "1": {
+       "HIGH_open_rel_ps": 128.599,
+       "LOW_open_rel_ps": 0.0,
+       "separation_ps": 128.599
+      },
+      "2": {
+       "HIGH_open_rel_ps": 129.6414,
+       "LOW_open_rel_ps": 0.0,
+       "separation_ps": 129.6414
+      },
+      "3": {
+       "HIGH_open_rel_ps": 129.382,
+       "LOW_open_rel_ps": 0.0,
+       "separation_ps": 129.382
+      }
+     },
+     "EYE1_RX_INSTANTANEOUS": {
+      "1": {
+       "HIGH_open_rel_ps": 201.0,
+       "LOW_open_rel_ps": 201.0,
+       "separation_ps": 0.0
+      },
+      "2": {
+       "HIGH_open_rel_ps": 201.0,
+       "LOW_open_rel_ps": 201.0,
+       "separation_ps": 0.0
+      },
+      "3": {
+       "HIGH_open_rel_ps": 201.0,
+       "LOW_open_rel_ps": 201.0,
+       "separation_ps": 0.0
+      }
+     }
+    },
+    "LOW_earlier_at_every_bank": false,
+    "separation_in_20_80_band": {
+     "EYE1": false,
+     "EYE2": false
+    }
+   },
+   "verdict": "PARTIAL",
+   "why": "The DIRECTION and its stated reason are CORRECT at every bank and under BOTH references. The MAGNITUDE band holds only for the pre-registered receiver-referenced eye (~27-28 ps). For the DATA eye the LOW side opens at the bank's own rail start with ZERO measured spread across patterns and is NEVER a constraint, so the separation is ~129 ps, outside my 20-80 ps band."
+  },
+  "EX5_late_edge_mechanism": {
+   "predicted": "the late edge closes on M3 (the return switch collapsing the driver rail) at EVERY bank, NOT on M4 (free droop)",
+   "measured": {
+    "EYE2_DATA_FIXED": {
+     "1": {
+      "M": "M4+M5",
+      "t_ps": 1207.9,
+      "t_minus_return_close_ps": 207.9,
+      "t_minus_return_open_ps": 72.183,
+      "transfer_gate_conducting": false,
+      "return_switch_conducting": false,
+      "dV_rail_dt_mV_per_ps": -0.75465,
+      "dV_tank_dt_mV_per_ps": 0.10998,
+      "I_L_uA": -79.1669,
+      "floor_mV": 14.93442
+     },
+     "2": {
+      "M": "M4+M5",
+      "t_ps": 1407.3000000000002,
+      "t_minus_return_close_ps": 207.3,
+      "t_minus_return_open_ps": 66.824,
+      "transfer_gate_conducting": false,
+      "return_switch_conducting": false,
+      "dV_rail_dt_mV_per_ps": -0.73044,
+      "dV_tank_dt_mV_per_ps": 0.12968,
+      "I_L_uA": -85.8885,
+      "floor_mV": 16.2551
+     },
+     "3": {
+      "M": "M4+M5",
+      "t_ps": 1606.9,
+      "t_minus_return_close_ps": 206.9,
+      "t_minus_return_open_ps": 66.387,
+      "transfer_gate_conducting": false,
+      "return_switch_conducting": false,
+      "dV_rail_dt_mV_per_ps": -0.86663,
+      "dV_tank_dt_mV_per_ps": 0.16446,
+      "I_L_uA": -96.8601,
+      "floor_mV": 19.52672
+     }
+    },
+    "EYE1_RX_INSTANTANEOUS": {
+     "1": {
+      "M": "M3+M5",
+      "t_ps": 1160.0,
+      "t_minus_return_close_ps": 160.0,
+      "t_minus_return_open_ps": 24.283,
+      "transfer_gate_conducting": false,
+      "return_switch_conducting": true,
+      "dV_rail_dt_mV_per_ps": 30.03491,
+      "dV_tank_dt_mV_per_ps": 1.3533,
+      "I_L_uA": -0.1352,
+      "floor_mV": 69.58149
+     },
+     "2": {
+      "M": "M3+M5",
+      "t_ps": 1361.0,
+      "t_minus_return_close_ps": 161.0,
+      "t_minus_return_open_ps": 20.524,
+      "transfer_gate_conducting": false,
+      "return_switch_conducting": true,
+      "dV_rail_dt_mV_per_ps": 5.45227,
+      "dV_tank_dt_mV_per_ps": 0.23547,
+      "I_L_uA": -0.3118,
+      "floor_mV": 71.02684
+     },
+     "3": {
+      "M": "M3+M5",
+      "t_ps": 1563.3000000000002,
+      "t_minus_return_close_ps": 163.3,
+      "t_minus_return_open_ps": 22.787,
+      "transfer_gate_conducting": false,
+      "return_switch_conducting": true,
+      "dV_rail_dt_mV_per_ps": 41.42688,
+      "dV_tank_dt_mV_per_ps": 1.78107,
+      "I_L_uA": -0.075,
+      "floor_mV": 73.04761
+     }
+    }
+   },
+   "verdict": "REFUTED",
+   "why": "For the DATA eye -- the reference that bounds the beat -- the late-edge mechanism is M4+M5: FREE DROOP of an un-topped-up rail plus CHARGE REDISTRIBUTION in the tank/inductor loop, with BOTH the transfer gate and the return switch OPEN, ~207 ps after the return CLOSES and ~66-72 ps after it OPENS. The return switch has already finished by then. I also did not anticipate that the mechanism is REFERENCE-DEPENDENT: under the receiver-referenced eye the candidate instant is earlier and is M3+M5, because there the decision level collapses together with the driver's rail and the two partly cancel."
+  },
+  "EX6_steepness_at_3sigma": {
+   "predicted": "the eye at a 3*sigma_trip = 19.323 mV threshold is no more than 20 ps narrower than the zero-margin eye, i.e. the margin curve is steep at BOTH edges",
+   "measured": {
+    "1": {
+     "opening_shift_ps": 1.7083,
+     "width_0mV_ps": 1911.301,
+     "width_0mV_is_lower_bound": true,
+     "width_3sigma_ps": 823.3323,
+     "width_3sigma_is_lower_bound": false,
+     "width_reduction_ps": 1087.9687,
+     "a_right_edge_APPEARED_at_3sigma": true,
+     "post_return_floor_mV": 14.9344
+    },
+    "2": {
+     "opening_shift_ps": 0.5277,
+     "width_0mV_ps": 1710.2586,
+     "width_0mV_is_lower_bound": true,
+     "width_3sigma_ps": 826.3853,
+     "width_3sigma_is_lower_bound": false,
+     "width_reduction_ps": 883.8733,
+     "a_right_edge_APPEARED_at_3sigma": true,
+     "post_return_floor_mV": 16.2551
+    },
+    "3": {
+     "opening_shift_ps": 0.7768,
+     "width_0mV_ps": 1510.518,
+     "width_0mV_is_lower_bound": true,
+     "width_3sigma_ps": 1509.7412,
+     "width_3sigma_is_lower_bound": true,
+     "width_reduction_ps": 0.7768,
+     "a_right_edge_APPEARED_at_3sigma": false,
+     "post_return_floor_mV": 19.5267
+    }
+   },
+   "verdict": "SPLIT: early edge HIT, late edge REFUTED",
+   "why": "At the EARLY edge the prediction holds with room to spare: the opening moves only {1: 1.7083, 2: 0.5277, 3: 0.7768} ps for a 19.323 mV bar, because the margin there climbs at 28-38 mV/ps. At the LATE edge it is flatly wrong, and wrong in the interesting direction: the margin after the return is a nearly FLAT plateau whose floor is only {1: 14.9344, 2: 16.2551, 3: 19.5267} mV, i.e. 2.3-3.0 sigma_trip, so a 3-sigma bar does not shave the eye -- it CREATES a right edge that does not exist at zero margin, cutting the width by hundreds of ps and SPLITTING the eye.",
+   "early_edge_within_20ps": true
+  }
+ },
+ "TALLY": {
+  "EX1_width_vs_jitter": "PARTIAL",
+  "EX2_opening_instant": "PARTIAL",
+  "EX3_intersection_and_binding_pattern": "SPLIT: binding pattern HIT, width ratio MISS",
+  "EX4_polarity_separation": "PARTIAL",
+  "EX5_late_edge_mechanism": "REFUTED",
+  "EX6_steepness_at_3sigma": "SPLIT: early edge HIT, late edge REFUTED"
+ },
+ "HONEST_SUMMARY": "Of six pre-registered expectations: ZERO clean unqualified hits. Two mechanism predictions were exactly right (EX3's binding pattern and polarity; EX2's comparative claim against banktank's own data-valid criterion; EX6's early-edge steepness). Three were PARTIAL -- right direction, wrong magnitude (EX1, EX2, EX4). One was REFUTED outright (EX5, the late-edge mechanism) and one was refuted on half its claim (EX6, the late edge). Every quantitative point estimate I made was outside its band."
+}

@@ -1,0 +1,117 @@
+{
+ "study": "qal/eye -- PHASE 1: MEASURE THE EYE of a per-bank-tank QAL wave",
+ "written_at": "2026-09-29T20:03-07:00",
+ "written_before": "any deck, .cir, .prn or result file in qal/eye/ (see DISK_STATE_BEFORE.txt, mtime 2026-09-29 20:01:44 -0700, which lists this directory as containing only itself)",
+ "author_note": "This campaign has had ~25 corrections, THREE of them on the terminology this study exists to fix. The model is: a QAL bank output is NOT a node approaching an asymptote. It becomes valid, stays valid for a WINDOW, and stops being valid. There is no completion event. The artifact is an EYE (width in ps, height in mV). Every prior measurement in this campaign is SINGLE-POINT and is therefore the wrong instrument for this question.",
+
+ "THE_INSTRUMENT": {
+  "arrangement": "qal/banktank (commit 0aae11e) -- per-bank tanks, 4 banks x 8 committed inverter cells, NO flop/latch/buffer/keeper/level-shifter anywhere between banks. Bank k cell i's gate input net IS o{k-1}_{i}.",
+  "generator": "imports /usr/local/src/stat-sim/qal/banktank/bt.py VERBATIM (sha256 5b3582bea9e398e4..., 26626 B, 2026-09-29 09:57:35 -0700). NOTHING in the netlist is added, removed or re-sized. Exactly three things are overridden, and they are declared here: (1) bt.PAT, the DATA (the whole point of the pattern sweep); (2) the .tran print step and max step (the time-resolution refinement, item TIME_RESOLUTION); (3) the .print list is EXTENDED with the per-bank gate-drive nets already present in the deck, nothing new instantiated.",
+  "operating_point": {"m": 10.0, "T_ps": 200.0, "H": 4, "dv_V": 1.65, "mode": "free", "L_nH": 15.0, "total_um": 30.0, "Rs_ohm": 10.0, "C_tank_fF": 359.79, "V_tank0_V": 0.9075},
+  "why_dv_1.65": "brief-specified. Below Vtn + |Vtp| = 0.9642 V the cascade is not level-restoring; the BINDING threshold is Vtn = 0.5240 V, NOT |Vtp| (qal/strip, commit edfa354). dv = 1.65 V is comfortably above.",
+  "receiver_threshold": "MEASURED trip-vs-delivered-rail table, qal/fcrit/TRIP.json cell S (wp 1.12u / wn 0.74u -- IDENTICAL widths and IDENTICAL bulk connections to every banktank cell: pMOS bulk on the bank rail, nMOS bulk on 0). 27 rails, 0.20 to 1.50 V, 1 mV DC step. sha256 105f30308cda42d6..., 17124 B, 2026-09-29 14:46:30 -0700.",
+  "trip_is_not_a_constant": "MEASURED trip_frac_of_rail = 0.728124239 at 0.20 V falling to 0.517850471 at 1.50 V. The curve is LINEARLY INTERPOLATED on the 27 measured points at every sampling instant against the receiver's INSTANTANEOUS rail. The constant 0.59 is NEVER used. The interpolator is qal/fcrit/rescore.py class Trip, copied verbatim."
+ },
+
+ "TIME_RESOLUTION": {
+  "brief_complaint": "the campaign has a 10.28 ps measurement grid in places, which is too coarse for an eye.",
+  "committed_banktank_grid_MEASURED": "bt.py schedule() sets pstep = 0.1 ps, mstep = 0.25 ps, and Xyce prints at SOLVER points, not at pstep. Measured on the committed c_m10_T200_H4_dv1650_free.cir.prn: 10889 points over 2249.32 ps, dt median 0.250000 ps, dt max 0.250000 ps. So the committed grid is already 0.25 ps, not 10.28 ps.",
+  "MY_grid_ps": 0.10,
+  "how_refined": "mstep 0.25 -> 0.10 ps and pstep 0.1 -> 0.05 ps, so Xyce's max-step ceiling (which is what actually sets the print density) is 0.10 ps. Nothing else changes. This is a TIGHTENING of the integration, not a loosening.",
+  "resolution_in_units_of_the_thing_it_must_resolve": {"samples_across_the_61.6_ps_data_dependent_jitter": 616, "same_on_the_committed_0.25_ps_grid": 246, "same_on_the_10.28_ps_grid_the_brief_objects_to": 6},
+  "extraction_rule": "ONE transient per (pattern) configuration. The sampling instant is swept by reading the DENSE WAVEFORM, never by re-simulating. No deck is ever re-run for a different sampling instant.",
+  "CONVERGENCE_GUARD_pre_stated": "the instrument-check row (dv = 1.2, T = 200, H = 4, free) is run TWICE, once at the committed 0.25 ps ceiling and once at my 0.10 ps ceiling, and the eye edges extracted from the two must agree to <= 1.0 ps. If they do not, the grid is NOT converged and the eye widths are reported with that caveat attached, not silently."
+ },
+
+ "STEP_b_INSTRUMENT_CHECK": {
+  "target": "the committed banktank headline row, qal/banktank/row_m10_T200_H4_dv1200_free.json (sha256 584ee49eeded4243..., 2026-09-29 09:55:41 -0700), regenerated from scratch in qal/eye/ under qal/eye's OWN PYMS_VAE_CACHE built from empty.",
+  "zeros_used": "the committed qal/banktank/zeros_m10_dv1200_T200_H4.json (sha256 ca5bdb68b718d217...), copied unmodified -- so the schedule is bit-identical and the check is of the SIMULATOR, not of the probe.",
+  "digit_checked_quantities_stated_NOW": {
+   "rail_at_own_boundary_V": {"1": 0.7544238, "2": 0.6767239, "3": 0.7312457, "4": 0.7200878},
+   "brief_quoted_the_same_row_as": "0.6767239 / 0.7312456 / 0.7200877 (banks 2/3/4). Banks 3 and 4 differ from the committed file in the LAST printed digit (0.7312457 vs 0.7312456, 0.7200878 vs 0.7200877). I am declaring BEFORE the run that I treat the COMMITTED FILE as the target and will report this 1e-7 V discrepancy in the brief's transcription rather than quietly matching whichever one comes out.",
+   "worst_gate_pct": 90.54454610810019,
+   "worst_gate_where": [3, "o3"],
+   "per_bank_worst_pct": {"1": 94.71062551313996, "2": 91.15563969293828, "3": 90.54454610810019, "4": 92.65559005443504},
+   "separation_min_mV": 612.378631,
+   "data_valid_instant_ps": {"1": 386.376645, "2": 599.327279, "3": 799.756394, "4": 990.467232},
+   "IZ_uA": {"1": -0.007584775, "2": -0.001218682, "3": -0.00308636, "4": -0.002971461},
+   "PASS": true, "A1_settling_pass_90": true, "A2_value_pass": true, "A6_zcs_pass": true
+  },
+  "ACCEPTANCE": [
+   "IC1 the deck regenerates BYTE-IDENTICALLY from bt.py at the committed step (diff against qal/banktank/c_m10_T200_H4_dv1200_free.cir, sha256 ec034e1681c331b5...). Any difference is an instrument failure.",
+   "IC2 every numeric key of my .mt0 agrees with the committed .mt0 (sha256 e16e374d7c908864...) to <= 1e-9 RELATIVE, or to <= 1e-12 ABSOLUTE for keys whose committed value is < 1e-9. Count and list every key that does not.",
+   "IC3 the derived scalars above reproduce to every printed digit.",
+   "IC4 >= 99.0 % of .mt0 keys must pass IC2 or the study STOPS and reports an instrument failure instead of an eye."
+  ]
+ },
+
+ "STEP_c_EYE_PROTOCOL": {
+  "zeros": "RE-PROBED by me, at T = 200 ps and H = 4 and dv = 1.65 (NOT reused from qal/banktank/zeros_m10_dv1650.json, whose T_probe is 120 ps). Reason, stated before the fact: the committed row_m10_T200_H4_dv1650_free.json reports A6_zcs_pass = FALSE with |I(L)| = 1.79 / 2.72 / 0.38 uA at the commanded opens on banks 2/3/4, i.e. the T=120 zeros do NOT transfer to T=200 -- exactly the beat-period dependence banktank AMENDMENT A7 found. Protocol: the FULL 8-run sequential true-ZCS probe (bt.do_probe with T=200, H=4), per pattern, never the reduced oddeven4 shortcut.",
+  "per_pattern": "8 probe decks (rise 1..4 then ret 1..4, each with predecessors cut at their own measured zeros) + 1 measured row deck. 6 patterns => 54 Xyce runs.",
+  "A6_GATE": "|IZ_k| <= 1.0 uA and |IZQ_k| <= 1.0 uA at every commanded open, the inherited banktank A6 gate. A pattern whose row fails A6 is an INSTRUMENT FAILURE for that pattern, reported as such and NOT silently dropped from the intersection: the intersection is then stated as being over the patterns that passed, with the count.",
+  "printed_signals": "already in the committed .print: V(rail1..4), V(tnk1..4), I(L1..4), V(sw1..4), and ALL 32 outputs V(ok_i). The eye needs nothing else."
+ },
+
+ "STEP_c_PATTERNS_FIXED_NOW": {
+  "note": "bank 1's 8 inputs. Every bank is an inverter, so bank k sees PAT for odd k and its complement for even k. Fixed here so the set cannot be curated after seeing the eye.",
+  "P0": {"bits": [1,1,1,0,1,0,0,1], "weight": 5, "why": "the COMMITTED banktank pattern, verbatim -- the link back to the instrument"},
+  "P1": {"bits": [0,0,0,0,0,0,0,0], "weight": 0, "why": "all 8 of bank 1's inputs LOW => all 8 odd-bank cells pull UP simultaneously. Maximum simultaneous pMOS demand on the odd banks' rails."},
+  "P2": {"bits": [1,1,1,1,1,1,1,1], "weight": 8, "why": "the complement extreme: all 8 odd-bank cells pull DOWN, all 8 even-bank cells pull UP."},
+  "P3": {"bits": [1,0,1,0,1,0,1,0], "weight": 4, "why": "balanced 4/4 -- the minimum-rail-disturbance vector, the likely WIDEST eye, so the intersection has a ceiling to be measured against."},
+  "P4": {"bits": [0,1,1,0,1,1,0,1], "weight": 5, "why": "SAME Hamming weight as P0, different arrangement. Separates 'does the eye depend on the count' from 'does it depend on which cells'."},
+  "P5": {"bits": [1,0,0,0,0,0,0,0], "weight": 1, "why": "a single aggressor against 7 quiet neighbours -- the worst single-ended case for rail disturbance per switching cell."}
+ },
+
+ "STEP_d_EYE_DEFINITION_pre_stated_so_it_cannot_be_tuned": {
+  "link": "for bank k, gate i: the SIGNAL is V(o{k}_{i}); the RECEIVER is bank k+1; the DECISION LEVEL is Trip_S(V(rail{k+1})(t)), interpolated on the 27 MEASURED points at the receiver's instantaneous rail.",
+  "signed_margin_mV": "mgn(k,i,t) = +1000*(V(o_k_i)(t) - trip(t)) when bank k cell i's EXPECTED output is HIGH; -1000*(V(o_k_i)(t) - trip(t)) when it is LOW. Expected value from bt.out_hi(k,i) under the pattern in force.",
+  "open_condition": "bank k's eye is OPEN at instant t iff min over all 8 gates i of mgn(k,i,t) > 0, AND t is IN-TABLE for the receiver rail.",
+  "per_pattern_eye": "the LARGEST CONTIGUOUS open interval inside bank k's search window. Opening = its left edge, closing = its right edge, width = closing - opening.",
+  "search_window": "bank k: [c_k, ro_k] -- its own rail-raise close to its own return-switch open. c = {200,400,600,800} ps, ro measured per pattern.",
+  "INTERSECTION_over_patterns": "the eye reported for bank k is the INTERSECTION over all patterns of the per-pattern open SETS, then the largest contiguous interval of that intersection. Because that is what a receiver actually has to tolerate.",
+  "HEIGHT_at_centre": "t_centre = (opening + closing)/2 of the INTERSECTION eye. Reported as THREE numbers, not one: height_HIGH_mV = min over (patterns, gates whose expected output is HIGH) of mgn at t_centre; height_LOW_mV = the same over the LOW gates; height_mV = 2 * min(height_HIGH, height_LOW), the conventional opening about the decision level.",
+  "BOTH_POLARITIES": "the HIGH-expected gates and the LOW-expected gates are eyes in their own right and are reported SEPARATELY (opening, closing, width, height) as well as jointly, because the limiting device switches by regime -- free-running chains bind on the pMOS pull-up, topped-up ones on the nMOS pull-down. A one-polarity eye is half an eye.",
+  "bank_4_is_DERIVED_not_MEASURED": "there is no bank 5 in a 4-bank deck. Banks 1, 2 and 3 have a REAL measured receiver. Bank 4's eye is computed against a DERIVED receiver rail V(rail3)(t - T), justified only by the uniform T cadence, and is LABELLED DERIVED everywhere it appears. It is never used for a headline number.",
+  "margin_curve_is_the_real_deliverable": "for every bank I emit min-over-(gates,patterns) mgn(t) on the 0.10 ps grid. Any Phase-2 timing budget can then charge ANY threshold against it without re-simulating. The zero-margin eye is one contour of that curve; the 1-sigma (6.441 mV) and 3-sigma (19.323 mV) contours are reported alongside it."
+ },
+
+ "STEP_e_CLOSING_MECHANISM_candidate_list_fixed_NOW": {
+  "why_fixed_now": "so that the mechanism cannot be invented to fit the edge after the edge is seen.",
+  "recorded_at_each_edge_for_the_gate_that_closes_the_eye": ["polarity (expected HIGH or LOW)", "V(rail_k) and dV(rail_k)/dt", "V(rail_{k+1}) and dV(rail_{k+1})/dt", "V(tnk_k)", "the driver's own gate input voltage (= predecessor output) and its overdrive against Vtn = 0.5240 V and |Vtp| = 0.4402 V", "d(V(o_k_i))/dt", "d(trip)/dt", "whether the driver bank's transfer gate is conducting", "whether the driver bank's return switch is conducting", "I(L_k)"],
+  "candidates": {
+   "M1": "driver output NOT YET RESOLVED -- V(o) is still moving toward its rail; the driver's own pull-up or pull-down has not finished. Signature: |d(V(o))/dt| dominates d(mgn)/dt, driver transfer gate CONDUCTING.",
+   "M2": "receiver rail STILL RISING -- the decision level itself is still moving. Signature: |d(trip)/dt| dominates and dV(rail_{k+1})/dt > 0.",
+   "M3": "driver rail COLLAPSING -- the return switch has opened the path back to the tank. Signature: dV(rail_k)/dt << 0 with the return switch conducting.",
+   "M4": "driver rail DROOPING FREE -- no top-up, leakage and gate current only. Signature: dV(rail_k)/dt < 0 with BOTH the transfer gate and the return switch OFF.",
+   "M5": "CHARGE REDISTRIBUTION into the tank -- V(tnk_k) rising while V(rail_k) falls, I(L_k) reversed.",
+   "M6": "THE PREDECESSOR'S OWN EYE CLOSING -- the driver's INPUT loses validity, so the driver's output follows. The propagating-collapse mechanism. Signature: bank k's edge coincides (within the grid) with bank k-1's edge.",
+   "M7": "OUT-OF-TABLE -- the receiver rail left [0.20, 1.50] V, the MEASURED domain. An INSTRUMENT limit, not a physical edge, and reported as one."
+  },
+  "attribution_rule": "at the edge instant, d(mgn)/dt is decomposed into its two exact terms, d(V(o))/dt and -d(trip)/dt, on the 0.10 ps grid; the mechanism is assigned to whichever term is larger in magnitude, then refined to the specific M-code by the switch states and rail slopes recorded above. The decomposition is reported numerically, not asserted."
+ },
+
+ "PRE_STATED_EXPECTATIONS_these_are_the_ones_that_can_be_wrong": {
+  "EX1_width_vs_the_61.6_ps_jitter": "I expect banks 2 and 3 to show an INTERSECTION eye WIDER than the 61.6 ps data-dependent zero spread. Point estimate 300-600 ps. Confidence HIGH -- but I state NOW, before measuring, that this width is H-INFLATED: the hold window is H*T = 800 ps and only ~130-160 ps of it is consumed by the driver's own ramp, so a wide eye at H = 4 is NOT a speed result and I will not present it as one.",
+  "EX2_the_H_independent_quantity": "the eye OPENING instant measured from the bank's OWN rail start is the quantity that actually constrains the beat. I expect 130-160 ps at dv = 1.65, from banktank's own MEASURED data_valid_instant_ps at this exact point (350.22/550.71/751.29/937.38 ps against rail starts of 200/400/600/800 => 150.2/150.7/151.3/137.4 ps). My eye opening should be EARLIER than those, because banktank's data-valid rule demands 90 % settling against the instantaneous rail, whereas an eye only demands the correct side of the receiver's trip.",
+  "EX3_the_intersection_narrows_it": "the pattern INTERSECTION width will be 60-90 % of the P0-only width, and the binding pattern at the EARLY edge will be the one with the most simultaneous pull-UPS on the driving bank (P2 driving the even banks, P1 driving the odd banks), because free-running chains bind on the pMOS.",
+  "EX4_the_two_polarities_do_not_coincide": "the LOW-expected (pull-down) eye will OPEN EARLIER than the HIGH-expected (pull-up) eye at every bank, because the nMOS source is the hard 0 V rail whereas the pMOS source is the bank's own ramping rail. Predicted separation 20-80 ps.",
+  "EX5_the_late_edge": "closes on M3 (the return switch collapsing the driver rail) at every bank, NOT on M4 (free droop).",
+  "EX6_steepness": "the eye at a 3*sigma_trip = 19.323 mV margin threshold will be no more than 20 ps narrower than the zero-margin eye, i.e. the margin curve is steep at both edges."
+ },
+
+ "PRE_DECLARED_FAILURE_HANDLING": {
+  "F1": "a pattern whose row fails A6 after re-probing is an INSTRUMENT FAILURE for that pattern. It is reported with its IZ/IZQ numbers and the intersection is stated as being over the surviving patterns, with the count named in the headline. It is NOT silently dropped.",
+  "F2": "if a bank's eye is EMPTY for some pattern, the intersection is EMPTY and the finding is that this arrangement does not compute for that pattern set. Reported as such. The pattern is NOT dropped to manufacture an eye.",
+  "F3": "if the eye is NARROWER than the 61.6 ps measured data-dependent jitter, the finding is a SPEC ON THE TIMING REFERENCE, not a failure of QAL, and is stated that way (per the brief).",
+  "F4": "if the 0.25 ps and 0.10 ps instrument-check eyes disagree by more than 1.0 ps, every eye width carries that disagreement as a stated uncertainty.",
+  "F5": "no criterion in this file is changed after the first deck runs. Anything that must change is written to AMENDMENT.md with the measurement that forced it and the mtime proving it preceded the affected rows, following the banktank precedent."
+ },
+
+ "SCOPE_AND_LIABILITIES_restated": {
+  "this_is_PHASE_1_ONLY": "measure the eye. The Phase-2 timing budget (composing the 61.6 ps data spread, the 0.46 ps/K timer drift, the 16.4x replica-tracking failure and the 6.441 mV mismatch against the eye width, and shrinking the beat until the eye closes) is a SEPARATE deliverable and is NOT claimed here. What this study owes Phase 2 is the margin-vs-time curve on a 0.10 ps grid.",
+  "direction": "SPEED, not efficiency (user, 2026-09-29). Energy is REPORTED, never a gate. The 23.213 fJ/bank/hop vs 12.7467 fJ energy exclusion is an ENERGY verdict and is NOT a gate in this study.",
+  "the_liability_that_bounds_any_claim": "a QAL level is the rail transfer with the logic resolving INSIDE it, at a LOWER rail than CMOS's supply. Per-level LATENCY can never beat CMOS. Any win must be a THROUGHPUT win via the absent flop tax. This study will NEVER claim a latency win.",
+  "sim_discipline": "own PYMS_VAE_CACHE (qal/eye's own, built from empty); own directory qal/eye/; <= 3 concurrent heavy Xyce jobs (box was at load 11.33 with 14 Xyce at 20:01:44); sg13_lv via qal/sg13lv_compat.sp (it DECLARES ad/as/pd/ps and DISCARDS them, so PSP103 defaults apply and JUNCAP200 IS ENABLED -- default PD = 1.00 um < the 1.12 um pMOS, so the STI-edge term clips to zero and any leakage figure here is a LOWER bound); PSP103 via .hdl + sg13g2_psp103_tt.lib; vt/gmin reserved; corners only via instance-level DTA (none used here).",
+  "no_writes_outside_this_directory": "qal/fastwave, qal/widebank and qal/cipher are in flight. Their files are READ only. Nothing in qal/banktank is modified -- the two committed files copied in (bt.py is imported, zeros_m10_dv1200_T200_H4.json is copied) are read-only sources."
+ }
+}

@@ -1,0 +1,5864 @@
+{
+ "_what": "THE EYE of a per-bank-tank QAL wave: a WIDTH in ps and a HEIGHT in mV. A bank output is not a node approaching an asymptote; it becomes valid, stays valid for a window, and stops being valid. There is no completion event.",
+ "_grid_ps": 0.1,
+ "_edge_location": "sub-grid LINEAR INTERPOLATION of the root of margin(t)=threshold (AMENDMENT E1); grid-quantised edges given alongside",
+ "_operating_point": {
+  "m": 10.0,
+  "T_ps": 200.0,
+  "H": 4,
+  "dv_V": 1.65,
+  "mode": "free",
+  "L_nH": 15.0,
+  "nbank": 4,
+  "ngate_per_bank": 8,
+  "arrangement": "qal/banktank 0aae11e per-bank tanks, no flop/latch/buffer/keeper between banks"
+ },
+ "_receiver_threshold": "MEASURED qal/fcrit/TRIP.json cell S (wp 1.12u/wn 0.74u, identical widths AND bulk connections to every banktank cell), 27 rails 0.20-1.50 V at 1 mV DC step, LINEARLY INTERPOLATED at the receiver's rail. The trip FRACTION is not a constant: MEASURED 0.728124 at 0.20 V -> 0.517850 at 1.50 V. 0.59 is never used.",
+ "_references": {
+  "EYE1_RX_INSTANTANEOUS": "PRE_REGISTERED STEP_d verbatim. Trip at the receiver's INSTANTANEOUS rail, in-table only. Early edge is the RECEIVER'S POWER-UP (AMENDMENT E3), not the data.",
+  "EYE2_DATA_FIXED": "AMENDMENT E3. Fixed level Trip_S(VR{k+1}B), the receiver's trip at the receiver's rail at ITS OWN pre-registered boundary instant (a committed banktank .measure key, MEASURED per pattern). Isolates the DRIVER. THIS is the one that bounds the beat."
+ },
+ "_windows": {
+  "W_PREREG": "[c_k, ro_k] as pre-registered",
+  "W_EXTENDED": "[c_k, tend-1] -- AMENDMENT E4, because the pre-registered window END was masquerading as a closing edge"
+ },
+ "_patterns": {
+  "P0": {
+   "bits": [
+    1,
+    1,
+    1,
+    0,
+    1,
+    0,
+    0,
+    1
+   ],
+   "weight": 5,
+   "probe_protocol": "full8_sequential",
+   "IZ_uA": {
+    "1": -0.012848,
+    "2": -0.000133,
+    "3": -0.009563,
+    "4": -0.008628
+   },
+   "IZQ_uA": {
+    "1": 0.007023,
+    "2": 0.002148,
+    "3": 0.00156,
+    "4": 0.001634
+   },
+   "worst_abs_uA": 0.012848,
+   "A6_zcs_pass": true
+  },
+  "P1": {
+   "bits": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "weight": 0,
+   "probe_protocol": "full8_sequential",
+   "IZ_uA": {
+    "1": -0.005641,
+    "2": -0.013524,
+    "3": -0.004707,
+    "4": -0.004845
+   },
+   "IZQ_uA": {
+    "1": 0.00849,
+    "2": 0.01501,
+    "3": 0.00229,
+    "4": 0.00503
+   },
+   "worst_abs_uA": 0.01501,
+   "A6_zcs_pass": true
+  },
+  "P2": {
+   "bits": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   "weight": 8,
+   "probe_protocol": "full8_sequential",
+   "IZ_uA": {
+    "1": -0.00874,
+    "2": -0.000473,
+    "3": -0.007847,
+    "4": -0.005568
+   },
+   "IZQ_uA": {
+    "1": 0.029008,
+    "2": 0.003462,
+    "3": 0.007832,
+    "4": 0.002962
+   },
+   "worst_abs_uA": 0.029008,
+   "A6_zcs_pass": true
+  },
+  "P3": {
+   "bits": [
+    1,
+    0,
+    1,
+    0,
+    1,
+    0,
+    1,
+    0
+   ],
+   "weight": 4,
+   "probe_protocol": "full8_sequential",
+   "IZ_uA": {
+    "1": -0.003666,
+    "2": -0.006206,
+    "3": -0.008072,
+    "4": -0.003257
+   },
+   "IZQ_uA": {
+    "1": 0.00113,
+    "2": 0.012067,
+    "3": 0.007797,
+    "4": 0.009955
+   },
+   "worst_abs_uA": 0.012067,
+   "A6_zcs_pass": true
+  },
+  "P4": {
+   "bits": [
+    0,
+    1,
+    1,
+    0,
+    1,
+    1,
+    0,
+    1
+   ],
+   "weight": 5,
+   "probe_protocol": "full8_sequential",
+   "IZ_uA": {
+    "1": -0.012848,
+    "2": -0.000133,
+    "3": -0.009563,
+    "4": -0.008628
+   },
+   "IZQ_uA": {
+    "1": 0.007023,
+    "2": 0.002148,
+    "3": 0.00156,
+    "4": 0.001634
+   },
+   "worst_abs_uA": 0.012848,
+   "A6_zcs_pass": true
+  },
+  "P5": {
+   "bits": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "weight": 1,
+   "probe_protocol": "full8_sequential",
+   "IZ_uA": {
+    "1": -0.007928,
+    "2": -0.004489,
+    "3": -0.009041,
+    "4": -0.00247
+   },
+   "IZQ_uA": {
+    "1": 0.009412,
+    "2": 0.001095,
+    "3": 0.005196,
+    "4": 0.007924
+   },
+   "worst_abs_uA": 0.009412,
+   "A6_zcs_pass": true
+  }
+ },
+ "_patterns_in_intersection": [
+  "P0",
+  "P1",
+  "P2",
+  "P3",
+  "P4",
+  "P5"
+ ],
+ "_patterns_excluded_A6_instrument_failure": [],
+ "_n_patterns_in_intersection": 6,
+ "banks": {
+  "1": {
+   "receiver": "bank 2 (MEASURED)",
+   "receiver_is_measured": true,
+   "own_rail_start_c_ps": 200.0,
+   "transfer_open_o_ps": 329.93536756730265,
+   "return_close_r_ps": 1000.0,
+   "return_open_ro_ps": 1135.716722519697,
+   "windows_ps": {
+    "W_PREREG": [
+     200.0,
+     1135.716722519697
+    ],
+    "W_EXTENDED": [
+     200.0,
+     2239.9
+    ]
+   },
+   "decision_levels": {
+    "P0": {
+     "rail_at_receiver_boundary_V": 0.9542317,
+     "trip_fixed_V": 0.5234374,
+     "trip_min_over_live_window_V": 0.1498057,
+     "trip_max_over_live_window_V": 0.6046789,
+     "receiver_is_derived": false
+    },
+    "P1": {
+     "rail_at_receiver_boundary_V": 1.273546,
+     "trip_fixed_V": 0.6792712,
+     "trip_min_over_live_window_V": 0.1487371,
+     "trip_max_over_live_window_V": 0.6847892,
+     "receiver_is_derived": false
+    },
+    "P2": {
+     "rail_at_receiver_boundary_V": 0.8580256,
+     "trip_fixed_V": 0.4745717,
+     "trip_min_over_live_window_V": 0.1483992,
+     "trip_max_over_live_window_V": 0.5678996,
+     "receiver_is_derived": false
+    },
+    "P3": {
+     "rail_at_receiver_boundary_V": 0.9965892,
+     "trip_fixed_V": 0.544944,
+     "trip_min_over_live_window_V": 0.1482461,
+     "trip_max_over_live_window_V": 0.6189959,
+     "receiver_is_derived": false
+    },
+    "P4": {
+     "rail_at_receiver_boundary_V": 0.9542317,
+     "trip_fixed_V": 0.5234374,
+     "trip_min_over_live_window_V": 0.1498057,
+     "trip_max_over_live_window_V": 0.6046789,
+     "receiver_is_derived": false
+    },
+    "P5": {
+     "rail_at_receiver_boundary_V": 1.181066,
+     "trip_fixed_V": 0.6361016,
+     "trip_min_over_live_window_V": 0.1462544,
+     "trip_max_over_live_window_V": 0.6671344,
+     "receiver_is_derived": false
+    }
+   },
+   "gates_expected_HIGH_by_pattern": {
+    "P0": [
+     3,
+     5,
+     6
+    ],
+    "P1": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7
+    ],
+    "P2": [],
+    "P3": [
+     1,
+     3,
+     5,
+     7
+    ],
+    "P4": [
+     0,
+     3,
+     6
+    ],
+    "P5": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7
+    ]
+   },
+   "patterns_contributing_to_polarity_eye": {
+    "HIGH": [
+     "P0",
+     "P1",
+     "P3",
+     "P4",
+     "P5"
+    ],
+    "LOW": [
+     "P0",
+     "P2",
+     "P3",
+     "P4",
+     "P5"
+    ]
+   },
+   "EYES": {
+    "EYE1_RX_INSTANTANEOUS": {
+     "W_PREREG": {
+      "0mV": {
+       "opening_ps": 398.1778,
+       "closing_ps": 1135.7,
+       "WIDTH_ps": 737.5222,
+       "opening_ps_gridquant": 401.0,
+       "closing_ps_gridquant": 1135.7,
+       "centre_ps": 766.9389,
+       "HEIGHT_at_centre_HIGH_mV": 257.1692,
+       "HEIGHT_at_centre_LOW_mV": 510.1889,
+       "HEIGHT_at_centre_mV": 514.3384,
+       "opening_minus_own_rail_start_ps": 198.1778,
+       "closing_minus_return_close_ps": 135.7,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "1sigma_6.441mV": {
+       "opening_ps": 398.3205,
+       "closing_ps": 1135.7,
+       "WIDTH_ps": 737.3795,
+       "opening_ps_gridquant": 401.0,
+       "closing_ps_gridquant": 1135.7,
+       "centre_ps": 767.0102,
+       "HEIGHT_at_centre_HIGH_mV": 257.1717,
+       "HEIGHT_at_centre_LOW_mV": 510.1885,
+       "HEIGHT_at_centre_mV": 514.3433,
+       "opening_minus_own_rail_start_ps": 198.3205,
+       "closing_minus_return_close_ps": 135.7,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "3sigma_19.323mV": {
+       "opening_ps": 398.6058,
+       "closing_ps": 1135.7,
+       "WIDTH_ps": 737.0942,
+       "opening_ps_gridquant": 401.0,
+       "closing_ps_gridquant": 1135.7,
+       "centre_ps": 767.1529,
+       "HEIGHT_at_centre_HIGH_mV": 257.1766,
+       "HEIGHT_at_centre_LOW_mV": 510.1878,
+       "HEIGHT_at_centre_mV": 514.3532,
+       "opening_minus_own_rail_start_ps": 198.6058,
+       "closing_minus_return_close_ps": 135.7,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      }
+     },
+     "W_PREREG_FIRST_RUN": {
+      "0mV": {
+       "opening_ps": 398.1778,
+       "closing_ps": 1135.7,
+       "WIDTH_ps": 737.5222,
+       "opening_minus_own_rail_start_ps": 198.1778,
+       "closing_minus_return_close_ps": 135.7,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "eye_was_SPLIT_by_the_threshold": false
+      },
+      "1sigma_6.441mV": {
+       "opening_ps": 398.3205,
+       "closing_ps": 1135.7,
+       "WIDTH_ps": 737.3795,
+       "opening_minus_own_rail_start_ps": 198.3205,
+       "closing_minus_return_close_ps": 135.7,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "eye_was_SPLIT_by_the_threshold": false
+      },
+      "3sigma_19.323mV": {
+       "opening_ps": 398.6058,
+       "closing_ps": 1135.7,
+       "WIDTH_ps": 737.0942,
+       "opening_minus_own_rail_start_ps": 198.6058,
+       "closing_minus_return_close_ps": 135.7,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "eye_was_SPLIT_by_the_threshold": false
+      }
+     },
+     "W_EXTENDED": {
+      "0mV": {
+       "opening_ps": 398.1778,
+       "closing_ps": 2239.9,
+       "WIDTH_ps": 1841.7222,
+       "opening_ps_gridquant": 401.0,
+       "closing_ps_gridquant": 2239.9,
+       "centre_ps": 1319.0389,
+       "HEIGHT_at_centre_HIGH_mV": 291.7932,
+       "HEIGHT_at_centre_LOW_mV": 395.8945,
+       "HEIGHT_at_centre_mV": 583.5864,
+       "opening_minus_own_rail_start_ps": 198.1778,
+       "closing_minus_return_close_ps": 1239.9,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "1sigma_6.441mV": {
+       "opening_ps": 398.3205,
+       "closing_ps": 2239.9,
+       "WIDTH_ps": 1841.5795,
+       "opening_ps_gridquant": 401.0,
+       "closing_ps_gridquant": 2239.9,
+       "centre_ps": 1319.1102,
+       "HEIGHT_at_centre_HIGH_mV": 291.8241,
+       "HEIGHT_at_centre_LOW_mV": 395.8539,
+       "HEIGHT_at_centre_mV": 583.6482,
+       "opening_minus_own_rail_start_ps": 198.3205,
+       "closing_minus_return_close_ps": 1239.9,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "3sigma_19.323mV": {
+       "opening_ps": 398.6058,
+       "closing_ps": 2239.9,
+       "WIDTH_ps": 1841.2942,
+       "opening_ps_gridquant": 401.0,
+       "closing_ps_gridquant": 2239.9,
+       "centre_ps": 1319.2529,
+       "HEIGHT_at_centre_HIGH_mV": 291.8857,
+       "HEIGHT_at_centre_LOW_mV": 395.773,
+       "HEIGHT_at_centre_mV": 583.7713,
+       "opening_minus_own_rail_start_ps": 198.6058,
+       "closing_minus_return_close_ps": 1239.9,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      }
+     },
+     "W_EXTENDED_FIRST_RUN": {
+      "0mV": {
+       "opening_ps": 398.1778,
+       "closing_ps": 2239.9,
+       "WIDTH_ps": 1841.7222,
+       "opening_minus_own_rail_start_ps": 198.1778,
+       "closing_minus_return_close_ps": 1239.9,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "eye_was_SPLIT_by_the_threshold": false
+      },
+      "1sigma_6.441mV": {
+       "opening_ps": 398.3205,
+       "closing_ps": 2239.9,
+       "WIDTH_ps": 1841.5795,
+       "opening_minus_own_rail_start_ps": 198.3205,
+       "closing_minus_return_close_ps": 1239.9,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "eye_was_SPLIT_by_the_threshold": false
+      },
+      "3sigma_19.323mV": {
+       "opening_ps": 398.6058,
+       "closing_ps": 2239.9,
+       "WIDTH_ps": 1841.2942,
+       "opening_minus_own_rail_start_ps": 198.6058,
+       "closing_minus_return_close_ps": 1239.9,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "eye_was_SPLIT_by_the_threshold": false
+      }
+     },
+     "HIGH_only_W_EXTENDED_0mV": {
+      "pick": "largest",
+      "open_ps": 425.3362,
+      "close_ps": 2239.9,
+      "width_ps": 1814.5638,
+      "open_ps_gridquant": 401.0,
+      "close_ps_gridquant": 2239.9,
+      "width_ps_gridquant": 1838.9,
+      "clipped_at_window_start": false,
+      "clipped_at_window_end": true
+     },
+     "LOW_only_W_EXTENDED_0mV": {
+      "pick": "largest",
+      "open_ps": 398.1778,
+      "close_ps": 2239.9,
+      "width_ps": 1841.7222,
+      "open_ps_gridquant": 401.0,
+      "close_ps_gridquant": 2239.9,
+      "width_ps_gridquant": 1838.9,
+      "clipped_at_window_start": false,
+      "clipped_at_window_end": true
+     },
+     "per_pattern_W_EXTENDED_0mV": {
+      "P0": {
+       "joint": {
+        "pick": "largest",
+        "open_ps": 396.7664,
+        "close_ps": 2239.9,
+        "width_ps": 1843.1336,
+        "open_ps_gridquant": 401.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1838.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "HIGH": {
+        "pick": "largest",
+        "open_ps": 435.4577,
+        "close_ps": 2239.9,
+        "width_ps": 1804.4423,
+        "open_ps_gridquant": 401.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1838.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "LOW": {
+        "pick": "largest",
+        "open_ps": 396.7664,
+        "close_ps": 2239.9,
+        "width_ps": 1843.1336,
+        "open_ps_gridquant": 401.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1838.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       }
+      },
+      "P1": {
+       "joint": {
+        "pick": "largest",
+        "open_ps": 425.3362,
+        "close_ps": 2239.9,
+        "width_ps": 1814.5638,
+        "open_ps_gridquant": 401.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1838.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "HIGH": {
+        "pick": "largest",
+        "open_ps": 425.3362,
+        "close_ps": 2239.9,
+        "width_ps": 1814.5638,
+        "open_ps_gridquant": 401.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1838.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "LOW": null
+      },
+      "P2": {
+       "joint": {
+        "pick": "largest",
+        "open_ps": 398.1778,
+        "close_ps": 2239.9,
+        "width_ps": 1841.7222,
+        "open_ps_gridquant": 401.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1838.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "HIGH": null,
+       "LOW": {
+        "pick": "largest",
+        "open_ps": 398.1778,
+        "close_ps": 2239.9,
+        "width_ps": 1841.7222,
+        "open_ps_gridquant": 401.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1838.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       }
+      },
+      "P3": {
+       "joint": {
+        "pick": "largest",
+        "open_ps": 396.6098,
+        "close_ps": 2239.9,
+        "width_ps": 1843.2902,
+        "open_ps_gridquant": 401.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1838.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "HIGH": {
+        "pick": "largest",
+        "open_ps": 432.457,
+        "close_ps": 2239.9,
+        "width_ps": 1807.443,
+        "open_ps_gridquant": 401.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1838.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "LOW": {
+        "pick": "largest",
+        "open_ps": 396.6098,
+        "close_ps": 2239.9,
+        "width_ps": 1843.2902,
+        "open_ps_gridquant": 401.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1838.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       }
+      },
+      "P4": {
+       "joint": {
+        "pick": "largest",
+        "open_ps": 396.7664,
+        "close_ps": 2239.9,
+        "width_ps": 1843.1336,
+        "open_ps_gridquant": 401.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1838.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "HIGH": {
+        "pick": "largest",
+        "open_ps": 435.4577,
+        "close_ps": 2239.9,
+        "width_ps": 1804.4423,
+        "open_ps_gridquant": 401.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1838.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "LOW": {
+        "pick": "largest",
+        "open_ps": 396.7664,
+        "close_ps": 2239.9,
+        "width_ps": 1843.1336,
+        "open_ps_gridquant": 401.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1838.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       }
+      },
+      "P5": {
+       "joint": {
+        "pick": "largest",
+        "open_ps": 396.2005,
+        "close_ps": 2239.9,
+        "width_ps": 1843.6995,
+        "open_ps_gridquant": 401.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1838.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "HIGH": {
+        "pick": "largest",
+        "open_ps": 426.6012,
+        "close_ps": 2239.9,
+        "width_ps": 1813.2988,
+        "open_ps_gridquant": 401.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1838.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "LOW": {
+        "pick": "largest",
+        "open_ps": 396.2005,
+        "close_ps": 2239.9,
+        "width_ps": 1843.6995,
+        "open_ps_gridquant": 401.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1838.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       }
+      }
+     },
+     "DATA_JITTER_HIGH_polarity": {
+      "n_patterns_with_this_polarity": 5,
+      "patterns": [
+       "P0",
+       "P1",
+       "P3",
+       "P4",
+       "P5"
+      ],
+      "per_pattern_opening_ps": {
+       "P0": 435.4577,
+       "P1": 425.3362,
+       "P3": 432.457,
+       "P4": 435.4577,
+       "P5": 426.6012
+      },
+      "per_pattern_opening_minus_c_k_ps": {
+       "P0": 235.4577,
+       "P1": 225.3362,
+       "P3": 232.457,
+       "P4": 235.4577,
+       "P5": 226.6012
+      },
+      "peak_to_peak_ps": 10.1215,
+      "sigma_ps": 4.3191,
+      "note": "P1 (all-zero) and P2 (all-one) give a bank eight gates of ONE polarity, so they appear in only one of these two lists."
+     },
+     "DATA_JITTER_LOW_polarity": {
+      "n_patterns_with_this_polarity": 5,
+      "patterns": [
+       "P0",
+       "P2",
+       "P3",
+       "P4",
+       "P5"
+      ],
+      "per_pattern_opening_ps": {
+       "P0": 396.7664,
+       "P2": 398.1778,
+       "P3": 396.6098,
+       "P4": 396.7664,
+       "P5": 396.2005
+      },
+      "per_pattern_opening_minus_c_k_ps": {
+       "P0": 196.7664,
+       "P2": 198.1778,
+       "P3": 196.6098,
+       "P4": 196.7664,
+       "P5": 196.2005
+      },
+      "peak_to_peak_ps": 1.9773,
+      "sigma_ps": 0.6696,
+      "note": "P1 (all-zero) and P2 (all-one) give a bank eight gates of ONE polarity, so they appear in only one of these two lists."
+     },
+     "DATA_DEPENDENT_EDGE_JITTER": {
+      "n_patterns": 6,
+      "opening_min_ps": 396.2005,
+      "opening_max_ps": 425.3362,
+      "opening_peak_to_peak_ps": 29.1357,
+      "opening_mean_ps": 401.6429,
+      "opening_sigma_ps": 10.6136,
+      "closing_peak_to_peak_ps": 0.0,
+      "per_pattern_opening_ps": {
+       "P0": 396.7664,
+       "P1": 425.3362,
+       "P2": 398.1778,
+       "P3": 396.6098,
+       "P4": 396.7664,
+       "P5": 396.2005
+      },
+      "what": "PEAK-TO-PEAK spread of this bank's eye OPENING instant across the data patterns, measured. This is the data-dependent jitter that closes the eye from the early side, and it is what the pattern INTERSECTION charges. It is NOT the campaign's 61.6 ps number, which is a zero-crossing spread, not an eye-edge spread."
+     }
+    },
+    "EYE2_DATA_FIXED": {
+     "W_PREREG": {
+      "0mV": {
+       "opening_ps": 328.599,
+       "closing_ps": 1135.7,
+       "WIDTH_ps": 807.101,
+       "opening_ps_gridquant": 328.6,
+       "closing_ps_gridquant": 1135.7,
+       "centre_ps": 732.1495,
+       "HEIGHT_at_centre_HIGH_mV": 258.1467,
+       "HEIGHT_at_centre_LOW_mV": 473.866,
+       "HEIGHT_at_centre_mV": 516.2935,
+       "opening_minus_own_rail_start_ps": 128.599,
+       "closing_minus_return_close_ps": 135.7,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "1sigma_6.441mV": {
+       "opening_ps": 329.7218,
+       "closing_ps": 1135.7,
+       "WIDTH_ps": 805.9782,
+       "opening_ps_gridquant": 329.8,
+       "closing_ps_gridquant": 1135.7,
+       "centre_ps": 732.7109,
+       "HEIGHT_at_centre_HIGH_mV": 257.8294,
+       "HEIGHT_at_centre_LOW_mV": 473.9576,
+       "HEIGHT_at_centre_mV": 515.6589,
+       "opening_minus_own_rail_start_ps": 129.7218,
+       "closing_minus_return_close_ps": 135.7,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "3sigma_19.323mV": {
+       "opening_ps": 330.3073,
+       "closing_ps": 1135.7,
+       "WIDTH_ps": 805.3927,
+       "opening_ps_gridquant": 330.4,
+       "closing_ps_gridquant": 1135.7,
+       "centre_ps": 733.0036,
+       "HEIGHT_at_centre_HIGH_mV": 257.678,
+       "HEIGHT_at_centre_LOW_mV": 473.9997,
+       "HEIGHT_at_centre_mV": 515.3559,
+       "opening_minus_own_rail_start_ps": 130.3073,
+       "closing_minus_return_close_ps": 135.7,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      }
+     },
+     "W_PREREG_FIRST_RUN": {
+      "0mV": {
+       "opening_ps": 328.599,
+       "closing_ps": 1135.7,
+       "WIDTH_ps": 807.101,
+       "opening_minus_own_rail_start_ps": 128.599,
+       "closing_minus_return_close_ps": 135.7,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "eye_was_SPLIT_by_the_threshold": false
+      },
+      "1sigma_6.441mV": {
+       "opening_ps": 329.7218,
+       "closing_ps": 1135.7,
+       "WIDTH_ps": 805.9782,
+       "opening_minus_own_rail_start_ps": 129.7218,
+       "closing_minus_return_close_ps": 135.7,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "eye_was_SPLIT_by_the_threshold": false
+      },
+      "3sigma_19.323mV": {
+       "opening_ps": 330.3073,
+       "closing_ps": 1135.7,
+       "WIDTH_ps": 805.3927,
+       "opening_minus_own_rail_start_ps": 130.3073,
+       "closing_minus_return_close_ps": 135.7,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "eye_was_SPLIT_by_the_threshold": false
+      }
+     },
+     "W_EXTENDED": {
+      "0mV": {
+       "opening_ps": 328.599,
+       "closing_ps": 2239.9,
+       "WIDTH_ps": 1911.301,
+       "opening_ps_gridquant": 328.6,
+       "closing_ps_gridquant": 2239.9,
+       "centre_ps": 1284.2495,
+       "HEIGHT_at_centre_HIGH_mV": 22.7606,
+       "HEIGHT_at_centre_LOW_mV": 476.3995,
+       "HEIGHT_at_centre_mV": 45.5213,
+       "opening_minus_own_rail_start_ps": 128.599,
+       "closing_minus_return_close_ps": 1239.9,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "1sigma_6.441mV": {
+       "opening_ps": 329.7218,
+       "closing_ps": 2239.9,
+       "WIDTH_ps": 1910.1782,
+       "opening_ps_gridquant": 329.8,
+       "closing_ps_gridquant": 2239.9,
+       "centre_ps": 1284.8109,
+       "HEIGHT_at_centre_HIGH_mV": 22.7277,
+       "HEIGHT_at_centre_LOW_mV": 476.4068,
+       "HEIGHT_at_centre_mV": 45.4555,
+       "opening_minus_own_rail_start_ps": 129.7218,
+       "closing_minus_return_close_ps": 1239.9,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "3sigma_19.323mV": {
+       "opening_ps": 1222.6683,
+       "closing_ps": 2239.9,
+       "WIDTH_ps": 1017.2317,
+       "opening_ps_gridquant": 1222.7,
+       "closing_ps_gridquant": 2239.9,
+       "centre_ps": 1731.2842,
+       "HEIGHT_at_centre_HIGH_mV": 27.8786,
+       "HEIGHT_at_centre_LOW_mV": 474.5542,
+       "HEIGHT_at_centre_mV": 55.7573,
+       "opening_minus_own_rail_start_ps": 1022.6683,
+       "closing_minus_return_close_ps": 1239.9,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      }
+     },
+     "W_EXTENDED_FIRST_RUN": {
+      "0mV": {
+       "opening_ps": 328.599,
+       "closing_ps": 2239.9,
+       "WIDTH_ps": 1911.301,
+       "opening_minus_own_rail_start_ps": 128.599,
+       "closing_minus_return_close_ps": 1239.9,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "eye_was_SPLIT_by_the_threshold": false
+      },
+      "1sigma_6.441mV": {
+       "opening_ps": 329.7218,
+       "closing_ps": 2239.9,
+       "WIDTH_ps": 1910.1782,
+       "opening_minus_own_rail_start_ps": 129.7218,
+       "closing_minus_return_close_ps": 1239.9,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "eye_was_SPLIT_by_the_threshold": false
+      },
+      "3sigma_19.323mV": {
+       "opening_ps": 330.3073,
+       "closing_ps": 1153.6396,
+       "WIDTH_ps": 823.3323,
+       "opening_minus_own_rail_start_ps": 130.3073,
+       "closing_minus_return_close_ps": 153.6396,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": false,
+       "WIDTH_IS_A_LOWER_BOUND": false,
+       "eye_was_SPLIT_by_the_threshold": true
+      }
+     },
+     "HIGH_only_W_EXTENDED_0mV": {
+      "pick": "largest",
+      "open_ps": 328.599,
+      "close_ps": 2239.9,
+      "width_ps": 1911.301,
+      "open_ps_gridquant": 328.6,
+      "close_ps_gridquant": 2239.9,
+      "width_ps_gridquant": 1911.3,
+      "clipped_at_window_start": false,
+      "clipped_at_window_end": true
+     },
+     "LOW_only_W_EXTENDED_0mV": {
+      "pick": "largest",
+      "open_ps": 200.0,
+      "close_ps": 2239.9,
+      "width_ps": 2039.9,
+      "open_ps_gridquant": 200.0,
+      "close_ps_gridquant": 2239.9,
+      "width_ps_gridquant": 2039.9,
+      "clipped_at_window_start": true,
+      "clipped_at_window_end": true
+     },
+     "per_pattern_W_EXTENDED_0mV": {
+      "P0": {
+       "joint": {
+        "pick": "largest",
+        "open_ps": 303.2822,
+        "close_ps": 2239.9,
+        "width_ps": 1936.6178,
+        "open_ps_gridquant": 303.3,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1936.6,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "HIGH": {
+        "pick": "largest",
+        "open_ps": 303.2822,
+        "close_ps": 2239.9,
+        "width_ps": 1936.6178,
+        "open_ps_gridquant": 303.3,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1936.6,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "LOW": {
+        "pick": "largest",
+        "open_ps": 200.0,
+        "close_ps": 2239.9,
+        "width_ps": 2039.9,
+        "open_ps_gridquant": 200.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 2039.9,
+        "clipped_at_window_start": true,
+        "clipped_at_window_end": true
+       }
+      },
+      "P1": {
+       "joint": {
+        "pick": "largest",
+        "open_ps": 328.599,
+        "close_ps": 2239.9,
+        "width_ps": 1911.301,
+        "open_ps_gridquant": 328.6,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1911.3,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "HIGH": {
+        "pick": "largest",
+        "open_ps": 328.599,
+        "close_ps": 2239.9,
+        "width_ps": 1911.301,
+        "open_ps_gridquant": 328.6,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1911.3,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "LOW": null
+      },
+      "P2": {
+       "joint": {
+        "pick": "largest",
+        "open_ps": 200.0,
+        "close_ps": 2239.9,
+        "width_ps": 2039.9,
+        "open_ps_gridquant": 200.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 2039.9,
+        "clipped_at_window_start": true,
+        "clipped_at_window_end": true
+       },
+       "HIGH": null,
+       "LOW": {
+        "pick": "largest",
+        "open_ps": 200.0,
+        "close_ps": 2239.9,
+        "width_ps": 2039.9,
+        "open_ps_gridquant": 200.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 2039.9,
+        "clipped_at_window_start": true,
+        "clipped_at_window_end": true
+       }
+      },
+      "P3": {
+       "joint": {
+        "pick": "largest",
+        "open_ps": 306.1001,
+        "close_ps": 2239.9,
+        "width_ps": 1933.7999,
+        "open_ps_gridquant": 306.2,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1933.7,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "HIGH": {
+        "pick": "largest",
+        "open_ps": 306.1001,
+        "close_ps": 2239.9,
+        "width_ps": 1933.7999,
+        "open_ps_gridquant": 306.2,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1933.7,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "LOW": {
+        "pick": "largest",
+        "open_ps": 200.0,
+        "close_ps": 2239.9,
+        "width_ps": 2039.9,
+        "open_ps_gridquant": 200.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 2039.9,
+        "clipped_at_window_start": true,
+        "clipped_at_window_end": true
+       }
+      },
+      "P4": {
+       "joint": {
+        "pick": "largest",
+        "open_ps": 303.2822,
+        "close_ps": 2239.9,
+        "width_ps": 1936.6178,
+        "open_ps_gridquant": 303.3,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1936.6,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "HIGH": {
+        "pick": "largest",
+        "open_ps": 303.2822,
+        "close_ps": 2239.9,
+        "width_ps": 1936.6178,
+        "open_ps_gridquant": 303.3,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1936.6,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "LOW": {
+        "pick": "largest",
+        "open_ps": 200.0,
+        "close_ps": 2239.9,
+        "width_ps": 2039.9,
+        "open_ps_gridquant": 200.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 2039.9,
+        "clipped_at_window_start": true,
+        "clipped_at_window_end": true
+       }
+      },
+      "P5": {
+       "joint": {
+        "pick": "largest",
+        "open_ps": 320.0641,
+        "close_ps": 2239.9,
+        "width_ps": 1919.8359,
+        "open_ps_gridquant": 320.1,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1919.8,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "HIGH": {
+        "pick": "largest",
+        "open_ps": 320.0641,
+        "close_ps": 2239.9,
+        "width_ps": 1919.8359,
+        "open_ps_gridquant": 320.1,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1919.8,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "LOW": {
+        "pick": "largest",
+        "open_ps": 200.0,
+        "close_ps": 2239.9,
+        "width_ps": 2039.9,
+        "open_ps_gridquant": 200.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 2039.9,
+        "clipped_at_window_start": true,
+        "clipped_at_window_end": true
+       }
+      }
+     },
+     "DATA_JITTER_HIGH_polarity": {
+      "n_patterns_with_this_polarity": 5,
+      "patterns": [
+       "P0",
+       "P1",
+       "P3",
+       "P4",
+       "P5"
+      ],
+      "per_pattern_opening_ps": {
+       "P0": 303.2822,
+       "P1": 328.599,
+       "P3": 306.1001,
+       "P4": 303.2822,
+       "P5": 320.0641
+      },
+      "per_pattern_opening_minus_c_k_ps": {
+       "P0": 103.2822,
+       "P1": 128.599,
+       "P3": 106.1001,
+       "P4": 103.2822,
+       "P5": 120.0641
+      },
+      "peak_to_peak_ps": 25.3168,
+      "sigma_ps": 10.2666,
+      "note": "P1 (all-zero) and P2 (all-one) give a bank eight gates of ONE polarity, so they appear in only one of these two lists."
+     },
+     "DATA_JITTER_LOW_polarity": {
+      "n_patterns_with_this_polarity": 5,
+      "patterns": [
+       "P0",
+       "P2",
+       "P3",
+       "P4",
+       "P5"
+      ],
+      "per_pattern_opening_ps": {
+       "P0": 200.0,
+       "P2": 200.0,
+       "P3": 200.0,
+       "P4": 200.0,
+       "P5": 200.0
+      },
+      "per_pattern_opening_minus_c_k_ps": {
+       "P0": 0.0,
+       "P2": 0.0,
+       "P3": 0.0,
+       "P4": 0.0,
+       "P5": 0.0
+      },
+      "peak_to_peak_ps": 0.0,
+      "sigma_ps": 0.0,
+      "note": "P1 (all-zero) and P2 (all-one) give a bank eight gates of ONE polarity, so they appear in only one of these two lists."
+     },
+     "DATA_DEPENDENT_EDGE_JITTER": {
+      "n_patterns": 6,
+      "opening_min_ps": 200.0,
+      "opening_max_ps": 328.599,
+      "opening_peak_to_peak_ps": 128.599,
+      "opening_mean_ps": 293.5546,
+      "opening_sigma_ps": 42.8757,
+      "closing_peak_to_peak_ps": 0.0,
+      "per_pattern_opening_ps": {
+       "P0": 303.2822,
+       "P1": 328.599,
+       "P2": 200.0,
+       "P3": 306.1001,
+       "P4": 303.2822,
+       "P5": 320.0641
+      },
+      "what": "PEAK-TO-PEAK spread of this bank's eye OPENING instant across the data patterns, measured. This is the data-dependent jitter that closes the eye from the early side, and it is what the pattern INTERSECTION charges. It is NOT the campaign's 61.6 ps number, which is a zero-crossing spread, not an eye-edge spread."
+     }
+    }
+   },
+   "HEIGHT_at_meaningful_instants": {
+    "EYE1_RX_INSTANTANEOUS": {
+     "sampling_instant_receiver_rail_start_ps": {
+      "t_ps": 400.0,
+      "HEIGHT_HIGH_mV": 748.3345,
+      "HEIGHT_LOW_mV": 55.1349,
+      "HEIGHT_mV": 110.2699,
+      "min_over_both_polarities_mV": 55.1349,
+      "in_eye": true
+     },
+     "pipelined_eye_centre_ps": {
+      "t_ps": 699.0889,
+      "HEIGHT_HIGH_mV": 256.2772,
+      "HEIGHT_LOW_mV": 499.9578,
+      "HEIGHT_mV": 512.5544,
+      "min_over_both_polarities_mV": 256.2772,
+      "in_eye": true
+     },
+     "eye_opening_plus_1ps": {
+      "t_ps": 399.1778,
+      "HEIGHT_HIGH_mV": 778.3038,
+      "HEIGHT_LOW_mV": 7.8033,
+      "HEIGHT_mV": 15.6066,
+      "min_over_both_polarities_mV": 7.8033,
+      "in_eye": true
+     },
+     "return_close_minus_1ps": {
+      "t_ps": 999.0,
+      "HEIGHT_HIGH_mV": 251.4878,
+      "HEIGHT_LOW_mV": 517.5769,
+      "HEIGHT_mV": 502.9756,
+      "min_over_both_polarities_mV": 251.4878,
+      "in_eye": true
+     }
+    },
+    "EYE2_DATA_FIXED": {
+     "sampling_instant_receiver_rail_start_ps": {
+      "t_ps": 400.0,
+      "HEIGHT_HIGH_mV": 185.8212,
+      "HEIGHT_LOW_mV": 464.5742,
+      "HEIGHT_mV": 371.6424,
+      "min_over_both_polarities_mV": 185.8212,
+      "in_eye": true
+     },
+     "pipelined_eye_centre_ps": {
+      "t_ps": 664.2995,
+      "HEIGHT_HIGH_mV": 256.1338,
+      "HEIGHT_LOW_mV": 473.6606,
+      "HEIGHT_mV": 512.2677,
+      "min_over_both_polarities_mV": 256.1338,
+      "in_eye": true
+     },
+     "eye_opening_plus_1ps": {
+      "t_ps": 329.599,
+      "HEIGHT_HIGH_mV": 5.7525,
+      "HEIGHT_LOW_mV": 460.628,
+      "HEIGHT_mV": 11.5051,
+      "min_over_both_polarities_mV": 5.7525,
+      "in_eye": true
+     },
+     "return_close_minus_1ps": {
+      "t_ps": 999.0,
+      "HEIGHT_HIGH_mV": 244.5426,
+      "HEIGHT_LOW_mV": 483.3028,
+      "HEIGHT_mV": 489.0851,
+      "min_over_both_polarities_mV": 244.5426,
+      "in_eye": true
+     }
+    }
+   },
+   "POST_RETURN_MARGIN_FLOOR": {
+    "EYE1_RX_INSTANTANEOUS": {
+     "worst_margin_after_return_close_mV": 69.5815,
+     "at_t_ps": 1160.0,
+     "at_t_minus_return_open_ro_ps": 24.2833,
+     "right_edge_appears_only_for_thresholds_above_mV": 69.5815,
+     "LATE_EDGE_CANDIDATE": {
+      "binding_pattern": "P1",
+      "binding_gate": "o0",
+      "binding_polarity": "HIGH",
+      "binding_margin_mV": 69.58149,
+      "MECHANISM": {
+       "M": "M3+M5",
+       "reference": "EYE1_RX_INSTANTANEOUS",
+       "t_ps": 1160.0,
+       "V_trip_used": 0.6261425,
+       "trip_is_constant_for_this_reference": false,
+       "gate": "o0",
+       "polarity": "HIGH",
+       "mgn_mV": 69.5815,
+       "d_mgn_dt_mV_per_ps": 5.40629,
+       "term_dVout_dt_mV_per_ps": 5.67493,
+       "term_minus_dtrip_dt_mV_per_ps": -0.26864,
+       "dominant_term": "dVout/dt",
+       "V_out": 0.695724,
+       "V_trip_rx": 0.6261425,
+       "V_rail_driver": 0.6799083,
+       "dV_rail_driver_dt_mV_per_ps": 30.03491,
+       "V_rail_rx": 1.1602535,
+       "dV_rail_rx_dt_mV_per_ps": 0.5614,
+       "V_tank_driver": 0.7317085,
+       "dV_tank_dt_mV_per_ps": 1.3533,
+       "I_L_driver_uA": -0.1352,
+       "transfer_gate_conducting": false,
+       "return_switch_conducting": true,
+       "V_in_driver_gate": "ideal DC source (bank 1)",
+       "overdrive_vs_Vtn_V": null,
+       "overdrive_vs_absVtp_V": null
+      }
+     }
+    },
+    "EYE2_DATA_FIXED": {
+     "worst_margin_after_return_close_mV": 14.9344,
+     "at_t_ps": 1207.9,
+     "at_t_minus_return_open_ro_ps": 72.1833,
+     "right_edge_appears_only_for_thresholds_above_mV": 14.9344,
+     "LATE_EDGE_CANDIDATE": {
+      "binding_pattern": "P1",
+      "binding_gate": "o0",
+      "binding_polarity": "HIGH",
+      "binding_margin_mV": 14.93442,
+      "MECHANISM": {
+       "M": "M4+M5",
+       "reference": "EYE2_DATA_FIXED",
+       "t_ps": 1207.9,
+       "V_trip_used": 0.6792712,
+       "trip_is_constant_for_this_reference": true,
+       "gate": "o0",
+       "polarity": "HIGH",
+       "mgn_mV": 233.8838,
+       "d_mgn_dt_mV_per_ps": -0.00097,
+       "term_dVout_dt_mV_per_ps": -0.00097,
+       "term_minus_dtrip_dt_mV_per_ps": 0.0,
+       "dominant_term": "dVout/dt",
+       "V_out": 0.6942056,
+       "V_trip_rx": 0.4603218,
+       "V_rail_driver": 0.7191598,
+       "dV_rail_driver_dt_mV_per_ps": -0.75465,
+       "V_rail_rx": 0.8298666,
+       "dV_rail_rx_dt_mV_per_ps": -5.59435,
+       "V_tank_driver": 0.7496845,
+       "dV_tank_dt_mV_per_ps": 0.10998,
+       "I_L_driver_uA": -79.1669,
+       "transfer_gate_conducting": false,
+       "return_switch_conducting": false,
+       "V_in_driver_gate": "ideal DC source (bank 1)",
+       "overdrive_vs_Vtn_V": null,
+       "overdrive_vs_absVtp_V": null
+      }
+     }
+    }
+   },
+   "CLOSING_MECHANISM": {
+    "EYE1_RX_INSTANTANEOUS": {
+     "early_edge_OPENING": {
+      "t_ps": 398.1778,
+      "binding_pattern": "P2",
+      "binding_pattern_bits": [
+       1,
+       1,
+       1,
+       1,
+       1,
+       1,
+       1,
+       1
+      ],
+      "binding_gate": "o0",
+      "binding_polarity": "LOW",
+      "binding_margin_mV": -1.55652,
+      "MECHANISM": {
+       "M": "M7",
+       "reference": "EYE1_RX_INSTANTANEOUS",
+       "t_ps": 398.20000000000005,
+       "V_trip_used": -0.001859,
+       "trip_is_constant_for_this_reference": false,
+       "gate": "o0",
+       "polarity": "LOW",
+       "mgn_mV": -1.5565,
+       "d_mgn_dt_mV_per_ps": -8.06224,
+       "term_dVout_dt_mV_per_ps": 1.53423,
+       "term_minus_dtrip_dt_mV_per_ps": -9.59647,
+       "dominant_term": "-dtrip/dt",
+       "V_out": -0.0003025,
+       "V_trip_rx": -0.001859,
+       "V_rail_driver": 1.2986419,
+       "dV_rail_driver_dt_mV_per_ps": -0.31085,
+       "V_rail_rx": -0.0025531,
+       "dV_rail_rx_dt_mV_per_ps": -13.17972,
+       "V_tank_driver": 0.7227637,
+       "dV_tank_dt_mV_per_ps": -0.50228,
+       "I_L_driver_uA": -303.6423,
+       "transfer_gate_conducting": false,
+       "return_switch_conducting": false,
+       "V_in_driver_gate": "ideal DC source (bank 1)",
+       "overdrive_vs_Vtn_V": null,
+       "overdrive_vs_absVtp_V": null
+      }
+     },
+     "late_edge_CLOSING": {
+      "t_ps": 2239.9,
+      "binding_pattern": "P1",
+      "binding_pattern_bits": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ],
+      "binding_gate": "o0",
+      "binding_polarity": "HIGH",
+      "binding_margin_mV": 251.38402,
+      "NO_EDGE": "the eye is CLIPPED at this window bound -- there is no crossing here. The margin never crosses the threshold within the transient: the true right edge is set by the NEXT datum on this bank at the initiation interval H*T, which this single-shot deck does not contain (AMENDMENT E4).",
+      "MECHANISM": {
+       "M": "NO_EDGE_WITHIN_DECK",
+       "reference": "EYE1_RX_INSTANTANEOUS",
+       "t_ps": 2239.9,
+       "V_trip_used": 0.4558262,
+       "trip_is_constant_for_this_reference": false,
+       "gate": "o0",
+       "polarity": "HIGH",
+       "mgn_mV": 251.384,
+       "d_mgn_dt_mV_per_ps": 1e-05,
+       "term_dVout_dt_mV_per_ps": -1e-05,
+       "term_minus_dtrip_dt_mV_per_ps": 2e-05,
+       "dominant_term": "-dtrip/dt",
+       "V_out": 0.7072102,
+       "V_trip_rx": 0.4558262,
+       "V_rail_driver": 0.7072102,
+       "dV_rail_driver_dt_mV_per_ps": 0.0,
+       "V_rail_rx": 0.8209736,
+       "dV_rail_rx_dt_mV_per_ps": -3e-05,
+       "V_tank_driver": 0.7469114,
+       "dV_tank_dt_mV_per_ps": 0.0,
+       "I_L_driver_uA": 0.0,
+       "transfer_gate_conducting": false,
+       "return_switch_conducting": false,
+       "V_in_driver_gate": "ideal DC source (bank 1)",
+       "overdrive_vs_Vtn_V": null,
+       "overdrive_vs_absVtp_V": null
+      }
+     }
+    },
+    "EYE2_DATA_FIXED": {
+     "early_edge_OPENING": {
+      "t_ps": 328.599,
+      "binding_pattern": "P1",
+      "binding_pattern_bits": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ],
+      "binding_gate": "o0",
+      "binding_polarity": "HIGH",
+      "binding_margin_mV": 0.00563,
+      "MECHANISM": {
+       "M": "M1",
+       "reference": "EYE2_DATA_FIXED",
+       "t_ps": 328.6,
+       "V_trip_used": 0.6792712,
+       "trip_is_constant_for_this_reference": true,
+       "gate": "o0",
+       "polarity": "HIGH",
+       "mgn_mV": 604.876,
+       "d_mgn_dt_mV_per_ps": 5.82856,
+       "term_dVout_dt_mV_per_ps": 5.82856,
+       "term_minus_dtrip_dt_mV_per_ps": 0.0,
+       "dominant_term": "dVout/dt",
+       "V_out": 0.6792769,
+       "V_trip_rx": 0.0744008,
+       "V_rail_driver": 0.8897857,
+       "dV_rail_driver_dt_mV_per_ps": -1.01423,
+       "V_rail_rx": 0.1021815,
+       "dV_rail_rx_dt_mV_per_ps": 0.78388,
+       "V_tank_driver": 0.631529,
+       "dV_tank_dt_mV_per_ps": -0.10166,
+       "I_L_driver_uA": 26.7537,
+       "transfer_gate_conducting": true,
+       "return_switch_conducting": false,
+       "V_in_driver_gate": "ideal DC source (bank 1)",
+       "overdrive_vs_Vtn_V": null,
+       "overdrive_vs_absVtp_V": null
+      }
+     },
+     "late_edge_CLOSING": {
+      "t_ps": 2239.9,
+      "binding_pattern": "P1",
+      "binding_pattern_bits": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ],
+      "binding_gate": "o0",
+      "binding_polarity": "HIGH",
+      "binding_margin_mV": 27.93897,
+      "NO_EDGE": "the eye is CLIPPED at this window bound -- there is no crossing here. The margin never crosses the threshold within the transient: the true right edge is set by the NEXT datum on this bank at the initiation interval H*T, which this single-shot deck does not contain (AMENDMENT E4).",
+      "MECHANISM": {
+       "M": "NO_EDGE_WITHIN_DECK",
+       "reference": "EYE2_DATA_FIXED",
+       "t_ps": 2239.9,
+       "V_trip_used": 0.6792712,
+       "trip_is_constant_for_this_reference": true,
+       "gate": "o0",
+       "polarity": "HIGH",
+       "mgn_mV": 251.384,
+       "d_mgn_dt_mV_per_ps": -1e-05,
+       "term_dVout_dt_mV_per_ps": -1e-05,
+       "term_minus_dtrip_dt_mV_per_ps": 0.0,
+       "dominant_term": "dVout/dt",
+       "V_out": 0.7072102,
+       "V_trip_rx": 0.4558262,
+       "V_rail_driver": 0.7072102,
+       "dV_rail_driver_dt_mV_per_ps": 0.0,
+       "V_rail_rx": 0.8209736,
+       "dV_rail_rx_dt_mV_per_ps": -3e-05,
+       "V_tank_driver": 0.7469114,
+       "dV_tank_dt_mV_per_ps": 0.0,
+       "I_L_driver_uA": 0.0,
+       "transfer_gate_conducting": false,
+       "return_switch_conducting": false,
+       "V_in_driver_gate": "ideal DC source (bank 1)",
+       "overdrive_vs_Vtn_V": null,
+       "overdrive_vs_absVtp_V": null
+      }
+     }
+    }
+   },
+   "margin_curve_file": "MARGIN_bank1.csv.gz",
+   "margin_curve_n_points": 22410
+  },
+  "2": {
+   "receiver": "bank 3 (MEASURED)",
+   "receiver_is_measured": true,
+   "own_rail_start_c_ps": 400.0,
+   "transfer_open_o_ps": 529.5581534764176,
+   "return_close_r_ps": 1200.0,
+   "return_open_ro_ps": 1340.4758779390015,
+   "windows_ps": {
+    "W_PREREG": [
+     400.0,
+     1340.4758779390015
+    ],
+    "W_EXTENDED": [
+     400.0,
+     2239.9
+    ]
+   },
+   "decision_levels": {
+    "P0": {
+     "rail_at_receiver_boundary_V": 1.044696,
+     "trip_fixed_V": 0.5692195,
+     "trip_min_over_live_window_V": 0.1458754,
+     "trip_max_over_live_window_V": 0.6349203,
+     "receiver_is_derived": false
+    },
+    "P1": {
+     "rail_at_receiver_boundary_V": 0.8507042,
+     "trip_fixed_V": 0.470857,
+     "trip_min_over_live_window_V": 0.1485641,
+     "trip_max_over_live_window_V": 0.5707787,
+     "receiver_is_derived": false
+    },
+    "P2": {
+     "rail_at_receiver_boundary_V": 1.273209,
+     "trip_fixed_V": 0.6791175,
+     "trip_min_over_live_window_V": 0.1485695,
+     "trip_max_over_live_window_V": 0.6848641,
+     "receiver_is_derived": false
+    },
+    "P3": {
+     "rail_at_receiver_boundary_V": 0.9937947,
+     "trip_fixed_V": 0.5435251,
+     "trip_min_over_live_window_V": 0.1479601,
+     "trip_max_over_live_window_V": 0.620065,
+     "receiver_is_derived": false
+    },
+    "P4": {
+     "rail_at_receiver_boundary_V": 1.044696,
+     "trip_fixed_V": 0.5692195,
+     "trip_min_over_live_window_V": 0.1458754,
+     "trip_max_over_live_window_V": 0.6349203,
+     "receiver_is_derived": false
+    },
+    "P5": {
+     "rail_at_receiver_boundary_V": 0.8797841,
+     "trip_fixed_V": 0.4856115,
+     "trip_min_over_live_window_V": 0.1457436,
+     "trip_max_over_live_window_V": 0.5814394,
+     "receiver_is_derived": false
+    }
+   },
+   "gates_expected_HIGH_by_pattern": {
+    "P0": [
+     0,
+     1,
+     2,
+     4,
+     7
+    ],
+    "P1": [],
+    "P2": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7
+    ],
+    "P3": [
+     0,
+     2,
+     4,
+     6
+    ],
+    "P4": [
+     1,
+     2,
+     4,
+     5,
+     7
+    ],
+    "P5": [
+     0
+    ]
+   },
+   "patterns_contributing_to_polarity_eye": {
+    "HIGH": [
+     "P0",
+     "P2",
+     "P3",
+     "P4",
+     "P5"
+    ],
+    "LOW": [
+     "P0",
+     "P1",
+     "P3",
+     "P4",
+     "P5"
+    ]
+   },
+   "EYES": {
+    "EYE1_RX_INSTANTANEOUS": {
+     "W_PREREG": {
+      "0mV": {
+       "opening_ps": 598.0654,
+       "closing_ps": 1340.5,
+       "WIDTH_ps": 742.4346,
+       "opening_ps_gridquant": 601.0,
+       "closing_ps_gridquant": 1340.5,
+       "centre_ps": 969.2827,
+       "HEIGHT_at_centre_HIGH_mV": 252.0318,
+       "HEIGHT_at_centre_LOW_mV": 505.8985,
+       "HEIGHT_at_centre_mV": 504.0636,
+       "opening_minus_own_rail_start_ps": 198.0654,
+       "closing_minus_return_close_ps": 140.5,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "1sigma_6.441mV": {
+       "opening_ps": 598.2168,
+       "closing_ps": 1340.5,
+       "WIDTH_ps": 742.2832,
+       "opening_ps_gridquant": 601.0,
+       "closing_ps_gridquant": 1340.5,
+       "centre_ps": 969.3584,
+       "HEIGHT_at_centre_HIGH_mV": 252.0346,
+       "HEIGHT_at_centre_LOW_mV": 505.8991,
+       "HEIGHT_at_centre_mV": 504.0692,
+       "opening_minus_own_rail_start_ps": 198.2168,
+       "closing_minus_return_close_ps": 140.5,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "3sigma_19.323mV": {
+       "opening_ps": 598.5196,
+       "closing_ps": 1340.5,
+       "WIDTH_ps": 741.9804,
+       "opening_ps_gridquant": 601.0,
+       "closing_ps_gridquant": 1340.5,
+       "centre_ps": 969.5098,
+       "HEIGHT_at_centre_HIGH_mV": 252.0373,
+       "HEIGHT_at_centre_LOW_mV": 505.8996,
+       "HEIGHT_at_centre_mV": 504.0747,
+       "opening_minus_own_rail_start_ps": 198.5196,
+       "closing_minus_return_close_ps": 140.5,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      }
+     },
+     "W_PREREG_FIRST_RUN": {
+      "0mV": {
+       "opening_ps": 598.0654,
+       "closing_ps": 1340.5,
+       "WIDTH_ps": 742.4346,
+       "opening_minus_own_rail_start_ps": 198.0654,
+       "closing_minus_return_close_ps": 140.5,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "eye_was_SPLIT_by_the_threshold": false
+      },
+      "1sigma_6.441mV": {
+       "opening_ps": 598.2168,
+       "closing_ps": 1340.5,
+       "WIDTH_ps": 742.2832,
+       "opening_minus_own_rail_start_ps": 198.2168,
+       "closing_minus_return_close_ps": 140.5,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "eye_was_SPLIT_by_the_threshold": false
+      },
+      "3sigma_19.323mV": {
+       "opening_ps": 598.5196,
+       "closing_ps": 1340.5,
+       "WIDTH_ps": 741.9804,
+       "opening_minus_own_rail_start_ps": 198.5196,
+       "closing_minus_return_close_ps": 140.5,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "eye_was_SPLIT_by_the_threshold": false
+      }
+     },
+     "W_EXTENDED": {
+      "0mV": {
+       "opening_ps": 598.0654,
+       "closing_ps": 2239.9,
+       "WIDTH_ps": 1641.8346,
+       "opening_ps_gridquant": 601.0,
+       "closing_ps_gridquant": 2239.9,
+       "centre_ps": 1418.9827,
+       "HEIGHT_at_centre_HIGH_mV": 249.7167,
+       "HEIGHT_at_centre_LOW_mV": 443.8881,
+       "HEIGHT_at_centre_mV": 499.4335,
+       "opening_minus_own_rail_start_ps": 198.0654,
+       "closing_minus_return_close_ps": 1039.9,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "1sigma_6.441mV": {
+       "opening_ps": 598.2168,
+       "closing_ps": 2239.9,
+       "WIDTH_ps": 1641.6832,
+       "opening_ps_gridquant": 601.0,
+       "closing_ps_gridquant": 2239.9,
+       "centre_ps": 1419.0584,
+       "HEIGHT_at_centre_HIGH_mV": 249.7717,
+       "HEIGHT_at_centre_LOW_mV": 443.894,
+       "HEIGHT_at_centre_mV": 499.5435,
+       "opening_minus_own_rail_start_ps": 198.2168,
+       "closing_minus_return_close_ps": 1039.9,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "3sigma_19.323mV": {
+       "opening_ps": 598.5196,
+       "closing_ps": 2239.9,
+       "WIDTH_ps": 1641.3804,
+       "opening_ps_gridquant": 601.0,
+       "closing_ps_gridquant": 2239.9,
+       "centre_ps": 1419.2098,
+       "HEIGHT_at_centre_HIGH_mV": 249.8262,
+       "HEIGHT_at_centre_LOW_mV": 443.8996,
+       "HEIGHT_at_centre_mV": 499.6524,
+       "opening_minus_own_rail_start_ps": 198.5196,
+       "closing_minus_return_close_ps": 1039.9,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      }
+     },
+     "W_EXTENDED_FIRST_RUN": {
+      "0mV": {
+       "opening_ps": 598.0654,
+       "closing_ps": 2239.9,
+       "WIDTH_ps": 1641.8346,
+       "opening_minus_own_rail_start_ps": 198.0654,
+       "closing_minus_return_close_ps": 1039.9,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "eye_was_SPLIT_by_the_threshold": false
+      },
+      "1sigma_6.441mV": {
+       "opening_ps": 598.2168,
+       "closing_ps": 2239.9,
+       "WIDTH_ps": 1641.6832,
+       "opening_minus_own_rail_start_ps": 198.2168,
+       "closing_minus_return_close_ps": 1039.9,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "eye_was_SPLIT_by_the_threshold": false
+      },
+      "3sigma_19.323mV": {
+       "opening_ps": 598.5196,
+       "closing_ps": 2239.9,
+       "WIDTH_ps": 1641.3804,
+       "opening_minus_own_rail_start_ps": 198.5196,
+       "closing_minus_return_close_ps": 1039.9,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "eye_was_SPLIT_by_the_threshold": false
+      }
+     },
+     "HIGH_only_W_EXTENDED_0mV": {
+      "pick": "largest",
+      "open_ps": 625.4253,
+      "close_ps": 2239.9,
+      "width_ps": 1614.4747,
+      "open_ps_gridquant": 601.0,
+      "close_ps_gridquant": 2239.9,
+      "width_ps_gridquant": 1638.9,
+      "clipped_at_window_start": false,
+      "clipped_at_window_end": true
+     },
+     "LOW_only_W_EXTENDED_0mV": {
+      "pick": "largest",
+      "open_ps": 598.0654,
+      "close_ps": 2239.9,
+      "width_ps": 1641.8346,
+      "open_ps_gridquant": 601.0,
+      "close_ps_gridquant": 2239.9,
+      "width_ps_gridquant": 1638.9,
+      "clipped_at_window_start": false,
+      "clipped_at_window_end": true
+     },
+     "per_pattern_W_EXTENDED_0mV": {
+      "P0": {
+       "joint": {
+        "pick": "largest",
+        "open_ps": 596.3487,
+        "close_ps": 2239.9,
+        "width_ps": 1643.5513,
+        "open_ps_gridquant": 601.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1638.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "HIGH": {
+        "pick": "largest",
+        "open_ps": 630.0071,
+        "close_ps": 2239.9,
+        "width_ps": 1609.8929,
+        "open_ps_gridquant": 601.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1638.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "LOW": {
+        "pick": "largest",
+        "open_ps": 596.3487,
+        "close_ps": 2239.9,
+        "width_ps": 1643.5513,
+        "open_ps_gridquant": 601.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1638.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       }
+      },
+      "P1": {
+       "joint": {
+        "pick": "largest",
+        "open_ps": 598.0654,
+        "close_ps": 2239.9,
+        "width_ps": 1641.8346,
+        "open_ps_gridquant": 601.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1638.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "HIGH": null,
+       "LOW": {
+        "pick": "largest",
+        "open_ps": 598.0654,
+        "close_ps": 2239.9,
+        "width_ps": 1641.8346,
+        "open_ps_gridquant": 601.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1638.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       }
+      },
+      "P2": {
+       "joint": {
+        "pick": "largest",
+        "open_ps": 625.4253,
+        "close_ps": 2239.9,
+        "width_ps": 1614.4747,
+        "open_ps_gridquant": 601.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1638.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "HIGH": {
+        "pick": "largest",
+        "open_ps": 625.4253,
+        "close_ps": 2239.9,
+        "width_ps": 1614.4747,
+        "open_ps_gridquant": 601.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1638.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "LOW": null
+      },
+      "P3": {
+       "joint": {
+        "pick": "largest",
+        "open_ps": 596.4937,
+        "close_ps": 2239.9,
+        "width_ps": 1643.4063,
+        "open_ps_gridquant": 601.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1638.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "HIGH": {
+        "pick": "largest",
+        "open_ps": 632.2511,
+        "close_ps": 2239.9,
+        "width_ps": 1607.6489,
+        "open_ps_gridquant": 601.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1638.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "LOW": {
+        "pick": "largest",
+        "open_ps": 596.4937,
+        "close_ps": 2239.9,
+        "width_ps": 1643.4063,
+        "open_ps_gridquant": 601.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1638.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       }
+      },
+      "P4": {
+       "joint": {
+        "pick": "largest",
+        "open_ps": 596.3487,
+        "close_ps": 2239.9,
+        "width_ps": 1643.5513,
+        "open_ps_gridquant": 601.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1638.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "HIGH": {
+        "pick": "largest",
+        "open_ps": 630.0071,
+        "close_ps": 2239.9,
+        "width_ps": 1609.8929,
+        "open_ps_gridquant": 601.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1638.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "LOW": {
+        "pick": "largest",
+        "open_ps": 596.3487,
+        "close_ps": 2239.9,
+        "width_ps": 1643.5513,
+        "open_ps_gridquant": 601.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1638.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       }
+      },
+      "P5": {
+       "joint": {
+        "pick": "largest",
+        "open_ps": 597.1227,
+        "close_ps": 2239.9,
+        "width_ps": 1642.7773,
+        "open_ps_gridquant": 601.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1638.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "HIGH": {
+        "pick": "largest",
+        "open_ps": 641.9808,
+        "close_ps": 2239.9,
+        "width_ps": 1597.9192,
+        "open_ps_gridquant": 601.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1638.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "LOW": {
+        "pick": "largest",
+        "open_ps": 597.1227,
+        "close_ps": 2239.9,
+        "width_ps": 1642.7773,
+        "open_ps_gridquant": 601.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1638.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       }
+      }
+     },
+     "DATA_JITTER_HIGH_polarity": {
+      "n_patterns_with_this_polarity": 5,
+      "patterns": [
+       "P0",
+       "P2",
+       "P3",
+       "P4",
+       "P5"
+      ],
+      "per_pattern_opening_ps": {
+       "P0": 630.0071,
+       "P2": 625.4253,
+       "P3": 632.2511,
+       "P4": 630.0071,
+       "P5": 641.9808
+      },
+      "per_pattern_opening_minus_c_k_ps": {
+       "P0": 230.0071,
+       "P2": 225.4253,
+       "P3": 232.2511,
+       "P4": 230.0071,
+       "P5": 241.9808
+      },
+      "peak_to_peak_ps": 16.5555,
+      "sigma_ps": 5.4923,
+      "note": "P1 (all-zero) and P2 (all-one) give a bank eight gates of ONE polarity, so they appear in only one of these two lists."
+     },
+     "DATA_JITTER_LOW_polarity": {
+      "n_patterns_with_this_polarity": 5,
+      "patterns": [
+       "P0",
+       "P1",
+       "P3",
+       "P4",
+       "P5"
+      ],
+      "per_pattern_opening_ps": {
+       "P0": 596.3487,
+       "P1": 598.0654,
+       "P3": 596.4937,
+       "P4": 596.3487,
+       "P5": 597.1227
+      },
+      "per_pattern_opening_minus_c_k_ps": {
+       "P0": 196.3487,
+       "P1": 198.0654,
+       "P3": 196.4937,
+       "P4": 196.3487,
+       "P5": 197.1227
+      },
+      "peak_to_peak_ps": 1.7167,
+      "sigma_ps": 0.66,
+      "note": "P1 (all-zero) and P2 (all-one) give a bank eight gates of ONE polarity, so they appear in only one of these two lists."
+     },
+     "DATA_DEPENDENT_EDGE_JITTER": {
+      "n_patterns": 6,
+      "opening_min_ps": 596.3487,
+      "opening_max_ps": 625.4253,
+      "opening_peak_to_peak_ps": 29.0766,
+      "opening_mean_ps": 601.6341,
+      "opening_sigma_ps": 10.6568,
+      "closing_peak_to_peak_ps": 0.0,
+      "per_pattern_opening_ps": {
+       "P0": 596.3487,
+       "P1": 598.0654,
+       "P2": 625.4253,
+       "P3": 596.4937,
+       "P4": 596.3487,
+       "P5": 597.1227
+      },
+      "what": "PEAK-TO-PEAK spread of this bank's eye OPENING instant across the data patterns, measured. This is the data-dependent jitter that closes the eye from the early side, and it is what the pattern INTERSECTION charges. It is NOT the campaign's 61.6 ps number, which is a zero-crossing spread, not an eye-edge spread."
+     }
+    },
+    "EYE2_DATA_FIXED": {
+     "W_PREREG": {
+      "0mV": {
+       "opening_ps": 529.6414,
+       "closing_ps": 1340.5,
+       "WIDTH_ps": 810.8586,
+       "opening_ps_gridquant": 529.7,
+       "closing_ps_gridquant": 1340.5,
+       "centre_ps": 935.0707,
+       "HEIGHT_at_centre_HIGH_mV": 251.8438,
+       "HEIGHT_at_centre_LOW_mV": 468.7575,
+       "HEIGHT_at_centre_mV": 503.6876,
+       "opening_minus_own_rail_start_ps": 129.6414,
+       "closing_minus_return_close_ps": 140.5,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "1sigma_6.441mV": {
+       "opening_ps": 529.8083,
+       "closing_ps": 1340.5,
+       "WIDTH_ps": 810.6917,
+       "opening_ps_gridquant": 529.9,
+       "closing_ps_gridquant": 1340.5,
+       "centre_ps": 935.1541,
+       "HEIGHT_at_centre_HIGH_mV": 251.8089,
+       "HEIGHT_at_centre_LOW_mV": 468.7754,
+       "HEIGHT_at_centre_mV": 503.6179,
+       "opening_minus_own_rail_start_ps": 129.8083,
+       "closing_minus_return_close_ps": 140.5,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "3sigma_19.323mV": {
+       "opening_ps": 530.1691,
+       "closing_ps": 1340.5,
+       "WIDTH_ps": 810.3309,
+       "opening_ps_gridquant": 530.2,
+       "closing_ps_gridquant": 1340.5,
+       "centre_ps": 935.3346,
+       "HEIGHT_at_centre_HIGH_mV": 251.7744,
+       "HEIGHT_at_centre_LOW_mV": 468.7932,
+       "HEIGHT_at_centre_mV": 503.5488,
+       "opening_minus_own_rail_start_ps": 130.1691,
+       "closing_minus_return_close_ps": 140.5,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      }
+     },
+     "W_PREREG_FIRST_RUN": {
+      "0mV": {
+       "opening_ps": 529.6414,
+       "closing_ps": 1340.5,
+       "WIDTH_ps": 810.8586,
+       "opening_minus_own_rail_start_ps": 129.6414,
+       "closing_minus_return_close_ps": 140.5,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "eye_was_SPLIT_by_the_threshold": false
+      },
+      "1sigma_6.441mV": {
+       "opening_ps": 529.8083,
+       "closing_ps": 1340.5,
+       "WIDTH_ps": 810.6917,
+       "opening_minus_own_rail_start_ps": 129.8083,
+       "closing_minus_return_close_ps": 140.5,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "eye_was_SPLIT_by_the_threshold": false
+      },
+      "3sigma_19.323mV": {
+       "opening_ps": 530.1691,
+       "closing_ps": 1340.5,
+       "WIDTH_ps": 810.3309,
+       "opening_minus_own_rail_start_ps": 130.1691,
+       "closing_minus_return_close_ps": 140.5,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "eye_was_SPLIT_by_the_threshold": false
+      }
+     },
+     "W_EXTENDED": {
+      "0mV": {
+       "opening_ps": 529.6414,
+       "closing_ps": 2239.9,
+       "WIDTH_ps": 1710.2586,
+       "opening_ps_gridquant": 529.7,
+       "closing_ps_gridquant": 2239.9,
+       "centre_ps": 1384.7707,
+       "HEIGHT_at_centre_HIGH_mV": 45.6998,
+       "HEIGHT_at_centre_LOW_mV": 466.5145,
+       "HEIGHT_at_centre_mV": 91.3995,
+       "opening_minus_own_rail_start_ps": 129.6414,
+       "closing_minus_return_close_ps": 1039.9,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "1sigma_6.441mV": {
+       "opening_ps": 529.8083,
+       "closing_ps": 2239.9,
+       "WIDTH_ps": 1710.0917,
+       "opening_ps_gridquant": 529.9,
+       "closing_ps_gridquant": 2239.9,
+       "centre_ps": 1384.8541,
+       "HEIGHT_at_centre_HIGH_mV": 45.728,
+       "HEIGHT_at_centre_LOW_mV": 466.5244,
+       "HEIGHT_at_centre_mV": 91.4561,
+       "opening_minus_own_rail_start_ps": 129.8083,
+       "closing_minus_return_close_ps": 1039.9,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "3sigma_19.323mV": {
+       "opening_ps": 530.1691,
+       "closing_ps": 1356.5544,
+       "WIDTH_ps": 826.3853,
+       "opening_ps_gridquant": 530.2,
+       "closing_ps_gridquant": 1356.5,
+       "centre_ps": 943.3617,
+       "HEIGHT_at_centre_HIGH_mV": 249.8668,
+       "HEIGHT_at_centre_LOW_mV": 469.7858,
+       "HEIGHT_at_centre_mV": 499.7336,
+       "opening_minus_own_rail_start_ps": 130.1691,
+       "closing_minus_return_close_ps": 156.5544,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": false,
+       "WIDTH_IS_A_LOWER_BOUND": false,
+       "width_bound_reason": null
+      }
+     },
+     "W_EXTENDED_FIRST_RUN": {
+      "0mV": {
+       "opening_ps": 529.6414,
+       "closing_ps": 2239.9,
+       "WIDTH_ps": 1710.2586,
+       "opening_minus_own_rail_start_ps": 129.6414,
+       "closing_minus_return_close_ps": 1039.9,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "eye_was_SPLIT_by_the_threshold": false
+      },
+      "1sigma_6.441mV": {
+       "opening_ps": 529.8083,
+       "closing_ps": 2239.9,
+       "WIDTH_ps": 1710.0917,
+       "opening_minus_own_rail_start_ps": 129.8083,
+       "closing_minus_return_close_ps": 1039.9,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "eye_was_SPLIT_by_the_threshold": false
+      },
+      "3sigma_19.323mV": {
+       "opening_ps": 530.1691,
+       "closing_ps": 1356.5544,
+       "WIDTH_ps": 826.3853,
+       "opening_minus_own_rail_start_ps": 130.1691,
+       "closing_minus_return_close_ps": 156.5544,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": false,
+       "WIDTH_IS_A_LOWER_BOUND": false,
+       "eye_was_SPLIT_by_the_threshold": true
+      }
+     },
+     "HIGH_only_W_EXTENDED_0mV": {
+      "pick": "largest",
+      "open_ps": 529.6414,
+      "close_ps": 2239.9,
+      "width_ps": 1710.2586,
+      "open_ps_gridquant": 529.7,
+      "close_ps_gridquant": 2239.9,
+      "width_ps_gridquant": 1710.2,
+      "clipped_at_window_start": false,
+      "clipped_at_window_end": true
+     },
+     "LOW_only_W_EXTENDED_0mV": {
+      "pick": "largest",
+      "open_ps": 400.0,
+      "close_ps": 2239.9,
+      "width_ps": 1839.9,
+      "open_ps_gridquant": 400.0,
+      "close_ps_gridquant": 2239.9,
+      "width_ps_gridquant": 1839.9,
+      "clipped_at_window_start": true,
+      "clipped_at_window_end": true
+     },
+     "per_pattern_W_EXTENDED_0mV": {
+      "P0": {
+       "joint": {
+        "pick": "largest",
+        "open_ps": 509.646,
+        "close_ps": 2239.9,
+        "width_ps": 1730.254,
+        "open_ps_gridquant": 509.7,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1730.2,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "HIGH": {
+        "pick": "largest",
+        "open_ps": 509.646,
+        "close_ps": 2239.9,
+        "width_ps": 1730.254,
+        "open_ps_gridquant": 509.7,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1730.2,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "LOW": {
+        "pick": "largest",
+        "open_ps": 400.0,
+        "close_ps": 2239.9,
+        "width_ps": 1839.9,
+        "open_ps_gridquant": 400.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1839.9,
+        "clipped_at_window_start": true,
+        "clipped_at_window_end": true
+       }
+      },
+      "P1": {
+       "joint": {
+        "pick": "largest",
+        "open_ps": 400.0,
+        "close_ps": 2239.9,
+        "width_ps": 1839.9,
+        "open_ps_gridquant": 400.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1839.9,
+        "clipped_at_window_start": true,
+        "clipped_at_window_end": true
+       },
+       "HIGH": null,
+       "LOW": {
+        "pick": "largest",
+        "open_ps": 400.0,
+        "close_ps": 2239.9,
+        "width_ps": 1839.9,
+        "open_ps_gridquant": 400.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1839.9,
+        "clipped_at_window_start": true,
+        "clipped_at_window_end": true
+       }
+      },
+      "P2": {
+       "joint": {
+        "pick": "largest",
+        "open_ps": 529.6414,
+        "close_ps": 2239.9,
+        "width_ps": 1710.2586,
+        "open_ps_gridquant": 529.7,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1710.2,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "HIGH": {
+        "pick": "largest",
+        "open_ps": 529.6414,
+        "close_ps": 2239.9,
+        "width_ps": 1710.2586,
+        "open_ps_gridquant": 529.7,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1710.2,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "LOW": null
+      },
+      "P3": {
+       "joint": {
+        "pick": "largest",
+        "open_ps": 505.4202,
+        "close_ps": 2239.9,
+        "width_ps": 1734.4798,
+        "open_ps_gridquant": 505.5,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1734.4,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "HIGH": {
+        "pick": "largest",
+        "open_ps": 505.4202,
+        "close_ps": 2239.9,
+        "width_ps": 1734.4798,
+        "open_ps_gridquant": 505.5,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1734.4,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "LOW": {
+        "pick": "largest",
+        "open_ps": 400.0,
+        "close_ps": 2239.9,
+        "width_ps": 1839.9,
+        "open_ps_gridquant": 400.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1839.9,
+        "clipped_at_window_start": true,
+        "clipped_at_window_end": true
+       }
+      },
+      "P4": {
+       "joint": {
+        "pick": "largest",
+        "open_ps": 509.646,
+        "close_ps": 2239.9,
+        "width_ps": 1730.254,
+        "open_ps_gridquant": 509.7,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1730.2,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "HIGH": {
+        "pick": "largest",
+        "open_ps": 509.646,
+        "close_ps": 2239.9,
+        "width_ps": 1730.254,
+        "open_ps_gridquant": 509.7,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1730.2,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "LOW": {
+        "pick": "largest",
+        "open_ps": 400.0,
+        "close_ps": 2239.9,
+        "width_ps": 1839.9,
+        "open_ps_gridquant": 400.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1839.9,
+        "clipped_at_window_start": true,
+        "clipped_at_window_end": true
+       }
+      },
+      "P5": {
+       "joint": {
+        "pick": "largest",
+        "open_ps": 495.9255,
+        "close_ps": 2239.9,
+        "width_ps": 1743.9745,
+        "open_ps_gridquant": 496.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1743.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "HIGH": {
+        "pick": "largest",
+        "open_ps": 495.9255,
+        "close_ps": 2239.9,
+        "width_ps": 1743.9745,
+        "open_ps_gridquant": 496.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1743.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "LOW": {
+        "pick": "largest",
+        "open_ps": 400.0,
+        "close_ps": 2239.9,
+        "width_ps": 1839.9,
+        "open_ps_gridquant": 400.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1839.9,
+        "clipped_at_window_start": true,
+        "clipped_at_window_end": true
+       }
+      }
+     },
+     "DATA_JITTER_HIGH_polarity": {
+      "n_patterns_with_this_polarity": 5,
+      "patterns": [
+       "P0",
+       "P2",
+       "P3",
+       "P4",
+       "P5"
+      ],
+      "per_pattern_opening_ps": {
+       "P0": 509.646,
+       "P2": 529.6414,
+       "P3": 505.4202,
+       "P4": 509.646,
+       "P5": 495.9255
+      },
+      "per_pattern_opening_minus_c_k_ps": {
+       "P0": 109.646,
+       "P2": 129.6414,
+       "P3": 105.4202,
+       "P4": 109.646,
+       "P5": 95.9255
+      },
+      "peak_to_peak_ps": 33.7159,
+      "sigma_ps": 11.0008,
+      "note": "P1 (all-zero) and P2 (all-one) give a bank eight gates of ONE polarity, so they appear in only one of these two lists."
+     },
+     "DATA_JITTER_LOW_polarity": {
+      "n_patterns_with_this_polarity": 5,
+      "patterns": [
+       "P0",
+       "P1",
+       "P3",
+       "P4",
+       "P5"
+      ],
+      "per_pattern_opening_ps": {
+       "P0": 400.0,
+       "P1": 400.0,
+       "P3": 400.0,
+       "P4": 400.0,
+       "P5": 400.0
+      },
+      "per_pattern_opening_minus_c_k_ps": {
+       "P0": 0.0,
+       "P1": 0.0,
+       "P3": 0.0,
+       "P4": 0.0,
+       "P5": 0.0
+      },
+      "peak_to_peak_ps": 0.0,
+      "sigma_ps": 0.0,
+      "note": "P1 (all-zero) and P2 (all-one) give a bank eight gates of ONE polarity, so they appear in only one of these two lists."
+     },
+     "DATA_DEPENDENT_EDGE_JITTER": {
+      "n_patterns": 6,
+      "opening_min_ps": 400.0,
+      "opening_max_ps": 529.6414,
+      "opening_peak_to_peak_ps": 129.6414,
+      "opening_mean_ps": 491.7132,
+      "opening_sigma_ps": 42.2269,
+      "closing_peak_to_peak_ps": 0.0,
+      "per_pattern_opening_ps": {
+       "P0": 509.646,
+       "P1": 400.0,
+       "P2": 529.6414,
+       "P3": 505.4202,
+       "P4": 509.646,
+       "P5": 495.9255
+      },
+      "what": "PEAK-TO-PEAK spread of this bank's eye OPENING instant across the data patterns, measured. This is the data-dependent jitter that closes the eye from the early side, and it is what the pattern INTERSECTION charges. It is NOT the campaign's 61.6 ps number, which is a zero-crossing spread, not an eye-edge spread."
+     }
+    }
+   },
+   "HEIGHT_at_meaningful_instants": {
+    "EYE1_RX_INSTANTANEOUS": {
+     "sampling_instant_receiver_rail_start_ps": {
+      "t_ps": 600.0,
+      "HEIGHT_HIGH_mV": 743.4249,
+      "HEIGHT_LOW_mV": 54.2354,
+      "HEIGHT_mV": 108.4708,
+      "min_over_both_polarities_mV": 54.2354,
+      "in_eye": true
+     },
+     "pipelined_eye_centre_ps": {
+      "t_ps": 899.0327,
+      "HEIGHT_HIGH_mV": 251.0901,
+      "HEIGHT_LOW_mV": 494.8079,
+      "HEIGHT_mV": 502.1803,
+      "min_over_both_polarities_mV": 251.0901,
+      "in_eye": true
+     },
+     "eye_opening_plus_1ps": {
+      "t_ps": 599.0654,
+      "HEIGHT_HIGH_mV": 775.0534,
+      "HEIGHT_LOW_mV": 4.0071,
+      "HEIGHT_mV": 8.0142,
+      "min_over_both_polarities_mV": 4.0071,
+      "in_eye": true
+     },
+     "return_close_minus_1ps": {
+      "t_ps": 1199.0,
+      "HEIGHT_HIGH_mV": 245.3799,
+      "HEIGHT_LOW_mV": 502.2424,
+      "HEIGHT_mV": 490.7597,
+      "min_over_both_polarities_mV": 245.3799,
+      "in_eye": true
+     }
+    },
+    "EYE2_DATA_FIXED": {
+     "sampling_instant_receiver_rail_start_ps": {
+      "t_ps": 600.0,
+      "HEIGHT_HIGH_mV": 180.7275,
+      "HEIGHT_LOW_mV": 459.867,
+      "HEIGHT_mV": 361.4551,
+      "min_over_both_polarities_mV": 180.7275,
+      "in_eye": true
+     },
+     "pipelined_eye_centre_ps": {
+      "t_ps": 864.8207,
+      "HEIGHT_HIGH_mV": 250.8404,
+      "HEIGHT_LOW_mV": 468.5234,
+      "HEIGHT_mV": 501.6807,
+      "min_over_both_polarities_mV": 250.8404,
+      "in_eye": true
+     },
+     "eye_opening_plus_1ps": {
+      "t_ps": 530.6414,
+      "HEIGHT_HIGH_mV": 28.1602,
+      "HEIGHT_LOW_mV": 444.3869,
+      "HEIGHT_mV": 56.3205,
+      "min_over_both_polarities_mV": 28.1602,
+      "in_eye": true
+     },
+     "return_close_minus_1ps": {
+      "t_ps": 1199.0,
+      "HEIGHT_HIGH_mV": 237.5022,
+      "HEIGHT_LOW_mV": 466.8974,
+      "HEIGHT_mV": 475.0045,
+      "min_over_both_polarities_mV": 237.5022,
+      "in_eye": true
+     }
+    }
+   },
+   "POST_RETURN_MARGIN_FLOOR": {
+    "EYE1_RX_INSTANTANEOUS": {
+     "worst_margin_after_return_close_mV": 71.0268,
+     "at_t_ps": 1361.0,
+     "at_t_minus_return_open_ro_ps": 20.5241,
+     "right_edge_appears_only_for_thresholds_above_mV": 71.0268,
+     "LATE_EDGE_CANDIDATE": {
+      "binding_pattern": "P2",
+      "binding_gate": "o0",
+      "binding_polarity": "HIGH",
+      "binding_margin_mV": 71.02684,
+      "MECHANISM": {
+       "M": "M3+M5",
+       "reference": "EYE1_RX_INSTANTANEOUS",
+       "t_ps": 1361.0,
+       "V_trip_used": 0.6255838,
+       "trip_is_constant_for_this_reference": false,
+       "gate": "o0",
+       "polarity": "HIGH",
+       "mgn_mV": 71.0268,
+       "d_mgn_dt_mV_per_ps": 1.02662,
+       "term_dVout_dt_mV_per_ps": 0.87106,
+       "term_minus_dtrip_dt_mV_per_ps": 0.15555,
+       "dominant_term": "dVout/dt",
+       "V_out": 0.6966106,
+       "V_trip_rx": 0.6255838,
+       "V_rail_driver": 0.6817176,
+       "dV_rail_driver_dt_mV_per_ps": 5.45227,
+       "V_rail_rx": 1.1590859,
+       "dV_rail_rx_dt_mV_per_ps": -0.32507,
+       "V_tank_driver": 0.7308365,
+       "dV_tank_dt_mV_per_ps": 0.23547,
+       "I_L_driver_uA": -0.3118,
+       "transfer_gate_conducting": false,
+       "return_switch_conducting": true,
+       "V_in_driver_gate": -0.000645,
+       "overdrive_vs_Vtn_V": -0.524645,
+       "overdrive_vs_absVtp_V": 0.2421625
+      }
+     }
+    },
+    "EYE2_DATA_FIXED": {
+     "worst_margin_after_return_close_mV": 16.2551,
+     "at_t_ps": 1407.3,
+     "at_t_minus_return_open_ro_ps": 66.8241,
+     "right_edge_appears_only_for_thresholds_above_mV": 16.2551,
+     "LATE_EDGE_CANDIDATE": {
+      "binding_pattern": "P2",
+      "binding_gate": "o0",
+      "binding_polarity": "HIGH",
+      "binding_margin_mV": 16.2551,
+      "MECHANISM": {
+       "M": "M4+M5",
+       "reference": "EYE2_DATA_FIXED",
+       "t_ps": 1407.3000000000002,
+       "V_trip_used": 0.6791175,
+       "trip_is_constant_for_this_reference": true,
+       "gate": "o0",
+       "polarity": "HIGH",
+       "mgn_mV": 233.3596,
+       "d_mgn_dt_mV_per_ps": 0.004,
+       "term_dVout_dt_mV_per_ps": 0.004,
+       "term_minus_dtrip_dt_mV_per_ps": 0.0,
+       "dominant_term": "dVout/dt",
+       "V_out": 0.6953726,
+       "V_trip_rx": 0.4620131,
+       "V_rail_driver": 0.7209595,
+       "dV_rail_driver_dt_mV_per_ps": -0.73044,
+       "V_rail_rx": 0.8332122,
+       "dV_rail_rx_dt_mV_per_ps": -6.40941,
+       "V_tank_driver": 0.7490831,
+       "dV_tank_dt_mV_per_ps": 0.12968,
+       "I_L_driver_uA": -85.8885,
+       "transfer_gate_conducting": false,
+       "return_switch_conducting": false,
+       "V_in_driver_gate": -0.0028542,
+       "overdrive_vs_Vtn_V": -0.5268542,
+       "overdrive_vs_absVtp_V": 0.2836137
+      }
+     }
+    }
+   },
+   "CLOSING_MECHANISM": {
+    "EYE1_RX_INSTANTANEOUS": {
+     "early_edge_OPENING": {
+      "t_ps": 598.0654,
+      "binding_pattern": "P1",
+      "binding_pattern_bits": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ],
+      "binding_gate": "o0",
+      "binding_polarity": "LOW",
+      "binding_margin_mV": -1.13518,
+      "MECHANISM": {
+       "M": "M7",
+       "reference": "EYE1_RX_INSTANTANEOUS",
+       "t_ps": 598.1,
+       "V_trip_used": -0.0008713,
+       "trip_is_constant_for_this_reference": false,
+       "gate": "o0",
+       "polarity": "LOW",
+       "mgn_mV": -1.1352,
+       "d_mgn_dt_mV_per_ps": -7.75124,
+       "term_dVout_dt_mV_per_ps": 1.56341,
+       "term_minus_dtrip_dt_mV_per_ps": -9.31465,
+       "dominant_term": "-dtrip/dt",
+       "V_out": 0.0002639,
+       "V_trip_rx": -0.0008713,
+       "V_rail_driver": 1.2712616,
+       "dV_rail_driver_dt_mV_per_ps": -0.37566,
+       "V_rail_rx": -0.0011966,
+       "dV_rail_rx_dt_mV_per_ps": -12.79267,
+       "V_tank_driver": 0.7685199,
+       "dV_tank_dt_mV_per_ps": -0.51207,
+       "I_L_driver_uA": -230.1172,
+       "transfer_gate_conducting": false,
+       "return_switch_conducting": false,
+       "V_in_driver_gate": 0.9334582,
+       "overdrive_vs_Vtn_V": 0.4094582,
+       "overdrive_vs_absVtp_V": -0.1023966
+      }
+     },
+     "late_edge_CLOSING": {
+      "t_ps": 2239.9,
+      "binding_pattern": "P2",
+      "binding_pattern_bits": [
+       1,
+       1,
+       1,
+       1,
+       1,
+       1,
+       1,
+       1
+      ],
+      "binding_gate": "o0",
+      "binding_polarity": "HIGH",
+      "binding_margin_mV": 253.39872,
+      "NO_EDGE": "the eye is CLIPPED at this window bound -- there is no crossing here. The margin never crosses the threshold within the transient: the true right edge is set by the NEXT datum on this bank at the initiation interval H*T, which this single-shot deck does not contain (AMENDMENT E4).",
+      "MECHANISM": {
+       "M": "NO_EDGE_WITHIN_DECK",
+       "reference": "EYE1_RX_INSTANTANEOUS",
+       "t_ps": 2239.9,
+       "V_trip_used": 0.4557405,
+       "trip_is_constant_for_this_reference": false,
+       "gate": "o0",
+       "polarity": "HIGH",
+       "mgn_mV": 253.3987,
+       "d_mgn_dt_mV_per_ps": 1e-05,
+       "term_dVout_dt_mV_per_ps": -0.0,
+       "term_minus_dtrip_dt_mV_per_ps": 2e-05,
+       "dominant_term": "-dtrip/dt",
+       "V_out": 0.7091392,
+       "V_trip_rx": 0.4557405,
+       "V_rail_driver": 0.7091392,
+       "dV_rail_driver_dt_mV_per_ps": -1e-05,
+       "V_rail_rx": 0.8208041,
+       "dV_rail_rx_dt_mV_per_ps": -3e-05,
+       "V_tank_driver": 0.7463898,
+       "dV_tank_dt_mV_per_ps": -0.0,
+       "I_L_driver_uA": 0.0001,
+       "transfer_gate_conducting": false,
+       "return_switch_conducting": false,
+       "V_in_driver_gate": -0.0,
+       "overdrive_vs_Vtn_V": -0.524,
+       "overdrive_vs_absVtp_V": 0.2689392
+      }
+     }
+    },
+    "EYE2_DATA_FIXED": {
+     "early_edge_OPENING": {
+      "t_ps": 529.6414,
+      "binding_pattern": "P2",
+      "binding_pattern_bits": [
+       1,
+       1,
+       1,
+       1,
+       1,
+       1,
+       1,
+       1
+      ],
+      "binding_gate": "o0",
+      "binding_polarity": "HIGH",
+      "binding_margin_mV": -1.54193,
+      "MECHANISM": {
+       "M": "M1",
+       "reference": "EYE2_DATA_FIXED",
+       "t_ps": 529.6,
+       "V_trip_used": 0.6791175,
+       "trip_is_constant_for_this_reference": true,
+       "gate": "o0",
+       "polarity": "HIGH",
+       "mgn_mV": 603.273,
+       "d_mgn_dt_mV_per_ps": 27.71917,
+       "term_dVout_dt_mV_per_ps": 27.71917,
+       "term_minus_dtrip_dt_mV_per_ps": 0.0,
+       "dominant_term": "dVout/dt",
+       "V_out": 0.6775756,
+       "V_trip_rx": 0.0743026,
+       "V_rail_driver": 0.895853,
+       "dV_rail_driver_dt_mV_per_ps": 107.77275,
+       "V_rail_rx": 0.1020466,
+       "dV_rail_rx_dt_mV_per_ps": 4.72635,
+       "V_tank_driver": 0.6329982,
+       "dV_tank_dt_mV_per_ps": 3.12177,
+       "I_L_driver_uA": -0.8456,
+       "transfer_gate_conducting": true,
+       "return_switch_conducting": false,
+       "V_in_driver_gate": 0.0053866,
+       "overdrive_vs_Vtn_V": -0.5186134,
+       "overdrive_vs_absVtp_V": 0.4502664
+      }
+     },
+     "late_edge_CLOSING": {
+      "t_ps": 2239.9,
+      "binding_pattern": "P2",
+      "binding_pattern_bits": [
+       1,
+       1,
+       1,
+       1,
+       1,
+       1,
+       1,
+       1
+      ],
+      "binding_gate": "o0",
+      "binding_polarity": "HIGH",
+      "binding_margin_mV": 30.02164,
+      "NO_EDGE": "the eye is CLIPPED at this window bound -- there is no crossing here. The margin never crosses the threshold within the transient: the true right edge is set by the NEXT datum on this bank at the initiation interval H*T, which this single-shot deck does not contain (AMENDMENT E4).",
+      "MECHANISM": {
+       "M": "NO_EDGE_WITHIN_DECK",
+       "reference": "EYE2_DATA_FIXED",
+       "t_ps": 2239.9,
+       "V_trip_used": 0.6791175,
+       "trip_is_constant_for_this_reference": true,
+       "gate": "o0",
+       "polarity": "HIGH",
+       "mgn_mV": 253.3987,
+       "d_mgn_dt_mV_per_ps": -0.0,
+       "term_dVout_dt_mV_per_ps": -0.0,
+       "term_minus_dtrip_dt_mV_per_ps": 0.0,
+       "dominant_term": "dVout/dt",
+       "V_out": 0.7091392,
+       "V_trip_rx": 0.4557405,
+       "V_rail_driver": 0.7091392,
+       "dV_rail_driver_dt_mV_per_ps": -1e-05,
+       "V_rail_rx": 0.8208041,
+       "dV_rail_rx_dt_mV_per_ps": -3e-05,
+       "V_tank_driver": 0.7463898,
+       "dV_tank_dt_mV_per_ps": -0.0,
+       "I_L_driver_uA": 0.0001,
+       "transfer_gate_conducting": false,
+       "return_switch_conducting": false,
+       "V_in_driver_gate": -0.0,
+       "overdrive_vs_Vtn_V": -0.524,
+       "overdrive_vs_absVtp_V": 0.2689392
+      }
+     }
+    }
+   },
+   "margin_curve_file": "MARGIN_bank2.csv.gz",
+   "margin_curve_n_points": 22410
+  },
+  "3": {
+   "receiver": "bank 4 (MEASURED)",
+   "receiver_is_measured": true,
+   "own_rail_start_c_ps": 600.0,
+   "transfer_open_o_ps": 729.0097756604349,
+   "return_close_r_ps": 1400.0,
+   "return_open_ro_ps": 1540.5131455989124,
+   "windows_ps": {
+    "W_PREREG": [
+     600.0,
+     1540.5131455989124
+    ],
+    "W_EXTENDED": [
+     600.0,
+     2239.9
+    ]
+   },
+   "decision_levels": {
+    "P0": {
+     "rail_at_receiver_boundary_V": 1.061487,
+     "trip_fixed_V": 0.577614,
+     "trip_min_over_live_window_V": 0.1458156,
+     "trip_max_over_live_window_V": 0.6235136,
+     "receiver_is_derived": false
+    },
+    "P1": {
+     "rail_at_receiver_boundary_V": 1.269896,
+     "trip_fixed_V": 0.6776067,
+     "trip_min_over_live_window_V": 0.1488069,
+     "trip_max_over_live_window_V": 0.6859022,
+     "receiver_is_derived": false
+    },
+    "P2": {
+     "rail_at_receiver_boundary_V": 0.9761371,
+     "trip_fixed_V": 0.5345596,
+     "trip_min_over_live_window_V": 0.1500761,
+     "trip_max_over_live_window_V": 0.5929925,
+     "receiver_is_derived": false
+    },
+    "P3": {
+     "rail_at_receiver_boundary_V": 1.095765,
+     "trip_fixed_V": 0.594681,
+     "trip_min_over_live_window_V": 0.1489855,
+     "trip_max_over_live_window_V": 0.6348403,
+     "receiver_is_derived": false
+    },
+    "P4": {
+     "rail_at_receiver_boundary_V": 1.061487,
+     "trip_fixed_V": 0.577614,
+     "trip_min_over_live_window_V": 0.1458156,
+     "trip_max_over_live_window_V": 0.6235136,
+     "receiver_is_derived": false
+    },
+    "P5": {
+     "rail_at_receiver_boundary_V": 1.221583,
+     "trip_fixed_V": 0.6552504,
+     "trip_min_over_live_window_V": 0.1464723,
+     "trip_max_over_live_window_V": 0.67252,
+     "receiver_is_derived": false
+    }
+   },
+   "gates_expected_HIGH_by_pattern": {
+    "P0": [
+     3,
+     5,
+     6
+    ],
+    "P1": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7
+    ],
+    "P2": [],
+    "P3": [
+     1,
+     3,
+     5,
+     7
+    ],
+    "P4": [
+     0,
+     3,
+     6
+    ],
+    "P5": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7
+    ]
+   },
+   "patterns_contributing_to_polarity_eye": {
+    "HIGH": [
+     "P0",
+     "P1",
+     "P3",
+     "P4",
+     "P5"
+    ],
+    "LOW": [
+     "P0",
+     "P2",
+     "P3",
+     "P4",
+     "P5"
+    ]
+   },
+   "EYES": {
+    "EYE1_RX_INSTANTANEOUS": {
+     "W_PREREG": {
+      "0mV": {
+       "opening_ps": 797.4912,
+       "closing_ps": 1540.5,
+       "WIDTH_ps": 743.0088,
+       "opening_ps_gridquant": 801.0,
+       "closing_ps_gridquant": 1540.5,
+       "centre_ps": 1168.9956,
+       "HEIGHT_at_centre_HIGH_mV": 247.9953,
+       "HEIGHT_at_centre_LOW_mV": 534.2786,
+       "HEIGHT_at_centre_mV": 495.9907,
+       "opening_minus_own_rail_start_ps": 197.4912,
+       "closing_minus_return_close_ps": 140.5,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "1sigma_6.441mV": {
+       "opening_ps": 797.6725,
+       "closing_ps": 1540.5,
+       "WIDTH_ps": 742.8275,
+       "opening_ps_gridquant": 801.0,
+       "closing_ps_gridquant": 1540.5,
+       "centre_ps": 1169.0862,
+       "HEIGHT_at_centre_HIGH_mV": 247.9978,
+       "HEIGHT_at_centre_LOW_mV": 534.2785,
+       "HEIGHT_at_centre_mV": 495.9956,
+       "opening_minus_own_rail_start_ps": 197.6725,
+       "closing_minus_return_close_ps": 140.5,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "3sigma_19.323mV": {
+       "opening_ps": 798.0349,
+       "closing_ps": 1540.5,
+       "WIDTH_ps": 742.4651,
+       "opening_ps_gridquant": 801.0,
+       "closing_ps_gridquant": 1540.5,
+       "centre_ps": 1169.2675,
+       "HEIGHT_at_centre_HIGH_mV": 248.0026,
+       "HEIGHT_at_centre_LOW_mV": 534.2784,
+       "HEIGHT_at_centre_mV": 496.0052,
+       "opening_minus_own_rail_start_ps": 198.0349,
+       "closing_minus_return_close_ps": 140.5,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      }
+     },
+     "W_PREREG_FIRST_RUN": {
+      "0mV": {
+       "opening_ps": 797.4912,
+       "closing_ps": 1540.5,
+       "WIDTH_ps": 743.0088,
+       "opening_minus_own_rail_start_ps": 197.4912,
+       "closing_minus_return_close_ps": 140.5,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "eye_was_SPLIT_by_the_threshold": false
+      },
+      "1sigma_6.441mV": {
+       "opening_ps": 797.6725,
+       "closing_ps": 1540.5,
+       "WIDTH_ps": 742.8275,
+       "opening_minus_own_rail_start_ps": 197.6725,
+       "closing_minus_return_close_ps": 140.5,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "eye_was_SPLIT_by_the_threshold": false
+      },
+      "3sigma_19.323mV": {
+       "opening_ps": 798.0349,
+       "closing_ps": 1540.5,
+       "WIDTH_ps": 742.4651,
+       "opening_minus_own_rail_start_ps": 198.0349,
+       "closing_minus_return_close_ps": 140.5,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "eye_was_SPLIT_by_the_threshold": false
+      }
+     },
+     "W_EXTENDED": {
+      "0mV": {
+       "opening_ps": 797.4912,
+       "closing_ps": 2239.9,
+       "WIDTH_ps": 1442.4088,
+       "opening_ps_gridquant": 801.0,
+       "closing_ps_gridquant": 2239.9,
+       "centre_ps": 1518.6956,
+       "HEIGHT_at_centre_HIGH_mV": 86.2975,
+       "HEIGHT_at_centre_LOW_mV": 543.0219,
+       "HEIGHT_at_centre_mV": 172.595,
+       "opening_minus_own_rail_start_ps": 197.4912,
+       "closing_minus_return_close_ps": 839.9,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "1sigma_6.441mV": {
+       "opening_ps": 797.6725,
+       "closing_ps": 2239.9,
+       "WIDTH_ps": 1442.2275,
+       "opening_ps_gridquant": 801.0,
+       "closing_ps_gridquant": 2239.9,
+       "centre_ps": 1518.7862,
+       "HEIGHT_at_centre_HIGH_mV": 86.2505,
+       "HEIGHT_at_centre_LOW_mV": 543.0138,
+       "HEIGHT_at_centre_mV": 172.5011,
+       "opening_minus_own_rail_start_ps": 197.6725,
+       "closing_minus_return_close_ps": 839.9,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "3sigma_19.323mV": {
+       "opening_ps": 798.0349,
+       "closing_ps": 2239.9,
+       "WIDTH_ps": 1441.8651,
+       "opening_ps_gridquant": 801.0,
+       "closing_ps_gridquant": 2239.9,
+       "centre_ps": 1518.9675,
+       "HEIGHT_at_centre_HIGH_mV": 86.1567,
+       "HEIGHT_at_centre_LOW_mV": 542.9975,
+       "HEIGHT_at_centre_mV": 172.3135,
+       "opening_minus_own_rail_start_ps": 198.0349,
+       "closing_minus_return_close_ps": 839.9,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      }
+     },
+     "W_EXTENDED_FIRST_RUN": {
+      "0mV": {
+       "opening_ps": 797.4912,
+       "closing_ps": 2239.9,
+       "WIDTH_ps": 1442.4088,
+       "opening_minus_own_rail_start_ps": 197.4912,
+       "closing_minus_return_close_ps": 839.9,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "eye_was_SPLIT_by_the_threshold": false
+      },
+      "1sigma_6.441mV": {
+       "opening_ps": 797.6725,
+       "closing_ps": 2239.9,
+       "WIDTH_ps": 1442.2275,
+       "opening_minus_own_rail_start_ps": 197.6725,
+       "closing_minus_return_close_ps": 839.9,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "eye_was_SPLIT_by_the_threshold": false
+      },
+      "3sigma_19.323mV": {
+       "opening_ps": 798.0349,
+       "closing_ps": 2239.9,
+       "WIDTH_ps": 1441.8651,
+       "opening_minus_own_rail_start_ps": 198.0349,
+       "closing_minus_return_close_ps": 839.9,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "eye_was_SPLIT_by_the_threshold": false
+      }
+     },
+     "HIGH_only_W_EXTENDED_0mV": {
+      "pick": "largest",
+      "open_ps": 825.2701,
+      "close_ps": 2239.9,
+      "width_ps": 1414.6299,
+      "open_ps_gridquant": 801.0,
+      "close_ps_gridquant": 2239.9,
+      "width_ps_gridquant": 1438.9,
+      "clipped_at_window_start": false,
+      "clipped_at_window_end": true
+     },
+     "LOW_only_W_EXTENDED_0mV": {
+      "pick": "largest",
+      "open_ps": 797.4912,
+      "close_ps": 2239.9,
+      "width_ps": 1442.4088,
+      "open_ps_gridquant": 801.0,
+      "close_ps_gridquant": 2239.9,
+      "width_ps_gridquant": 1438.9,
+      "clipped_at_window_start": false,
+      "clipped_at_window_end": true
+     },
+     "per_pattern_W_EXTENDED_0mV": {
+      "P0": {
+       "joint": {
+        "pick": "largest",
+        "open_ps": 796.6172,
+        "close_ps": 2239.9,
+        "width_ps": 1443.2828,
+        "open_ps_gridquant": 801.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1438.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "HIGH": {
+        "pick": "largest",
+        "open_ps": 835.1121,
+        "close_ps": 2239.9,
+        "width_ps": 1404.7879,
+        "open_ps_gridquant": 801.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1438.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "LOW": {
+        "pick": "largest",
+        "open_ps": 796.6172,
+        "close_ps": 2239.9,
+        "width_ps": 1443.2828,
+        "open_ps_gridquant": 801.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1438.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       }
+      },
+      "P1": {
+       "joint": {
+        "pick": "largest",
+        "open_ps": 825.2701,
+        "close_ps": 2239.9,
+        "width_ps": 1414.6299,
+        "open_ps_gridquant": 801.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1438.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "HIGH": {
+        "pick": "largest",
+        "open_ps": 825.2701,
+        "close_ps": 2239.9,
+        "width_ps": 1414.6299,
+        "open_ps_gridquant": 801.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1438.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "LOW": null
+      },
+      "P2": {
+       "joint": {
+        "pick": "largest",
+        "open_ps": 797.4912,
+        "close_ps": 2239.9,
+        "width_ps": 1442.4088,
+        "open_ps_gridquant": 801.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1438.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "HIGH": null,
+       "LOW": {
+        "pick": "largest",
+        "open_ps": 797.4912,
+        "close_ps": 2239.9,
+        "width_ps": 1442.4088,
+        "open_ps_gridquant": 801.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1438.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       }
+      },
+      "P3": {
+       "joint": {
+        "pick": "largest",
+        "open_ps": 796.457,
+        "close_ps": 2239.9,
+        "width_ps": 1443.443,
+        "open_ps_gridquant": 801.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1438.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "HIGH": {
+        "pick": "largest",
+        "open_ps": 832.2853,
+        "close_ps": 2239.9,
+        "width_ps": 1407.6147,
+        "open_ps_gridquant": 801.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1438.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "LOW": {
+        "pick": "largest",
+        "open_ps": 796.457,
+        "close_ps": 2239.9,
+        "width_ps": 1443.443,
+        "open_ps_gridquant": 801.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1438.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       }
+      },
+      "P4": {
+       "joint": {
+        "pick": "largest",
+        "open_ps": 796.6172,
+        "close_ps": 2239.9,
+        "width_ps": 1443.2828,
+        "open_ps_gridquant": 801.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1438.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "HIGH": {
+        "pick": "largest",
+        "open_ps": 835.1121,
+        "close_ps": 2239.9,
+        "width_ps": 1404.7879,
+        "open_ps_gridquant": 801.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1438.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "LOW": {
+        "pick": "largest",
+        "open_ps": 796.6172,
+        "close_ps": 2239.9,
+        "width_ps": 1443.2828,
+        "open_ps_gridquant": 801.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1438.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       }
+      },
+      "P5": {
+       "joint": {
+        "pick": "largest",
+        "open_ps": 796.1213,
+        "close_ps": 2239.9,
+        "width_ps": 1443.7787,
+        "open_ps_gridquant": 801.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1438.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "HIGH": {
+        "pick": "largest",
+        "open_ps": 826.5043,
+        "close_ps": 2239.9,
+        "width_ps": 1413.3957,
+        "open_ps_gridquant": 801.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1438.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "LOW": {
+        "pick": "largest",
+        "open_ps": 796.1213,
+        "close_ps": 2239.9,
+        "width_ps": 1443.7787,
+        "open_ps_gridquant": 801.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1438.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       }
+      }
+     },
+     "DATA_JITTER_HIGH_polarity": {
+      "n_patterns_with_this_polarity": 5,
+      "patterns": [
+       "P0",
+       "P1",
+       "P3",
+       "P4",
+       "P5"
+      ],
+      "per_pattern_opening_ps": {
+       "P0": 835.1121,
+       "P1": 825.2701,
+       "P3": 832.2853,
+       "P4": 835.1121,
+       "P5": 826.5043
+      },
+      "per_pattern_opening_minus_c_k_ps": {
+       "P0": 235.1121,
+       "P1": 225.2701,
+       "P3": 232.2853,
+       "P4": 235.1121,
+       "P5": 226.5043
+      },
+      "peak_to_peak_ps": 9.842,
+      "sigma_ps": 4.205,
+      "note": "P1 (all-zero) and P2 (all-one) give a bank eight gates of ONE polarity, so they appear in only one of these two lists."
+     },
+     "DATA_JITTER_LOW_polarity": {
+      "n_patterns_with_this_polarity": 5,
+      "patterns": [
+       "P0",
+       "P2",
+       "P3",
+       "P4",
+       "P5"
+      ],
+      "per_pattern_opening_ps": {
+       "P0": 796.6172,
+       "P2": 797.4912,
+       "P3": 796.457,
+       "P4": 796.6172,
+       "P5": 796.1213
+      },
+      "per_pattern_opening_minus_c_k_ps": {
+       "P0": 196.6172,
+       "P2": 197.4912,
+       "P3": 196.457,
+       "P4": 196.6172,
+       "P5": 196.1213
+      },
+      "peak_to_peak_ps": 1.3699,
+      "sigma_ps": 0.453,
+      "note": "P1 (all-zero) and P2 (all-one) give a bank eight gates of ONE polarity, so they appear in only one of these two lists."
+     },
+     "DATA_DEPENDENT_EDGE_JITTER": {
+      "n_patterns": 6,
+      "opening_min_ps": 796.1213,
+      "opening_max_ps": 825.2701,
+      "opening_peak_to_peak_ps": 29.1488,
+      "opening_mean_ps": 801.429,
+      "opening_sigma_ps": 10.6701,
+      "closing_peak_to_peak_ps": 0.0,
+      "per_pattern_opening_ps": {
+       "P0": 796.6172,
+       "P1": 825.2701,
+       "P2": 797.4912,
+       "P3": 796.457,
+       "P4": 796.6172,
+       "P5": 796.1213
+      },
+      "what": "PEAK-TO-PEAK spread of this bank's eye OPENING instant across the data patterns, measured. This is the data-dependent jitter that closes the eye from the early side, and it is what the pattern INTERSECTION charges. It is NOT the campaign's 61.6 ps number, which is a zero-crossing spread, not an eye-edge spread."
+     }
+    },
+    "EYE2_DATA_FIXED": {
+     "W_PREREG": {
+      "0mV": {
+       "opening_ps": 729.382,
+       "closing_ps": 1540.5,
+       "WIDTH_ps": 811.118,
+       "opening_ps_gridquant": 729.4,
+       "closing_ps_gridquant": 1540.5,
+       "centre_ps": 1134.941,
+       "HEIGHT_at_centre_HIGH_mV": 243.7019,
+       "HEIGHT_at_centre_LOW_mV": 534.2716,
+       "HEIGHT_at_centre_mV": 487.4039,
+       "opening_minus_own_rail_start_ps": 129.382,
+       "closing_minus_return_close_ps": 140.5,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "1sigma_6.441mV": {
+       "opening_ps": 729.561,
+       "closing_ps": 1540.5,
+       "WIDTH_ps": 810.939,
+       "opening_ps_gridquant": 729.6,
+       "closing_ps_gridquant": 1540.5,
+       "centre_ps": 1135.0305,
+       "HEIGHT_at_centre_HIGH_mV": 243.704,
+       "HEIGHT_at_centre_LOW_mV": 534.2715,
+       "HEIGHT_at_centre_mV": 487.408,
+       "opening_minus_own_rail_start_ps": 129.561,
+       "closing_minus_return_close_ps": 140.5,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "3sigma_19.323mV": {
+       "opening_ps": 730.1588,
+       "closing_ps": 1540.5,
+       "WIDTH_ps": 810.3412,
+       "opening_ps_gridquant": 730.2,
+       "closing_ps_gridquant": 1540.5,
+       "centre_ps": 1135.3294,
+       "HEIGHT_at_centre_HIGH_mV": 243.7102,
+       "HEIGHT_at_centre_LOW_mV": 534.2715,
+       "HEIGHT_at_centre_mV": 487.4204,
+       "opening_minus_own_rail_start_ps": 130.1588,
+       "closing_minus_return_close_ps": 140.5,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      }
+     },
+     "W_PREREG_FIRST_RUN": {
+      "0mV": {
+       "opening_ps": 729.382,
+       "closing_ps": 1540.5,
+       "WIDTH_ps": 811.118,
+       "opening_minus_own_rail_start_ps": 129.382,
+       "closing_minus_return_close_ps": 140.5,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "eye_was_SPLIT_by_the_threshold": false
+      },
+      "1sigma_6.441mV": {
+       "opening_ps": 729.561,
+       "closing_ps": 1540.5,
+       "WIDTH_ps": 810.939,
+       "opening_minus_own_rail_start_ps": 129.561,
+       "closing_minus_return_close_ps": 140.5,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "eye_was_SPLIT_by_the_threshold": false
+      },
+      "3sigma_19.323mV": {
+       "opening_ps": 730.1588,
+       "closing_ps": 1540.5,
+       "WIDTH_ps": 810.3412,
+       "opening_minus_own_rail_start_ps": 130.1588,
+       "closing_minus_return_close_ps": 140.5,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "eye_was_SPLIT_by_the_threshold": false
+      }
+     },
+     "W_EXTENDED": {
+      "0mV": {
+       "opening_ps": 729.382,
+       "closing_ps": 2239.9,
+       "WIDTH_ps": 1510.518,
+       "opening_ps_gridquant": 729.4,
+       "closing_ps_gridquant": 2239.9,
+       "centre_ps": 1484.641,
+       "HEIGHT_at_centre_HIGH_mV": 72.3707,
+       "HEIGHT_at_centre_LOW_mV": 546.844,
+       "HEIGHT_at_centre_mV": 144.7414,
+       "opening_minus_own_rail_start_ps": 129.382,
+       "closing_minus_return_close_ps": 839.9,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "1sigma_6.441mV": {
+       "opening_ps": 729.561,
+       "closing_ps": 2239.9,
+       "WIDTH_ps": 1510.339,
+       "opening_ps_gridquant": 729.6,
+       "closing_ps_gridquant": 2239.9,
+       "centre_ps": 1484.7305,
+       "HEIGHT_at_centre_HIGH_mV": 72.2936,
+       "HEIGHT_at_centre_LOW_mV": 546.8375,
+       "HEIGHT_at_centre_mV": 144.5872,
+       "opening_minus_own_rail_start_ps": 129.561,
+       "closing_minus_return_close_ps": 839.9,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "3sigma_19.323mV": {
+       "opening_ps": 730.1588,
+       "closing_ps": 2239.9,
+       "WIDTH_ps": 1509.7412,
+       "opening_ps_gridquant": 730.2,
+       "closing_ps_gridquant": 2239.9,
+       "centre_ps": 1485.0294,
+       "HEIGHT_at_centre_HIGH_mV": 72.062,
+       "HEIGHT_at_centre_LOW_mV": 546.8181,
+       "HEIGHT_at_centre_mV": 144.1239,
+       "opening_minus_own_rail_start_ps": 130.1588,
+       "closing_minus_return_close_ps": 839.9,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      }
+     },
+     "W_EXTENDED_FIRST_RUN": {
+      "0mV": {
+       "opening_ps": 729.382,
+       "closing_ps": 2239.9,
+       "WIDTH_ps": 1510.518,
+       "opening_minus_own_rail_start_ps": 129.382,
+       "closing_minus_return_close_ps": 839.9,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "eye_was_SPLIT_by_the_threshold": false
+      },
+      "1sigma_6.441mV": {
+       "opening_ps": 729.561,
+       "closing_ps": 2239.9,
+       "WIDTH_ps": 1510.339,
+       "opening_minus_own_rail_start_ps": 129.561,
+       "closing_minus_return_close_ps": 839.9,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "eye_was_SPLIT_by_the_threshold": false
+      },
+      "3sigma_19.323mV": {
+       "opening_ps": 730.1588,
+       "closing_ps": 2239.9,
+       "WIDTH_ps": 1509.7412,
+       "opening_minus_own_rail_start_ps": 130.1588,
+       "closing_minus_return_close_ps": 839.9,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "eye_was_SPLIT_by_the_threshold": false
+      }
+     },
+     "HIGH_only_W_EXTENDED_0mV": {
+      "pick": "largest",
+      "open_ps": 729.382,
+      "close_ps": 2239.9,
+      "width_ps": 1510.518,
+      "open_ps_gridquant": 729.4,
+      "close_ps_gridquant": 2239.9,
+      "width_ps_gridquant": 1510.5,
+      "clipped_at_window_start": false,
+      "clipped_at_window_end": true
+     },
+     "LOW_only_W_EXTENDED_0mV": {
+      "pick": "largest",
+      "open_ps": 600.0,
+      "close_ps": 2239.9,
+      "width_ps": 1639.9,
+      "open_ps_gridquant": 600.0,
+      "close_ps_gridquant": 2239.9,
+      "width_ps_gridquant": 1639.9,
+      "clipped_at_window_start": true,
+      "clipped_at_window_end": true
+     },
+     "per_pattern_W_EXTENDED_0mV": {
+      "P0": {
+       "joint": {
+        "pick": "largest",
+        "open_ps": 708.118,
+        "close_ps": 2239.9,
+        "width_ps": 1531.782,
+        "open_ps_gridquant": 708.2,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1531.7,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "HIGH": {
+        "pick": "largest",
+        "open_ps": 708.118,
+        "close_ps": 2239.9,
+        "width_ps": 1531.782,
+        "open_ps_gridquant": 708.2,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1531.7,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "LOW": {
+        "pick": "largest",
+        "open_ps": 600.0,
+        "close_ps": 2239.9,
+        "width_ps": 1639.9,
+        "open_ps_gridquant": 600.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1639.9,
+        "clipped_at_window_start": true,
+        "clipped_at_window_end": true
+       }
+      },
+      "P1": {
+       "joint": {
+        "pick": "largest",
+        "open_ps": 729.382,
+        "close_ps": 2239.9,
+        "width_ps": 1510.518,
+        "open_ps_gridquant": 729.4,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1510.5,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "HIGH": {
+        "pick": "largest",
+        "open_ps": 729.382,
+        "close_ps": 2239.9,
+        "width_ps": 1510.518,
+        "open_ps_gridquant": 729.4,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1510.5,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "LOW": null
+      },
+      "P2": {
+       "joint": {
+        "pick": "largest",
+        "open_ps": 600.0,
+        "close_ps": 2239.9,
+        "width_ps": 1639.9,
+        "open_ps_gridquant": 600.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1639.9,
+        "clipped_at_window_start": true,
+        "clipped_at_window_end": true
+       },
+       "HIGH": null,
+       "LOW": {
+        "pick": "largest",
+        "open_ps": 600.0,
+        "close_ps": 2239.9,
+        "width_ps": 1639.9,
+        "open_ps_gridquant": 600.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1639.9,
+        "clipped_at_window_start": true,
+        "clipped_at_window_end": true
+       }
+      },
+      "P3": {
+       "joint": {
+        "pick": "largest",
+        "open_ps": 711.6421,
+        "close_ps": 2239.9,
+        "width_ps": 1528.2579,
+        "open_ps_gridquant": 711.7,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1528.2,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "HIGH": {
+        "pick": "largest",
+        "open_ps": 711.6421,
+        "close_ps": 2239.9,
+        "width_ps": 1528.2579,
+        "open_ps_gridquant": 711.7,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1528.2,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "LOW": {
+        "pick": "largest",
+        "open_ps": 600.0,
+        "close_ps": 2239.9,
+        "width_ps": 1639.9,
+        "open_ps_gridquant": 600.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1639.9,
+        "clipped_at_window_start": true,
+        "clipped_at_window_end": true
+       }
+      },
+      "P4": {
+       "joint": {
+        "pick": "largest",
+        "open_ps": 708.118,
+        "close_ps": 2239.9,
+        "width_ps": 1531.782,
+        "open_ps_gridquant": 708.2,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1531.7,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "HIGH": {
+        "pick": "largest",
+        "open_ps": 708.118,
+        "close_ps": 2239.9,
+        "width_ps": 1531.782,
+        "open_ps_gridquant": 708.2,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1531.7,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "LOW": {
+        "pick": "largest",
+        "open_ps": 600.0,
+        "close_ps": 2239.9,
+        "width_ps": 1639.9,
+        "open_ps_gridquant": 600.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1639.9,
+        "clipped_at_window_start": true,
+        "clipped_at_window_end": true
+       }
+      },
+      "P5": {
+       "joint": {
+        "pick": "largest",
+        "open_ps": 725.3856,
+        "close_ps": 2239.9,
+        "width_ps": 1514.5144,
+        "open_ps_gridquant": 725.4,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1514.5,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "HIGH": {
+        "pick": "largest",
+        "open_ps": 725.3856,
+        "close_ps": 2239.9,
+        "width_ps": 1514.5144,
+        "open_ps_gridquant": 725.4,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1514.5,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "LOW": {
+        "pick": "largest",
+        "open_ps": 600.0,
+        "close_ps": 2239.9,
+        "width_ps": 1639.9,
+        "open_ps_gridquant": 600.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1639.9,
+        "clipped_at_window_start": true,
+        "clipped_at_window_end": true
+       }
+      }
+     },
+     "DATA_JITTER_HIGH_polarity": {
+      "n_patterns_with_this_polarity": 5,
+      "patterns": [
+       "P0",
+       "P1",
+       "P3",
+       "P4",
+       "P5"
+      ],
+      "per_pattern_opening_ps": {
+       "P0": 708.118,
+       "P1": 729.382,
+       "P3": 711.6421,
+       "P4": 708.118,
+       "P5": 725.3856
+      },
+      "per_pattern_opening_minus_c_k_ps": {
+       "P0": 108.118,
+       "P1": 129.382,
+       "P3": 111.6421,
+       "P4": 108.118,
+       "P5": 125.3856
+      },
+      "peak_to_peak_ps": 21.264,
+      "sigma_ps": 9.0445,
+      "note": "P1 (all-zero) and P2 (all-one) give a bank eight gates of ONE polarity, so they appear in only one of these two lists."
+     },
+     "DATA_JITTER_LOW_polarity": {
+      "n_patterns_with_this_polarity": 5,
+      "patterns": [
+       "P0",
+       "P2",
+       "P3",
+       "P4",
+       "P5"
+      ],
+      "per_pattern_opening_ps": {
+       "P0": 600.0,
+       "P2": 600.0,
+       "P3": 600.0,
+       "P4": 600.0,
+       "P5": 600.0
+      },
+      "per_pattern_opening_minus_c_k_ps": {
+       "P0": 0.0,
+       "P2": 0.0,
+       "P3": 0.0,
+       "P4": 0.0,
+       "P5": 0.0
+      },
+      "peak_to_peak_ps": 0.0,
+      "sigma_ps": 0.0,
+      "note": "P1 (all-zero) and P2 (all-one) give a bank eight gates of ONE polarity, so they appear in only one of these two lists."
+     },
+     "DATA_DEPENDENT_EDGE_JITTER": {
+      "n_patterns": 6,
+      "opening_min_ps": 600.0,
+      "opening_max_ps": 729.382,
+      "opening_peak_to_peak_ps": 129.382,
+      "opening_mean_ps": 697.1076,
+      "opening_sigma_ps": 44.2057,
+      "closing_peak_to_peak_ps": 0.0,
+      "per_pattern_opening_ps": {
+       "P0": 708.118,
+       "P1": 729.382,
+       "P2": 600.0,
+       "P3": 711.6421,
+       "P4": 708.118,
+       "P5": 725.3856
+      },
+      "what": "PEAK-TO-PEAK spread of this bank's eye OPENING instant across the data patterns, measured. This is the data-dependent jitter that closes the eye from the early side, and it is what the pattern INTERSECTION charges. It is NOT the campaign's 61.6 ps number, which is a zero-crossing spread, not an eye-edge spread."
+     }
+    }
+   },
+   "HEIGHT_at_meaningful_instants": {
+    "EYE1_RX_INSTANTANEOUS": {
+     "sampling_instant_receiver_rail_start_ps": {
+      "t_ps": 800.0,
+      "HEIGHT_HIGH_mV": 736.1283,
+      "HEIGHT_LOW_mV": 54.5528,
+      "HEIGHT_mV": 109.1055,
+      "min_over_both_polarities_mV": 54.5528,
+      "in_eye": true
+     },
+     "pipelined_eye_centre_ps": {
+      "t_ps": 1098.7456,
+      "HEIGHT_HIGH_mV": 244.97,
+      "HEIGHT_LOW_mV": 534.2401,
+      "HEIGHT_mV": 489.9401,
+      "min_over_both_polarities_mV": 244.97,
+      "in_eye": true
+     },
+     "eye_opening_plus_1ps": {
+      "t_ps": 798.4912,
+      "HEIGHT_HIGH_mV": 769.5683,
+      "HEIGHT_LOW_mV": -4.3724,
+      "HEIGHT_mV": -8.7447,
+      "min_over_both_polarities_mV": -4.3724,
+      "in_eye": false
+     },
+     "return_close_minus_1ps": {
+      "t_ps": 1399.0,
+      "HEIGHT_HIGH_mV": 239.3112,
+      "HEIGHT_LOW_mV": 531.531,
+      "HEIGHT_mV": 478.6223,
+      "min_over_both_polarities_mV": 239.3112,
+      "in_eye": true
+     }
+    },
+    "EYE2_DATA_FIXED": {
+     "sampling_instant_receiver_rail_start_ps": {
+      "t_ps": 800.0,
+      "HEIGHT_HIGH_mV": 174.6945,
+      "HEIGHT_LOW_mV": 522.7703,
+      "HEIGHT_mV": 349.389,
+      "min_over_both_polarities_mV": 174.6945,
+      "in_eye": true
+     },
+     "pipelined_eye_centre_ps": {
+      "t_ps": 1064.691,
+      "HEIGHT_HIGH_mV": 242.4488,
+      "HEIGHT_LOW_mV": 534.2707,
+      "HEIGHT_mV": 484.8977,
+      "min_over_both_polarities_mV": 242.4488,
+      "in_eye": true
+     },
+     "eye_opening_plus_1ps": {
+      "t_ps": 730.382,
+      "HEIGHT_HIGH_mV": 23.2611,
+      "HEIGHT_LOW_mV": 507.2167,
+      "HEIGHT_mV": 46.5222,
+      "min_over_both_polarities_mV": 23.2611,
+      "in_eye": true
+     },
+     "return_close_minus_1ps": {
+      "t_ps": 1399.0,
+      "HEIGHT_HIGH_mV": 231.5981,
+      "HEIGHT_LOW_mV": 531.0387,
+      "HEIGHT_mV": 463.1962,
+      "min_over_both_polarities_mV": 231.5981,
+      "in_eye": true
+     }
+    }
+   },
+   "POST_RETURN_MARGIN_FLOOR": {
+    "EYE1_RX_INSTANTANEOUS": {
+     "worst_margin_after_return_close_mV": 73.0476,
+     "at_t_ps": 1563.3,
+     "at_t_minus_return_open_ro_ps": 22.7869,
+     "right_edge_appears_only_for_thresholds_above_mV": 73.0476,
+     "LATE_EDGE_CANDIDATE": {
+      "binding_pattern": "P1",
+      "binding_gate": "o0",
+      "binding_polarity": "HIGH",
+      "binding_margin_mV": 73.04761,
+      "MECHANISM": {
+       "M": "M3+M5",
+       "reference": "EYE1_RX_INSTANTANEOUS",
+       "t_ps": 1563.3000000000002,
+       "V_trip_used": 0.624393,
+       "trip_is_constant_for_this_reference": false,
+       "gate": "o0",
+       "polarity": "HIGH",
+       "mgn_mV": 73.0476,
+       "d_mgn_dt_mV_per_ps": 8.6704,
+       "term_dVout_dt_mV_per_ps": 9.35263,
+       "term_minus_dtrip_dt_mV_per_ps": -0.68223,
+       "dominant_term": "dVout/dt",
+       "V_out": 0.6974406,
+       "V_trip_rx": 0.624393,
+       "V_rail_driver": 0.6845681,
+       "dV_rail_driver_dt_mV_per_ps": 41.42688,
+       "V_rail_rx": 1.1565975,
+       "dV_rail_rx_dt_mV_per_ps": 1.42573,
+       "V_tank_driver": 0.729108,
+       "dV_tank_dt_mV_per_ps": 1.78107,
+       "I_L_driver_uA": -0.075,
+       "transfer_gate_conducting": false,
+       "return_switch_conducting": true,
+       "V_in_driver_gate": -0.0086361,
+       "overdrive_vs_Vtn_V": -0.5326361,
+       "overdrive_vs_absVtp_V": 0.2530042
+      }
+     }
+    },
+    "EYE2_DATA_FIXED": {
+     "worst_margin_after_return_close_mV": 19.5267,
+     "at_t_ps": 1606.9,
+     "at_t_minus_return_open_ro_ps": 66.3869,
+     "right_edge_appears_only_for_thresholds_above_mV": 19.5267,
+     "LATE_EDGE_CANDIDATE": {
+      "binding_pattern": "P1",
+      "binding_gate": "o0",
+      "binding_polarity": "HIGH",
+      "binding_margin_mV": 19.52672,
+      "MECHANISM": {
+       "M": "M4+M5",
+       "reference": "EYE2_DATA_FIXED",
+       "t_ps": 1606.9,
+       "V_trip_used": 0.6776067,
+       "trip_is_constant_for_this_reference": true,
+       "gate": "o0",
+       "polarity": "HIGH",
+       "mgn_mV": 234.9178,
+       "d_mgn_dt_mV_per_ps": -0.00675,
+       "term_dVout_dt_mV_per_ps": -0.00675,
+       "term_minus_dtrip_dt_mV_per_ps": 0.0,
+       "dominant_term": "dVout/dt",
+       "V_out": 0.6971334,
+       "V_trip_rx": 0.4622156,
+       "V_rail_driver": 0.7246494,
+       "dV_rail_driver_dt_mV_per_ps": -0.86663,
+       "V_rail_rx": 0.8336129,
+       "dV_rail_rx_dt_mV_per_ps": -6.86138,
+       "V_tank_driver": 0.7477282,
+       "dV_tank_dt_mV_per_ps": 0.16446,
+       "I_L_driver_uA": -96.8601,
+       "transfer_gate_conducting": false,
+       "return_switch_conducting": false,
+       "V_in_driver_gate": -0.0051093,
+       "overdrive_vs_Vtn_V": -0.5291093,
+       "overdrive_vs_absVtp_V": 0.2895587
+      }
+     }
+    }
+   },
+   "CLOSING_MECHANISM": {
+    "EYE1_RX_INSTANTANEOUS": {
+     "early_edge_OPENING": {
+      "t_ps": 797.4912,
+      "binding_pattern": "P2",
+      "binding_pattern_bits": [
+       1,
+       1,
+       1,
+       1,
+       1,
+       1,
+       1,
+       1
+      ],
+      "binding_gate": "o0",
+      "binding_polarity": "LOW",
+      "binding_margin_mV": -0.43022,
+      "MECHANISM": {
+       "M": "M7",
+       "reference": "EYE1_RX_INSTANTANEOUS",
+       "t_ps": 797.5,
+       "V_trip_used": 5.84e-05,
+       "trip_is_constant_for_this_reference": false,
+       "gate": "o0",
+       "polarity": "LOW",
+       "mgn_mV": -0.4302,
+       "d_mgn_dt_mV_per_ps": 0.00936,
+       "term_dVout_dt_mV_per_ps": 0.01054,
+       "term_minus_dtrip_dt_mV_per_ps": -0.00118,
+       "dominant_term": "dVout/dt",
+       "V_out": 0.0004886,
+       "V_trip_rx": 5.84e-05,
+       "V_rail_driver": 1.2708242,
+       "dV_rail_driver_dt_mV_per_ps": -0.0408,
+       "V_rail_rx": 8.02e-05,
+       "dV_rail_rx_dt_mV_per_ps": -0.00162,
+       "V_tank_driver": 0.7687411,
+       "dV_tank_dt_mV_per_ps": -0.5044,
+       "I_L_driver_uA": -240.5255,
+       "transfer_gate_conducting": false,
+       "return_switch_conducting": false,
+       "V_in_driver_gate": 0.9278825,
+       "overdrive_vs_Vtn_V": 0.4038825,
+       "overdrive_vs_absVtp_V": -0.0972583
+      }
+     },
+     "late_edge_CLOSING": {
+      "t_ps": 2239.9,
+      "binding_pattern": "P1",
+      "binding_pattern_bits": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ],
+      "binding_gate": "o0",
+      "binding_polarity": "HIGH",
+      "binding_margin_mV": 257.89445,
+      "NO_EDGE": "the eye is CLIPPED at this window bound -- there is no crossing here. The margin never crosses the threshold within the transient: the true right edge is set by the NEXT datum on this bank at the initiation interval H*T, which this single-shot deck does not contain (AMENDMENT E4).",
+      "MECHANISM": {
+       "M": "NO_EDGE_WITHIN_DECK",
+       "reference": "EYE1_RX_INSTANTANEOUS",
+       "t_ps": 2239.9,
+       "V_trip_used": 0.4554748,
+       "trip_is_constant_for_this_reference": false,
+       "gate": "o0",
+       "polarity": "HIGH",
+       "mgn_mV": 257.8945,
+       "d_mgn_dt_mV_per_ps": 1e-05,
+       "term_dVout_dt_mV_per_ps": -0.0,
+       "term_minus_dtrip_dt_mV_per_ps": 1e-05,
+       "dominant_term": "-dtrip/dt",
+       "V_out": 0.7133692,
+       "V_trip_rx": 0.4554748,
+       "V_rail_driver": 0.7133693,
+       "dV_rail_driver_dt_mV_per_ps": 0.0,
+       "V_rail_rx": 0.8202786,
+       "dV_rail_rx_dt_mV_per_ps": -2e-05,
+       "V_tank_driver": 0.7452433,
+       "dV_tank_dt_mV_per_ps": 0.0,
+       "I_L_driver_uA": -0.0036,
+       "transfer_gate_conducting": false,
+       "return_switch_conducting": false,
+       "V_in_driver_gate": 8e-07,
+       "overdrive_vs_Vtn_V": -0.5239992,
+       "overdrive_vs_absVtp_V": 0.2731685
+      }
+     }
+    },
+    "EYE2_DATA_FIXED": {
+     "early_edge_OPENING": {
+      "t_ps": 729.382,
+      "binding_pattern": "P1",
+      "binding_pattern_bits": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ],
+      "binding_gate": "o0",
+      "binding_polarity": "HIGH",
+      "binding_margin_mV": 0.69747,
+      "MECHANISM": {
+       "M": "M1",
+       "reference": "EYE2_DATA_FIXED",
+       "t_ps": 729.4000000000001,
+       "V_trip_used": 0.6776067,
+       "trip_is_constant_for_this_reference": true,
+       "gate": "o0",
+       "polarity": "HIGH",
+       "mgn_mV": 599.2541,
+       "d_mgn_dt_mV_per_ps": 37.8162,
+       "term_dVout_dt_mV_per_ps": 37.8162,
+       "term_minus_dtrip_dt_mV_per_ps": 0.0,
+       "dominant_term": "dVout/dt",
+       "V_out": 0.6783041,
+       "V_trip_rx": 0.07905,
+       "V_rail_driver": 0.9553008,
+       "dV_rail_driver_dt_mV_per_ps": 154.393,
+       "V_rail_rx": 0.1085666,
+       "dV_rail_rx_dt_mV_per_ps": 6.82622,
+       "V_tank_driver": 0.6362439,
+       "dV_tank_dt_mV_per_ps": 4.1736,
+       "I_L_driver_uA": -8.9657,
+       "transfer_gate_conducting": true,
+       "return_switch_conducting": false,
+       "V_in_driver_gate": 0.0262345,
+       "overdrive_vs_Vtn_V": -0.4977655,
+       "overdrive_vs_absVtp_V": 0.4888663
+      }
+     },
+     "late_edge_CLOSING": {
+      "t_ps": 2239.9,
+      "binding_pattern": "P1",
+      "binding_pattern_bits": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ],
+      "binding_gate": "o0",
+      "binding_polarity": "HIGH",
+      "binding_margin_mV": 35.76257,
+      "NO_EDGE": "the eye is CLIPPED at this window bound -- there is no crossing here. The margin never crosses the threshold within the transient: the true right edge is set by the NEXT datum on this bank at the initiation interval H*T, which this single-shot deck does not contain (AMENDMENT E4).",
+      "MECHANISM": {
+       "M": "NO_EDGE_WITHIN_DECK",
+       "reference": "EYE2_DATA_FIXED",
+       "t_ps": 2239.9,
+       "V_trip_used": 0.6776067,
+       "trip_is_constant_for_this_reference": true,
+       "gate": "o0",
+       "polarity": "HIGH",
+       "mgn_mV": 257.8945,
+       "d_mgn_dt_mV_per_ps": -0.0,
+       "term_dVout_dt_mV_per_ps": -0.0,
+       "term_minus_dtrip_dt_mV_per_ps": 0.0,
+       "dominant_term": "dVout/dt",
+       "V_out": 0.7133692,
+       "V_trip_rx": 0.4554748,
+       "V_rail_driver": 0.7133693,
+       "dV_rail_driver_dt_mV_per_ps": 0.0,
+       "V_rail_rx": 0.8202786,
+       "dV_rail_rx_dt_mV_per_ps": -2e-05,
+       "V_tank_driver": 0.7452433,
+       "dV_tank_dt_mV_per_ps": 0.0,
+       "I_L_driver_uA": -0.0036,
+       "transfer_gate_conducting": false,
+       "return_switch_conducting": false,
+       "V_in_driver_gate": 8e-07,
+       "overdrive_vs_Vtn_V": -0.5239992,
+       "overdrive_vs_absVtp_V": 0.2731685
+      }
+     }
+    }
+   },
+   "margin_curve_file": "MARGIN_bank3.csv.gz",
+   "margin_curve_n_points": 22410
+  },
+  "4": {
+   "receiver": "DERIVED: receiver rail = V(rail3)(t - T) and the fixed data level uses VR4B; there is no bank 5 in a 4-bank deck",
+   "receiver_is_measured": false,
+   "own_rail_start_c_ps": 800.0,
+   "transfer_open_o_ps": 927.6463686438515,
+   "return_close_r_ps": 1600.0,
+   "return_open_ro_ps": 1740.983635317566,
+   "windows_ps": {
+    "W_PREREG": [
+     800.0,
+     1740.983635317566
+    ],
+    "W_EXTENDED": [
+     800.0,
+     2239.9
+    ]
+   },
+   "decision_levels": {
+    "P0": {
+     "rail_at_receiver_boundary_V": 1.061487,
+     "trip_fixed_V": 0.577614,
+     "trip_min_over_live_window_V": 0.1458754,
+     "trip_max_over_live_window_V": 0.6349203,
+     "receiver_is_derived": true
+    },
+    "P1": {
+     "rail_at_receiver_boundary_V": 1.269896,
+     "trip_fixed_V": 0.6776067,
+     "trip_min_over_live_window_V": 0.1485641,
+     "trip_max_over_live_window_V": 0.5707787,
+     "receiver_is_derived": true
+    },
+    "P2": {
+     "rail_at_receiver_boundary_V": 0.9761371,
+     "trip_fixed_V": 0.5345596,
+     "trip_min_over_live_window_V": 0.1485695,
+     "trip_max_over_live_window_V": 0.6848641,
+     "receiver_is_derived": true
+    },
+    "P3": {
+     "rail_at_receiver_boundary_V": 1.095765,
+     "trip_fixed_V": 0.594681,
+     "trip_min_over_live_window_V": 0.1479601,
+     "trip_max_over_live_window_V": 0.620065,
+     "receiver_is_derived": true
+    },
+    "P4": {
+     "rail_at_receiver_boundary_V": 1.061487,
+     "trip_fixed_V": 0.577614,
+     "trip_min_over_live_window_V": 0.1458754,
+     "trip_max_over_live_window_V": 0.6349203,
+     "receiver_is_derived": true
+    },
+    "P5": {
+     "rail_at_receiver_boundary_V": 1.221583,
+     "trip_fixed_V": 0.6552504,
+     "trip_min_over_live_window_V": 0.1457436,
+     "trip_max_over_live_window_V": 0.5814394,
+     "receiver_is_derived": true
+    }
+   },
+   "gates_expected_HIGH_by_pattern": {
+    "P0": [
+     0,
+     1,
+     2,
+     4,
+     7
+    ],
+    "P1": [],
+    "P2": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7
+    ],
+    "P3": [
+     0,
+     2,
+     4,
+     6
+    ],
+    "P4": [
+     1,
+     2,
+     4,
+     5,
+     7
+    ],
+    "P5": [
+     0
+    ]
+   },
+   "patterns_contributing_to_polarity_eye": {
+    "HIGH": [
+     "P0",
+     "P2",
+     "P3",
+     "P4",
+     "P5"
+    ],
+    "LOW": [
+     "P0",
+     "P1",
+     "P3",
+     "P4",
+     "P5"
+    ]
+   },
+   "EYES": {
+    "EYE1_RX_INSTANTANEOUS": {
+     "W_PREREG": {
+      "0mV": {
+       "opening_ps": 896.4131,
+       "closing_ps": 1741.0,
+       "WIDTH_ps": 844.5869,
+       "opening_ps_gridquant": 896.5,
+       "closing_ps_gridquant": 1741.0,
+       "centre_ps": 1318.7066,
+       "HEIGHT_at_centre_HIGH_mV": 304.6878,
+       "HEIGHT_at_centre_LOW_mV": 506.2022,
+       "HEIGHT_at_centre_mV": 609.3756,
+       "opening_minus_own_rail_start_ps": 96.4131,
+       "closing_minus_return_close_ps": 141.0,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "1sigma_6.441mV": {
+       "opening_ps": 897.3123,
+       "closing_ps": 1741.0,
+       "WIDTH_ps": 843.6877,
+       "opening_ps_gridquant": 897.4,
+       "closing_ps_gridquant": 1741.0,
+       "centre_ps": 1319.1562,
+       "HEIGHT_at_centre_HIGH_mV": 304.7058,
+       "HEIGHT_at_centre_LOW_mV": 506.2067,
+       "HEIGHT_at_centre_mV": 609.4116,
+       "opening_minus_own_rail_start_ps": 97.3123,
+       "closing_minus_return_close_ps": 141.0,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "3sigma_19.323mV": {
+       "opening_ps": 899.0797,
+       "closing_ps": 1741.0,
+       "WIDTH_ps": 841.9203,
+       "opening_ps_gridquant": 899.1,
+       "closing_ps_gridquant": 1741.0,
+       "centre_ps": 1320.0398,
+       "HEIGHT_at_centre_HIGH_mV": 304.7347,
+       "HEIGHT_at_centre_LOW_mV": 506.2138,
+       "HEIGHT_at_centre_mV": 609.4694,
+       "opening_minus_own_rail_start_ps": 99.0797,
+       "closing_minus_return_close_ps": 141.0,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      }
+     },
+     "W_PREREG_FIRST_RUN": {
+      "0mV": {
+       "opening_ps": 896.4131,
+       "closing_ps": 1741.0,
+       "WIDTH_ps": 844.5869,
+       "opening_minus_own_rail_start_ps": 96.4131,
+       "closing_minus_return_close_ps": 141.0,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "eye_was_SPLIT_by_the_threshold": false
+      },
+      "1sigma_6.441mV": {
+       "opening_ps": 897.3123,
+       "closing_ps": 1741.0,
+       "WIDTH_ps": 843.6877,
+       "opening_minus_own_rail_start_ps": 97.3123,
+       "closing_minus_return_close_ps": 141.0,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "eye_was_SPLIT_by_the_threshold": false
+      },
+      "3sigma_19.323mV": {
+       "opening_ps": 899.0797,
+       "closing_ps": 1741.0,
+       "WIDTH_ps": 841.9203,
+       "opening_minus_own_rail_start_ps": 99.0797,
+       "closing_minus_return_close_ps": 141.0,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "eye_was_SPLIT_by_the_threshold": false
+      }
+     },
+     "W_EXTENDED": {
+      "0mV": {
+       "opening_ps": 896.4131,
+       "closing_ps": 2239.9,
+       "WIDTH_ps": 1343.4869,
+       "opening_ps_gridquant": 896.5,
+       "closing_ps_gridquant": 2239.9,
+       "centre_ps": 1568.1566,
+       "HEIGHT_at_centre_HIGH_mV": 351.6491,
+       "HEIGHT_at_centre_LOW_mV": 490.3178,
+       "HEIGHT_at_centre_mV": 703.2982,
+       "opening_minus_own_rail_start_ps": 96.4131,
+       "closing_minus_return_close_ps": 639.9,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "1sigma_6.441mV": {
+       "opening_ps": 897.3123,
+       "closing_ps": 2239.9,
+       "WIDTH_ps": 1342.5877,
+       "opening_ps_gridquant": 897.4,
+       "closing_ps_gridquant": 2239.9,
+       "centre_ps": 1568.6062,
+       "HEIGHT_at_centre_HIGH_mV": 351.6849,
+       "HEIGHT_at_centre_LOW_mV": 490.3131,
+       "HEIGHT_at_centre_mV": 703.3699,
+       "opening_minus_own_rail_start_ps": 97.3123,
+       "closing_minus_return_close_ps": 639.9,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "3sigma_19.323mV": {
+       "opening_ps": 899.0797,
+       "closing_ps": 2239.9,
+       "WIDTH_ps": 1340.8203,
+       "opening_ps_gridquant": 899.1,
+       "closing_ps_gridquant": 2239.9,
+       "centre_ps": 1569.4898,
+       "HEIGHT_at_centre_HIGH_mV": 351.7656,
+       "HEIGHT_at_centre_LOW_mV": 490.3142,
+       "HEIGHT_at_centre_mV": 703.5312,
+       "opening_minus_own_rail_start_ps": 99.0797,
+       "closing_minus_return_close_ps": 639.9,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      }
+     },
+     "W_EXTENDED_FIRST_RUN": {
+      "0mV": {
+       "opening_ps": 896.4131,
+       "closing_ps": 2239.9,
+       "WIDTH_ps": 1343.4869,
+       "opening_minus_own_rail_start_ps": 96.4131,
+       "closing_minus_return_close_ps": 639.9,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "eye_was_SPLIT_by_the_threshold": false
+      },
+      "1sigma_6.441mV": {
+       "opening_ps": 897.3123,
+       "closing_ps": 2239.9,
+       "WIDTH_ps": 1342.5877,
+       "opening_minus_own_rail_start_ps": 97.3123,
+       "closing_minus_return_close_ps": 639.9,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "eye_was_SPLIT_by_the_threshold": false
+      },
+      "3sigma_19.323mV": {
+       "opening_ps": 899.0797,
+       "closing_ps": 2239.9,
+       "WIDTH_ps": 1340.8203,
+       "opening_minus_own_rail_start_ps": 99.0797,
+       "closing_minus_return_close_ps": 639.9,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "eye_was_SPLIT_by_the_threshold": false
+      }
+     },
+     "HIGH_only_W_EXTENDED_0mV": {
+      "pick": "largest",
+      "open_ps": 896.4131,
+      "close_ps": 2239.9,
+      "width_ps": 1343.4869,
+      "open_ps_gridquant": 896.5,
+      "close_ps_gridquant": 2239.9,
+      "width_ps_gridquant": 1343.4,
+      "clipped_at_window_start": false,
+      "clipped_at_window_end": true
+     },
+     "LOW_only_W_EXTENDED_0mV": {
+      "pick": "largest",
+      "open_ps": 797.7296,
+      "close_ps": 2239.9,
+      "width_ps": 1442.1704,
+      "open_ps_gridquant": 801.0,
+      "close_ps_gridquant": 2239.9,
+      "width_ps_gridquant": 1438.9,
+      "clipped_at_window_start": false,
+      "clipped_at_window_end": true
+     },
+     "per_pattern_W_EXTENDED_0mV": {
+      "P0": {
+       "joint": {
+        "pick": "largest",
+        "open_ps": 889.938,
+        "close_ps": 2239.9,
+        "width_ps": 1349.962,
+        "open_ps_gridquant": 890.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1349.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "HIGH": {
+        "pick": "largest",
+        "open_ps": 889.938,
+        "close_ps": 2239.9,
+        "width_ps": 1349.962,
+        "open_ps_gridquant": 890.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1349.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "LOW": {
+        "pick": "largest",
+        "open_ps": 795.2394,
+        "close_ps": 2239.9,
+        "width_ps": 1444.6606,
+        "open_ps_gridquant": 801.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1438.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       }
+      },
+      "P1": {
+       "joint": {
+        "pick": "largest",
+        "open_ps": 797.7296,
+        "close_ps": 2239.9,
+        "width_ps": 1442.1704,
+        "open_ps_gridquant": 801.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1438.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "HIGH": null,
+       "LOW": {
+        "pick": "largest",
+        "open_ps": 797.7296,
+        "close_ps": 2239.9,
+        "width_ps": 1442.1704,
+        "open_ps_gridquant": 801.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1438.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       }
+      },
+      "P2": {
+       "joint": {
+        "pick": "largest",
+        "open_ps": 896.4131,
+        "close_ps": 2239.9,
+        "width_ps": 1343.4869,
+        "open_ps_gridquant": 896.5,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1343.4,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "HIGH": {
+        "pick": "largest",
+        "open_ps": 896.4131,
+        "close_ps": 2239.9,
+        "width_ps": 1343.4869,
+        "open_ps_gridquant": 896.5,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1343.4,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "LOW": null
+      },
+      "P3": {
+       "joint": {
+        "pick": "largest",
+        "open_ps": 888.1069,
+        "close_ps": 2239.9,
+        "width_ps": 1351.7931,
+        "open_ps_gridquant": 888.2,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1351.7,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "HIGH": {
+        "pick": "largest",
+        "open_ps": 888.1069,
+        "close_ps": 2239.9,
+        "width_ps": 1351.7931,
+        "open_ps_gridquant": 888.2,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1351.7,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "LOW": {
+        "pick": "largest",
+        "open_ps": 795.3752,
+        "close_ps": 2239.9,
+        "width_ps": 1444.5248,
+        "open_ps_gridquant": 801.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1438.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       }
+      },
+      "P4": {
+       "joint": {
+        "pick": "largest",
+        "open_ps": 889.938,
+        "close_ps": 2239.9,
+        "width_ps": 1349.962,
+        "open_ps_gridquant": 890.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1349.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "HIGH": {
+        "pick": "largest",
+        "open_ps": 889.938,
+        "close_ps": 2239.9,
+        "width_ps": 1349.962,
+        "open_ps_gridquant": 890.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1349.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "LOW": {
+        "pick": "largest",
+        "open_ps": 795.2394,
+        "close_ps": 2239.9,
+        "width_ps": 1444.6606,
+        "open_ps_gridquant": 801.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1438.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       }
+      },
+      "P5": {
+       "joint": {
+        "pick": "largest",
+        "open_ps": 883.4114,
+        "close_ps": 2239.9,
+        "width_ps": 1356.4886,
+        "open_ps_gridquant": 883.5,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1356.4,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "HIGH": {
+        "pick": "largest",
+        "open_ps": 883.4114,
+        "close_ps": 2239.9,
+        "width_ps": 1356.4886,
+        "open_ps_gridquant": 883.5,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1356.4,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "LOW": {
+        "pick": "largest",
+        "open_ps": 796.188,
+        "close_ps": 2239.9,
+        "width_ps": 1443.712,
+        "open_ps_gridquant": 801.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1438.9,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       }
+      }
+     },
+     "DATA_JITTER_HIGH_polarity": {
+      "n_patterns_with_this_polarity": 5,
+      "patterns": [
+       "P0",
+       "P2",
+       "P3",
+       "P4",
+       "P5"
+      ],
+      "per_pattern_opening_ps": {
+       "P0": 889.938,
+       "P2": 896.4131,
+       "P3": 888.1069,
+       "P4": 889.938,
+       "P5": 883.4114
+      },
+      "per_pattern_opening_minus_c_k_ps": {
+       "P0": 89.938,
+       "P2": 96.4131,
+       "P3": 88.1069,
+       "P4": 89.938,
+       "P5": 83.4114
+      },
+      "peak_to_peak_ps": 13.0017,
+      "sigma_ps": 4.1753,
+      "note": "P1 (all-zero) and P2 (all-one) give a bank eight gates of ONE polarity, so they appear in only one of these two lists."
+     },
+     "DATA_JITTER_LOW_polarity": {
+      "n_patterns_with_this_polarity": 5,
+      "patterns": [
+       "P0",
+       "P1",
+       "P3",
+       "P4",
+       "P5"
+      ],
+      "per_pattern_opening_ps": {
+       "P0": 795.2394,
+       "P1": 797.7296,
+       "P3": 795.3752,
+       "P4": 795.2394,
+       "P5": 796.188
+      },
+      "per_pattern_opening_minus_c_k_ps": {
+       "P0": -4.7606,
+       "P1": -2.2704,
+       "P3": -4.6248,
+       "P4": -4.7606,
+       "P5": -3.812
+      },
+      "peak_to_peak_ps": 2.4902,
+      "sigma_ps": 0.9554,
+      "note": "P1 (all-zero) and P2 (all-one) give a bank eight gates of ONE polarity, so they appear in only one of these two lists."
+     },
+     "DATA_DEPENDENT_EDGE_JITTER": {
+      "n_patterns": 6,
+      "opening_min_ps": 797.7296,
+      "opening_max_ps": 896.4131,
+      "opening_peak_to_peak_ps": 98.6835,
+      "opening_mean_ps": 874.2562,
+      "opening_sigma_ps": 34.4353,
+      "closing_peak_to_peak_ps": 0.0,
+      "per_pattern_opening_ps": {
+       "P0": 889.938,
+       "P1": 797.7296,
+       "P2": 896.4131,
+       "P3": 888.1069,
+       "P4": 889.938,
+       "P5": 883.4114
+      },
+      "what": "PEAK-TO-PEAK spread of this bank's eye OPENING instant across the data patterns, measured. This is the data-dependent jitter that closes the eye from the early side, and it is what the pattern INTERSECTION charges. It is NOT the campaign's 61.6 ps number, which is a zero-crossing spread, not an eye-edge spread."
+     }
+    },
+    "EYE2_DATA_FIXED": {
+     "W_PREREG": {
+      "0mV": {
+       "opening_ps": 899.7978,
+       "closing_ps": 1741.0,
+       "WIDTH_ps": 841.2022,
+       "opening_ps_gridquant": 899.8,
+       "closing_ps_gridquant": 1741.0,
+       "centre_ps": 1320.3989,
+       "HEIGHT_at_centre_HIGH_mV": 443.0931,
+       "HEIGHT_at_centre_LOW_mV": 577.6779,
+       "HEIGHT_at_centre_mV": 886.1861,
+       "opening_minus_own_rail_start_ps": 99.7978,
+       "closing_minus_return_close_ps": 141.0,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "1sigma_6.441mV": {
+       "opening_ps": 900.3111,
+       "closing_ps": 1741.0,
+       "WIDTH_ps": 840.6889,
+       "opening_ps_gridquant": 900.4,
+       "closing_ps_gridquant": 1741.0,
+       "centre_ps": 1320.6556,
+       "HEIGHT_at_centre_HIGH_mV": 443.1002,
+       "HEIGHT_at_centre_LOW_mV": 577.6777,
+       "HEIGHT_at_centre_mV": 886.2005,
+       "opening_minus_own_rail_start_ps": 100.3111,
+       "closing_minus_return_close_ps": 141.0,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "3sigma_19.323mV": {
+       "opening_ps": 901.3404,
+       "closing_ps": 1741.0,
+       "WIDTH_ps": 839.6596,
+       "opening_ps_gridquant": 901.4,
+       "closing_ps_gridquant": 1741.0,
+       "centre_ps": 1321.1702,
+       "HEIGHT_at_centre_HIGH_mV": 443.1123,
+       "HEIGHT_at_centre_LOW_mV": 577.6775,
+       "HEIGHT_at_centre_mV": 886.2246,
+       "opening_minus_own_rail_start_ps": 101.3404,
+       "closing_minus_return_close_ps": 141.0,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      }
+     },
+     "W_PREREG_FIRST_RUN": {
+      "0mV": {
+       "opening_ps": 899.7978,
+       "closing_ps": 1741.0,
+       "WIDTH_ps": 841.2022,
+       "opening_minus_own_rail_start_ps": 99.7978,
+       "closing_minus_return_close_ps": 141.0,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "eye_was_SPLIT_by_the_threshold": false
+      },
+      "1sigma_6.441mV": {
+       "opening_ps": 900.3111,
+       "closing_ps": 1741.0,
+       "WIDTH_ps": 840.6889,
+       "opening_minus_own_rail_start_ps": 100.3111,
+       "closing_minus_return_close_ps": 141.0,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "eye_was_SPLIT_by_the_threshold": false
+      },
+      "3sigma_19.323mV": {
+       "opening_ps": 901.3404,
+       "closing_ps": 1741.0,
+       "WIDTH_ps": 839.6596,
+       "opening_minus_own_rail_start_ps": 101.3404,
+       "closing_minus_return_close_ps": 141.0,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "eye_was_SPLIT_by_the_threshold": false
+      }
+     },
+     "W_EXTENDED": {
+      "0mV": {
+       "opening_ps": 899.7978,
+       "closing_ps": 2239.9,
+       "WIDTH_ps": 1340.1022,
+       "opening_ps_gridquant": 899.8,
+       "closing_ps_gridquant": 2239.9,
+       "centre_ps": 1569.8489,
+       "HEIGHT_at_centre_HIGH_mV": 443.1111,
+       "HEIGHT_at_centre_LOW_mV": 574.872,
+       "HEIGHT_at_centre_mV": 886.2223,
+       "opening_minus_own_rail_start_ps": 99.7978,
+       "closing_minus_return_close_ps": 639.9,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "1sigma_6.441mV": {
+       "opening_ps": 900.3111,
+       "closing_ps": 2239.9,
+       "WIDTH_ps": 1339.5889,
+       "opening_ps_gridquant": 900.4,
+       "closing_ps_gridquant": 2239.9,
+       "centre_ps": 1570.1056,
+       "HEIGHT_at_centre_HIGH_mV": 443.0984,
+       "HEIGHT_at_centre_LOW_mV": 574.8788,
+       "HEIGHT_at_centre_mV": 886.1967,
+       "opening_minus_own_rail_start_ps": 100.3111,
+       "closing_minus_return_close_ps": 639.9,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "3sigma_19.323mV": {
+       "opening_ps": 901.3404,
+       "closing_ps": 2239.9,
+       "WIDTH_ps": 1338.5596,
+       "opening_ps_gridquant": 901.4,
+       "closing_ps_gridquant": 2239.9,
+       "centre_ps": 1570.6202,
+       "HEIGHT_at_centre_HIGH_mV": 443.0773,
+       "HEIGHT_at_centre_LOW_mV": 574.8911,
+       "HEIGHT_at_centre_mV": 886.1546,
+       "opening_minus_own_rail_start_ps": 101.3404,
+       "closing_minus_return_close_ps": 639.9,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      }
+     },
+     "W_EXTENDED_FIRST_RUN": {
+      "0mV": {
+       "opening_ps": 899.7978,
+       "closing_ps": 2239.9,
+       "WIDTH_ps": 1340.1022,
+       "opening_minus_own_rail_start_ps": 99.7978,
+       "closing_minus_return_close_ps": 639.9,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "eye_was_SPLIT_by_the_threshold": false
+      },
+      "1sigma_6.441mV": {
+       "opening_ps": 900.3111,
+       "closing_ps": 2239.9,
+       "WIDTH_ps": 1339.5889,
+       "opening_minus_own_rail_start_ps": 100.3111,
+       "closing_minus_return_close_ps": 639.9,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "eye_was_SPLIT_by_the_threshold": false
+      },
+      "3sigma_19.323mV": {
+       "opening_ps": 901.3404,
+       "closing_ps": 2239.9,
+       "WIDTH_ps": 1338.5596,
+       "opening_minus_own_rail_start_ps": 101.3404,
+       "closing_minus_return_close_ps": 639.9,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "eye_was_SPLIT_by_the_threshold": false
+      }
+     },
+     "HIGH_only_W_EXTENDED_0mV": {
+      "pick": "largest",
+      "open_ps": 899.7978,
+      "close_ps": 2239.9,
+      "width_ps": 1340.1022,
+      "open_ps_gridquant": 899.8,
+      "close_ps_gridquant": 2239.9,
+      "width_ps_gridquant": 1340.1,
+      "clipped_at_window_start": false,
+      "clipped_at_window_end": true
+     },
+     "LOW_only_W_EXTENDED_0mV": {
+      "pick": "largest",
+      "open_ps": 800.0,
+      "close_ps": 2239.9,
+      "width_ps": 1439.9,
+      "open_ps_gridquant": 800.0,
+      "close_ps_gridquant": 2239.9,
+      "width_ps_gridquant": 1439.9,
+      "clipped_at_window_start": true,
+      "clipped_at_window_end": true
+     },
+     "per_pattern_W_EXTENDED_0mV": {
+      "P0": {
+       "joint": {
+        "pick": "largest",
+        "open_ps": 898.1486,
+        "close_ps": 2239.9,
+        "width_ps": 1341.7514,
+        "open_ps_gridquant": 898.2,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1341.7,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "HIGH": {
+        "pick": "largest",
+        "open_ps": 898.1486,
+        "close_ps": 2239.9,
+        "width_ps": 1341.7514,
+        "open_ps_gridquant": 898.2,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1341.7,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "LOW": {
+        "pick": "largest",
+        "open_ps": 800.0,
+        "close_ps": 2239.9,
+        "width_ps": 1439.9,
+        "open_ps_gridquant": 800.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1439.9,
+        "clipped_at_window_start": true,
+        "clipped_at_window_end": true
+       }
+      },
+      "P1": {
+       "joint": {
+        "pick": "largest",
+        "open_ps": 800.0,
+        "close_ps": 2239.9,
+        "width_ps": 1439.9,
+        "open_ps_gridquant": 800.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1439.9,
+        "clipped_at_window_start": true,
+        "clipped_at_window_end": true
+       },
+       "HIGH": null,
+       "LOW": {
+        "pick": "largest",
+        "open_ps": 800.0,
+        "close_ps": 2239.9,
+        "width_ps": 1439.9,
+        "open_ps_gridquant": 800.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1439.9,
+        "clipped_at_window_start": true,
+        "clipped_at_window_end": true
+       }
+      },
+      "P2": {
+       "joint": {
+        "pick": "largest",
+        "open_ps": 897.111,
+        "close_ps": 2239.9,
+        "width_ps": 1342.789,
+        "open_ps_gridquant": 897.2,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1342.7,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "HIGH": {
+        "pick": "largest",
+        "open_ps": 897.111,
+        "close_ps": 2239.9,
+        "width_ps": 1342.789,
+        "open_ps_gridquant": 897.2,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1342.7,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "LOW": null
+      },
+      "P3": {
+       "joint": {
+        "pick": "largest",
+        "open_ps": 898.5159,
+        "close_ps": 2239.9,
+        "width_ps": 1341.3841,
+        "open_ps_gridquant": 898.6,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1341.3,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "HIGH": {
+        "pick": "largest",
+        "open_ps": 898.5159,
+        "close_ps": 2239.9,
+        "width_ps": 1341.3841,
+        "open_ps_gridquant": 898.6,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1341.3,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "LOW": {
+        "pick": "largest",
+        "open_ps": 800.0,
+        "close_ps": 2239.9,
+        "width_ps": 1439.9,
+        "open_ps_gridquant": 800.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1439.9,
+        "clipped_at_window_start": true,
+        "clipped_at_window_end": true
+       }
+      },
+      "P4": {
+       "joint": {
+        "pick": "largest",
+        "open_ps": 898.1486,
+        "close_ps": 2239.9,
+        "width_ps": 1341.7514,
+        "open_ps_gridquant": 898.2,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1341.7,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "HIGH": {
+        "pick": "largest",
+        "open_ps": 898.1486,
+        "close_ps": 2239.9,
+        "width_ps": 1341.7514,
+        "open_ps_gridquant": 898.2,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1341.7,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "LOW": {
+        "pick": "largest",
+        "open_ps": 800.0,
+        "close_ps": 2239.9,
+        "width_ps": 1439.9,
+        "open_ps_gridquant": 800.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1439.9,
+        "clipped_at_window_start": true,
+        "clipped_at_window_end": true
+       }
+      },
+      "P5": {
+       "joint": {
+        "pick": "largest",
+        "open_ps": 899.7978,
+        "close_ps": 2239.9,
+        "width_ps": 1340.1022,
+        "open_ps_gridquant": 899.8,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1340.1,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "HIGH": {
+        "pick": "largest",
+        "open_ps": 899.7978,
+        "close_ps": 2239.9,
+        "width_ps": 1340.1022,
+        "open_ps_gridquant": 899.8,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1340.1,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "LOW": {
+        "pick": "largest",
+        "open_ps": 800.0,
+        "close_ps": 2239.9,
+        "width_ps": 1439.9,
+        "open_ps_gridquant": 800.0,
+        "close_ps_gridquant": 2239.9,
+        "width_ps_gridquant": 1439.9,
+        "clipped_at_window_start": true,
+        "clipped_at_window_end": true
+       }
+      }
+     },
+     "DATA_JITTER_HIGH_polarity": {
+      "n_patterns_with_this_polarity": 5,
+      "patterns": [
+       "P0",
+       "P2",
+       "P3",
+       "P4",
+       "P5"
+      ],
+      "per_pattern_opening_ps": {
+       "P0": 898.1486,
+       "P2": 897.111,
+       "P3": 898.5159,
+       "P4": 898.1486,
+       "P5": 899.7978
+      },
+      "per_pattern_opening_minus_c_k_ps": {
+       "P0": 98.1486,
+       "P2": 97.111,
+       "P3": 98.5159,
+       "P4": 98.1486,
+       "P5": 99.7978
+      },
+      "peak_to_peak_ps": 2.6868,
+      "sigma_ps": 0.8648,
+      "note": "P1 (all-zero) and P2 (all-one) give a bank eight gates of ONE polarity, so they appear in only one of these two lists."
+     },
+     "DATA_JITTER_LOW_polarity": {
+      "n_patterns_with_this_polarity": 5,
+      "patterns": [
+       "P0",
+       "P1",
+       "P3",
+       "P4",
+       "P5"
+      ],
+      "per_pattern_opening_ps": {
+       "P0": 800.0,
+       "P1": 800.0,
+       "P3": 800.0,
+       "P4": 800.0,
+       "P5": 800.0
+      },
+      "per_pattern_opening_minus_c_k_ps": {
+       "P0": 0.0,
+       "P1": 0.0,
+       "P3": 0.0,
+       "P4": 0.0,
+       "P5": 0.0
+      },
+      "peak_to_peak_ps": 0.0,
+      "sigma_ps": 0.0,
+      "note": "P1 (all-zero) and P2 (all-one) give a bank eight gates of ONE polarity, so they appear in only one of these two lists."
+     },
+     "DATA_DEPENDENT_EDGE_JITTER": {
+      "n_patterns": 6,
+      "opening_min_ps": 800.0,
+      "opening_max_ps": 899.7978,
+      "opening_peak_to_peak_ps": 99.7978,
+      "opening_mean_ps": 881.9537,
+      "opening_sigma_ps": 36.6593,
+      "closing_peak_to_peak_ps": 0.0,
+      "per_pattern_opening_ps": {
+       "P0": 898.1486,
+       "P1": 800.0,
+       "P2": 897.111,
+       "P3": 898.5159,
+       "P4": 898.1486,
+       "P5": 899.7978
+      },
+      "what": "PEAK-TO-PEAK spread of this bank's eye OPENING instant across the data patterns, measured. This is the data-dependent jitter that closes the eye from the early side, and it is what the pattern INTERSECTION charges. It is NOT the campaign's 61.6 ps number, which is a zero-crossing spread, not an eye-edge spread."
+     }
+    }
+   },
+   "HEIGHT_at_meaningful_instants": {
+    "EYE1_RX_INSTANTANEOUS": {
+     "sampling_instant_receiver_rail_start_ps": {
+      "t_ps": 1000.0,
+      "HEIGHT_HIGH_mV": 296.6025,
+      "HEIGHT_LOW_mV": 470.535,
+      "HEIGHT_mV": 593.205,
+      "min_over_both_polarities_mV": 296.6025,
+      "in_eye": true
+     },
+     "pipelined_eye_centre_ps": {
+      "t_ps": 1248.2065,
+      "HEIGHT_HIGH_mV": 301.8127,
+      "HEIGHT_LOW_mV": 505.3249,
+      "HEIGHT_mV": 603.6255,
+      "min_over_both_polarities_mV": 301.8127,
+      "in_eye": true
+     },
+     "eye_opening_plus_1ps": {
+      "t_ps": 897.4131,
+      "HEIGHT_HIGH_mV": 7.0733,
+      "HEIGHT_LOW_mV": 462.6816,
+      "HEIGHT_mV": 14.1467,
+      "min_over_both_polarities_mV": 7.0733,
+      "in_eye": true
+     },
+     "return_close_minus_1ps": {
+      "t_ps": 1599.0,
+      "HEIGHT_HIGH_mV": 364.7398,
+      "HEIGHT_LOW_mV": 485.3868,
+      "HEIGHT_mV": 729.4797,
+      "min_over_both_polarities_mV": 364.7398,
+      "in_eye": true
+     }
+    },
+    "EYE2_DATA_FIXED": {
+     "sampling_instant_receiver_rail_start_ps": {
+      "t_ps": 1000.0,
+      "HEIGHT_HIGH_mV": 441.1603,
+      "HEIGHT_LOW_mV": 577.8848,
+      "HEIGHT_mV": 882.3207,
+      "min_over_both_polarities_mV": 441.1603,
+      "in_eye": true
+     },
+     "pipelined_eye_centre_ps": {
+      "t_ps": 1249.8989,
+      "HEIGHT_HIGH_mV": 441.2131,
+      "HEIGHT_LOW_mV": 577.6543,
+      "HEIGHT_mV": 882.4261,
+      "min_over_both_polarities_mV": 441.2131,
+      "in_eye": true
+     },
+     "eye_opening_plus_1ps": {
+      "t_ps": 900.7978,
+      "HEIGHT_HIGH_mV": 12.5657,
+      "HEIGHT_LOW_mV": 569.8757,
+      "HEIGHT_mV": 25.1315,
+      "min_over_both_polarities_mV": 12.5657,
+      "in_eye": true
+     },
+     "return_close_minus_1ps": {
+      "t_ps": 1599.0,
+      "HEIGHT_HIGH_mV": 427.3912,
+      "HEIGHT_LOW_mV": 587.7031,
+      "HEIGHT_mV": 854.7824,
+      "min_over_both_polarities_mV": 427.3912,
+      "in_eye": true
+     }
+    }
+   },
+   "POST_RETURN_MARGIN_FLOOR": {
+    "EYE1_RX_INSTANTANEOUS": {
+     "worst_margin_after_return_close_mV": 240.7419,
+     "at_t_ps": 1754.6,
+     "at_t_minus_return_open_ro_ps": 13.6164,
+     "right_edge_appears_only_for_thresholds_above_mV": 240.7419,
+     "LATE_EDGE_CANDIDATE": {
+      "binding_pattern": "P2",
+      "binding_gate": "o0",
+      "binding_polarity": "HIGH",
+      "binding_margin_mV": 240.74189,
+      "MECHANISM": {
+       "M": "M3+M5",
+       "reference": "EYE1_RX_INSTANTANEOUS",
+       "t_ps": 1754.6000000000001,
+       "V_trip_used": 0.4569693,
+       "trip_is_constant_for_this_reference": false,
+       "gate": "o0",
+       "polarity": "HIGH",
+       "mgn_mV": 240.7419,
+       "d_mgn_dt_mV_per_ps": 14.8019,
+       "term_dVout_dt_mV_per_ps": 14.76939,
+       "term_minus_dtrip_dt_mV_per_ps": 0.03251,
+       "dominant_term": "dVout/dt",
+       "V_out": 0.6977112,
+       "V_trip_rx": 0.4569693,
+       "V_rail_driver": 0.6868093,
+       "dV_rail_driver_dt_mV_per_ps": 47.5051,
+       "V_rail_rx": 0.8232348,
+       "dV_rail_rx_dt_mV_per_ps": -0.06431,
+       "V_tank_driver": 0.7382646,
+       "dV_tank_dt_mV_per_ps": 2.01424,
+       "I_L_driver_uA": -0.0502,
+       "transfer_gate_conducting": false,
+       "return_switch_conducting": true,
+       "V_in_driver_gate": -0.0102419,
+       "overdrive_vs_Vtn_V": -0.5342419,
+       "overdrive_vs_absVtp_V": 0.2568511
+      }
+     }
+    },
+    "EYE2_DATA_FIXED": {
+     "worst_margin_after_return_close_mV": 70.4479,
+     "at_t_ps": 1741.7,
+     "at_t_minus_return_open_ro_ps": 0.7164,
+     "right_edge_appears_only_for_thresholds_above_mV": 70.4479,
+     "LATE_EDGE_CANDIDATE": {
+      "binding_pattern": "P5",
+      "binding_gate": "o0",
+      "binding_polarity": "HIGH",
+      "binding_margin_mV": 70.44788,
+      "MECHANISM": {
+       "M": "M3+M5",
+       "reference": "EYE2_DATA_FIXED",
+       "t_ps": 1741.7,
+       "V_trip_used": 0.6552504,
+       "trip_is_constant_for_this_reference": true,
+       "gate": "o0",
+       "polarity": "HIGH",
+       "mgn_mV": 334.0521,
+       "d_mgn_dt_mV_per_ps": 18.78598,
+       "term_dVout_dt_mV_per_ps": 18.78598,
+       "term_minus_dtrip_dt_mV_per_ps": 0.0,
+       "dominant_term": "dVout/dt",
+       "V_out": 0.7256982,
+       "V_trip_rx": 0.3916461,
+       "V_rail_driver": 0.7115291,
+       "dV_rail_driver_dt_mV_per_ps": 60.57319,
+       "V_rail_rx": 0.693347,
+       "dV_rail_rx_dt_mV_per_ps": -0.3637,
+       "V_tank_driver": 0.7754142,
+       "dV_tank_dt_mV_per_ps": 2.36778,
+       "I_L_driver_uA": -0.0137,
+       "transfer_gate_conducting": false,
+       "return_switch_conducting": true,
+       "V_in_driver_gate": -0.0070956,
+       "overdrive_vs_Vtn_V": -0.5310956,
+       "overdrive_vs_absVtp_V": 0.2784247
+      }
+     }
+    }
+   },
+   "CLOSING_MECHANISM": {
+    "EYE1_RX_INSTANTANEOUS": {
+     "early_edge_OPENING": {
+      "t_ps": 896.4131,
+      "binding_pattern": "P2",
+      "binding_pattern_bits": [
+       1,
+       1,
+       1,
+       1,
+       1,
+       1,
+       1,
+       1
+      ],
+      "binding_gate": "o0",
+      "binding_polarity": "HIGH",
+      "binding_margin_mV": -0.09338,
+      "MECHANISM": {
+       "M": "M1",
+       "reference": "EYE1_RX_INSTANTANEOUS",
+       "t_ps": 896.4000000000001,
+       "V_trip_used": 0.5276154,
+       "trip_is_constant_for_this_reference": false,
+       "gate": "o0",
+       "polarity": "HIGH",
+       "mgn_mV": -0.0934,
+       "d_mgn_dt_mV_per_ps": 7.11651,
+       "term_dVout_dt_mV_per_ps": 9.88963,
+       "term_minus_dtrip_dt_mV_per_ps": -2.77312,
+       "dominant_term": "dVout/dt",
+       "V_out": 0.5275221,
+       "V_trip_rx": 0.5276154,
+       "V_rail_driver": 0.8800232,
+       "dV_rail_driver_dt_mV_per_ps": 3.3416,
+       "V_rail_rx": 0.9624604,
+       "dV_rail_rx_dt_mV_per_ps": 5.46169,
+       "V_tank_driver": 0.6690885,
+       "dV_tank_dt_mV_per_ps": -1.9377,
+       "I_L_driver_uA": 709.7165,
+       "transfer_gate_conducting": true,
+       "return_switch_conducting": false,
+       "V_in_driver_gate": 0.0269829,
+       "overdrive_vs_Vtn_V": -0.4970171,
+       "overdrive_vs_absVtp_V": 0.4128403
+      }
+     },
+     "late_edge_CLOSING": {
+      "t_ps": 2239.9,
+      "binding_pattern": "P2",
+      "binding_pattern_bits": [
+       1,
+       1,
+       1,
+       1,
+       1,
+       1,
+       1,
+       1
+      ],
+      "binding_gate": "o0",
+      "binding_polarity": "HIGH",
+      "binding_margin_mV": 292.52377,
+      "NO_EDGE": "the eye is CLIPPED at this window bound -- there is no crossing here. The margin never crosses the threshold within the transient: the true right edge is set by the NEXT datum on this bank at the initiation interval H*T, which this single-shot deck does not contain (AMENDMENT E4).",
+      "MECHANISM": {
+       "M": "NO_EDGE_WITHIN_DECK",
+       "reference": "EYE1_RX_INSTANTANEOUS",
+       "t_ps": 2239.9,
+       "V_trip_used": 0.455745,
+       "trip_is_constant_for_this_reference": false,
+       "gate": "o0",
+       "polarity": "HIGH",
+       "mgn_mV": 292.5238,
+       "d_mgn_dt_mV_per_ps": 5e-05,
+       "term_dVout_dt_mV_per_ps": 0.0,
+       "term_minus_dtrip_dt_mV_per_ps": 5e-05,
+       "dominant_term": "-dtrip/dt",
+       "V_out": 0.7482687,
+       "V_trip_rx": 0.455745,
+       "V_rail_driver": 0.7482687,
+       "dV_rail_driver_dt_mV_per_ps": -0.0,
+       "V_rail_rx": 0.820813,
+       "dV_rail_rx_dt_mV_per_ps": -0.0001,
+       "V_tank_driver": 0.7538644,
+       "dV_tank_dt_mV_per_ps": 0.00024,
+       "I_L_driver_uA": -0.0456,
+       "transfer_gate_conducting": false,
+       "return_switch_conducting": false,
+       "V_in_driver_gate": 9e-07,
+       "overdrive_vs_Vtn_V": -0.5239991,
+       "overdrive_vs_absVtp_V": 0.3080679
+      }
+     }
+    },
+    "EYE2_DATA_FIXED": {
+     "early_edge_OPENING": {
+      "t_ps": 899.7978,
+      "binding_pattern": "P5",
+      "binding_pattern_bits": [
+       1,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ],
+      "binding_gate": "o0",
+      "binding_polarity": "HIGH",
+      "binding_margin_mV": 0.02777,
+      "MECHANISM": {
+       "M": "M1",
+       "reference": "EYE2_DATA_FIXED",
+       "t_ps": 899.8000000000001,
+       "V_trip_used": 0.6552504,
+       "trip_is_constant_for_this_reference": true,
+       "gate": "o0",
+       "polarity": "HIGH",
+       "mgn_mV": 165.9665,
+       "d_mgn_dt_mV_per_ps": 12.5551,
+       "term_dVout_dt_mV_per_ps": 12.5551,
+       "term_minus_dtrip_dt_mV_per_ps": 0.0,
+       "dominant_term": "dVout/dt",
+       "V_out": 0.6552781,
+       "V_trip_rx": 0.4893116,
+       "V_rail_driver": 0.9651543,
+       "dV_rail_driver_dt_mV_per_ps": 4.60072,
+       "V_rail_rx": 0.8870767,
+       "dV_rail_rx_dt_mV_per_ps": 2.7457,
+       "V_tank_driver": 0.6807748,
+       "dV_tank_dt_mV_per_ps": -1.47094,
+       "I_L_driver_uA": 541.1754,
+       "transfer_gate_conducting": true,
+       "return_switch_conducting": false,
+       "V_in_driver_gate": 0.0210946,
+       "overdrive_vs_Vtn_V": -0.5029054,
+       "overdrive_vs_absVtp_V": 0.5038597
+      }
+     },
+     "late_edge_CLOSING": {
+      "t_ps": 2239.9,
+      "binding_pattern": "P5",
+      "binding_pattern_bits": [
+       1,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ],
+      "binding_gate": "o0",
+      "binding_polarity": "HIGH",
+      "binding_margin_mV": 148.91156,
+      "NO_EDGE": "the eye is CLIPPED at this window bound -- there is no crossing here. The margin never crosses the threshold within the transient: the true right edge is set by the NEXT datum on this bank at the initiation interval H*T, which this single-shot deck does not contain (AMENDMENT E4).",
+      "MECHANISM": {
+       "M": "NO_EDGE_WITHIN_DECK",
+       "reference": "EYE2_DATA_FIXED",
+       "t_ps": 2239.9,
+       "V_trip_used": 0.6552504,
+       "trip_is_constant_for_this_reference": true,
+       "gate": "o0",
+       "polarity": "HIGH",
+       "mgn_mV": 397.1172,
+       "d_mgn_dt_mV_per_ps": -1e-05,
+       "term_dVout_dt_mV_per_ps": -1e-05,
+       "term_minus_dtrip_dt_mV_per_ps": 0.0,
+       "dominant_term": "dVout/dt",
+       "V_out": 0.8041619,
+       "V_trip_rx": 0.4070447,
+       "V_rail_driver": 0.8041618,
+       "dV_rail_driver_dt_mV_per_ps": -1e-05,
+       "V_rail_rx": 0.7240647,
+       "dV_rail_rx_dt_mV_per_ps": -0.0,
+       "V_tank_driver": 0.7911697,
+       "dV_tank_dt_mV_per_ps": 0.00078,
+       "I_L_driver_uA": -0.3277,
+       "transfer_gate_conducting": false,
+       "return_switch_conducting": false,
+       "V_in_driver_gate": -1e-07,
+       "overdrive_vs_Vtn_V": -0.5240001,
+       "overdrive_vs_absVtp_V": 0.3639619
+      }
+     }
+    }
+   },
+   "margin_curve_file": "MARGIN_bank4.csv.gz",
+   "margin_curve_n_points": 22410
+  }
+ },
+ "PHASE2_HANDOFF_slack_around_the_sampling_instant": {
+  "_note": "Phase 1 owes Phase 2 the SLACK, not a pass/fail. The BINDING comparison against the 61.6 ps measured data-dependent jitter is the SETUP SLACK, not the eye width: the width is bounded by the initiation interval and is generous, while the setup slack is the margin between the data becoming valid and the receiver's aperture opening. Everything here is DERIVED from the measured eyes in this file.",
+  "_measured_inputs": {
+   "data_dependent_zero_spread_ps": 61.6,
+   "timer_drift_ps_per_K": 0.46,
+   "sigma_trip_mV": 6.441
+  },
+  "per_bank": {
+   "1": {
+    "data_valid_after_own_rail_start_ps": 128.599,
+    "beat_period_T_ps": 200.0,
+    "initiation_interval_H_times_T_ps": 800.0,
+    "SETUP_SLACK_strict_ps": 71.401,
+    "setup_slack_strict_definition": "T - (data-eye opening after own rail start): how much earlier than its receiver's rail start the driver's data is already valid",
+    "SETUP_SLACK_relaxed_ps": 201.0424,
+    "setup_slack_relaxed_definition": "the receiver's OWN data-eye opening minus the driver's: how much of the receiver's evaluation the driver's data precedes",
+    "EYE_WIDTH_pipelined_DERIVED_ps": 671.401,
+    "eye_width_pipelined_definition": "H*T - (data-eye opening after own rail start). DERIVED: in a pipelined machine the right edge is the NEXT datum on this bank at the initiation interval; the single-shot deck contains no next datum (AMENDMENT E4), so the deck WIDTH is only a lower bound.",
+    "EYE_WIDTH_deck_LOWER_BOUND_ps": 1911.301,
+    "HEIGHT_at_centre_HIGH_mV": 22.7606,
+    "HEIGHT_at_centre_LOW_mV": 476.3995,
+    "post_return_margin_floor_mV": 14.9344,
+    "vs_MEASURED_61.6_ps_data_jitter": {
+     "jitter_ps": 61.6,
+     "setup_slack_over_jitter": 1.1591,
+     "pipelined_width_over_jitter": 10.8994,
+     "setup_slack_survives_worst_case_data_jitter": true
+    }
+   },
+   "2": {
+    "data_valid_after_own_rail_start_ps": 129.6414,
+    "beat_period_T_ps": 200.0,
+    "initiation_interval_H_times_T_ps": 800.0,
+    "SETUP_SLACK_strict_ps": 70.3586,
+    "setup_slack_strict_definition": "T - (data-eye opening after own rail start): how much earlier than its receiver's rail start the driver's data is already valid",
+    "SETUP_SLACK_relaxed_ps": 199.7406,
+    "setup_slack_relaxed_definition": "the receiver's OWN data-eye opening minus the driver's: how much of the receiver's evaluation the driver's data precedes",
+    "EYE_WIDTH_pipelined_DERIVED_ps": 670.3586,
+    "eye_width_pipelined_definition": "H*T - (data-eye opening after own rail start). DERIVED: in a pipelined machine the right edge is the NEXT datum on this bank at the initiation interval; the single-shot deck contains no next datum (AMENDMENT E4), so the deck WIDTH is only a lower bound.",
+    "EYE_WIDTH_deck_LOWER_BOUND_ps": 1710.2586,
+    "HEIGHT_at_centre_HIGH_mV": 45.6998,
+    "HEIGHT_at_centre_LOW_mV": 466.5145,
+    "post_return_margin_floor_mV": 16.2551,
+    "vs_MEASURED_61.6_ps_data_jitter": {
+     "jitter_ps": 61.6,
+     "setup_slack_over_jitter": 1.1422,
+     "pipelined_width_over_jitter": 10.8824,
+     "setup_slack_survives_worst_case_data_jitter": true
+    }
+   },
+   "3": {
+    "data_valid_after_own_rail_start_ps": 129.382,
+    "beat_period_T_ps": 200.0,
+    "initiation_interval_H_times_T_ps": 800.0,
+    "SETUP_SLACK_strict_ps": 70.618,
+    "setup_slack_strict_definition": "T - (data-eye opening after own rail start): how much earlier than its receiver's rail start the driver's data is already valid",
+    "SETUP_SLACK_relaxed_ps": 170.4158,
+    "setup_slack_relaxed_definition": "the receiver's OWN data-eye opening minus the driver's: how much of the receiver's evaluation the driver's data precedes",
+    "EYE_WIDTH_pipelined_DERIVED_ps": 670.618,
+    "eye_width_pipelined_definition": "H*T - (data-eye opening after own rail start). DERIVED: in a pipelined machine the right edge is the NEXT datum on this bank at the initiation interval; the single-shot deck contains no next datum (AMENDMENT E4), so the deck WIDTH is only a lower bound.",
+    "EYE_WIDTH_deck_LOWER_BOUND_ps": 1510.518,
+    "HEIGHT_at_centre_HIGH_mV": 72.3707,
+    "HEIGHT_at_centre_LOW_mV": 546.844,
+    "post_return_margin_floor_mV": 19.5267,
+    "vs_MEASURED_61.6_ps_data_jitter": {
+     "jitter_ps": 61.6,
+     "setup_slack_over_jitter": 1.1464,
+     "pipelined_width_over_jitter": 10.8867,
+     "setup_slack_survives_worst_case_data_jitter": true
+    }
+   },
+   "4": {
+    "data_valid_after_own_rail_start_ps": 99.7978,
+    "beat_period_T_ps": 200.0,
+    "initiation_interval_H_times_T_ps": 800.0,
+    "SETUP_SLACK_strict_ps": 100.2022,
+    "setup_slack_strict_definition": "T - (data-eye opening after own rail start): how much earlier than its receiver's rail start the driver's data is already valid",
+    "SETUP_SLACK_relaxed_ps": null,
+    "setup_slack_relaxed_definition": "the receiver's OWN data-eye opening minus the driver's: how much of the receiver's evaluation the driver's data precedes",
+    "EYE_WIDTH_pipelined_DERIVED_ps": 700.2022,
+    "eye_width_pipelined_definition": "H*T - (data-eye opening after own rail start). DERIVED: in a pipelined machine the right edge is the NEXT datum on this bank at the initiation interval; the single-shot deck contains no next datum (AMENDMENT E4), so the deck WIDTH is only a lower bound.",
+    "EYE_WIDTH_deck_LOWER_BOUND_ps": 1340.1022,
+    "HEIGHT_at_centre_HIGH_mV": 443.1111,
+    "HEIGHT_at_centre_LOW_mV": 574.872,
+    "post_return_margin_floor_mV": 70.4479,
+    "vs_MEASURED_61.6_ps_data_jitter": {
+     "jitter_ps": 61.6,
+     "setup_slack_over_jitter": 1.6267,
+     "pipelined_width_over_jitter": 11.3669,
+     "setup_slack_survives_worst_case_data_jitter": true
+    }
+   }
+  }
+ },
+ "_M6_propagating_collapse_test": {
+  "reference": "EYE2_DATA_FIXED, W_EXTENDED, 0 mV",
+  "openings_ps": {
+   "1": 328.599,
+   "2": 529.6414,
+   "3": 729.382,
+   "4": 899.7978
+  },
+  "opening_delta_minus_T_ps": {
+   "2_minus_1": 1.0424,
+   "3_minus_2": -0.2594,
+   "4_minus_3": -29.5842
+  },
+  "note": "M6 (the predecessor's own eye closing, propagating forward) is supported only if a bank's edge coincides with its predecessor's edge to within the grid AFTER removing the beat period T. A residual of ~0 means bank k's edge is inherited from bank k-1; a large residual means it is set locally."
+ }
+}

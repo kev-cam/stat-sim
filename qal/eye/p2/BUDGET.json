@@ -1,0 +1,3197 @@
+{
+ "_what": "qal/eye/p2 PHASE 2 -- the composed timing budget and the fastest sustainable wave.",
+ "_pre_registration": "PRE_REGISTERED_P2.json sha256 b333ab252ba09c61ef846c16649e445b91b55949c56c5d1233a9daccbdc53471",
+ "_instrument": "INSTRUMENT_CHECK_P2.json -- INSTRUMENT OK (IC-P2-1 re-extracted Phase 1's openings to 0.00036 ps with an independent reader against a 0.10 ps bar)",
+ "THE_CONSTRAINT": {
+  "form": "t_valid(schedule, mismatch contour, worst bank) + U_timer <= T",
+  "t_valid": "the eye OPENING measured from the driver bank's OWN rail start c_k, as the INTERSECTION over every data vector the bank can present (9 Hamming weights; Phase 1 proved the eye depends only on weight, not arrangement)",
+  "sampling_instant": "c_k + T = c_(k+1), the instant the receiver's rail starts. This is bt.py's own bnd_k = min(c_k+T, r_k-EDGE, r_(k-1)-EDGE), which equals c_k+T at H=4.",
+  "what_is_ALREADY_inside_t_valid": [
+   "worst-case data (intersection over all 9 weights)",
+   "the calibrated-timer schedule error (the schedule is ONE fixed vector, not the per-pattern oracle Phase 1 used)",
+   "mismatch, when read at the 3-sigma contour instead of 0 mV"
+  ],
+  "ANTI_DOUBLE_COUNT": "because worst-case data is already inside the intersection opening, a raw data-spread term must NOT be added on top. The data term is charged as the MEASURED cost of running a data-blind schedule, which is what a real calibrated timer does."
+ },
+ "TIMER_ERROR_STRESS_MEASURED": {
+  "_why": "the inherited 61.612 ps term is MEASURED AT A DIFFERENT OPERATING POINT (dV=0.8 V, L=400 nH, C_A=35 fF, one bank, switch held ON) where the hop is 364 ps. Here the hop is 125.5 ps, so 61.612 ps is 49%% of the hop, not a perturbation. Rather than extrapolate it, the schedule was DELIBERATELY MIS-TIMED by that amount on this arrangement and the eye re-measured. A p-p spread of S seen by a centre-calibrated timer is at most +/- S/2.",
+  "offsets_ps": {
+   "+30.806": {
+    "t_valid_0mV_ps": 123.96549635885708,
+    "t_valid_3sigma_trip_ps": 126.9760507330401,
+    "t_valid_3sigma_total_ps": 136.23868532421943
+   },
+   "-30.806": {
+    "t_valid_0mV_ps": 124.15838368876734,
+    "t_valid_3sigma_trip_ps": 129.74029182585207,
+    "t_valid_3sigma_total_ps": 157.61203698134307
+   },
+   "+61.612": {
+    "t_valid_0mV_ps": 108.27572091905722,
+    "t_valid_3sigma_trip_ps": 110.70892875123207,
+    "t_valid_3sigma_total_ps": 117.31918763615909
+   },
+   "-10.620": {
+    "t_valid_0mV_ps": 123.42049741129085,
+    "t_valid_3sigma_trip_ps": 126.22042295756626,
+    "t_valid_3sigma_total_ps": 136.08401862400808
+   }
+  },
+  "A6_residual_note": "an off-zero switch leaves 734-1042 uA at the commanded open against a 1.17-1.31 mA peak. That is an ENERGY cost (reported, never gated here) and it is why A6, a PROBE-VALIDITY gate, cannot pass on a data-blind schedule."
+ },
+ "U1_THE_DATA_TERM": {
+  "readings": {
+   "R1_MEASURED_HERE": {
+    "_what": "the machine's REAL condition: one schedule calibrated on the centred weight-4 pattern, every data vector run on it.",
+    "schedule_spread_present_ps": null,
+    "t_valid_0mV_ps": 126.6343441055759,
+    "t_valid_3sigma_trip_ps": 128.39132621373494,
+    "t_valid_3sigma_total_ps": 135.86889630395387,
+    "label": "MEASURED"
+   },
+   "R2_INHERITED_ABSOLUTE_61.612ps_pp": {
+    "_what": "the literal inherited spread, charged by MEASUREMENT on this arrangement: schedule offset +/-30.806 ps about the centre.",
+    "t_valid_3sigma_total_ps": 157.61203698134307,
+    "t_valid_3sigma_trip_ps": 129.74029182585207,
+    "binding_limb": "the EARLY (negative) offset -- the switch opens before the true zero, the rail gets less charge, the pull-up is weaker and the margin slope collapses. Same sign as the timer's cold corner.",
+    "label": "MEASURED (at this operating point, under a deliberately imposed schedule error of the inherited magnitude)"
+   },
+   "R3_INHERITED_FRACTIONAL_16.929pct_of_hop": {
+    "_what": "the source table's own RATIO applied to THIS point's measured hop zero: 16.929%% x 125.4919 ps = 21.24 ps p-p, i.e. +/-10.62 ps. The scaling-law-preserving reading.",
+    "schedule_spread_ps_pp": 21.2450410286118,
+    "t_valid_3sigma_total_ps": 136.08401862400808,
+    "t_valid_3sigma_trip_ps": 126.22042295756626,
+    "label": "MEASURED"
+   }
+  },
+  "ORACLE_vs_CALIBRATED_the_correction_to_Phase_1": {
+   "oracle_t_valid_0mV_ps": 129.38200568398895,
+   "calibrated_t_valid_0mV_ps": 126.6343441055759,
+   "difference_ps": -2.7476615784130445,
+   "SIGN": "NEGATIVE -- the calibrated eye opens EARLIER than the per-pattern oracle eye.",
+   "isolated_by_freezing_the_reference": {
+    "calibrated_opening_with_ORACLE_trip_frozen_ps": {
+     "bank1": 126.109,
+     "bank2": 126.2364,
+     "bank3": 126.6052
+    },
+    "driver_part_ps": {
+     "bank1": -2.49,
+     "bank2": -3.405,
+     "bank3": -2.7768
+    },
+    "reference_part_ps": {
+     "bank1": 0.023,
+     "bank2": 0.0266,
+     "bank3": 0.0288
+    },
+    "_reading": "99%% of the shift is the DRIVER, ~1%% is the decision level moving. The earlier opening is real and is not an artifact of EYE2's per-pattern fixed reference."
+   },
+   "CREDIT_DECLINED": "this -2.5 to -3.4 ps is a measured CREDIT and it is NOT banked in any headline. Taking credit for a timer error helping would be fragile: it is an energy-for-time trade (734-1042 uA of off-zero switching) measured at one calibration choice. U1 is charged as ZERO in the R1 budget."
+  }
+ },
+ "U2_THE_TIMER_TERM": {
+  "recalibration_band_charge_ps": 7.36,
+  "arithmetic": "0.46 ps/K (MEASURED) x 16 K (MEASURED benign band)",
+  "ANTI_DOUBLE_COUNT_VERIFIED": {
+   "drift_over_60K_ps": 27.6,
+   "as_pct_of_the_265.623_ps_line": 10.390666470900488,
+   "measured_RC_soft_limb_pct": 10.23,
+   "CONCLUSION": "10.391%% vs 10.23%% -- the 0.46 ps/K drift rate and the RC-soft limb of the 16.4 tracking ratio are THE SAME MEASUREMENT. Charged ONCE."
+  },
+  "LC_stiff_limb_over_the_same_band_ps": 0.0876990084552048,
+  "LC_limb_span_ASSUMED": "cold column taken as 27C -> -40C = 67 K; the rate (-0.29%) is MEASURED, the span is ASSUMED",
+  "DIFFERENTIAL_CHARGE_ps": 7.272300991544795,
+  "why_it_does_not_cancel": "tracking ratio 16.4 cold / 13.9 hot: the timed quantity is LC-stiff (+0.736%/85C) and the timer is RC-soft (+10.23%/85C). A tracking replica would cancel this term entirely; this one leaves 7.272 of 7.360 ps uncancelled.",
+  "THE_SAVING_SIGN": "hot -> RC-soft line slows -> T grows -> sampling LATER -> MORE slack -> BENIGN. cold -> early -> BAD. Charged one-sided cold. MEASURED CONFIRMATION: the stress test's binding limb is the EARLY offset, the same direction.",
+  "FULL_COLD_CORNER_named_separately": {
+   "_note": "not the recalibration band but the whole cold corner; reported, not added to the headline",
+   "T_shrinks_pct": -4.82,
+   "t_valid_shrinks_pct": -0.29
+  },
+  "label": "MEASURED rate, DERIVED charge"
+ },
+ "U3_THE_MISMATCH_TERM": {
+  "_method": "a mismatch VOLTAGE becomes a TIME charge by reading the opening at the shifted CONTOUR of the measured margin curve -- NOT by dividing by a local slope. The local derivative is the wrong instrument here: bank 2's curve has a kink at the crossing (37 mV/ps over one 0.1 ps cell, ~6 mV/ps over the next 20 ps).",
+  "sigma_trip_mV": 6.441,
+  "sigma_trip_status": "DERIVED-from-MEASURED and a LOWER BOUND (dw/dl excluded). This is the brief's term.",
+  "sigma_driver_level_mV": 22.4,
+  "sigma_driver_level_status": "MEASURED, qal/mcsize 300 samples. A DIFFERENT random variable: sigma_trip charges only the RECEIVER's decision level, this charges the DRIVER's delivered level.",
+  "sigma_total_mV": 23.307648551494847,
+  "MEASURED_time_charge_3sigma_trip_only_ps": 1.7569821081590362,
+  "MEASURED_time_charge_3sigma_total_ps": 9.234552198377969,
+  "reproduces_Phase_1": "Phase 1 measured the 3-sigma_trip early-edge cost as 0.53-1.71 ps on the ORACLE eye; this study re-measures 0.78/0.53/1.71 ps on the same curves (IC-P2-1) and 1.14/1.23/1.76 ps on the calibrated eye.",
+  "the_late_edge_does_NOT_bind_setup": "Phase 1's 3-sigma right edge lands ~950 ps after c_k; the setup instant is c_k + T <= 200 ps. The right edge is a HOLD question and is not in this budget.",
+  "label": "MEASURED"
+ },
+ "b_THE_FASTEST_SUSTAINABLE_WAVE": {
+  "beats": {
+   "R1_MEASURED_HERE": {
+    "t_valid_at_3sigma_total_ps": 135.86889630395387,
+    "U2_timer_ps": 7.272300991544795,
+    "T_SUSTAINABLE_ps": 143.14119729549867,
+    "with_sigma_trip_only": {
+     "t_valid_ps": 128.39132621373494,
+     "T_SUSTAINABLE_ps": 135.66362720527974
+    }
+   },
+   "R2_INHERITED_ABSOLUTE_61.612ps_pp": {
+    "t_valid_at_3sigma_total_ps": 157.61203698134307,
+    "U2_timer_ps": 7.272300991544795,
+    "T_SUSTAINABLE_ps": 164.88433797288786,
+    "with_sigma_trip_only": {
+     "t_valid_ps": 129.74029182585207,
+     "T_SUSTAINABLE_ps": 137.01259281739686
+    }
+   },
+   "R3_INHERITED_FRACTIONAL_16.929pct_of_hop": {
+    "t_valid_at_3sigma_total_ps": 136.08401862400808,
+    "U2_timer_ps": 7.272300991544795,
+    "T_SUSTAINABLE_ps": 143.35631961555288,
+    "with_sigma_trip_only": {
+     "t_valid_ps": 126.22042295756626,
+     "T_SUSTAINABLE_ps": 133.49272394911105
+    }
+   }
+  },
+  "t_valid_is_T_INVARIANT_MEASURED": {
+   "_what": "MEASURED: t_valid vs the beat period T on the CALIBRATED (single fixed timer) schedule, intersection over the binding data vectors.",
+   "_finding": "t_valid is BEAT-PERIOD INVARIANT. Its physical source is the LC rail-transfer half-period, set by L and C_tank, not by the schedule.",
+   "_pattern_reduction": "{P1,P2,P3} at T<200; VERIFIED at T=200 against all 9 Hamming weights -- the 3-pattern and 9-pattern eyes agree to 0.0000 ps at every bank and the binding patterns are P1 (odd banks) / P2 (even banks). Pre-registered F4 check PASSED.",
+   "rows": {
+    "T200": {
+     "bank1": {
+      "t_valid_0mV": 126.13159270648566,
+      "t_valid_3s_trip": 127.27653546850894,
+      "t_valid_3s_total": 133.36962793954103,
+      "slack_0mV": 73.86840729351434,
+      "binding_polarity": "HIGH",
+      "binding_pattern": "P1"
+     },
+     "bank2": {
+      "t_valid_0mV": 126.26345233115615,
+      "t_valid_3s_trip": 127.49033129577015,
+      "t_valid_3s_total": 134.70505415666094,
+      "slack_0mV": 73.73654766884385,
+      "binding_polarity": "HIGH",
+      "binding_pattern": "P2"
+     },
+     "bank3": {
+      "t_valid_0mV": 126.6343441055759,
+      "t_valid_3s_trip": 128.39132621373494,
+      "t_valid_3s_total": 135.86889630395387,
+      "slack_0mV": 73.3656558944241,
+      "binding_polarity": "HIGH",
+      "binding_pattern": "P1"
+     }
+    },
+    "T180": {
+     "bank1": {
+      "t_valid_0mV": 126.1474016252285,
+      "t_valid_3s_trip": 127.30138031121834,
+      "t_valid_3s_total": 133.42757849483166,
+      "slack_0mV": 53.8525983747715,
+      "binding_polarity": "HIGH",
+      "binding_pattern": "P1"
+     },
+     "bank2": {
+      "t_valid_0mV": 126.28520170129906,
+      "t_valid_3s_trip": 127.54554420731495,
+      "t_valid_3s_total": 134.77768766970917,
+      "slack_0mV": 53.71479829870094,
+      "binding_polarity": "HIGH",
+      "binding_pattern": "P2"
+     },
+     "bank3": {
+      "t_valid_0mV": 126.66555928509445,
+      "t_valid_3s_trip": 128.45793494318934,
+      "t_valid_3s_total": 135.96452068214512,
+      "slack_0mV": 53.334440714905554,
+      "binding_polarity": "HIGH",
+      "binding_pattern": "P1"
+     }
+    },
+    "T160": {
+     "bank1": {
+      "t_valid_0mV": 126.16627213034758,
+      "t_valid_3s_trip": 127.33107217828194,
+      "t_valid_3s_total": 133.49697471119254,
+      "slack_0mV": 33.83372786965242,
+      "binding_polarity": "HIGH",
+      "binding_pattern": "P1"
+     },
+     "bank2": {
+      "t_valid_0mV": 126.31260551409372,
+      "t_valid_3s_trip": 127.6095050549273,
+      "t_valid_3s_total": 134.8616074103861,
+      "slack_0mV": 33.68739448590628,
+      "binding_polarity": "HIGH",
+      "binding_pattern": "P2"
+     },
+     "bank3": {
+      "t_valid_0mV": 126.70141983039184,
+      "t_valid_3s_trip": 128.53003077621327,
+      "t_valid_3s_total": 136.0662057314688,
+      "slack_0mV": 33.29858016960816,
+      "binding_polarity": "HIGH",
+      "binding_pattern": "P1"
+     }
+    },
+    "T150": {
+     "bank1": {
+      "t_valid_0mV": 126.1830273576067,
+      "t_valid_3s_trip": 127.35743575346231,
+      "t_valid_3s_total": 133.55895277775915,
+      "slack_0mV": 23.816972642393296,
+      "binding_polarity": "HIGH",
+      "binding_pattern": "P1"
+     },
+     "bank2": {
+      "t_valid_0mV": 126.3401079647071,
+      "t_valid_3s_trip": 127.6647991138077,
+      "t_valid_3s_total": 134.9337263323722,
+      "slack_0mV": 23.6598920352929,
+      "binding_polarity": "HIGH",
+      "binding_pattern": "P2"
+     },
+     "bank3": {
+      "t_valid_0mV": 126.73388907675712,
+      "t_valid_3s_trip": 128.5906464088048,
+      "t_valid_3s_total": 136.14982740639425,
+      "slack_0mV": 23.266110923242877,
+      "binding_polarity": "HIGH",
+      "binding_pattern": "P1"
+     }
+    },
+    "T145": {
+     "bank1": {
+      "t_valid_0mV": 126.19677666369643,
+      "t_valid_3s_trip": 127.37906965070334,
+      "t_valid_3s_total": 133.60988774221522,
+      "slack_0mV": 18.803223336303574,
+      "binding_polarity": "HIGH",
+      "binding_pattern": "P1"
+     },
+     "bank2": {
+      "t_valid_0mV": 126.36282810075988,
+      "t_valid_3s_trip": 127.71003678362331,
+      "t_valid_3s_total": 134.99265656097737,
+      "slack_0mV": 18.637171899240116,
+      "binding_polarity": "HIGH",
+      "binding_pattern": "P2"
+     },
+     "bank3": {
+      "t_valid_0mV": 126.7614337361249,
+      "t_valid_3s_trip": 128.64323149325355,
+      "t_valid_3s_total": 136.22263525818425,
+      "slack_0mV": 18.2385662638751,
+      "binding_polarity": "HIGH",
+      "binding_pattern": "P1"
+     }
+    },
+    "T140": {
+     "bank1": {
+      "t_valid_0mV": 126.2199012112601,
+      "t_valid_3s_trip": 127.4115062347293,
+      "t_valid_3s_total": 133.68573729747715,
+      "slack_0mV": 13.780098788739906,
+      "binding_polarity": "HIGH",
+      "binding_pattern": "P1"
+     },
+     "bank2": {
+      "t_valid_0mV": 126.39532679083851,
+      "t_valid_3s_trip": 127.77744370045696,
+      "t_valid_3s_total": 135.08087722844698,
+      "slack_0mV": 13.60467320916149,
+      "binding_polarity": "HIGH",
+      "binding_pattern": "P2"
+     },
+     "bank3": {
+      "t_valid_0mV": 126.8055942157223,
+      "t_valid_3s_trip": 128.72770278853773,
+      "t_valid_3s_total": 136.34019405202605,
+      "slack_0mV": 13.194405784277706,
+      "binding_polarity": "HIGH",
+      "binding_pattern": "P1"
+     }
+    }
+   },
+   "T_invariance_0mV": {
+    "bank1": {
+     "T_ps": [
+      200,
+      180,
+      160,
+      150,
+      145,
+      140
+     ],
+     "values_ps": [
+      126.13159270648566,
+      126.1474016252285,
+      126.16627213034758,
+      126.1830273576067,
+      126.19677666369643,
+      126.2199012112601
+     ],
+     "span_ps": 0.08830850477443164
+    },
+    "bank2": {
+     "T_ps": [
+      200,
+      180,
+      160,
+      150,
+      145,
+      140
+     ],
+     "values_ps": [
+      126.26345233115615,
+      126.28520170129906,
+      126.31260551409372,
+      126.3401079647071,
+      126.36282810075988,
+      126.39532679083851
+     ],
+     "span_ps": 0.1318744596823649
+    },
+    "bank3": {
+     "T_ps": [
+      200,
+      180,
+      160,
+      150,
+      145,
+      140
+     ],
+     "values_ps": [
+      126.6343441055759,
+      126.66555928509445,
+      126.70141983039184,
+      126.73388907675712,
+      126.7614337361249,
+      126.8055942157223
+     ],
+     "span_ps": 0.17125011014638858
+    }
+   },
+   "measured_zero_T_invariance": "the rail-transfer zero tzr varies by <= 0.0091 ps and the return zero tzq by <= 0.0861 ps over T = 150-200 ps"
+  },
+  "HEADLINE": "R1 is the machine's real condition and is the headline; R2 is the stress case carrying the inherited term."
+ },
+ "c_CMOS_AND_THE_FLOP_TAX": {
+  "_load_matching": {
+   "QAL_cell_load_fF": 2.0,
+   "CMOS_level_USED_ps": 57.143,
+   "CMOS_level_NOT_used_ps": 94.174,
+   "which_and_why": "the 2 fF figure, BECAUSE the banktank cells this eye is measured on carry CL = 2.0 fF. Quoting the 6.91 fF number would flatter QAL by 1.648x. Same choice, same reason, as qal/sha256/p2/COMPARISON.json."
+  },
+  "t_reg_at_2fF_ps_DERIVED": 315.3778581765557,
+  "t_reg_status": "linear interpolation between the MEASURED 307.1 ps at 0 fF and 335.7 ps at 6.91 fF. A LOWER BOUND on the flop tax (liberty 1.11-1.21x optimistic), which is the CONSERVATIVE choice for QAL. Inflated band 350.1-381.6 ps reported, not used.",
+  "THE_LIABILITY_NO_LATENCY_WIN": {
+   "QAL_ps_per_logic_level_MEASURED": 143.14119729549867,
+   "CMOS_ps_per_logic_level": 57.143,
+   "QAL_slower_by": 2.504964690259501,
+   "_statement": "A QAL level is the rail transfer with the logic resolving INSIDE it, at a LOWER rail than CMOS's supply. Per-level latency can NEVER beat CMOS and NO LATENCY WIN IS CLAIMED ANYWHERE. Any win must be THROUGHPUT, via the absent flop tax."
+  },
+  "INITIATION_INTERVAL": {
+   "_definition": "II = H*T + tzq. A bank cannot accept a new datum until its rail has returned AND the return switch has opened at its own zero (ro_k = c_k + H*T + tzq). fcrit's quoted 'best initiation interval 320 ps' is H*T only and OMITS the return; both readings are given.",
+   "tzq_worst_MEASURED_ps": 153.5394,
+   "variants": {
+    "H2_H*T_only_fcrit_convention": {
+     "II_ps": 286.28239459099734,
+     "throughput_GHz": 3.493054476607507
+    },
+    "H2_H*T_plus_tzq_STRICT": {
+     "II_ps": 439.82179459099734,
+     "throughput_GHz": 2.273648128169565
+    },
+    "H4_H*T_only_fcrit_convention": {
+     "II_ps": 572.5647891819947,
+     "throughput_GHz": 1.7465272383037536
+    },
+    "H4_H*T_plus_tzq_STRICT": {
+     "II_ps": 726.1041891819947,
+     "throughput_GHz": 1.3772128227583529
+    }
+   }
+  },
+  "crossovers": {
+   "H2__H*T_only_fcrit_convention__1_level_per_bank_MEASURED": {
+    "ideal": {
+     "unc_ps": 0,
+     "CMOS_stage_flop_every_level_ps": 372.52085817655575,
+     "CROSSOVER_D_vs_flop_every_level": 1,
+     "CROSSOVER_D_vs_best_isoD_CMOS": 1,
+     "D_exact_i": 0.7685003089285116,
+     "D_exact_ii": -0.509169339823922,
+     "rows": [
+      {
+       "D_banks": 1,
+       "logic_levels": 1,
+       "QAL_throughput_ps_per_level": 286.28239459099734,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 372.52085817655575,
+       "CMOS_isoD_ps_per_level": 372.52085817655575,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 2,
+       "logic_levels": 2,
+       "QAL_throughput_ps_per_level": 143.14119729549867,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 429.6638581765557,
+       "CMOS_isoD_ps_per_level": 214.83192908827786,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 3,
+       "logic_levels": 3,
+       "QAL_throughput_ps_per_level": 95.42746486366578,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 486.8068581765557,
+       "CMOS_isoD_ps_per_level": 162.26895272551857,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 4,
+       "logic_levels": 4,
+       "QAL_throughput_ps_per_level": 71.57059864774934,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 543.9498581765557,
+       "CMOS_isoD_ps_per_level": 135.98746454413893,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 5,
+       "logic_levels": 5,
+       "QAL_throughput_ps_per_level": 57.25647891819947,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 601.0928581765558,
+       "CMOS_isoD_ps_per_level": 120.21857163531115,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 6,
+       "logic_levels": 6,
+       "QAL_throughput_ps_per_level": 47.71373243183289,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 658.2358581765557,
+       "CMOS_isoD_ps_per_level": 109.70597636275927,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 7,
+       "logic_levels": 7,
+       "QAL_throughput_ps_per_level": 40.89748494157105,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 715.3788581765557,
+       "CMOS_isoD_ps_per_level": 102.19697973950795,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 8,
+       "logic_levels": 8,
+       "QAL_throughput_ps_per_level": 35.78529932387467,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 772.5218581765557,
+       "CMOS_isoD_ps_per_level": 96.56523227206947,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 9,
+       "logic_levels": 9,
+       "QAL_throughput_ps_per_level": 31.80915495455526,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 829.6648581765558,
+       "CMOS_isoD_ps_per_level": 92.18498424183953,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 10,
+       "logic_levels": 10,
+       "QAL_throughput_ps_per_level": 28.628239459099735,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 886.8078581765558,
+       "CMOS_isoD_ps_per_level": 88.68078581765558,
+       "QAL_wins_ii": true
+      }
+     ]
+    },
+    "tree": {
+     "unc_ps": 100,
+     "CMOS_stage_flop_every_level_ps": 472.52085817655575,
+     "CROSSOVER_D_vs_flop_every_level": 1,
+     "CROSSOVER_D_vs_best_isoD_CMOS": 1,
+     "D_exact_i": 0.6058619204573377,
+     "D_exact_ii": -2.2591649648348593,
+     "rows": [
+      {
+       "D_banks": 1,
+       "logic_levels": 1,
+       "QAL_throughput_ps_per_level": 286.28239459099734,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 472.52085817655575,
+       "CMOS_isoD_ps_per_level": 472.52085817655575,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 2,
+       "logic_levels": 2,
+       "QAL_throughput_ps_per_level": 143.14119729549867,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 529.6638581765558,
+       "CMOS_isoD_ps_per_level": 264.8319290882779,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 3,
+       "logic_levels": 3,
+       "QAL_throughput_ps_per_level": 95.42746486366578,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 586.8068581765557,
+       "CMOS_isoD_ps_per_level": 195.6022860588519,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 4,
+       "logic_levels": 4,
+       "QAL_throughput_ps_per_level": 71.57059864774934,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 643.9498581765557,
+       "CMOS_isoD_ps_per_level": 160.98746454413893,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 5,
+       "logic_levels": 5,
+       "QAL_throughput_ps_per_level": 57.25647891819947,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 701.0928581765558,
+       "CMOS_isoD_ps_per_level": 140.21857163531115,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 6,
+       "logic_levels": 6,
+       "QAL_throughput_ps_per_level": 47.71373243183289,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 758.2358581765557,
+       "CMOS_isoD_ps_per_level": 126.37264302942594,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 7,
+       "logic_levels": 7,
+       "QAL_throughput_ps_per_level": 40.89748494157105,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 815.3788581765557,
+       "CMOS_isoD_ps_per_level": 116.48269402522224,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 8,
+       "logic_levels": 8,
+       "QAL_throughput_ps_per_level": 35.78529932387467,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 872.5218581765557,
+       "CMOS_isoD_ps_per_level": 109.06523227206947,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 9,
+       "logic_levels": 9,
+       "QAL_throughput_ps_per_level": 31.80915495455526,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 929.6648581765558,
+       "CMOS_isoD_ps_per_level": 103.29609535295064,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 10,
+       "logic_levels": 10,
+       "QAL_throughput_ps_per_level": 28.628239459099735,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 986.8078581765558,
+       "CMOS_isoD_ps_per_level": 98.68078581765558,
+       "QAL_wins_ii": true
+      }
+     ]
+    },
+    "flow": {
+     "unc_ps": 250,
+     "CMOS_stage_flop_every_level_ps": 622.5208581765557,
+     "CROSSOVER_D_vs_flop_every_level": 1,
+     "CROSSOVER_D_vs_best_isoD_CMOS": 1,
+     "D_exact_i": 0.45987598781758987,
+     "D_exact_ii": -4.884158402351265,
+     "rows": [
+      {
+       "D_banks": 1,
+       "logic_levels": 1,
+       "QAL_throughput_ps_per_level": 286.28239459099734,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 622.5208581765557,
+       "CMOS_isoD_ps_per_level": 622.5208581765557,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 2,
+       "logic_levels": 2,
+       "QAL_throughput_ps_per_level": 143.14119729549867,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 679.6638581765558,
+       "CMOS_isoD_ps_per_level": 339.8319290882779,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 3,
+       "logic_levels": 3,
+       "QAL_throughput_ps_per_level": 95.42746486366578,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 736.8068581765557,
+       "CMOS_isoD_ps_per_level": 245.6022860588519,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 4,
+       "logic_levels": 4,
+       "QAL_throughput_ps_per_level": 71.57059864774934,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 793.9498581765557,
+       "CMOS_isoD_ps_per_level": 198.48746454413893,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 5,
+       "logic_levels": 5,
+       "QAL_throughput_ps_per_level": 57.25647891819947,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 851.0928581765558,
+       "CMOS_isoD_ps_per_level": 170.21857163531115,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 6,
+       "logic_levels": 6,
+       "QAL_throughput_ps_per_level": 47.71373243183289,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 908.2358581765557,
+       "CMOS_isoD_ps_per_level": 151.37264302942594,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 7,
+       "logic_levels": 7,
+       "QAL_throughput_ps_per_level": 40.89748494157105,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 965.3788581765557,
+       "CMOS_isoD_ps_per_level": 137.91126545379367,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 8,
+       "logic_levels": 8,
+       "QAL_throughput_ps_per_level": 35.78529932387467,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1022.5218581765557,
+       "CMOS_isoD_ps_per_level": 127.81523227206947,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 9,
+       "logic_levels": 9,
+       "QAL_throughput_ps_per_level": 31.80915495455526,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1079.6648581765558,
+       "CMOS_isoD_ps_per_level": 119.9627620196173,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 10,
+       "logic_levels": 10,
+       "QAL_throughput_ps_per_level": 28.628239459099735,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1136.8078581765558,
+       "CMOS_isoD_ps_per_level": 113.68078581765558,
+       "QAL_wins_ii": true
+      }
+     ]
+    }
+   },
+   "H2__H*T_only_fcrit_convention__2_levels_per_bank_ARCHITECTURAL": {
+    "ideal": {
+     "unc_ps": 0,
+     "CMOS_stage_flop_every_level_ps": 372.52085817655575,
+     "CROSSOVER_D_vs_flop_every_level": 1,
+     "CROSSOVER_D_vs_best_isoD_CMOS": 1,
+     "D_exact_i": 0.3842501544642558,
+     "D_exact_ii": -0.254584669911961,
+     "rows": [
+      {
+       "D_banks": 1,
+       "logic_levels": 2,
+       "QAL_throughput_ps_per_level": 143.14119729549867,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 429.6638581765557,
+       "CMOS_isoD_ps_per_level": 214.83192908827786,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 2,
+       "logic_levels": 4,
+       "QAL_throughput_ps_per_level": 71.57059864774934,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 543.9498581765557,
+       "CMOS_isoD_ps_per_level": 135.98746454413893,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 3,
+       "logic_levels": 6,
+       "QAL_throughput_ps_per_level": 47.71373243183289,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 658.2358581765557,
+       "CMOS_isoD_ps_per_level": 109.70597636275927,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 4,
+       "logic_levels": 8,
+       "QAL_throughput_ps_per_level": 35.78529932387467,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 772.5218581765557,
+       "CMOS_isoD_ps_per_level": 96.56523227206947,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 5,
+       "logic_levels": 10,
+       "QAL_throughput_ps_per_level": 28.628239459099735,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 886.8078581765558,
+       "CMOS_isoD_ps_per_level": 88.68078581765558,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 6,
+       "logic_levels": 12,
+       "QAL_throughput_ps_per_level": 23.856866215916444,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1001.0938581765557,
+       "CMOS_isoD_ps_per_level": 83.42448818137964,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 7,
+       "logic_levels": 14,
+       "QAL_throughput_ps_per_level": 20.448742470785525,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1115.3798581765557,
+       "CMOS_isoD_ps_per_level": 79.66998986975398,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 8,
+       "logic_levels": 16,
+       "QAL_throughput_ps_per_level": 17.892649661937334,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1229.6658581765557,
+       "CMOS_isoD_ps_per_level": 76.85411613603473,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 9,
+       "logic_levels": 18,
+       "QAL_throughput_ps_per_level": 15.90457747727763,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1343.9518581765558,
+       "CMOS_isoD_ps_per_level": 74.66399212091977,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 10,
+       "logic_levels": 20,
+       "QAL_throughput_ps_per_level": 14.314119729549867,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1458.2378581765558,
+       "CMOS_isoD_ps_per_level": 72.9118929088278,
+       "QAL_wins_ii": true
+      }
+     ]
+    },
+    "tree": {
+     "unc_ps": 100,
+     "CMOS_stage_flop_every_level_ps": 472.52085817655575,
+     "CROSSOVER_D_vs_flop_every_level": 1,
+     "CROSSOVER_D_vs_best_isoD_CMOS": 1,
+     "D_exact_i": 0.30293096022866883,
+     "D_exact_ii": -1.1295824824174296,
+     "rows": [
+      {
+       "D_banks": 1,
+       "logic_levels": 2,
+       "QAL_throughput_ps_per_level": 143.14119729549867,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 529.6638581765558,
+       "CMOS_isoD_ps_per_level": 264.8319290882779,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 2,
+       "logic_levels": 4,
+       "QAL_throughput_ps_per_level": 71.57059864774934,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 643.9498581765557,
+       "CMOS_isoD_ps_per_level": 160.98746454413893,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 3,
+       "logic_levels": 6,
+       "QAL_throughput_ps_per_level": 47.71373243183289,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 758.2358581765557,
+       "CMOS_isoD_ps_per_level": 126.37264302942594,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 4,
+       "logic_levels": 8,
+       "QAL_throughput_ps_per_level": 35.78529932387467,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 872.5218581765557,
+       "CMOS_isoD_ps_per_level": 109.06523227206947,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 5,
+       "logic_levels": 10,
+       "QAL_throughput_ps_per_level": 28.628239459099735,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 986.8078581765558,
+       "CMOS_isoD_ps_per_level": 98.68078581765558,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 6,
+       "logic_levels": 12,
+       "QAL_throughput_ps_per_level": 23.856866215916444,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1101.0938581765558,
+       "CMOS_isoD_ps_per_level": 91.75782151471299,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 7,
+       "logic_levels": 14,
+       "QAL_throughput_ps_per_level": 20.448742470785525,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1215.3798581765557,
+       "CMOS_isoD_ps_per_level": 86.81284701261112,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 8,
+       "logic_levels": 16,
+       "QAL_throughput_ps_per_level": 17.892649661937334,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1329.6658581765557,
+       "CMOS_isoD_ps_per_level": 83.10411613603473,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 9,
+       "logic_levels": 18,
+       "QAL_throughput_ps_per_level": 15.90457747727763,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1443.9518581765558,
+       "CMOS_isoD_ps_per_level": 80.21954767647532,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 10,
+       "logic_levels": 20,
+       "QAL_throughput_ps_per_level": 14.314119729549867,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1558.2378581765558,
+       "CMOS_isoD_ps_per_level": 77.9118929088278,
+       "QAL_wins_ii": true
+      }
+     ]
+    },
+    "flow": {
+     "unc_ps": 250,
+     "CMOS_stage_flop_every_level_ps": 622.5208581765557,
+     "CROSSOVER_D_vs_flop_every_level": 1,
+     "CROSSOVER_D_vs_best_isoD_CMOS": 1,
+     "D_exact_i": 0.22993799390879494,
+     "D_exact_ii": -2.4420792011756327,
+     "rows": [
+      {
+       "D_banks": 1,
+       "logic_levels": 2,
+       "QAL_throughput_ps_per_level": 143.14119729549867,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 679.6638581765558,
+       "CMOS_isoD_ps_per_level": 339.8319290882779,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 2,
+       "logic_levels": 4,
+       "QAL_throughput_ps_per_level": 71.57059864774934,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 793.9498581765557,
+       "CMOS_isoD_ps_per_level": 198.48746454413893,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 3,
+       "logic_levels": 6,
+       "QAL_throughput_ps_per_level": 47.71373243183289,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 908.2358581765557,
+       "CMOS_isoD_ps_per_level": 151.37264302942594,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 4,
+       "logic_levels": 8,
+       "QAL_throughput_ps_per_level": 35.78529932387467,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1022.5218581765557,
+       "CMOS_isoD_ps_per_level": 127.81523227206947,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 5,
+       "logic_levels": 10,
+       "QAL_throughput_ps_per_level": 28.628239459099735,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1136.8078581765558,
+       "CMOS_isoD_ps_per_level": 113.68078581765558,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 6,
+       "logic_levels": 12,
+       "QAL_throughput_ps_per_level": 23.856866215916444,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1251.0938581765558,
+       "CMOS_isoD_ps_per_level": 104.25782151471299,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 7,
+       "logic_levels": 14,
+       "QAL_throughput_ps_per_level": 20.448742470785525,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1365.3798581765557,
+       "CMOS_isoD_ps_per_level": 97.52713272689684,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 8,
+       "logic_levels": 16,
+       "QAL_throughput_ps_per_level": 17.892649661937334,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1479.6658581765557,
+       "CMOS_isoD_ps_per_level": 92.47911613603473,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 9,
+       "logic_levels": 18,
+       "QAL_throughput_ps_per_level": 15.90457747727763,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1593.9518581765558,
+       "CMOS_isoD_ps_per_level": 88.55288100980866,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 10,
+       "logic_levels": 20,
+       "QAL_throughput_ps_per_level": 14.314119729549867,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1708.2378581765558,
+       "CMOS_isoD_ps_per_level": 85.4118929088278,
+       "QAL_wins_ii": true
+      }
+     ]
+    }
+   },
+   "H2__H*T_plus_tzq_STRICT__1_level_per_bank_MEASURED": {
+    "ideal": {
+     "unc_ps": 0,
+     "CMOS_stage_flop_every_level_ps": 372.52085817655575,
+     "CROSSOVER_D_vs_flop_every_level": 2,
+     "CROSSOVER_D_vs_best_isoD_CMOS": 3,
+     "D_exact_i": 1.1806635385300879,
+     "D_exact_ii": 2.1777634428441215,
+     "rows": [
+      {
+       "D_banks": 1,
+       "logic_levels": 1,
+       "QAL_throughput_ps_per_level": 439.82179459099734,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": false,
+       "CMOS_isoD_stage_ps": 372.52085817655575,
+       "CMOS_isoD_ps_per_level": 372.52085817655575,
+       "QAL_wins_ii": false
+      },
+      {
+       "D_banks": 2,
+       "logic_levels": 2,
+       "QAL_throughput_ps_per_level": 219.91089729549867,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 429.6638581765557,
+       "CMOS_isoD_ps_per_level": 214.83192908827786,
+       "QAL_wins_ii": false
+      },
+      {
+       "D_banks": 3,
+       "logic_levels": 3,
+       "QAL_throughput_ps_per_level": 146.6072648636658,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 486.8068581765557,
+       "CMOS_isoD_ps_per_level": 162.26895272551857,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 4,
+       "logic_levels": 4,
+       "QAL_throughput_ps_per_level": 109.95544864774934,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 543.9498581765557,
+       "CMOS_isoD_ps_per_level": 135.98746454413893,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 5,
+       "logic_levels": 5,
+       "QAL_throughput_ps_per_level": 87.96435891819947,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 601.0928581765558,
+       "CMOS_isoD_ps_per_level": 120.21857163531115,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 6,
+       "logic_levels": 6,
+       "QAL_throughput_ps_per_level": 73.3036324318329,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 658.2358581765557,
+       "CMOS_isoD_ps_per_level": 109.70597636275927,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 7,
+       "logic_levels": 7,
+       "QAL_throughput_ps_per_level": 62.83168494157105,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 715.3788581765557,
+       "CMOS_isoD_ps_per_level": 102.19697973950795,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 8,
+       "logic_levels": 8,
+       "QAL_throughput_ps_per_level": 54.97772432387467,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 772.5218581765557,
+       "CMOS_isoD_ps_per_level": 96.56523227206947,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 9,
+       "logic_levels": 9,
+       "QAL_throughput_ps_per_level": 48.869088287888594,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 829.6648581765558,
+       "CMOS_isoD_ps_per_level": 92.18498424183953,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 10,
+       "logic_levels": 10,
+       "QAL_throughput_ps_per_level": 43.98217945909973,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 886.8078581765558,
+       "CMOS_isoD_ps_per_level": 88.68078581765558,
+       "QAL_wins_ii": true
+      }
+     ]
+    },
+    "tree": {
+     "unc_ps": 100,
+     "CMOS_stage_flop_every_level_ps": 472.52085817655575,
+     "CROSSOVER_D_vs_flop_every_level": 1,
+     "CROSSOVER_D_vs_best_isoD_CMOS": 1,
+     "D_exact_i": 0.930798687465897,
+     "D_exact_ii": 0.4277678178331838,
+     "rows": [
+      {
+       "D_banks": 1,
+       "logic_levels": 1,
+       "QAL_throughput_ps_per_level": 439.82179459099734,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 472.52085817655575,
+       "CMOS_isoD_ps_per_level": 472.52085817655575,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 2,
+       "logic_levels": 2,
+       "QAL_throughput_ps_per_level": 219.91089729549867,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 529.6638581765558,
+       "CMOS_isoD_ps_per_level": 264.8319290882779,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 3,
+       "logic_levels": 3,
+       "QAL_throughput_ps_per_level": 146.6072648636658,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 586.8068581765557,
+       "CMOS_isoD_ps_per_level": 195.6022860588519,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 4,
+       "logic_levels": 4,
+       "QAL_throughput_ps_per_level": 109.95544864774934,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 643.9498581765557,
+       "CMOS_isoD_ps_per_level": 160.98746454413893,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 5,
+       "logic_levels": 5,
+       "QAL_throughput_ps_per_level": 87.96435891819947,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 701.0928581765558,
+       "CMOS_isoD_ps_per_level": 140.21857163531115,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 6,
+       "logic_levels": 6,
+       "QAL_throughput_ps_per_level": 73.3036324318329,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 758.2358581765557,
+       "CMOS_isoD_ps_per_level": 126.37264302942594,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 7,
+       "logic_levels": 7,
+       "QAL_throughput_ps_per_level": 62.83168494157105,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 815.3788581765557,
+       "CMOS_isoD_ps_per_level": 116.48269402522224,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 8,
+       "logic_levels": 8,
+       "QAL_throughput_ps_per_level": 54.97772432387467,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 872.5218581765557,
+       "CMOS_isoD_ps_per_level": 109.06523227206947,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 9,
+       "logic_levels": 9,
+       "QAL_throughput_ps_per_level": 48.869088287888594,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 929.6648581765558,
+       "CMOS_isoD_ps_per_level": 103.29609535295064,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 10,
+       "logic_levels": 10,
+       "QAL_throughput_ps_per_level": 43.98217945909973,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 986.8078581765558,
+       "CMOS_isoD_ps_per_level": 98.68078581765558,
+       "QAL_wins_ii": true
+      }
+     ]
+    },
+    "flow": {
+     "unc_ps": 250,
+     "CMOS_stage_flop_every_level_ps": 622.5208581765557,
+     "CROSSOVER_D_vs_flop_every_level": 1,
+     "CROSSOVER_D_vs_best_isoD_CMOS": 1,
+     "D_exact_i": 0.706517362131917,
+     "D_exact_ii": -2.1972256196832225,
+     "rows": [
+      {
+       "D_banks": 1,
+       "logic_levels": 1,
+       "QAL_throughput_ps_per_level": 439.82179459099734,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 622.5208581765557,
+       "CMOS_isoD_ps_per_level": 622.5208581765557,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 2,
+       "logic_levels": 2,
+       "QAL_throughput_ps_per_level": 219.91089729549867,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 679.6638581765558,
+       "CMOS_isoD_ps_per_level": 339.8319290882779,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 3,
+       "logic_levels": 3,
+       "QAL_throughput_ps_per_level": 146.6072648636658,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 736.8068581765557,
+       "CMOS_isoD_ps_per_level": 245.6022860588519,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 4,
+       "logic_levels": 4,
+       "QAL_throughput_ps_per_level": 109.95544864774934,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 793.9498581765557,
+       "CMOS_isoD_ps_per_level": 198.48746454413893,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 5,
+       "logic_levels": 5,
+       "QAL_throughput_ps_per_level": 87.96435891819947,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 851.0928581765558,
+       "CMOS_isoD_ps_per_level": 170.21857163531115,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 6,
+       "logic_levels": 6,
+       "QAL_throughput_ps_per_level": 73.3036324318329,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 908.2358581765557,
+       "CMOS_isoD_ps_per_level": 151.37264302942594,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 7,
+       "logic_levels": 7,
+       "QAL_throughput_ps_per_level": 62.83168494157105,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 965.3788581765557,
+       "CMOS_isoD_ps_per_level": 137.91126545379367,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 8,
+       "logic_levels": 8,
+       "QAL_throughput_ps_per_level": 54.97772432387467,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1022.5218581765557,
+       "CMOS_isoD_ps_per_level": 127.81523227206947,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 9,
+       "logic_levels": 9,
+       "QAL_throughput_ps_per_level": 48.869088287888594,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1079.6648581765558,
+       "CMOS_isoD_ps_per_level": 119.9627620196173,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 10,
+       "logic_levels": 10,
+       "QAL_throughput_ps_per_level": 43.98217945909973,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1136.8078581765558,
+       "CMOS_isoD_ps_per_level": 113.68078581765558,
+       "QAL_wins_ii": true
+      }
+     ]
+    }
+   },
+   "H2__H*T_plus_tzq_STRICT__2_levels_per_bank_ARCHITECTURAL": {
+    "ideal": {
+     "unc_ps": 0,
+     "CMOS_stage_flop_every_level_ps": 372.52085817655575,
+     "CROSSOVER_D_vs_flop_every_level": 1,
+     "CROSSOVER_D_vs_best_isoD_CMOS": 2,
+     "D_exact_i": 0.5903317692650439,
+     "D_exact_ii": 1.0888817214220607,
+     "rows": [
+      {
+       "D_banks": 1,
+       "logic_levels": 2,
+       "QAL_throughput_ps_per_level": 219.91089729549867,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 429.6638581765557,
+       "CMOS_isoD_ps_per_level": 214.83192908827786,
+       "QAL_wins_ii": false
+      },
+      {
+       "D_banks": 2,
+       "logic_levels": 4,
+       "QAL_throughput_ps_per_level": 109.95544864774934,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 543.9498581765557,
+       "CMOS_isoD_ps_per_level": 135.98746454413893,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 3,
+       "logic_levels": 6,
+       "QAL_throughput_ps_per_level": 73.3036324318329,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 658.2358581765557,
+       "CMOS_isoD_ps_per_level": 109.70597636275927,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 4,
+       "logic_levels": 8,
+       "QAL_throughput_ps_per_level": 54.97772432387467,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 772.5218581765557,
+       "CMOS_isoD_ps_per_level": 96.56523227206947,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 5,
+       "logic_levels": 10,
+       "QAL_throughput_ps_per_level": 43.98217945909973,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 886.8078581765558,
+       "CMOS_isoD_ps_per_level": 88.68078581765558,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 6,
+       "logic_levels": 12,
+       "QAL_throughput_ps_per_level": 36.65181621591645,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1001.0938581765557,
+       "CMOS_isoD_ps_per_level": 83.42448818137964,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 7,
+       "logic_levels": 14,
+       "QAL_throughput_ps_per_level": 31.415842470785524,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1115.3798581765557,
+       "CMOS_isoD_ps_per_level": 79.66998986975398,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 8,
+       "logic_levels": 16,
+       "QAL_throughput_ps_per_level": 27.488862161937334,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1229.6658581765557,
+       "CMOS_isoD_ps_per_level": 76.85411613603473,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 9,
+       "logic_levels": 18,
+       "QAL_throughput_ps_per_level": 24.434544143944297,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1343.9518581765558,
+       "CMOS_isoD_ps_per_level": 74.66399212091977,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 10,
+       "logic_levels": 20,
+       "QAL_throughput_ps_per_level": 21.991089729549866,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1458.2378581765558,
+       "CMOS_isoD_ps_per_level": 72.9118929088278,
+       "QAL_wins_ii": true
+      }
+     ]
+    },
+    "tree": {
+     "unc_ps": 100,
+     "CMOS_stage_flop_every_level_ps": 472.52085817655575,
+     "CROSSOVER_D_vs_flop_every_level": 1,
+     "CROSSOVER_D_vs_best_isoD_CMOS": 1,
+     "D_exact_i": 0.4653993437329485,
+     "D_exact_ii": 0.2138839089165919,
+     "rows": [
+      {
+       "D_banks": 1,
+       "logic_levels": 2,
+       "QAL_throughput_ps_per_level": 219.91089729549867,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 529.6638581765558,
+       "CMOS_isoD_ps_per_level": 264.8319290882779,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 2,
+       "logic_levels": 4,
+       "QAL_throughput_ps_per_level": 109.95544864774934,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 643.9498581765557,
+       "CMOS_isoD_ps_per_level": 160.98746454413893,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 3,
+       "logic_levels": 6,
+       "QAL_throughput_ps_per_level": 73.3036324318329,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 758.2358581765557,
+       "CMOS_isoD_ps_per_level": 126.37264302942594,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 4,
+       "logic_levels": 8,
+       "QAL_throughput_ps_per_level": 54.97772432387467,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 872.5218581765557,
+       "CMOS_isoD_ps_per_level": 109.06523227206947,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 5,
+       "logic_levels": 10,
+       "QAL_throughput_ps_per_level": 43.98217945909973,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 986.8078581765558,
+       "CMOS_isoD_ps_per_level": 98.68078581765558,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 6,
+       "logic_levels": 12,
+       "QAL_throughput_ps_per_level": 36.65181621591645,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1101.0938581765558,
+       "CMOS_isoD_ps_per_level": 91.75782151471299,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 7,
+       "logic_levels": 14,
+       "QAL_throughput_ps_per_level": 31.415842470785524,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1215.3798581765557,
+       "CMOS_isoD_ps_per_level": 86.81284701261112,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 8,
+       "logic_levels": 16,
+       "QAL_throughput_ps_per_level": 27.488862161937334,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1329.6658581765557,
+       "CMOS_isoD_ps_per_level": 83.10411613603473,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 9,
+       "logic_levels": 18,
+       "QAL_throughput_ps_per_level": 24.434544143944297,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1443.9518581765558,
+       "CMOS_isoD_ps_per_level": 80.21954767647532,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 10,
+       "logic_levels": 20,
+       "QAL_throughput_ps_per_level": 21.991089729549866,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1558.2378581765558,
+       "CMOS_isoD_ps_per_level": 77.9118929088278,
+       "QAL_wins_ii": true
+      }
+     ]
+    },
+    "flow": {
+     "unc_ps": 250,
+     "CMOS_stage_flop_every_level_ps": 622.5208581765557,
+     "CROSSOVER_D_vs_flop_every_level": 1,
+     "CROSSOVER_D_vs_best_isoD_CMOS": 1,
+     "D_exact_i": 0.3532586810659585,
+     "D_exact_ii": -1.0986128098416112,
+     "rows": [
+      {
+       "D_banks": 1,
+       "logic_levels": 2,
+       "QAL_throughput_ps_per_level": 219.91089729549867,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 679.6638581765558,
+       "CMOS_isoD_ps_per_level": 339.8319290882779,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 2,
+       "logic_levels": 4,
+       "QAL_throughput_ps_per_level": 109.95544864774934,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 793.9498581765557,
+       "CMOS_isoD_ps_per_level": 198.48746454413893,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 3,
+       "logic_levels": 6,
+       "QAL_throughput_ps_per_level": 73.3036324318329,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 908.2358581765557,
+       "CMOS_isoD_ps_per_level": 151.37264302942594,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 4,
+       "logic_levels": 8,
+       "QAL_throughput_ps_per_level": 54.97772432387467,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1022.5218581765557,
+       "CMOS_isoD_ps_per_level": 127.81523227206947,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 5,
+       "logic_levels": 10,
+       "QAL_throughput_ps_per_level": 43.98217945909973,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1136.8078581765558,
+       "CMOS_isoD_ps_per_level": 113.68078581765558,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 6,
+       "logic_levels": 12,
+       "QAL_throughput_ps_per_level": 36.65181621591645,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1251.0938581765558,
+       "CMOS_isoD_ps_per_level": 104.25782151471299,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 7,
+       "logic_levels": 14,
+       "QAL_throughput_ps_per_level": 31.415842470785524,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1365.3798581765557,
+       "CMOS_isoD_ps_per_level": 97.52713272689684,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 8,
+       "logic_levels": 16,
+       "QAL_throughput_ps_per_level": 27.488862161937334,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1479.6658581765557,
+       "CMOS_isoD_ps_per_level": 92.47911613603473,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 9,
+       "logic_levels": 18,
+       "QAL_throughput_ps_per_level": 24.434544143944297,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1593.9518581765558,
+       "CMOS_isoD_ps_per_level": 88.55288100980866,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 10,
+       "logic_levels": 20,
+       "QAL_throughput_ps_per_level": 21.991089729549866,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1708.2378581765558,
+       "CMOS_isoD_ps_per_level": 85.4118929088278,
+       "QAL_wins_ii": true
+      }
+     ]
+    }
+   },
+   "H4__H*T_only_fcrit_convention__1_level_per_bank_MEASURED": {
+    "ideal": {
+     "unc_ps": 0,
+     "CMOS_stage_flop_every_level_ps": 372.52085817655575,
+     "CROSSOVER_D_vs_flop_every_level": 2,
+     "CROSSOVER_D_vs_best_isoD_CMOS": 5,
+     "D_exact_i": 1.5370006178570232,
+     "D_exact_ii": 4.50076004069508,
+     "rows": [
+      {
+       "D_banks": 1,
+       "logic_levels": 1,
+       "QAL_throughput_ps_per_level": 572.5647891819947,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": false,
+       "CMOS_isoD_stage_ps": 372.52085817655575,
+       "CMOS_isoD_ps_per_level": 372.52085817655575,
+       "QAL_wins_ii": false
+      },
+      {
+       "D_banks": 2,
+       "logic_levels": 2,
+       "QAL_throughput_ps_per_level": 286.28239459099734,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 429.6638581765557,
+       "CMOS_isoD_ps_per_level": 214.83192908827786,
+       "QAL_wins_ii": false
+      },
+      {
+       "D_banks": 3,
+       "logic_levels": 3,
+       "QAL_throughput_ps_per_level": 190.85492972733155,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 486.8068581765557,
+       "CMOS_isoD_ps_per_level": 162.26895272551857,
+       "QAL_wins_ii": false
+      },
+      {
+       "D_banks": 4,
+       "logic_levels": 4,
+       "QAL_throughput_ps_per_level": 143.14119729549867,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 543.9498581765557,
+       "CMOS_isoD_ps_per_level": 135.98746454413893,
+       "QAL_wins_ii": false
+      },
+      {
+       "D_banks": 5,
+       "logic_levels": 5,
+       "QAL_throughput_ps_per_level": 114.51295783639894,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 601.0928581765558,
+       "CMOS_isoD_ps_per_level": 120.21857163531115,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 6,
+       "logic_levels": 6,
+       "QAL_throughput_ps_per_level": 95.42746486366578,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 658.2358581765557,
+       "CMOS_isoD_ps_per_level": 109.70597636275927,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 7,
+       "logic_levels": 7,
+       "QAL_throughput_ps_per_level": 81.7949698831421,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 715.3788581765557,
+       "CMOS_isoD_ps_per_level": 102.19697973950795,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 8,
+       "logic_levels": 8,
+       "QAL_throughput_ps_per_level": 71.57059864774934,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 772.5218581765557,
+       "CMOS_isoD_ps_per_level": 96.56523227206947,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 9,
+       "logic_levels": 9,
+       "QAL_throughput_ps_per_level": 63.61830990911052,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 829.6648581765558,
+       "CMOS_isoD_ps_per_level": 92.18498424183953,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 10,
+       "logic_levels": 10,
+       "QAL_throughput_ps_per_level": 57.25647891819947,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 886.8078581765558,
+       "CMOS_isoD_ps_per_level": 88.68078581765558,
+       "QAL_wins_ii": true
+      }
+     ]
+    },
+    "tree": {
+     "unc_ps": 100,
+     "CMOS_stage_flop_every_level_ps": 472.52085817655575,
+     "CROSSOVER_D_vs_flop_every_level": 2,
+     "CROSSOVER_D_vs_best_isoD_CMOS": 3,
+     "D_exact_i": 1.2117238409146753,
+     "D_exact_ii": 2.7507644156841424,
+     "rows": [
+      {
+       "D_banks": 1,
+       "logic_levels": 1,
+       "QAL_throughput_ps_per_level": 572.5647891819947,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": false,
+       "CMOS_isoD_stage_ps": 472.52085817655575,
+       "CMOS_isoD_ps_per_level": 472.52085817655575,
+       "QAL_wins_ii": false
+      },
+      {
+       "D_banks": 2,
+       "logic_levels": 2,
+       "QAL_throughput_ps_per_level": 286.28239459099734,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 529.6638581765558,
+       "CMOS_isoD_ps_per_level": 264.8319290882779,
+       "QAL_wins_ii": false
+      },
+      {
+       "D_banks": 3,
+       "logic_levels": 3,
+       "QAL_throughput_ps_per_level": 190.85492972733155,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 586.8068581765557,
+       "CMOS_isoD_ps_per_level": 195.6022860588519,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 4,
+       "logic_levels": 4,
+       "QAL_throughput_ps_per_level": 143.14119729549867,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 643.9498581765557,
+       "CMOS_isoD_ps_per_level": 160.98746454413893,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 5,
+       "logic_levels": 5,
+       "QAL_throughput_ps_per_level": 114.51295783639894,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 701.0928581765558,
+       "CMOS_isoD_ps_per_level": 140.21857163531115,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 6,
+       "logic_levels": 6,
+       "QAL_throughput_ps_per_level": 95.42746486366578,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 758.2358581765557,
+       "CMOS_isoD_ps_per_level": 126.37264302942594,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 7,
+       "logic_levels": 7,
+       "QAL_throughput_ps_per_level": 81.7949698831421,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 815.3788581765557,
+       "CMOS_isoD_ps_per_level": 116.48269402522224,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 8,
+       "logic_levels": 8,
+       "QAL_throughput_ps_per_level": 71.57059864774934,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 872.5218581765557,
+       "CMOS_isoD_ps_per_level": 109.06523227206947,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 9,
+       "logic_levels": 9,
+       "QAL_throughput_ps_per_level": 63.61830990911052,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 929.6648581765558,
+       "CMOS_isoD_ps_per_level": 103.29609535295064,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 10,
+       "logic_levels": 10,
+       "QAL_throughput_ps_per_level": 57.25647891819947,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 986.8078581765558,
+       "CMOS_isoD_ps_per_level": 98.68078581765558,
+       "QAL_wins_ii": true
+      }
+     ]
+    },
+    "flow": {
+     "unc_ps": 250,
+     "CMOS_stage_flop_every_level_ps": 622.5208581765557,
+     "CROSSOVER_D_vs_flop_every_level": 1,
+     "CROSSOVER_D_vs_best_isoD_CMOS": 1,
+     "D_exact_i": 0.9197519756351797,
+     "D_exact_ii": 0.12577097816773647,
+     "rows": [
+      {
+       "D_banks": 1,
+       "logic_levels": 1,
+       "QAL_throughput_ps_per_level": 572.5647891819947,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 622.5208581765557,
+       "CMOS_isoD_ps_per_level": 622.5208581765557,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 2,
+       "logic_levels": 2,
+       "QAL_throughput_ps_per_level": 286.28239459099734,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 679.6638581765558,
+       "CMOS_isoD_ps_per_level": 339.8319290882779,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 3,
+       "logic_levels": 3,
+       "QAL_throughput_ps_per_level": 190.85492972733155,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 736.8068581765557,
+       "CMOS_isoD_ps_per_level": 245.6022860588519,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 4,
+       "logic_levels": 4,
+       "QAL_throughput_ps_per_level": 143.14119729549867,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 793.9498581765557,
+       "CMOS_isoD_ps_per_level": 198.48746454413893,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 5,
+       "logic_levels": 5,
+       "QAL_throughput_ps_per_level": 114.51295783639894,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 851.0928581765558,
+       "CMOS_isoD_ps_per_level": 170.21857163531115,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 6,
+       "logic_levels": 6,
+       "QAL_throughput_ps_per_level": 95.42746486366578,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 908.2358581765557,
+       "CMOS_isoD_ps_per_level": 151.37264302942594,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 7,
+       "logic_levels": 7,
+       "QAL_throughput_ps_per_level": 81.7949698831421,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 965.3788581765557,
+       "CMOS_isoD_ps_per_level": 137.91126545379367,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 8,
+       "logic_levels": 8,
+       "QAL_throughput_ps_per_level": 71.57059864774934,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1022.5218581765557,
+       "CMOS_isoD_ps_per_level": 127.81523227206947,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 9,
+       "logic_levels": 9,
+       "QAL_throughput_ps_per_level": 63.61830990911052,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1079.6648581765558,
+       "CMOS_isoD_ps_per_level": 119.9627620196173,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 10,
+       "logic_levels": 10,
+       "QAL_throughput_ps_per_level": 57.25647891819947,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1136.8078581765558,
+       "CMOS_isoD_ps_per_level": 113.68078581765558,
+       "QAL_wins_ii": true
+      }
+     ]
+    }
+   },
+   "H4__H*T_only_fcrit_convention__2_levels_per_bank_ARCHITECTURAL": {
+    "ideal": {
+     "unc_ps": 0,
+     "CMOS_stage_flop_every_level_ps": 372.52085817655575,
+     "CROSSOVER_D_vs_flop_every_level": 1,
+     "CROSSOVER_D_vs_best_isoD_CMOS": 3,
+     "D_exact_i": 0.7685003089285116,
+     "D_exact_ii": 2.25038002034754,
+     "rows": [
+      {
+       "D_banks": 1,
+       "logic_levels": 2,
+       "QAL_throughput_ps_per_level": 286.28239459099734,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 429.6638581765557,
+       "CMOS_isoD_ps_per_level": 214.83192908827786,
+       "QAL_wins_ii": false
+      },
+      {
+       "D_banks": 2,
+       "logic_levels": 4,
+       "QAL_throughput_ps_per_level": 143.14119729549867,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 543.9498581765557,
+       "CMOS_isoD_ps_per_level": 135.98746454413893,
+       "QAL_wins_ii": false
+      },
+      {
+       "D_banks": 3,
+       "logic_levels": 6,
+       "QAL_throughput_ps_per_level": 95.42746486366578,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 658.2358581765557,
+       "CMOS_isoD_ps_per_level": 109.70597636275927,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 4,
+       "logic_levels": 8,
+       "QAL_throughput_ps_per_level": 71.57059864774934,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 772.5218581765557,
+       "CMOS_isoD_ps_per_level": 96.56523227206947,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 5,
+       "logic_levels": 10,
+       "QAL_throughput_ps_per_level": 57.25647891819947,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 886.8078581765558,
+       "CMOS_isoD_ps_per_level": 88.68078581765558,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 6,
+       "logic_levels": 12,
+       "QAL_throughput_ps_per_level": 47.71373243183289,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1001.0938581765557,
+       "CMOS_isoD_ps_per_level": 83.42448818137964,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 7,
+       "logic_levels": 14,
+       "QAL_throughput_ps_per_level": 40.89748494157105,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1115.3798581765557,
+       "CMOS_isoD_ps_per_level": 79.66998986975398,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 8,
+       "logic_levels": 16,
+       "QAL_throughput_ps_per_level": 35.78529932387467,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1229.6658581765557,
+       "CMOS_isoD_ps_per_level": 76.85411613603473,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 9,
+       "logic_levels": 18,
+       "QAL_throughput_ps_per_level": 31.80915495455526,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1343.9518581765558,
+       "CMOS_isoD_ps_per_level": 74.66399212091977,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 10,
+       "logic_levels": 20,
+       "QAL_throughput_ps_per_level": 28.628239459099735,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1458.2378581765558,
+       "CMOS_isoD_ps_per_level": 72.9118929088278,
+       "QAL_wins_ii": true
+      }
+     ]
+    },
+    "tree": {
+     "unc_ps": 100,
+     "CMOS_stage_flop_every_level_ps": 472.52085817655575,
+     "CROSSOVER_D_vs_flop_every_level": 1,
+     "CROSSOVER_D_vs_best_isoD_CMOS": 2,
+     "D_exact_i": 0.6058619204573377,
+     "D_exact_ii": 1.3753822078420712,
+     "rows": [
+      {
+       "D_banks": 1,
+       "logic_levels": 2,
+       "QAL_throughput_ps_per_level": 286.28239459099734,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 529.6638581765558,
+       "CMOS_isoD_ps_per_level": 264.8319290882779,
+       "QAL_wins_ii": false
+      },
+      {
+       "D_banks": 2,
+       "logic_levels": 4,
+       "QAL_throughput_ps_per_level": 143.14119729549867,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 643.9498581765557,
+       "CMOS_isoD_ps_per_level": 160.98746454413893,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 3,
+       "logic_levels": 6,
+       "QAL_throughput_ps_per_level": 95.42746486366578,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 758.2358581765557,
+       "CMOS_isoD_ps_per_level": 126.37264302942594,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 4,
+       "logic_levels": 8,
+       "QAL_throughput_ps_per_level": 71.57059864774934,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 872.5218581765557,
+       "CMOS_isoD_ps_per_level": 109.06523227206947,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 5,
+       "logic_levels": 10,
+       "QAL_throughput_ps_per_level": 57.25647891819947,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 986.8078581765558,
+       "CMOS_isoD_ps_per_level": 98.68078581765558,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 6,
+       "logic_levels": 12,
+       "QAL_throughput_ps_per_level": 47.71373243183289,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1101.0938581765558,
+       "CMOS_isoD_ps_per_level": 91.75782151471299,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 7,
+       "logic_levels": 14,
+       "QAL_throughput_ps_per_level": 40.89748494157105,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1215.3798581765557,
+       "CMOS_isoD_ps_per_level": 86.81284701261112,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 8,
+       "logic_levels": 16,
+       "QAL_throughput_ps_per_level": 35.78529932387467,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1329.6658581765557,
+       "CMOS_isoD_ps_per_level": 83.10411613603473,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 9,
+       "logic_levels": 18,
+       "QAL_throughput_ps_per_level": 31.80915495455526,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1443.9518581765558,
+       "CMOS_isoD_ps_per_level": 80.21954767647532,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 10,
+       "logic_levels": 20,
+       "QAL_throughput_ps_per_level": 28.628239459099735,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1558.2378581765558,
+       "CMOS_isoD_ps_per_level": 77.9118929088278,
+       "QAL_wins_ii": true
+      }
+     ]
+    },
+    "flow": {
+     "unc_ps": 250,
+     "CMOS_stage_flop_every_level_ps": 622.5208581765557,
+     "CROSSOVER_D_vs_flop_every_level": 1,
+     "CROSSOVER_D_vs_best_isoD_CMOS": 1,
+     "D_exact_i": 0.45987598781758987,
+     "D_exact_ii": 0.06288548908386823,
+     "rows": [
+      {
+       "D_banks": 1,
+       "logic_levels": 2,
+       "QAL_throughput_ps_per_level": 286.28239459099734,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 679.6638581765558,
+       "CMOS_isoD_ps_per_level": 339.8319290882779,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 2,
+       "logic_levels": 4,
+       "QAL_throughput_ps_per_level": 143.14119729549867,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 793.9498581765557,
+       "CMOS_isoD_ps_per_level": 198.48746454413893,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 3,
+       "logic_levels": 6,
+       "QAL_throughput_ps_per_level": 95.42746486366578,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 908.2358581765557,
+       "CMOS_isoD_ps_per_level": 151.37264302942594,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 4,
+       "logic_levels": 8,
+       "QAL_throughput_ps_per_level": 71.57059864774934,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1022.5218581765557,
+       "CMOS_isoD_ps_per_level": 127.81523227206947,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 5,
+       "logic_levels": 10,
+       "QAL_throughput_ps_per_level": 57.25647891819947,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1136.8078581765558,
+       "CMOS_isoD_ps_per_level": 113.68078581765558,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 6,
+       "logic_levels": 12,
+       "QAL_throughput_ps_per_level": 47.71373243183289,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1251.0938581765558,
+       "CMOS_isoD_ps_per_level": 104.25782151471299,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 7,
+       "logic_levels": 14,
+       "QAL_throughput_ps_per_level": 40.89748494157105,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1365.3798581765557,
+       "CMOS_isoD_ps_per_level": 97.52713272689684,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 8,
+       "logic_levels": 16,
+       "QAL_throughput_ps_per_level": 35.78529932387467,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1479.6658581765557,
+       "CMOS_isoD_ps_per_level": 92.47911613603473,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 9,
+       "logic_levels": 18,
+       "QAL_throughput_ps_per_level": 31.80915495455526,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1593.9518581765558,
+       "CMOS_isoD_ps_per_level": 88.55288100980866,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 10,
+       "logic_levels": 20,
+       "QAL_throughput_ps_per_level": 28.628239459099735,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1708.2378581765558,
+       "CMOS_isoD_ps_per_level": 85.4118929088278,
+       "QAL_wins_ii": true
+      }
+     ]
+    }
+   },
+   "H4__H*T_plus_tzq_STRICT__1_level_per_bank_MEASURED": {
+    "ideal": {
+     "unc_ps": 0,
+     "CMOS_stage_flop_every_level_ps": 372.52085817655575,
+     "CROSSOVER_D_vs_flop_every_level": 2,
+     "CROSSOVER_D_vs_best_isoD_CMOS": 8,
+     "D_exact_i": 1.9491638474585995,
+     "D_exact_ii": 7.187692823363124,
+     "rows": [
+      {
+       "D_banks": 1,
+       "logic_levels": 1,
+       "QAL_throughput_ps_per_level": 726.1041891819947,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": false,
+       "CMOS_isoD_stage_ps": 372.52085817655575,
+       "CMOS_isoD_ps_per_level": 372.52085817655575,
+       "QAL_wins_ii": false
+      },
+      {
+       "D_banks": 2,
+       "logic_levels": 2,
+       "QAL_throughput_ps_per_level": 363.05209459099734,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 429.6638581765557,
+       "CMOS_isoD_ps_per_level": 214.83192908827786,
+       "QAL_wins_ii": false
+      },
+      {
+       "D_banks": 3,
+       "logic_levels": 3,
+       "QAL_throughput_ps_per_level": 242.03472972733155,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 486.8068581765557,
+       "CMOS_isoD_ps_per_level": 162.26895272551857,
+       "QAL_wins_ii": false
+      },
+      {
+       "D_banks": 4,
+       "logic_levels": 4,
+       "QAL_throughput_ps_per_level": 181.52604729549867,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 543.9498581765557,
+       "CMOS_isoD_ps_per_level": 135.98746454413893,
+       "QAL_wins_ii": false
+      },
+      {
+       "D_banks": 5,
+       "logic_levels": 5,
+       "QAL_throughput_ps_per_level": 145.22083783639894,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 601.0928581765558,
+       "CMOS_isoD_ps_per_level": 120.21857163531115,
+       "QAL_wins_ii": false
+      },
+      {
+       "D_banks": 6,
+       "logic_levels": 6,
+       "QAL_throughput_ps_per_level": 121.01736486366578,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 658.2358581765557,
+       "CMOS_isoD_ps_per_level": 109.70597636275927,
+       "QAL_wins_ii": false
+      },
+      {
+       "D_banks": 7,
+       "logic_levels": 7,
+       "QAL_throughput_ps_per_level": 103.72916988314209,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 715.3788581765557,
+       "CMOS_isoD_ps_per_level": 102.19697973950795,
+       "QAL_wins_ii": false
+      },
+      {
+       "D_banks": 8,
+       "logic_levels": 8,
+       "QAL_throughput_ps_per_level": 90.76302364774934,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 772.5218581765557,
+       "CMOS_isoD_ps_per_level": 96.56523227206947,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 9,
+       "logic_levels": 9,
+       "QAL_throughput_ps_per_level": 80.67824324244386,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 829.6648581765558,
+       "CMOS_isoD_ps_per_level": 92.18498424183953,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 10,
+       "logic_levels": 10,
+       "QAL_throughput_ps_per_level": 72.61041891819947,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 886.8078581765558,
+       "CMOS_isoD_ps_per_level": 88.68078581765558,
+       "QAL_wins_ii": true
+      }
+     ]
+    },
+    "tree": {
+     "unc_ps": 100,
+     "CMOS_stage_flop_every_level_ps": 472.52085817655575,
+     "CROSSOVER_D_vs_flop_every_level": 2,
+     "CROSSOVER_D_vs_best_isoD_CMOS": 6,
+     "D_exact_i": 1.5366606079232346,
+     "D_exact_ii": 5.437697198352186,
+     "rows": [
+      {
+       "D_banks": 1,
+       "logic_levels": 1,
+       "QAL_throughput_ps_per_level": 726.1041891819947,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": false,
+       "CMOS_isoD_stage_ps": 472.52085817655575,
+       "CMOS_isoD_ps_per_level": 472.52085817655575,
+       "QAL_wins_ii": false
+      },
+      {
+       "D_banks": 2,
+       "logic_levels": 2,
+       "QAL_throughput_ps_per_level": 363.05209459099734,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 529.6638581765558,
+       "CMOS_isoD_ps_per_level": 264.8319290882779,
+       "QAL_wins_ii": false
+      },
+      {
+       "D_banks": 3,
+       "logic_levels": 3,
+       "QAL_throughput_ps_per_level": 242.03472972733155,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 586.8068581765557,
+       "CMOS_isoD_ps_per_level": 195.6022860588519,
+       "QAL_wins_ii": false
+      },
+      {
+       "D_banks": 4,
+       "logic_levels": 4,
+       "QAL_throughput_ps_per_level": 181.52604729549867,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 643.9498581765557,
+       "CMOS_isoD_ps_per_level": 160.98746454413893,
+       "QAL_wins_ii": false
+      },
+      {
+       "D_banks": 5,
+       "logic_levels": 5,
+       "QAL_throughput_ps_per_level": 145.22083783639894,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 701.0928581765558,
+       "CMOS_isoD_ps_per_level": 140.21857163531115,
+       "QAL_wins_ii": false
+      },
+      {
+       "D_banks": 6,
+       "logic_levels": 6,
+       "QAL_throughput_ps_per_level": 121.01736486366578,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 758.2358581765557,
+       "CMOS_isoD_ps_per_level": 126.37264302942594,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 7,
+       "logic_levels": 7,
+       "QAL_throughput_ps_per_level": 103.72916988314209,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 815.3788581765557,
+       "CMOS_isoD_ps_per_level": 116.48269402522224,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 8,
+       "logic_levels": 8,
+       "QAL_throughput_ps_per_level": 90.76302364774934,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 872.5218581765557,
+       "CMOS_isoD_ps_per_level": 109.06523227206947,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 9,
+       "logic_levels": 9,
+       "QAL_throughput_ps_per_level": 80.67824324244386,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 929.6648581765558,
+       "CMOS_isoD_ps_per_level": 103.29609535295064,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 10,
+       "logic_levels": 10,
+       "QAL_throughput_ps_per_level": 72.61041891819947,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 986.8078581765558,
+       "CMOS_isoD_ps_per_level": 98.68078581765558,
+       "QAL_wins_ii": true
+      }
+     ]
+    },
+    "flow": {
+     "unc_ps": 250,
+     "CMOS_stage_flop_every_level_ps": 622.5208581765557,
+     "CROSSOVER_D_vs_flop_every_level": 2,
+     "CROSSOVER_D_vs_best_isoD_CMOS": 3,
+     "D_exact_i": 1.1663933499495067,
+     "D_exact_ii": 2.8127037608357797,
+     "rows": [
+      {
+       "D_banks": 1,
+       "logic_levels": 1,
+       "QAL_throughput_ps_per_level": 726.1041891819947,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": false,
+       "CMOS_isoD_stage_ps": 622.5208581765557,
+       "CMOS_isoD_ps_per_level": 622.5208581765557,
+       "QAL_wins_ii": false
+      },
+      {
+       "D_banks": 2,
+       "logic_levels": 2,
+       "QAL_throughput_ps_per_level": 363.05209459099734,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 679.6638581765558,
+       "CMOS_isoD_ps_per_level": 339.8319290882779,
+       "QAL_wins_ii": false
+      },
+      {
+       "D_banks": 3,
+       "logic_levels": 3,
+       "QAL_throughput_ps_per_level": 242.03472972733155,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 736.8068581765557,
+       "CMOS_isoD_ps_per_level": 245.6022860588519,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 4,
+       "logic_levels": 4,
+       "QAL_throughput_ps_per_level": 181.52604729549867,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 793.9498581765557,
+       "CMOS_isoD_ps_per_level": 198.48746454413893,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 5,
+       "logic_levels": 5,
+       "QAL_throughput_ps_per_level": 145.22083783639894,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 851.0928581765558,
+       "CMOS_isoD_ps_per_level": 170.21857163531115,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 6,
+       "logic_levels": 6,
+       "QAL_throughput_ps_per_level": 121.01736486366578,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 908.2358581765557,
+       "CMOS_isoD_ps_per_level": 151.37264302942594,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 7,
+       "logic_levels": 7,
+       "QAL_throughput_ps_per_level": 103.72916988314209,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 965.3788581765557,
+       "CMOS_isoD_ps_per_level": 137.91126545379367,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 8,
+       "logic_levels": 8,
+       "QAL_throughput_ps_per_level": 90.76302364774934,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1022.5218581765557,
+       "CMOS_isoD_ps_per_level": 127.81523227206947,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 9,
+       "logic_levels": 9,
+       "QAL_throughput_ps_per_level": 80.67824324244386,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1079.6648581765558,
+       "CMOS_isoD_ps_per_level": 119.9627620196173,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 10,
+       "logic_levels": 10,
+       "QAL_throughput_ps_per_level": 72.61041891819947,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1136.8078581765558,
+       "CMOS_isoD_ps_per_level": 113.68078581765558,
+       "QAL_wins_ii": true
+      }
+     ]
+    }
+   },
+   "H4__H*T_plus_tzq_STRICT__2_levels_per_bank_ARCHITECTURAL": {
+    "ideal": {
+     "unc_ps": 0,
+     "CMOS_stage_flop_every_level_ps": 372.52085817655575,
+     "CROSSOVER_D_vs_flop_every_level": 1,
+     "CROSSOVER_D_vs_best_isoD_CMOS": 4,
+     "D_exact_i": 0.9745819237292997,
+     "D_exact_ii": 3.593846411681562,
+     "rows": [
+      {
+       "D_banks": 1,
+       "logic_levels": 2,
+       "QAL_throughput_ps_per_level": 363.05209459099734,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 429.6638581765557,
+       "CMOS_isoD_ps_per_level": 214.83192908827786,
+       "QAL_wins_ii": false
+      },
+      {
+       "D_banks": 2,
+       "logic_levels": 4,
+       "QAL_throughput_ps_per_level": 181.52604729549867,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 543.9498581765557,
+       "CMOS_isoD_ps_per_level": 135.98746454413893,
+       "QAL_wins_ii": false
+      },
+      {
+       "D_banks": 3,
+       "logic_levels": 6,
+       "QAL_throughput_ps_per_level": 121.01736486366578,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 658.2358581765557,
+       "CMOS_isoD_ps_per_level": 109.70597636275927,
+       "QAL_wins_ii": false
+      },
+      {
+       "D_banks": 4,
+       "logic_levels": 8,
+       "QAL_throughput_ps_per_level": 90.76302364774934,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 772.5218581765557,
+       "CMOS_isoD_ps_per_level": 96.56523227206947,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 5,
+       "logic_levels": 10,
+       "QAL_throughput_ps_per_level": 72.61041891819947,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 886.8078581765558,
+       "CMOS_isoD_ps_per_level": 88.68078581765558,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 6,
+       "logic_levels": 12,
+       "QAL_throughput_ps_per_level": 60.50868243183289,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1001.0938581765557,
+       "CMOS_isoD_ps_per_level": 83.42448818137964,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 7,
+       "logic_levels": 14,
+       "QAL_throughput_ps_per_level": 51.864584941571046,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1115.3798581765557,
+       "CMOS_isoD_ps_per_level": 79.66998986975398,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 8,
+       "logic_levels": 16,
+       "QAL_throughput_ps_per_level": 45.38151182387467,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1229.6658581765557,
+       "CMOS_isoD_ps_per_level": 76.85411613603473,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 9,
+       "logic_levels": 18,
+       "QAL_throughput_ps_per_level": 40.33912162122193,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1343.9518581765558,
+       "CMOS_isoD_ps_per_level": 74.66399212091977,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 10,
+       "logic_levels": 20,
+       "QAL_throughput_ps_per_level": 36.305209459099736,
+       "CMOS_flop_every_level_ps_per_level": 372.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1458.2378581765558,
+       "CMOS_isoD_ps_per_level": 72.9118929088278,
+       "QAL_wins_ii": true
+      }
+     ]
+    },
+    "tree": {
+     "unc_ps": 100,
+     "CMOS_stage_flop_every_level_ps": 472.52085817655575,
+     "CROSSOVER_D_vs_flop_every_level": 1,
+     "CROSSOVER_D_vs_best_isoD_CMOS": 3,
+     "D_exact_i": 0.7683303039616173,
+     "D_exact_ii": 2.718848599176093,
+     "rows": [
+      {
+       "D_banks": 1,
+       "logic_levels": 2,
+       "QAL_throughput_ps_per_level": 363.05209459099734,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 529.6638581765558,
+       "CMOS_isoD_ps_per_level": 264.8319290882779,
+       "QAL_wins_ii": false
+      },
+      {
+       "D_banks": 2,
+       "logic_levels": 4,
+       "QAL_throughput_ps_per_level": 181.52604729549867,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 643.9498581765557,
+       "CMOS_isoD_ps_per_level": 160.98746454413893,
+       "QAL_wins_ii": false
+      },
+      {
+       "D_banks": 3,
+       "logic_levels": 6,
+       "QAL_throughput_ps_per_level": 121.01736486366578,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 758.2358581765557,
+       "CMOS_isoD_ps_per_level": 126.37264302942594,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 4,
+       "logic_levels": 8,
+       "QAL_throughput_ps_per_level": 90.76302364774934,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 872.5218581765557,
+       "CMOS_isoD_ps_per_level": 109.06523227206947,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 5,
+       "logic_levels": 10,
+       "QAL_throughput_ps_per_level": 72.61041891819947,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 986.8078581765558,
+       "CMOS_isoD_ps_per_level": 98.68078581765558,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 6,
+       "logic_levels": 12,
+       "QAL_throughput_ps_per_level": 60.50868243183289,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1101.0938581765558,
+       "CMOS_isoD_ps_per_level": 91.75782151471299,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 7,
+       "logic_levels": 14,
+       "QAL_throughput_ps_per_level": 51.864584941571046,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1215.3798581765557,
+       "CMOS_isoD_ps_per_level": 86.81284701261112,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 8,
+       "logic_levels": 16,
+       "QAL_throughput_ps_per_level": 45.38151182387467,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1329.6658581765557,
+       "CMOS_isoD_ps_per_level": 83.10411613603473,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 9,
+       "logic_levels": 18,
+       "QAL_throughput_ps_per_level": 40.33912162122193,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1443.9518581765558,
+       "CMOS_isoD_ps_per_level": 80.21954767647532,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 10,
+       "logic_levels": 20,
+       "QAL_throughput_ps_per_level": 36.305209459099736,
+       "CMOS_flop_every_level_ps_per_level": 472.52085817655575,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1558.2378581765558,
+       "CMOS_isoD_ps_per_level": 77.9118929088278,
+       "QAL_wins_ii": true
+      }
+     ]
+    },
+    "flow": {
+     "unc_ps": 250,
+     "CMOS_stage_flop_every_level_ps": 622.5208581765557,
+     "CROSSOVER_D_vs_flop_every_level": 1,
+     "CROSSOVER_D_vs_best_isoD_CMOS": 2,
+     "D_exact_i": 0.5831966749747534,
+     "D_exact_ii": 1.4063518804178898,
+     "rows": [
+      {
+       "D_banks": 1,
+       "logic_levels": 2,
+       "QAL_throughput_ps_per_level": 363.05209459099734,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 679.6638581765558,
+       "CMOS_isoD_ps_per_level": 339.8319290882779,
+       "QAL_wins_ii": false
+      },
+      {
+       "D_banks": 2,
+       "logic_levels": 4,
+       "QAL_throughput_ps_per_level": 181.52604729549867,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 793.9498581765557,
+       "CMOS_isoD_ps_per_level": 198.48746454413893,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 3,
+       "logic_levels": 6,
+       "QAL_throughput_ps_per_level": 121.01736486366578,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 908.2358581765557,
+       "CMOS_isoD_ps_per_level": 151.37264302942594,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 4,
+       "logic_levels": 8,
+       "QAL_throughput_ps_per_level": 90.76302364774934,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1022.5218581765557,
+       "CMOS_isoD_ps_per_level": 127.81523227206947,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 5,
+       "logic_levels": 10,
+       "QAL_throughput_ps_per_level": 72.61041891819947,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1136.8078581765558,
+       "CMOS_isoD_ps_per_level": 113.68078581765558,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 6,
+       "logic_levels": 12,
+       "QAL_throughput_ps_per_level": 60.50868243183289,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1251.0938581765558,
+       "CMOS_isoD_ps_per_level": 104.25782151471299,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 7,
+       "logic_levels": 14,
+       "QAL_throughput_ps_per_level": 51.864584941571046,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1365.3798581765557,
+       "CMOS_isoD_ps_per_level": 97.52713272689684,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 8,
+       "logic_levels": 16,
+       "QAL_throughput_ps_per_level": 45.38151182387467,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1479.6658581765557,
+       "CMOS_isoD_ps_per_level": 92.47911613603473,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 9,
+       "logic_levels": 18,
+       "QAL_throughput_ps_per_level": 40.33912162122193,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1593.9518581765558,
+       "CMOS_isoD_ps_per_level": 88.55288100980866,
+       "QAL_wins_ii": true
+      },
+      {
+       "D_banks": 10,
+       "logic_levels": 20,
+       "QAL_throughput_ps_per_level": 36.305209459099736,
+       "CMOS_flop_every_level_ps_per_level": 622.5208581765557,
+       "QAL_wins_i": true,
+       "CMOS_isoD_stage_ps": 1708.2378581765558,
+       "CMOS_isoD_ps_per_level": 85.4118929088278,
+       "QAL_wins_ii": true
+      }
+     ]
+    }
+   }
+  },
+  "H_EVIDENCE": {
+   "H4": "MEASURED in this study at dV = 1.65 V.",
+   "H2": "NOT measured at dV = 1.65 V by this study. qal/fcrit MEASURED that on the 24 links with a real in-deck receiver both H = 2 and H = 4 clear down to T = 120 ps, and that the best initiation interval is H = 2, T = 160 ps -- but at dV = 1.2 V. Carried as EVIDENCE FROM ELSEWHERE at a different swing, not as a measurement of this operating point.",
+   "why_it_matters": "H is the dominant lever on the throughput verdict: it multiplies the beat directly in II."
+  }
+ },
+ "b_VS_THE_SINGLE_POINT_BEAT": {
+  "_the_apples_to_apples_reference": {
+   "_what": "the same arrangement, same dV, same criterion, with the budget NOT charged: the beat at which the eye opens exactly at the sampling instant, i.e. T = t_valid at 0 mV.",
+   "single_point_beat_ps": 126.6343441055759,
+   "sustainable_beat_ps": 143.14119729549867,
+   "larger_by_ps": 16.506853189922765,
+   "larger_by_factor": 1.130350524626723
+  },
+  "other_references_in_the_campaign_NOT_the_same_quantity": {
+   "fcrit_measured_banktank_beat_ps": 150.0,
+   "fcrit_caveat": "MEASURED at dV = 1.2 V under fcrit's FUNCTIONAL receiver-referential criterion with a noise budget (T=140 fails inside the noise budget at 13.1 mV). Different swing AND different criterion -- not comparable to this study's number.",
+   "banktank_committed_headline_beat_ps": 200.0,
+   "banktank_caveat": "the committed 32/32-value-correct beat at dV = 1.2 V, single-point. This study's arrangement row is at dV = 1.65 V."
+  }
+ },
+ "_constants": {
+  "sigma_trip_mV": {
+   "v": 6.441,
+   "label": "DERIVED-from-MEASURED",
+   "src": "qal/vtaudit via qal/fcrit_skept: sqrt((0.4779*5.766)^2+(0.4630*12.574)^2) = 6.4409 mV. A LOWER BOUND -- dw/dl excluded, stated on AUDIT.md's face."
+  },
+  "sigma_driver_level_mV": {
+   "v": 22.4,
+   "label": "MEASURED",
+   "src": "qal/mcsize/README.md, 300 MC samples: exit HIGH-class level 0.6618-0.6657 V +/- 19.4-22.4 mV. Worst taken. This is the DRIVER's delivered-level mismatch, a DIFFERENT random variable from sigma_trip, which charges only the RECEIVER's decision level."
+  },
+  "drift_ps_per_K": {
+   "v": 0.46,
+   "label": "MEASURED",
+   "src": "qal/timer/RESULTS.json /tracking/drift_rate_ps_per_K"
+  },
+  "recalib_interval_K": {
+   "v": 16.0,
+   "label": "MEASURED-BAND",
+   "src": "qal/timer/README.md: +/-16 K between calibrations holds the measured-benign band."
+  },
+  "lc_zero_pct_hot": {
+   "v": 0.736,
+   "label": "MEASURED",
+   "src": "qal/timer/RESULTS.json /tracking/zero_fractional/to_85C -- the LC-STIFF limb"
+  },
+  "rc_width_pct_hot": {
+   "v": 10.23,
+   "label": "MEASURED",
+   "src": "qal/timer/RESULTS.json /tracking/width_fractional/to_85C -- the RC-SOFT limb"
+  },
+  "tracking_ratio_cold": {
+   "v": 16.4,
+   "label": "MEASURED",
+   "src": "qal/timer/RESULTS.json /tracking/tracking_ratio/cold"
+  },
+  "rc_width_pct_cold": {
+   "v": -4.82,
+   "label": "MEASURED",
+   "src": "qal/timer/README.md loaded timer width N=9 cold column 265.546 (-4.82%)"
+  },
+  "lc_zero_pct_cold": {
+   "v": -0.29,
+   "label": "MEASURED",
+   "src": "qal/timer/README.md ideal-probe zero cold column 264.842 (-0.29%)"
+  },
+  "inherited_spread_ps": {
+   "v": 61.612,
+   "label": "MEASURED-ELSEWHERE",
+   "src": "qal/qal_bankN_zcs.json max-min over the 9 Hamming weights. OPERATING POINT: dV=0.8 V, L=400 nH, C_A=35.0025 fF, ONE bank, switch HELD ON. NOT this eye's operating point (dV=1.65, L=15 nH, C_tank=359.79 fF, 4 cascaded banks, switch opened at the true ZCS)."
+  },
+  "inherited_spread_pct": {
+   "v": 16.9294122,
+   "label": "MEASURED-ELSEWHERE",
+   "src": "same table: 61.612 / mean(t_zcs) = 61.612 / 363.9347 ps"
+  },
+  "cmos_level_2fF_ps": {
+   "v": 57.143,
+   "label": "MEASURED",
+   "src": "qal/sha256/p2/COMPARISON.json CMOS_level_at_2fF_ps, from qal/synth/threeway. THIS is the load-matched one: the banktank cells carry CL = 2.0 fF."
+  },
+  "cmos_level_6p91fF_ps": {
+   "v": 94.174,
+   "label": "MEASURED",
+   "src": "same file, CMOS_level_at_6p91fF_ps -- the 6.91 fF convention. Quoting it here would flatter QAL by 1.648x and it is NOT used in the verdict."
+  },
+  "t_reg_0fF_ps": {
+   "v": 307.1,
+   "label": "MEASURED",
+   "src": "qal/restore5, OpenSTA on the vendor liberty, sg13g2_dfrbpq_1"
+  },
+  "t_reg_6p91fF_ps": {
+   "v": 335.7,
+   "label": "MEASURED",
+   "src": "same"
+  },
+  "t_reg_20fF_ps": {
+   "v": 390.0,
+   "label": "MEASURED",
+   "src": "same"
+  },
+  "liberty_optimism": {
+   "v": [
+    1.11,
+    1.21
+   ],
+   "label": "MEASURED",
+   "src": "qal/restore5: liberty is 1.11-1.21x OPTIMISTIC vs the transistor-level CLK->Q 258.9-302.25 ps, so t_reg is a LOWER BOUND on the flop tax -- which is the CONSERVATIVE choice for QAL."
+  },
+  "unc_corners_ps": {
+   "v": {
+    "ideal": 0,
+    "tree": 100,
+    "flow": 250
+   },
+   "label": "NAMED-CORNERS",
+   "src": "qal/restore5/PRE_REGISTERED.json"
+  }
+ }
+}

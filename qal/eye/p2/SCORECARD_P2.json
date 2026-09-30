@@ -1,0 +1,48 @@
+{
+ "_what": "Phase 2 scorecard, scored mechanically against PRE_REGISTERED_P2.json B5. Scored AFTER the measurements, from the emitted JSON.",
+ "_bar": "A CLEAN HIT requires both the direction and the quantitative band to hold. PARTIAL = band holds but the point estimate or the stated mechanism does not. SPLIT = one half of a compound claim right. REFUTED = band missed or sign wrong.",
+ "EY1_oracle_to_calibrated_cost": {
+  "predicted": "calibrated eye opens LATER than oracle by 5-25 ps, point estimate 12 ps, confidence MEDIUM",
+  "measured": "opens EARLIER by 2.4900 / 3.4050 / 2.7768 ps (banks 1/2/3), driver-isolated by freezing the reference (AMENDMENT A7)",
+  "verdict": "REFUTED",
+  "why": "WRONG SIGN. I predicted a cost and measured a credit. The stated rationale (schedule error converts to eye time at the margin slope) had the right magnitude scale but the wrong direction: an off-zero switch leaves current still driving the rail, so the pull-up resolves sooner."
+ },
+ "EY2_t_valid_is_NOT_T_invariant": {
+  "predicted": "t_valid GROWS as T shrinks, by 0-15 ps over T=200->140, point estimate +6 ps, confidence MEDIUM-HIGH",
+  "measured": "grows MONOTONICALLY but by only 0.1713 ps over T=200->140 (bank 3): ['126.6343', '126.6656', '126.7014', '126.7339', '126.7614', '126.8056']",
+  "verdict": "PARTIAL",
+  "why": "DIRECTION EXACTLY RIGHT and monotonic at every rung. Band [0,15] technically contains 0.171 ps. But the point estimate is wrong by 35x and the stated mechanism (bt.py A7 beat-period dependence of a bank input levels) does NOT manifest over 140-200 ps: the rail-transfer zero itself moves only 0.0091 ps. t_valid is T-invariant for every practical purpose, which is the opposite of what the claim name asserts."
+ },
+ "EY3_the_sustainable_beat": {
+  "predicted": "R1 in 145-175 ps (point 158); R2 in 195-215 ps",
+  "measured": "R1 = 143.1412 ps ; R2 = 164.8843 ps ; R3 = 143.3563 ps",
+  "verdict": "REFUTED",
+  "why": "R1 = 143.14 ps falls 1.86 ps BELOW its 145-175 band -- a near miss but a miss. R2 = 164.88 ps falls 30 ps below its 195-215 band. Both point estimates too slow."
+ },
+ "EY4_crossover_D": {
+  "predicted": "QAL throughput beats CMOS flopped every level for D>=2, and beats the best iso-D CMOS for D>=3, confidence LOW-MEDIUM",
+  "measured_at_the_MEASURED_configuration_H4_strict_II_1_level_per_bank_ideal_clock": "D>=2 vs flop-every-level; D>=8 vs best iso-D",
+  "measured_at_H2_strict_II": "D>=2 and D>=3",
+  "verdict": "SPLIT",
+  "why": "The first half is EXACTLY RIGHT at the measured configuration (D>=2). The second half is wrong at H=4 (8, not 3) and exactly right at H=2 -- but H=2 is not measured at this swing by this study, so the scored verdict is against H=4 and the iso-D half is REFUTED. My own stated low confidence, and my stated reason for it (the initiation interval is the term most likely to sink the claim), were both correct."
+ },
+ "EY5_mismatch_is_cheap_in_TIME": {
+  "predicted": "3-sigma mismatch time charge < 5 ps even under sigma_total, confidence HIGH",
+  "measured": "9.2346 ps under sigma_total (bank 3, calibrated); 1.7570 ps under sigma_trip only",
+  "verdict": "REFUTED",
+  "why": "9.23 ps exceeds the 5 ps bar by 1.85x, and it is the LARGEST single term in the R1 budget. It would have held under sigma_trip alone (1.76 ps) -- which is exactly the term the brief supplies and which I correctly identified as incomplete. My HIGH confidence was misplaced: I reasoned from the steep 28-38 mV/ps slope Phase 1 quoted, but on the CALIBRATED schedule the slope is 16.8-24.6 mV/ps, and under a timer offset it collapses to 3.8-8.7 mV/ps."
+ },
+ "EY6_the_binding_bank": {
+  "predicted": "bank 2 remains the binding bank (worst setup slack) at every T, confidence MEDIUM",
+  "measured": "bank 3 binds at EVERY T on the calibrated schedule (slack 73.37 vs bank 2 73.74 at T=200, and the same ordering at 180/160/150/145/140). Bank 2 binds only on Phase 1 ORACLE schedule (70.359 vs 70.618).",
+  "verdict": "REFUTED",
+  "why": "The binding bank CHANGED when the schedule changed from oracle to calibrated -- which I did not anticipate and which is itself a result worth reporting."
+ },
+ "TALLY": {
+  "CLEAN HIT": 0,
+  "PARTIAL": 1,
+  "SPLIT": 1,
+  "REFUTED": 4
+ },
+ "SELF_ASSESSMENT": "ZERO clean unqualified hits again, as in Phase 1. One PARTIAL (EY2, direction right / magnitude wrong by 35x), one SPLIT (EY4, the half I flagged as low-confidence is the half that failed), four REFUTED (EY1 wrong SIGN, EY3 both bands, EY5 the term I was most confident about, EY6 the binding bank). The pattern repeats Phase 1 exactly: MECHANISM predictions fared better than NUMBERS, and every quantitative point estimate was outside its band. The two most consequential misses -- EY1 sign and EY5 magnitude -- both came from reasoning off Phase 1 ORACLE-schedule slopes, which do not survive the change to a calibrated schedule."
+}

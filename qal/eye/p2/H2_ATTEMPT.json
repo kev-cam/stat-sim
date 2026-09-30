@@ -1,0 +1,62 @@
+{
+ "_what": "ATTEMPTED and NOT VALIDATED: H = 2 at T = 145 ps, dV = 1.65 V, on the banktank per-bank-tank arrangement.",
+ "result": "F2 TRIGGERED, and on the RISE side. The calibration pattern own FULL 8-run sequential probe leaves iz3 = -8.7626 uA and iz4 = -8.2946 uA at the commanded rail-raise open, against the inherited 1 uA A6 gate, while iz1 = -0.0037 and iz2 = -0.0031 uA are clean. Unlike the H=4 T<=145 failure (AMENDMENT A5, return-side only), this is the side that SETS t_valid, so it does bear on the eye and the schedule is not usable.",
+ "THE_MECHANISM_FOUND_AND_CONFIRMED_NOT_ASSERTED": {
+  "claim": "at H = 2 the schedule places bank (k-2) RETURN exactly on top of bank k RAISE. r_(k-2) = c_(k-2) + H*T = c_(k-2) + 2T = c_k, so the return switch of bank k-2 CLOSES at the instant bank k begins its raise, and stays closed for tzq ~ 146 ps, which fully SPANS bank k raise of tzr ~ 125 ps.",
+  "MEASURED_spans": {
+   "bank3": {
+    "raise_ps": [
+     490.0,
+     615.2
+    ],
+    "bank1_return_ps": [
+     490.0,
+     638.9
+    ],
+    "spans": true
+   },
+   "bank4": {
+    "raise_ps": [
+     635.0,
+     759.5
+    ],
+    "bank2_return_ps": [
+     635.0,
+     786.0
+    ],
+    "spans": true
+   },
+   "bank1": "no k-2 predecessor",
+   "bank2": "no k-2 predecessor"
+  },
+  "THE_FALSIFIABLE_PREDICTION_IT_MAKES_AND_PASSES": "only banks with a k-2 predecessor should fail. MEASURED: exactly banks 3 and 4 fail (-8.76, -8.29 uA); banks 1 and 2, which have no k-2 predecessor, are clean at -0.0037 and -0.0031 uA. The mechanism predicts WHICH banks fail and is confirmed on all four.",
+  "a_correction_I_made_to_myself": "my first statement of this mechanism used the wrong index -- I wrote that the PREDECESSOR (k-1) return collides with bank k boundary. That is a different and milder fact (r_(k-1) = c_k + T = bnd_k, which bt.py own bnd_k = min(c_k+T, r_k-EDGE, r_(k-1)-EDGE) already handles by pulling the boundary 2 ps earlier). The collision that actually breaks the rise zero is k-2, not k-1, and it is the SPAN over the raise rather than a coincidence at the boundary. Corrected before publication."
+ },
+ "magnitude_in_time": "at the MEASURED dI/dt ~ 23 uA/ps near the crossing, 8.76 uA is ~0.38 ps of schedule error -- small in time, but outside the inherited gate. The gate was not re-tuned mid-study.",
+ "A6_measured": {
+  "iz1_uA": -0.003666475,
+  "izq1_uA": 0.24229560000000003,
+  "iz2_uA": -0.003076556,
+  "izq2_uA": 0.5933505,
+  "iz3_uA": -8.762624,
+  "izq3_uA": 0.7441367,
+  "iz4_uA": -8.294576,
+  "izq4_uA": 0.01272981,
+  "worst_abs_uA": 8.762624,
+  "A6_pass_1uA": false
+ },
+ "tzr_ps": [
+  125.4919,
+  125.4109,
+  125.2264,
+  124.4598
+ ],
+ "tzq_ps": [
+  148.8881,
+  150.9877,
+  151.0896,
+  146.2475
+ ],
+ "CONSEQUENCE_FOR_THE_VERDICT": "the throughput verdict is reported at H = 4, which IS measured and A6-clean at T >= 150 ps. H = 2 numbers are computed and shown but labelled NOT VALIDATED AT THIS SWING. qal/fcrit MEASURED that both H = 2 and H = 4 clear down to T = 120 ps on the 24 links with a real in-deck receiver, and that the best initiation interval is H = 2 / T = 160 ps -- but at dV = 1.2 V. This study does not reproduce H = 2 at dV = 1.65 V and reports that rather than inheriting the optimistic reading.",
+ "what_would_settle_it": "H = 3, or an H = 2 schedule that staggers the return away from c_k (e.g. r_k = c_k + H*T + delta with delta > tzq - tzr). Neither is run here. This is a SCHEDULE design question, not a device limit."
+}

@@ -1,0 +1,149 @@
+{
+ "_what": "qal/eye/p2 PHASE 2 instrument check. No simulation.",
+ "_pre_registered_bars": "PRE_REGISTERED_P2.json IC_INSTRUMENT_CHECK_P2",
+ "checks": {
+  "IC-P2-1_re_extract_the_Phase1_eye": {
+   "_bar_ps": 0.1,
+   "_reader": "independent, does not import eyecalc.py",
+   "rows": {
+    "bank1": {
+     "n_points": 22410,
+     "grid_ps": 0.1,
+     "window_start_c_k_ps": 200.0,
+     "EYE2_HIGH_opening_ps": 328.5990357532022,
+     "opening_edge_set_by": "margin_crossing",
+     "EYE2_all_polarity_opening_ps": 328.5990357532022,
+     "all_edge_set_by": "margin_crossing",
+     "HIGH_equals_all": true,
+     "EYE_json_target_ps": 328.599,
+     "abs_dev_ps": 3.575320221216316e-05,
+     "opening_after_own_rail_start_ps": 128.5990357532022,
+     "pass": true
+    },
+    "bank2": {
+     "n_points": 22410,
+     "grid_ps": 0.1,
+     "window_start_c_k_ps": 400.0,
+     "EYE2_HIGH_opening_ps": 529.6413581836382,
+     "opening_edge_set_by": "margin_crossing",
+     "EYE2_all_polarity_opening_ps": 529.6413581836382,
+     "all_edge_set_by": "margin_crossing",
+     "HIGH_equals_all": true,
+     "EYE_json_target_ps": 529.641,
+     "abs_dev_ps": 0.0003581836382409165,
+     "opening_after_own_rail_start_ps": 129.6413581836382,
+     "pass": true
+    },
+    "bank3": {
+     "n_points": 22410,
+     "grid_ps": 0.1,
+     "window_start_c_k_ps": 600.0,
+     "EYE2_HIGH_opening_ps": 729.382005681056,
+     "opening_edge_set_by": "margin_crossing",
+     "EYE2_all_polarity_opening_ps": 729.382005681056,
+     "all_edge_set_by": "margin_crossing",
+     "HIGH_equals_all": true,
+     "EYE_json_target_ps": 729.382,
+     "abs_dev_ps": 5.681055995410134e-06,
+     "opening_after_own_rail_start_ps": 129.38200568105594,
+     "pass": true
+    }
+   },
+   "worst_abs_dev_ps": 0.0003581836382409165,
+   "verdict": "PASS"
+  },
+  "IC-P2-2_reproduce_61.6_from_its_source": {
+   "source": "qal/qal_bankN_zcs.json",
+   "source_sha256_16": "fec5521ee11a2b7f",
+   "source_mtime": "2026-09-25T00:01:45-0700",
+   "source_doc": "Zero-current (freeze) instant vs DATA for a real 8-gate QAL bank, switch held ON. Tests qal_a1f_inductive.py:75 ('T_half data-independent'), which was measured on ideal linear caps, against a gate-loaded bank.",
+   "THE_OPERATING_POINT_OF_THE_61.6_ps_FIGURE": {
+    "dV_V": 0.8,
+    "L_nH": 400.0,
+    "C_A_fF": 35.0025,
+    "m_gates": 8,
+    "switch": "held ON (freeze probe)",
+    "n_banks": 1
+   },
+   "THE_EYE_OPERATING_POINT_FOR_CONTRAST": {
+    "dV_V": 1.65,
+    "L_nH": 15.0,
+    "C_tank_fF": 359.79,
+    "m_gates": 8,
+    "switch": "opened at the true ZCS",
+    "n_banks": 4
+   },
+   "n_rows_Hamming_weight_0_to_8": 9,
+   "t_zcs_ps_min": 330.532,
+   "t_zcs_ps_max": 392.144,
+   "peak_to_peak_ps": 61.61200000000002,
+   "mean_ps": 363.9346666666667,
+   "pp_over_mean_pct": 16.929412238826753,
+   "brief_says": "61.6 ps / 16.9%",
+   "pass": true,
+   "verdict": "PASS -- 61.6 ps and 16.9% both reproduce EXACTLY from this table"
+  },
+  "IC-P2-3_reproduce_the_timer_terms": {
+   "drift_rate_ps_per_K_found": [
+    [
+     "/tracking/drift_rate_ps_per_K",
+     0.46
+    ]
+   ],
+   "to_85C_found": [
+    [
+     "/tracking/zero_fractional/to_85C",
+     0.736
+    ],
+    [
+     "/tracking/width_fractional/to_85C",
+     10.23
+    ]
+   ],
+   "cold_found": [
+    [
+     "/tracking/tracking_ratio/cold",
+     16.4
+    ]
+   ],
+   "brief_says": "0.46 ps/K; tracking ratio 16.4; LC +0.74%/85C vs RC +10.23%/85C",
+   "drift_rate_ps_per_K": 0.46,
+   "pass_drift": true,
+   "ANTI_DOUBLE_COUNT_ARITHMETIC": {
+    "_claim_pre_registered": "0.46 ps/K and the +10.23% RC-soft limb are THE SAME measurement",
+    "drift_over_60K_ps": 27.6,
+    "nominal_loaded_timer_width_ps": 265.623,
+    "implied_pct_over_60K": 10.390666470900488,
+    "measured_RC_soft_limb_pct": 10.23,
+    "agree_to_within_pct_abs": 0.16066647090048747,
+    "CONCLUSION": "SAME TERM -- charge once, never twice"
+   },
+   "verdict": "PASS"
+  },
+  "IC-P2-4_reproduce_the_CMOS_and_flop_anchors": {
+   "CMOS_level_at_2fF_ps": 57.143,
+   "CMOS_level_at_6p91fF_ps": 94.174,
+   "pass_cmos": true,
+   "which_load_is_matched": "2 fF -- the banktank cells carry CL = 2.0 fF",
+   "ratio_if_6.91fF_were_quoted_instead": 1.6480408798978003,
+   "t_reg_ps_MEASURED": {
+    "0.0": 307.1,
+    "6.91": 335.7,
+    "20.0": 390.0
+   },
+   "t_reg_at_2fF_DERIVED_linear_interp_ps": 315.3778581765557,
+   "t_reg_is_a_LOWER_bound_because": "liberty is 1.11-1.21x OPTIMISTIC per restore5's transistor CLK->Q cross-check; a smaller flop tax is the CONSERVATIVE choice for QAL",
+   "t_reg_at_2fF_inflated_band_ps": [
+    350.0694225759769,
+    381.6072083936324
+   ],
+   "unc_named_corners_ps": {
+    "ideal": 0,
+    "tree": 100,
+    "flow": 250
+   },
+   "verdict": "PASS"
+  }
+ },
+ "OVERALL": "INSTRUMENT OK"
+}

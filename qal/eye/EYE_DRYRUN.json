@@ -1,0 +1,2373 @@
+{
+ "_what": "THE EYE of a per-bank-tank QAL wave: a WIDTH in ps and a HEIGHT in mV. A bank output is not a node approaching an asymptote; it becomes valid, stays valid for a window, and stops being valid. There is no completion event.",
+ "_grid_ps": 0.1,
+ "_edge_location": "sub-grid LINEAR INTERPOLATION of the root of margin(t)=threshold (AMENDMENT E1); grid-quantised edges given alongside",
+ "_operating_point": {
+  "m": 10.0,
+  "T_ps": 200.0,
+  "H": 4,
+  "dv_V": 1.65,
+  "mode": "free",
+  "L_nH": 15.0,
+  "nbank": 4,
+  "ngate_per_bank": 8,
+  "arrangement": "qal/banktank 0aae11e per-bank tanks, no flop/latch/buffer/keeper between banks"
+ },
+ "_receiver_threshold": "MEASURED qal/fcrit/TRIP.json cell S (wp 1.12u/wn 0.74u, identical widths AND bulk connections to every banktank cell), 27 rails 0.20-1.50 V at 1 mV DC step, LINEARLY INTERPOLATED at the receiver's rail. The trip FRACTION is not a constant: MEASURED 0.728124 at 0.20 V -> 0.517850 at 1.50 V. 0.59 is never used.",
+ "_references": {
+  "EYE1_RX_INSTANTANEOUS": "PRE_REGISTERED STEP_d verbatim. Trip at the receiver's INSTANTANEOUS rail, in-table only. Early edge is the RECEIVER'S POWER-UP (AMENDMENT E3), not the data.",
+  "EYE2_DATA_FIXED": "AMENDMENT E3. Fixed level Trip_S(VR{k+1}B), the receiver's trip at the receiver's rail at ITS OWN pre-registered boundary instant (a committed banktank .measure key, MEASURED per pattern). Isolates the DRIVER. THIS is the one that bounds the beat."
+ },
+ "_windows": {
+  "W_PREREG": "[c_k, ro_k] as pre-registered",
+  "W_EXTENDED": "[c_k, tend-1] -- AMENDMENT E4, because the pre-registered window END was masquerading as a closing edge"
+ },
+ "_patterns": {
+  "DRYRUN_committed_dv1650": {
+   "bits": [
+    1,
+    1,
+    1,
+    0,
+    1,
+    0,
+    0,
+    1
+   ],
+   "weight": 5,
+   "probe_protocol": "DRYRUN-committed-T120-zeros",
+   "A6_zcs_pass": true,
+   "worst_abs_uA": null,
+   "note": "no .mt0",
+   "DRYRUN_A6_BYPASSED": true
+  }
+ },
+ "_patterns_in_intersection": [
+  "DRYRUN_committed_dv1650"
+ ],
+ "_patterns_excluded_A6_instrument_failure": [],
+ "_n_patterns_in_intersection": 1,
+ "banks": {
+  "1": {
+   "receiver": "bank 2 (MEASURED)",
+   "receiver_is_measured": true,
+   "own_rail_start_c_ps": 200.0,
+   "transfer_open_o_ps": 324.56895751572125,
+   "return_close_r_ps": 1000.0,
+   "return_open_ro_ps": 1145.0853122059043,
+   "windows_ps": {
+    "W_PREREG": [
+     200.0,
+     1145.0853122059043
+    ],
+    "W_EXTENDED": [
+     200.0,
+     2248.3
+    ]
+   },
+   "decision_levels": {
+    "DRYRUN_committed_dv1650": {
+     "rail_at_receiver_boundary_V": 0.9540702,
+     "trip_fixed_V": 0.5233554,
+     "trip_min_over_live_window_V": 0.1498011,
+     "trip_max_over_live_window_V": 0.6048092,
+     "receiver_is_derived": false
+    }
+   },
+   "gates_expected_HIGH_by_pattern": {
+    "DRYRUN_committed_dv1650": [
+     3,
+     5,
+     6
+    ]
+   },
+   "EYES": {
+    "EYE1_RX_INSTANTANEOUS": {
+     "W_PREREG": {
+      "0mV": {
+       "opening_ps": 397.5282,
+       "closing_ps": 1145.1,
+       "WIDTH_ps": 747.5718,
+       "opening_ps_gridquant": 400.7,
+       "closing_ps_gridquant": 1145.1,
+       "centre_ps": 771.3141,
+       "HEIGHT_at_centre_HIGH_mV": 549.2678,
+       "HEIGHT_at_centre_LOW_mV": 548.5789,
+       "HEIGHT_at_centre_mV": 1097.1578,
+       "opening_minus_own_rail_start_ps": 197.5282,
+       "closing_minus_return_close_ps": 145.1,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "1sigma_6.441mV": {
+       "opening_ps": 397.6804,
+       "closing_ps": 1145.1,
+       "WIDTH_ps": 747.4196,
+       "opening_ps_gridquant": 400.7,
+       "closing_ps_gridquant": 1145.1,
+       "centre_ps": 771.3902,
+       "HEIGHT_at_centre_HIGH_mV": 549.2705,
+       "HEIGHT_at_centre_LOW_mV": 548.5759,
+       "HEIGHT_at_centre_mV": 1097.1518,
+       "opening_minus_own_rail_start_ps": 197.6804,
+       "closing_minus_return_close_ps": 145.1,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "3sigma_19.323mV": {
+       "opening_ps": 397.9847,
+       "closing_ps": 1145.1,
+       "WIDTH_ps": 747.1153,
+       "opening_ps_gridquant": 400.7,
+       "closing_ps_gridquant": 1145.1,
+       "centre_ps": 771.5424,
+       "HEIGHT_at_centre_HIGH_mV": 549.2733,
+       "HEIGHT_at_centre_LOW_mV": 548.5729,
+       "HEIGHT_at_centre_mV": 1097.1458,
+       "opening_minus_own_rail_start_ps": 197.9847,
+       "closing_minus_return_close_ps": 145.1,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      }
+     },
+     "W_EXTENDED": {
+      "0mV": {
+       "opening_ps": 397.5282,
+       "closing_ps": 2248.3,
+       "WIDTH_ps": 1850.7718,
+       "opening_ps_gridquant": 400.7,
+       "closing_ps_gridquant": 2248.3,
+       "centre_ps": 1322.9141,
+       "HEIGHT_at_centre_HIGH_mV": 321.2793,
+       "HEIGHT_at_centre_LOW_mV": 401.4397,
+       "HEIGHT_at_centre_mV": 642.5586,
+       "opening_minus_own_rail_start_ps": 197.5282,
+       "closing_minus_return_close_ps": 1248.3,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "1sigma_6.441mV": {
+       "opening_ps": 397.6804,
+       "closing_ps": 2248.3,
+       "WIDTH_ps": 1850.6196,
+       "opening_ps_gridquant": 400.7,
+       "closing_ps_gridquant": 2248.3,
+       "centre_ps": 1322.9902,
+       "HEIGHT_at_centre_HIGH_mV": 321.3155,
+       "HEIGHT_at_centre_LOW_mV": 401.4008,
+       "HEIGHT_at_centre_mV": 642.631,
+       "opening_minus_own_rail_start_ps": 197.6804,
+       "closing_minus_return_close_ps": 1248.3,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "3sigma_19.323mV": {
+       "opening_ps": 397.9847,
+       "closing_ps": 2248.3,
+       "WIDTH_ps": 1850.3153,
+       "opening_ps_gridquant": 400.7,
+       "closing_ps_gridquant": 2248.3,
+       "centre_ps": 1323.1424,
+       "HEIGHT_at_centre_HIGH_mV": 321.3515,
+       "HEIGHT_at_centre_LOW_mV": 401.362,
+       "HEIGHT_at_centre_mV": 642.7031,
+       "opening_minus_own_rail_start_ps": 197.9847,
+       "closing_minus_return_close_ps": 1248.3,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      }
+     },
+     "HIGH_only_W_EXTENDED_0mV": {
+      "open_ps": 428.5243,
+      "close_ps": 2248.3,
+      "width_ps": 1819.7757,
+      "open_ps_gridquant": 400.7,
+      "close_ps_gridquant": 2248.3,
+      "width_ps_gridquant": 1847.6,
+      "clipped_at_window_start": false,
+      "clipped_at_window_end": true
+     },
+     "LOW_only_W_EXTENDED_0mV": {
+      "open_ps": 397.5282,
+      "close_ps": 2248.3,
+      "width_ps": 1850.7718,
+      "open_ps_gridquant": 400.7,
+      "close_ps_gridquant": 2248.3,
+      "width_ps_gridquant": 1847.6,
+      "clipped_at_window_start": false,
+      "clipped_at_window_end": true
+     },
+     "per_pattern_W_EXTENDED_0mV": {
+      "DRYRUN_committed_dv1650": {
+       "joint": {
+        "open_ps": 397.5282,
+        "close_ps": 2248.3,
+        "width_ps": 1850.7718,
+        "open_ps_gridquant": 400.7,
+        "close_ps_gridquant": 2248.3,
+        "width_ps_gridquant": 1847.6,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "HIGH": {
+        "open_ps": 428.5243,
+        "close_ps": 2248.3,
+        "width_ps": 1819.7757,
+        "open_ps_gridquant": 400.7,
+        "close_ps_gridquant": 2248.3,
+        "width_ps_gridquant": 1847.6,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "LOW": {
+        "open_ps": 397.5282,
+        "close_ps": 2248.3,
+        "width_ps": 1850.7718,
+        "open_ps_gridquant": 400.7,
+        "close_ps_gridquant": 2248.3,
+        "width_ps_gridquant": 1847.6,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       }
+      }
+     }
+    },
+    "EYE2_DATA_FIXED": {
+     "W_PREREG": {
+      "0mV": {
+       "opening_ps": 303.2752,
+       "closing_ps": 1145.1,
+       "WIDTH_ps": 841.8248,
+       "opening_ps_gridquant": 303.3,
+       "closing_ps_gridquant": 1145.1,
+       "centre_ps": 724.1876,
+       "HEIGHT_at_centre_HIGH_mV": 574.9403,
+       "HEIGHT_at_centre_LOW_mV": 523.316,
+       "HEIGHT_at_centre_mV": 1046.6319,
+       "opening_minus_own_rail_start_ps": 103.2752,
+       "closing_minus_return_close_ps": 145.1,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "1sigma_6.441mV": {
+       "opening_ps": 303.8833,
+       "closing_ps": 1145.1,
+       "WIDTH_ps": 841.2167,
+       "opening_ps_gridquant": 303.9,
+       "closing_ps_gridquant": 1145.1,
+       "centre_ps": 724.4917,
+       "HEIGHT_at_centre_HIGH_mV": 576.3869,
+       "HEIGHT_at_centre_LOW_mV": 521.9871,
+       "HEIGHT_at_centre_mV": 1043.9741,
+       "opening_minus_own_rail_start_ps": 103.8833,
+       "closing_minus_return_close_ps": 145.1,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "3sigma_19.323mV": {
+       "opening_ps": 305.1008,
+       "closing_ps": 1145.1,
+       "WIDTH_ps": 839.9992,
+       "opening_ps_gridquant": 305.2,
+       "closing_ps_gridquant": 1145.1,
+       "centre_ps": 725.1004,
+       "HEIGHT_at_centre_HIGH_mV": 578.6819,
+       "HEIGHT_at_centre_LOW_mV": 519.9766,
+       "HEIGHT_at_centre_mV": 1039.9533,
+       "opening_minus_own_rail_start_ps": 105.1008,
+       "closing_minus_return_close_ps": 145.1,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      }
+     },
+     "W_EXTENDED": {
+      "0mV": {
+       "opening_ps": 303.2752,
+       "closing_ps": 2248.3,
+       "WIDTH_ps": 1945.0248,
+       "opening_ps_gridquant": 303.3,
+       "closing_ps_gridquant": 2248.3,
+       "centre_ps": 1275.7876,
+       "HEIGHT_at_centre_HIGH_mV": 198.5829,
+       "HEIGHT_at_centre_LOW_mV": 525.3792,
+       "HEIGHT_at_centre_mV": 397.1658,
+       "opening_minus_own_rail_start_ps": 103.2752,
+       "closing_minus_return_close_ps": 1248.3,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "1sigma_6.441mV": {
+       "opening_ps": 303.8833,
+       "closing_ps": 2248.3,
+       "WIDTH_ps": 1944.4167,
+       "opening_ps_gridquant": 303.9,
+       "closing_ps_gridquant": 2248.3,
+       "centre_ps": 1276.0917,
+       "HEIGHT_at_centre_HIGH_mV": 198.5771,
+       "HEIGHT_at_centre_LOW_mV": 525.3828,
+       "HEIGHT_at_centre_mV": 397.1541,
+       "opening_minus_own_rail_start_ps": 103.8833,
+       "closing_minus_return_close_ps": 1248.3,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "3sigma_19.323mV": {
+       "opening_ps": 305.1008,
+       "closing_ps": 2248.3,
+       "WIDTH_ps": 1943.1992,
+       "opening_ps_gridquant": 305.2,
+       "closing_ps_gridquant": 2248.3,
+       "centre_ps": 1276.7004,
+       "HEIGHT_at_centre_HIGH_mV": 198.565,
+       "HEIGHT_at_centre_LOW_mV": 525.39,
+       "HEIGHT_at_centre_mV": 397.13,
+       "opening_minus_own_rail_start_ps": 105.1008,
+       "closing_minus_return_close_ps": 1248.3,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      }
+     },
+     "HIGH_only_W_EXTENDED_0mV": {
+      "open_ps": 303.2752,
+      "close_ps": 2248.3,
+      "width_ps": 1945.0248,
+      "open_ps_gridquant": 303.3,
+      "close_ps_gridquant": 2248.3,
+      "width_ps_gridquant": 1945.0,
+      "clipped_at_window_start": false,
+      "clipped_at_window_end": true
+     },
+     "LOW_only_W_EXTENDED_0mV": {
+      "open_ps": 200.0,
+      "close_ps": 2248.3,
+      "width_ps": 2048.3,
+      "open_ps_gridquant": 200.0,
+      "close_ps_gridquant": 2248.3,
+      "width_ps_gridquant": 2048.3,
+      "clipped_at_window_start": true,
+      "clipped_at_window_end": true
+     },
+     "per_pattern_W_EXTENDED_0mV": {
+      "DRYRUN_committed_dv1650": {
+       "joint": {
+        "open_ps": 303.2752,
+        "close_ps": 2248.3,
+        "width_ps": 1945.0248,
+        "open_ps_gridquant": 303.3,
+        "close_ps_gridquant": 2248.3,
+        "width_ps_gridquant": 1945.0,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "HIGH": {
+        "open_ps": 303.2752,
+        "close_ps": 2248.3,
+        "width_ps": 1945.0248,
+        "open_ps_gridquant": 303.3,
+        "close_ps_gridquant": 2248.3,
+        "width_ps_gridquant": 1945.0,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "LOW": {
+        "open_ps": 200.0,
+        "close_ps": 2248.3,
+        "width_ps": 2048.3,
+        "open_ps_gridquant": 200.0,
+        "close_ps_gridquant": 2248.3,
+        "width_ps_gridquant": 2048.3,
+        "clipped_at_window_start": true,
+        "clipped_at_window_end": true
+       }
+      }
+     }
+    }
+   },
+   "POST_RETURN_MARGIN_FLOOR": {
+    "EYE1_RX_INSTANTANEOUS": {
+     "worst_margin_after_return_close_mV": 156.2346,
+     "at_t_ps": 1145.0,
+     "at_t_minus_return_open_ro_ps": -0.0853,
+     "right_edge_appears_only_for_thresholds_above_mV": 156.2346
+    },
+    "EYE2_DATA_FIXED": {
+     "worst_margin_after_return_close_mV": 176.3482,
+     "at_t_ps": 1145.0,
+     "at_t_minus_return_open_ro_ps": -0.0853,
+     "right_edge_appears_only_for_thresholds_above_mV": 176.3482
+    }
+   },
+   "CLOSING_MECHANISM": {
+    "EYE1_RX_INSTANTANEOUS": {
+     "early_edge_OPENING": {
+      "t_ps": 397.5282,
+      "binding_pattern": "DRYRUN_committed_dv1650",
+      "binding_pattern_bits": [
+       1,
+       1,
+       1,
+       0,
+       1,
+       0,
+       0,
+       1
+      ],
+      "binding_gate": "o0",
+      "binding_polarity": "LOW",
+      "binding_margin_mV": 46.03676,
+      "MECHANISM": {
+       "M": "M7",
+       "t_ps": 397.5,
+       "gate": "o0",
+       "polarity": "LOW",
+       "mgn_mV": 46.0368,
+       "d_mgn_dt_mV_per_ps": 0.00081,
+       "term_dVout_dt_mV_per_ps": -0.01175,
+       "term_minus_dtrip_dt_mV_per_ps": 0.01256,
+       "dominant_term": "-dtrip/dt",
+       "V_out": -0.0001898,
+       "V_trip_rx": 0.045847,
+       "V_rail_driver": 1.0577489,
+       "dV_rail_driver_dt_mV_per_ps": -0.12322,
+       "V_rail_rx": 0.0629659,
+       "dV_rail_rx_dt_mV_per_ps": 0.01725,
+       "V_tank_driver": 0.7181907,
+       "dV_tank_dt_mV_per_ps": -0.40949,
+       "I_L_driver_uA": -300.2329,
+       "transfer_gate_conducting": false,
+       "return_switch_conducting": false,
+       "V_in_driver_gate": "ideal DC source (bank 1)",
+       "overdrive_vs_Vtn_V": null,
+       "overdrive_vs_absVtp_V": null
+      }
+     },
+     "late_edge_CLOSING": {
+      "t_ps": 2248.3,
+      "binding_pattern": "DRYRUN_committed_dv1650",
+      "binding_pattern_bits": [
+       1,
+       1,
+       1,
+       0,
+       1,
+       0,
+       0,
+       1
+      ],
+      "binding_gate": "o3",
+      "binding_polarity": "HIGH",
+      "binding_margin_mV": 304.86649,
+      "NO_EDGE": "the eye is CLIPPED at this window bound -- there is no crossing here. The margin never crosses the threshold within the transient: the true right edge is set by the NEXT datum on this bank at the initiation interval H*T, which this single-shot deck does not contain (AMENDMENT E4).",
+      "MECHANISM": {
+       "M": "M1",
+       "t_ps": 2248.3,
+       "gate": "o3",
+       "polarity": "HIGH",
+       "mgn_mV": 304.8665,
+       "d_mgn_dt_mV_per_ps": 0.0,
+       "term_dVout_dt_mV_per_ps": 0.0,
+       "term_minus_dtrip_dt_mV_per_ps": -0.0,
+       "dominant_term": "dVout/dt",
+       "V_out": 0.7239847,
+       "V_trip_rx": 0.4191183,
+       "V_rail_driver": 0.7239847,
+       "dV_rail_driver_dt_mV_per_ps": 0.0,
+       "V_rail_rx": 0.7481358,
+       "dV_rail_rx_dt_mV_per_ps": 0.0,
+       "V_tank_driver": 0.7672814,
+       "dV_tank_dt_mV_per_ps": 0.0,
+       "I_L_driver_uA": -0.0,
+       "transfer_gate_conducting": false,
+       "return_switch_conducting": false,
+       "V_in_driver_gate": "ideal DC source (bank 1)",
+       "overdrive_vs_Vtn_V": null,
+       "overdrive_vs_absVtp_V": null
+      }
+     }
+    },
+    "EYE2_DATA_FIXED": {
+     "early_edge_OPENING": {
+      "t_ps": 303.2752,
+      "binding_pattern": "DRYRUN_committed_dv1650",
+      "binding_pattern_bits": [
+       1,
+       1,
+       1,
+       0,
+       1,
+       0,
+       0,
+       1
+      ],
+      "binding_gate": "o3",
+      "binding_polarity": "HIGH",
+      "binding_margin_mV": 0.26247,
+      "MECHANISM": {
+       "M": "M7",
+       "t_ps": 303.3,
+       "gate": "o3",
+       "polarity": "HIGH",
+       "mgn_mV": 501.5962,
+       "d_mgn_dt_mV_per_ps": 10.12387,
+       "term_dVout_dt_mV_per_ps": 10.59276,
+       "term_minus_dtrip_dt_mV_per_ps": -0.46889,
+       "dominant_term": "dVout/dt",
+       "V_out": 0.5236179,
+       "V_trip_rx": 0.0220216,
+       "V_rail_driver": 0.9475332,
+       "dV_rail_driver_dt_mV_per_ps": 3.86197,
+       "V_rail_rx": 0.0302443,
+       "dV_rail_rx_dt_mV_per_ps": 0.64397,
+       "V_tank_driver": 0.6377279,
+       "dV_tank_dt_mV_per_ps": -1.58138,
+       "I_L_driver_uA": 578.3585,
+       "transfer_gate_conducting": true,
+       "return_switch_conducting": false,
+       "V_in_driver_gate": "ideal DC source (bank 1)",
+       "overdrive_vs_Vtn_V": null,
+       "overdrive_vs_absVtp_V": null
+      }
+     },
+     "late_edge_CLOSING": {
+      "t_ps": 2248.3,
+      "binding_pattern": "DRYRUN_committed_dv1650",
+      "binding_pattern_bits": [
+       1,
+       1,
+       1,
+       0,
+       1,
+       0,
+       0,
+       1
+      ],
+      "binding_gate": "o3",
+      "binding_polarity": "HIGH",
+      "binding_margin_mV": 200.62936,
+      "NO_EDGE": "the eye is CLIPPED at this window bound -- there is no crossing here. The margin never crosses the threshold within the transient: the true right edge is set by the NEXT datum on this bank at the initiation interval H*T, which this single-shot deck does not contain (AMENDMENT E4).",
+      "MECHANISM": {
+       "M": "M1",
+       "t_ps": 2248.3,
+       "gate": "o3",
+       "polarity": "HIGH",
+       "mgn_mV": 304.8665,
+       "d_mgn_dt_mV_per_ps": 0.0,
+       "term_dVout_dt_mV_per_ps": 0.0,
+       "term_minus_dtrip_dt_mV_per_ps": -0.0,
+       "dominant_term": "dVout/dt",
+       "V_out": 0.7239847,
+       "V_trip_rx": 0.4191183,
+       "V_rail_driver": 0.7239847,
+       "dV_rail_driver_dt_mV_per_ps": 0.0,
+       "V_rail_rx": 0.7481358,
+       "dV_rail_rx_dt_mV_per_ps": 0.0,
+       "V_tank_driver": 0.7672814,
+       "dV_tank_dt_mV_per_ps": 0.0,
+       "I_L_driver_uA": -0.0,
+       "transfer_gate_conducting": false,
+       "return_switch_conducting": false,
+       "V_in_driver_gate": "ideal DC source (bank 1)",
+       "overdrive_vs_Vtn_V": null,
+       "overdrive_vs_absVtp_V": null
+      }
+     }
+    }
+   },
+   "margin_curve_file": "MARGIN_bank1.csv.gz",
+   "margin_curve_n_points": 22494
+  },
+  "2": {
+   "receiver": "bank 3 (MEASURED)",
+   "receiver_is_measured": true,
+   "own_rail_start_c_ps": 400.0,
+   "transfer_open_o_ps": 526.4931158381787,
+   "return_close_r_ps": 1200.0,
+   "return_open_ro_ps": 1356.1118472210865,
+   "windows_ps": {
+    "W_PREREG": [
+     400.0,
+     1356.1118472210865
+    ],
+    "W_EXTENDED": [
+     400.0,
+     2248.3
+    ]
+   },
+   "decision_levels": {
+    "DRYRUN_committed_dv1650": {
+     "rail_at_receiver_boundary_V": 1.044916,
+     "trip_fixed_V": 0.5693304,
+     "trip_min_over_live_window_V": 0.145871,
+     "trip_max_over_live_window_V": 0.634944,
+     "receiver_is_derived": false
+    }
+   },
+   "gates_expected_HIGH_by_pattern": {
+    "DRYRUN_committed_dv1650": [
+     0,
+     1,
+     2,
+     4,
+     7
+    ]
+   },
+   "EYES": {
+    "EYE1_RX_INSTANTANEOUS": {
+     "W_PREREG": {
+      "0mV": {
+       "opening_ps": 598.4171,
+       "closing_ps": 1356.1,
+       "WIDTH_ps": 757.6829,
+       "opening_ps_gridquant": 600.5,
+       "closing_ps_gridquant": 1356.1,
+       "centre_ps": 977.2586,
+       "HEIGHT_at_centre_HIGH_mV": 415.566,
+       "HEIGHT_at_centre_LOW_mV": 589.0865,
+       "HEIGHT_at_centre_mV": 831.132,
+       "opening_minus_own_rail_start_ps": 198.4171,
+       "closing_minus_return_close_ps": 156.1,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "1sigma_6.441mV": {
+       "opening_ps": 598.5183,
+       "closing_ps": 1356.1,
+       "WIDTH_ps": 757.5817,
+       "opening_ps_gridquant": 600.5,
+       "closing_ps_gridquant": 1356.1,
+       "centre_ps": 977.3091,
+       "HEIGHT_at_centre_HIGH_mV": 415.566,
+       "HEIGHT_at_centre_LOW_mV": 589.0865,
+       "HEIGHT_at_centre_mV": 831.132,
+       "opening_minus_own_rail_start_ps": 198.5183,
+       "closing_minus_return_close_ps": 156.1,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "3sigma_19.323mV": {
+       "opening_ps": 598.7206,
+       "closing_ps": 1356.1,
+       "WIDTH_ps": 757.3794,
+       "opening_ps_gridquant": 600.5,
+       "closing_ps_gridquant": 1356.1,
+       "centre_ps": 977.4103,
+       "HEIGHT_at_centre_HIGH_mV": 415.567,
+       "HEIGHT_at_centre_LOW_mV": 589.0849,
+       "HEIGHT_at_centre_mV": 831.134,
+       "opening_minus_own_rail_start_ps": 198.7206,
+       "closing_minus_return_close_ps": 156.1,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      }
+     },
+     "W_EXTENDED": {
+      "0mV": {
+       "opening_ps": 598.4171,
+       "closing_ps": 2248.3,
+       "WIDTH_ps": 1649.8829,
+       "opening_ps_gridquant": 600.5,
+       "closing_ps_gridquant": 2248.3,
+       "centre_ps": 1423.3586,
+       "HEIGHT_at_centre_HIGH_mV": 296.647,
+       "HEIGHT_at_centre_LOW_mV": 485.528,
+       "HEIGHT_at_centre_mV": 593.2941,
+       "opening_minus_own_rail_start_ps": 198.4171,
+       "closing_minus_return_close_ps": 1048.3,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "1sigma_6.441mV": {
+       "opening_ps": 598.5183,
+       "closing_ps": 2248.3,
+       "WIDTH_ps": 1649.7817,
+       "opening_ps_gridquant": 600.5,
+       "closing_ps_gridquant": 2248.3,
+       "centre_ps": 1423.4091,
+       "HEIGHT_at_centre_HIGH_mV": 296.647,
+       "HEIGHT_at_centre_LOW_mV": 485.528,
+       "HEIGHT_at_centre_mV": 593.2941,
+       "opening_minus_own_rail_start_ps": 198.5183,
+       "closing_minus_return_close_ps": 1048.3,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "3sigma_19.323mV": {
+       "opening_ps": 598.7206,
+       "closing_ps": 2248.3,
+       "WIDTH_ps": 1649.5794,
+       "opening_ps_gridquant": 600.5,
+       "closing_ps_gridquant": 2248.3,
+       "centre_ps": 1423.5103,
+       "HEIGHT_at_centre_HIGH_mV": 296.6667,
+       "HEIGHT_at_centre_LOW_mV": 485.4851,
+       "HEIGHT_at_centre_mV": 593.3334,
+       "opening_minus_own_rail_start_ps": 198.7206,
+       "closing_minus_return_close_ps": 1048.3,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      }
+     },
+     "HIGH_only_W_EXTENDED_0mV": {
+      "open_ps": 614.8954,
+      "close_ps": 2248.3,
+      "width_ps": 1633.4046,
+      "open_ps_gridquant": 600.5,
+      "close_ps_gridquant": 2248.3,
+      "width_ps_gridquant": 1647.8,
+      "clipped_at_window_start": false,
+      "clipped_at_window_end": true
+     },
+     "LOW_only_W_EXTENDED_0mV": {
+      "open_ps": 598.4171,
+      "close_ps": 2248.3,
+      "width_ps": 1649.8829,
+      "open_ps_gridquant": 600.5,
+      "close_ps_gridquant": 2248.3,
+      "width_ps_gridquant": 1647.8,
+      "clipped_at_window_start": false,
+      "clipped_at_window_end": true
+     },
+     "per_pattern_W_EXTENDED_0mV": {
+      "DRYRUN_committed_dv1650": {
+       "joint": {
+        "open_ps": 598.4171,
+        "close_ps": 2248.3,
+        "width_ps": 1649.8829,
+        "open_ps_gridquant": 600.5,
+        "close_ps_gridquant": 2248.3,
+        "width_ps_gridquant": 1647.8,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "HIGH": {
+        "open_ps": 614.8954,
+        "close_ps": 2248.3,
+        "width_ps": 1633.4046,
+        "open_ps_gridquant": 600.5,
+        "close_ps_gridquant": 2248.3,
+        "width_ps_gridquant": 1647.8,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "LOW": {
+        "open_ps": 598.4171,
+        "close_ps": 2248.3,
+        "width_ps": 1649.8829,
+        "open_ps_gridquant": 600.5,
+        "close_ps_gridquant": 2248.3,
+        "width_ps_gridquant": 1647.8,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       }
+      }
+     }
+    },
+    "EYE2_DATA_FIXED": {
+     "W_PREREG": {
+      "0mV": {
+       "opening_ps": 509.6592,
+       "closing_ps": 1356.1,
+       "WIDTH_ps": 846.4408,
+       "opening_ps_gridquant": 509.7,
+       "closing_ps_gridquant": 1356.1,
+       "centre_ps": 932.8796,
+       "HEIGHT_at_centre_HIGH_mV": 438.2098,
+       "HEIGHT_at_centre_LOW_mV": 568.2608,
+       "HEIGHT_at_centre_mV": 876.4196,
+       "opening_minus_own_rail_start_ps": 109.6592,
+       "closing_minus_return_close_ps": 156.1,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "1sigma_6.441mV": {
+       "opening_ps": 510.3847,
+       "closing_ps": 1356.1,
+       "WIDTH_ps": 845.7153,
+       "opening_ps_gridquant": 510.4,
+       "closing_ps_gridquant": 1356.1,
+       "centre_ps": 933.2424,
+       "HEIGHT_at_centre_HIGH_mV": 438.1034,
+       "HEIGHT_at_centre_LOW_mV": 568.3658,
+       "HEIGHT_at_centre_mV": 876.2068,
+       "opening_minus_own_rail_start_ps": 110.3847,
+       "closing_minus_return_close_ps": 156.1,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "3sigma_19.323mV": {
+       "opening_ps": 511.8492,
+       "closing_ps": 1356.1,
+       "WIDTH_ps": 844.2508,
+       "opening_ps_gridquant": 511.9,
+       "closing_ps_gridquant": 1356.1,
+       "centre_ps": 933.9746,
+       "HEIGHT_at_centre_HIGH_mV": 437.8361,
+       "HEIGHT_at_centre_LOW_mV": 568.6209,
+       "HEIGHT_at_centre_mV": 875.6722,
+       "opening_minus_own_rail_start_ps": 111.8492,
+       "closing_minus_return_close_ps": 156.1,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      }
+     },
+     "W_EXTENDED": {
+      "0mV": {
+       "opening_ps": 509.6592,
+       "closing_ps": 2248.3,
+       "WIDTH_ps": 1738.6408,
+       "opening_ps_gridquant": 509.7,
+       "closing_ps_gridquant": 2248.3,
+       "centre_ps": 1378.9796,
+       "HEIGHT_at_centre_HIGH_mV": 181.4072,
+       "HEIGHT_at_centre_LOW_mV": 564.7904,
+       "HEIGHT_at_centre_mV": 362.8144,
+       "opening_minus_own_rail_start_ps": 109.6592,
+       "closing_minus_return_close_ps": 1048.3,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "1sigma_6.441mV": {
+       "opening_ps": 510.3847,
+       "closing_ps": 2248.3,
+       "WIDTH_ps": 1737.9153,
+       "opening_ps_gridquant": 510.4,
+       "closing_ps_gridquant": 2248.3,
+       "centre_ps": 1379.3424,
+       "HEIGHT_at_centre_HIGH_mV": 181.5517,
+       "HEIGHT_at_centre_LOW_mV": 564.8449,
+       "HEIGHT_at_centre_mV": 363.1034,
+       "opening_minus_own_rail_start_ps": 110.3847,
+       "closing_minus_return_close_ps": 1048.3,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "3sigma_19.323mV": {
+       "opening_ps": 511.8492,
+       "closing_ps": 2248.3,
+       "WIDTH_ps": 1736.4508,
+       "opening_ps_gridquant": 511.9,
+       "closing_ps_gridquant": 2248.3,
+       "centre_ps": 1380.0746,
+       "HEIGHT_at_centre_HIGH_mV": 181.9279,
+       "HEIGHT_at_centre_LOW_mV": 564.9867,
+       "HEIGHT_at_centre_mV": 363.8558,
+       "opening_minus_own_rail_start_ps": 111.8492,
+       "closing_minus_return_close_ps": 1048.3,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      }
+     },
+     "HIGH_only_W_EXTENDED_0mV": {
+      "open_ps": 509.6592,
+      "close_ps": 2248.3,
+      "width_ps": 1738.6408,
+      "open_ps_gridquant": 509.7,
+      "close_ps_gridquant": 2248.3,
+      "width_ps_gridquant": 1738.6,
+      "clipped_at_window_start": false,
+      "clipped_at_window_end": true
+     },
+     "LOW_only_W_EXTENDED_0mV": {
+      "open_ps": 400.0,
+      "close_ps": 2248.3,
+      "width_ps": 1848.3,
+      "open_ps_gridquant": 400.0,
+      "close_ps_gridquant": 2248.3,
+      "width_ps_gridquant": 1848.3,
+      "clipped_at_window_start": true,
+      "clipped_at_window_end": true
+     },
+     "per_pattern_W_EXTENDED_0mV": {
+      "DRYRUN_committed_dv1650": {
+       "joint": {
+        "open_ps": 509.6592,
+        "close_ps": 2248.3,
+        "width_ps": 1738.6408,
+        "open_ps_gridquant": 509.7,
+        "close_ps_gridquant": 2248.3,
+        "width_ps_gridquant": 1738.6,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "HIGH": {
+        "open_ps": 509.6592,
+        "close_ps": 2248.3,
+        "width_ps": 1738.6408,
+        "open_ps_gridquant": 509.7,
+        "close_ps_gridquant": 2248.3,
+        "width_ps_gridquant": 1738.6,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "LOW": {
+        "open_ps": 400.0,
+        "close_ps": 2248.3,
+        "width_ps": 1848.3,
+        "open_ps_gridquant": 400.0,
+        "close_ps_gridquant": 2248.3,
+        "width_ps_gridquant": 1848.3,
+        "clipped_at_window_start": true,
+        "clipped_at_window_end": true
+       }
+      }
+     }
+    }
+   },
+   "POST_RETURN_MARGIN_FLOOR": {
+    "EYE1_RX_INSTANTANEOUS": {
+     "worst_margin_after_return_close_mV": 133.7751,
+     "at_t_ps": 1356.1,
+     "at_t_minus_return_open_ro_ps": -0.0118,
+     "right_edge_appears_only_for_thresholds_above_mV": 133.7751
+    },
+    "EYE2_DATA_FIXED": {
+     "worst_margin_after_return_close_mV": 144.861,
+     "at_t_ps": 1356.1,
+     "at_t_minus_return_open_ro_ps": -0.0118,
+     "right_edge_appears_only_for_thresholds_above_mV": 144.861
+    }
+   },
+   "CLOSING_MECHANISM": {
+    "EYE1_RX_INSTANTANEOUS": {
+     "early_edge_OPENING": {
+      "t_ps": 598.4171,
+      "binding_pattern": "DRYRUN_committed_dv1650",
+      "binding_pattern_bits": [
+       1,
+       1,
+       1,
+       0,
+       1,
+       0,
+       0,
+       1
+      ],
+      "binding_gate": "o3",
+      "binding_polarity": "LOW",
+      "binding_margin_mV": 57.93677,
+      "MECHANISM": {
+       "M": "M7",
+       "t_ps": 598.4,
+       "gate": "o3",
+       "polarity": "LOW",
+       "mgn_mV": 57.9368,
+       "d_mgn_dt_mV_per_ps": -9.50152,
+       "term_dVout_dt_mV_per_ps": 1.83492,
+       "term_minus_dtrip_dt_mV_per_ps": -11.33643,
+       "dominant_term": "-dtrip/dt",
+       "V_out": -0.0012734,
+       "V_trip_rx": 0.0566634,
+       "V_rail_driver": 0.9512107,
+       "dV_rail_driver_dt_mV_per_ps": -0.91271,
+       "V_rail_rx": 0.077821,
+       "dV_rail_rx_dt_mV_per_ps": -15.56937,
+       "V_tank_driver": 0.7341128,
+       "dV_tank_dt_mV_per_ps": -0.35269,
+       "I_L_driver_uA": -264.46,
+       "transfer_gate_conducting": false,
+       "return_switch_conducting": false,
+       "V_in_driver_gate": 1.0959437,
+       "overdrive_vs_Vtn_V": 0.5719437,
+       "overdrive_vs_absVtp_V": -0.584933
+      }
+     },
+     "late_edge_CLOSING": {
+      "t_ps": 2248.3,
+      "binding_pattern": "DRYRUN_committed_dv1650",
+      "binding_pattern_bits": [
+       1,
+       1,
+       1,
+       0,
+       1,
+       0,
+       0,
+       1
+      ],
+      "binding_gate": "o0",
+      "binding_polarity": "HIGH",
+      "binding_margin_mV": 316.69802,
+      "NO_EDGE": "the eye is CLIPPED at this window bound -- there is no crossing here. The margin never crosses the threshold within the transient: the true right edge is set by the NEXT datum on this bank at the initiation interval H*T, which this single-shot deck does not contain (AMENDMENT E4).",
+      "MECHANISM": {
+       "M": "M1",
+       "t_ps": 2248.3,
+       "gate": "o0",
+       "polarity": "HIGH",
+       "mgn_mV": 316.698,
+       "d_mgn_dt_mV_per_ps": 0.0,
+       "term_dVout_dt_mV_per_ps": 0.0,
+       "term_minus_dtrip_dt_mV_per_ps": -0.0,
+       "dominant_term": "dVout/dt",
+       "V_out": 0.7481358,
+       "V_trip_rx": 0.4314378,
+       "V_rail_driver": 0.7481358,
+       "dV_rail_driver_dt_mV_per_ps": 0.0,
+       "V_rail_rx": 0.7726151,
+       "dV_rail_rx_dt_mV_per_ps": 0.0,
+       "V_tank_driver": 0.7648326,
+       "dV_tank_dt_mV_per_ps": -0.0,
+       "I_L_driver_uA": 0.0004,
+       "transfer_gate_conducting": false,
+       "return_switch_conducting": false,
+       "V_in_driver_gate": 0.0,
+       "overdrive_vs_Vtn_V": -0.524,
+       "overdrive_vs_absVtp_V": 0.3079358
+      }
+     }
+    },
+    "EYE2_DATA_FIXED": {
+     "early_edge_OPENING": {
+      "t_ps": 509.6592,
+      "binding_pattern": "DRYRUN_committed_dv1650",
+      "binding_pattern_bits": [
+       1,
+       1,
+       1,
+       0,
+       1,
+       0,
+       0,
+       1
+      ],
+      "binding_gate": "o0",
+      "binding_polarity": "HIGH",
+      "binding_margin_mV": 0.36316,
+      "MECHANISM": {
+       "M": "M7",
+       "t_ps": 509.70000000000005,
+       "gate": "o0",
+       "polarity": "HIGH",
+       "mgn_mV": 530.0972,
+       "d_mgn_dt_mV_per_ps": 8.23987,
+       "term_dVout_dt_mV_per_ps": 8.89997,
+       "term_minus_dtrip_dt_mV_per_ps": -0.6601,
+       "dominant_term": "dVout/dt",
+       "V_out": 0.5696936,
+       "V_trip_rx": 0.0395964,
+       "V_rail_driver": 0.9288904,
+       "dV_rail_driver_dt_mV_per_ps": 1.67062,
+       "V_rail_rx": 0.0543813,
+       "dV_rail_rx_dt_mV_per_ps": 0.90657,
+       "V_tank_driver": 0.656378,
+       "dV_tank_dt_mV_per_ps": -1.0616,
+       "I_L_driver_uA": 384.5582,
+       "transfer_gate_conducting": true,
+       "return_switch_conducting": false,
+       "V_in_driver_gate": 0.0091936,
+       "overdrive_vs_Vtn_V": -0.5148064,
+       "overdrive_vs_absVtp_V": 0.4794968
+      }
+     },
+     "late_edge_CLOSING": {
+      "t_ps": 2248.3,
+      "binding_pattern": "DRYRUN_committed_dv1650",
+      "binding_pattern_bits": [
+       1,
+       1,
+       1,
+       0,
+       1,
+       0,
+       0,
+       1
+      ],
+      "binding_gate": "o0",
+      "binding_polarity": "HIGH",
+      "binding_margin_mV": 178.80541,
+      "NO_EDGE": "the eye is CLIPPED at this window bound -- there is no crossing here. The margin never crosses the threshold within the transient: the true right edge is set by the NEXT datum on this bank at the initiation interval H*T, which this single-shot deck does not contain (AMENDMENT E4).",
+      "MECHANISM": {
+       "M": "M1",
+       "t_ps": 2248.3,
+       "gate": "o0",
+       "polarity": "HIGH",
+       "mgn_mV": 316.698,
+       "d_mgn_dt_mV_per_ps": 0.0,
+       "term_dVout_dt_mV_per_ps": 0.0,
+       "term_minus_dtrip_dt_mV_per_ps": -0.0,
+       "dominant_term": "dVout/dt",
+       "V_out": 0.7481358,
+       "V_trip_rx": 0.4314378,
+       "V_rail_driver": 0.7481358,
+       "dV_rail_driver_dt_mV_per_ps": 0.0,
+       "V_rail_rx": 0.7726151,
+       "dV_rail_rx_dt_mV_per_ps": 0.0,
+       "V_tank_driver": 0.7648326,
+       "dV_tank_dt_mV_per_ps": -0.0,
+       "I_L_driver_uA": 0.0004,
+       "transfer_gate_conducting": false,
+       "return_switch_conducting": false,
+       "V_in_driver_gate": 0.0,
+       "overdrive_vs_Vtn_V": -0.524,
+       "overdrive_vs_absVtp_V": 0.3079358
+      }
+     }
+    }
+   },
+   "margin_curve_file": "MARGIN_bank2.csv.gz",
+   "margin_curve_n_points": 22494
+  },
+  "3": {
+   "receiver": "bank 4 (MEASURED)",
+   "receiver_is_measured": true,
+   "own_rail_start_c_ps": 600.0,
+   "transfer_open_o_ps": 724.181983880418,
+   "return_close_r_ps": 1400.0,
+   "return_open_ro_ps": 1550.5418066108234,
+   "windows_ps": {
+    "W_PREREG": [
+     600.0,
+     1550.5418066108234
+    ],
+    "W_EXTENDED": [
+     600.0,
+     2248.3
+    ]
+   },
+   "decision_levels": {
+    "DRYRUN_committed_dv1650": {
+     "rail_at_receiver_boundary_V": 1.061516,
+     "trip_fixed_V": 0.5776285,
+     "trip_min_over_live_window_V": 0.1458234,
+     "trip_max_over_live_window_V": 0.6235727,
+     "receiver_is_derived": false
+    }
+   },
+   "gates_expected_HIGH_by_pattern": {
+    "DRYRUN_committed_dv1650": [
+     3,
+     5,
+     6
+    ]
+   },
+   "EYES": {
+    "EYE1_RX_INSTANTANEOUS": {
+     "W_PREREG": {
+      "0mV": {
+       "opening_ps": 798.5379,
+       "closing_ps": 1550.5,
+       "WIDTH_ps": 751.9621,
+       "opening_ps_gridquant": 800.6,
+       "closing_ps_gridquant": 1550.5,
+       "centre_ps": 1174.5189,
+       "HEIGHT_at_centre_HIGH_mV": 505.9156,
+       "HEIGHT_at_centre_LOW_mV": 577.5823,
+       "HEIGHT_at_centre_mV": 1011.8311,
+       "opening_minus_own_rail_start_ps": 198.5379,
+       "closing_minus_return_close_ps": 150.5,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "1sigma_6.441mV": {
+       "opening_ps": 798.6406,
+       "closing_ps": 1550.5,
+       "WIDTH_ps": 751.8594,
+       "opening_ps_gridquant": 800.6,
+       "closing_ps_gridquant": 1550.5,
+       "centre_ps": 1174.5703,
+       "HEIGHT_at_centre_HIGH_mV": 505.9159,
+       "HEIGHT_at_centre_LOW_mV": 577.5822,
+       "HEIGHT_at_centre_mV": 1011.8318,
+       "opening_minus_own_rail_start_ps": 198.6406,
+       "closing_minus_return_close_ps": 150.5,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "3sigma_19.323mV": {
+       "opening_ps": 798.846,
+       "closing_ps": 1550.5,
+       "WIDTH_ps": 751.654,
+       "opening_ps_gridquant": 800.6,
+       "closing_ps_gridquant": 1550.5,
+       "centre_ps": 1174.673,
+       "HEIGHT_at_centre_HIGH_mV": 505.9162,
+       "HEIGHT_at_centre_LOW_mV": 577.5821,
+       "HEIGHT_at_centre_mV": 1011.8325,
+       "opening_minus_own_rail_start_ps": 198.846,
+       "closing_minus_return_close_ps": 150.5,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      }
+     },
+     "W_EXTENDED": {
+      "0mV": {
+       "opening_ps": 798.5379,
+       "closing_ps": 2248.3,
+       "WIDTH_ps": 1449.7621,
+       "opening_ps_gridquant": 800.6,
+       "closing_ps_gridquant": 2248.3,
+       "centre_ps": 1523.4189,
+       "HEIGHT_at_centre_HIGH_mV": 171.7168,
+       "HEIGHT_at_centre_LOW_mV": 578.9855,
+       "HEIGHT_at_centre_mV": 343.4337,
+       "opening_minus_own_rail_start_ps": 198.5379,
+       "closing_minus_return_close_ps": 848.3,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "1sigma_6.441mV": {
+       "opening_ps": 798.6406,
+       "closing_ps": 2248.3,
+       "WIDTH_ps": 1449.6594,
+       "opening_ps_gridquant": 800.6,
+       "closing_ps_gridquant": 2248.3,
+       "centre_ps": 1523.4703,
+       "HEIGHT_at_centre_HIGH_mV": 171.6248,
+       "HEIGHT_at_centre_LOW_mV": 578.9778,
+       "HEIGHT_at_centre_mV": 343.2496,
+       "opening_minus_own_rail_start_ps": 198.6406,
+       "closing_minus_return_close_ps": 848.3,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "3sigma_19.323mV": {
+       "opening_ps": 798.846,
+       "closing_ps": 2248.3,
+       "WIDTH_ps": 1449.454,
+       "opening_ps_gridquant": 800.6,
+       "closing_ps_gridquant": 2248.3,
+       "centre_ps": 1523.573,
+       "HEIGHT_at_centre_HIGH_mV": 171.5331,
+       "HEIGHT_at_centre_LOW_mV": 578.9701,
+       "HEIGHT_at_centre_mV": 343.0662,
+       "opening_minus_own_rail_start_ps": 198.846,
+       "closing_minus_return_close_ps": 848.3,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      }
+     },
+     "HIGH_only_W_EXTENDED_0mV": {
+      "open_ps": 817.539,
+      "close_ps": 2248.3,
+      "width_ps": 1430.761,
+      "open_ps_gridquant": 800.6,
+      "close_ps_gridquant": 2248.3,
+      "width_ps_gridquant": 1447.7,
+      "clipped_at_window_start": false,
+      "clipped_at_window_end": true
+     },
+     "LOW_only_W_EXTENDED_0mV": {
+      "open_ps": 798.5379,
+      "close_ps": 2248.3,
+      "width_ps": 1449.7621,
+      "open_ps_gridquant": 800.6,
+      "close_ps_gridquant": 2248.3,
+      "width_ps_gridquant": 1447.7,
+      "clipped_at_window_start": false,
+      "clipped_at_window_end": true
+     },
+     "per_pattern_W_EXTENDED_0mV": {
+      "DRYRUN_committed_dv1650": {
+       "joint": {
+        "open_ps": 798.5379,
+        "close_ps": 2248.3,
+        "width_ps": 1449.7621,
+        "open_ps_gridquant": 800.6,
+        "close_ps_gridquant": 2248.3,
+        "width_ps_gridquant": 1447.7,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "HIGH": {
+        "open_ps": 817.539,
+        "close_ps": 2248.3,
+        "width_ps": 1430.761,
+        "open_ps_gridquant": 800.6,
+        "close_ps_gridquant": 2248.3,
+        "width_ps_gridquant": 1447.7,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "LOW": {
+        "open_ps": 798.5379,
+        "close_ps": 2248.3,
+        "width_ps": 1449.7621,
+        "open_ps_gridquant": 800.6,
+        "close_ps_gridquant": 2248.3,
+        "width_ps_gridquant": 1447.7,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       }
+      }
+     }
+    },
+    "EYE2_DATA_FIXED": {
+     "W_PREREG": {
+      "0mV": {
+       "opening_ps": 708.1202,
+       "closing_ps": 1550.5,
+       "WIDTH_ps": 842.3798,
+       "opening_ps_gridquant": 708.2,
+       "closing_ps_gridquant": 1550.5,
+       "centre_ps": 1129.3101,
+       "HEIGHT_at_centre_HIGH_mV": 505.2691,
+       "HEIGHT_at_centre_LOW_mV": 577.676,
+       "HEIGHT_at_centre_mV": 1010.5382,
+       "opening_minus_own_rail_start_ps": 108.1202,
+       "closing_minus_return_close_ps": 150.5,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "1sigma_6.441mV": {
+       "opening_ps": 708.788,
+       "closing_ps": 1550.5,
+       "WIDTH_ps": 841.712,
+       "opening_ps_gridquant": 708.8,
+       "closing_ps_gridquant": 1550.5,
+       "centre_ps": 1129.644,
+       "HEIGHT_at_centre_HIGH_mV": 505.2691,
+       "HEIGHT_at_centre_LOW_mV": 577.6757,
+       "HEIGHT_at_centre_mV": 1010.5382,
+       "opening_minus_own_rail_start_ps": 108.788,
+       "closing_minus_return_close_ps": 150.5,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "3sigma_19.323mV": {
+       "opening_ps": 710.1326,
+       "closing_ps": 1550.5,
+       "WIDTH_ps": 840.3674,
+       "opening_ps_gridquant": 710.2,
+       "closing_ps_gridquant": 1550.5,
+       "centre_ps": 1130.3163,
+       "HEIGHT_at_centre_HIGH_mV": 505.2692,
+       "HEIGHT_at_centre_LOW_mV": 577.6751,
+       "HEIGHT_at_centre_mV": 1010.5385,
+       "opening_minus_own_rail_start_ps": 110.1326,
+       "closing_minus_return_close_ps": 150.5,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      }
+     },
+     "W_EXTENDED": {
+      "0mV": {
+       "opening_ps": 708.1202,
+       "closing_ps": 2248.3,
+       "WIDTH_ps": 1540.1798,
+       "opening_ps_gridquant": 708.2,
+       "closing_ps_gridquant": 2248.3,
+       "centre_ps": 1478.2101,
+       "HEIGHT_at_centre_HIGH_mV": 215.7758,
+       "HEIGHT_at_centre_LOW_mV": 586.4212,
+       "HEIGHT_at_centre_mV": 431.5516,
+       "opening_minus_own_rail_start_ps": 108.1202,
+       "closing_minus_return_close_ps": 848.3,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "1sigma_6.441mV": {
+       "opening_ps": 708.788,
+       "closing_ps": 2248.3,
+       "WIDTH_ps": 1539.512,
+       "opening_ps_gridquant": 708.8,
+       "closing_ps_gridquant": 2248.3,
+       "centre_ps": 1478.544,
+       "HEIGHT_at_centre_HIGH_mV": 215.4228,
+       "HEIGHT_at_centre_LOW_mV": 586.4121,
+       "HEIGHT_at_centre_mV": 430.8455,
+       "opening_minus_own_rail_start_ps": 108.788,
+       "closing_minus_return_close_ps": 848.3,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "3sigma_19.323mV": {
+       "opening_ps": 710.1326,
+       "closing_ps": 2248.3,
+       "WIDTH_ps": 1538.1674,
+       "opening_ps_gridquant": 710.2,
+       "closing_ps_gridquant": 2248.3,
+       "centre_ps": 1479.2163,
+       "HEIGHT_at_centre_HIGH_mV": 214.5989,
+       "HEIGHT_at_centre_LOW_mV": 586.3918,
+       "HEIGHT_at_centre_mV": 429.1979,
+       "opening_minus_own_rail_start_ps": 110.1326,
+       "closing_minus_return_close_ps": 848.3,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      }
+     },
+     "HIGH_only_W_EXTENDED_0mV": {
+      "open_ps": 708.1202,
+      "close_ps": 2248.3,
+      "width_ps": 1540.1798,
+      "open_ps_gridquant": 708.2,
+      "close_ps_gridquant": 2248.3,
+      "width_ps_gridquant": 1540.1,
+      "clipped_at_window_start": false,
+      "clipped_at_window_end": true
+     },
+     "LOW_only_W_EXTENDED_0mV": {
+      "open_ps": 600.0,
+      "close_ps": 2248.3,
+      "width_ps": 1648.3,
+      "open_ps_gridquant": 600.0,
+      "close_ps_gridquant": 2248.3,
+      "width_ps_gridquant": 1648.3,
+      "clipped_at_window_start": true,
+      "clipped_at_window_end": true
+     },
+     "per_pattern_W_EXTENDED_0mV": {
+      "DRYRUN_committed_dv1650": {
+       "joint": {
+        "open_ps": 708.1202,
+        "close_ps": 2248.3,
+        "width_ps": 1540.1798,
+        "open_ps_gridquant": 708.2,
+        "close_ps_gridquant": 2248.3,
+        "width_ps_gridquant": 1540.1,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "HIGH": {
+        "open_ps": 708.1202,
+        "close_ps": 2248.3,
+        "width_ps": 1540.1798,
+        "open_ps_gridquant": 708.2,
+        "close_ps_gridquant": 2248.3,
+        "width_ps_gridquant": 1540.1,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "LOW": {
+        "open_ps": 600.0,
+        "close_ps": 2248.3,
+        "width_ps": 1648.3,
+        "open_ps_gridquant": 600.0,
+        "close_ps_gridquant": 2248.3,
+        "width_ps_gridquant": 1648.3,
+        "clipped_at_window_start": true,
+        "clipped_at_window_end": true
+       }
+      }
+     }
+    }
+   },
+   "POST_RETURN_MARGIN_FLOOR": {
+    "EYE1_RX_INSTANTANEOUS": {
+     "worst_margin_after_return_close_mV": 152.4062,
+     "at_t_ps": 1550.5,
+     "at_t_minus_return_open_ro_ps": -0.0418,
+     "right_edge_appears_only_for_thresholds_above_mV": 152.4062
+    },
+    "EYE2_DATA_FIXED": {
+     "worst_margin_after_return_close_mV": 146.3003,
+     "at_t_ps": 1550.5,
+     "at_t_minus_return_open_ro_ps": -0.0418,
+     "right_edge_appears_only_for_thresholds_above_mV": 146.3003
+    }
+   },
+   "CLOSING_MECHANISM": {
+    "EYE1_RX_INSTANTANEOUS": {
+     "early_edge_OPENING": {
+      "t_ps": 798.5379,
+      "binding_pattern": "DRYRUN_committed_dv1650",
+      "binding_pattern_bits": [
+       1,
+       1,
+       1,
+       0,
+       1,
+       0,
+       0,
+       1
+      ],
+      "binding_gate": "o0",
+      "binding_polarity": "LOW",
+      "binding_margin_mV": 41.26972,
+      "MECHANISM": {
+       "M": "M7",
+       "t_ps": 798.5,
+       "gate": "o0",
+       "polarity": "LOW",
+       "mgn_mV": 41.2697,
+       "d_mgn_dt_mV_per_ps": -8.63559,
+       "term_dVout_dt_mV_per_ps": 1.75014,
+       "term_minus_dtrip_dt_mV_per_ps": -10.38573,
+       "dominant_term": "-dtrip/dt",
+       "V_out": -0.0015206,
+       "V_trip_rx": 0.0397491,
+       "V_rail_driver": 1.041777,
+       "dV_rail_driver_dt_mV_per_ps": -0.77635,
+       "V_rail_rx": 0.0545911,
+       "dV_rail_rx_dt_mV_per_ps": -14.26368,
+       "V_tank_driver": 0.7478133,
+       "dV_tank_dt_mV_per_ps": -0.41803,
+       "I_L_driver_uA": -250.0227,
+       "transfer_gate_conducting": false,
+       "return_switch_conducting": false,
+       "V_in_driver_gate": 1.0025174,
+       "overdrive_vs_Vtn_V": 0.4785174,
+       "overdrive_vs_absVtp_V": -0.4009404
+      }
+     },
+     "late_edge_CLOSING": {
+      "t_ps": 2248.3,
+      "binding_pattern": "DRYRUN_committed_dv1650",
+      "binding_pattern_bits": [
+       1,
+       1,
+       1,
+       0,
+       1,
+       0,
+       0,
+       1
+      ],
+      "binding_gate": "o3",
+      "binding_polarity": "HIGH",
+      "binding_margin_mV": 342.91469,
+      "NO_EDGE": "the eye is CLIPPED at this window bound -- there is no crossing here. The margin never crosses the threshold within the transient: the true right edge is set by the NEXT datum on this bank at the initiation interval H*T, which this single-shot deck does not contain (AMENDMENT E4).",
+      "MECHANISM": {
+       "M": "M1",
+       "t_ps": 2248.3,
+       "gate": "o3",
+       "polarity": "HIGH",
+       "mgn_mV": 342.9147,
+       "d_mgn_dt_mV_per_ps": -0.0,
+       "term_dVout_dt_mV_per_ps": -0.0,
+       "term_minus_dtrip_dt_mV_per_ps": -0.0,
+       "dominant_term": "dVout/dt",
+       "V_out": 0.7726151,
+       "V_trip_rx": 0.4297005,
+       "V_rail_driver": 0.7726151,
+       "dV_rail_driver_dt_mV_per_ps": 0.0,
+       "V_rail_rx": 0.7691639,
+       "dV_rail_rx_dt_mV_per_ps": 0.0,
+       "V_tank_driver": 0.7800653,
+       "dV_tank_dt_mV_per_ps": -2e-05,
+       "I_L_driver_uA": -0.0003,
+       "transfer_gate_conducting": false,
+       "return_switch_conducting": false,
+       "V_in_driver_gate": 0.0,
+       "overdrive_vs_Vtn_V": -0.524,
+       "overdrive_vs_absVtp_V": 0.3324151
+      }
+     }
+    },
+    "EYE2_DATA_FIXED": {
+     "early_edge_OPENING": {
+      "t_ps": 708.1202,
+      "binding_pattern": "DRYRUN_committed_dv1650",
+      "binding_pattern_bits": [
+       1,
+       1,
+       1,
+       0,
+       1,
+       0,
+       0,
+       1
+      ],
+      "binding_gate": "o3",
+      "binding_polarity": "HIGH",
+      "binding_margin_mV": -0.19481,
+      "MECHANISM": {
+       "M": "M7",
+       "t_ps": 708.1,
+       "gate": "o3",
+       "polarity": "HIGH",
+       "mgn_mV": 551.0448,
+       "d_mgn_dt_mV_per_ps": 9.21418,
+       "term_dVout_dt_mV_per_ps": 9.66497,
+       "term_minus_dtrip_dt_mV_per_ps": -0.4508,
+       "dominant_term": "dVout/dt",
+       "V_out": 0.5774337,
+       "V_trip_rx": 0.0263888,
+       "V_rail_driver": 0.958013,
+       "dV_rail_driver_dt_mV_per_ps": 2.407,
+       "V_rail_rx": 0.0362422,
+       "dV_rail_rx_dt_mV_per_ps": 0.61912,
+       "V_tank_driver": 0.6645547,
+       "dV_tank_dt_mV_per_ps": -1.04795,
+       "I_L_driver_uA": 381.1732,
+       "transfer_gate_conducting": true,
+       "return_switch_conducting": false,
+       "V_in_driver_gate": 0.0175459,
+       "overdrive_vs_Vtn_V": -0.5064541,
+       "overdrive_vs_absVtp_V": 0.5002672
+      }
+     },
+     "late_edge_CLOSING": {
+      "t_ps": 2248.3,
+      "binding_pattern": "DRYRUN_committed_dv1650",
+      "binding_pattern_bits": [
+       1,
+       1,
+       1,
+       0,
+       1,
+       0,
+       0,
+       1
+      ],
+      "binding_gate": "o3",
+      "binding_polarity": "HIGH",
+      "binding_margin_mV": 194.98668,
+      "NO_EDGE": "the eye is CLIPPED at this window bound -- there is no crossing here. The margin never crosses the threshold within the transient: the true right edge is set by the NEXT datum on this bank at the initiation interval H*T, which this single-shot deck does not contain (AMENDMENT E4).",
+      "MECHANISM": {
+       "M": "M1",
+       "t_ps": 2248.3,
+       "gate": "o3",
+       "polarity": "HIGH",
+       "mgn_mV": 342.9147,
+       "d_mgn_dt_mV_per_ps": -0.0,
+       "term_dVout_dt_mV_per_ps": -0.0,
+       "term_minus_dtrip_dt_mV_per_ps": -0.0,
+       "dominant_term": "dVout/dt",
+       "V_out": 0.7726151,
+       "V_trip_rx": 0.4297005,
+       "V_rail_driver": 0.7726151,
+       "dV_rail_driver_dt_mV_per_ps": 0.0,
+       "V_rail_rx": 0.7691639,
+       "dV_rail_rx_dt_mV_per_ps": 0.0,
+       "V_tank_driver": 0.7800653,
+       "dV_tank_dt_mV_per_ps": -2e-05,
+       "I_L_driver_uA": -0.0003,
+       "transfer_gate_conducting": false,
+       "return_switch_conducting": false,
+       "V_in_driver_gate": 0.0,
+       "overdrive_vs_Vtn_V": -0.524,
+       "overdrive_vs_absVtp_V": 0.3324151
+      }
+     }
+    }
+   },
+   "margin_curve_file": "MARGIN_bank3.csv.gz",
+   "margin_curve_n_points": 22494
+  },
+  "4": {
+   "receiver": "DERIVED: receiver rail = V(rail3)(t - T) and the fixed data level uses VR4B; there is no bank 5 in a 4-bank deck",
+   "receiver_is_measured": false,
+   "own_rail_start_c_ps": 800.0,
+   "transfer_open_o_ps": 925.3915341561382,
+   "return_close_r_ps": 1600.0,
+   "return_open_ro_ps": 1749.3220068791977,
+   "windows_ps": {
+    "W_PREREG": [
+     800.0,
+     1749.3220068791977
+    ],
+    "W_EXTENDED": [
+     800.0,
+     2248.3
+    ]
+   },
+   "decision_levels": {
+    "DRYRUN_committed_dv1650": {
+     "rail_at_receiver_boundary_V": 1.061516,
+     "trip_fixed_V": 0.5776285,
+     "trip_min_over_live_window_V": 0.145871,
+     "trip_max_over_live_window_V": 0.634944,
+     "receiver_is_derived": true
+    }
+   },
+   "gates_expected_HIGH_by_pattern": {
+    "DRYRUN_committed_dv1650": [
+     0,
+     1,
+     2,
+     4,
+     7
+    ]
+   },
+   "EYES": {
+    "EYE1_RX_INSTANTANEOUS": {
+     "W_PREREG": {
+      "0mV": {
+       "opening_ps": 889.9393,
+       "closing_ps": 1749.3,
+       "WIDTH_ps": 859.3607,
+       "opening_ps_gridquant": 890.0,
+       "closing_ps_gridquant": 1749.3,
+       "centre_ps": 1319.6197,
+       "HEIGHT_at_centre_HIGH_mV": 472.0962,
+       "HEIGHT_at_centre_LOW_mV": 588.3356,
+       "HEIGHT_at_centre_mV": 944.1924,
+       "opening_minus_own_rail_start_ps": 89.9393,
+       "closing_minus_return_close_ps": 149.3,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "1sigma_6.441mV": {
+       "opening_ps": 890.7581,
+       "closing_ps": 1749.3,
+       "WIDTH_ps": 858.5419,
+       "opening_ps_gridquant": 890.8,
+       "closing_ps_gridquant": 1749.3,
+       "centre_ps": 1320.029,
+       "HEIGHT_at_centre_HIGH_mV": 472.0964,
+       "HEIGHT_at_centre_LOW_mV": 588.335,
+       "HEIGHT_at_centre_mV": 944.1928,
+       "opening_minus_own_rail_start_ps": 90.7581,
+       "closing_minus_return_close_ps": 149.3,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "3sigma_19.323mV": {
+       "opening_ps": 892.3589,
+       "closing_ps": 1749.3,
+       "WIDTH_ps": 856.9411,
+       "opening_ps_gridquant": 892.4,
+       "closing_ps_gridquant": 1749.3,
+       "centre_ps": 1320.8295,
+       "HEIGHT_at_centre_HIGH_mV": 472.0968,
+       "HEIGHT_at_centre_LOW_mV": 588.3339,
+       "HEIGHT_at_centre_mV": 944.1937,
+       "opening_minus_own_rail_start_ps": 92.3589,
+       "closing_minus_return_close_ps": 149.3,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      }
+     },
+     "W_EXTENDED": {
+      "0mV": {
+       "opening_ps": 889.9393,
+       "closing_ps": 2248.3,
+       "WIDTH_ps": 1358.3607,
+       "opening_ps_gridquant": 890.0,
+       "closing_ps_gridquant": 2248.3,
+       "centre_ps": 1569.1197,
+       "HEIGHT_at_centre_HIGH_mV": 470.7004,
+       "HEIGHT_at_centre_LOW_mV": 579.494,
+       "HEIGHT_at_centre_mV": 941.4008,
+       "opening_minus_own_rail_start_ps": 89.9393,
+       "closing_minus_return_close_ps": 648.3,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "1sigma_6.441mV": {
+       "opening_ps": 890.7581,
+       "closing_ps": 2248.3,
+       "WIDTH_ps": 1357.5419,
+       "opening_ps_gridquant": 890.8,
+       "closing_ps_gridquant": 2248.3,
+       "centre_ps": 1569.529,
+       "HEIGHT_at_centre_HIGH_mV": 470.6797,
+       "HEIGHT_at_centre_LOW_mV": 579.504,
+       "HEIGHT_at_centre_mV": 941.3593,
+       "opening_minus_own_rail_start_ps": 90.7581,
+       "closing_minus_return_close_ps": 648.3,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "3sigma_19.323mV": {
+       "opening_ps": 892.3589,
+       "closing_ps": 2248.3,
+       "WIDTH_ps": 1355.9411,
+       "opening_ps_gridquant": 892.4,
+       "closing_ps_gridquant": 2248.3,
+       "centre_ps": 1570.3295,
+       "HEIGHT_at_centre_HIGH_mV": 470.6403,
+       "HEIGHT_at_centre_LOW_mV": 579.5257,
+       "HEIGHT_at_centre_mV": 941.2805,
+       "opening_minus_own_rail_start_ps": 92.3589,
+       "closing_minus_return_close_ps": 648.3,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      }
+     },
+     "HIGH_only_W_EXTENDED_0mV": {
+      "open_ps": 889.9393,
+      "close_ps": 2248.3,
+      "width_ps": 1358.3607,
+      "open_ps_gridquant": 890.0,
+      "close_ps_gridquant": 2248.3,
+      "width_ps_gridquant": 1358.3,
+      "clipped_at_window_start": false,
+      "clipped_at_window_end": true
+     },
+     "LOW_only_W_EXTENDED_0mV": {
+      "open_ps": 798.1379,
+      "close_ps": 2248.3,
+      "width_ps": 1450.1621,
+      "open_ps_gridquant": 800.5,
+      "close_ps_gridquant": 2248.3,
+      "width_ps_gridquant": 1447.8,
+      "clipped_at_window_start": false,
+      "clipped_at_window_end": true
+     },
+     "per_pattern_W_EXTENDED_0mV": {
+      "DRYRUN_committed_dv1650": {
+       "joint": {
+        "open_ps": 889.9393,
+        "close_ps": 2248.3,
+        "width_ps": 1358.3607,
+        "open_ps_gridquant": 890.0,
+        "close_ps_gridquant": 2248.3,
+        "width_ps_gridquant": 1358.3,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "HIGH": {
+        "open_ps": 889.9393,
+        "close_ps": 2248.3,
+        "width_ps": 1358.3607,
+        "open_ps_gridquant": 890.0,
+        "close_ps_gridquant": 2248.3,
+        "width_ps_gridquant": 1358.3,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "LOW": {
+        "open_ps": 798.1379,
+        "close_ps": 2248.3,
+        "width_ps": 1450.1621,
+        "open_ps_gridquant": 800.5,
+        "close_ps_gridquant": 2248.3,
+        "width_ps_gridquant": 1447.8,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       }
+      }
+     }
+    },
+    "EYE2_DATA_FIXED": {
+     "W_PREREG": {
+      "0mV": {
+       "opening_ps": 898.1514,
+       "closing_ps": 1749.3,
+       "WIDTH_ps": 851.1486,
+       "opening_ps_gridquant": 898.2,
+       "closing_ps_gridquant": 1749.3,
+       "centre_ps": 1323.7257,
+       "HEIGHT_at_centre_HIGH_mV": 482.7384,
+       "HEIGHT_at_centre_LOW_mV": 577.6906,
+       "HEIGHT_at_centre_mV": 965.4769,
+       "opening_minus_own_rail_start_ps": 98.1514,
+       "closing_minus_return_close_ps": 149.3,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "1sigma_6.441mV": {
+       "opening_ps": 898.7437,
+       "closing_ps": 1749.3,
+       "WIDTH_ps": 850.5563,
+       "opening_ps_gridquant": 898.8,
+       "closing_ps_gridquant": 1749.3,
+       "centre_ps": 1324.0219,
+       "HEIGHT_at_centre_HIGH_mV": 482.7385,
+       "HEIGHT_at_centre_LOW_mV": 577.6904,
+       "HEIGHT_at_centre_mV": 965.477,
+       "opening_minus_own_rail_start_ps": 98.7437,
+       "closing_minus_return_close_ps": 149.3,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "3sigma_19.323mV": {
+       "opening_ps": 899.9282,
+       "closing_ps": 1749.3,
+       "WIDTH_ps": 849.3718,
+       "opening_ps_gridquant": 900.0,
+       "closing_ps_gridquant": 1749.3,
+       "centre_ps": 1324.6141,
+       "HEIGHT_at_centre_HIGH_mV": 482.7387,
+       "HEIGHT_at_centre_LOW_mV": 577.6901,
+       "HEIGHT_at_centre_mV": 965.4774,
+       "opening_minus_own_rail_start_ps": 99.9282,
+       "closing_minus_return_close_ps": 149.3,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      }
+     },
+     "W_EXTENDED": {
+      "0mV": {
+       "opening_ps": 898.1514,
+       "closing_ps": 2248.3,
+       "WIDTH_ps": 1350.1486,
+       "opening_ps_gridquant": 898.2,
+       "closing_ps_gridquant": 2248.3,
+       "centre_ps": 1573.2257,
+       "HEIGHT_at_centre_HIGH_mV": 475.1965,
+       "HEIGHT_at_centre_LOW_mV": 574.9425,
+       "HEIGHT_at_centre_mV": 950.393,
+       "opening_minus_own_rail_start_ps": 98.1514,
+       "closing_minus_return_close_ps": 648.3,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "1sigma_6.441mV": {
+       "opening_ps": 898.7437,
+       "closing_ps": 2248.3,
+       "WIDTH_ps": 1349.5563,
+       "opening_ps_gridquant": 898.8,
+       "closing_ps_gridquant": 2248.3,
+       "centre_ps": 1573.5219,
+       "HEIGHT_at_centre_HIGH_mV": 475.1867,
+       "HEIGHT_at_centre_LOW_mV": 574.9524,
+       "HEIGHT_at_centre_mV": 950.3733,
+       "opening_minus_own_rail_start_ps": 98.7437,
+       "closing_minus_return_close_ps": 648.3,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      },
+      "3sigma_19.323mV": {
+       "opening_ps": 899.9282,
+       "closing_ps": 2248.3,
+       "WIDTH_ps": 1348.3718,
+       "opening_ps_gridquant": 900.0,
+       "closing_ps_gridquant": 2248.3,
+       "centre_ps": 1574.1141,
+       "HEIGHT_at_centre_HIGH_mV": 475.1677,
+       "HEIGHT_at_centre_LOW_mV": 574.9731,
+       "HEIGHT_at_centre_mV": 950.3353,
+       "opening_minus_own_rail_start_ps": 99.9282,
+       "closing_minus_return_close_ps": 648.3,
+       "clipped_at_window_start": false,
+       "clipped_at_window_end": true,
+       "WIDTH_IS_A_LOWER_BOUND": true,
+       "width_bound_reason": "the margin had NOT crossed the threshold by the window end -- the eye does not close here; see AMENDMENT E4"
+      }
+     },
+     "HIGH_only_W_EXTENDED_0mV": {
+      "open_ps": 898.1514,
+      "close_ps": 2248.3,
+      "width_ps": 1350.1486,
+      "open_ps_gridquant": 898.2,
+      "close_ps_gridquant": 2248.3,
+      "width_ps_gridquant": 1350.1,
+      "clipped_at_window_start": false,
+      "clipped_at_window_end": true
+     },
+     "LOW_only_W_EXTENDED_0mV": {
+      "open_ps": 800.0,
+      "close_ps": 2248.3,
+      "width_ps": 1448.3,
+      "open_ps_gridquant": 800.0,
+      "close_ps_gridquant": 2248.3,
+      "width_ps_gridquant": 1448.3,
+      "clipped_at_window_start": true,
+      "clipped_at_window_end": true
+     },
+     "per_pattern_W_EXTENDED_0mV": {
+      "DRYRUN_committed_dv1650": {
+       "joint": {
+        "open_ps": 898.1514,
+        "close_ps": 2248.3,
+        "width_ps": 1350.1486,
+        "open_ps_gridquant": 898.2,
+        "close_ps_gridquant": 2248.3,
+        "width_ps_gridquant": 1350.1,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "HIGH": {
+        "open_ps": 898.1514,
+        "close_ps": 2248.3,
+        "width_ps": 1350.1486,
+        "open_ps_gridquant": 898.2,
+        "close_ps_gridquant": 2248.3,
+        "width_ps_gridquant": 1350.1,
+        "clipped_at_window_start": false,
+        "clipped_at_window_end": true
+       },
+       "LOW": {
+        "open_ps": 800.0,
+        "close_ps": 2248.3,
+        "width_ps": 1448.3,
+        "open_ps_gridquant": 800.0,
+        "close_ps_gridquant": 2248.3,
+        "width_ps_gridquant": 1448.3,
+        "clipped_at_window_start": true,
+        "clipped_at_window_end": true
+       }
+      }
+     }
+    }
+   },
+   "POST_RETURN_MARGIN_FLOOR": {
+    "EYE1_RX_INSTANTANEOUS": {
+     "worst_margin_after_return_close_mV": 297.2998,
+     "at_t_ps": 1752.6,
+     "at_t_minus_return_open_ro_ps": 3.278,
+     "right_edge_appears_only_for_thresholds_above_mV": 297.2998
+    },
+    "EYE2_DATA_FIXED": {
+     "worst_margin_after_return_close_mV": 132.4819,
+     "at_t_ps": 1749.3,
+     "at_t_minus_return_open_ro_ps": -0.022,
+     "right_edge_appears_only_for_thresholds_above_mV": 132.4819
+    }
+   },
+   "CLOSING_MECHANISM": {
+    "EYE1_RX_INSTANTANEOUS": {
+     "early_edge_OPENING": {
+      "t_ps": 889.9393,
+      "binding_pattern": "DRYRUN_committed_dv1650",
+      "binding_pattern_bits": [
+       1,
+       1,
+       1,
+       0,
+       1,
+       0,
+       0,
+       1
+      ],
+      "binding_gate": "o0",
+      "binding_polarity": "HIGH",
+      "binding_margin_mV": -0.30685,
+      "MECHANISM": {
+       "M": "M1",
+       "t_ps": 889.9000000000001,
+       "gate": "o0",
+       "polarity": "HIGH",
+       "mgn_mV": -0.3069,
+       "d_mgn_dt_mV_per_ps": 7.79901,
+       "term_dVout_dt_mV_per_ps": 10.39438,
+       "term_minus_dtrip_dt_mV_per_ps": -2.59538,
+       "dominant_term": "dVout/dt",
+       "V_out": 0.4893812,
+       "V_trip_rx": 0.4896881,
+       "V_rail_driver": 0.8752203,
+       "dV_rail_driver_dt_mV_per_ps": 4.75864,
+       "V_rail_rx": 0.8878187,
+       "dV_rail_rx_dt_mV_per_ps": 5.11529,
+       "V_tank_driver": 0.6908089,
+       "dV_tank_dt_mV_per_ps": -2.20509,
+       "I_L_driver_uA": 812.5741,
+       "transfer_gate_conducting": true,
+       "return_switch_conducting": false,
+       "V_in_driver_gate": 0.0242547,
+       "overdrive_vs_Vtn_V": -0.4997453,
+       "overdrive_vs_absVtp_V": 0.4107656
+      }
+     },
+     "late_edge_CLOSING": {
+      "t_ps": 2248.3,
+      "binding_pattern": "DRYRUN_committed_dv1650",
+      "binding_pattern_bits": [
+       1,
+       1,
+       1,
+       0,
+       1,
+       0,
+       0,
+       1
+      ],
+      "binding_gate": "o0",
+      "binding_polarity": "HIGH",
+      "binding_margin_mV": 337.72599,
+      "NO_EDGE": "the eye is CLIPPED at this window bound -- there is no crossing here. The margin never crosses the threshold within the transient: the true right edge is set by the NEXT datum on this bank at the initiation interval H*T, which this single-shot deck does not contain (AMENDMENT E4).",
+      "MECHANISM": {
+       "M": "M1",
+       "t_ps": 2248.3,
+       "gate": "o0",
+       "polarity": "HIGH",
+       "mgn_mV": 337.726,
+       "d_mgn_dt_mV_per_ps": -0.0,
+       "term_dVout_dt_mV_per_ps": -0.0,
+       "term_minus_dtrip_dt_mV_per_ps": -0.0,
+       "dominant_term": "dVout/dt",
+       "V_out": 0.7691639,
+       "V_trip_rx": 0.4314379,
+       "V_rail_driver": 0.7691639,
+       "dV_rail_driver_dt_mV_per_ps": 0.0,
+       "V_rail_rx": 0.7726153,
+       "dV_rail_rx_dt_mV_per_ps": 0.0,
+       "V_tank_driver": 0.7728108,
+       "dV_tank_dt_mV_per_ps": 0.00039,
+       "I_L_driver_uA": -0.1519,
+       "transfer_gate_conducting": false,
+       "return_switch_conducting": false,
+       "V_in_driver_gate": 1e-07,
+       "overdrive_vs_Vtn_V": -0.5239999,
+       "overdrive_vs_absVtp_V": 0.3289639
+      }
+     }
+    },
+    "EYE2_DATA_FIXED": {
+     "early_edge_OPENING": {
+      "t_ps": 898.1514,
+      "binding_pattern": "DRYRUN_committed_dv1650",
+      "binding_pattern_bits": [
+       1,
+       1,
+       1,
+       0,
+       1,
+       0,
+       0,
+       1
+      ],
+      "binding_gate": "o0",
+      "binding_polarity": "HIGH",
+      "binding_margin_mV": 0.52819,
+      "MECHANISM": {
+       "M": "M1",
+       "t_ps": 898.2,
+       "gate": "o0",
+       "polarity": "HIGH",
+       "mgn_mV": 69.0713,
+       "d_mgn_dt_mV_per_ps": 8.82651,
+       "term_dVout_dt_mV_per_ps": 10.87282,
+       "term_minus_dtrip_dt_mV_per_ps": -2.04631,
+       "dominant_term": "dVout/dt",
+       "V_out": 0.5781567,
+       "V_trip_rx": 0.5090854,
+       "V_rail_driver": 0.9106358,
+       "dV_rail_driver_dt_mV_per_ps": 3.73521,
+       "V_rail_rx": 0.9259966,
+       "dV_rail_rx_dt_mV_per_ps": 4.02497,
+       "V_tank_driver": 0.6744332,
+       "dV_tank_dt_mV_per_ps": -1.73232,
+       "I_L_driver_uA": 634.6659,
+       "transfer_gate_conducting": true,
+       "return_switch_conducting": false,
+       "V_in_driver_gate": 0.0241791,
+       "overdrive_vs_Vtn_V": -0.4998209,
+       "overdrive_vs_absVtp_V": 0.4462566
+      }
+     },
+     "late_edge_CLOSING": {
+      "t_ps": 2248.3,
+      "binding_pattern": "DRYRUN_committed_dv1650",
+      "binding_pattern_bits": [
+       1,
+       1,
+       1,
+       0,
+       1,
+       0,
+       0,
+       1
+      ],
+      "binding_gate": "o0",
+      "binding_polarity": "HIGH",
+      "binding_margin_mV": 191.53544,
+      "NO_EDGE": "the eye is CLIPPED at this window bound -- there is no crossing here. The margin never crosses the threshold within the transient: the true right edge is set by the NEXT datum on this bank at the initiation interval H*T, which this single-shot deck does not contain (AMENDMENT E4).",
+      "MECHANISM": {
+       "M": "M1",
+       "t_ps": 2248.3,
+       "gate": "o0",
+       "polarity": "HIGH",
+       "mgn_mV": 337.726,
+       "d_mgn_dt_mV_per_ps": -0.0,
+       "term_dVout_dt_mV_per_ps": -0.0,
+       "term_minus_dtrip_dt_mV_per_ps": -0.0,
+       "dominant_term": "dVout/dt",
+       "V_out": 0.7691639,
+       "V_trip_rx": 0.4314379,
+       "V_rail_driver": 0.7691639,
+       "dV_rail_driver_dt_mV_per_ps": 0.0,
+       "V_rail_rx": 0.7726153,
+       "dV_rail_rx_dt_mV_per_ps": 0.0,
+       "V_tank_driver": 0.7728108,
+       "dV_tank_dt_mV_per_ps": 0.00039,
+       "I_L_driver_uA": -0.1519,
+       "transfer_gate_conducting": false,
+       "return_switch_conducting": false,
+       "V_in_driver_gate": 1e-07,
+       "overdrive_vs_Vtn_V": -0.5239999,
+       "overdrive_vs_absVtp_V": 0.3289639
+      }
+     }
+    }
+   },
+   "margin_curve_file": "MARGIN_bank4.csv.gz",
+   "margin_curve_n_points": 22494
+  }
+ },
+ "PHASE2_HANDOFF_slack_around_the_sampling_instant": {
+  "_note": "Phase 1 owes Phase 2 the SLACK, not a pass/fail. The BINDING comparison against the 61.6 ps measured data-dependent jitter is the SETUP SLACK, not the eye width: the width is bounded by the initiation interval and is generous, while the setup slack is the margin between the data becoming valid and the receiver's aperture opening. Everything here is DERIVED from the measured eyes in this file.",
+  "_measured_inputs": {
+   "data_dependent_zero_spread_ps": 61.6,
+   "timer_drift_ps_per_K": 0.46,
+   "sigma_trip_mV": 6.441
+  },
+  "per_bank": {
+   "1": {
+    "data_valid_after_own_rail_start_ps": 103.2752,
+    "beat_period_T_ps": 200.0,
+    "initiation_interval_H_times_T_ps": 800.0,
+    "SETUP_SLACK_strict_ps": 96.7248,
+    "setup_slack_strict_definition": "T - (data-eye opening after own rail start): how much earlier than its receiver's rail start the driver's data is already valid",
+    "SETUP_SLACK_relaxed_ps": 206.384,
+    "setup_slack_relaxed_definition": "the receiver's OWN data-eye opening minus the driver's: how much of the receiver's evaluation the driver's data precedes",
+    "EYE_WIDTH_pipelined_DERIVED_ps": 696.7248,
+    "eye_width_pipelined_definition": "H*T - (data-eye opening after own rail start). DERIVED: in a pipelined machine the right edge is the NEXT datum on this bank at the initiation interval; the single-shot deck contains no next datum (AMENDMENT E4), so the deck WIDTH is only a lower bound.",
+    "EYE_WIDTH_deck_LOWER_BOUND_ps": 1945.0248,
+    "HEIGHT_at_centre_HIGH_mV": 198.5829,
+    "HEIGHT_at_centre_LOW_mV": 525.3792,
+    "post_return_margin_floor_mV": 176.3482,
+    "vs_MEASURED_61.6_ps_data_jitter": {
+     "jitter_ps": 61.6,
+     "setup_slack_over_jitter": 1.5702,
+     "pipelined_width_over_jitter": 11.3105,
+     "setup_slack_survives_worst_case_data_jitter": true
+    }
+   },
+   "2": {
+    "data_valid_after_own_rail_start_ps": 109.6592,
+    "beat_period_T_ps": 200.0,
+    "initiation_interval_H_times_T_ps": 800.0,
+    "SETUP_SLACK_strict_ps": 90.3408,
+    "setup_slack_strict_definition": "T - (data-eye opening after own rail start): how much earlier than its receiver's rail start the driver's data is already valid",
+    "SETUP_SLACK_relaxed_ps": 198.461,
+    "setup_slack_relaxed_definition": "the receiver's OWN data-eye opening minus the driver's: how much of the receiver's evaluation the driver's data precedes",
+    "EYE_WIDTH_pipelined_DERIVED_ps": 690.3408,
+    "eye_width_pipelined_definition": "H*T - (data-eye opening after own rail start). DERIVED: in a pipelined machine the right edge is the NEXT datum on this bank at the initiation interval; the single-shot deck contains no next datum (AMENDMENT E4), so the deck WIDTH is only a lower bound.",
+    "EYE_WIDTH_deck_LOWER_BOUND_ps": 1738.6408,
+    "HEIGHT_at_centre_HIGH_mV": 181.4072,
+    "HEIGHT_at_centre_LOW_mV": 564.7904,
+    "post_return_margin_floor_mV": 144.861,
+    "vs_MEASURED_61.6_ps_data_jitter": {
+     "jitter_ps": 61.6,
+     "setup_slack_over_jitter": 1.4666,
+     "pipelined_width_over_jitter": 11.2068,
+     "setup_slack_survives_worst_case_data_jitter": true
+    }
+   },
+   "3": {
+    "data_valid_after_own_rail_start_ps": 108.1202,
+    "beat_period_T_ps": 200.0,
+    "initiation_interval_H_times_T_ps": 800.0,
+    "SETUP_SLACK_strict_ps": 91.8798,
+    "setup_slack_strict_definition": "T - (data-eye opening after own rail start): how much earlier than its receiver's rail start the driver's data is already valid",
+    "SETUP_SLACK_relaxed_ps": 190.0312,
+    "setup_slack_relaxed_definition": "the receiver's OWN data-eye opening minus the driver's: how much of the receiver's evaluation the driver's data precedes",
+    "EYE_WIDTH_pipelined_DERIVED_ps": 691.8798,
+    "eye_width_pipelined_definition": "H*T - (data-eye opening after own rail start). DERIVED: in a pipelined machine the right edge is the NEXT datum on this bank at the initiation interval; the single-shot deck contains no next datum (AMENDMENT E4), so the deck WIDTH is only a lower bound.",
+    "EYE_WIDTH_deck_LOWER_BOUND_ps": 1540.1798,
+    "HEIGHT_at_centre_HIGH_mV": 215.7758,
+    "HEIGHT_at_centre_LOW_mV": 586.4212,
+    "post_return_margin_floor_mV": 146.3003,
+    "vs_MEASURED_61.6_ps_data_jitter": {
+     "jitter_ps": 61.6,
+     "setup_slack_over_jitter": 1.4916,
+     "pipelined_width_over_jitter": 11.2318,
+     "setup_slack_survives_worst_case_data_jitter": true
+    }
+   },
+   "4": {
+    "data_valid_after_own_rail_start_ps": 98.1514,
+    "beat_period_T_ps": 200.0,
+    "initiation_interval_H_times_T_ps": 800.0,
+    "SETUP_SLACK_strict_ps": 101.8486,
+    "setup_slack_strict_definition": "T - (data-eye opening after own rail start): how much earlier than its receiver's rail start the driver's data is already valid",
+    "SETUP_SLACK_relaxed_ps": null,
+    "setup_slack_relaxed_definition": "the receiver's OWN data-eye opening minus the driver's: how much of the receiver's evaluation the driver's data precedes",
+    "EYE_WIDTH_pipelined_DERIVED_ps": 701.8486,
+    "eye_width_pipelined_definition": "H*T - (data-eye opening after own rail start). DERIVED: in a pipelined machine the right edge is the NEXT datum on this bank at the initiation interval; the single-shot deck contains no next datum (AMENDMENT E4), so the deck WIDTH is only a lower bound.",
+    "EYE_WIDTH_deck_LOWER_BOUND_ps": 1350.1486,
+    "HEIGHT_at_centre_HIGH_mV": 475.1965,
+    "HEIGHT_at_centre_LOW_mV": 574.9425,
+    "post_return_margin_floor_mV": 132.4819,
+    "vs_MEASURED_61.6_ps_data_jitter": {
+     "jitter_ps": 61.6,
+     "setup_slack_over_jitter": 1.6534,
+     "pipelined_width_over_jitter": 11.3936,
+     "setup_slack_survives_worst_case_data_jitter": true
+    }
+   }
+  }
+ },
+ "_M6_propagating_collapse_test": {
+  "reference": "EYE2_DATA_FIXED, W_EXTENDED, 0 mV",
+  "openings_ps": {
+   "1": 303.2752,
+   "2": 509.6592,
+   "3": 708.1202,
+   "4": 898.1514
+  },
+  "opening_delta_minus_T_ps": {
+   "2_minus_1": 6.384,
+   "3_minus_2": -1.539,
+   "4_minus_3": -9.9688
+  },
+  "note": "M6 (the predecessor's own eye closing, propagating forward) is supported only if a bank's edge coincides with its predecessor's edge to within the grid AFTER removing the beat period T. A residual of ~0 means bank k's edge is inherited from bank k-1; a large residual means it is set locally."
+ }
+}
