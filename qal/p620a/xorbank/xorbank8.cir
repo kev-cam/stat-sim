@@ -1,0 +1,150 @@
+* 128-cell XOR2 bank, tank+switch+inductor (AddRoundKey shape)
+.hdl "/usr/local/share/xyce/verilog-a/psp103/psp103.va"
+.include "/usr/local/src/kestrel/sim/models/sg13g2_psp103_tt.lib"
+.include "/usr/local/src/stat-sim/qal/sg13lv_compat.sp"
+.OPTIONS TIMEINT METHOD=GEAR RELTOL=1e-6 ABSTOL=1e-15
+VHI vhi 0 1.5
+CT tnk 0 143.916f
+LT tnk mid 6.2n
+RT mid sw 10
+VGT gt 0 PWL(0 0 48p 0 50p 1.5 315p 1.5 317p 0)
+VGTP gtp 0 PWL(0 1.5 48p 1.5 50p 0 315p 0 317p 1.5)
+VPK pk 0 PWL(0 0 317p 0 319p 1.5)
+XSWN sw gt rail 0 sg13_lv_nmos w=320u l=0.13u
+XSWP sw gtp rail vhi sg13_lv_pmos w=640u l=0.13u
+XPK sw pk tnk tnk sg13_lv_nmos w=64u l=0.13u
+VMG gn 0 0
+.ic V(tnk)=1.2 V(rail)=0
+VA0 a0 0 1.2
+VB0 b0 0 1.2
+XIAP0 an0 a0 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XIAN0 an0 a0 gn gn sg13_lv_nmos w=0.74u l=0.13u
+XIBP0 bn0 b0 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XIBN0 bn0 b0 gn gn sg13_lv_nmos w=0.74u l=0.13u
+XU1A0 p1_0 an0 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XU1B0 o0 b0 p1_0 rail sg13_lv_pmos w=1.12u l=0.13u
+XU2A0 p2_0 a0 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XU2B0 o0 bn0 p2_0 rail sg13_lv_pmos w=1.12u l=0.13u
+XD1A0 o0 a0 n1_0 gn sg13_lv_nmos w=0.74u l=0.13u
+XD1B0 n1_0 b0 gn gn sg13_lv_nmos w=0.74u l=0.13u
+XD2A0 o0 an0 n2_0 gn sg13_lv_nmos w=0.74u l=0.13u
+XD2B0 n2_0 bn0 gn gn sg13_lv_nmos w=0.74u l=0.13u
+CL0 o0 gn 2f
+VA1 a1 0 1.2
+VB1 b1 0 0
+XIAP1 an1 a1 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XIAN1 an1 a1 gn gn sg13_lv_nmos w=0.74u l=0.13u
+XIBP1 bn1 b1 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XIBN1 bn1 b1 gn gn sg13_lv_nmos w=0.74u l=0.13u
+XU1A1 p1_1 an1 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XU1B1 o1 b1 p1_1 rail sg13_lv_pmos w=1.12u l=0.13u
+XU2A1 p2_1 a1 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XU2B1 o1 bn1 p2_1 rail sg13_lv_pmos w=1.12u l=0.13u
+XD1A1 o1 a1 n1_1 gn sg13_lv_nmos w=0.74u l=0.13u
+XD1B1 n1_1 b1 gn gn sg13_lv_nmos w=0.74u l=0.13u
+XD2A1 o1 an1 n2_1 gn sg13_lv_nmos w=0.74u l=0.13u
+XD2B1 n2_1 bn1 gn gn sg13_lv_nmos w=0.74u l=0.13u
+CL1 o1 gn 2f
+VA2 a2 0 0
+VB2 b2 0 1.2
+XIAP2 an2 a2 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XIAN2 an2 a2 gn gn sg13_lv_nmos w=0.74u l=0.13u
+XIBP2 bn2 b2 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XIBN2 bn2 b2 gn gn sg13_lv_nmos w=0.74u l=0.13u
+XU1A2 p1_2 an2 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XU1B2 o2 b2 p1_2 rail sg13_lv_pmos w=1.12u l=0.13u
+XU2A2 p2_2 a2 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XU2B2 o2 bn2 p2_2 rail sg13_lv_pmos w=1.12u l=0.13u
+XD1A2 o2 a2 n1_2 gn sg13_lv_nmos w=0.74u l=0.13u
+XD1B2 n1_2 b2 gn gn sg13_lv_nmos w=0.74u l=0.13u
+XD2A2 o2 an2 n2_2 gn sg13_lv_nmos w=0.74u l=0.13u
+XD2B2 n2_2 bn2 gn gn sg13_lv_nmos w=0.74u l=0.13u
+CL2 o2 gn 2f
+VA3 a3 0 1.2
+VB3 b3 0 0
+XIAP3 an3 a3 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XIAN3 an3 a3 gn gn sg13_lv_nmos w=0.74u l=0.13u
+XIBP3 bn3 b3 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XIBN3 bn3 b3 gn gn sg13_lv_nmos w=0.74u l=0.13u
+XU1A3 p1_3 an3 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XU1B3 o3 b3 p1_3 rail sg13_lv_pmos w=1.12u l=0.13u
+XU2A3 p2_3 a3 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XU2B3 o3 bn3 p2_3 rail sg13_lv_pmos w=1.12u l=0.13u
+XD1A3 o3 a3 n1_3 gn sg13_lv_nmos w=0.74u l=0.13u
+XD1B3 n1_3 b3 gn gn sg13_lv_nmos w=0.74u l=0.13u
+XD2A3 o3 an3 n2_3 gn sg13_lv_nmos w=0.74u l=0.13u
+XD2B3 n2_3 bn3 gn gn sg13_lv_nmos w=0.74u l=0.13u
+CL3 o3 gn 2f
+VA4 a4 0 0
+VB4 b4 0 1.2
+XIAP4 an4 a4 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XIAN4 an4 a4 gn gn sg13_lv_nmos w=0.74u l=0.13u
+XIBP4 bn4 b4 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XIBN4 bn4 b4 gn gn sg13_lv_nmos w=0.74u l=0.13u
+XU1A4 p1_4 an4 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XU1B4 o4 b4 p1_4 rail sg13_lv_pmos w=1.12u l=0.13u
+XU2A4 p2_4 a4 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XU2B4 o4 bn4 p2_4 rail sg13_lv_pmos w=1.12u l=0.13u
+XD1A4 o4 a4 n1_4 gn sg13_lv_nmos w=0.74u l=0.13u
+XD1B4 n1_4 b4 gn gn sg13_lv_nmos w=0.74u l=0.13u
+XD2A4 o4 an4 n2_4 gn sg13_lv_nmos w=0.74u l=0.13u
+XD2B4 n2_4 bn4 gn gn sg13_lv_nmos w=0.74u l=0.13u
+CL4 o4 gn 2f
+VA5 a5 0 1.2
+VB5 b5 0 0
+XIAP5 an5 a5 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XIAN5 an5 a5 gn gn sg13_lv_nmos w=0.74u l=0.13u
+XIBP5 bn5 b5 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XIBN5 bn5 b5 gn gn sg13_lv_nmos w=0.74u l=0.13u
+XU1A5 p1_5 an5 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XU1B5 o5 b5 p1_5 rail sg13_lv_pmos w=1.12u l=0.13u
+XU2A5 p2_5 a5 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XU2B5 o5 bn5 p2_5 rail sg13_lv_pmos w=1.12u l=0.13u
+XD1A5 o5 a5 n1_5 gn sg13_lv_nmos w=0.74u l=0.13u
+XD1B5 n1_5 b5 gn gn sg13_lv_nmos w=0.74u l=0.13u
+XD2A5 o5 an5 n2_5 gn sg13_lv_nmos w=0.74u l=0.13u
+XD2B5 n2_5 bn5 gn gn sg13_lv_nmos w=0.74u l=0.13u
+CL5 o5 gn 2f
+VA6 a6 0 1.2
+VB6 b6 0 1.2
+XIAP6 an6 a6 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XIAN6 an6 a6 gn gn sg13_lv_nmos w=0.74u l=0.13u
+XIBP6 bn6 b6 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XIBN6 bn6 b6 gn gn sg13_lv_nmos w=0.74u l=0.13u
+XU1A6 p1_6 an6 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XU1B6 o6 b6 p1_6 rail sg13_lv_pmos w=1.12u l=0.13u
+XU2A6 p2_6 a6 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XU2B6 o6 bn6 p2_6 rail sg13_lv_pmos w=1.12u l=0.13u
+XD1A6 o6 a6 n1_6 gn sg13_lv_nmos w=0.74u l=0.13u
+XD1B6 n1_6 b6 gn gn sg13_lv_nmos w=0.74u l=0.13u
+XD2A6 o6 an6 n2_6 gn sg13_lv_nmos w=0.74u l=0.13u
+XD2B6 n2_6 bn6 gn gn sg13_lv_nmos w=0.74u l=0.13u
+CL6 o6 gn 2f
+VA7 a7 0 0
+VB7 b7 0 1.2
+XIAP7 an7 a7 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XIAN7 an7 a7 gn gn sg13_lv_nmos w=0.74u l=0.13u
+XIBP7 bn7 b7 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XIBN7 bn7 b7 gn gn sg13_lv_nmos w=0.74u l=0.13u
+XU1A7 p1_7 an7 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XU1B7 o7 b7 p1_7 rail sg13_lv_pmos w=1.12u l=0.13u
+XU2A7 p2_7 a7 rail rail sg13_lv_pmos w=1.12u l=0.13u
+XU2B7 o7 bn7 p2_7 rail sg13_lv_pmos w=1.12u l=0.13u
+XD1A7 o7 a7 n1_7 gn sg13_lv_nmos w=0.74u l=0.13u
+XD1B7 n1_7 b7 gn gn sg13_lv_nmos w=0.74u l=0.13u
+XD2A7 o7 an7 n2_7 gn sg13_lv_nmos w=0.74u l=0.13u
+XD2B7 n2_7 bn7 gn gn sg13_lv_nmos w=0.74u l=0.13u
+CL7 o7 gn 2f
+.tran 0.1p 815p 0 0.25p
+.print tran V(rail) V(tnk) I(LT) V(o0) V(o1) V(o63) V(o126) V(o127)
+.measure tran OE0 FIND V(o0) AT=810p
+.measure tran OE1 FIND V(o1) AT=810p
+.measure tran OE2 FIND V(o2) AT=810p
+.measure tran OE3 FIND V(o3) AT=810p
+.measure tran OE4 FIND V(o4) AT=810p
+.measure tran OE5 FIND V(o5) AT=810p
+.measure tran OE6 FIND V(o6) AT=810p
+.measure tran OE7 FIND V(o7) AT=810p
+.measure tran RAILE FIND V(rail) AT=810p
+.measure tran TNKE FIND V(tnk) AT=810p
+.end

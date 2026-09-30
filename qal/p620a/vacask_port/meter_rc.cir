@@ -1,0 +1,18 @@
+* metering validation: RC discharge closed form (C=1p V0=1 R=1k tau=1ns)
+* Analytic: E_R(10ns) = 0.5*C*V0^2*(1-exp(-20)) = 4.99999999e-13 J
+C1 n1 0 1p
+R1 n1 0 1k
+* committed cap-integrator idiom: B source into 1F cap, R=0.01 leak (tau 10ms)
+CXer xer 0 1
+BXer 0 xer I={ V(n1)*V(n1)/1000 }
+RXer xer 0 0.01
+* expression node for the .measure INTEGRAL side-check
+Bp p 0 V={ V(n1)*V(n1)/1000 }
+.OPTIONS TIMEINT METHOD=GEAR RELTOL=1e-6 ABSTOL=1e-15 CHGTOL=1e-17
+.ic V(n1)=1
+.tran 1p 10n 0 5p
+.print tran V(n1) V(xer) V(p)
+.measure tran ER_CAPINT FIND V(xer) AT=10n
+.measure tran ER_MEASINT INTEGRAL V(p) FROM=0 TO=10n
+.measure tran V_TAU FIND V(n1) AT=1n
+.end

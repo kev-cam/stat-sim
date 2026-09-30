@@ -1,0 +1,159 @@
+128-cell XOR2 bank, tank+switch+inductor (AddRoundKey shape)
+
+load "psp103v4.osdi"
+load "capacitor.osdi"
+load "inductor.osdi"
+load "spice/resistor.osdi"
+include "sg13g2_models.inc"
+model v vsource
+model rmod sp_resistor
+model cmod capacitor
+model lmod inductor
+
+subckt sg13_lv_nmos (d g s b)
+  parameters w=0.15u l=0.13u
+  m1 (d g s b) sg13g2_nmos w=w l=l
+ends
+subckt sg13_lv_pmos (d g s b)
+  parameters w=0.15u l=0.13u
+  m1 (d g s b) sg13g2_pmos w=w l=l
+ends
+
+vhi (vhi 0) v dc=1.5
+ct (tnk 0) cmod c=143.916f
+lt (tnk mid) lmod l=6.2n
+rt (mid sw) rmod r=10
+vgt (gt 0) v type="pwl" wave=[48p,0, 50p,1.5, 315p,1.5, 317p,0]
+vgtp (gtp 0) v type="pwl" wave=[48p,1.5, 50p,0, 315p,0, 317p,1.5]
+vpk (pk 0) v type="pwl" wave=[317p,0, 319p,1.5]
+xswn (sw gt rail 0) sg13_lv_nmos w=320u l=0.13u
+xswp (sw gtp rail vhi) sg13_lv_pmos w=640u l=0.13u
+xpk (sw pk tnk tnk) sg13_lv_nmos w=64u l=0.13u
+vmg (gn 0) v dc=0
+va0 (a0 0) v dc=1.2
+vb0 (b0 0) v dc=1.2
+xiap0 (an0 a0 rail rail) sg13_lv_pmos w=1.12u l=0.13u
+xian0 (an0 a0 gn gn) sg13_lv_nmos w=0.74u l=0.13u
+xibp0 (bn0 b0 rail rail) sg13_lv_pmos w=1.12u l=0.13u
+xibn0 (bn0 b0 gn gn) sg13_lv_nmos w=0.74u l=0.13u
+xu1a0 (p1_0 an0 rail rail) sg13_lv_pmos w=1.12u l=0.13u
+xu1b0 (o0 b0 p1_0 rail) sg13_lv_pmos w=1.12u l=0.13u
+xu2a0 (p2_0 a0 rail rail) sg13_lv_pmos w=1.12u l=0.13u
+xu2b0 (o0 bn0 p2_0 rail) sg13_lv_pmos w=1.12u l=0.13u
+xd1a0 (o0 a0 n1_0 gn) sg13_lv_nmos w=0.74u l=0.13u
+xd1b0 (n1_0 b0 gn gn) sg13_lv_nmos w=0.74u l=0.13u
+xd2a0 (o0 an0 n2_0 gn) sg13_lv_nmos w=0.74u l=0.13u
+xd2b0 (n2_0 bn0 gn gn) sg13_lv_nmos w=0.74u l=0.13u
+cl0 (o0 gn) cmod c=2f
+va1 (a1 0) v dc=1.2
+vb1 (b1 0) v dc=0
+xiap1 (an1 a1 rail rail) sg13_lv_pmos w=1.12u l=0.13u
+xian1 (an1 a1 gn gn) sg13_lv_nmos w=0.74u l=0.13u
+xibp1 (bn1 b1 rail rail) sg13_lv_pmos w=1.12u l=0.13u
+xibn1 (bn1 b1 gn gn) sg13_lv_nmos w=0.74u l=0.13u
+xu1a1 (p1_1 an1 rail rail) sg13_lv_pmos w=1.12u l=0.13u
+xu1b1 (o1 b1 p1_1 rail) sg13_lv_pmos w=1.12u l=0.13u
+xu2a1 (p2_1 a1 rail rail) sg13_lv_pmos w=1.12u l=0.13u
+xu2b1 (o1 bn1 p2_1 rail) sg13_lv_pmos w=1.12u l=0.13u
+xd1a1 (o1 a1 n1_1 gn) sg13_lv_nmos w=0.74u l=0.13u
+xd1b1 (n1_1 b1 gn gn) sg13_lv_nmos w=0.74u l=0.13u
+xd2a1 (o1 an1 n2_1 gn) sg13_lv_nmos w=0.74u l=0.13u
+xd2b1 (n2_1 bn1 gn gn) sg13_lv_nmos w=0.74u l=0.13u
+cl1 (o1 gn) cmod c=2f
+va2 (a2 0) v dc=0
+vb2 (b2 0) v dc=1.2
+xiap2 (an2 a2 rail rail) sg13_lv_pmos w=1.12u l=0.13u
+xian2 (an2 a2 gn gn) sg13_lv_nmos w=0.74u l=0.13u
+xibp2 (bn2 b2 rail rail) sg13_lv_pmos w=1.12u l=0.13u
+xibn2 (bn2 b2 gn gn) sg13_lv_nmos w=0.74u l=0.13u
+xu1a2 (p1_2 an2 rail rail) sg13_lv_pmos w=1.12u l=0.13u
+xu1b2 (o2 b2 p1_2 rail) sg13_lv_pmos w=1.12u l=0.13u
+xu2a2 (p2_2 a2 rail rail) sg13_lv_pmos w=1.12u l=0.13u
+xu2b2 (o2 bn2 p2_2 rail) sg13_lv_pmos w=1.12u l=0.13u
+xd1a2 (o2 a2 n1_2 gn) sg13_lv_nmos w=0.74u l=0.13u
+xd1b2 (n1_2 b2 gn gn) sg13_lv_nmos w=0.74u l=0.13u
+xd2a2 (o2 an2 n2_2 gn) sg13_lv_nmos w=0.74u l=0.13u
+xd2b2 (n2_2 bn2 gn gn) sg13_lv_nmos w=0.74u l=0.13u
+cl2 (o2 gn) cmod c=2f
+va3 (a3 0) v dc=1.2
+vb3 (b3 0) v dc=0
+xiap3 (an3 a3 rail rail) sg13_lv_pmos w=1.12u l=0.13u
+xian3 (an3 a3 gn gn) sg13_lv_nmos w=0.74u l=0.13u
+xibp3 (bn3 b3 rail rail) sg13_lv_pmos w=1.12u l=0.13u
+xibn3 (bn3 b3 gn gn) sg13_lv_nmos w=0.74u l=0.13u
+xu1a3 (p1_3 an3 rail rail) sg13_lv_pmos w=1.12u l=0.13u
+xu1b3 (o3 b3 p1_3 rail) sg13_lv_pmos w=1.12u l=0.13u
+xu2a3 (p2_3 a3 rail rail) sg13_lv_pmos w=1.12u l=0.13u
+xu2b3 (o3 bn3 p2_3 rail) sg13_lv_pmos w=1.12u l=0.13u
+xd1a3 (o3 a3 n1_3 gn) sg13_lv_nmos w=0.74u l=0.13u
+xd1b3 (n1_3 b3 gn gn) sg13_lv_nmos w=0.74u l=0.13u
+xd2a3 (o3 an3 n2_3 gn) sg13_lv_nmos w=0.74u l=0.13u
+xd2b3 (n2_3 bn3 gn gn) sg13_lv_nmos w=0.74u l=0.13u
+cl3 (o3 gn) cmod c=2f
+va4 (a4 0) v dc=0
+vb4 (b4 0) v dc=1.2
+xiap4 (an4 a4 rail rail) sg13_lv_pmos w=1.12u l=0.13u
+xian4 (an4 a4 gn gn) sg13_lv_nmos w=0.74u l=0.13u
+xibp4 (bn4 b4 rail rail) sg13_lv_pmos w=1.12u l=0.13u
+xibn4 (bn4 b4 gn gn) sg13_lv_nmos w=0.74u l=0.13u
+xu1a4 (p1_4 an4 rail rail) sg13_lv_pmos w=1.12u l=0.13u
+xu1b4 (o4 b4 p1_4 rail) sg13_lv_pmos w=1.12u l=0.13u
+xu2a4 (p2_4 a4 rail rail) sg13_lv_pmos w=1.12u l=0.13u
+xu2b4 (o4 bn4 p2_4 rail) sg13_lv_pmos w=1.12u l=0.13u
+xd1a4 (o4 a4 n1_4 gn) sg13_lv_nmos w=0.74u l=0.13u
+xd1b4 (n1_4 b4 gn gn) sg13_lv_nmos w=0.74u l=0.13u
+xd2a4 (o4 an4 n2_4 gn) sg13_lv_nmos w=0.74u l=0.13u
+xd2b4 (n2_4 bn4 gn gn) sg13_lv_nmos w=0.74u l=0.13u
+cl4 (o4 gn) cmod c=2f
+va5 (a5 0) v dc=1.2
+vb5 (b5 0) v dc=0
+xiap5 (an5 a5 rail rail) sg13_lv_pmos w=1.12u l=0.13u
+xian5 (an5 a5 gn gn) sg13_lv_nmos w=0.74u l=0.13u
+xibp5 (bn5 b5 rail rail) sg13_lv_pmos w=1.12u l=0.13u
+xibn5 (bn5 b5 gn gn) sg13_lv_nmos w=0.74u l=0.13u
+xu1a5 (p1_5 an5 rail rail) sg13_lv_pmos w=1.12u l=0.13u
+xu1b5 (o5 b5 p1_5 rail) sg13_lv_pmos w=1.12u l=0.13u
+xu2a5 (p2_5 a5 rail rail) sg13_lv_pmos w=1.12u l=0.13u
+xu2b5 (o5 bn5 p2_5 rail) sg13_lv_pmos w=1.12u l=0.13u
+xd1a5 (o5 a5 n1_5 gn) sg13_lv_nmos w=0.74u l=0.13u
+xd1b5 (n1_5 b5 gn gn) sg13_lv_nmos w=0.74u l=0.13u
+xd2a5 (o5 an5 n2_5 gn) sg13_lv_nmos w=0.74u l=0.13u
+xd2b5 (n2_5 bn5 gn gn) sg13_lv_nmos w=0.74u l=0.13u
+cl5 (o5 gn) cmod c=2f
+va6 (a6 0) v dc=1.2
+vb6 (b6 0) v dc=1.2
+xiap6 (an6 a6 rail rail) sg13_lv_pmos w=1.12u l=0.13u
+xian6 (an6 a6 gn gn) sg13_lv_nmos w=0.74u l=0.13u
+xibp6 (bn6 b6 rail rail) sg13_lv_pmos w=1.12u l=0.13u
+xibn6 (bn6 b6 gn gn) sg13_lv_nmos w=0.74u l=0.13u
+xu1a6 (p1_6 an6 rail rail) sg13_lv_pmos w=1.12u l=0.13u
+xu1b6 (o6 b6 p1_6 rail) sg13_lv_pmos w=1.12u l=0.13u
+xu2a6 (p2_6 a6 rail rail) sg13_lv_pmos w=1.12u l=0.13u
+xu2b6 (o6 bn6 p2_6 rail) sg13_lv_pmos w=1.12u l=0.13u
+xd1a6 (o6 a6 n1_6 gn) sg13_lv_nmos w=0.74u l=0.13u
+xd1b6 (n1_6 b6 gn gn) sg13_lv_nmos w=0.74u l=0.13u
+xd2a6 (o6 an6 n2_6 gn) sg13_lv_nmos w=0.74u l=0.13u
+xd2b6 (n2_6 bn6 gn gn) sg13_lv_nmos w=0.74u l=0.13u
+cl6 (o6 gn) cmod c=2f
+va7 (a7 0) v dc=0
+vb7 (b7 0) v dc=1.2
+xiap7 (an7 a7 rail rail) sg13_lv_pmos w=1.12u l=0.13u
+xian7 (an7 a7 gn gn) sg13_lv_nmos w=0.74u l=0.13u
+xibp7 (bn7 b7 rail rail) sg13_lv_pmos w=1.12u l=0.13u
+xibn7 (bn7 b7 gn gn) sg13_lv_nmos w=0.74u l=0.13u
+xu1a7 (p1_7 an7 rail rail) sg13_lv_pmos w=1.12u l=0.13u
+xu1b7 (o7 b7 p1_7 rail) sg13_lv_pmos w=1.12u l=0.13u
+xu2a7 (p2_7 a7 rail rail) sg13_lv_pmos w=1.12u l=0.13u
+xu2b7 (o7 bn7 p2_7 rail) sg13_lv_pmos w=1.12u l=0.13u
+xd1a7 (o7 a7 n1_7 gn) sg13_lv_nmos w=0.74u l=0.13u
+xd1b7 (n1_7 b7 gn gn) sg13_lv_nmos w=0.74u l=0.13u
+xd2a7 (o7 an7 n2_7 gn) sg13_lv_nmos w=0.74u l=0.13u
+xd2b7 (n2_7 bn7 gn gn) sg13_lv_nmos w=0.74u l=0.13u
+cl7 (o7 gn) cmod c=2f
+
+control
+  options tran_method="gear" reltol=1e-5
+  save v(rail) v(tnk) i(lt)
+  save v(o0) v(o1) v(o2) v(o3) v(o4) v(o5) v(o6) v(o7)
+  analysis xbtr tran step=0.1p stop=815p maxstep=0.25p icmode="op" ic=["tnk"; 1.2; "mid"; 1.2; "sw"; 1.2; "rail"; 0.0]
+endc

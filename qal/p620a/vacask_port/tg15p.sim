@@ -1,0 +1,77 @@
+tg15p anchor port: qal/swsweep/sw_tg15p_z.cir (LOCAL-XYCE committed deck) -> VACASK
+
+load "psp103v4.osdi"
+load "capacitor.osdi"
+load "inductor.osdi"
+load "spice/resistor.osdi"
+
+include "sg13g2_models.inc"
+
+model v vsource
+model rmod sp_resistor
+model cmod capacitor
+model lmod inductor
+
+subckt sg13_lv_nmos (d g s b)
+  parameters w=0.15u l=0.13u
+  m1 (d g s b) sg13g2_nmos w=w l=l
+ends
+
+subckt sg13_lv_pmos (d g s b)
+  parameters w=0.15u l=0.13u
+  m1 (d g s b) sg13g2_pmos w=w l=l
+ends
+
+ca (bka 0) cmod c=35.979f
+vhi (vhi 0) v dc=1.5
+vgt  (gt 0)  v type="pwl" wave=[0,0, 48p,0, 50p,1.5, 316.755p,1.5, 318.755p,0]
+vgtp (gtp 0) v type="pwl" wave=[0,1.5, 48p,1.5, 50p,0, 316.755p,0, 318.755p,1.5]
+xswn (sw gt bkb 0) sg13_lv_nmos w=5u l=0.13u
+xswp (sw gtp bkb vhi) sg13_lv_pmos w=10u l=0.13u
+xpk (sw pk 0 0) sg13_lv_nmos w=1u l=0.13u
+vpk (pk 0) v type="pwl" wave=[0,0, 318.755p,0, 320.755p,1.5]
+lt (bka mid) lmod l=277.8n
+rt (mid sw) rmod r=10
+vmgh (gnh 0) v dc=0
+vmgl (gnl 0) v dc=0
+vi0 (in0 0) v dc=1
+xp0 (o0 in0 bkb bkb) sg13_lv_pmos w=1.12u l=0.13u
+xn0 (o0 in0 gnh gnh) sg13_lv_nmos w=0.74u l=0.13u
+cl0 (o0 gnh) cmod c=2f
+vi1 (in1 0) v dc=0
+xp1 (o1 in1 bkb bkb) sg13_lv_pmos w=1.12u l=0.13u
+xn1 (o1 in1 gnl gnl) sg13_lv_nmos w=0.74u l=0.13u
+cl1 (o1 gnl) cmod c=2f
+vi2 (in2 0) v dc=1
+xp2 (o2 in2 bkb bkb) sg13_lv_pmos w=1.12u l=0.13u
+xn2 (o2 in2 gnh gnh) sg13_lv_nmos w=0.74u l=0.13u
+cl2 (o2 gnh) cmod c=2f
+vi3 (in3 0) v dc=0
+xp3 (o3 in3 bkb bkb) sg13_lv_pmos w=1.12u l=0.13u
+xn3 (o3 in3 gnl gnl) sg13_lv_nmos w=0.74u l=0.13u
+cl3 (o3 gnl) cmod c=2f
+vi4 (in4 0) v dc=1
+xp4 (o4 in4 bkb bkb) sg13_lv_pmos w=1.12u l=0.13u
+xn4 (o4 in4 gnh gnh) sg13_lv_nmos w=0.74u l=0.13u
+cl4 (o4 gnh) cmod c=2f
+vi5 (in5 0) v dc=0
+xp5 (o5 in5 bkb bkb) sg13_lv_pmos w=1.12u l=0.13u
+xn5 (o5 in5 gnl gnl) sg13_lv_nmos w=0.74u l=0.13u
+cl5 (o5 gnl) cmod c=2f
+vi6 (in6 0) v dc=1
+xp6 (o6 in6 bkb bkb) sg13_lv_pmos w=1.12u l=0.13u
+xn6 (o6 in6 gnh gnh) sg13_lv_nmos w=0.74u l=0.13u
+cl6 (o6 gnh) cmod c=2f
+vi7 (in7 0) v dc=0
+xp7 (o7 in7 bkb bkb) sg13_lv_pmos w=1.12u l=0.13u
+xn7 (o7 in7 gnl gnl) sg13_lv_nmos w=0.74u l=0.13u
+cl7 (o7 gnl) cmod c=2f
+
+control
+  options tran_method="gear" reltol=1e-5
+  save v(bka) v(bkb) v(sw) v(mid) v(gt) v(gtp) v(pk)
+  save v(o0) v(o1) v(o2) v(o3) v(o4) v(o5) v(o6) v(o7)
+  save i(lt) i(vmgh) i(vmgl) i(vhi) i(vgt) i(vgtp) i(vpk)
+  save i(vi0) i(vi1) i(vi2) i(vi3) i(vi4) i(vi5) i(vi6) i(vi7)
+  analysis tg15ptr tran step=0.1p stop=816.755p maxstep=0.25p icmode="op" ic=["bka"; 1.0; "mid"; 1.0; "sw"; 1.0; "bkb"; 0.0]
+endc

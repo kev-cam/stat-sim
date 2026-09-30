@@ -1,0 +1,15 @@
+metering validation: RC discharge closed form (C=1p V0=1 R=1k tau=1ns)
+
+load "capacitor.osdi"
+load "spice/resistor.osdi"
+model cmod capacitor
+model rmod sp_resistor
+
+c1 (n1 0) cmod c=1p
+r1 (n1 0) rmod r=1k
+
+control
+  options tran_method="gear" reltol=1e-6 abstol=1e-15 chgtol=1e-17
+  save v(n1)
+  analysis metertr tran step=1p stop=10n maxstep=5p icmode="op" ic=["n1"; 1.0]
+endc
