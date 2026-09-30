@@ -1,0 +1,64 @@
+.hdl "/usr/local/share/xyce/verilog-a/psp103/psp103.va"
+.include "/usr/local/src/kestrel/sim/models/sg13g2_psp103_tt.lib"
+.include "/usr/local/src/stat-sim/qal/sg13lv_compat.sp"
+.OPTIONS TIMEINT METHOD=GEAR RELTOL=1e-6 ABSTOL=1e-15 CHGTOL=1e-17
+.include "/usr/local/src/IHP-Open-PDK/ihp-sg13g2/libs.ref/sg13g2_stdcell/spice/sg13g2_stdcell.spice"
+V1 a 0 0.5
+V2 b 0 0.5
+XWN0 d0 a 0 0 sg13_lv_nmos w=2.82843u l=0.13u
+RN0 d0 b 1k
+XWN1 d1 a 0 0 sg13_lv_nmos w=4u l=0.13u
+RN1 d1 b 1k
+XWN2 d2 a 0 0 sg13_lv_nmos w=5.65685u l=0.13u
+RN2 d2 b 1k
+XWN3 d3 a 0 0 sg13_lv_nmos w=8u l=0.13u
+RN3 d3 b 1k
+XWN4 d4 a 0 0 sg13_lv_nmos w=14.1421u l=0.13u
+RN4 d4 b 1k
+XWN5 d5 a 0 0 sg13_lv_nmos w=16u l=0.13u
+RN5 d5 b 1k
+XWN6 d6 a 0 0 sg13_lv_nmos w=20u l=0.13u
+RN6 d6 b 1k
+XWN7 d7 a 0 0 sg13_lv_nmos w=28.2843u l=0.13u
+RN7 d7 b 1k
+XWN8 d8 a 0 0 sg13_lv_nmos w=40u l=0.13u
+RN8 d8 b 1k
+XWN9 d9 a 0 0 sg13_lv_nmos w=80u l=0.13u
+RN9 d9 b 1k
+XWP10 e10 a b b sg13_lv_pmos w=28.2843u l=0.13u
+RP10 e10 0 1k
+XWP11 e11 a b b sg13_lv_pmos w=40u l=0.13u
+RP11 e11 0 1k
+XWP12 e12 a b b sg13_lv_pmos w=56.5685u l=0.13u
+RP12 e12 0 1k
+XWP13 e13 a b b sg13_lv_pmos w=80u l=0.13u
+RP13 e13 0 1k
+XWP14 e14 a b b sg13_lv_pmos w=160u l=0.13u
+RP14 e14 0 1k
+XC0 y0 a a a b 0 sg13g2_a21o_1
+RC0 y0 0 1k
+XC1 y1 a a a b 0 sg13g2_a21oi_1
+RC1 y1 0 1k
+XC2 y2 a a b 0 sg13g2_and2_1
+RC2 y2 0 1k
+XC3 y3 a b 0 sg13g2_buf_1
+RC3 y3 0 1k
+XC4 y4 a b 0 sg13g2_inv_1
+RC4 y4 0 1k
+XC5 y5 a a b 0 sg13g2_nand2_1
+RC5 y5 0 1k
+XC6 y6 a a b 0 sg13g2_nor2_1
+RC6 y6 0 1k
+XC7 y7 a a b 0 sg13g2_nor2b_1
+RC7 y7 0 1k
+XC8 y8 a a a b 0 sg13g2_o21ai_1
+RC8 y8 0 1k
+XC9 y9 a a b 0 sg13g2_or2_1
+RC9 y9 0 1k
+XC10 y10 a a b 0 sg13g2_xnor2_1
+RC10 y10 0 1k
+XC11 y11 a a b 0 sg13g2_xor2_1
+RC11 y11 0 1k
+.tran 1p 20p
+.print tran V(a)
+.end

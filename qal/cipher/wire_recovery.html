@@ -1,0 +1,740 @@
+<title>Wiring Does The Rotate</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+
+<style>
+:root{
+  --paper:#f4f6f8; --surface:#ffffff; --surface-2:#eaeff3; --surface-3:#e0e7ec;
+  --text:#1b262f; --text-dim:#5a6a76; --text-faint:#8494a0;
+  --rule:#d2dae1; --rule-soft:#e5ebef;
+  --recov:#0f6b62; --diss:#a5391c; --accent:#0f6b62;
+  --recov-soft:rgba(15,107,98,.10); --diss-soft:rgba(165,57,28,.10);
+  --recov-bar:rgba(15,107,98,.32); --diss-bar:rgba(165,57,28,.34);
+  --shadow:0 1px 2px rgba(27,38,47,.05),0 8px 24px -16px rgba(27,38,47,.22);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#0e1419; --surface:#151d24; --surface-2:#1b242c; --surface-3:#222d36;
+    --text:#dbe3ea; --text-dim:#8ea0ad; --text-faint:#6d7f8c;
+    --rule:#2a3641; --rule-soft:#1f2a33;
+    --recov:#5cc3b4; --diss:#e88a66; --accent:#5cc3b4;
+    --recov-soft:rgba(92,195,180,.13); --diss-soft:rgba(232,138,102,.13);
+    --recov-bar:rgba(92,195,180,.34); --diss-bar:rgba(232,138,102,.34);
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -16px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0e1419; --surface:#151d24; --surface-2:#1b242c; --surface-3:#222d36;
+  --text:#dbe3ea; --text-dim:#8ea0ad; --text-faint:#6d7f8c;
+  --rule:#2a3641; --rule-soft:#1f2a33;
+  --recov:#5cc3b4; --diss:#e88a66; --accent:#5cc3b4;
+  --recov-soft:rgba(92,195,180,.13); --diss-soft:rgba(232,138,102,.13);
+  --recov-bar:rgba(92,195,180,.34); --diss-bar:rgba(232,138,102,.34);
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -16px rgba(0,0,0,.7);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--paper); color:var(--text);
+  font-family:"Source Serif 4",Georgia,"Times New Roman",serif;
+  font-size:17px; line-height:1.62; -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1180px;margin:0 auto;padding:0 28px 104px}
+.col{max-width:69ch}
+
+/* ---------- type ---------- */
+h1,h2,h3,.eyebrow,.lab,th,.k,.big,.pill,.tag{font-family:Archivo,"Helvetica Neue",Arial,sans-serif}
+h1{font-size:clamp(2.1rem,4.6vw,3.15rem);line-height:1.04;font-weight:700;letter-spacing:-.022em;margin:0;text-wrap:balance}
+h2{font-size:1.42rem;font-weight:700;letter-spacing:-.012em;margin:0 0 .15em;text-wrap:balance}
+h3{font-size:1.02rem;font-weight:600;letter-spacing:.002em;margin:2.1em 0 .5em;text-wrap:balance}
+p{margin:0 0 1.05em}
+.eyebrow{font-size:.685rem;font-weight:600;letter-spacing:.17em;text-transform:uppercase;color:var(--text-faint)}
+.lab{font-size:.7rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--text-dim)}
+code,.mono,.num{font-family:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;font-variant-numeric:tabular-nums}
+code{font-size:.855em;background:var(--surface-2);padding:.1em .34em;border-radius:3px;color:var(--text)}
+strong{font-weight:600}
+em{font-style:italic}
+a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:2px}
+a:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
+.dim{color:var(--text-dim)}
+.up{color:var(--recov);font-weight:600}
+.down{color:var(--diss);font-weight:600}
+
+/* ---------- masthead ---------- */
+header.top{border-bottom:1px solid var(--rule);padding:56px 0 34px;margin-bottom:44px}
+.kicker{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:22px}
+.tag{font-size:.665rem;font-weight:600;letter-spacing:.13em;text-transform:uppercase;
+  padding:4px 9px;border:1px solid var(--rule);border-radius:2px;color:var(--text-dim);background:var(--surface)}
+.tag.on{border-color:var(--accent);color:var(--accent);background:var(--recov-soft)}
+.sub{font-size:1.17rem;line-height:1.5;color:var(--text-dim);margin:20px 0 0;max-width:62ch}
+.sub b{color:var(--text);font-weight:600}
+.meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(178px,1fr));gap:2px 26px;margin-top:30px;
+  border-top:1px solid var(--rule-soft);padding-top:18px}
+.meta div{padding:5px 0}
+.meta .k{display:block;font-size:.66rem;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:var(--text-faint);margin-bottom:3px}
+.meta .v{font-family:"IBM Plex Mono",monospace;font-size:.795rem;color:var(--text);word-break:break-word}
+
+/* ---------- verdict strip ---------- */
+.verdict{display:grid;grid-template-columns:repeat(auto-fit,minmax(252px,1fr));gap:14px;margin:0 0 14px}
+.vc{background:var(--surface);border:1px solid var(--rule);border-radius:3px;padding:20px 20px 18px;
+  box-shadow:var(--shadow);position:relative;overflow:hidden}
+.vc::before{content:"";position:absolute;inset:0 auto 0 0;width:3px;background:var(--rule)}
+.vc.good::before{background:var(--recov)}
+.vc.mid::before{background:var(--text-faint)}
+.vc.bad::before{background:var(--diss)}
+.vc .lab{display:block;margin-bottom:12px}
+.big{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;
+  font-size:2.28rem;font-weight:600;line-height:1;letter-spacing:-.03em;display:block}
+.vc.good .big{color:var(--recov)}
+.vc.bad .big{color:var(--diss)}
+.vc p{font-size:.895rem;line-height:1.5;color:var(--text-dim);margin:11px 0 0}
+.vnote{font-size:.85rem;color:var(--text-faint);margin:0 0 42px;max-width:78ch}
+
+/* ---------- sections ---------- */
+section{margin:0 0 58px;scroll-margin-top:20px}
+.shead{display:flex;gap:16px;align-items:baseline;border-top:1px solid var(--rule);padding-top:16px;margin-bottom:22px}
+.step{font-family:Archivo,sans-serif;font-size:.78rem;font-weight:700;letter-spacing:.08em;
+  color:var(--accent);background:var(--recov-soft);border-radius:2px;padding:3px 8px;flex:none;
+  position:relative;top:-2px}
+.shead .t{flex:1}
+.shead .t .eyebrow{display:block;margin-bottom:4px}
+
+/* ---------- tables ---------- */
+.tbox{overflow-x:auto;margin:22px 0 10px;border:1px solid var(--rule);border-radius:3px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-family:"IBM Plex Mono",monospace;
+  font-variant-numeric:tabular-nums;font-size:.775rem;line-height:1.42}
+th{font-family:Archivo,sans-serif;font-size:.655rem;font-weight:600;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--text-dim);text-align:right;padding:11px 12px;background:var(--surface-2);
+  border-bottom:1px solid var(--rule);white-space:nowrap;position:sticky;top:0}
+th:first-child,td:first-child{text-align:left}
+td{padding:9px 12px;text-align:right;border-bottom:1px solid var(--rule-soft);white-space:nowrap}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:var(--surface-2)}
+td.name{font-family:Archivo,sans-serif;font-size:.79rem;font-weight:500;letter-spacing:.005em;white-space:normal;min-width:190px}
+tr.base td{background:var(--surface-3)}
+tr.base:hover td{background:var(--surface-3)}
+caption{caption-side:bottom;text-align:left;font-family:"Source Serif 4",serif;font-size:.86rem;
+  line-height:1.5;color:var(--text-dim);padding:13px 14px;border-top:1px solid var(--rule-soft)}
+.bar{display:inline-block;height:7px;border-radius:1px;vertical-align:middle;margin-right:7px}
+.bar.g{background:var(--recov-bar)}
+.bar.r{background:var(--diss-bar)}
+.pill{display:inline-block;font-size:.63rem;font-weight:600;letter-spacing:.09em;text-transform:uppercase;
+  padding:2px 6px;border-radius:2px;white-space:nowrap}
+.pill.p{background:var(--recov-soft);color:var(--recov)}
+.pill.f{background:var(--diss-soft);color:var(--diss)}
+
+/* ---------- callouts ---------- */
+.note{background:var(--surface);border:1px solid var(--rule);border-left:3px solid var(--accent);
+  border-radius:0 3px 3px 0;padding:17px 20px;margin:24px 0;font-size:.945rem;line-height:1.56}
+.note.warn{border-left-color:var(--diss)}
+.note .lab{display:block;margin-bottom:7px}
+.note p:last-child{margin-bottom:0}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(288px,1fr));gap:16px;margin:24px 0}
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:3px;padding:18px 19px}
+.card .lab{display:block;margin-bottom:9px}
+.card p{font-size:.92rem;line-height:1.55;margin:0 0 .7em}
+.card p:last-child{margin-bottom:0}
+.card .n{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;
+  font-size:1.5rem;font-weight:600;letter-spacing:-.02em;display:block;margin-bottom:6px}
+
+/* ---------- figure ---------- */
+figure{margin:30px 0;background:var(--surface);border:1px solid var(--rule);border-radius:3px;
+  padding:26px 24px 0;color:var(--text)}
+figure svg{display:block;width:100%;max-width:100%;height:auto;margin:0 auto}
+figcaption{font-size:.89rem;line-height:1.55;color:var(--text-dim);border-top:1px solid var(--rule-soft);
+  margin-top:22px;padding:14px 0 18px}
+figcaption b{color:var(--text);font-weight:600}
+
+/* ---------- scored predictions ---------- */
+.preds{display:flex;flex-direction:column;gap:2px;margin:24px 0}
+.pred{display:grid;grid-template-columns:52px 96px 1fr;gap:16px;align-items:start;
+  padding:14px 16px;background:var(--surface);border:1px solid var(--rule-soft);border-radius:3px}
+.pred .id{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:.86rem;color:var(--text-faint)}
+.pred .sc{font-family:Archivo,sans-serif;font-size:.66rem;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;padding-top:3px}
+.pred.right{border-left:3px solid var(--recov)} .pred.right .sc{color:var(--recov)}
+.pred.part{border-left:3px solid var(--text-faint)} .pred.part .sc{color:var(--text-dim)}
+.pred.wrong{border-left:3px solid var(--diss)} .pred.wrong .sc{color:var(--diss)}
+.pred .bd{font-size:.925rem;line-height:1.54}
+.pred .bd b{font-weight:600}
+
+ul{margin:0 0 1.05em;padding-left:1.15em}
+li{margin-bottom:.42em}
+li::marker{color:var(--text-faint)}
+details{border:1px solid var(--rule);border-radius:3px;background:var(--surface);padding:0;margin:22px 0}
+summary{font-family:Archivo,sans-serif;font-size:.83rem;font-weight:600;letter-spacing:.01em;
+  padding:13px 18px;cursor:pointer;color:var(--text)}
+details[open] summary{border-bottom:1px solid var(--rule-soft)}
+.dbody{padding:16px 18px 4px;font-size:.93rem;line-height:1.56}
+footer{border-top:1px solid var(--rule);padding-top:22px;color:var(--text-faint);font-size:.83rem;line-height:1.6}
+@media (max-width:620px){
+  body{font-size:16px}
+  .wrap{padding:0 18px 72px}
+  .pred{grid-template-columns:44px 1fr;gap:6px 12px}
+  .pred .bd{grid-column:1/-1}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="wrap">
+
+<header class="top">
+  <div class="kicker">
+    <span class="tag">qal/cipher · phase 1</span>
+    <span class="tag">IHP SG13G2 · PSP103</span>
+    <span class="tag on">pre-registered 19:40:00</span>
+    <span class="tag">instrument check G1 pass</span>
+  </div>
+  <h1>Wiring does the rotate.<br>QAL takes half of it back.</h1>
+  <p class="sub">The insight was that a rotate costs zero gates but real wire capacitance, and that
+  wire is the one capacitance an adiabatic rail recovers instead of dissipating. Measured on the
+  committed per-bank-tank chain with a PDK-extracted 32-bit-rotate load: <b>true where the wire sits
+  on the resonant node, and worth almost nothing where a rotate actually lives.</b></p>
+  <div class="meta">
+    <div><span class="k">Topology</span><span class="v">banktank 0aae11e · 4×8 gates · m=10 · T=150 ps · H=4 · dV=1.65 V · L=15 nH · R=10 Ω</span></div>
+    <div><span class="k">Wire figure</span><span class="v">Metal2 min width · 0.0930 / 0.15 / 0.2181 fF/µm · 2.400 fF per rotated bit</span></div>
+    <div><span class="k">Pre-registration</span><span class="v">81c1d78f0f71d5a9… · 17 419 B · 2026-09-29</span></div>
+    <div><span class="k">Scored by</span><span class="v">qal/fcrit S3 · trip tag S · 3σ = 19.323 mV</span></div>
+  </div>
+</header>
+
+<div class="verdict">
+  <div class="vc good">
+    <span class="lab">Wire on the rail — resonant node</span>
+    <span class="big">2.01–5.00×</span>
+    <p>Cheaper than CMOS on the same capacitance at the same measured swing. Net cost
+    <span class="num">0.400–0.994</span>× the wire's own stored energy per cycle, against CMOS's
+    <span class="num">2.000</span>.</p>
+  </div>
+  <div class="vc mid">
+    <span class="lab">Wire on signal nodes — a real rotate</span>
+    <span class="big">1.00–1.59×</span>
+    <p>Behind the driving cell's pull-up, outside the LC loop. With the tank re-sized to hold the
+    rail it is <span class="num">1.003×</span> — break-even to three digits.</p>
+  </div>
+  <div class="vc bad">
+    <span class="lab">Signal nodes at the PDK's XOR2 bit pitch</span>
+    <span class="big">0.749×</span>
+    <p>QAL <em>loses</em>. And this row is the only one that stops computing: fcrit S3 27/32,
+    failing inside the noise budget at +3.263 mV.</p>
+  </div>
+</div>
+<p class="vnote">Every ratio is a difference between two decks identical apart from one capacitor, so
+the cells' own load, the gate drives, the switch loss and the baseline tank loss cancel exactly. The
+CMOS comparator carries the identical capacitance on the identical cells and its supply is set to the
+QAL variant's own measured swing peak; it reproduces <span class="num">n·C<sub>w</sub>·V²</span> to
+0.4–0.6 %.</p>
+
+<!-- ============================================================ (a) -->
+<section>
+  <div class="shead">
+    <span class="step">a</span>
+    <div class="t"><span class="eyebrow">pre-registration</span><h2>Written before the first deck, and the mtimes prove it</h2></div>
+  </div>
+  <div class="col">
+  <p>The PDK extraction had to come first, because the pre-registration has to state the figure it
+  will use. That extraction is pure arithmetic on committed PDK files — no simulation — and the
+  netlist byte-identity check that follows it runs no simulation either.</p>
+  </div>
+  <div class="tbox"><table>
+    <thead><tr><th>Artefact</th><th>mtime</th><th>What it fixed</th></tr></thead>
+    <tbody>
+      <tr><td class="name">DISK_STATE_BEFORE.txt</td><td>19:32:50</td><td style="text-align:left;white-space:normal">sha256 + mtime of every committed input, before anything was written</td></tr>
+      <tr><td class="name">wire.py · WIRE_MODEL.json</td><td>19:34:28</td><td style="text-align:left;white-space:normal">the interconnect figure and its provenance — <em>no simulation</em></td></tr>
+      <tr><td class="name">btk/ byte-identity check</td><td>19:36:29</td><td style="text-align:left;white-space:normal">both committed netlists regenerated and byte-compared — <em>no simulation</em></td></tr>
+      <tr class="base"><td class="name">PRE_REGISTERED.json</td><td>19:40:00</td><td style="text-align:left;white-space:normal">acceptance gates G1–G10, the wire figure, and eight numbered expectations</td></tr>
+      <tr><td class="name">first Xyce deck</td><td>19:40+</td><td style="text-align:left;white-space:normal">—</td></tr>
+    </tbody>
+    <caption>Five amendments were forced afterwards and are recorded in <code>AMENDMENT.md</code> with
+    the measurement that forced each one — including a self-correction inside one of the fixes, where
+    my first return-zero search ran past the commanded open and returned a park-loop zero 83 ps
+    late.</caption>
+  </table></div>
+</section>
+
+<!-- ============================================================ (b) -->
+<section>
+  <div class="shead">
+    <span class="step">b</span>
+    <div class="t"><span class="eyebrow">the wire model</span><h2>0.15 fF/µm was assumed. It is now bracketed by the PDK.</h2></div>
+  </div>
+  <div class="col">
+  <p>Min-width <strong>Metal2</strong>, read straight out of <code>sg13g2_tech.lef</code> — the same
+  RC OpenROAD and librelane use for this process. <code>CPERSQDIST = 1.81e-05 pF/µm²</code> and
+  <code>EDGECAPACITANCE = 4.47e-05 pF/µm</code> per edge give an isolated wire over the plane below
+  at <strong>0.0930 fF/µm</strong>. That is <em>measured from the PDK</em>: the numbers are read, not
+  modelled.</p>
+  <p>The LEF model carries no same-layer coupling, and a rotate bundle is a bus. The coupling term is
+  <em>derived</em> from the ITF geometry (thickness 0.450 µm, spacing 0.210 µm, ε<sub>r</sub> = 4.1)
+  by the Sakurai–Tamaru closed form, whose isolated prediction independently reproduces the LEF
+  figure to 84 % — which is what makes it trustworthy for the part the LEF omits.</p>
+  </div>
+  <div class="tbox"><table>
+    <thead><tr><th>Figure</th><th>fF/µm</th><th>Label</th><th>Source</th></tr></thead>
+    <tbody>
+      <tr><td class="name">Isolated over the plane below</td><td>0.0930</td><td><span class="pill p">measured</span></td><td style="text-align:left;white-space:normal">sg13g2_tech.lef</td></tr>
+      <tr><td class="name">OpenRCX far-spacing total</td><td>0.1077</td><td><span class="pill p">corroborates</span></td><td style="text-align:left;white-space:normal">116 % of the LEF figure</td></tr>
+      <tr><td class="name">Sakurai isolated</td><td>0.0784</td><td><span class="pill p">corroborates</span></td><td style="text-align:left;white-space:normal">84 % of the LEF figure</td></tr>
+      <tr class="base"><td class="name">The campaign's own figure</td><td>0.1500</td><td><span class="pill p">bracketed</span></td><td style="text-align:left;white-space:normal">lies inside the band — retained as nominal</td></tr>
+      <tr><td class="name">Middle of a min-pitch bus</td><td>0.2181</td><td><span class="pill p">derived</span></td><td style="text-align:left;white-space:normal">shielded ground 0.0114 + 2 × coupling 0.1033</td></tr>
+      <tr><td class="name">OpenRCX min-spacing coupling</td><td>0.4599</td><td><span class="pill f">flagged</span></td><td style="text-align:left;white-space:normal">4.5× Sakurai, 5.9× a parallel-plate bound — not used</td></tr>
+    </tbody>
+    <caption>Both ends of the band are run as rows, so no conclusion rests on the midpoint. Declining
+    to use the OpenRCX coupling entry is the conservative choice: it would raise every wire figure
+    roughly 4× and make QAL's case look better.</caption>
+  </table></div>
+
+  <h3>How long a rotate wire is</h3>
+  <div class="col">
+  <p>Bit <em>i</em> goes to bit <em>(i+r)</em> mod <em>W</em>, so <em>W−r</em> bits travel <em>r</em>
+  pitches and <em>r</em> bits travel <em>W−r</em> (the wrap). Mean length is
+  <code>2r(W−r)/W</code> bit pitches — 16.0 / 15.0 / 12.0 / 10.94 for ChaCha20's r = 16 / 12 / 8 / 7,
+  mean 13.48. At the brief's own geometry (32 bits, r = 16, 1 µm bit pitch) that is 16 µm per bit and
+  <strong>2.400 fF per rotated bit</strong>; 32 bits × 16 µm × 0.15 fF/µm = <strong>76.8 fF</strong>
+  against the brief's "~75 fF". Reproduced.</p>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <span class="lab">Correction 1 — the wire is a smaller share than supposed</span>
+      <span class="n">20–33 %</span>
+      <p>Of the committed bank's own measured 35.979 fF, at the nominal 0.15 fF/µm. The brief's "a
+      third to a half" holds only at the <em>top</em> of the PDK band (29–49 % at 0.2181 fF/µm).</p>
+    </div>
+    <div class="card">
+      <span class="lab">Correction 2 — the 64-cell bank figure</span>
+      <span class="n">287.8 fF</span>
+      <p>Not 128 fF. The committed 8-cell bank measures 35.979 fF → 4.497 fF/cell → 64 cells is
+      287.8 fF for <em>inverters</em>, and an XOR2 is larger. A 2.25× understatement, and it works
+      <em>against</em> the insight.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ (c) -->
+<section>
+  <div class="shead">
+    <span class="step">c</span>
+    <div class="t"><span class="eyebrow">instrument check · gate g1</span><h2>The committed row reproduces digit for digit</h2></div>
+  </div>
+  <div class="col">
+  <p>Both committed banktank decks were regenerated from a verbatim copy of the committed generator
+  and came out <strong>byte-identical</strong>, then re-run here under this run's own
+  <code>PYMS_VAE_CACHE</code> and compared quantity by quantity against the committed
+  <code>.mt0</code>.</p>
+  </div>
+  <div class="tbox"><table>
+    <thead><tr><th>Deck</th><th>Quantities</th><th>Bit-identical</th><th>Worst relative</th><th>G1</th></tr></thead>
+    <tbody>
+      <tr><td class="name">c_m10_T150_H4_dv1650_free</td><td>440</td><td>422</td><td>5.792e−07</td><td><span class="pill p">pass</span></td></tr>
+      <tr><td class="name">c_m10_T200_H4_dv1200_free</td><td>440</td><td>435</td><td>3.126e−07</td><td><span class="pill p">pass</span></td></tr>
+    </tbody>
+    <caption>The residual is last-digit rounding in the <code>.mt0</code> text. Re-running the
+    committed <em>extractor</em> on the reproduced decks returns every derived metric — PASS,
+    worst_gate_pct 90.3874281903175, separation 902.79723 mV, stage time 137.57482199999993 ps and
+    every per-bank energy — at relative difference 0.00e+00. The <code>.so</code>-cache hazard that
+    the banktank run logged did not recur.</caption>
+  </table></div>
+</section>
+
+<!-- ============================================================ (d) -->
+<section>
+  <div class="shead">
+    <span class="step">d</span>
+    <div class="t"><span class="eyebrow">the chain, with and without the wire</span><h2>Position beats magnitude</h2></div>
+  </div>
+  <div class="col">
+  <p>Nine rows on the committed 4-bank chain at its own best beat. The same total capacitance is
+  placed two ways — on all eight <strong>signal</strong> nodes of every bank, where a rotate wire
+  physically is, and lumped on the <strong>rail</strong>, the resonant node — and the tank is either
+  left at the committed value or re-sized per bank to hold the delivered rail. The convention-free
+  headline is what the tanks permanently gave up, <code>½C<sub>t</sub>(V₀²−V₁²)</code> on a linear
+  capacitor.</p>
+  </div>
+  <div class="tbox"><table>
+    <thead><tr>
+      <th>Configuration</th><th>C<sub>w</sub> fF</th><th>E<sub>tank</sub> fJ</th><th>ΔE fJ</th>
+      <th>net ÷ stored</th><th>CMOS ref fJ</th><th>vs CMOS</th><th>rail min V</th>
+      <th>fcrit S3</th><th>tank µm²</th>
+    </tr></thead>
+    <tbody>
+      <tr class="base"><td class="name">control — no wire</td><td>0.000</td><td>180.511</td><td>—</td><td>—</td><td>—</td><td>—</td><td>1.0009</td><td>32/32</td><td>959</td></tr>
+      <tr><td class="name">signal · fixed tank</td><td>2.400</td><td>202.839</td><td>22.328</td><td>1.256</td><td>35.548</td><td><span class="bar g" style="width:32px"></span><span class="up">1.592×</span></td><td><span class="down">0.9567</span></td><td>32/32</td><td>959</td></tr>
+      <tr><td class="name">rail · fixed tank</td><td>2.400</td><td>190.129</td><td>9.618</td><td>0.400</td><td>48.113</td><td><span class="bar g" style="width:100px"></span><span class="up">5.002×</span></td><td>0.9939</td><td>32/32</td><td>959</td></tr>
+      <tr><td class="name">signal · rail-matched tank</td><td>2.400</td><td>220.030</td><td>39.519</td><td>1.995</td><td>39.619</td><td><span class="bar g" style="width:20px"></span>1.003×</td><td>1.0267</td><td>32/32</td><td>1215</td></tr>
+      <tr><td class="name">rail · rail-matched tank</td><td>2.400</td><td>206.462</td><td>25.951</td><td>0.994</td><td>52.213</td><td><span class="bar g" style="width:40px"></span><span class="up">2.012×</span></td><td>1.0632</td><td>32/32</td><td>1215</td></tr>
+      <tr><td class="name">signal · 3-segment π ladder</td><td>2.400</td><td>220.034</td><td>39.523</td><td>1.995</td><td>39.619</td><td><span class="bar g" style="width:20px"></span>1.002×</td><td>1.0267</td><td>32/32</td><td>1215</td></tr>
+      <tr><td class="name">signal · low end of band</td><td>1.488</td><td>205.170</td><td>24.659</td><td>1.927</td><td>25.594</td><td><span class="bar g" style="width:21px"></span>1.038×</td><td>1.0156</td><td>32/32</td><td>1118</td></tr>
+      <tr><td class="name">signal · high end of band</td><td>3.489</td><td>237.239</td><td>56.728</td><td>2.074</td><td>54.708</td><td><span class="bar r" style="width:19px"></span><span class="down">0.964×</span></td><td>1.0414</td><td>32/32</td><td>1332</td></tr>
+      <tr><td class="name">signal · XOR2 bit pitch</td><td>9.216</td><td>337.022</td><td>156.511</td><td>2.670</td><td>117.218</td><td><span class="bar r" style="width:15px"></span><span class="down">0.749×</span></td><td>1.1227</td><td><span class="pill f">27/32</span></td><td>1942</td></tr>
+    </tbody>
+    <caption><strong>net ÷ stored</strong> is the net energy the wire cost the tanks divided by the
+    energy actually stored on it at peak. <strong>CMOS is 2.000 by construction</strong> — half burnt
+    on the way up, half on the way down — and the CMOS decks measure 2.004–2.006. Read the column
+    against 2.000 and the whole result is visible in one place: the rail placement halves it or
+    better; the signal placement lands on it; at the XOR2 pitch it exceeds it.</caption>
+  </table></div>
+
+  <div class="note">
+    <span class="lab">The lumped-C booking, validated rather than declared</span>
+    <p>The same 2.400 fF as a three-segment π ladder carrying the PDK's own 8.24 Ω over 16 µm differs
+    from the lumped row by <strong>0.004 fJ — 0.01 %</strong>. The idealisation is worth nothing here,
+    and it was applied identically to both sides anyway.</p>
+  </div>
+
+  <h3>The energy split, and how much wire charge actually comes back</h3>
+  <div class="grid2">
+    <div class="card">
+      <span class="lab">Signal wire · matched tank</span>
+      <span class="n down">−53.9 %</span>
+      <p>Incremental return. The tanks push <span class="num">24.793 fJ</span> more into the rails and
+      get <span class="num">13.369 fJ</span> <em>less</em> back than they did without the wire. Net cost
+      <span class="num">39.519 fJ</span> to store <span class="num">19.809 fJ</span>.</p>
+      <p>Per-bank recycle falls 25.41 / 17.12 / 19.11 / 18.81 % →
+      19.62 / 9.42 / 13.73 / 11.87 %. The wire does not merely fail to recover — it degrades the
+      recovery of the bank's own charge.</p>
+    </div>
+    <div class="card">
+      <span class="lab">Rail wire · matched tank</span>
+      <span class="n up">+49.9 %</span>
+      <p>Incremental return. <span class="num">40.646 fJ</span> in,
+      <span class="num">20.295 fJ</span> back. Net cost <span class="num">25.951 fJ</span> to store
+      <span class="num">26.106 fJ</span> — one-to-one.</p>
+      <p>Per-bank recycle <em>rises</em> 25.41 / 17.12 / 19.11 / 18.81 % →
+      28.32 / 22.26 / 22.37 / 23.94 %. The only term in this campaign where adding capacitance
+      improves the recycling.</p>
+    </div>
+  </div>
+
+  <figure>
+    <svg viewBox="0 0 1000 384" role="img" aria-label="The resonant loop contains the tank, inductor, series resistance, transfer switch and the rail. A wire placed on the rail is inside the loop and its charge returns through the inductor. A wire placed on a cell output node is behind the cell's pull-up pMOS, outside the loop, and is charged and discharged resistively.">
+      <defs>
+        <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0 0 L10 5 L0 10 z" fill="currentColor"/>
+        </marker>
+        <marker id="arG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0 0 L10 5 L0 10 z" fill="var(--recov)"/>
+        </marker>
+        <marker id="arR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0 0 L10 5 L0 10 z" fill="var(--diss)"/>
+        </marker>
+      </defs>
+
+      <!-- resonant loop boundary -->
+      <rect x="18" y="84" width="574" height="182" rx="4" fill="none" stroke="var(--recov)"
+            stroke-width="1.5" stroke-dasharray="7 5" opacity=".85"/>
+      <text x="32" y="106" font-family="Archivo, sans-serif" font-size="12.5" font-weight="700"
+            fill="var(--recov)" letter-spacing="1.4">THE RESONANT LOOP</text>
+
+      <!-- main spine -->
+      <line x1="72" y1="176" x2="120" y2="176" stroke="currentColor" stroke-width="1.6"/>
+      <!-- inductor coils -->
+      <path d="M120 176 q10 -16 20 0 q10 -16 20 0 q10 -16 20 0 q10 -16 20 0"
+            fill="none" stroke="currentColor" stroke-width="1.9"/>
+      <line x1="200" y1="176" x2="238" y2="176" stroke="currentColor" stroke-width="1.6"/>
+      <!-- series R -->
+      <rect x="238" y="166" width="52" height="20" fill="none" stroke="currentColor" stroke-width="1.6"/>
+      <line x1="290" y1="176" x2="330" y2="176" stroke="currentColor" stroke-width="1.6"/>
+      <!-- transfer switch -->
+      <rect x="330" y="160" width="60" height="32" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/>
+      <line x1="336" y1="186" x2="384" y2="166" stroke="currentColor" stroke-width="1.5"/>
+      <line x1="390" y1="176" x2="470" y2="176" stroke="currentColor" stroke-width="1.6"/>
+
+      <!-- tank -->
+      <line x1="72" y1="140" x2="72" y2="212" stroke="currentColor" stroke-width="1.6"/>
+      <line x1="56" y1="212" x2="88" y2="212" stroke="currentColor" stroke-width="2.4"/>
+      <line x1="56" y1="222" x2="88" y2="222" stroke="currentColor" stroke-width="2.4"/>
+      <line x1="72" y1="222" x2="72" y2="240" stroke="currentColor" stroke-width="1.6"/>
+      <line x1="58" y1="240" x2="86" y2="240" stroke="currentColor" stroke-width="1.9"/>
+      <text x="72" y="130" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12.5" fill="currentColor">C_tank</text>
+      <text x="72" y="258" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" fill="var(--text-dim)">360 fF</text>
+
+      <text x="160" y="150" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12.5" fill="currentColor">L 15 nH</text>
+      <text x="264" y="158" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12.5" fill="currentColor">10 Ω</text>
+      <text x="360" y="150" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12.5" fill="currentColor">tg15p</text>
+
+      <!-- rail node -->
+      <circle cx="470" cy="176" r="5" fill="currentColor"/>
+      <text x="470" y="152" text-anchor="middle" font-family="Archivo, sans-serif" font-size="13" font-weight="700" fill="currentColor">RAIL</text>
+      <text x="470" y="136" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" fill="var(--text-dim)">peak 1.21 V</text>
+
+      <!-- rail wire (inside loop) -->
+      <line x1="470" y1="176" x2="470" y2="206" stroke="var(--recov)" stroke-width="1.9"/>
+      <line x1="452" y1="206" x2="488" y2="206" stroke="var(--recov)" stroke-width="2.6"/>
+      <line x1="452" y1="216" x2="488" y2="216" stroke="var(--recov)" stroke-width="2.6"/>
+      <line x1="470" y1="216" x2="470" y2="236" stroke="var(--recov)" stroke-width="1.9"/>
+      <line x1="456" y1="236" x2="484" y2="236" stroke="var(--recov)" stroke-width="1.9"/>
+      <text x="470" y="256" text-anchor="middle" font-family="Archivo, sans-serif" font-size="12" font-weight="700" fill="var(--recov)">RAIL WIRE</text>
+
+      <!-- cell pull-up -->
+      <line x1="470" y1="176" x2="610" y2="176" stroke="currentColor" stroke-width="1.6"/>
+      <line x1="610" y1="176" x2="682" y2="176" stroke="currentColor" stroke-width="1.6"/>
+      <rect x="610" y="158" width="72" height="36" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/>
+      <text x="646" y="181" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" fill="currentColor">pMOS</text>
+      <text x="646" y="146" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" fill="var(--text-dim)">w = 1.12 µm</text>
+      <text x="646" y="216" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" fill="var(--diss)">~15 kΩ channel</text>
+
+      <!-- output node -->
+      <line x1="682" y1="176" x2="790" y2="176" stroke="currentColor" stroke-width="1.6"/>
+      <circle cx="790" cy="176" r="5" fill="currentColor"/>
+      <text x="790" y="152" text-anchor="middle" font-family="Archivo, sans-serif" font-size="13" font-weight="700" fill="currentColor">OUTPUT</text>
+      <text x="790" y="136" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" fill="var(--text-dim)">peak 1.06 V</text>
+      <line x1="790" y1="176" x2="838" y2="176" stroke="currentColor" stroke-width="1.6"/>
+      <text x="884" y="180" font-family="IBM Plex Mono, monospace" font-size="11.5" fill="var(--text-dim)">to next bank</text>
+
+      <!-- signal wire (outside loop) -->
+      <line x1="790" y1="176" x2="790" y2="206" stroke="var(--diss)" stroke-width="1.9"/>
+      <line x1="772" y1="206" x2="808" y2="206" stroke="var(--diss)" stroke-width="2.6"/>
+      <line x1="772" y1="216" x2="808" y2="216" stroke="var(--diss)" stroke-width="2.6"/>
+      <line x1="790" y1="216" x2="790" y2="236" stroke="var(--diss)" stroke-width="1.9"/>
+      <line x1="776" y1="236" x2="804" y2="236" stroke="var(--diss)" stroke-width="1.9"/>
+      <text x="790" y="256" text-anchor="middle" font-family="Archivo, sans-serif" font-size="12" font-weight="700" fill="var(--diss)">ROTATE WIRE</text>
+
+      <!-- verdicts -->
+      <path d="M262 300 L262 330 L470 330 L470 302" fill="none" stroke="var(--recov)" stroke-width="1.7" marker-end="url(#arG)"/>
+      <text x="366" y="352" text-anchor="middle" font-family="Archivo, sans-serif" font-size="12.5" font-weight="700" fill="var(--recov)">charge returns through L — net cost 0.99× stored</text>
+      <text x="366" y="370" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11.5" fill="var(--recov)">rise hop 124.57 → 129.76 ps  (+4.2 %: the inductor sees it)</text>
+
+      <path d="M646 300 L646 330 L790 330 L790 302" fill="none" stroke="var(--diss)" stroke-width="1.7" marker-end="url(#arR)"/>
+      <text x="790" y="352" text-anchor="middle" font-family="Archivo, sans-serif" font-size="12.5" font-weight="700" fill="var(--diss)">filled and drained resistively — 2.00× stored</text>
+      <text x="790" y="370" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11.5" fill="var(--diss)">rise hop 124.57 → 124.92 ps  (+0.28 %: it never does)</text>
+
+      <!-- flow arrow along the spine -->
+      <path d="M100 118 L440 118" fill="none" stroke="currentColor" stroke-width="1.3" opacity=".45" marker-end="url(#ar)"/>
+      <text x="270" y="112" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" fill="var(--text-dim)">resonant half-cycle, both directions</text>
+    </svg>
+    <figcaption><b>The one figure that carries the result.</b> The inductor's charge transfer sees
+    only the capacitance inside the dashed loop. A rail wire is inside it and shifts the measured
+    zero-current instant by 4.2 %; a rotate wire hangs on a cell output node, behind that cell's own
+    ~15 kΩ pull-up channel, and shifts it by 0.28 % — the inductor never sees it, so the wire is
+    filled from the rail and drained back through a resistance that is outside the resonance. Those
+    two hop times are measured, and they are the mechanism.</figcaption>
+  </figure>
+
+  <div class="note warn">
+    <span class="lab">This refutes the mechanism I pre-registered</span>
+    <p>I predicted the pull-up pMOS would stop conducting at <code>|Vtp| = 0.4403 V</code> and cap
+    recovery at 80.6–82.4 %. Measured, the output-node end voltages are
+    <span class="num">0.7587 / 0.7871 / 0.8000 / 0.8000 V</span> and the rail end voltages are
+    <span class="num">0.7587 / 0.7871 / 0.8000 / 0.8000 V</span> — equal to four decimals. The pMOS
+    conducts all the way down and <strong>the threshold never binds</strong>. The wire's recovery is
+    capped by the <em>rail's</em> own recovery: the rail stops at 0.76–0.80 V out of a 1.21 V peak,
+    because the committed return stroke removes only about 60 % of the rail's stored charge.</p>
+  </div>
+</section>
+
+<!-- ============================================================ (e) -->
+<section>
+  <div class="shead">
+    <span class="step">e</span>
+    <div class="t"><span class="eyebrow">the decisive comparison</span><h2>One hop, one harness, both technologies</h2></div>
+  </div>
+  <div class="col">
+  <p>Same eight cells, same load, same models, same <code>.OPTIONS</code>, same 2 ps edges, same
+  wire capacitors. QAL raises and returns the rail at its own measured zero-current instants; CMOS
+  drives the same three nodes through a full 0 → V → 0 cycle from an ideal supply set equal to the
+  QAL variant's own measured swing peak.</p>
+  <p>The CMOS side is validated first, because a comparator you have not checked is not a
+  comparator.</p>
+  </div>
+  <div class="tbox"><table>
+    <thead><tr><th>CMOS supply</th><th>E(C<sub>w</sub>=0) fJ</th><th>E(C<sub>w</sub>=2.4) fJ</th><th>ΔE fJ</th><th>n·C<sub>w</sub>·V² fJ</th><th>ratio</th><th>integrator − QV</th></tr></thead>
+    <tbody>
+      <tr><td class="name">1.0603 V</td><td>25.5950</td><td>33.7190</td><td>8.1240</td><td>8.0945</td><td>1.0036</td><td>4.0e−04 fJ</td></tr>
+      <tr><td class="name">1.1061 V</td><td>27.8410</td><td>36.6870</td><td>8.8460</td><td>8.8089</td><td>1.0042</td><td>−1.3e−04 fJ</td></tr>
+      <tr><td class="name">1.1509 V</td><td>30.1230</td><td>39.7060</td><td>9.5830</td><td>9.5369</td><td>1.0048</td><td>−5.0e−05 fJ</td></tr>
+      <tr><td class="name">1.1785 V</td><td>31.5700</td><td>41.6220</td><td>10.0520</td><td>9.9998</td><td>1.0052</td><td>9.2e−04 fJ</td></tr>
+      <tr><td class="name">1.2229 V</td><td>33.9610</td><td>44.7920</td><td>10.8310</td><td>10.7675</td><td>1.0059</td><td>−1.6e−03 fJ</td></tr>
+    </tbody>
+    <caption>The measured incremental CMOS wire energy reproduces the textbook
+    <code>n·C<sub>w</sub>·V²</code> per cycle to 0.4–0.6 %, and the 1 F integrator agrees with an
+    independent charge-times-voltage computation to 1.6e−03 fJ. The 0.4–0.6 % excess is the extra
+    short-circuit and subthreshold charge a slower node edge costs — and it <em>favours</em> QAL in
+    every ratio below.</caption>
+  </table></div>
+
+  <div class="tbox"><table>
+    <thead><tr><th>QAL variant</th><th>C<sub>t</sub> fF</th><th>E<sub>tank</sub>/cycle fJ</th><th>ΔE<sub>QAL</sub> fJ</th><th>swing peak V</th><th>ΔE<sub>CMOS</sub> fJ</th><th>Ratio</th></tr></thead>
+    <tbody>
+      <tr class="base"><td class="name">control — no wire</td><td>359.79</td><td>43.3049</td><td>—</td><td>1.1509</td><td>—</td><td>—</td></tr>
+      <tr><td class="name">signal node · fixed tank</td><td>359.79</td><td>47.8379</td><td>4.5331</td><td>1.0603</td><td>8.1243</td><td><span class="bar g" style="width:36px"></span><span class="up">1.792×</span></td></tr>
+      <tr><td class="name">rail · fixed tank</td><td>359.79</td><td>44.9966</td><td>1.6917</td><td>1.1785</td><td>10.0520</td><td><span class="bar g" style="width:119px"></span><span class="up">5.942×</span></td></tr>
+      <tr><td class="name">signal node · matched tank</td><td>431.79</td><td>50.9979</td><td>7.6930</td><td>1.1061</td><td>8.8457</td><td><span class="bar g" style="width:23px"></span>1.150×</td></tr>
+      <tr><td class="name">rail · matched tank</td><td>431.79</td><td>48.0398</td><td>4.7350</td><td>1.2229</td><td>10.8316</td><td><span class="bar g" style="width:46px"></span><span class="up">2.288×</span></td></tr>
+    </tbody>
+    <caption>The fixed-tank pair answers "what does the wire itself cost, everything else identical";
+    the matched-tank pair answers "what does it cost to carry the wire <em>and</em> keep the delivered
+    rail". Both are given because they are different questions and the honest answer to the second is
+    smaller. The single-hop and 4-bank numbers agree.</caption>
+  </table></div>
+
+  <div class="note warn">
+    <span class="lab">The loop quality factor was the wrong model, and I used it in my own pre-registration</span>
+    <p>I predicted 5–40× for the rail wire from <code>(2/π)·√(L/C_eff)/R = 43.11×</code>. That
+    reference assumes the only loss is the 10 Ω series resistance — and the measured series-R loss is
+    <span class="num">0.82–1.06 fJ</span> per hop, against roughly <span class="num">43 fJ</span>
+    dissipated inside the bank on the way in (68.5 fJ pushed into the rail for 25.3 fJ of storage)
+    and <span class="num">6.7–8.6 fJ</span> in the switch block. The transfer was never R-limited,
+    so 43× was never reachable in this topology. The bottom of my band is the right answer for the
+    wrong reason.</p>
+  </div>
+</section>
+
+<!-- ============================================================ (f) -->
+<section>
+  <div class="shead">
+    <span class="step">f</span>
+    <div class="t"><span class="eyebrow">mechanism probes</span><h2>The defeating mechanism is fixable, and the price is exactly the exchange</h2></div>
+  </div>
+  <div class="col">
+  <p>If the signal wire recovers poorly because it is filled and drained through the cell's own
+  channel resistance, then making that path adiabatic must improve it. Two levers test that
+  independently — a slower rail ramp, and a lower channel resistance. Each departs from the committed
+  point in one stated way, so these are labelled probes, not scored rows.</p>
+  </div>
+  <div class="tbox"><table>
+    <thead><tr><th>Probe</th><th>L nH</th><th>w<sub>p</sub> µm</th><th>rise hop ps</th><th>ΔE<sub>QAL</sub> fJ</th><th>net ÷ stored</th><th>vs CMOS</th><th>hop recycle</th><th>What it costs</th></tr></thead>
+    <tbody>
+      <tr class="base"><td class="name">committed point</td><td>15</td><td>1.12</td><td>124.66</td><td>4.5331</td><td>1.120</td><td>1.786×</td><td>27.4 %</td><td style="text-align:left;white-space:normal">—</td></tr>
+      <tr><td class="name">slower ramp</td><td>60</td><td>1.12</td><td>257.19</td><td>3.5227</td><td>0.721</td><td><span class="up">2.775×</span></td><td>34.4 %</td><td style="text-align:left;white-space:normal">the hop takes 2.07× as long</td></tr>
+      <tr><td class="name">wider pull-up</td><td>15</td><td>4.48</td><td>139.62</td><td>2.6028</td><td>0.780</td><td><span class="up">2.563×</span></td><td>41.3 %</td><td style="text-align:left;white-space:normal">baseline hop 43.30 → 57.60 fJ (+33 %), rail 1.2106 → 1.0206 V</td></tr>
+    </tbody>
+    <caption>Confirmed twice, independently. Both levers roughly double the signal-wire saving and
+    both raise the whole hop's recycle fraction. The mechanism that defeats the insight is not a
+    property of QAL — it is that the committed cell's pull-up is too resistive for the committed
+    ramp. Fixing it costs speed, or area and baseline energy: the area/power-for-speed exchange,
+    measured rather than asserted.</caption>
+  </table></div>
+</section>
+
+<!-- ============================================================ predictions -->
+<section>
+  <div class="shead">
+    <span class="step">✓</span>
+    <div class="t"><span class="eyebrow">pre-stated expectations, scored</span><h2>Two right, three partly, three wrong</h2></div>
+  </div>
+  <div class="preds">
+    <div class="pred right"><span class="id">P0</span><span class="sc">right</span><div class="bd">
+      <b>The topology point is the result.</b> Signal wire versus rail wire, at identical total
+      capacitance, differs by 2.0–3.5× in every framing.</div></div>
+    <div class="pred wrong"><span class="id">P1</span><span class="sc">wrong</span><div class="bd">
+      <b>Wrong device.</b> I named <code>|Vtp|</code> as the stranding limit. The node tracks the rail
+      to four decimals, so the threshold never binds; the rail's own recovery is the cap.</div></div>
+    <div class="pred wrong"><span class="id">P2</span><span class="sc">wrong</span><div class="bd">
+      <b>Not low — negative.</b> I predicted an incremental recycle of 5–20 %. It is
+      −47 % to −120 %: adding signal wire makes the bank's existing recycling worse.</div></div>
+    <div class="pred part"><span class="id">P3</span><span class="sc">partly</span><div class="bd">
+      <b>Signal-wire ratio 0.3–1.2×.</b> Right for the matched-tank rows (1.003×, 0.964×, 0.749×);
+      wrong for the fixed-tank rows (1.592× and 1.792×). I under-called the case where nothing but the
+      capacitor changes.</div></div>
+    <div class="pred part"><span class="id">P4</span><span class="sc">partly</span><div class="bd">
+      <b>Rail-wire ratio 5–40×.</b> 5.002× and 5.942× with a fixed tank, just inside the band;
+      2.012× and 2.288× with the matched tank, below it. And the mechanism I cited — the loop quality
+      factor — is the wrong model, as the measured loss breakdown shows.</div></div>
+    <div class="pred wrong"><span class="id">P5</span><span class="sc">wrong</span><div class="bd">
+      <b>Wrong in both directions.</b> The fixed-tank droop is −4.4 %, below my 5–12 % band — and it
+      <em>does</em> cross the 0.9642 V level-restoring floor (0.9567 V), which I predicted it would
+      not.</div></div>
+    <div class="pred part"><span class="id">P6</span><span class="sc">partly</span><div class="bd">
+      <b>The 90 % bar fails and fcrit S3 still passes 32/32 — both right.</b> But the rail-matched
+      tank does not recover the 90 % bar (78.70 %, 16/32); only the rail-wire variant partly does
+      (86.70 %, 27/32).</div></div>
+    <div class="pred wrong"><span class="id">P7</span><span class="sc">wrong</span><div class="bd">
+      <b>Five times too pessimistic.</b> I predicted the stage time would lengthen 10–20 %; measured
+      +3.1 % (137.52 → 141.75 ps). The wire's real timing cost is in the <em>return</em> hop
+      (+17.1 %), which sits inside the hold window and is paid in the initiation interval, not the
+      beat.</div></div>
+    <div class="pred right"><span class="id">P8</span><span class="sc">right</span><div class="bd">
+      <b>Tank area 959.4 → ~1218 µm².</b> Measured 1215.4 µm² at C<sub>w</sub> = 2.400 fF, rising to
+      1942.4 µm² at 9.216 fF.</div></div>
+  </div>
+</section>
+
+<!-- ============================================================ gates + bookings -->
+<section>
+  <div class="shead">
+    <span class="step">◇</span>
+    <div class="t"><span class="eyebrow">gates and bookings</span><h2>What holds, and which way each idealisation leans</h2></div>
+  </div>
+  <div class="tbox"><table>
+    <thead><tr><th>Gate</th><th>Status</th><th>Evidence</th></tr></thead>
+    <tbody>
+      <tr><td class="name">G1 · instrument reproduction</td><td><span class="pill p">pass</span></td><td style="text-align:left;white-space:normal">422/440 and 435/440 <code>.mt0</code> quantities bit-identical; every derived metric at relative 0.00e+00</td></tr>
+      <tr><td class="name">G2 · |I(L)| ≤ 1 µA at every open</td><td><span class="pill p">pass</span></td><td style="text-align:left;white-space:normal">all 18 rows, after the return-zero fixed point. Before it, 8 of 9 chain rows failed (worst 8.63 µA = 0.00056 fJ stranded); the fix moved the headlines by &lt;0.01 fJ</td></tr>
+      <tr><td class="name">G3 · path identity</td><td><span class="pill p">pass</span></td><td style="text-align:left;white-space:normal">within 1 % of E<sub>out of tank</sub>; single-hop residual ≤ 0.0003 fJ</td></tr>
+      <tr><td class="name">G5 · convention-free energy</td><td><span class="pill p">pass</span></td><td style="text-align:left;white-space:normal">every headline is ½C(V₀²−V₁²) on a linear capacitor; integrators are cross-checks only</td></tr>
+      <tr><td class="name">G6 · fcrit functional S3</td><td><span class="pill p">8 of 9</span></td><td style="text-align:left;white-space:normal">32/32 everywhere except C<sub>w</sub> = 9.216 fF (27/32, failing <em>inside</em> the budget at +3.263 mV against 19.323 mV)</td></tr>
+      <tr><td class="name">G7 · level-restoring &gt; 0.9642 V</td><td><span class="pill f">1 fail</span></td><td style="text-align:left;white-space:normal">signal wire on a <em>fixed</em> tank drops bank 2 to 0.9567 V — 7.5 mV below the floor. Re-sizing the tank is not optional.</td></tr>
+      <tr><td class="name">G8 · separation ≥ 6.44 mV</td><td><span class="pill p">pass</span></td><td style="text-align:left;white-space:normal">minimum 539.5 mV, at C<sub>w</sub> = 9.216 fF</td></tr>
+      <tr><td class="name">G9 · comparator symmetry</td><td><span class="pill p">pass</span></td><td style="text-align:left;white-space:normal">identical capacitance, cells, options and edges; supply set to the QAL variant's own measured swing at five voltages</td></tr>
+    </tbody>
+  </table></div>
+
+  <details>
+    <summary>Bookings — every idealisation, and the direction it biases the result</summary>
+    <div class="dbody">
+      <ul>
+        <li><strong>Ideal CMOS supply.</strong> Favours CMOS — a real regulator adds loss. Every
+        ratio here is conservative for QAL.</li>
+        <li><strong>Tank pre-charge not costed.</strong> Favours QAL. Every row is a bound on that
+        account; the committed <code>topup</code> variant is what costs it.</li>
+        <li><strong>Ideal gate-drive and V<sub>HI</sub> rails</strong>, metered but not generated.
+        Favours QAL — CMOS needs no such rail. Measured 3.86 → 8.33 fJ of gate drive across the
+        4-bank run.</li>
+        <li><strong>Lumped wire capacitance.</strong> Applied identically to both sides, and
+        <em>measured</em> to be worth 0.01 % against a π ladder carrying the PDK's own resistance.</li>
+        <li><strong>No via or jog capacitance.</strong> Understates the wire, hence understates
+        whichever side wire capacitance favours.</li>
+        <li><strong>Single-shot rails.</strong> The committed deck's rails end at 0.72–0.88 V, not 0,
+        because the return recovers only 17–25 %. Every energy here is a <em>first-cycle</em> energy.
+        It cancels in the difference and is identical on both sides, but it bounds the
+        interpretation.</li>
+        <li><strong>JUNCAP leakage.</strong> The compat shim discards <code>ad/as/pd/ps</code>, so the
+        default PD = 1.00 µm clips the STI-edge term on the 1.12 µm pMOS: every implied leakage figure
+        is a lower bound.</li>
+      </ul>
+    </div>
+  </details>
+</section>
+
+<!-- ============================================================ phase 2 -->
+<section>
+  <div class="shead">
+    <span class="step">→</span>
+    <div class="t"><span class="eyebrow">what phase 2 inherits</span><h2>The regime AES AddRoundKey actually sits in</h2></div>
+  </div>
+  <div class="col">
+  <p>The wire model is settled and PDK-bracketed, and the rotate length formula is closed-form. Two
+  things carry forward with teeth in them.</p>
+  <p><strong>The XOR2 pitch is the operating point, not an outlier.</strong> AES AddRoundKey is 128
+  XOR2 cells wide, and <code>sg13g2_xor2_1</code> is 3.84 µm — so C<sub>w</sub> = 9.216 fF per bit is
+  the realistic load, and that is precisely the row where the committed configuration stops computing
+  (fcrit S3 27/32) <em>and</em> QAL loses the wire term to CMOS (0.749×). Phase 2 vehicle (a) must
+  widen the cells, slow the ramp, or both — and the mechanism probes say how much each buys.</p>
+  <p><strong>The adder point reframes itself.</strong> This run does not measure ripple against
+  parallel-prefix. What it does establish is that the beat is set by the <em>rise</em> hop and the
+  rise hop is set by the capacitance inside the LC loop — so a wide-and-shallow adder pays its wire in
+  the return hop and the initiation interval rather than in the beat. That is the opposite of what the
+  bank-profile argument predicts, and it is worth measuring directly rather than asserting.</p>
+  <p class="dim">Budget note: a 4×8 row is 93–100 s of Xyce wall and ~8 MB of <code>.prn</code>, and
+  each configuration needs eight sequential zero-current probes plus one fixed-point re-run. A
+  128-cell single-level bank is sixteen times the cell count — probe at 8 or 16 cells and scale by
+  measured per-cell increments instead.</p>
+  </div>
+</section>
+
+<footer>
+  <p><strong>Phase 1 verdict.</strong> The adiabatic mechanism does apply to the dominant capacitance
+  — but only when that capacitance is inside the resonant loop. A rotate permutation is by
+  construction on signal nodes, behind each driving cell's own pull-up, and there the measured saving
+  runs from 59 % down to nothing and turns negative at the PDK's own XOR2 bit pitch. The insight
+  survives as a <em>design instruction</em>, not as a free win: get the wire into the charge path, or
+  pay for the driver that makes the path adiabatic.</p>
+  <p>All figures measured with Xyce and PSP103 on IHP-Open-PDK SG13G2. Pre-registration
+  <code>81c1d78f0f71d5a92ee5cc3a6c007c53ecc52a1b35057ce2a3b5af06a5672166</code>. Working directory
+  <code>/usr/local/src/stat-sim/qal/cipher/</code>; amendments A1–A5 in <code>AMENDMENT.md</code>;
+  every quoted number cross-checked against <code>ANALYSIS.json</code>.</p>
+</footer>
+
+</div>

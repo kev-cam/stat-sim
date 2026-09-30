@@ -1,0 +1,47 @@
+================================================================================
+THE SKEPTIC'S VERDICT NUMBERS
+================================================================================
+
+1. THE BEAT -- three readings, in increasing order of defensibility
+   their headline (t_valid at T=200 + U2)          : 143.141 ps
+   self-consistent (t_valid at the SOLUTION + U2)  : 143.529 ps  [+0.39, theirs is optimistic]
+   A6-VALIDATED (their own gate knees 150->145)    : 150.000 ps  <-- DEFENSIBLE
+   at T=150 the timing budget is MET with slack:
+     t_valid_3sigma_total(150) + U2 = 136.1498 + 7.272 = 143.4218 ps <= 150
+     slack = 6.578 ps
+   => on THIS arrangement the timing budget is NOT the binding constraint.
+      The RETURN-ZERO SCHEDULE is.  The beat is 150 ps, and the 143 ps figure
+      is a budget limit at a beat their own A6 gate rejects (1.40 / 2.95 uA).
+
+2. PER-LEVEL LATENCY  (no win is claimable; confirming the liability)
+   their beat 143.141     vs FAIR CMOS 52.51 ps  => QAL 2.726x SLOWER
+                          vs their CMOS 57.143 ps => QAL 2.505x slower (what they report)
+   A6-validated 150       vs FAIR CMOS 52.51 ps  => QAL 2.857x SLOWER
+                          vs their CMOS 57.143 ps => QAL 2.625x slower (what they report)
+   NO LATENCY WIN.  Confirmed on both comparators.
+
+3. THROUGHPUT AND THE CROSSOVER D  (H=4, strict II = H*T + tzq, 1 level/bank)
+   configuration                                        D_i      D_ii    Di  Dii
+   THEIRS: T=143.141, CMOS 57.143, t_reg 315.4, unc 0     1.949     7.188     2    8
+   fair CMOS 52.51 only                               1.974     7.822     2    8
+   A6 beat 150 + fair CMOS                            2.048     8.344     3    9
+   A6 beat 150 + fair CMOS + honest t_reg x1.11       1.872     7.684     2    8
+   A6 beat 150 + fair CMOS + honest t_reg x1.21       1.736     7.083     2    8
+   A6 beat 150 + fair CMOS, unc=100 (clock tree)      1.611     6.440     2    7
+   A6 beat 150 + fair CMOS, unc=250 (flow)            1.220     3.583     2    4
+   => the two corrections (fairer CMOS raises D, honest flop tax lowers it)
+      LARGELY CANCEL.  D_ii = 8-9 at an ideal clock, 7 at a tree clock, 4 at a
+      flow clock.  Their D=8 is ROBUST.  D_i moves 2 -> 3 at the validated beat.
+
+4. THE EYE ITSELF (my own measurement, calibrated single timer, binding bank 3)
+   t_valid (data valid after own rail start) : 126.634 ps  [intersection, all gates]
+   setup slack at T=200                      : 73.366 ps
+   setup slack at the A6-validated T=150     : 23.366 ps
+   HEIGHT at the sampling instant            : 165.4 mV = 7.10 sigma_total
+   WIDTH at 0 mV / 3 sigma_trip              : no close in a single-shot deck (LOWER BOUND)
+   WIDTH at 3 sigma_total (budget's contour) : 749.5 ps  [first measured finite width]
+   WIDTH that actually binds (pipelined)     : H*T - t_valid = 473.3 ps at T=150
+   vs the 61.6 ps jitter: the eye is NOT narrower than it -- but the 61.6 ps
+   figure is a dV=0.8 V / L=400 nH / single-bank number and does not transfer.
+   The quantity that binds here is SETUP SLACK, and at the validated beat it is
+   23.4 ps against a 16.507 ps composed budget.

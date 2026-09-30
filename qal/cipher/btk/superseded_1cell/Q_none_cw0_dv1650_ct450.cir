@@ -1,0 +1,112 @@
+.hdl "/usr/local/share/xyce/verilog-a/psp103/psp103.va"
+.include "/usr/local/src/kestrel/sim/models/sg13g2_psp103_tt.lib"
+.include "/usr/local/src/stat-sim/qal/sg13lv_compat.sp"
+.OPTIONS TIMEINT METHOD=GEAR RELTOL=1e-6 ABSTOL=1e-15 CHGTOL=1e-17
+VHI vhi 0 1.5
+VMG gn 0 0
+VIN in 0 0
+XP o in rail rail sg13_lv_pmos w=1.12u l=0.13u
+XN o in gn gn sg13_lv_nmos w=0.74u l=0.13u
+CL o gn 2f
+CT tnk 0 44.973750f
+L1 tnk mid 15n
+R1 mid sw 10
+XSWN sw gt rail 0 sg13_lv_nmos w=10u l=0.13u
+XSWP sw gtp rail vhi sg13_lv_pmos w=20u l=0.13u
+XPK sw pk tnk tnk sg13_lv_nmos w=2u l=0.13u
+VGT gt 0 PWL(0 0 198p 0 200p 1.5 272.034p 1.5 274.034p 0 798p 0 800p 1.5 878.467p 1.5 880.467p 0)
+VGTP gtp 0 PWL(0 1.5 198p 1.5 200p 0 272.034p 0 274.034p 1.5 798p 1.5 800p 0 878.467p 0 880.467p 1.5)
+VPK pk 0 PWL(0 1.5 198p 1.5 200p 0 272.034p 0 274.034p 1.5 798p 1.5 800p 0 878.467p 0 880.467p 1.5)
+CXqlt xqlt 0 1
+BXqlt 0 xqlt I={ I(L1) }
+RXqlt xqlt 0 0.01
+CXea xea 0 1
+BXea 0 xea I={ V(tnk)*I(L1) }
+RXea xea 0 0.01
+CXeb xeb 0 1
+BXeb 0 xeb I={ V(rail)*I(L1) }
+RXeb xeb 0 0.01
+CXesw xesw 0 1
+BXesw 0 xesw I={ V(sw)*I(L1) }
+RXesw xesw 0 0.01
+CXer xer 0 1
+BXer 0 xer I={ I(L1)*I(L1)*10 }
+RXer xer 0 0.01
+CXqg xqg 0 1
+BXqg 0 xqg I={ I(VMG) }
+RXqg xqg 0 0.01
+CXegt xegt 0 1
+BXegt 0 xegt I={ -V(gt)*I(VGT)-V(gtp)*I(VGTP)-V(pk)*I(VPK) }
+RXegt xegt 0 0.01
+CXehi xehi 0 1
+BXehi 0 xehi I={ -1.5*I(VHI) }
+RXehi xehi 0 0.01
+.ic V(tnk)=0.9075 V(rail)=0 V(sw)=0.9075 V(o)=0
+.tran 0.1p 1478.47p 0 0.25p
+.measure tran QLT_Z FIND V(xqlt) AT=1.500000p
+.measure tran QLT_O FIND V(xqlt) AT=273.033777p
+.measure tran QLT_R FIND V(xqlt) AT=799.000000p
+.measure tran QLT_Q FIND V(xqlt) AT=879.466637p
+.measure tran QLT_D FIND V(xqlt) AT=1474.466637p
+.measure tran EA_Z FIND V(xea) AT=1.500000p
+.measure tran EA_O FIND V(xea) AT=273.033777p
+.measure tran EA_R FIND V(xea) AT=799.000000p
+.measure tran EA_Q FIND V(xea) AT=879.466637p
+.measure tran EA_D FIND V(xea) AT=1474.466637p
+.measure tran EB_Z FIND V(xeb) AT=1.500000p
+.measure tran EB_O FIND V(xeb) AT=273.033777p
+.measure tran EB_R FIND V(xeb) AT=799.000000p
+.measure tran EB_Q FIND V(xeb) AT=879.466637p
+.measure tran EB_D FIND V(xeb) AT=1474.466637p
+.measure tran ESW_Z FIND V(xesw) AT=1.500000p
+.measure tran ESW_O FIND V(xesw) AT=273.033777p
+.measure tran ESW_R FIND V(xesw) AT=799.000000p
+.measure tran ESW_Q FIND V(xesw) AT=879.466637p
+.measure tran ESW_D FIND V(xesw) AT=1474.466637p
+.measure tran ER_Z FIND V(xer) AT=1.500000p
+.measure tran ER_O FIND V(xer) AT=273.033777p
+.measure tran ER_R FIND V(xer) AT=799.000000p
+.measure tran ER_Q FIND V(xer) AT=879.466637p
+.measure tran ER_D FIND V(xer) AT=1474.466637p
+.measure tran QG_Z FIND V(xqg) AT=1.500000p
+.measure tran QG_O FIND V(xqg) AT=273.033777p
+.measure tran QG_R FIND V(xqg) AT=799.000000p
+.measure tran QG_Q FIND V(xqg) AT=879.466637p
+.measure tran QG_D FIND V(xqg) AT=1474.466637p
+.measure tran EGT_Z FIND V(xegt) AT=1.500000p
+.measure tran EGT_O FIND V(xegt) AT=273.033777p
+.measure tran EGT_R FIND V(xegt) AT=799.000000p
+.measure tran EGT_Q FIND V(xegt) AT=879.466637p
+.measure tran EGT_D FIND V(xegt) AT=1474.466637p
+.measure tran EHI_Z FIND V(xehi) AT=1.500000p
+.measure tran EHI_O FIND V(xehi) AT=273.033777p
+.measure tran EHI_R FIND V(xehi) AT=799.000000p
+.measure tran EHI_Q FIND V(xehi) AT=879.466637p
+.measure tran EHI_D FIND V(xehi) AT=1474.466637p
+.measure tran VTZ FIND V(tnk) AT=1.500000p
+.measure tran VRZ FIND V(rail) AT=1.500000p
+.measure tran VOZ FIND V(o) AT=1.500000p
+.measure tran VSZ FIND V(sw) AT=1.500000p
+.measure tran VTO FIND V(tnk) AT=273.033777p
+.measure tran VRO FIND V(rail) AT=273.033777p
+.measure tran VOO FIND V(o) AT=273.033777p
+.measure tran VSO FIND V(sw) AT=273.033777p
+.measure tran VTR FIND V(tnk) AT=799.000000p
+.measure tran VRR FIND V(rail) AT=799.000000p
+.measure tran VOR FIND V(o) AT=799.000000p
+.measure tran VSR FIND V(sw) AT=799.000000p
+.measure tran VTQ FIND V(tnk) AT=879.466637p
+.measure tran VRQ FIND V(rail) AT=879.466637p
+.measure tran VOQ FIND V(o) AT=879.466637p
+.measure tran VSQ FIND V(sw) AT=879.466637p
+.measure tran VTD FIND V(tnk) AT=1474.466637p
+.measure tran VRD FIND V(rail) AT=1474.466637p
+.measure tran VOD FIND V(o) AT=1474.466637p
+.measure tran VSD FIND V(sw) AT=1474.466637p
+.measure tran VOPK MAX V(o) FROM=200p TO=1478.47p
+.measure tran VRPK MAX V(rail) FROM=200p TO=1478.47p
+.measure tran IZ FIND I(L1) AT=273.033777p
+.measure tran IZQ FIND I(L1) AT=879.466637p
+.measure tran IPK MAX I(L1) FROM=200p TO=1478.47p
+.print tran V(tnk) V(rail) V(o) V(sw) I(L1)
+.end

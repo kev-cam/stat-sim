@@ -1,0 +1,60 @@
+{
+ "VERDICT_overall": "NEITHER cipher vehicle puts QAL ahead of CMOS at realistic data activity, and both lose decisively on speed.  AES-128 AddRoundKey -- the brief's own best possible case, N = 128 in ONE level with zero carry -- needs activity > 0.677 to win on energy and gets about 0.5, so it costs 1.35x MORE energy than a CMOS-native AddRoundKey while being 5.8x slower on latency and 14.9x on throughput.  The ChaCha20 XOR+rotate step needs activity > 0.557 and also loses.  The brief's framing was 'if QAL loses here it loses on every cipher datapath': it loses here.  The ONE term where QAL does win is the interconnect itself -- the incremental cost of the ChaCha rotate wire is 0.90x its stored energy against CMOS's 1.92x, a 2.13x saving -- which partially VINDICATES the insight, and revises Phase 1's 'QAL does essentially nothing for wire behind a driver'.  But that term does not carry the vehicle, because QAL raises and returns the whole bank rail whatever the data does while CMOS charges only the nodes that flip.",
+ "per_vehicle": {
+  "aes_T1150_cw4608_ms1": {
+   "vehicle": "aes_addroundkey",
+   "paired_with": "the functional bank alone",
+   "crossover_activity": 0.6768,
+   "ratio_at_activity_1": 1.4776,
+   "ratio_at_activity_0p5": 0.7388,
+   "ENERGY_verdict": "QAL ahead only if activity > 0.677; at ~0.5 it is 0.739x -> QAL COSTLIER",
+   "SPEED_verdict": "5.79x slower latency, 14.91x slower throughput",
+   "LEVEL_RESTORING": "FAILS G7: rail 0.8869 V at boundary (peak 0.9446) vs 0.9642 V floor",
+   "COMPUTES": "fcrit 384/384, value check exact"
+  },
+  "ks8_T600_cwstruct": {
+   "vehicle": "ks_w8",
+   "paired_with": "whole chain",
+   "crossover_activity": 0.4798,
+   "ratio_at_activity_1": 1.3895,
+   "ratio_at_activity_0p5": 1.0421,
+   "ENERGY_verdict": "QAL ahead only if activity > 0.480; at ~0.5 it is 1.042x -> QAL CHEAPER",
+   "SPEED_verdict": "3.29x slower latency, 4.58x slower throughput",
+   "LEVEL_RESTORING": "FAILS G7: rail 0.8263 V at boundary (peak 1.0585) vs 0.9642 V floor",
+   "COMPUTES": "fcrit 76/76, value check exact"
+  },
+  "qrxor_T650_cw0": {
+   "vehicle": "qrxor_w32_r16",
+   "paired_with": "the functional bank alone",
+   "crossover_activity": 0.5927,
+   "ratio_at_activity_1": 1.6871,
+   "ratio_at_activity_0p5": 0.8435,
+   "ENERGY_verdict": "QAL ahead only if activity > 0.593; at ~0.5 it is 0.844x -> QAL COSTLIER",
+   "SPEED_verdict": "5.24x slower latency, 13.65x slower throughput",
+   "LEVEL_RESTORING": "FAILS G7: rail 0.9304 V at boundary (peak 1.0668) vs 0.9642 V floor",
+   "COMPUTES": "fcrit 96/96, value check exact"
+  },
+  "qrxor_T650_cw7767": {
+   "vehicle": "qrxor_w32_r16",
+   "paired_with": "the functional bank alone",
+   "crossover_activity": 0.5572,
+   "ratio_at_activity_1": 1.7947,
+   "ratio_at_activity_0p5": 0.8973,
+   "ENERGY_verdict": "QAL ahead only if activity > 0.557; at ~0.5 it is 0.897x -> QAL COSTLIER",
+   "SPEED_verdict": "3.44x slower latency, 8.95x slower throughput",
+   "LEVEL_RESTORING": "FAILS G7: rail 0.8578 V at boundary (peak 1.0678) vs 0.9642 V floor",
+   "COMPUTES": "fcrit 96/96, value check exact"
+  },
+  "qrxor_T650_cw7767_ms1": {
+   "vehicle": "qrxor_w32_r16",
+   "paired_with": "the functional bank alone",
+   "crossover_activity": 0.5572,
+   "ratio_at_activity_1": 1.7947,
+   "ratio_at_activity_0p5": 0.8973,
+   "ENERGY_verdict": "QAL ahead only if activity > 0.557; at ~0.5 it is 0.897x -> QAL COSTLIER",
+   "SPEED_verdict": "3.44x slower latency, 8.95x slower throughput",
+   "LEVEL_RESTORING": "FAILS G7: rail 0.8578 V at boundary (peak 1.0678) vs 0.9642 V floor",
+   "COMPUTES": "fcrit 96/96, value check exact"
+  }
+ }
+}

@@ -1,0 +1,51 @@
+=== A. recompute per-T worst aggregation from T*/EYEBEAT.json ===
+T60   0mV     OK
+T60   3sigma  OK
+T90   0mV     OK
+T90   3sigma  OK
+T120  0mV     OK
+T120  3sigma  OK
+T150  0mV     OK
+T150  3sigma  OK
+T200  0mV     OK
+T200  3sigma  OK
+T250  0mV     OK
+T250  3sigma  OK
+T300  0mV     OK
+T300  3sigma  OK
+aggregation deviations: 0
+
+=== B. budget composition audit ===
+terms: JIT worst-case 61.6 ps (GIVEN, N-invariant, a WORST-CASE bound)
+       JIT random     30.8 ps (= 61.6/sqrt(4): a p-p WC bound scaled by 1/sqrt(N) -- convention mix, see below)
+       drift          4.6 ps (0.46 ps/K x +/-10 K ASSUMED; systematic)
+       sigma_trip     6.441 mV charged as 3*sigma = 19.323 mV IN THE THRESHOLD (margin domain)
+composition: SLACK_3sigma > JIT + DRIFT  (straight SUM, no RSS)
+
+T=120  slack3s   2.6237 | vs WC 66.2: fail (margin -63.5763) | vs RAND 35.4: fail (margin -32.7763)
+T=150  slack3s  19.6785 | vs WC 66.2: fail (margin -46.5215) | vs RAND 35.4: fail (margin -15.7215)
+T=200  slack3s  69.6926 | vs WC 66.2: PASS (margin +3.4926) | vs RAND 35.4: PASS (margin +34.2926)
+T=250  slack3s 119.7225 | vs WC 66.2: PASS (margin +53.5225) | vs RAND 35.4: PASS (margin +84.3225)
+T=300  slack3s 169.7448 | vs WC 66.2: PASS (margin +103.5448) | vs RAND 35.4: PASS (margin +134.3448)
+
+double-count check: does the 3sigma slack already contain a trip-noise ps charge?
+T=150  opening shift 0mV -> 3sigma: 0.6675 ps (= 19.323 mV / ~28.9 mV/ps edge slope)
+T=200  opening shift 0mV -> 3sigma: 0.6659 ps (= 19.323 mV / ~29.0 mV/ps edge slope)
+sigma_trip appears ONCE (threshold). The ps budget contains no second trip term. OK
+
+erasure temperature: (slack - JIT_WC)/0.46 at T=200: 17.6 K
+local-spread variant: charge 9.2 + 4.6 = 13.8 ps -> T=150 slack 19.6785 PASS
+
+=== C. sustainable beat + crossover arithmetic ===
+worst_case_data T= 200 budget 66.2 vs_cmos claim 3.5 recompute 3.5
+   D*(307.1) claim 2.15 recompute 2.15
+   D*(335.7) claim 2.35 recompute 2.35
+   D*(390.0) claim 2.73 recompute 2.73
+random_data_N4 T= 200 budget 35.4 vs_cmos claim 3.5 recompute 3.5
+   D*(307.1) claim 2.15 recompute 2.15
+   D*(335.7) claim 2.35 recompute 2.35
+   D*(390.0) claim 2.73 recompute 2.73
+
+RSS alternative (if all three terms were treated as independent 3sigma randoms):
+T=150  RSS(WC,drift)=61.8 -> fail | RSS(RAND,drift)=31.1 -> fail
+T=200  RSS(WC,drift)=61.8 -> PASS | RSS(RAND,drift)=31.1 -> PASS

@@ -1,0 +1,64 @@
+[SK1] MY INDEPENDENT REBUILD vs THEIR CALIBRATED EYE   (bar: 1.0 ps)
+  mine: own probe (cache from empty), own extractor, 4 patterns {P0,P1,P2,P3}
+  theirs: EYE_P2_T200_H4_calibrated_full9.json, all 9 Hamming weights
+
+  bank  contour                          MINE         THEIRS       dev ps
+  1     0mV                        126.131600     126.131593     0.000007
+  1     3sigma_trip                127.276500     127.276535    -0.000035
+  1     3sigma_total               133.369600     133.369628    -0.000028
+  2     0mV                        126.263500     126.263452     0.000048
+  2     3sigma_trip                127.490300     127.490331    -0.000031
+  2     3sigma_total               134.705100     134.705054     0.000046
+  3     0mV                        126.634300     126.634344    -0.000044
+  3     3sigma_trip                128.391300     128.391326    -0.000026
+  3     3sigma_total               135.868900     135.868896     0.000004
+
+  WORST DEVIATION = 0.000048 ps  against a pre-registered 1.0 ps bar
+  => SK1 PASSES.  20978x inside the bar; 1292500x smaller than the 61.6 ps jitter.
+  The eye is REPRODUCIBLE by an independent probe, an independent cache and
+  an independently written extractor.  My SX1 (within 0.5 ps, MEDIUM-HIGH) is a HIT.
+
+[SK2] IS IT AN INTERSECTION OR AN ENVELOPE?
+  bank          P0         P1         P2         P3   INTERSECTION     P0 error
+  1       103.1656   126.1316     0.0000   106.1001       126.1316     -22.9660
+  2       109.7625     0.0000   126.2635   105.4202       126.2635     -16.5010
+  3       108.0145   126.6343     0.0000   111.6421       126.6343     -18.6198
+
+  ACCEPT_A  intersection >= every member, to 0.0000 ps: PASS (it EQUALS the worst)
+  ACCEPT_B  headline = all-gates curve, not a polarity subset: PASS
+            LOW-polarity-only eye would report t_valid = 0.0000 ps at every bank
+            -- vacuous.  'A one-polarity eye is half an eye' is validated in the
+            strongest form: the wrong half is not half, it is empty.
+  ACCEPT_C  the committed single pattern P0 is 16.6-23.0 ps MORE OPTIMISTIC than
+            the intersection.  PASS, and far more emphatically than I predicted:
+            my SX2 said the pattern sweep would matter mainly for the LATE edge
+            and be MARGINAL on the opening.  REFUTED -- 18 ps on the early edge is
+            larger than the whole timer term (7.27 ps) and comparable to the whole
+            16.5 ps budget.  A single-pattern beat would have been ~18 ps too fast.
+
+[SA3] WIDTH AT THE CONTOUR THE BUDGET ACTUALLY CHARGES
+  bank 1: floor after return 22.422 mV = 0.96 sigma_total  (bar is 3.00)
+           0mV / 1sig / 3sig_trip: NO CLOSE inside the deck (their E4 reproduced)
+           3sigma_total: closes 1087.5 ps, width 754.1 ps  <- FIRST measured finite width
+  bank 2: floor after return 21.841 mV = 0.94 sigma_total  (bar is 3.00)
+           0mV / 1sig / 3sig_trip: NO CLOSE inside the deck (their E4 reproduced)
+           3sigma_total: closes 1286.4 ps, width 751.7 ps  <- FIRST measured finite width
+  bank 3: floor after return 25.222 mV = 1.08 sigma_total  (bar is 3.00)
+           0mV / 1sig / 3sig_trip: NO CLOSE inside the deck (their E4 reproduced)
+           3sigma_total: closes 1485.3 ps, width 749.5 ps  <- FIRST measured finite width
+
+  BUT the pipelined right edge still binds first: H*T - t_valid = 800.0 - 126.3 = 673.7 ps
+  at T=200, versus the 751.7 ps droop width -- so the width IS set by the
+  initiation interval, as they said.  At the A6-validated T=150 the
+  pipelined width is 4*150 - 126.73 = 473.3 ps.
+
+[HEIGHT] at the actual sampling instant c_k + T, one-sided, min over gates+patterns
+  bank       MINE mV    THEIRS mV   MINE sig_tot THEIRS sig_trip
+  1         175.4903        185.8           7.53           28.8
+  2         171.0119        180.7           7.34           28.1
+  3         165.4309        174.7           7.10           27.1
+  mine are 9-10 mV LOWER because theirs is the ORACLE schedule (Phase 1) and
+  mine is the ONE CALIBRATED TIMER.  And their '27 sigma' is in sigma_TRIP;
+  their own budget's random variable is sigma_TOTAL = 23.308 mV, in which the
+  height is 7.1-7.5 sigma, not 27.  Conclusion ('height is not the problem')
+  survives; the 27 figure is a 3.6x overstatement of the margin in sigma.

@@ -1,0 +1,45 @@
+{
+  "_study": "qal/eyebeat_skept -- skeptic re-run of qal/eyebeat (pre-reg SKEPTIC_PREREG.json sha256 425443e9..., 2026-09-30 00:38:03, before first deck). Own cache vae_cache_eyebeat_skept built from empty (9 geometries). All re-runs A6-gated.",
+
+  "SK_A_eye_rebuild": {
+    "extractor_crosscheck_their_T200_transients": "independent numpy extractor (skx.py, TRIP.json read directly): openings/widths/floors/lag medians/strand match EYEBEAT/SWEEP to <=1e-4 ps and 1e-4 mV (XCHECK_T200.json)",
+    "T150_rerun": "fresh cache + own Newton lanes (A6 0.13-0.23 uA): every compared field dev 0.0000 incl. the anomaly floor -17.7988 mV and strand 0.66213 V; decks byte-identical to sweep's except one 1e-6 ps .measure timestamp (1-ulp zero rounding)",
+    "T300_rerun": "same: worst dev 0.0001 (last printed digit)",
+    "T60_rerun_independent_seed": "different seed path -> final zeros differ up to 0.12 ps, A6 0.2296 vs their 0.5558 uA, yet ALL fields reproduce to print precision -- claims robust within the A6-legal zero band, not merely deterministic",
+    "intersection_binding_T200": "bank1 bound by P1, bank2 by P2, bank3 by P1 (the all-HIGH-output weight extreme per bank); P0 alone opens 18-25 ps EARLIER; LOW-polarity margins never bind (margin ~ fixed trip 470-680 mV >> 19 mV); joint-polarity min correctly equals HIGH-side curve. Trip interpolated per delivered rail confirmed (fraction 0.7281@0.20V - 0.5179@1.50V; EYE2 fixed levels from each pattern's OWN .mt0: 0.39-0.41 V at T=60 vs 0.47-0.68 V at T>=150 -- verifies the falling-bar reading of short-T openings)",
+    "guards_reverified": "P3 guard (1.6-24 ps earlier, ok), convergence 0.0002 ps, B2 by-product (rise zeros beat-invariant <=0.3 ps above overlap regime; return zeros +6..+22 ps at T=60) all reproduce",
+    "flags": [
+      "per-bank '3sigma close exists in-deck' statements are threshold-marginal: bank2 T300 floor 19.2417 vs 19.323 mV (-0.08 mV), bank3 T200 19.5232 (+0.2 mV); the verdict-carrying minima (bank1) are not marginal",
+      "SWEEP.json OPTIMUM.T_max_fractional=120 is mechanically computed from a clipped lower bound; the prose correctly overrides to T=150 -- the JSON field alone would mislead",
+      "prose band 'droop median 0.97-1.72 mV/ps' matches neither medians (0.894-1.527) nor means (1.149-1.760); conclusion (T-invariant within spread, committed 1.29 inside band) holds either way",
+      "prose band 'rising LAG_B 12-39 ps' omits T=120/150 where median LAG_B is -7.6..+0.2 ps (sign flips because the two reference bars' separation is T-dependent); per-T records correct"
+    ]
+  },
+
+  "SK_B_lag_attribution": {
+    "reproduction": "draining LAG_A medians 59-88 ps, rising 55-72 ps, 0 censored -- all exact vs claims at T=60/150/300",
+    "intervention": "cell widths x0.5 / x2 at FIXED T=300 P0 (R_on x2 / x0.5, CL 2 fF and schedule unchanged, own Newton zeros, A6 0.145/0.339 uA) -- the experiment the sweep did not run",
+    "draining_side": "lag scales with R_on: full-span movement 3.6-4.5x across the 4x R_on span (gate-identical ratios: bank1 x2.32/x0.59; banks2-3 x1.18-1.20/x0.26-0.33, compressed on the R_on-doubling side). Pre-stated fail branch (<20% movement) decisively excluded; bank1 meets the full pre-stated pass; banks2/3 partial on one side",
+    "strand_at_fixed_T": "monotone in R_on with TIME HELD FIXED: bank1 min-HIGH 0.635 (R_on x0.5) -> 0.700 (x1) -> 0.741 (x2); banks2/3 same ordering. 'Less droop because less time passes' is EXCLUDED: at the same schedule the preserved HIGH level is set by the conducting-path lag. The lag IS what holds data up while power leaves -- the user's mechanism, demonstrated by intervention",
+    "rising_side": "NOT cell-RC: rising lag x0.91-1.18 and 3sigma opening -5/+13 ps over the same 4x R_on span -> the ~130 ps opening (the beat floor) is ~90% LC-rail-ramp-set; upsizing cells cannot buy the beat floor down (diminishing returns already at x1)",
+    "corroboration": "bank1 (ideal 1.65 V inputs, higher pull-up overdrive) has systematically smaller baseline draining lag (32 ps) than peer-fed banks (60-73 ps) -- lag anticorrelates with overdrive as RC requires",
+    "net": "the sweep's endpoint attribution CONFIRMED and sharpened: tank-floor endpoint sets the preserved level's baseline (~250 mV vs peer-fed), the RC lag modulates +-40 mV around it per 4x R_on; both the endpoint reading and the user's lag mechanism are real, at different magnitudes"
+  },
+
+  "SK_C_stranded": {
+    "rerun": "T60 0.68643 (independent zeros) / T150 0.66213 / T300 0.69586 -- exact vs claims; T150 dip and its negative post-return floor (-17.8/-16.7/-15.6 mV at r+159-160) reproduce, systematic across banks, still not root-caused",
+    "candidate_not_verified": "at T=150 the predecessor bank's drain END (tzq~150) lands exactly on this bank's drain START (T=150) -- a schedule coincidence unique in the sweep; flagged as a root-cause candidate, unverified",
+    "value_checks": "T150/T300 32/32 all patterns; T60 fails 27/32/24 bits (P0/P1/P2) exactly as claimed",
+    "P2": "refutation upheld: flat-to-slightly-lower at short T, 34 mV spread, nowhere near 0.336-0.455 V; correct re-reading is peer-fed artefact, not slow-beat artefact"
+  },
+
+  "SK_D_budget": {
+    "aggregation": "SWEEP.json re-derived from T*/EYEBEAT.json: 0 deviations (AUDIT_OUT.txt)",
+    "composition": "straight SUM (61.6 + 4.6) against 3sigma slack; correct for worst-case bound + systematic drift; RSS alternative changes no verdict (61.8/31.1)",
+    "sigma_trip": "charged ONCE, in the margin domain (3sigma=19.323 mV threshold); no ps re-charge; measured time-equivalent of the threshold is only ~0.67 ps at the ~29 mV/ps edge slope",
+    "arithmetic": "all exact: T200 slack 69.6926 vs 66.2 (+3.4926); erasure +-17.6 K; random 35.4 (T150 fails 19.6785); local variant 13.8 (T150 passes); D* 2.15/2.35/2.73 at T200, 3.31/3.61/4.20 at T150; 3.50x load-matched level",
+    "convention_flag": "61.6/sqrt(4) applies sqrt-N scaling to a worst-case p-p figure -- a GIVEN convention mix, inherited; and the unreconciled 61.6 vs locally-measured 7.8-9.2 ps spread remains the single biggest lever on the verdict (200 vs 150 ps), correctly dual-reported"
+  },
+
+  "SK_E_verdict": "P1 CONFIRMED as stated (sign confirmed; growth term is the fixed-edge residue on the H*T construction; collision 90<T<120; opening floor is LC-set per the width intervention). P2 REFUTED as beat effect; peer-fed-artefact re-reading upheld. Optimum: absolute T=300, fractional real-edge T=150, heights saturate. Sustainable beat 200 ps under the 61.6 ps budget (fragile +3.5 ps), 150 ps under the local spread; beats CMOS+flop tax in THROUGHPUT only, at pipeline chop depths D > 2.15-2.73 (T=200) / 3.31-4.20 (T=150); no latency win anywhere."
+}

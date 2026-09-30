@@ -1,0 +1,94 @@
+.hdl "/usr/local/share/xyce/verilog-a/psp103/psp103.va"
+.include "/usr/local/src/kestrel/sim/models/sg13g2_psp103_tt.lib"
+.include "/usr/local/src/stat-sim/qal/sg13lv_compat.sp"
+.OPTIONS TIMEINT METHOD=GEAR RELTOL=1e-6 ABSTOL=1e-15 CHGTOL=1e-17
+VDD vdd 0 1.0603
+VMG gn 0 0
+VI0 in0 0 1.0603
+VI1 in1 0 1.0603
+VI2 in2 0 1.0603
+VI3 in3 0 PWL(0 1.0603 298p 1.0603 300p 0 900p 0 902p 1.0603 1500p 1.0603)
+VI4 in4 0 1.0603
+VI5 in5 0 PWL(0 1.0603 298p 1.0603 300p 0 900p 0 902p 1.0603 1500p 1.0603)
+VI6 in6 0 PWL(0 1.0603 298p 1.0603 300p 0 900p 0 902p 1.0603 1500p 1.0603)
+VI7 in7 0 1.0603
+XP0 o0 in0 vdd vdd sg13_lv_pmos w=1.12u l=0.13u
+XN0 o0 in0 gn gn sg13_lv_nmos w=0.74u l=0.13u
+CL0 o0 gn 2f
+XP1 o1 in1 vdd vdd sg13_lv_pmos w=1.12u l=0.13u
+XN1 o1 in1 gn gn sg13_lv_nmos w=0.74u l=0.13u
+CL1 o1 gn 2f
+XP2 o2 in2 vdd vdd sg13_lv_pmos w=1.12u l=0.13u
+XN2 o2 in2 gn gn sg13_lv_nmos w=0.74u l=0.13u
+CL2 o2 gn 2f
+XP3 o3 in3 vdd vdd sg13_lv_pmos w=1.12u l=0.13u
+XN3 o3 in3 gn gn sg13_lv_nmos w=0.74u l=0.13u
+CL3 o3 gn 2f
+XP4 o4 in4 vdd vdd sg13_lv_pmos w=1.12u l=0.13u
+XN4 o4 in4 gn gn sg13_lv_nmos w=0.74u l=0.13u
+CL4 o4 gn 2f
+XP5 o5 in5 vdd vdd sg13_lv_pmos w=1.12u l=0.13u
+XN5 o5 in5 gn gn sg13_lv_nmos w=0.74u l=0.13u
+CL5 o5 gn 2f
+XP6 o6 in6 vdd vdd sg13_lv_pmos w=1.12u l=0.13u
+XN6 o6 in6 gn gn sg13_lv_nmos w=0.74u l=0.13u
+CL6 o6 gn 2f
+XP7 o7 in7 vdd vdd sg13_lv_pmos w=1.12u l=0.13u
+XN7 o7 in7 gn gn sg13_lv_nmos w=0.74u l=0.13u
+CL7 o7 gn 2f
+CW0 o0 gn 2.400000f
+CW1 o1 gn 2.400000f
+CW2 o2 gn 2.400000f
+CW3 o3 gn 2.400000f
+CW4 o4 gn 2.400000f
+CW5 o5 gn 2.400000f
+CW6 o6 gn 2.400000f
+CW7 o7 gn 2.400000f
+CXevd xevd 0 1
+BXevd 0 xevd I={ -1.0603*I(VDD) }
+RXevd xevd 0 0.01
+CXqvd xqvd 0 1
+BXqvd 0 xqvd I={ -I(VDD) }
+RXqvd xqvd 0 0.01
+.ic V(o0)=0 V(o1)=0 V(o2)=0 V(o3)=0 V(o4)=0 V(o5)=0 V(o6)=0 V(o7)=0
+.tran 0.1p 1500p 0 0.25p
+.measure tran EVD_Z FIND V(xevd) AT=1.500000p
+.measure tran EVD_A FIND V(xevd) AT=896.000000p
+.measure tran EVD_D FIND V(xevd) AT=1496.000000p
+.measure tran QVD_Z FIND V(xqvd) AT=1.500000p
+.measure tran QVD_A FIND V(xqvd) AT=896.000000p
+.measure tran QVD_D FIND V(xqvd) AT=1496.000000p
+.measure tran VO0Z FIND V(o0) AT=1.500000p
+.measure tran VO1Z FIND V(o1) AT=1.500000p
+.measure tran VO2Z FIND V(o2) AT=1.500000p
+.measure tran VO3Z FIND V(o3) AT=1.500000p
+.measure tran VO4Z FIND V(o4) AT=1.500000p
+.measure tran VO5Z FIND V(o5) AT=1.500000p
+.measure tran VO6Z FIND V(o6) AT=1.500000p
+.measure tran VO7Z FIND V(o7) AT=1.500000p
+.measure tran VO0A FIND V(o0) AT=896.000000p
+.measure tran VO1A FIND V(o1) AT=896.000000p
+.measure tran VO2A FIND V(o2) AT=896.000000p
+.measure tran VO3A FIND V(o3) AT=896.000000p
+.measure tran VO4A FIND V(o4) AT=896.000000p
+.measure tran VO5A FIND V(o5) AT=896.000000p
+.measure tran VO6A FIND V(o6) AT=896.000000p
+.measure tran VO7A FIND V(o7) AT=896.000000p
+.measure tran VO0D FIND V(o0) AT=1496.000000p
+.measure tran VO1D FIND V(o1) AT=1496.000000p
+.measure tran VO2D FIND V(o2) AT=1496.000000p
+.measure tran VO3D FIND V(o3) AT=1496.000000p
+.measure tran VO4D FIND V(o4) AT=1496.000000p
+.measure tran VO5D FIND V(o5) AT=1496.000000p
+.measure tran VO6D FIND V(o6) AT=1496.000000p
+.measure tran VO7D FIND V(o7) AT=1496.000000p
+.measure tran VO0PK MAX V(o0) FROM=0 TO=1500p
+.measure tran VO1PK MAX V(o1) FROM=0 TO=1500p
+.measure tran VO2PK MAX V(o2) FROM=0 TO=1500p
+.measure tran VO3PK MAX V(o3) FROM=0 TO=1500p
+.measure tran VO4PK MAX V(o4) FROM=0 TO=1500p
+.measure tran VO5PK MAX V(o5) FROM=0 TO=1500p
+.measure tran VO6PK MAX V(o6) FROM=0 TO=1500p
+.measure tran VO7PK MAX V(o7) FROM=0 TO=1500p
+.print tran I(VDD) V(o0) V(o1) V(o2) V(o3) V(o4) V(o5) V(o6) V(o7)
+.end

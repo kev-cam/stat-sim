@@ -1,0 +1,148 @@
+{
+  "_what": "Mechanical scoring of my OWN pre-registered expectations SX1-SX5, plus the audit verdicts on the audited study's claims. Scored off SKEPTIC_EYE.json, AUDIT_ARITH.txt, AUDIT_TRIP.txt, AUDIT_SK1.txt, AUDIT_VERDICT.txt.",
+  "_prereg_sha256": "81c58ca750087c0e3c83b4666c1f0bbbbaa2b57de498e17fd2b2f61a20745436",
+  "_prereg_mtime": "2026-09-29 22:54:39.498151726 -0700",
+
+  "MY_OWN_EXPECTATIONS": {
+    "SX1_reproducibility": {
+      "predicted": "reproduce their opening within 0.5 ps, confidence MEDIUM-HIGH",
+      "measured": "worst deviation 0.000048 ps over 9 (bank, contour) cells",
+      "score": "HIT, and by a margin of 10000x. My only clean unqualified hit."
+    },
+    "SX2_intersection_vs_envelope": {
+      "predicted_A": "intersection >= every member -- PASS predicted",
+      "predicted_B": "headline is the all-gates curve -- PASS predicted",
+      "predicted_C": "intersection matters for the LATE edge; MARGINAL on the OPENING; 'the headline beat is only weakly protected by the pattern sweep'",
+      "measured_A": "PASS, intersection EQUALS the worst member to 0.0000 ps",
+      "measured_B": "PASS, and stronger than predicted: a LOW-only eye reports t_valid = 0.0000 ps at every bank, i.e. vacuous",
+      "measured_C": "REFUTED. The committed single pattern P0 is 16.50-22.97 ps MORE OPTIMISTIC than the intersection on the OPENING -- larger than the entire timer term and comparable to the whole 16.507 ps budget.",
+      "score": "SPLIT. A and B HIT, C REFUTED in the consequential direction: the pattern intersection protects the early edge far more than I allowed."
+    },
+    "SX3_trip_curve": {
+      "predicted": "the measured fraction at the delivered rails is 0.60-0.62, so a constant 0.59 is CLOSE; error 10-25 mV -> 0.5-1.5 ps, borderline at my bar; confidence LOW on magnitude",
+      "measured": "the fraction is 0.5442-0.5485 at the dV=1.65 V delivered rails (0.9542-1.0615 V), NOT 0.60-0.62. Constant-0.59 error is +39.6 to +48.7 mV -> 2.0-2.9 ps.",
+      "score": "REFUTED on the point estimate (fraction and mV both outside my band); the qualitative conclusion (the error is real and about a ps) was right but I under-stated it 2-3x. Direction I did NOT predict: 0.59 is PESSIMISTIC (trip too high), so their eye is not flattered by the trip treatment."
+    },
+    "SX4_budget": {
+      "predicted_main": "U3 is charged at ONE sigma of sigma_total and mislabelled '3sigma_total'; this is the single largest defect; confidence MEDIUM",
+      "predicted_second": "NO double-count of 3*sigma_trip; the brief's suspicion (c) will come back NEGATIVE and the real error will be an UNDER-charge",
+      "measured_main": "REFUTED. p2eye.py CONTOURS['3sigma_total_with_driver_level'] = 3.0*sqrt(6.441^2+22.4^2) = 69.9229 mV. The FULL 3 sigma. No mislabelling.",
+      "measured_second": "CONFIRMED. sigma_trip enters exactly once, inside sigma_total; the 3*sigma_trip-only figure (1.757 ps) is reported as a sub-reading and is never added. No double-count.",
+      "score": "SPLIT, and the half I held with MEDIUM confidence is the half that failed. The budget is better than I expected."
+    },
+    "SX5_fairness": {
+      "predicted": "C1/C4/C5/C6 PASS; C2 is the weak one -- CMOS gets no mismatch charge while QAL gets 9.235 ps, so the asymmetry runs AGAINST QAL and cannot rescue a QAL win",
+      "measured": "C1/C4/C5/C6 PASS as predicted. C2 IS the weak one, as predicted -- but the asymmetry runs the OTHER WAY. The CMOS comparator is one inverter's 90%-SETTLING time from an ideal step (57.143 ps), while QAL is scored at a TRIP CROSSING. The fair bar-invariant object (52.51 ps, already MEASURED on disk in qal/fcrit_skept) makes CMOS 8.82% FASTER, i.e. the choice FLATTERS QAL.",
+      "score": "SPLIT. Right that C2 was the weak clause, WRONG on its sign -- I predicted the unfairness disadvantaged QAL; it favours QAL."
+    },
+    "SUMMARY": "One clean hit (SX1). Three splits (SX2, SX4, SX5). One refuted point estimate (SX3). Every numeric point estimate I made outside SX1 was outside its band -- the same pattern both prior phases reported about themselves. Mechanism predictions again beat numbers: I correctly named C2 as the weak fairness clause and correctly predicted no 3*sigma_trip double-count, and got the SIGN wrong on both."
+  },
+
+  "VERDICTS_ON_THE_AUDITED_STUDY": {
+    "CONFIRMED": [
+      "SK1 the eye is REPRODUCIBLE: my own 8-run probe (own PYMS_VAE_CACHE built from empty) returned their calibration zeros to every printed digit (tzr 125.4919/125.4024/125.2116/124.4489, tzq 148.1324/152.9270/153.4533/147.0927), and my independently written extractor returned their calibrated t_valid to a worst 0.000048 ps.",
+      "SK2 the eye IS the intersection over data patterns AND over both polarities: the headline mask is min-over-all-8-gates then min-over-patterns. Not an envelope.",
+      "SK2 the binding pattern is P1 for odd banks and P2 for even -- the vector putting every cell in pull-up. Reproduced.",
+      "SK2 bank 3 binds, not bank 2 (their own EY6 correction). Reproduced.",
+      "SK3 the trip curve is 27 MEASURED rows interpolated at the receiver's delivered rail; endpoints 0.728124239 / 0.517850471 confirmed; 0.59 never used; no headline instant touches the extrapolating limb.",
+      "SK4c NO DOUBLE-COUNT. sigma_trip appears once, inside sigma_total. The brief's specific suspicion is NEGATIVE.",
+      "SK4b U3 is charged at the full 3 sigma, not 1 sigma.",
+      "SK4e the timer anti-double-count holds: 0.46*60/265.623 = 10.391% vs the MEASURED 10.23% RC-soft limb, agreeing to 1.6% relative -- the drift rate and the tracking ratio's soft limb are the same measurement, charged once.",
+      "SK4a composition is a LINEAR SUM of a systematic (U2) and a 3-sigma random (U3). Conservative and correctly justified; RSS reported but not headlined.",
+      "their E4 (no zero-margin close in a single-shot deck) reproduced exactly at 0 mV, 1 sigma and 3 sigma_trip.",
+      "their A6 calibrated band 26.3-128.4 uA reproduced exactly: my P0 26.3498, P2 123.6844, P1 128.4111 uA.",
+      "NO LATENCY WIN is claimed anywhere, and none is available: QAL is 2.73-2.86x slower per level on the fair comparator."
+    ],
+    "FINDINGS_AGAINST": [
+      {
+        "id": "F-A  THE HEADLINE BEAT IS NOT AN A6-VALIDATED OPERATING POINT",
+        "severity": "HIGH -- this is the headline speed number",
+        "detail": "143.141 ps sits BELOW the study's own A6 knee. Their A6_VS_BEAT.json records the calibration probe FAILING bt.py's unchanged 1 uA gate at T=145 (1.4023 uA) and T=140 (2.9486 uA), passing at T=150 (0.2682 uA). They report this, then headline a beat inside the failing region. The defensible fastest sustainable beat on this arrangement is 150 ps, where the timing budget is met with 6.58 ps to spare -- i.e. the timing budget is NOT the binding constraint; the return-zero schedule is."
+      },
+      {
+        "id": "F-B  THE BEAT IS NOT SELF-CONSISTENT",
+        "severity": "LOW -- 0.27%",
+        "detail": "They evaluate t_valid at T=200 and add U2 to get 143.141 ps, but they MEASURED t_valid to grow as T shrinks. Solving T = t_valid_3sigma_total(T) + U2 on their own 145/140 rungs gives T* = 143.529 ps, +0.388 ps. Their own closure bracket (145 OPEN / 140 CLOSED) contains T* too, so the conclusion is unchanged."
+      },
+      {
+        "id": "F-C  THE T-DEPENDENCE THEY CALLED NEGLIGIBLE IS 2.8x LARGER AT THE CONTOUR THAT SETS THE BEAT",
+        "severity": "LOW",
+        "detail": "0.1713 ps at 0 mV over T=200->140 (their quoted 0.171 ps), but 0.4713 ps at 3 sigma_total -- the contour the budget charges. Direction: under-charge."
+      },
+      {
+        "id": "F-D  THE CMOS COMPARATOR IS THE WRONG OBJECT, AND IT FLATTERS QAL",
+        "severity": "MEDIUM",
+        "detail": "57.143 ps is qal/lsweep/cellcmp.json c120.t90_ps -- ONE inverter's 90%-settling time at 1.2 V from an ideal 2 ps step. The same cell at a 50% crossing is 30.357 ps. The bar-invariant steady-state per-logic-level propagation on a real chain, SAME CELL (wp 1.12u / wn 0.74u / l 0.13u) and SAME 2 fF load, was already MEASURED at 52.51 ps (t90 = t_commit = 52.51, GAIN 1.0000) by qal/fcrit_skept, which explicitly warned 'the bar-invariant one is the one a beat is made of'. eye/p2 inherited the primary's single-gate convention instead, making CMOS look 8.82% slower than it is. The study relaxed QAL from 90% settling to a trip crossing -- its central methodological point -- and did not grant the same relaxation to CMOS."
+      },
+      {
+        "id": "F-E  THE HEIGHT IS QUOTED IN THE WRONG SIGMA",
+        "severity": "LOW",
+        "detail": "'174.7 mV is 27 sigma' uses sigma_trip = 6.441 mV. Their own budget's random variable is sigma_total = 23.308 mV, in which the height is 7.10-7.53 sigma. A 3.6x overstatement of the margin in sigma. The conclusion ('the height is not the problem') survives. Separately, my calibrated-schedule heights are 9-10 mV LOWER than their oracle-schedule figures: 175.5 / 171.0 / 165.4 mV."
+      },
+      {
+        "id": "F-F  EVERY PUBLISHED WIDTH IS TAKEN AT A CONTOUR THE BUDGET DOES NOT USE",
+        "severity": "MEDIUM (methodological)",
+        "detail": "Widths are reported at 0 mV and 3 sigma_trip; the budget charges 3 sigma_total = 69.923 mV. At that contour the post-return plateau (my measured floor 22.4 / 21.8 / 25.2 mV = 0.94-1.08 sigma_total) is far below the bar and the eye CLOSES: 1087.5 / 1286.4 / 1485.3 ps, widths 754.1 / 751.7 / 749.5 ps. This is the first measured finite width in the study. It does not change the verdict -- the pipelined right edge (H*T - t_valid) still arrives first -- but a width at 0 mV alongside a beat at 69.923 mV is two different eyes."
+      },
+      {
+        "id": "F-G  'A6 IS AN ENERGY COST, REPORTED NEVER GATED' UNDERSTATES THE COUPLING",
+        "severity": "LOW",
+        "detail": "The off-zero current that fails A6 on the calibrated rows (my measured 26.3-128.4 uA) is the SAME current they identify as the mechanism of their own -2.5 to -3.4 ps correction ('an off-zero switch leaves current still driving the rail, so the pull-up resolves sooner'). They rightly decline to bank that credit (their A9). The residual point is that the A6 failure is not only an energy cost -- it is the physical cause of the timing result the beat is computed from."
+      },
+      {
+        "id": "F-H  U2's BASE LENGTH IS AMBIGUOUS AND IT IS 44% OF THE BUDGET",
+        "severity": "LOW, direction SAFE",
+        "detail": "7.36 ps = 0.46 ps/K x 16 K is the ABSOLUTE drift of a 265.623 ps reference line. The interval being timed is T ~ 143-150 ps. If the timer element scales with the interval the charge is 10.391% x 16/60 x 143.141 = 3.97 ps, a 1.86x over-charge. Direction is CONSERVATIVE (over-charge -> slower beat), so it is safe, but it should be named because it is 44% of the composed budget."
+      },
+      {
+        "id": "F-I  R1's PROSE OVERSTATES WHAT R1 CONTAINS",
+        "severity": "COSMETIC",
+        "detail": "The report says R1 charges a 'schedule error +/-4.8 ps (measured actual)'. BUDGET.json's R1 record has schedule_spread_present_ps = null, and no +/-4.8 ps stress deck exists. The construction is nonetheless defensible -- running every pattern on ONE calibrated schedule and intersecting IS how the real data-dependent schedule error gets charged -- but the prose reads as an imposed stress that was not run. Interpolating their own -10.620 ps rung, the residual under-charge is ~0.1 ps."
+      },
+      {
+        "id": "F-J  BUDGET.json CARRIES NO TOTAL",
+        "severity": "COSMETIC",
+        "detail": "The 16.507 ps total and the RSS alternative appear only in prose; there is no key in the artifact summing U1+U2+U3. The arithmetic checks out (126.634 + 9.235 + 7.272 = 143.141), but the headline total is not machine-checkable from the artifact."
+      }
+    ],
+    "NOT_A_FINDING_CHECKED_AND_CLEARED": [
+      "the 0.59 constant is never used anywhere (grep-verified in eyecalc.py, p2eye.py, skharness.py)",
+      "no extrapolation of the trip table at any headline instant",
+      "t_reg(2 fF) = 315.3779 ps interpolation arithmetic correct, and the liberty 1.11-1.21x optimism is used in the direction that DISADVANTAGES QAL",
+      "the strict II = H*T + tzq is the headline; fcrit's looser H*T convention is reported separately and never mixed",
+      "the 2-levels-per-bank variant is labelled ARCHITECTURAL and kept out of the headline",
+      "bank 4 is DERIVED and never a headline number",
+      "H=2 is correctly reported as NOT VALIDATED at dV=1.65 V"
+    ]
+  },
+
+  "THE_CROSSOVER_D_RECOMPUTED": {
+    "_note": "H=4, strict II = H*T + tzq, tzq = 153.5394 ps MEASURED, 1 level/bank MEASURED. (i) vs CMOS flopped every level; (ii) vs the best iso-D CMOS free to amortise the flop.",
+    "theirs_T143.141_CMOS57.143_treg315.4_unc0": {"D_i": 2, "D_ii": 8},
+    "fair_CMOS_52.51_only": {"D_i": 2, "D_ii": 8},
+    "A6_validated_T150_plus_fair_CMOS": {"D_i": 3, "D_ii": 9},
+    "A6_validated_T150_fair_CMOS_honest_treg_1.11x": {"D_i": 2, "D_ii": 8},
+    "A6_validated_T150_fair_CMOS_honest_treg_1.21x": {"D_i": 2, "D_ii": 8},
+    "A6_validated_T150_fair_CMOS_unc100_tree": {"D_i": 2, "D_ii": 7},
+    "A6_validated_T150_fair_CMOS_unc250_flow": {"D_i": 2, "D_ii": 4},
+    "_reading": "The fairer CMOS comparator RAISES D and the honest (liberty-inflated) flop tax LOWERS it, and they largely CANCEL. D_ii = 8-9 at an ideal clock, 7 at a tree clock, 4 at a flow clock. Their D=8 is ROBUST. D_i moves from 2 to 3 at the A6-validated beat."
+  },
+
+  "WHAT_I_DID_NOT_DO": [
+    "I ran 4 patterns (weights 0, 4, 5, 8) on one calibrated schedule, not all 9 Hamming weights -- I relied on their MEASURED reduction (identical to 0.0000 ps) rather than re-verifying it. My openings are therefore upper bounds on the true-intersection opening, by at most that 0.0000 ps. See AMENDMENT SA2.",
+    "I did not re-simulate T=150/145/140 myself; the T-sweep audit (F-B, F-C) is arithmetic on THEIR eye files, labelled as such.",
+    "I drew no Monte Carlo mismatch sample. Everything I say about mismatch is a CONTOUR SHIFT on a nominal margin curve -- the same instrument theirs is.",
+    "I ran no DTA corner; every temperature statement is arithmetic on qal/timer's MEASURED drift.",
+    "I did not re-measure the 52.51 ps CMOS chain myself; I read it from qal/fcrit_skept and verified its deck uses the IDENTICAL cell (wp 1.12u / wn 0.74u / l 0.13u), the IDENTICAL 2 fF load and 1.2 V.",
+    "I did not attempt H=2 or a modified return-zero protocol below T=150."
+  ],
+
+  "DISCIPLINE_VERIFIED": {
+    "own_directory": "/usr/local/src/stat-sim/qal/eye_skeptic/ only",
+    "own_cache": "vae_cache_skeptic, 94 MB, built FROM EMPTY (warm.cir 18.7 s), distinct from vae_cache_eye",
+    "files_newer_than_my_prereg_in": {"qal/eye": 0, "qal/eye/p2": 0, "qal/banktank": 0, "qal/fcrit": 0, "qal/fcrit_skept": 0, "qal/lsweep": 0, "qal/timer": 0, "qal/mcsize": 0},
+    "audited_study_artifacts": "all 7 Phase-1 files and all Phase-2 files unchanged (mtimes 20:03-21:33 and 21:44-22:48, all before my 22:54:39 pre-registration)",
+    "concurrency": "<= 3 concurrent heavy Xyce; box at load 8.5-12.5 with 11-12 foreign Xyce throughout",
+    "decks": "8 probe + 4 rows + 1 warm = 13 transients, 13 .prn, one per configuration; the sampling instant was swept by READING the waveform, never re-simulated"
+  }
+}

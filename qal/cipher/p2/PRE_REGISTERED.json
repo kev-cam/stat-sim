@@ -1,0 +1,159 @@
+{
+ "_what": "qal/cipher/p2 PHASE 2 -- the two cipher datapaths (AES-128 AddRoundKey, ChaCha20 quarter-round) with interconnect included, and the ripple-vs-parallel-prefix adder-form measurement. Written BEFORE the first Xyce deck of Phase 2.",
+ "_run": "qal/cipher/p2. Phase 1 (the wire model and the wire-recovery measurement) is a separate, already-published pre-registration at ../PRE_REGISTERED.json sha256 81c1d78f0f71d5a92ee5cc3a6c007c53ecc52a1b35057ce2a3b5af06a5672166. This file does not restate Phase 1's conclusions; it INHERITS its wire figures and its acceptance gates.",
+ "_order_of_work": [
+  "DISK_STATE_BEFORE.txt      20:58:27  sha256 + mtime of every committed input and of the widebank sibling's rows",
+  "cg.py                      the generalised deck generator; selftest() + selftest_logic() are PURE PYTHON and read only the PDK netlist -- NO simulation",
+  "veh.py                     the vehicles, their wire geometry and their reference implementations; selftest() checks ChaCha against RFC 8439 and ShiftRows against FIPS-197 -- NO simulation",
+  "GEOMETRY.json              the structural census and the wire arithmetic -- NO simulation",
+  "PRE_REGISTERED.json  <-- this file",
+  "first Xyce deck            AFTER this file is written and hashed"
+ ],
+
+ "A_WHAT_IS_INHERITED_UNCHANGED": {
+  "harness": "qal/banktank bt.py sha256 5b3582bea9e398e40d3aa93fc6fe44428d4eb1dfbde56c5d122604c5c35576c0 (commit 0aae11e), imported -- not copied -- by cg.py. Per-bank tanks, own inductor per bank, the committed tg15p triple at 30 um total, the A6 tank-referenced park, break-before-make at BOTH edges (2 ps), diode freewheel, source-side chain-legal cut at every hop, the sequential true-ZCS probe protocol, the 1F-integrator metering with t0 pedestal referencing, and the .OPTIONS line, all VERBATIM.",
+  "harness_identity_check": "cg.selftest() rebuilds the committed 4x8-inverter chain through the generalised generator and compares against bt.deck() line by line outside the cell and .print blocks: 122 of 122 retained lines IDENTICAL, schedule IDENTICAL, and the generalised tank-sizing rule reproduces the committed CBANK = 35.979 fF for an 8-inverter bank to 1e-6. The reference logic evaluator reproduces the committed out_hi() 32/32.",
+  "operating_point": {"dV_V": 1.65, "m": 10, "H": 4, "L_nH": 15.0, "Rs_ohm": 10.0, "switch_total_um": 30.0, "mode": "free", "ct_mode": "matched -- C_t(k) = m * C_bank(k), tanks tuned per bank"},
+  "why_matched_tanks": "Phase 1 G7 measured that a FIXED tank with wire present drops the delivered rail to 0.9567 V, 7.5 mV BELOW Vtn + |Vtp| = 0.9642 V, so the cascade stops being level-restoring. Re-sizing the tank is not optional once wire is added. Every Phase 2 row therefore uses matched tanks and pays the area.",
+  "wire_figures_fF_per_um": {"LOW_isolated_M2_MEASURED_LEF": 0.0930, "NOMINAL_campaign_PDK_BRACKETED": 0.15, "HIGH_min_pitch_bus_DERIVED": 0.2181, "R_ohm_per_um": 0.515, "provenance": "Phase 1 WIRE_MODEL.json sha256 5d5b9987b3266175e5f20544b575fbd6e978c4058ec370c09129c7abbaaf0e9c, from sg13g2_tech.lef sha256 054f5b7b... CPERSQDIST 1.81e-05 pF/um^2 + 2 x EDGECAPACITANCE 4.47e-05 pF/um, cross-checked by Sakurai-Tamaru on the ITF geometry. The openrcx min-spacing entry is FLAGGED and NOT USED (it is 5.9x a hard parallel-plate bound); declining it is the choice that makes QAL's wire case look WORSE, not better."},
+  "functional_criterion": "qal/fcrit S3, imported from disk unmodified (rescore.py sha256 f219dd654bee8ebbaffb89a209356cdbc39041aacd955eec34ff57a82f156da3, TRIP.json sha256 105f30308cda42d6ec7e849ba2ae450a349f060e86842209bf639688e9e748a7): the sender is scored against the RECEIVER's MEASURED trip at the RECEIVER's delivered rail at the instant the RECEIVER commits. The trip fraction is NOT a constant -- 0.7281 at 0.20 V falling to 0.5179 at 1.50 V. Noise budget 3 sigma = 19.323 mV.",
+  "standing_corrections_carried": [
+   "the binding threshold is Vtn = 0.5240 V, NOT |Vtp| = 0.4403 V",
+   "sg13g2_o21ai_1 DOES settle (479.1 ps, 99.78-99.99% of rail), 3.12-3.55x an inverter. No cell family fails; the separation is SPEED. The Kogge-Stone prefix in this run USES o21ai, so this cell sets the beat.",
+   "sg13g2_nor2_1 has a 2-HIGH pMOS pull-up and is NOT shallow. The KS prefix uses nor2 on its even stages.",
+   "synthesise for WORST-CELL SETTLING TIME, not cell count",
+   "mismatch is not binding in the chain (0/300, 16.45 sigma); the BOUNDARY receiver is",
+   "NEVER quote a single-hop number as a chain result, nor tank-only energy as block energy"
+  ]
+ },
+
+ "B_THE_CELLS_ARE_THE_PDK_S_OWN": {
+  "source": "IHP-Open-PDK/ihp-sg13g2/libs.ref/sg13g2_stdcell/spice/sg13g2_stdcell.spice sha256 e9d9d5f58f118326588323dbb7a0c669ddfc19af700d838d0772e0e31f0841ac, .include'd and instantiated as subcircuits with (VDD, VSS) -> (rail_k, gn_k). The PDK subckts tie every bulk to those same ports, so the pMOS bulk sits on the bank rail -- the committed convention unchanged. ad/as/pd/ps are DECLARED AND DISCARDED by qal/sg13lv_compat.sp exactly as for the committed hand-written cell.",
+  "logic_verified_independently": "cg.selftest_logic() reads the PDK netlist, builds the pull-up and pull-down conduction graphs, solves the internal nodes to a monotone fixed point (and2/or2/xor2/xnor2/buf are TWO-STAGE cells whose later devices are gated from internal nodes) and checks the resolved output against this run's logic table for EVERY input combination. 10 cells, 56 cases, ALL PASS. A wrong lambda cannot survive this.",
+  "cells_used": {
+   "xor2": "sg13g2_xor2_1, 10 devices. CORRECTION TO THE BRIEF: the brief describes XOR as 'the cell the pass-gate work made cheap (depth 1, 8 devices, XOR and XNOR the same cell with a tap swap)'. That is the qal/pgcell transmission-gate cell, and qal/pgcell's own committed verdict is that restoration gives the saving back -- device-NEUTRAL, 2.38x depth, and the chain still does not compute. The cell whose 3.84 um LEF width sets the AES bit pitch is the PDK's STATIC xor2_1, and it has a 2-HIGH stack on BOTH sides (MP3 over MP2||MP4; MN3+MN4) plus a 2-high pMOS stack on its internal NOR node. It is not a shallow cell. This run uses the PDK cell and reports the pass-gate claim as NOT ADOPTED.",
+   "and2": "sg13g2_and2_1, 6 devices, two-stage",
+   "a21oi": "sg13g2_a21oi_1, 6 devices -- AOI21, 2-high both sides",
+   "o21ai": "sg13g2_o21ai_1, 6 devices -- OAI21, the 479.1 ps cell",
+   "nand2": "sg13g2_nand2_1, 4 devices", "nor2": "sg13g2_nor2_1, 4 devices, 2-high pMOS",
+   "inv": "sg13g2_inv_1, 2 devices -- identical to the committed hand-written cell (wp 1.12u / wn 0.74u)",
+   "xnor2": "sg13g2_xnor2_1, 10 devices"
+  }
+ },
+
+ "C_THE_MECHANISM_THIS_PHASE_ADDS": {
+  "_name": "QAL CONVERTS WIRES INTO CELLS",
+  "statement": "An unbuffered QAL bank RETURNS its rail charge at the end of its hold window. A cell output is held up only by its own pull-up from its own bank rail, so when that rail comes down the value is GONE. A signal produced at level j and consumed at level k > j+1 therefore cannot be routed there: it must be RE-DRIVEN at every intervening level by a FORWARDING cell. In CMOS the same signal is a WIRE and costs nothing but capacitance, because a static gate holds its output against a supply that never goes away.",
+  "why_it_matters_to_the_insight": "The insight this campaign run exists to test is 'wiring does the rotate -- a rotate costs ZERO gates and ZERO levels'. That is true within one level boundary. It is FALSE for any value that must survive more than one level, and a cipher round is full of those: ChaCha's a, b, c and d are all live across the whole quarter-round. So the term the insight calls free is, in unbuffered QAL, one inverter per bit per level crossed.",
+  "how_it_is_enforced_not_assumed": "cg.Chain.evaluate() REFUSES to build a netlist in which any cell reads a level older than k-1. A vehicle that needs forwarding cannot be constructed without paying for it, so the forwarding census is a property of the netlist rather than an estimate.",
+  "kogge_stone_is_the_favourable_case": "Kogge-Stone is UNIFORM-DEPTH: every prefix cell reads only the level directly above it. That is exactly the property unbuffered QAL needs, and it is a real structural argument for the parallel-prefix form. A ripple CPA is not uniform-depth: bit i's propagate must survive i carry levels, so its forwarding cost grows as O(W^2).",
+  "structural_census_DERIVED_no_simulation": {
+   "aes_addroundkey": {"levels": 3, "cells": 384, "devices": 1792, "per_level": [128, 128, 128]},
+   "adder_ks_w8": {"levels": 5, "cells": 76, "devices": 372},
+   "adder_ripple_w8": {"levels": 10, "cells": 164, "devices": 500},
+   "adder_ks_w32": {"levels": 7, "cells": 504, "devices": 2320},
+   "adder_ripple_w32": {"levels": 34, "cells": 2576, "devices": 5900},
+   "ratio_ripple_over_ks_w32": {"levels": 4.857, "cells": 5.111, "devices": 2.543},
+   "qr_ks32": {"levels_per_quarter_round": 32, "forwarding_cells_per_qr": 3072},
+   "qr_ripple32": {"levels_per_quarter_round": 140, "forwarding_cells_per_qr": 13440}
+  },
+  "sha_slice_corroboration": "This run's INDEPENDENTLY reconstructed 8-bit ripple CPA is 164 cells over 10 levels. The committed qal/sha256 block that measured so badly was 161 cells over 14 banks with an 8-BIT RIPPLE CPA. Two independent constructions landing on the same size is evidence the reconstruction is faithful, and it is pre-registered here as a check to be scored, not as a claim."
+ },
+
+ "D_THE_WIRE_GEOMETRY_DERIVED": {
+  "aes_shiftrows": {
+   "permutation": "column-major 4x4 state, byte index 4c+r holds s[r][c], row r rotated LEFT by r bytes. Verified against the FIPS-197 index permutation [0,5,10,15,4,9,14,3,8,13,2,7,12,1,6,11].",
+   "floorplan_STATED": "the 16 bytes sit in the natural AES 4x4 tile grid, one tile per byte, with the 8 bit-slices of a byte side by side across a tile. A column pitch is therefore 8 bit pitches, and the wrap is routed the short way round.",
+   "per_byte_bitpitches": [0, 8, 16, 8, 0, 8, 16, 8, 0, 8, 16, 8, 0, 8, 16, 8],
+   "mean_bitpitches": 8.0, "max_bitpitches": 16,
+   "per_bit_load_fF": {"at_1.00um_pitch": {"LOW": 0.744, "NOM": 1.200, "HIGH": 1.745}, "at_1.44um_inv_pitch": {"LOW": 1.071, "NOM": 1.728, "HIGH": 2.513}, "at_3.84um_xor2_pitch": {"LOW": 2.857, "NOM": 4.608, "HIGH": 6.700}},
+   "which_pitch_is_right": "the cell that must physically fit per bit is the one being placed. AddRoundKey places xor2_1, whose LEF SIZE is 3.84 um, so 3.84 um is the HONEST pitch for this vehicle and 4.608 fF/bit is its nominal load. The 1.00 um column is the brief's own geometry and is carried as the optimistic end."
+  },
+  "chacha_rotates": {
+   "formula_DERIVED": "bit i -> bit (i+r) mod W: (W-r) bits travel r pitches and r bits travel (W-r) -- mean 2r(W-r)/W bit pitches (Phase 1's formula, reused).",
+   "bitpitches": {"r16": 16.0, "r12": 15.0, "r8": 12.0, "r7": 10.9375, "mean": 13.484},
+   "per_bit_load_fF_at_xor2_pitch": {"LOW": 4.816, "NOM": 7.767, "HIGH": 11.293},
+   "per_bit_load_fF_at_1um_pitch": {"LOW": 1.254, "NOM": 2.023, "HIGH": 2.941}
+  },
+  "relation_to_phase1": "Phase 1 measured the signal-wire QAL/CMOS ratio declining through 1.003x at Cw = 2.400 fF, 0.964x at 3.489 fF and 0.749x -- a LOSS -- at 9.216 fF, and 9.216 fF was the ONE row that also stopped computing (fcrit S3 27/32). AES's nominal 4.608 fF/bit and ChaCha's nominal 7.767 fF/bit both sit INSIDE that decline. Phase 2 therefore expects to be measuring the losing part of Phase 1's curve, and says so before running."
+ },
+
+ "E_ACCEPTANCE_GATES": {
+  "G1_harness_identity": "cg.selftest() must show the generalised generator reproducing the committed harness line-for-line outside cells/print, the schedule bit-identically, and the sizing rule reproducing CBANK to 1e-6. ALREADY RUN AND PASSED before this file was written.",
+  "G1b_cell_logic": "cg.selftest_logic() must resolve every PDK cell's output from its own switch network and match this run's logic table on every input combination. ALREADY RUN AND PASSED: 10 cells, 56 cases.",
+  "G2_zcs": "|I(L_k)| <= 1.0 uA at every commanded open, rise and return, every bank. Rows failing are reported as instrument failures, not results. Phase 1 AMENDMENT A2 applies: if the sequential probe's zeros do not hold in the row (because later banks are active in the row and idle in the probe), they are cleared by a fixed-point iteration off the ROW's OWN waveform, restricted to the conduction window [r_k, ro_k + 0.5 ps] (Phase 1 A2a: searching past the commanded open returns a park-loop zero and is wrong).",
+  "G3_path_identity": "|E_out_of_tank - E_switchblock - E_seriesR| <= 1 % of E_out_of_tank, per bank, on the rise.",
+  "G4_tank_closure": "reported per bank, never silently absorbed.",
+  "G5_energy_convention_free": "every headline energy is the tank's own 1/2 C_t (V0^2 - V1^2) on a LINEAR capacitor. Integrator numbers are a cross-check, never the headline.",
+  "G6_functional": "fcrit S3 at 3 sigma = 19.323 mV, scored at the RECEIVER's delivered rail and the RECEIVER's commit instant.",
+  "G7_level_restoring": "delivered rail at each bank's own boundary > Vtn + |Vtp| = 0.9642 V.",
+  "G8_separation": "min HIGH - max LOW >= 6.44 mV at every depth.",
+  "G9_comparator_symmetry": "the CMOS twin is generated from the SAME Chain object -- identical cells, identical CLOAD, identical wire capacitance, identical .OPTIONS, identical 2 ps edges, identical held sources -- and its supply is SET EQUAL TO THE QAL ROW'S OWN MEASURED DELIVERED RAIL PEAK, never to the commanded dV. A ratio against a CMOS row at a different supply is not reported. This is the error the campaign made once already (the DELVTO sweep) and Phase 1 gated against it; Phase 2 inherits the gate.",
+  "G10_no_single_hop_as_chain": "every vehicle is a MULTI-LEVEL chain (AES is 3 levels precisely so the AddRoundKey bank has a real receiver and is not a single hop). No tank-only energy is quoted as block energy.",
+  "G11_value_check": "every scored level's every cell output must agree with the reference implementation computed independently in veh.py -- ChaCha against RFC 8439 section 2.1.1 and ShiftRows against FIPS-197, both ALREADY VERIFIED. A row whose value check fails is reported as failing, and its energy is reported as the energy of a circuit that computed the wrong answer."
+ },
+
+ "F_ROWS_PRE_STATED": {
+  "vehicle_a_aes": [
+   "A0  AddRoundKey, Cw = 0                 the control",
+   "A1  AddRoundKey, Cw = 4.608 fF/bit      NOMINAL, xor2_1 pitch, ShiftRows mean",
+   "A2  AddRoundKey, Cw = 2.857 fF/bit      LOW end of the PDK band at that pitch",
+   "A3  AddRoundKey, Cw = 6.700 fF/bit      HIGH end of the PDK band at that pitch",
+   "A4  AddRoundKey, Cw = 1.200 fF/bit      the brief's own 1.00 um pitch, optimistic",
+   "AC  the CMOS twin of each of the above, at that row's OWN measured rail peak"
+  ],
+  "vehicle_b_c_adders": [
+   "K8   8-bit Kogge-Stone,  Cw = 0 and Cw = NOM   5 levels",
+   "R8   8-bit ripple CPA,   Cw = 0 and Cw = NOM   10 levels -- the sha_slice reframe, SAME function, SAME width",
+   "K32  32-bit Kogge-Stone, Cw = 7.767 fF/bit     the real ChaCha adder width",
+   "KC/RC the CMOS twin of each, at that row's own measured rail peak"
+  ],
+  "NOT_SIMULATED_and_why": "the 32-bit RIPPLE CPA is 34 levels and 2576 cells and needs 68 ZCS probe decks. It is reported STRUCTURALLY (exactly, from the netlist) and is NOT simulated. Its level count and cell count are netlist facts, not estimates; its energy is NOT claimed. The full 4x quarter-round is likewise reported as a level-structure composition over MEASURED level times and MEASURED per-level energies, and every composed number is labelled COMPOSED.",
+  "beat_selection_rule": "T is not guessed. For each vehicle, T starts at an estimate scaled from the qal/widebank sibling's own N-sweep (DERIVED: t_hop scales as sqrt(C_tank), and C_bank(xor2) / C_bank(inv) = 3.22 at N = 128, so t_hop x1.80 and T from widebank's accepted 580 ps to ~1045 ps) and ESCALATES by 1.35x until the row passes G2/G6/G7/G11 or four escalations are spent. Every attempt is recorded with its wall time, pass/fail and the gate that failed -- the same protocol qal/widebank used.",
+  "runtime_management": "AES is 1792 devices over 3 levels with a ~8 ns span; K32 is 2320 devices over 7 levels. Concurrency is held at <= 6 heavy Xyce processes, per the brief. Probe decks are single-hop windows and are cheap. If a single row exceeds 3600 s it is abandoned, reported as abandoned, and the vehicle falls back to the next smaller width with the scoping stated -- it is NOT silently replaced by a narrower slice, which is the error the campaign made once (a narrow carry-chain slice generalised to a cipher)."
+ },
+
+ "G_MY_PRE_STATED_EXPECTATIONS": {
+  "_status": "written before any Xyce run of Phase 2. I commit to reporting these whichever way they land and to naming every one I miss. Phase 1 scored 2 right, 3 partly, 3 wrong and said so; the same standard applies here.",
+  "Q0_the_adder_form_INVERTS_between_technologies": "In QAL the parallel-prefix form wins structurally and will win measurably: 32-bit ripple is 4.857x the levels and 5.111x the cells of 32-bit Kogge-Stone, because the ripple's O(W^2) forwarding tax is a QAL-only cost. In CMOS the SAME comparison goes the OTHER WAY: CMOS needs no forwarding at all, so a CMOS 32-bit ripple is roughly W x (a full adder, ~24 devices) = ~770 devices against a CMOS Kogge-Stone's ~2300. PREDICTION: the measured QAL energy ratio ripple/KS at 8 bits is >= 1.8x in the ripple's disfavour, while the CMOS device count goes the other way by >= 2x. If that holds, 'the adder form was a harness choice, not a property of the algorithm' is TRUE of the algorithm and FALSE of the technology: the choice is forced differently in QAL than in CMOS.",
+  "Q1_the_beat": "N = 128 xor2_1 will need T >= 900 ps, against the widebank sibling's 580 ps for N = 128 INVERTERS, i.e. the CELL dominates the population. Predicted band 900-1600 ps, accepted on the escalation rule.",
+  "Q2_per_gate_energy": "the widebank sibling measured 3.807 fJ per gate for N = 128 inverters. XOR2 is 5x the devices. PREDICTION: 8-20 fJ per gate WITH wire, i.e. well above the ideal-PWL floor of 3.5227 fJ, so the N_min ~ 52 energy argument the brief invokes does NOT rescue this vehicle -- N = 128 is far above N_min and the vehicle still loses.",
+  "Q3_AES_energy_vs_CMOS": "PREDICTION: QAL LOSES on energy at AES's own nominal wire load. Phase 1 measured the signal-wire ratio at 1.003x (Cw 2.400), 0.964x (3.489) and 0.749x (9.216); AES's nominal 4.608 fF/bit sits inside that decline, so I predict 0.80-0.98x, most likely 0.85-0.95x. If it comes out above 1.0x I have mispredicted and will say so.",
+  "Q4_AES_speed_vs_CMOS": "a CMOS AddRoundKey is ONE gate delay. A QAL AddRoundKey is a full rail hop plus a settle. PREDICTION: QAL is 7-15x SLOWER on this level, and there is NO configuration in Phase 2 where QAL is faster.",
+  "Q5_gates": "at the nominal wire on matched tanks I predict G7 PASSES (the tank is matched, which is why matched tanks are mandatory) and the committed 90 % settling bar FAILS, with fcrit S3 still passing; at the HIGH wire figure (6.700 fF/bit) I predict fcrit S3 FAILS, by analogy with Phase 1's 9.216 fF row which failed at +3.263 mV against a 19.323 mV budget.",
+  "Q6_sha_slice_corroboration": "my independently reconstructed 8-bit ripple (164 cells, 10 levels) should land within 2x of the committed qal/sha256 block's per-gate energy (161 cells, 14 banks, 8-bit ripple CPA). If it does not, one of the two constructions is wrong and I will identify which rather than reporting the discrepancy as a result.",
+  "Q7_the_quarter_round": "a 32-bit ChaCha quarter-round with a Kogge-Stone adder is 32 levels, therefore 32 rail hops. PREDICTION: per-op time 20-40 ns against a CMOS critical path of 1-3 ns, so QAL loses on speed at the op level by 10-30x. With a ripple adder it is 140 levels and loses by ~5x more again.",
+  "Q8_the_verdict_I_expect": "NEITHER vehicle puts QAL ahead of CMOS on energy OR on speed. The only term in this campaign where QAL beats CMOS on a real capacitance remains Phase 1's RAIL/clock-distribution wire (2.0-5.9x), which is not the cipher datapath term. I expect the deliverable of Phase 2 to be the MECHANISM -- that QAL converts wires into cells, and that this falls hardest on exactly the rotate-and-carry structures the insight nominated as its best case. If a vehicle wins I will say so as plainly as I am saying I expect it not to."
+ },
+
+ "H_BOOKINGS_EVERY_ONE_A_BOUND": {
+  "ideal_CMOS_supply": "the CMOS twin's VDD is an ideal voltage source. Direction: FAVOURS CMOS, so every reported ratio is conservative for QAL.",
+  "ideal_tank_precharge": "the QAL tank is a linear capacitor pre-charged by .ic; its generation is not costed. Direction: FAVOURS QAL. Every QAL row is a BOUND on that account.",
+  "ideal_gate_drives": "VHI and every transfer/park gate PWL are ideal sources; their energy IS metered (egt, ehi) but their generation is not. Direction: FAVOURS QAL.",
+  "held_sources": "primary inputs, the AES round key and the adders' A and B words are ideal DC sources, legal at any level because a held register's supply does not return. Metered by qi1/ei1. Applied IDENTICALLY to both technologies, so it cancels in the ratio; it does bound the absolute numbers.",
+  "first_cycle_energy": "Phase 1 AMENDMENT A4 applies unchanged: the committed deck is SINGLE-SHOT and its rails do not return to 0, so every energy here is a FIRST-CYCLE energy. A steady-state QAL cycle would start each rail part-charged, so either the swing collapses or the rail must be drained at a cost this deck family does not measure. It cancels in the difference and is identical on both sides; it bounds the interpretation.",
+  "lumped_wire_C": "Cw is a lumped linear capacitor, applied IDENTICALLY to both sides. Phase 1 MEASURED this idealisation against a 3-segment pi RC ladder carrying the PDK's own 8.24 ohm and found 0.004 fJ of 220 fJ -- 0.01 %. Validated, not declared.",
+  "no_via_or_jog_capacitance": "the permutation wire is straight min-width Metal2 of the mean length. Vias and jogs are excluded. Direction: UNDERSTATES the wire, hence understates whichever side wire favours.",
+  "sizing_rule": "C_bank(k) is DERIVED by scaling the committed MEASURED 4.497375 fF per inverter cell by the cell's device count. It is a SIZING rule, not a measurement; the measured secant C of every level is reported beside it and the rule's error is reported, exactly as qal/widebank reports its own 1.63x.",
+  "leakage": "sg13lv_compat.sp discards ad/as/pd/ps, so the default PD = 1.00 um clips the STI-edge term on the 1.12 um pMOS and every implied leakage figure is a LOWER bound.",
+  "forwarding_cell_choice": "forwarding uses ONE inverter per bit per level, which flips polarity -- and in the alternating-polarity parallel prefix the flip is exactly what the next stage wants, so no polarity repair is spent. This is the CHEAPEST physical forwarding available, so the reported forwarding tax is a LOWER bound on QAL's cost."
+ },
+
+ "I_SIM_DISCIPLINE": {
+  "directory": "/usr/local/src/stat-sim/qal/cipher/p2/ -- a new directory. Nothing in any committed qal/ directory is written to. qal/widebank/ is NOT touched and its rows are used READ-ONLY as the width reference.",
+  "cache": "PYMS_VAE_CACHE = /tmp/claude-1001/-usr-local-src/4921ad0c-f17b-4b84-986a-5917c9ebd2a6/scratchpad/vae_cache_cipher -- this run's OWN cache, shared with Phase 1 because Phase 1 is the same run and the same 5 PSP103 geometries apply. New geometries introduced by the PDK cells (w = 0.55u, 0.64u, 0.84u, 1.00u) are built fresh into it.",
+  "models": "PSP103 via .hdl of the committed psp103.va + sg13g2_psp103_tt.lib, tt only. sg13_lv via qal/sg13lv_compat.sp. No .va module is written by this run, so there is no module-name collision to manage.",
+  "metering": "1F-integrator or INTEG-I(Vsrc)+PARAM only. Every 1F integrator carries a t = 0 PEDESTAL and is ALWAYS t0-referenced.",
+  "zeros": "true current zeros RE-PROBED per configuration and per hop, schedule-matched, probe_span 3.6 (Phase 1 A1: the committed 2.6 span finds NO zero on a wire-loaded return hop).",
+  "reserved": "vt and gmin are reserved. Corners only via instance-level DTA.",
+  "concurrency": "<= 6 heavy Xyce processes."
+ },
+
+ "J_LABELS": {
+  "MEASURED": "read off a .mt0 or .prn produced by this run, or read directly out of a committed PDK file",
+  "DERIVED": "computed in closed form from MEASURED quantities or from the netlist's own structure, with the formula stated",
+  "ASSUMED": "neither -- stated as such, with what it would take to remove it",
+  "COMPOSED": "summed or scaled across separately MEASURED levels. Level times are measured end to end and never composed; an OP time that sums measured level times is labelled COMPOSED wherever it appears.",
+  "BOOKING": "modelled as an ideal source or element; its row is a BOUND and the direction of the bias is named"
+ }
+}

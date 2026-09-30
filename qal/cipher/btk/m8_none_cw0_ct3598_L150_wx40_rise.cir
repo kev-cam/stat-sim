@@ -1,0 +1,51 @@
+.hdl "/usr/local/share/xyce/verilog-a/psp103/psp103.va"
+.include "/usr/local/src/kestrel/sim/models/sg13g2_psp103_tt.lib"
+.include "/usr/local/src/stat-sim/qal/sg13lv_compat.sp"
+.OPTIONS TIMEINT METHOD=GEAR RELTOL=1e-6 ABSTOL=1e-15 CHGTOL=1e-17
+VHI vhi 0 1.5
+VMG gn 0 0
+VI0 in0 0 1.65
+VI1 in1 0 1.65
+VI2 in2 0 1.65
+VI3 in3 0 0
+VI4 in4 0 1.65
+VI5 in5 0 0
+VI6 in6 0 0
+VI7 in7 0 1.65
+XP0 o0 in0 rail rail sg13_lv_pmos w=4.48u l=0.13u
+XN0 o0 in0 gn gn sg13_lv_nmos w=0.74u l=0.13u
+CL0 o0 gn 2f
+XP1 o1 in1 rail rail sg13_lv_pmos w=4.48u l=0.13u
+XN1 o1 in1 gn gn sg13_lv_nmos w=0.74u l=0.13u
+CL1 o1 gn 2f
+XP2 o2 in2 rail rail sg13_lv_pmos w=4.48u l=0.13u
+XN2 o2 in2 gn gn sg13_lv_nmos w=0.74u l=0.13u
+CL2 o2 gn 2f
+XP3 o3 in3 rail rail sg13_lv_pmos w=4.48u l=0.13u
+XN3 o3 in3 gn gn sg13_lv_nmos w=0.74u l=0.13u
+CL3 o3 gn 2f
+XP4 o4 in4 rail rail sg13_lv_pmos w=4.48u l=0.13u
+XN4 o4 in4 gn gn sg13_lv_nmos w=0.74u l=0.13u
+CL4 o4 gn 2f
+XP5 o5 in5 rail rail sg13_lv_pmos w=4.48u l=0.13u
+XN5 o5 in5 gn gn sg13_lv_nmos w=0.74u l=0.13u
+CL5 o5 gn 2f
+XP6 o6 in6 rail rail sg13_lv_pmos w=4.48u l=0.13u
+XN6 o6 in6 gn gn sg13_lv_nmos w=0.74u l=0.13u
+CL6 o6 gn 2f
+XP7 o7 in7 rail rail sg13_lv_pmos w=4.48u l=0.13u
+XN7 o7 in7 gn gn sg13_lv_nmos w=0.74u l=0.13u
+CL7 o7 gn 2f
+CT tnk 0 359.790000f
+L1 tnk mid 15n
+R1 mid sw 10
+XSWN sw gt rail 0 sg13_lv_nmos w=10u l=0.13u
+XSWP sw gtp rail vhi sg13_lv_pmos w=20u l=0.13u
+XPK sw pk tnk tnk sg13_lv_nmos w=2u l=0.13u
+VGT gt 0 PWL(0 0 198p 0 200p 1.5 1743.13p 1.5)
+VGTP gtp 0 PWL(0 1.5 198p 1.5 200p 0 1743.13p 0)
+VPK pk 0 PWL(0 1.5 198p 1.5 200p 0 1743.13p 0)
+.ic V(tnk)=0.9075 V(rail)=0 V(sw)=0.9075 V(o0)=0 V(o1)=0 V(o2)=0 V(o3)=0 V(o4)=0 V(o5)=0 V(o6)=0 V(o7)=0
+.tran 0.1p 435.782p 0 0.25p
+.print tran V(tnk) V(rail) V(sw) I(L1) V(o0) V(o1) V(o2) V(o3) V(o4) V(o5) V(o6) V(o7)
+.end

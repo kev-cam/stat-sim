@@ -1,0 +1,81 @@
+==============================================================================
+SK4 / SK5 AUDIT ARITHMETIC  (no simulation; audits the artifacts on disk)
+==============================================================================
+
+[SK4b] THE CONTOUR MULTIPLE
+  sigma_trip            = 6.4410 mV  (DERIVED-from-MEASURED, LOWER bound)
+  sigma_driver_level    = 22.4000 mV  (MEASURED qal/mcsize, 300 samples)
+  sigma_total = RSS     = 23.307649 mV
+  p2eye.py CONTOURS['3sigma_total_with_driver_level'] = 3.0*sqrt(st^2+sl^2)
+                        = 69.9229 mV   <-- THREE sigma, NOT one
+  3*sigma_trip          = 19.3230 mV
+  => U3 is charged at the FULL 3-sigma of the total. My SX4 main clause is REFUTED.
+
+[SK4/new] IS THE CHARGED t_valid T-INVARIANT?  bank 3 (binding)
+  T ps          0mV  3sig_trip   3sig_tot
+  200      126.6343   128.3913   135.8689
+  180      126.6656   128.4579   135.9645
+  160      126.7014   128.5300   136.0662
+  150      126.7339   128.5906   136.1498
+  145      126.7614   128.6432   136.2226
+  140      126.8056   128.7277   136.3402
+  span T=200->140:  0 mV +0.1713 ps   3sigma_total +0.4713 ps  (2.8x larger)
+  => the T-dependence they called negligible (0.171 ps at 0 mV) is 0.471 ps
+     at the contour that actually SETS the beat -- 2.8x larger.
+
+[SK4/new] THE SELF-CONSISTENT BEAT   constraint: t_valid_3sig_tot(T) + U2 <= T
+  their headline: t_valid_3sig_tot(T=200) + U2 = 135.8689 + 7.272 = 143.1409 ps
+  local fit on the 145/140 rungs: dt_valid/dT = -0.023520 ps/ps
+  SELF-CONSISTENT solution T* = 143.5292 ps
+  their number                = 143.1412 ps
+  => their headline is +0.3880 ps OPTIMISTIC (0.27%): they evaluated
+     t_valid at T=200 and then solved for a beat of ~143, where t_valid is larger.
+  their own closure bracket (145 OPEN / 140 CLOSED) contains T* too, so the
+  CONCLUSION is unchanged; only the headline digit moves.
+
+[SK4e] U2: 0.46 ps/K x 16 K
+  absolute charge            = 7.360 ps  (their choice)
+  LC limb (their figure)     = 0.088 ps -> differential 7.272 ps
+  the rate's own base line   = 265.623 ps, and 0.46*60/265.623 = 10.3907%
+  MEASURED RC-soft limb      = 10.23%  -> agree to 1.57% relative
+  => their anti-double-count claim (drift rate and soft limb are the SAME
+     measurement) CHECKS OUT.  Charged once. CONFIRMED.
+  BUT: the interval being timed is T~143 ps, not the 265.623 ps line.
+     if the timer element SCALES with the interval, the charge is
+     10.3907% x 16/60 x 143.141 = 3.966 ps, not 7.360 ps -- a 1.86x OVER-charge.
+     Direction: CONSERVATIVE (over-charge -> slower beat). Safe, but the
+     ambiguity should be named, because it is 44%% of the budget.
+
+==============================================================================
+[SK5 C2/C3] THE CMOS COMPARATOR -- WHICH OBJECT, WHICH BAR
+==============================================================================
+  eye/p2 used                     57.143 ps
+  provenance: qal/lsweep/cellcmp.json key c120.t90_ps = 57.1429
+     -> ONE INVERTER's 90%%-SETTLING time at vdd=1.2 V from an ideal step.
+  same cell, same load, 50%% crossing: c120.t50_ps = 30.3573 ps
+  qal/fcrit_skept MEASURED the steady-state per-logic-level CMOS
+  propagation on a real depth-12 chain at 2 fF/node:
+     t90 = 52.51 ps,  t_commit = 52.51 ps,  GAIN = 1.0  <-- BAR-INVARIANT
+  THAT is the object 'a beat is made of', and it already exists on disk.
+  eye/p2's choice is +4.633 ps (8.82%) SLOWER than the fair comparator
+  DIRECTION: it makes CMOS look slower => it FLATTERS QAL.
+
+[SK5 C4] t_reg(2 fF) = 307.1 + (335.7-307.1)*2/6.91 = 315.3779 ps  ARITHMETIC OK
+  liberty 1.11-1.21x optimistic -> true band 350.1-381.6 ps.
+  using the LOWER 315.378 = SMALLER flop tax = LESS QAL advantage. CONSERVATIVE. OK.
+
+[SK5/VERDICT] CROSSOVER D RECOMPUTED, H=4, 1 level/bank, strict II=H*T+tzq
+  configuration                      D_i exact D_ii exact      D_i   D_ii
+  theirs: T=143.141 CMOS 57.143 unc=0    1.949    7.188        2      8
+    + fair CMOS 52.51                   1.974    7.822        2      8
+    + self-consistent T*=143.529        1.978    7.851        2      8
+    + A6-VALIDATED T=150                2.048    8.344        3      9
+    A6 T=150, honest t_reg 1.11x        1.872    7.684        2      8
+    A6 T=150, honest t_reg 1.21x        1.736    7.083        2      8
+    A6 T=150, fair CMOS, unc=100        1.611    6.440        2      7
+    A6 T=150, fair CMOS, unc=250        1.220    3.583        2      4
+
+  per-level LATENCY ratio (no win is claimable either way):
+    their T=143.141        QAL 143.141 ps/level vs CMOS 52.51 ps  => QAL 2.726x SLOWER
+    self-consistent T*     QAL 143.529 ps/level vs CMOS 52.51 ps  => QAL 2.733x SLOWER
+    A6-validated T=150     QAL 150.000 ps/level vs CMOS 52.51 ps  => QAL 2.857x SLOWER

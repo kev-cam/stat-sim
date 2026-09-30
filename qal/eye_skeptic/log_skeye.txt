@@ -1,0 +1,65 @@
+A6 FAIL P0 worst 26.3498 uA -- KEPT (see AMENDMENT SA1), off-zero switching is the definition of a data-blind schedule
+loaded P0  n=22471  solver_pts=23955 dt_max=0.1000 ps  A6 worst 26.3498 uA
+A6 FAIL P1 worst 128.4111 uA -- KEPT (see AMENDMENT SA1), off-zero switching is the definition of a data-blind schedule
+loaded P1  n=22471  solver_pts=23982 dt_max=0.1000 ps  A6 worst 128.4111 uA
+A6 FAIL P2 worst 123.6844 uA -- KEPT (see AMENDMENT SA1), off-zero switching is the definition of a data-blind schedule
+loaded P2  n=22471  solver_pts=23949 dt_max=0.1000 ps  A6 worst 123.6844 uA
+loaded P3  n=22471  solver_pts=23953 dt_max=0.1000 ps  A6 worst 0.0121 uA
+
+================================================================================================
+SK1  MY OWN t_valid (opening - own rail start), DATA reference, min over ALL 8 GATES then over patterns
+================================================================================================
+bank   construction                              0mV  1sig_trip  3sig_trip   3sig_tot
+1      INTERSECTION_all_patterns            126.1316  126.4528  127.2765  133.3696
+1      SINGLE_P0                            103.1656  103.7737  104.9909  109.8226
+1      SINGLE_P1                            126.1316  126.4528  127.2765  133.3696
+1      SINGLE_P2                              0.0000    0.0000    0.0000    0.0000
+1      SINGLE_P3                            106.1001  106.7429  108.0345  113.2269
+
+2      INTERSECTION_all_patterns            126.2635  126.6457  127.4903  134.7051
+2      SINGLE_P0                            109.7625  110.4886  111.9545  117.9555
+2      SINGLE_P1                              0.0000    0.0000    0.0000    0.0000
+2      SINGLE_P2                            126.2635  126.6457  127.4903  134.7051
+2      SINGLE_P3                            105.4202  106.1024  107.4730  112.9843
+
+3      INTERSECTION_all_patterns            126.6343  127.0192  128.3913  135.8689
+3      SINGLE_P0                            108.0145  108.6819  110.0253  115.4643
+3      SINGLE_P1                            126.6343  127.0192  128.3913  135.8689
+3      SINGLE_P2                              0.0000    0.0000    0.0000    0.0000
+3      SINGLE_P3                            111.6421  112.3554  113.7972  119.7307
+
+================================================================================================
+SK2  WIDTH and CLOSING at each contour -- INTERSECTION, and the floor
+================================================================================================
+bank 1  post-return floor 22.4216 mV  (3.48 sigma_trip, 0.96 sigma_total) at 1208.2 ps
+        height at sampling instant 175.4903 mV = 27.25 sigma_trip = 7.53 sigma_total
+        0mV            ( 0.000 mV)  open  326.1316  close NONE         width LOWER BOUND  NO_CLOSE_INSIDE_DECK
+        1sigma_trip    ( 6.441 mV)  open  326.4528  close NONE         width LOWER BOUND  NO_CLOSE_INSIDE_DECK
+        3sigma_trip    (19.323 mV)  open  327.2765  close NONE         width LOWER BOUND  NO_CLOSE_INSIDE_DECK
+        3sigma_total   (69.923 mV)  open  333.3696  close 1087.4904    width 754.1207     margin_crossing
+
+bank 2  post-return floor 21.8411 mV  (3.39 sigma_trip, 0.94 sigma_total) at 1407.5 ps
+        height at sampling instant 171.0119 mV = 26.55 sigma_trip = 7.34 sigma_total
+        0mV            ( 0.000 mV)  open  526.2635  close NONE         width LOWER BOUND  NO_CLOSE_INSIDE_DECK
+        1sigma_trip    ( 6.441 mV)  open  526.6457  close NONE         width LOWER BOUND  NO_CLOSE_INSIDE_DECK
+        3sigma_trip    (19.323 mV)  open  527.4903  close NONE         width LOWER BOUND  NO_CLOSE_INSIDE_DECK
+        3sigma_total   (69.923 mV)  open  534.7051  close 1286.4429    width 751.7378     margin_crossing
+
+bank 3  post-return floor 25.2221 mV  (3.92 sigma_trip, 1.08 sigma_total) at 1553.4 ps
+        height at sampling instant 165.4309 mV = 25.68 sigma_trip = 7.10 sigma_total
+        0mV            ( 0.000 mV)  open  726.6343  close NONE         width LOWER BOUND  NO_CLOSE_INSIDE_DECK
+        1sigma_trip    ( 6.441 mV)  open  727.0192  close NONE         width LOWER BOUND  NO_CLOSE_INSIDE_DECK
+        3sigma_trip    (19.323 mV)  open  728.3913  close NONE         width LOWER BOUND  NO_CLOSE_INSIDE_DECK
+        3sigma_total   (69.923 mV)  open  735.8689  close 1485.3498    width 749.4810     margin_crossing
+
+================================================================================================
+SK2  POLARITY DIAGNOSTIC (0 mV, DATA ref) -- which polarity limits the early edge
+================================================================================================
+bank 1  HIGH   n_pat=3  t_valid 126.1316 ps  (margin_crossing)
+bank 1  LOW    n_pat=3  t_valid 0.0 ps  (clipped_at_window_start)
+bank 2  HIGH   n_pat=3  t_valid 126.2635 ps  (margin_crossing)
+bank 2  LOW    n_pat=3  t_valid 0.0 ps  (clipped_at_window_start)
+bank 3  HIGH   n_pat=3  t_valid 126.6343 ps  (margin_crossing)
+bank 3  LOW    n_pat=3  t_valid 0.0 ps  (clipped_at_window_start)
+
+wrote SKEPTIC_EYE.json

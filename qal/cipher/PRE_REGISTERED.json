@@ -1,0 +1,150 @@
+{
+ "_what": "qal/cipher PHASE 1 -- the interconnect model and the wire-charge recovery measurement. Written BEFORE the first Xyce deck of this run. The only files in this directory at this instant are DISK_STATE_BEFORE.txt (19:32:50), wire.py, WIRE_MODEL.json and btk/ (the byte-identity check of the committed deck generator, which ran NO simulation).",
+ "_run": "qal/cipher, Phase 1 only. Phase 2 (AES AddRoundKey, ChaCha20 quarter-round) is NOT pre-registered here.",
+ "_order_of_work": [
+  "DISK_STATE_BEFORE.txt  19:32:50  sha256 + mtime of every committed input",
+  "wire.py + WIRE_MODEL.json        PDK arithmetic only, NO simulation -- run before this file because this file has to STATE its figure",
+  "btk/ byte-identity check          regenerated the two committed netlists and byte-compared them; NO simulation",
+  "PRE_REGISTERED.json  <-- this file",
+  "then, and only then, the first Xyce deck"
+ ],
+
+ "A_THE_WIRE_MODEL": {
+  "_label": "MEASURED-FROM-PDK for the isolated figure; DERIVED for the coupling term; the campaign's 0.15 fF/um is now BRACKETED by the PDK rather than assumed.",
+  "primary_layer": "Metal2 (VERTICAL), min width 0.20 um, min same-layer spacing 0.21 um, LEF thickness 0.450 um, bottom height 1.880 um, inter-metal oxide ER = 4.1",
+  "source_S1_MEASURED": {
+   "file": "IHP-Open-PDK/ihp-sg13g2/libs.ref/sg13g2_stdcell/lef/sg13g2_tech.lef",
+   "sha256": "054f5b7b24d72365b4b1088be1331e04c1c2e3805de9f99c37e71938ed231efc",
+   "fields": "CAPACITANCE CPERSQDIST = 1.81e-05 pF/um^2 ; EDGECAPACITANCE = 4.47e-05 pF/um PER EDGE ; RESISTANCE RPERSQ = 0.103 ohm/sq",
+   "isolated_wire_model": "C/L = CPERSQDIST*W + 2*EDGECAPACITANCE",
+   "figure_fF_per_um": 0.0930,
+   "R_ohm_per_um_at_min_width": 0.515,
+   "note": "this is the RC OpenROAD/librelane themselves use for this PDK; it is an ISOLATED wire over the plane below and carries NO same-layer coupling"
+  },
+  "source_S2_geometry_crosscheck": {
+   "file": "libs.tech/parasitics/itf/sg13g2_typ.itf",
+   "sha256": "050d57c9764c0ea84ace0ad5da19f07715bdc10effeb0c169b4fbf64d93d9f3f",
+   "method": "Sakurai & Tamaru (1983) closed form on the ITF/LEF geometry",
+   "isolated_fF_per_um": 0.0784,
+   "agreement_with_S1": "84 % of the LEF figure -- S1 is corroborated",
+   "coupling_per_neighbour_fF_per_um": 0.1033,
+   "parallel_plate_bound_on_coupling_fF_per_um": 0.0778
+  },
+  "source_S3_openrcx_FLAGGED": {
+   "file": "libs.tech/librelane/openrcx/ihp-sg13g2.nom.magic.rules",
+   "sha256": "479a65fb529a08756b6c91f122b9116f6ccacb6475413677ec654e2ba1a49c6c",
+   "far_spacing_total_fF_per_um": 0.1077,
+   "far_spacing_agreement_with_S1": "116 % of the LEF figure -- corroborates S1",
+   "min_spacing_coupling_per_side_fF_per_um": 0.4599,
+   "VERDICT": "the min-spacing coupling row is 4.5x the Sakurai value and 5.9x a hard parallel-plate bound (er*e0*T/S, which cannot be exceeded by a coplanar pair). It is REPORTED and FLAGGED as internally inconsistent with both the LEF and the ITF geometry in the same PDK, and it is NOT USED for any number in this run. If it were used every wire figure here would rise ~4x and QAL's wire case would look BETTER, so declining to use it is the conservative choice."
+  },
+  "THE_FIGURES_CARRIED": {
+   "LOW_isolated_M2_fF_per_um": 0.0930,
+   "NOMINAL_campaign_fF_per_um": 0.15,
+   "HIGH_min_pitch_bus_M2_fF_per_um": 0.2181,
+   "HIGH_composition": "shielded ground 0.0114 (area + RCX min-spacing fringe) + 2 x Sakurai coupling 0.1033",
+   "STATUS_OF_THE_CAMPAIGN_FIGURE": "0.15 fF/um lies INSIDE the PDK-derived band [0.0930, 0.2181] for min-width Metal2. It is therefore RETAINED as the nominal and is no longer ASSUMED: it is PDK-BRACKETED. Both ends of the band are run as rows so no conclusion rests on the midpoint."
+  },
+  "THE_ROTATE_GEOMETRY": {
+   "formula_DERIVED": "bit i -> bit (i+r) mod W. (W-r) bits travel r pitches, r bits travel (W-r) pitches (the wrap). Mean |delta index| = 2 r (W-r) / W bit pitches.",
+   "chacha20_rotations": [16, 12, 8, 7],
+   "chacha20_mean_pitches": [16.0, 15.0, 12.0, 10.94],
+   "chacha20_mean_over_four_rotates_pitches": 13.48,
+   "phase1_case": "r = 16, W = 32 -> mean 16.0 bit pitches (the worst case, and the brief's own)",
+   "bit_pitch_um_brief": 1.00,
+   "bit_pitch_um_PDK_alternatives": {"CoreSite_x2": 0.96, "sg13g2_inv_1": 1.44, "sg13g2_xor2_1": 3.84},
+   "mean_wire_length_um_at_brief_pitch": 16.0,
+   "wire_R_over_that_length_ohm": 8.24,
+   "PER_BIT_LOAD_fF": {"LOW": 1.488, "NOMINAL": 2.400, "HIGH": 3.489, "PHASE2_xor2_pitch": 9.216},
+   "brief_cross_check": "32 bits x 16 um x 0.15 fF/um = 76.8 fF. The brief said '~75 fF'. Reproduced."
+  }
+ },
+
+ "B_CONFIGURATION_only_what_is_known_to_work": {
+  "topology": "per-bank tanks, qal/banktank bt.py at sha256 5b3582bea9e398e40d3aa93fc6fe44428d4eb1dfbde56c5d122604c5c35576c0 (commit 0aae11e), copied VERBATIM into btk/bt_committed.py and EXTENDED (btk/bt_wire.py) only by the wire load. Regenerating the committed decks from the copy reproduces c_m10_T150_H4_dv1650_free.cir and c_m10_T200_H4_dv1200_free.cir BYTE-IDENTICALLY (checked 19:34, before this file).",
+  "primary_point": {"m": 10, "T_ps": 150, "H": 4, "dV_V": 1.65, "L_nH": 15, "Rs_ohm": 10, "switch_total_um": 30, "mode": "free"},
+  "why_this_point": "the only committed banktank point that both PASSES the committed 90 %/value gates at dV = 1.65 (worst gate 90.387 %) and is the beat qal/fcrit identifies as the shortest that computes under the functional criterion (200 -> 150 ps).",
+  "dV_justification": "dV = 1.65 V commanded delivers a MEASURED rail of 1.0946/1.0007/1.0826/1.0761 V at the four banks' own boundaries -- above Vtn + |Vtp| = 0.9642 V, so the cascade is level-restoring. dV = 1.2 delivers 0.75/0.68/0.73/0.72 V and is NOT.",
+  "sequencing": "the FIXED buck sequencing, break-before-make at BOTH edges (2 ps), park device tank-referenced per banktank AMENDMENT A6, diode freewheel as committed.",
+  "chain_legal_cuts": "source-side cut at every hop; per banktank the tank island touches exactly one rail so the cut is at the measured ZCS of that hop and nowhere else.",
+  "ZCS_protocol": "RE-PROBED for EVERY configuration in this run and for every hop, with the committed SEQUENTIAL protocol, SCHEDULE-MATCHED to the row's own T and H (banktank AMENDMENT A7). The committed zeros_m10_dv1650.json was probed at T = 120 and is the reason every committed dV = 1.65 row FAILS the strict |I(L)| <= 1 uA gate; this run does not inherit that.",
+  "scoring": "the FUNCTIONAL criterion of qal/fcrit (PRE_REGISTERED.sha256 289ae498c527976e9e5f2d3dac2befe333ec7cccac99db9b53a2dc0fc375ce26), reused from disk: rescore.score_deck with Trip(TRIP.json, 'S') -- the wp = 1.12u / wn = 0.74u receiver whose MEASURED trip fraction runs 0.7281 at 0.20 V to 0.5179 at 1.50 V -- at noise budget NB['free'] = 3 sigma = 19.323 mV. The committed 90 % bar and value guard are reported ALONGSIDE, never instead."
+ },
+
+ "C_ACCEPTANCE_GATES": {
+  "G1_instrument_reproduction": "the two committed rows re-run in THIS directory under THIS run's own PYMS_VAE_CACHE must reproduce every .mt0 quantity to <= 1e-6 RELATIVE (or <= 1e-18 absolute for quantities near zero). Any larger deviation is an INSTRUMENT FAILURE, is reported as such, and no result in this run is believed until it is explained.",
+  "G2_zcs": "|I(L_k)| <= 1.0 uA at every commanded open (rise and return, all 4 banks). Rows that fail are reported as instrument failures, not as results.",
+  "G3_path_identity": "|E_out_of_tank - E_switchblock - E_seriesR| <= 1 % of E_out_of_tank, per bank, on the rise.",
+  "G4_tank_closure": "the whole-run integral of V(tnk)*I(L) must equal the tank cap's own 1/2 C (V0^2 - V_end^2); the residual is reported for every bank and is NOT permitted to be silently absorbed.",
+  "G5_energy_convention_free": "every headline energy is the tank's own 1/2 C_t (V0^2 - V1^2) on a LINEAR capacitor, which needs no integrator convention. Integrator numbers are reported as a cross-check, never as the headline.",
+  "G6_functional": "fcrit S3: every gate on the correct side of its RECEIVER's measured trip at the RECEIVER's delivered rail at the instant the receiver commits, by >= 19.323 mV.",
+  "G7_level_restoring": "delivered rail at each bank's own boundary > Vtn + |Vtp| = 0.9642 V.",
+  "G8_separation": "min HIGH - max LOW >= 6.44 mV (the corrected 1-sigma floor) at every depth.",
+  "G9_comparator_symmetry": "the CMOS comparator carries the IDENTICAL wire capacitance, the IDENTICAL cell (wp = 1.12u / wn = 0.74u), the IDENTICAL .OPTIONS, the IDENTICAL 2 ps edges, and its supply is SET EQUAL TO THE QAL VARIANT'S OWN MEASURED DELIVERED RAIL, not to the commanded dV. A ratio computed against a CMOS row at a different voltage or a different load is void.",
+  "G10_no_single_hop_as_chain": "no single-hop number is quoted as a chain result and no tank-only energy is quoted as block energy. The chain rows are 4-bank rows; the micro-harness rows are labelled SINGLE HOP in their own name."
+ },
+
+ "D_ROWS_pre_stated": {
+  "instrument_check": [
+   "IC1  c_m10_T150_H4_dv1650_free   committed zeros, re-run here, digit-checked vs the committed .mt0",
+   "IC2  c_m10_T200_H4_dv1200_free   the A6-clean committed row, same treatment"
+  ],
+  "chain_rows_4_bank": [
+   "W0  Cw = 0            fixed tank (the control; = the committed deck with schedule-matched zeros)",
+   "W1  Cw = 2.400 fF     signal-node wire, fixed tank            NOMINAL",
+   "W2  Cw = 2.400 fF     signal-node wire, RAIL-MATCHED tank  C_t(k) = 10*(C_bank + n_hi(k)*Cw), tanks tuned per bank",
+   "W3  Cw = 2.400 fF     the SAME capacitance placed on the RESONANT NODE (the rail), rail-matched tank -- the discriminating row",
+   "W4  Cw = 1.488 fF     LOW end of the PDK band, signal-node, rail-matched",
+   "W5  Cw = 3.489 fF     HIGH end of the PDK band, signal-node, rail-matched",
+   "W6  Cw = 9.216 fF     xor2_1-pitch load, signal-node, rail-matched (the Phase-2 scale)",
+   "W7  Cw = 2.400 fF as a 3-segment pi RC ladder (R = 8.24 ohm total), signal-node, rail-matched -- lumped-C check"
+  ],
+  "micro_harness_single_hop_the_decisive_comparison": [
+   "Q0  QAL  single hop, one cell, Cw = 0        tank -> L -> R -> tg15p -> rail -> cell -> node(CL = 2 fF)",
+   "Q1  QAL  single hop, one cell, Cw = 2.400 fF on the node (BEHIND the cell pMOS)",
+   "Q2  QAL  single hop, one cell, Cw = 2.400 fF on the RAIL (ON the resonant node)",
+   "C0  CMOS single cell, ideal VDD = the MEASURED delivered rail of Q0/Q1, Cw = 0, one full 0->1->0 cycle",
+   "C1  CMOS same, Cw = 2.400 fF",
+   "RATIO_signal = (E_C1 - E_C0) / (E_Q1 - E_Q0)   RATIO_rail = (E_C1 - E_C0) / (E_Q2 - E_Q0)"
+  ],
+  "runtime_management": "each 4-bank row is ~30 kB of netlist, ~8 MB .prn, ~60 s wall. Each configuration needs 8 sequential ZCS probe decks (short). Configurations are independent, so up to 4 probe chains plus 2 rows run concurrently -- <= 6 heavy Xyce processes, per the brief. The micro-harness decks are single-hop and cheap. No 128-cell deck is run in Phase 1."
+ },
+
+ "E_MY_PRE_STATED_EXPECTATION": {
+  "_status": "written before any Xyce run of this study. I commit to reporting these whichever way they land, and to naming any of them that I miss.",
+  "P0_THE_TOPOLOGY_POINT_THAT_DECIDES_IT": "In the committed banktank cell the wire capacitance does NOT sit on the resonant node. The inductor charges the bank RAIL; a signal wire hangs on a cell OUTPUT node and is charged FROM the rail THROUGH that cell's own pMOS (w = 1.12 um), a series device that is OUTSIDE the LC loop. The insight 'QAL charges wire through the inductor and takes it back' is therefore, as stated, true of RAIL/clock wire and NOT automatically true of SIGNAL wire. This run is designed to separate those two.",
+  "P1_stranding_ceiling_DERIVED": "A pull-up output node with its gate at 0 V stops conducting back into a falling rail when it reaches |Vtp| = 0.4403 V. At the committed delivered rail of 1.0007-1.0946 V the CEILING on wire-charge energy return is 1 - (0.4403/V)^2 = 80.6-82.4 %, before any resistive loss. I predict the measured return will be well below that ceiling.",
+  "P2_adiabaticity_goes_the_WRONG_way": "Adding Cw = 2.400 fF multiplies the output node's RC by (CL+Cw)/CL = 2.20, while the rail ramp lengthens only by sqrt(C_eff'/C_eff) = 1.138 (C_eff 32.71 -> 42.33 fF at n_hi = 5). So the incremental wire charge is delivered LESS adiabatically than the bank's existing load. PREDICTION: the INCREMENTAL recycle fraction comes out BELOW the committed bank average of 17.1-25.4 %; I pre-state 5-20 %.",
+  "P3_THE_HEADLINE_I_EXPECT": "RATIO_signal = incremental CMOS loss / incremental QAL loss on the same Cw: I predict 0.3x to 1.2x, most likely 0.5-0.8x -- i.e. I do NOT expect QAL to win on signal-wire capacitance in this topology, and I expect it may LOSE. If it wins big I have mispredicted and will say so.",
+  "P4_THE_DISCRIMINATING_PREDICTION": "RATIO_rail, the same Cw placed ON the resonant node: governed by the loop quality factor (2/pi)*sqrt(L/C_eff)/R = 43.1 at the committed point. I predict 5x-40x in QAL's favour. If P3 and P4 both hold, 'wiring does the rotate and QAL recovers it' is TRUE for rail wire and FALSE for signal wire, and the insight survives only if the rotate permutation can be moved into the charge path -- which is a design conclusion, not a defeat.",
+  "P5_rail_droop": "2m/(m+1) saturates, so the IDEAL-lossless droop from the wire load on a FIXED tank is small: bank 2 (5 pull-up cells) goes m = 10 -> m' = 7.499, ideal rail 1.6500 -> 1.6014 V, -2.9 %. I predict the MEASURED droop is LARGER, 5-12 %, because the added load also costs switch and series loss. I predict the row stays above the 0.9642 V level-restoring floor at Cw = 2.400 fF and may cross below it at Cw = 9.216 fF.",
+  "P6_pass_fail": "the committed T = 150 / dV = 1.65 row passes the 90 % settling bar with only 0.387 points of margin. I predict it FAILS that bar at Cw = 2.400 fF on a fixed tank (W1) and is RECOVERED by the rail-matched tank (W2). Under the fcrit S3 functional criterion I predict W1 still passes 32/32.",
+  "P7_beat": "the MEASURED steady-state stage time (banktank A3 metric, t_dv(k) - t_dv(k-1), never composed) lengthens by 10-20 % at Cw = 2.400 fF.",
+  "P8_area_price": "the rail-matched tank grows as 1 + n_hi*Cw/C_bank = 1.20 (n_hi = 3) to 1.33 (n_hi = 5) at Cw = 2.400 fF; at MIM 1.5 fF/um^2 the four tanks go from 959.4 um^2 to ~1218 um^2. This is the area half of the area/power-for-speed exchange and is reported as a cost, not a footnote."
+ },
+
+ "F_BOOKINGS_every_one_is_a_BOUND": {
+  "ideal_CMOS_supply": "the CMOS comparator's VDD is an ideal voltage source. BOOKING. Direction: FAVOURS CMOS (a real regulator adds loss), so the reported ratio is conservative for QAL.",
+  "ideal_tank_precharge": "the QAL tank is a linear capacitor pre-charged by .ic; its generation is NOT costed in the free rows. BOOKING. Direction: FAVOURS QAL. The committed 'topup' variant costs the recharge switch; Phase 1 reports the free rows and says so.",
+  "ideal_gate_drives": "VHI and every transfer/park gate PWL are ideal sources; their energy IS metered (egt, ehi integrators) but their generation is not. BOOKING, both sides, direction FAVOURS QAL (CMOS needs no such rail).",
+  "lumped_wire_C": "Cw is a lumped linear capacitor in W1-W6, Q1-Q2, C1. BOOKING applied IDENTICALLY to both sides. W7 runs the same load as a 3-segment pi RC ladder to bound the error.",
+  "linear_wire_cap": "wire capacitance is genuinely linear, so the linear-cap idealisation is not a booking -- but its VALUE is a min-width, min-pitch Metal2 assumption stated in section A.",
+  "no_via_or_jog_capacitance": "the rotate wire is modelled as straight min-width Metal2 of the mean rotate length. Vias (Via1 0.0361 um^2, 20 ohm) and jogs are NOT included. BOOKING. Direction: UNDERSTATES the wire, which UNDERSTATES whichever side wire capacitance favours."
+ },
+
+ "G_SIM_DISCIPLINE": {
+  "cache": "PYMS_VAE_CACHE owned by this run: /tmp/claude-1001/-usr-local-src/4921ad0c-f17b-4b84-986a-5917c9ebd2a6/scratchpad/vae_cache_cipher. No committed directory is written to. qal/widebank/ is NOT touched and its results are used read-only if present.",
+  "models": "PSP103 via .hdl of the committed psp103.va + sg13g2_psp103_tt.lib; sg13_lv via qal/sg13lv_compat.sp (it DECLARES ad/as/pd/ps and DISCARDS them, so PSP103 defaults apply and JUNCAP200 IS enabled; the default PD = 1.00 um is smaller than the 1.12 um pMOS so the STI-edge term clips to zero -- every leakage figure here is a LOWER BOUND).",
+  "metering": "1F-integrator or INTEG-I(Vsrc)+PARAM only. Every 1F integrator carries a t = 0 PEDESTAL and is ALWAYS t0-referenced (the committed g(tag, ck) convention).",
+  "zeros": "true current zeros RE-PROBED per configuration and per hop, schedule-matched.",
+  "reserved": "vt and gmin are reserved. Corners only via instance-level DTA. No .va module is written by this run, so there is no module-name collision to manage.",
+  "concurrency": "<= 6 heavy Xyce processes."
+ },
+
+ "H_LABELS": {
+  "MEASURED": "read off a .mt0 or .prn produced by this run, or read directly out of a committed PDK file",
+  "DERIVED": "computed in closed form from MEASURED quantities, with the formula stated",
+  "ASSUMED": "neither -- stated as such, with what it would take to remove it",
+  "BOOKING": "modelled as an ideal source or an ideal element; its row is a BOUND and the direction of the bias is named"
+ }
+}

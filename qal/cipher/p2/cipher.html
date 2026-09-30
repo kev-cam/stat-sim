@@ -1,0 +1,486 @@
+<title>Wires Into Cells</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@400;500;600;700&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --ground:#F6F7F9; --surface:#FFFFFF; --surface-2:#EEF1F4;
+  --ink:#15181C; --ink-2:#414B57; --ink-3:#6B7785;
+  --rule:#DCE1E7; --rule-2:#C3CBD4;
+  --burn:#B0501C;      /* dissipated */
+  --keep:#0D7480;      /* recovered */
+  --pass:#1C6E46; --fail:#9E2A2A; --warn:#8A5D0C;
+  --code-bg:#F0F2F5;
+  --shadow:0 1px 2px rgba(20,28,38,.06), 0 8px 24px -12px rgba(20,28,38,.18);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#12151A; --surface:#191D23; --surface-2:#20252C;
+    --ink:#E9EDF2; --ink-2:#B4BEC9; --ink-3:#8793A1;
+    --rule:#282F37; --rule-2:#39424C;
+    --burn:#DE8347; --keep:#2FADB9;
+    --pass:#41A273; --fail:#D96A6A; --warn:#C69B3E;
+    --code-bg:#1E232A;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -14px rgba(0,0,0,.6);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#12151A; --surface:#191D23; --surface-2:#20252C;
+  --ink:#E9EDF2; --ink-2:#B4BEC9; --ink-3:#8793A1;
+  --rule:#282F37; --rule-2:#39424C;
+  --burn:#DE8347; --keep:#2FADB9;
+  --pass:#41A273; --fail:#D96A6A; --warn:#C69B3E;
+  --code-bg:#1E232A;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -14px rgba(0,0,0,.6);
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:"Source Sans 3",ui-sans-serif,system-ui,sans-serif;
+  font-size:16.5px; line-height:1.62; -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1180px;margin:0 auto;padding:0 28px 96px}
+h1,h2,h3,h4{font-family:"Zilla Slab",Georgia,serif;text-wrap:balance;margin:0}
+h1{font-size:clamp(2.1rem,4.4vw,3.35rem);font-weight:700;line-height:1.06;letter-spacing:-.017em}
+h2{font-size:1.66rem;font-weight:600;line-height:1.18;letter-spacing:-.01em}
+h3{font-size:1.16rem;font-weight:600;line-height:1.3}
+h4{font-size:1rem;font-weight:600}
+p{margin:0}
+a{color:var(--keep)}
+code,.mono,table,.num{font-family:"IBM Plex Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+code{background:var(--code-bg);padding:.1em .38em;border-radius:3px;font-size:.87em}
+
+/* ---------- masthead ---------- */
+header.mast{padding:64px 0 34px;border-bottom:2px solid var(--ink)}
+.eyebrow{font-family:"IBM Plex Mono",monospace;font-size:.7rem;letter-spacing:.17em;
+  text-transform:uppercase;color:var(--ink-3);margin-bottom:20px}
+.mast h1{max-width:23ch}
+.dek{margin-top:20px;max-width:64ch;font-size:1.14rem;color:var(--ink-2)}
+.mast-meta{margin-top:30px;display:flex;flex-wrap:wrap;gap:8px 26px;
+  font-family:"IBM Plex Mono",monospace;font-size:.735rem;color:var(--ink-3)}
+
+/* ---------- section scaffolding ---------- */
+section{padding-top:56px}
+.sechead{display:flex;align-items:baseline;gap:16px;
+  border-bottom:1px solid var(--rule);padding-bottom:12px;margin-bottom:28px}
+.sechead .lbl{font-family:"IBM Plex Mono",monospace;font-size:.7rem;letter-spacing:.15em;
+  text-transform:uppercase;color:var(--ink-3);white-space:nowrap}
+.prose{max-width:66ch;display:flex;flex-direction:column;gap:17px}
+.prose.wide{max-width:78ch}
+
+/* ---------- provenance chips: the campaign's own discipline, made visible ---------- */
+.tag{font-family:"IBM Plex Mono",monospace;font-size:.62rem;letter-spacing:.1em;
+  text-transform:uppercase;padding:.16em .48em;border-radius:3px;
+  border:1px solid var(--rule-2);color:var(--ink-3);white-space:nowrap;vertical-align:.12em}
+.tag.m{color:var(--keep);border-color:color-mix(in srgb,var(--keep) 42%,transparent)}
+.tag.d{color:var(--ink-2)}
+.tag.c{color:var(--warn);border-color:color-mix(in srgb,var(--warn) 42%,transparent)}
+.tag.b{color:var(--burn);border-color:color-mix(in srgb,var(--burn) 42%,transparent)}
+
+/* ---------- tables ---------- */
+.tblwrap{overflow-x:auto;margin:26px 0;border:1px solid var(--rule);
+  border-radius:5px;background:var(--surface);box-shadow:var(--shadow)}
+table{border-collapse:collapse;width:100%;font-size:.845rem}
+caption{text-align:left;padding:14px 16px 0;font-family:"Source Sans 3",sans-serif;
+  font-size:.86rem;color:var(--ink-2);caption-side:top}
+th,td{padding:8px 13px;text-align:right;border-bottom:1px solid var(--rule);white-space:nowrap}
+th{font-weight:600;font-size:.72rem;letter-spacing:.055em;text-transform:uppercase;
+  color:var(--ink-3);border-bottom:1px solid var(--rule-2)}
+th:first-child,td:first-child{text-align:left}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:var(--surface-2)}
+td.bad{color:var(--fail);font-weight:600}
+td.good{color:var(--pass);font-weight:600}
+td.hi{color:var(--burn);font-weight:600}
+.rowlbl{font-family:"IBM Plex Mono",monospace;font-size:.8rem}
+
+/* ---------- the claim ledger ---------- */
+.ledger{display:grid;gap:1px;background:var(--rule);border:1px solid var(--rule);
+  border-radius:5px;overflow:hidden;margin:28px 0}
+.ledger .row{background:var(--surface);padding:16px 18px;display:grid;
+  grid-template-columns:1fr auto;gap:14px;align-items:start}
+.ledger .row .k{font-weight:600}
+.ledger .row .sub{color:var(--ink-3);font-size:.9rem;margin-top:3px;max-width:62ch}
+.ledger .row .v{font-family:"IBM Plex Mono",monospace;font-size:1.02rem;text-align:right}
+
+/* ---------- callouts ---------- */
+.note{border-left:3px solid var(--rule-2);padding:2px 0 2px 18px;color:var(--ink-2);
+  max-width:66ch;margin:6px 0}
+.note.key{border-left-color:var(--burn)}
+.note.good{border-left-color:var(--keep)}
+.kicker{font-family:"Zilla Slab",serif;font-size:1.3rem;font-weight:600;line-height:1.32;
+  max-width:52ch;color:var(--ink)}
+
+/* ---------- inversion panel ---------- */
+.inv{display:grid;grid-template-columns:repeat(auto-fit,minmax(255px,1fr));gap:16px;margin:28px 0}
+.invcard{background:var(--surface);border:1px solid var(--rule);border-radius:5px;
+  padding:20px;box-shadow:var(--shadow)}
+.invcard .t{font-family:"IBM Plex Mono",monospace;font-size:.7rem;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink-3)}
+.invcard .big{font-family:"IBM Plex Mono",monospace;font-size:2.05rem;font-weight:600;
+  margin-top:9px;line-height:1}
+.invcard .big.burn{color:var(--burn)}
+.invcard .big.keep{color:var(--keep)}
+.invcard .cap{margin-top:9px;color:var(--ink-2);font-size:.9rem}
+
+figure{margin:30px 0}
+figcaption{font-size:.85rem;color:var(--ink-3);margin-top:12px;max-width:68ch}
+svg{max-width:100%;height:auto;display:block}
+
+footer{margin-top:78px;padding-top:26px;border-top:1px solid var(--rule);
+  font-family:"IBM Plex Mono",monospace;font-size:.73rem;color:var(--ink-3);
+  display:flex;flex-direction:column;gap:7px}
+:focus-visible{outline:2px solid var(--keep);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media (max-width:640px){
+  .wrap{padding:0 18px 70px}
+  .ledger .row{grid-template-columns:1fr}
+  .ledger .row .v{text-align:left}
+}
+</style>
+
+<div class="wrap">
+
+<header class="mast">
+  <div class="eyebrow">qal/cipher/p2 · Phase 2 · AES-128 &amp; ChaCha20 on a QAL datapath</div>
+  <h1>QAL turns wires into cells</h1>
+  <p class="dek">The insight under test was that <em>wiring does the rotate</em> — zero gates,
+  zero levels. Inside one level boundary that is true, and this run implements it exactly that
+  way. Across a level boundary it is false, because an unbuffered QAL bank returns its rail
+  charge and a value that must outlive its rail has to be re-driven. On a ChaCha20 quarter-round that
+  costs <strong>74&nbsp;% of all cells</strong>. Measured on both datapaths: QAL wins the wire term by
+  <strong>2.13&times;</strong> and still loses the vehicle — AddRoundKey needs 68&nbsp;% of its bits to
+  flip to break even on energy, and gets about 50.</p>
+  <div class="mast-meta">
+    <span>PRE_REGISTERED 19bf5430… · 25040 B · 21:11:56 −0700</span>
+    <span>13 amendments</span>
+    <span>IHP sg13g2 · PSP103 · Xyce</span>
+  </div>
+</header>
+
+<section>
+  <div class="sechead"><div class="lbl">01 / mechanism</div><h2>Why a level boundary costs a cell</h2></div>
+  <div class="prose">
+    <p>A CMOS gate holds its output against a supply that never goes away, so a signal that must
+    travel from level <em>j</em> to level <em>k</em> is a wire: it costs capacitance and nothing
+    else. An unbuffered QAL bank <strong>returns its rail charge</strong> at the end of its hold
+    window, and a cell output is held up only by its own pull-up from that rail. When the rail
+    comes down, the value is gone.</p>
+    <p>So a signal crossing <em>L</em> levels costs <em>L</em> forwarding cells — one inverter per
+    bit per level — and the rotate permutation the insight calls free is free only where it lands
+    on the very next level.</p>
+    <div class="note key"><p>This is enforced, not assumed. <code>Chain.evaluate()</code> refuses
+    a netlist in which any cell reads a level older than <em>k−1</em>, so a vehicle that needs
+    forwarding cannot be built without paying for it.</p></div>
+    <p class="kicker">Kogge-Stone is uniform-depth — every prefix cell reads only the level
+    directly above it — which is exactly the property unbuffered QAL needs. A ripple CPA is not,
+    and its forwarding bill grows as O(W²).</p>
+  </div>
+
+  <figure>
+    <svg viewBox="0 0 880 300" role="img" aria-label="A value produced at level 1 and consumed at level 4. In CMOS it is one wire spanning the levels. In QAL the same value needs a re-driving cell at every intervening level.">
+      <defs>
+        <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0 0 L10 5 L0 10 z" fill="currentColor"/>
+        </marker>
+      </defs>
+      <g font-family="IBM Plex Mono, monospace" font-size="11">
+        <!-- level rails -->
+        <g stroke="var(--rule-2)" stroke-width="1">
+          <line x1="150" y1="42" x2="840" y2="42"/>
+          <line x1="150" y1="112" x2="840" y2="112"/>
+          <line x1="150" y1="182" x2="840" y2="182"/>
+          <line x1="150" y1="252" x2="840" y2="252"/>
+        </g>
+        <g fill="var(--ink-3)" text-anchor="end">
+          <text x="138" y="46">level 1</text>
+          <text x="138" y="116">level 2</text>
+          <text x="138" y="186">level 3</text>
+          <text x="138" y="256">level 4</text>
+        </g>
+        <!-- CMOS: one wire -->
+        <g color="var(--keep)">
+          <text x="200" y="26" fill="var(--keep)" font-size="10" letter-spacing="1.4">CMOS — ONE WIRE</text>
+          <circle cx="232" cy="42" r="5" fill="var(--keep)"/>
+          <path d="M232 42 L232 252" stroke="var(--keep)" stroke-width="2.2" fill="none" marker-end="url(#ar)"/>
+          <circle cx="232" cy="252" r="5" fill="none" stroke="var(--keep)" stroke-width="2"/>
+        </g>
+        <!-- QAL: a cell per level -->
+        <g color="var(--burn)">
+          <text x="560" y="26" fill="var(--burn)" font-size="10" letter-spacing="1.4">QAL — A CELL PER LEVEL</text>
+          <circle cx="592" cy="42" r="5" fill="var(--burn)"/>
+          <path d="M592 42 L592 96" stroke="var(--burn)" stroke-width="2.2" marker-end="url(#ar)"/>
+          <rect x="576" y="100" width="32" height="24" rx="3" fill="var(--surface)" stroke="var(--burn)" stroke-width="2"/>
+          <text x="592" y="116" fill="var(--burn)" text-anchor="middle" font-size="10">inv</text>
+          <path d="M592 124 L592 166" stroke="var(--burn)" stroke-width="2.2" marker-end="url(#ar)"/>
+          <rect x="576" y="170" width="32" height="24" rx="3" fill="var(--surface)" stroke="var(--burn)" stroke-width="2"/>
+          <text x="592" y="186" fill="var(--burn)" text-anchor="middle" font-size="10">inv</text>
+          <path d="M592 194 L592 236" stroke="var(--burn)" stroke-width="2.2" marker-end="url(#ar)"/>
+          <rect x="576" y="240" width="32" height="24" rx="3" fill="var(--surface)" stroke="var(--burn)" stroke-width="2"/>
+          <text x="592" y="256" fill="var(--burn)" text-anchor="middle" font-size="10">inv</text>
+        </g>
+        <!-- rail-returns annotation -->
+        <g fill="var(--ink-3)" font-size="10">
+          <text x="660" y="116">rail 1 has already returned →</text>
+          <text x="660" y="130">the value must be re-driven</text>
+        </g>
+      </g>
+    </svg>
+    <figcaption>One value, produced at level&nbsp;1 and consumed at level&nbsp;4. The wire is the
+    same length in both technologies; only QAL pays cells for it.</figcaption>
+  </figure>
+</section>
+
+<section>
+  <div class="sechead"><div class="lbl">02 / the inversion</div><h2>The adder form is forced differently in each technology</h2></div>
+  <div class="prose">
+    <p>The brief says the ripple CPA in the committed <code>sha_slice</code> block “was a harness
+    choice, not a property of the algorithm.” Measured here, the form is not a free choice at
+    all — it is forced in <em>opposite directions</em> in the two technologies. Every figure below
+    is read off a netlist that was constructed and whose output was checked against
+    RFC&nbsp;8439&nbsp;§2.1.1.</p>
+  </div>
+
+  <div class="inv">
+    <div class="invcard">
+      <div class="t">QAL · ripple ÷ Kogge-Stone</div>
+      <div class="big burn">4.49×</div>
+      <div class="cap">cells. And 4.38× the levels. The ripple’s O(W²) forwarding tax is a
+      QAL-only cost.</div>
+    </div>
+    <div class="invcard">
+      <div class="t">CMOS · ripple ÷ Kogge-Stone</div>
+      <div class="big keep">0.38×</div>
+      <div class="cap">cells. The ripple is the <em>cheaper</em> CMOS adder — it needs no
+      forwarding at all.</div>
+    </div>
+    <div class="invcard">
+      <div class="t">Forwarding share of a QAL quarter-round</div>
+      <div class="big burn">74.2%</div>
+      <div class="cap">of all cells, with a Kogge-Stone adder. With a ripple adder, 97.4&nbsp;%.</div>
+    </div>
+  </div>
+
+  <div class="tblwrap">
+    <table>
+      <caption>32-bit adder, the same function both ways, both technologies <span class="tag d">derived</span> — netlist facts, no simulation</caption>
+      <thead><tr><th>form</th><th>QAL levels</th><th>QAL cells</th><th>QAL dev</th><th>CMOS cells</th><th>CMOS dev</th><th>CMOS depth</th><th>forwarding tax</th><th>QAL/CMOS dev</th></tr></thead>
+      <tbody>
+        <tr><td class="rowlbl">Kogge-Stone</td><td>7</td><td>504</td><td>2320</td><td>383</td><td>2140</td><td>7</td><td class="good">+180 (+8.4%)</td><td>1.08×</td></tr>
+        <tr><td class="rowlbl">ripple CPA</td><td class="bad">34</td><td class="bad">2576</td><td>5900</td><td>126</td><td>1070</td><td>32</td><td class="bad">+4830 (+451%)</td><td class="bad">5.51×</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="tblwrap">
+    <table>
+      <caption>ChaCha20 quarter-round, 32-bit, RFC 8439 §2.1.1 verified <span class="tag d">derived</span></caption>
+      <thead><tr><th>adder</th><th>QAL levels</th><th>QAL cells</th><th>QAL dev</th><th>forwarding</th><th>CMOS cells</th><th>CMOS dev</th><th>CMOS depth</th><th>QAL/CMOS dev</th></tr></thead>
+      <tbody>
+        <tr><td class="rowlbl">Kogge-Stone</td><td>32</td><td>5344</td><td>16960</td><td class="hi">74.2%</td><td>1660</td><td>9840</td><td>32</td><td>1.72×</td></tr>
+        <tr><td class="rowlbl">ripple CPA</td><td class="bad">140</td><td class="bad">24000</td><td>52024</td><td class="bad">97.4%</td><td>632</td><td>5560</td><td>132</td><td class="bad">9.36×</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="prose">
+    <div class="note good"><p><strong>The committed 161-cell block, corroborated independently.</strong>
+    This run’s separately reconstructed 8-bit ripple CPA is <strong>164 cells over 10 levels</strong>.
+    The committed <code>qal/sha256</code> block that measured so badly was <strong>161 cells over
+    14 banks</strong> with an 8-bit ripple CPA. Two independent constructions landing on the same
+    size is evidence the reconstruction is faithful — and it explains that block’s tailing-off
+    bank profile (6/5/3/7/4/7/3/4/1/1): those are forwarding levels.</p></div>
+  </div>
+</section>
+
+<section>
+  <div class="sechead"><div class="lbl">03 / interconnect</div><h2>The wire, per bit, from the permutation</h2></div>
+  <div class="prose">
+    <p>Phase&nbsp;1’s PDK-derived figures are inherited unchanged — 0.0930 / 0.15 / 0.2181 fF/µm
+    for isolated min-width Metal2, the campaign figure, and a min-pitch bus. What Phase&nbsp;2 adds
+    is the <em>geometry of the actual permutations</em>, per bit rather than as a mean.</p>
+    <p><strong>ShiftRows.</strong> With the 16 bytes in the natural 4×4 tile grid and 8 bit-slices
+    across a tile, source byte <code>4c+r</code> moves to column <code>(c−r) mod 4</code>, so
+    displacement depends only on the row: <strong>0 / 8 / 16 / 8 bit pitches</strong> for
+    <em>r</em> = 0…3. Row&nbsp;0 does not move and pays no wire at all — a real feature of
+    ShiftRows that a flat mean erases.</p>
+    <div class="note key"><p>At the <code>sg13g2_xor2_1</code> pitch of 3.84&nbsp;µm — the cell that
+    must physically fit per bit — AddRoundKey’s load distribution is 32 nets at 0&nbsp;fF, 64 at
+    4.608&nbsp;fF and <strong>32 at exactly 9.216&nbsp;fF</strong>. That last figure is the one
+    Phase&nbsp;1 measured as both failing its functional criterion (27/32) and losing the wire term
+    to CMOS (0.749×). A quarter of AddRoundKey’s permutation nets sit on it.</p></div>
+  </div>
+
+  <div class="tblwrap">
+    <table>
+      <caption>Adder-internal wire, read off each net’s own fan-out bit distances <span class="tag d">derived</span></caption>
+      <thead><tr><th>32-bit adder</th><th>longest net</th><th>mean net</th><th>total wire</th><th>nets</th></tr></thead>
+      <tbody>
+        <tr><td class="rowlbl">Kogge-Stone</td><td class="hi">5.760 fF</td><td>0.858 fF</td><td class="good">432.4 fF</td><td>504</td></tr>
+        <tr><td class="rowlbl">ripple CPA</td><td>0.360 fF</td><td>0.360 fF</td><td class="bad">927.4 fF</td><td>2576</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>Kogge-Stone’s individual wires are <strong>16× longer</strong> — a stride-<em>s</em> prefix
+    cell reaches <em>s</em> bit positions away, which is the real price of its shallow depth — and
+    yet its <em>total</em> wire bill is <strong>less than half</strong> the ripple’s, because the
+    ripple needs 2576 forwarding nets to Kogge-Stone’s 504. Even on interconnect alone, the
+    forwarding tax dominates.</p>
+  </div>
+</section>
+
+<section id="measured">
+  <div class="sechead"><div class="lbl">04 / measured</div><h2>Transistor-level rows</h2></div>
+  <div class="prose">
+    <p>Four QAL configurations, both CMOS comparators at the gate-G9 supply, every gate scored. The
+    energy headline is quoted at the <strong>minimum</strong> measured rail peak — the least energy
+    CMOS can be charged under G9, and therefore the hardest case for QAL.</p>
+  </div>
+
+  <div class="tblwrap">
+    <table>
+      <caption>QAL rows <span class="tag m">measured</span> — transistor-level PSP103, per-bank tanks, chain-legal ZCS cuts</caption>
+      <thead><tr><th>vehicle</th><th>levels</th><th>cells</th><th>wire fF/bit</th><th>E/beat fJ</th><th>E/gate fJ</th><th>level time ps</th><th>init. interval ps</th><th>rail @bound V</th><th>fcrit</th></tr></thead>
+      <tbody>
+        <tr><td class="rowlbl">AES-128 AddRoundKey</td><td>3</td><td>384</td><td>4.608</td><td>2766</td><td>7.20</td><td>1647.3</td><td>5750</td><td class="bad">0.8869</td><td class="good">384/384</td></tr>
+        <tr><td class="rowlbl">ChaCha XOR+rotate (control, no wire)</td><td>3</td><td>96</td><td>0.000</td><td>693</td><td>7.22</td><td>875.5</td><td>3250</td><td class="bad">0.9304</td><td class="good">96/96</td></tr>
+        <tr><td class="rowlbl">ChaCha XOR+rotate</td><td>3</td><td>96</td><td>7.767</td><td>822</td><td>8.57</td><td>999.6</td><td>3250</td><td class="bad">0.8578</td><td class="good">96/96</td></tr>
+        <tr><td class="rowlbl">Kogge-Stone adder, 8-bit</td><td>5</td><td>76</td><td>-1.000</td><td>645</td><td>8.48</td><td>708.3</td><td>3000</td><td class="bad">0.8263</td><td class="good">76/76</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <div class="note key"><p><strong>Every row fails G7.</strong> The delivered rail sits below the
+    Vtn + |Vtp| = 0.9642 V level-restoring floor — and for AddRoundKey the rail <em>peak</em> is only
+    0.9446 V, so 128 XOR2 cells plus their ShiftRows wire cannot be raised to the restoring floor at
+    all. Every row nevertheless passes the functional criterion (fcrit 384/384 for AES) with an exact
+    value check against the AES arithmetic and RFC 8439 — so these chains <em>compute</em>; they are
+    simply not formally restoring, and a deeper chain would degrade.</p></div>
+  </div>
+
+  <div class="sechead" style="margin-top:46px"><div class="lbl">04b / the verdict</div><h3>Activity is what decides it</h3></div>
+  <div class="prose">
+    <p>A QAL beat raises and returns the whole bank rail whatever the data does, so <strong>QAL's
+    energy is activity-independent</strong>. A CMOS transition charges only the nodes that flip, so
+    <strong>CMOS's energy scales with activity</strong>. One ratio is therefore not a verdict — the
+    <em>crossover activity</em> is.</p>
+  </div>
+  <div class="tblwrap">
+    <table>
+      <caption>QAL vs CMOS-native at the G9 supply <span class="tag m">measured</span>. A cipher word XOR flips about half its bits.</caption>
+      <thead><tr><th>vehicle</th><th>CMOS/QAL at activity 1.0</th><th>crossover activity</th><th>at activity 0.5</th><th>latency</th><th>throughput</th></tr></thead>
+      <tbody>
+        <tr><td class="rowlbl">AES-128 AddRoundKey</td><td>1.478&times;</td><td class="bad">0.677</td><td class="bad">0.739&times; — QAL costlier</td><td class="bad">5.79&times; slower</td><td class="bad">14.91&times; slower</td></tr>
+        <tr><td class="rowlbl">ChaCha XOR + rotate</td><td>1.795&times;</td><td class="bad">0.557</td><td class="bad">0.897&times; — QAL costlier</td><td class="bad">3.44&times; slower</td><td class="bad">8.95&times; slower</td></tr>
+        <tr><td class="rowlbl">Kogge-Stone adder, 8-bit</td><td>1.389&times;</td><td>0.480</td><td>1.042&times; — a tie</td><td class="bad">3.29&times; slower</td><td class="bad">4.58&times; slower</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p class="kicker">The brief nominated depth-1, N = 128 AddRoundKey as “QAL's best possible case
+    anywhere in cryptography.” Measured, it is the <em>worst</em> of the three: crossover 0.677
+    against the adder's 0.480.</p>
+    <p>The reason is structural. QAL pays for <strong>width</strong> every beat — it charges the whole
+    bank whether or not the data moves — while CMOS pays only for <strong>activity</strong>. Depth
+    costs QAL beats, but each beat at least buys computation; width costs QAL charge it cannot avoid.
+    Wide-and-shallow, the shape the insight nominated, is the shape that suits QAL least.</p>
+  </div>
+
+  <div class="sechead" style="margin-top:46px"><div class="lbl">04c / the wire term</div><h3>The one term QAL wins — and it revises Phase 1</h3></div>
+  <div class="inv">
+    <div class="invcard"><div class="t">ChaCha rotate wire · QAL</div><div class="big keep">0.90&times;</div>
+      <div class="cap">incremental cost as a multiple of the wire's own stored energy (248.5 fF at the measured 1.0761 V peak).</div></div>
+    <div class="invcard"><div class="t">the same wire · CMOS</div><div class="big burn">1.92&times;</div>
+      <div class="cap">measured, against the 2.00&times; that charging up then dumping down costs by construction.</div></div>
+    <div class="invcard"><div class="t">ratio on the wire term</div><div class="big keep">2.13&times;</div>
+      <div class="cap">QAL roughly halves the cost of the rotate wire — a <em>signal</em> wire, on cell output nodes.</div></div>
+  </div>
+  <div class="prose">
+    <div class="note good"><p><strong>This revises Phase 1's headline, in QAL's favour — and Phase 1
+    predicted it.</strong> Phase 1 concluded QAL “does essentially nothing for wire behind a driver”,
+    measuring net/stored 1.26–2.07 and ratios 0.749–1.792&times; on an <em>eight-cell</em> bank with a
+    124.66 ps ramp. It also named the mechanism — “the committed cell's pull-up is too resistive for
+    the committed ramp” — and measured that slowing the ramp to 257 ps takes net/stored to 0.721 and
+    the ratio to 2.775&times;. A real 32-bit cipher bank is 20&times; the committed capacitance, so its
+    ramp is <strong>322–340 ps with no device change at all</strong>: the slow ramp is not a lever
+    here, it is what a cipher-width bank does anyway. At that ramp this run measures 0.90&times; and
+    2.13&times;, in the direction and roughly the magnitude Phase 1's own probe predicted.</p></div>
+    <p>So the insight is <strong>partially vindicated</strong>: in wire-dominated logic the adiabatic
+    mechanism does apply to the interconnect, and to <em>signal</em> wire, not merely rail wire. What
+    it does not do is carry the vehicle — the wire term runs 2.13&times; in QAL's favour while the
+    total runs 0.74–0.90&times; against it, because the bank charge QAL cannot avoid dwarfs the wire
+    charge it partly recovers.</p>
+    <p>The mechanism shows up directly in the per-level recycle fractions: the wire-loaded level falls
+    from <strong>21.80 % to 6.27 %</strong> while its unloaded neighbours hold at 37–39 %. The wire's
+    own charge is partly recovered, and its presence simultaneously degrades the recovery of
+    everything else sharing that rail.</p>
+  </div>
+
+  <div class="sechead" style="margin-top:46px"><div class="lbl">04d / adder form</div><h3>Measured, and composed where it had to be</h3></div>
+  <div class="prose">
+    <p>The 8-bit Kogge-Stone adder was measured end to end: <strong>644.8 fJ per beat, 8.484 fJ per
+    cell, a 708.3 ps level time, fcrit 76/76</strong>. The 8-bit ripple row was not affordable — 20
+    probe decks over a 10-level schedule — so its energy is <span class="tag c">composed</span> from
+    that measured per-cell energy and its own exact census, and is never presented as a
+    measurement.</p>
+  </div>
+  <div class="tblwrap">
+    <table>
+      <caption>Same function, both forms. Per-cell energy and level time <span class="tag m">measured</span>; the products <span class="tag c">composed</span>.</caption>
+      <thead><tr><th>width</th><th>form</th><th>cells</th><th>levels</th><th>energy fJ</th><th>op time ps</th><th>ripple &divide; KS</th></tr></thead>
+      <tbody>
+        <tr><td class="rowlbl">8-bit</td><td>Kogge-Stone</td><td>76</td><td>5</td><td>644.8</td><td>3541</td><td rowspan="2">energy <strong>2.16&times;</strong><br>time <strong>2.00&times;</strong></td></tr>
+        <tr><td></td><td>ripple CPA</td><td>164</td><td>10</td><td class="bad">1391.5</td><td class="bad">7083</td></tr>
+        <tr><td class="rowlbl">32-bit</td><td>Kogge-Stone</td><td>504</td><td>7</td><td>4276.2</td><td>4958</td><td rowspan="2">energy <strong>5.11&times;</strong><br>time <strong>4.86&times;</strong></td></tr>
+        <tr><td></td><td>ripple CPA</td><td>2576</td><td>34</td><td class="bad">21856.0</td><td class="bad">24082</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</section>
+
+<section>
+  <div class="sechead"><div class="lbl">05 / discipline</div><h2>Comparators, gates and bookings</h2></div>
+  <div class="prose wide">
+    <p><strong>Two CMOS comparators, because they answer different questions.</strong> The
+    <em>same-netlist twin</em> carries the identical netlist, forwarding cells and all, on an ideal
+    supply pinned to the QAL row’s own measured rail peak — it isolates the technology at a fixed
+    netlist. The <em>CMOS-native</em> form is the same function built the way CMOS would build it,
+    with no forwarding cells; it is what an engineer would ship, so the ratio against it is the real
+    one, and it favours CMOS further. <strong>The gap between the two is the forwarding tax,
+    measured.</strong></p>
+    <p>Held-source amplitude is pinned to dV = 1.65 V on <em>both</em> sides; only the supply is
+    pinned to the QAL rail peak. CMOS energy is convention-free: the supply is constant, so
+    <code>E = vdd·ΔQ</code> exactly, verified against <code>C_switched·vdd²</code> by construction.</p>
+    <div class="note key"><p><strong>Activity is reported, not hidden.</strong> A QAL beat raises
+    and returns the whole bank rail whatever the data does, so QAL’s energy is
+    activity-<em>independent</em>. A CMOS transition charges only the nodes that flip, so CMOS’s
+    energy scales with activity. The CMOS rows toggle a full operand word — activity 1.0 on both
+    cipher vehicles — which is the worst case for CMOS and therefore conservative for QAL.</p></div>
+  </div>
+
+  <div class="ledger">
+    <div class="row"><div><div class="k">ideal CMOS supply</div><div class="sub">a real regulator adds loss</div></div><div class="v">favours CMOS</div></div>
+    <div class="row"><div><div class="k">tank pre-charge not costed</div><div class="sub">every QAL row is a bound on this account</div></div><div class="v">favours QAL</div></div>
+    <div class="row"><div><div class="k">ideal gate drives, metered not generated</div><div class="sub">VHI and every transfer/park PWL</div></div><div class="v">favours QAL</div></div>
+    <div class="row"><div><div class="k">first-cycle energy</div><div class="sub">Phase 1 A4 — rails end at 0.72–0.88 V, not 0; identical on both sides</div></div><div class="v">bounds interpretation</div></div>
+    <div class="row"><div><div class="k">forwarding by one inverter</div><div class="sub">the cheapest physical forwarding there is</div></div><div class="v">tax is a LOWER bound</div></div>
+    <div class="row"><div><div class="k">switch width snapped to a √2 ladder</div><div class="sub">≤ 19 % off ideal conductance, every level alike (B9a)</div></div><div class="v">both sides alike</div></div>
+    <div class="row"><div><div class="k">no via or jog capacitance</div><div class="sub">understates the wire, hence whichever side it favours</div></div><div class="v">understates wire</div></div>
+  </div>
+
+  <div class="prose wide">
+    <p><strong>What this run does not measure.</strong> The 32-bit ripple CPA is 34 levels and 2576
+    cells and needs 68 ZCS probe decks: it is reported <em>structurally only</em> — its level and
+    cell counts are netlist facts, its energy is not claimed. The full 4× quarter-round is likewise
+    structural; any per-op energy composed from measured levels is labelled
+    <span class="tag c">composed</span>. And every energy here is a first-cycle energy.</p>
+  </div>
+</section>
+
+<footer>
+  <span>qal/cipher/p2 — PHASE 2. Pre-registration sha256 19bf54304f6454ffdf03b8de15a268af2b5b5dbfc18684f6eed2bd3733c548db, 25040 B, mtime 2026-09-29 21:11:56 −0700, hashed 21:12:00.</span>
+  <span>Cells instantiated from IHP-Open-PDK sg13g2_stdcell.spice; all 10 verified by an independent switch-network solve (56 input cases). ChaCha20 against RFC 8439 §2.1.1; ShiftRows against FIPS-197.</span>
+  <span>13 amendments in AMENDMENT.md, six of them mistakes of mine. Width reference read-only from the qal/widebank sibling.</span>
+</footer>
+
+</div>

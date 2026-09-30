@@ -1,0 +1,360 @@
+{
+ "_what": "qal/cipher PHASE 1 -- the interconnect model and the wire-charge recovery measurement. Written after every deck. Labels: MEASURED / DERIVED / ASSUMED / BOOKING.",
+ "_pre_registration": {
+  "file": "PRE_REGISTERED.json",
+  "sha256": "81c1d78f0f71d5a92ee5cc3a6c007c53ecc52a1b35057ce2a3b5af06a5672166",
+  "written": "2026-09-29 19:40:00 -0700",
+  "amendments": "AMENDMENT.md (A1 probe window, A2 return-zero fixed point + A2a self-correction, A3 the mis-scaled first micro-harness, A4 the non-returning rail, A5 one unbounded best-case cell)"
+ },
+
+ "A_HEADLINE": {
+  "_one_sentence": "QAL recovers wire charge ONLY where the wire sits on the resonant node: measured on the committed 4-bank chain, the same 32-bit-rotate capacitance costs 0.400-0.994 x its own stored energy per cycle when placed on the RAIL against 2.000 x for CMOS (2.01-5.00 x better), and 1.256-2.074 x when placed on the SIGNAL nodes where a rotate actually lives (1.00-1.59 x better, falling to 0.75 x -- a LOSS -- at a wider bit pitch).",
+  "the_insight_as_stated": "'wiring does the rotate, and that is the one capacitance QAL recovers rather than dissipates'",
+  "verdict": "HALF TRUE, and the half that is true is not the half the cipher needs. The adiabatic mechanism does apply to the DOMINANT term -- but only when the capacitance is inside the LC loop. A rotate permutation is by construction on SIGNAL nodes, behind each driving cell's own pull-up device, which is OUTSIDE the loop; there the measured saving is between 59 % and nothing, and at the PDK's own XOR2 bit pitch it is negative.",
+  "what_would_make_it_true": "Two independent MEASURED levers each roughly double the signal-wire saving by making the cell's pull-up path adiabatic: a 2.07x slower rail ramp (L 15 -> 60 nH) takes it from 1.79x to 2.78x, and a 4x wider pull-up (wp 1.12 -> 4.48 um) takes it to 2.56x. Both are the area/power-for-speed exchange, landing on the favourable side only if the speed or the area is available to spend."
+ },
+
+ "B_THE_WIRE_MODEL_from_the_PDK": {
+  "_label": "MEASURED-FROM-PDK for the isolated figure, DERIVED for the coupling term, and the campaign's 0.15 fF/um is now PDK-BRACKETED rather than ASSUMED",
+  "layer": "Metal2 (VERTICAL), Wmin 0.20 um, Smin 0.21 um, T 0.450 um (LEF) / 0.490 um (ITF), bottom height 1.880 um, inter-metal oxide ER 4.1",
+  "S1_MEASURED_tech_LEF": {
+   "file": "IHP-Open-PDK/ihp-sg13g2/libs.ref/sg13g2_stdcell/lef/sg13g2_tech.lef",
+   "sha256": "054f5b7b24d72365b4b1088be1331e04c1c2e3805de9f99c37e71938ed231efc",
+   "fields_read": "CAPACITANCE CPERSQDIST 1.81e-05 pF/um^2 ; EDGECAPACITANCE 4.47e-05 pF/um PER EDGE ; RESISTANCE RPERSQ 0.103 ohm/sq",
+   "isolated_wire_fF_per_um": 0.0930,
+   "model": "C/L = CPERSQDIST*W + 2*EDGECAPACITANCE",
+   "R_ohm_per_um_min_width": 0.515,
+   "note": "this is the RC OpenROAD/librelane use for this PDK"
+  },
+  "S2_DERIVED_geometry_crosscheck": {
+   "file": "libs.tech/parasitics/itf/sg13g2_typ.itf",
+   "sha256": "050d57c9764c0ea84ace0ad5da19f07715bdc10effeb0c169b4fbf64d93d9f3f",
+   "method": "Sakurai & Tamaru (1983) closed form on the ITF/LEF geometry",
+   "isolated_fF_per_um": 0.0784,
+   "agreement_with_S1_pct": 84,
+   "coupling_per_neighbour_fF_per_um": 0.1033,
+   "hard_parallel_plate_bound_on_coupling_fF_per_um": 0.0778
+  },
+  "S3_openrcx_FLAGGED_AND_NOT_USED": {
+   "file": "libs.tech/librelane/openrcx/ihp-sg13g2.nom.magic.rules",
+   "sha256": "479a65fb529a08756b6c91f122b9116f6ccacb6475413677ec654e2ba1a49c6c",
+   "far_spacing_total_fF_per_um": 0.1077,
+   "far_spacing_vs_S1_pct": 116,
+   "min_spacing_coupling_per_side_fF_per_um": 0.4599,
+   "why_flagged": "4.5x the Sakurai value and 5.9x a hard parallel-plate bound (er*e0*T/S), which a coplanar pair cannot exceed. Internally inconsistent with both the LEF and the ITF geometry in the same PDK.",
+   "direction_of_declining_to_use_it": "CONSERVATIVE -- using it would raise every wire figure ~4x and make QAL's wire case look BETTER"
+  },
+  "THE_BAND": {
+   "LOW_isolated_M2_fF_per_um": 0.0930,
+   "campaign_figure_fF_per_um": 0.15,
+   "HIGH_min_pitch_bus_M2_fF_per_um": 0.2181,
+   "HIGH_composition": "shielded ground 0.0114 (area + the RCX min-spacing FRINGE, the one entry in that table that IS corroborated) + 2 x Sakurai coupling 0.1033",
+   "STATUS": "0.15 fF/um lies INSIDE the PDK-derived band for min-width Metal2. RETAINED as the nominal; both ends run as rows so nothing rests on the midpoint.",
+   "all_layers_fF_per_um_isolated_LEF": {"Metal1": 0.0688, "Metal2": 0.0930,
+                                          "Metal3": 0.0920, "Metal4": 0.0918,
+                                          "Metal5": 0.0888},
+   "all_layers_fF_per_um_min_pitch_bus_DERIVED": {"Metal1": 0.2178, "Metal2": 0.2181,
+                                                  "Metal3": 0.2146, "Metal4": 0.2024,
+                                                  "Metal5": 0.1841}
+  },
+  "THE_ROTATE": {
+   "formula_DERIVED": "bit i -> bit (i+r) mod W; (W-r) bits travel r pitches and r bits travel (W-r) (the wrap); mean = 2 r (W-r)/W bit pitches",
+   "chacha20_rotations": [16, 12, 8, 7],
+   "chacha20_mean_pitches": [16.0, 15.0, 12.0, 10.94],
+   "chacha20_mean_over_four_rotates": 13.48,
+   "phase1_case": "r = 16 of 32, mean 16.0 bit pitches -- the worst case and the brief's own",
+   "bit_pitch_um": {"brief_32um_datapath": 1.00, "PDK_CoreSite_x2": 0.96,
+                    "PDK_sg13g2_inv_1": 1.44, "PDK_sg13g2_xor2_1": 3.84},
+   "per_bit_load_fF": {"LOW": 1.488, "NOMINAL": 2.400, "HIGH": 3.489,
+                       "xor2_pitch_at_nominal": 9.216},
+   "wire_R_over_16um_min_width_M2_ohm": 8.24,
+   "brief_cross_check": "32 bits x 16 um x 0.15 fF/um = 76.8 fF total. The brief said '~75 fF'. REPRODUCED."
+  },
+  "TWO_CORRECTIONS_TO_THE_INSIGHT_ARITHMETIC": {
+   "wire_as_a_fraction_of_the_bank": {
+    "_label": "MEASURED bank C, DERIVED fractions",
+    "committed_8_cell_bank_secant_C_fF": 35.979,
+    "rail_visible_wire_load_fF_and_pct_of_bank": {
+     "nominal_0.15_n_hi_3": [7.20, 20.0], "nominal_0.15_n_hi_5": [12.00, 33.4],
+     "high_0.2181_n_hi_3": [10.47, 29.1], "high_0.2181_n_hi_5": [17.45, 48.5],
+     "low_0.0930_n_hi_3": [4.46, 12.4], "low_0.0930_n_hi_5": [7.44, 20.7]},
+    "verdict": "the brief's 'a third to a half of the bank load' is right only at the TOP of the PDK band; at the nominal 0.15 fF/um it is a FIFTH to a THIRD. Either way the wire is a real minority term in the bank capacitance, not the dominant one."
+   },
+   "the_64_cell_bank_figure": {
+    "brief_claim_fF": 128,
+    "from_the_committed_MEASURED_cell": "35.979 fF / 8 cells = 4.497 fF/cell -> 64 cells = 287.8 fF for INVERTERS; an XOR2 is larger still",
+    "verdict": "the brief's 128 fF understates a 64-cell bank by 2.25x, which makes the wire a SMALLER fraction of the bank than the insight supposed -- this correction works AGAINST the insight"
+   }
+  }
+ },
+
+ "C_INSTRUMENT_CHECK_gate_G1": {
+  "_label": "MEASURED",
+  "what": "the two committed banktank decks regenerated from a VERBATIM copy of the committed generator, byte-compared, then re-run in qal/cipher/btk under THIS run's own PYMS_VAE_CACHE and digit-checked against the committed .mt0",
+  "netlist_byte_identity": "c_m10_T150_H4_dv1650_free.cir and c_m10_T200_H4_dv1200_free.cir both BYTE-IDENTICAL to the committed files (checked 19:34, before the pre-registration was hashed)",
+  "mt0_digit_check": {
+   "c_m10_T150_H4_dv1650_free": {"quantities": 440, "bit_identical": 422,
+    "worst_relative": 5.792e-07, "worst_relative_key": "O1_0E",
+    "worst_absolute": 1.0e-14, "G1": "PASS"},
+   "c_m10_T200_H4_dv1200_free": {"quantities": 440, "bit_identical": 435,
+    "worst_relative": 3.126e-07, "worst_relative_key": "VR4Z",
+    "worst_absolute": 1.0e-15, "G1": "PASS"}
+  },
+  "derived_metric_check": "the committed extractor re-run on the reproduced decks returns PASS=True, worst_gate_pct 90.3874281903175, separation 902.79723 mV, stage time 137.57482199999993 ps and EVERY per-bank energy (tank_energy_lost, E_back_into_tank, recycle_fraction) at relative difference 0.00e+00 against the committed row_*.json",
+  "verdict": "the committed banktank row is reproduced digit-for-digit under this run's own cache and models. G1 PASS. The A0 .so-cache hazard of the banktank run did not recur.",
+  "btw_selftest": "the extended generator with cw = 0 and a fixed tank emits netlists BYTE-IDENTICAL to the committed generator, for rows AND for probes (rise1/rise4/ret1/ret4)",
+  "cmos_harness_validation": {
+   "what": "the measured incremental CMOS supply energy against n*Cw*V^2 at five voltages",
+   "ratios": {"1.0603": 1.0036, "1.1061": 1.0042, "1.1509": 1.0048,
+              "1.1785": 1.0052, "1.2229": 1.0059},
+   "integrator_vs_QV_residual_fJ_max": 1.6e-03,
+   "verdict": "the CMOS comparator reproduces the textbook Cw*V^2 per cycle to 0.4-0.6 %, with the 1F integrator agreeing with an independent charge-times-voltage computation to 1.6e-3 fJ. The 0.4-0.6 % excess is the extra short-circuit and subthreshold charge the slower node edge costs, and it FAVOURS QAL in the ratio."
+  }
+ },
+
+ "D_THE_CHAIN_with_and_without_the_rotate_wire": {
+  "_label": "MEASURED",
+  "point": "the committed per-bank-tank chain, 4 banks x 8 gates, m = 10, T = 150 ps, H = 4, dV = 1.65 V, L = 15 nH, Rs = 10 ohm, tg15p 30 um, A6 tank-referenced park, chain-legal source-side cut at every measured ZCS, schedule-matched zeros, return zeros at the A2 fixed point",
+  "control_row": {
+   "E_tank_lost_chain_fJ": 180.511,
+   "rail_at_own_boundary_V": [1.0946, 1.0009, 1.0824, 1.0759],
+   "rail_peak_V": [1.1851, 1.1164, 1.1786, 1.1551],
+   "rail_end_V": [0.724, 0.7504, 0.7732, 0.769],
+   "worst_gate_pct": 90.406, "committed_90_bar": "PASS",
+   "fcrit_S3": "32/32", "G2_zcs": "PASS", "G3_path_identity": "PASS",
+   "stage_time_deepest_ps": 137.52,
+   "t_hop_rise_ps": [124.57, 126.55, 124.12, 125.34],
+   "t_hop_return_ps": [145.13, 155.74, 150.12, 149.11],
+   "per_bank_recycle_pct": [25.41, 17.12, 19.11, 18.81],
+   "tank_area_um2_MIM": 959.4
+  },
+  "rows": {
+   "signal_wire_fixed_tank_Cw_2.400": {
+    "E_tank_lost_chain_fJ": 202.839, "dE_QAL_fJ": 22.328,
+    "E_wire_stored_peak_fJ": 17.774, "E_wire_stranded_end_fJ": 10.966,
+    "E_CMOS_same_wire_same_swing_fJ": 35.548,
+    "net_cost_over_wire_stored_energy": 1.256, "CMOS_equivalent": 2.000,
+    "RATIO_CMOS_over_QAL": 1.592, "stranded_credit_bound": 3.129,
+    "incremental_recycle_into_tank_pct": -1276.93,
+    "rail_min_V": 0.9567, "G7_level_restoring": false,
+    "worst_gate_pct": 79.908, "fcrit_S3": "32/32",
+    "stage_time_ps": 141.08, "tank_area_um2": 959.4
+   },
+   "rail_wire_fixed_tank_Cw_2.400": {
+    "E_tank_lost_chain_fJ": 190.129, "dE_QAL_fJ": 9.618,
+    "E_wire_stored_peak_fJ": 24.057, "E_wire_stranded_end_fJ": 9.988,
+    "E_CMOS_same_wire_same_swing_fJ": 48.113,
+    "net_cost_over_wire_stored_energy": 0.400, "CMOS_equivalent": 2.000,
+    "RATIO_CMOS_over_QAL": 5.002, "stranded_credit_bound": "unbounded (A5)",
+    "incremental_recycle_into_tank_pct": 78.37,
+    "rail_min_V": 0.9939, "G7_level_restoring": true,
+    "worst_gate_pct": 87.945, "fcrit_S3": "32/32",
+    "stage_time_ps": 139.47, "tank_area_um2": 959.4
+   },
+   "signal_wire_rail_matched_tank_Cw_2.400": {
+    "E_tank_lost_chain_fJ": 220.030, "dE_QAL_fJ": 39.519,
+    "E_wire_stored_peak_fJ": 19.809, "E_wire_stranded_end_fJ": 11.936,
+    "E_CMOS_same_wire_same_swing_fJ": 39.619,
+    "net_cost_over_wire_stored_energy": 1.995, "CMOS_equivalent": 2.000,
+    "RATIO_CMOS_over_QAL": 1.003, "stranded_credit_bound": 1.436,
+    "incremental_recycle_into_tank_pct": -53.92,
+    "rail_min_V": 1.0267, "G7_level_restoring": true,
+    "worst_gate_pct": 78.696, "fcrit_S3": "32/32",
+    "stage_time_ps": 141.75, "tank_area_um2": 1215.4
+   },
+   "rail_wire_rail_matched_tank_Cw_2.400": {
+    "E_tank_lost_chain_fJ": 206.462, "dE_QAL_fJ": 25.951,
+    "E_wire_stored_peak_fJ": 26.106, "E_wire_stranded_end_fJ": 10.892,
+    "E_CMOS_same_wire_same_swing_fJ": 52.213,
+    "net_cost_over_wire_stored_energy": 0.994, "CMOS_equivalent": 2.000,
+    "RATIO_CMOS_over_QAL": 2.012, "stranded_credit_bound": 3.467,
+    "incremental_recycle_into_tank_pct": 49.93,
+    "rail_min_V": 1.0632, "G7_level_restoring": true,
+    "worst_gate_pct": 86.701, "fcrit_S3": "32/32",
+    "stage_time_ps": 141.74, "tank_area_um2": 1215.4
+   },
+   "signal_wire_pi_RC_ladder_matched_tank_Cw_2.400": {
+    "E_tank_lost_chain_fJ": 220.034, "dE_QAL_fJ": 39.523,
+    "RATIO_CMOS_over_QAL": 1.002,
+    "note": "the same 2.400 fF as a 3-segment pi ladder with the PDK's own 8.24 ohm over 16 um. It differs from the LUMPED row by 0.004 fJ = 0.01 %. The lumped-C BOOKING is therefore validated, not merely declared."
+   },
+   "signal_wire_matched_tank_Cw_1.488_LOW_end_of_PDK_band": {
+    "E_tank_lost_chain_fJ": 205.170, "dE_QAL_fJ": 24.659,
+    "net_cost_over_wire_stored_energy": 1.927, "RATIO_CMOS_over_QAL": 1.038,
+    "incremental_recycle_into_tank_pct": -47.00,
+    "worst_gate_pct": 83.420, "fcrit_S3": "32/32", "tank_area_um2": 1118.0
+   },
+   "signal_wire_matched_tank_Cw_3.489_HIGH_end_of_PDK_band": {
+    "E_tank_lost_chain_fJ": 237.239, "dE_QAL_fJ": 56.728,
+    "net_cost_over_wire_stored_energy": 2.074, "RATIO_CMOS_over_QAL": 0.964,
+    "incremental_recycle_into_tank_pct": -61.17,
+    "worst_gate_pct": 73.088, "fcrit_S3": "32/32", "tank_area_um2": 1332.4
+   },
+   "signal_wire_matched_tank_Cw_9.216_xor2_bit_pitch": {
+    "E_tank_lost_chain_fJ": 337.022, "dE_QAL_fJ": 156.511,
+    "net_cost_over_wire_stored_energy": 2.670, "RATIO_CMOS_over_QAL": 0.749,
+    "incremental_recycle_into_tank_pct": -120.29,
+    "worst_gate_pct": 49.899, "value_check": "FAIL",
+    "fcrit_S3": "27/32 -- the ONLY row that stops computing, and it fails INSIDE the noise budget (+3.263 mV against 19.323 mV needed) on bank 4's five pull-up gates",
+    "tank_area_um2": 1942.4
+   }
+  },
+  "THE_ENERGY_SPLIT_asked_for": {
+   "_label": "MEASURED, and computed as a DIFFERENCE so every fixed overhead cancels exactly",
+   "signal_wire_matched_Cw_2.400": {
+    "extra_energy_pushed_from_tanks_into_the_rails_fJ": 24.793,
+    "extra_energy_returned_to_the_tanks_fJ": -13.369,
+    "net_cost_to_the_tanks_fJ": 39.519,
+    "energy_actually_stored_on_the_wire_at_peak_fJ": 19.809,
+    "energy_still_on_the_wire_at_the_end_fJ": 11.936,
+    "how_much_wire_charge_comes_back": "NONE, at the system level. Not only does the wire's own charge fail to return -- adding it makes the bank's EXISTING recycling WORSE. The per-bank recycle fraction falls from 25.41 / 17.12 / 19.11 / 18.81 % to 19.62 / 9.42 / 13.73 / 11.87 %, so the INCREMENTAL return is -53.9 %: the return stroke delivers 13.4 fJ LESS to the tanks than it did without the wire."
+   },
+   "rail_wire_matched_Cw_2.400": {
+    "extra_energy_pushed_from_tanks_into_the_rails_fJ": 40.646,
+    "extra_energy_returned_to_the_tanks_fJ": 20.295,
+    "net_cost_to_the_tanks_fJ": 25.951,
+    "energy_actually_stored_on_the_wire_at_peak_fJ": 26.106,
+    "energy_still_on_the_wire_at_the_end_fJ": 10.892,
+    "how_much_wire_charge_comes_back": "49.93 % of the incremental energy pushed into the rail comes back to the tank, and the per-bank recycle fraction RISES from 25.41 / 17.12 / 19.11 / 18.81 % to 28.32 / 22.26 / 22.37 / 23.94 %. This is the one term in the campaign where adding capacitance IMPROVES the recycling."
+   }
+  },
+  "WHY_THE_RISE_HOP_BARELY_MOVES_the_smoking_gun": {
+   "_label": "MEASURED",
+   "signal_wire_fixed_tank": "t_hop RISE 124.57 -> 124.92 ps on bank 1 (+0.28 %), while t_hop RETURN 145.13 -> 150.93 ps (+4.0 %) and bank 2's return 155.74 -> 176.06 ps (+13.0 %)",
+   "rail_wire_fixed_tank": "t_hop RISE 124.57 -> 125.34 ps and with the matched tank 124.57 -> 129.76 ps (+4.2 %), RETURN 145.13 -> 150.26 ps",
+   "reading": "the ZCS instant is set by the capacitance INSIDE the LC loop. A signal wire does not shift it, because the inductor never sees the wire -- the rail moves first and the wire is filled afterwards through the cell's pMOS. A rail wire shifts it immediately. That single pair of numbers is the whole mechanism."
+  },
+  "WHERE_THE_STRANDING_ACTUALLY_STOPS": {
+   "_label": "MEASURED -- and it refutes my own pre-registered mechanism",
+   "measurement": "in signal/matched/Cw=2.400 the output-node end voltages are 0.7587 / 0.7871 / 0.8000 / 0.8000 V and the rail end voltages are 0.7587 / 0.7871 / 0.8000 / 0.8000 V -- EQUAL to four decimals",
+   "reading": "the pull-up pMOS conducts all the way down and the node tracks the rail exactly. |Vtp| = 0.4403 V NEVER BINDS. The wire's recovery is capped by the RAIL's own recovery -- the rail stops at 0.76-0.80 V out of a 1.21 V peak because the committed return only removes about 60 % of the rail's stored charge -- not by any threshold."
+  }
+ },
+
+ "E_THE_DECISIVE_COMPARISON_single_hop_same_harness": {
+  "_label": "MEASURED",
+  "harness": "ONE hop of the committed 8-cell bank. Both sides: the same eight cells (wp 1.12u / wn 0.74u, CL 2 fF), the same committed PAT so the same THREE nodes swing, the same models, the same .OPTIONS, the same 2 ps edges, the same wire capacitors. QAL: tank -> L(15 nH) -> R(10) -> tg15p(30 um) -> rail -> the bank, raised and returned at the MEASURED ZCS. CMOS: ideal VDD -> the same bank, the three pull-up cells' inputs driven VDD -> 0 -> VDD. VDD is SET EQUAL to the QAL variant's own MEASURED swing peak (gate G9).",
+  "baseline_Cw_0": {"E_tank_lost_cycle_fJ": 43.3049, "rail_peak_V": 1.2106,
+                    "rail_end_V": 0.7275, "node_peak_V": 1.1509,
+                    "node_end_V": 0.7275, "recycle_pct": 27.36,
+                    "IZ_uA": -0.003, "IZQ_uA": 0.002, "path_identity_fJ": -0.0002},
+  "rows": {
+   "signal_wire_on_the_node_FIXED_tank": {
+    "E_tank_lost_cycle_fJ": 47.8379, "dE_QAL_fJ": 4.5331,
+    "swing_peak_V": 1.0603, "dE_CMOS_fJ": 8.1243,
+    "RATIO": 1.792, "stranded_credit_bound": 3.126,
+    "node_end_V": 0.7330, "E_wire_stranded_fJ": 1.9340},
+   "rail_wire_on_the_resonant_node_FIXED_tank": {
+    "E_tank_lost_cycle_fJ": 44.9966, "dE_QAL_fJ": 1.6917,
+    "swing_peak_V": 1.1785, "dE_CMOS_fJ": 10.0520,
+    "RATIO": 5.942, "stranded_credit_bound": "unbounded (A5)",
+    "E_wire_stranded_fJ": 1.7720},
+   "signal_wire_on_the_node_RAIL_MATCHED_tank": {
+    "E_tank_lost_cycle_fJ": 50.9979, "dE_QAL_fJ": 7.6930,
+    "swing_peak_V": 1.1061, "dE_CMOS_fJ": 8.8457,
+    "RATIO": 1.150, "stranded_credit_bound": 1.572},
+   "rail_wire_RAIL_MATCHED_tank": {
+    "E_tank_lost_cycle_fJ": 48.0398, "dE_QAL_fJ": 4.7350,
+    "swing_peak_V": 1.2229, "dE_CMOS_fJ": 10.8316,
+    "RATIO": 2.288, "stranded_credit_bound": 3.815}
+  },
+  "THE_RATIO": {
+   "signal_wire": "1.150x (tank re-sized to hold the rail) to 1.792x (nothing changed but the one capacitor)",
+   "rail_wire": "2.288x (tank re-sized) to 5.942x (nothing changed but the one capacitor)",
+   "chain_equivalents": "1.003-1.592x signal, 2.012-5.002x rail -- the single-hop and 4-bank numbers agree",
+   "which_to_quote": "the FIXED-tank pair answers 'what does the wire itself cost, everything else identical'; the MATCHED-tank pair answers 'what does it cost to carry the wire AND keep the delivered rail'. Both are given because they are different questions and the honest answer to the second is smaller."
+  },
+  "WHY_NOT_43x": {
+   "_label": "MEASURED explanation of a DERIVED reference",
+   "ideal_series_LCR_reference": "(2/pi)*sqrt(L/C_eff)/R = 43.11x  (C_eff 32.708 fF, Z0 677 ohm, R 10 ohm)",
+   "measured_series_R_loss_per_hop_fJ": [1.064, 0.860, 0.816, 0.845],
+   "measured_bank_side_loss_per_hop_fJ": "E_into_rail 68.5 fJ against 1/2 C V^2 = 25.3 fJ of storage on bank 1 -- about 43 fJ is dissipated inside the bank during the rise, 40-50x the series-R term",
+   "measured_switch_block_loss_per_hop_fJ": [8.594, 7.386, 6.735, 7.130],
+   "verdict": "the loop quality factor is not the governing number and 43x was never reachable in this topology. The transfer is not limited by the 10 ohm series R -- it is limited by the LOAD's own RC (the pMOS channels charging the output nodes) and by the return stroke removing only ~60 % of the rail's stored charge. Quoting Z0/R for this topology would have been a mistake, and I quoted it in my own pre-registration."
+  }
+ },
+
+ "F_MECHANISM_PROBES_labelled_not_scored": {
+  "_label": "MEASURED. Each departs from the committed point in ONE stated way and is a mechanism probe, not a scored row.",
+  "claim_under_test": "the signal wire recovers poorly because it is charged and discharged through the driving cell's own channel resistance, which is OUTSIDE the LC loop. If so, making that path adiabatic -- by slowing the ramp or by lowering the resistance -- must improve it.",
+  "probes": {
+   "committed_L15_wp1.12": {"t_hop_rise_ps": 124.66, "dE_QAL_fJ": 4.5331,
+     "net_cost_over_wire_stored": 1.120, "RATIO": 1.786,
+     "recycle_pct_cw0": 27.36, "recycle_pct_with_wire": 21.80},
+   "SLOWER_RAMP_L60nH": {"t_hop_rise_ps": 257.19, "t_hop_x": 2.07,
+     "E_tank_lost_cw0_fJ": 38.9756, "dE_QAL_fJ": 3.5227,
+     "net_cost_over_wire_stored": 0.721, "RATIO": 2.775,
+     "recycle_pct_cw0": 34.42, "recycle_pct_with_wire": 32.38,
+     "price": "the hop takes 2.07x as long -- this is the speed side of the exchange"},
+   "WIDER_PULL_UP_wp4.48um": {"t_hop_rise_ps": 139.62,
+     "E_tank_lost_cw0_fJ": 57.5980, "dE_QAL_fJ": 2.6028,
+     "net_cost_over_wire_stored": 0.780, "RATIO": 2.563,
+     "recycle_pct_cw0": 41.27, "recycle_pct_with_wire": 39.57,
+     "price": "the baseline hop energy rises 43.30 -> 57.60 fJ (+33 %) and the delivered rail falls 1.2106 -> 1.0206 V, because a 4x pMOS brings its own capacitance -- this is the area side of the exchange"}
+  },
+  "verdict": "CONFIRMED, twice, independently. Both levers roughly double the signal-wire saving (1.79x -> 2.78x and 2.56x) and both raise the whole hop's recycle fraction (27.4 % -> 34.4 % and 41.3 %). The mechanism that defeats the insight is not a property of QAL; it is that the committed cell's pull-up is too resistive for the committed ramp. It is fixable, and the price is exactly the speed-or-area exchange the brief asked about."
+ },
+
+ "G_GATES": {
+  "G1_instrument_reproduction": "PASS -- 422/440 and 435/440 .mt0 quantities bit-identical, worst relative 5.79e-07; every derived metric at relative 0.00e+00",
+  "G2_zcs_1uA": "PASS on all 9 chain rows and all 9 single-hop rows, after the A2 fixed-point iteration. Before it, 8 of 9 chain rows failed on the RETURN zeros (worst 8.63 uA); the iteration moved the headline energies by <0.01 fJ (3e-5 relative), so the gate is cleared AND the headline is shown insensitive.",
+  "G3_path_identity": "PASS on all rows (chain: within 1 % of E_out_of_tank; single hop: |residual| <= 0.0003 fJ)",
+  "G4_tank_closure": "residual reported per bank in every row_*.json; it is the committed banktank convention's known offset and is not absorbed into any headline, because every headline is a difference of two rows that carry it equally",
+  "G5_convention_free_energy": "PASS -- every headline is 1/2 C_t (V0^2 - V1^2) on a LINEAR capacitor; the integrators are reported only as cross-checks",
+  "G6_functional_fcrit_S3": "PASS 32/32 on 8 of 9 rows. The ONLY failure is Cw = 9.216 fF (xor2 bit pitch), 27/32, failing INSIDE the noise budget at +3.263 mV against 19.323 mV on bank 4's five pull-up gates.",
+  "G7_level_restoring_0.9642V": "PASS except signal/fixed/Cw=2.400, where bank 2's delivered rail falls to 0.9567 V -- 7.5 mV BELOW the floor. That is the row where the tank was NOT re-sized, and it is why the rail-matched tank is not optional.",
+  "G8_separation_6.44mV": "PASS on all rows (minimum 539.5 mV, at Cw = 9.216 fF)",
+  "G9_comparator_symmetry": "PASS -- the CMOS comparator carries the identical capacitance, the identical cells, the identical .OPTIONS and edges, and its supply is set to the QAL variant's own measured swing peak at each of five voltages. It reproduces n*Cw*V^2 to 0.4-0.6 %.",
+  "G10_no_single_hop_quoted_as_chain": "PASS -- the single-hop rows are named 'single hop' and the 4-bank rows are reported separately; the two agree to within 0.2-0.9x on the same quantity"
+ },
+
+ "H_MY_PRE_STATED_EXPECTATIONS_SCORED": {
+  "_note": "8 predictions: 2 right, 3 partly right, 3 wrong. Each is scored against the measurement, not re-interpreted.",
+  "P0_the_topology_point": "RIGHT, and it is the result. Signal wire vs rail wire, at identical total capacitance, differs by 2.0x-3.5x in every framing.",
+  "P1_stranding_ceiling_at_Vtp": "WRONG -- and the wrong DEVICE. I predicted the pull-up pMOS would stop conducting at |Vtp| = 0.4403 V and cap recovery at 80.6-82.4 %. Measured, the node end voltage EQUALS the rail end voltage to four decimals (0.7587/0.7871/0.8000/0.8000 both), so the pMOS conducts all the way down and the threshold never binds. The binding limit is where the RAIL stops, 0.76-0.80 V out of 1.21 V, i.e. only ~55 % of the wire's stored energy can leave at all.",
+  "P2_incremental_recycle_5_to_20_pct": "WRONG, and in a stronger direction than I allowed for. I predicted the incremental recycle would come out BELOW the committed bank average of 17-25 %. Measured it is NEGATIVE: -47 % to -120 % for signal wire. Adding signal wire does not merely recycle badly, it makes the bank's existing recycling worse (per-bank 25.41/17.12/19.11/18.81 -> 19.62/9.42/13.73/11.87 %).",
+  "P3_RATIO_signal_0.3_to_1.2x": "PARTLY RIGHT. Chain with a rail-matched tank: 1.003x, and 0.964x / 0.749x at larger loads -- all inside my band, and the 0.749x is inside my 'most likely 0.5-0.8x'. But the FIXED-tank rows are 1.592x (chain) and 1.792x (single hop), OUTSIDE it. I under-called the case where nothing but the capacitor changes.",
+  "P4_RATIO_rail_5_to_40x": "PARTLY RIGHT, at the very bottom. Measured 5.002x (chain) and 5.942x (single hop) with a fixed tank -- just inside. With the rail-matched tank 2.012x / 2.288x -- BELOW my band. And my stated mechanism, the loop quality factor (2/pi)*sqrt(L/Ceff)/R = 43.11x, is simply the wrong model for this topology: the measured series-R loss is 0.82-1.06 fJ per hop against ~43 fJ dissipated inside the bank, so the transfer was never R-limited.",
+  "P5_rail_droop_5_to_12_pct_and_stays_above_the_floor": "WRONG on both halves, in opposite directions. The measured droop on a fixed tank is bank 2's rail 1.0009 -> 0.9567 V = -4.4 %, just BELOW my 5-12 % band -- and it DOES cross the 0.9642 V level-restoring floor, which I predicted it would not. At Cw = 9.216 fF, where I predicted a crossing, the rail-matched tank holds 1.1227 V and the failure is settling instead.",
+  "P6_90pct_bar_fails_rail_matched_recovers_fcrit_still_passes": "PARTLY RIGHT. The 90 % bar fails at Cw = 2.400 fF (79.9 %, 16/32) -- RIGHT. fcrit S3 still 32/32 -- RIGHT. The rail-matched tank recovers the 90 % bar -- WRONG: signal/matched is 78.70 %, still 16/32. Only the RAIL-wire variant partly recovers it (86.70 %, 27/32 on S1).",
+  "P7_stage_time_plus_10_to_20_pct": "WRONG, 5x too pessimistic. Measured 137.52 -> 141.75 ps = +3.1 %. The reason is visible in the same data: the signal wire lengthens the RISE hop by only 3.1 % and the RETURN by 17.1 %, and at H = 4 the return sits inside the hold window so it never reaches the stage time. The return-hop cost is real and is paid in the initiation interval, not in the beat.",
+  "P8_tank_area_959_to_1218_um2": "RIGHT. Measured 959.4 -> 1215.4 um^2 at Cw = 2.400 fF, rising to 1942.4 um^2 at Cw = 9.216 fF."
+ },
+
+ "I_BOOKINGS_and_their_direction": {
+  "ideal_CMOS_supply": "BOOKING. FAVOURS CMOS (a real regulator adds loss) -> every ratio here is conservative for QAL.",
+  "ideal_tank_precharge_not_costed": "BOOKING. FAVOURS QAL. The committed 'topup' variant costs the recharge switch; Phase 1 reports the free rows. Every row here is a BOUND on that account.",
+  "ideal_gate_drive_and_VHI_rails": "BOOKING, metered (egt, ehi) but not generated. FAVOURS QAL (CMOS needs no such rail). Measured: E_gate_drive 3.86 fJ (control) to 8.33 fJ (signal/matched) and E_vhi -53.9 to -57.7 fJ over the whole 4-bank run.",
+  "lumped_wire_C": "BOOKING, applied identically to both sides -- and MEASURED to be worth 0.01 % against a 3-segment pi ladder carrying the PDK's own 8.24 ohm. Validated.",
+  "no_via_or_jog_capacitance": "BOOKING. UNDERSTATES the wire, hence understates whichever side wire capacitance favours.",
+  "single_shot_rail_does_not_return_to_zero": "A4. Every energy here is a FIRST-CYCLE energy. It cancels in the difference and is identical on both sides, but it bounds the interpretation and the stranded-charge bracket is how.",
+  "JUNCAP_leakage": "sg13lv_compat.sp discards ad/as/pd/ps so PSP103 defaults apply; the default PD = 1.00 um is smaller than the 1.12 um pMOS, so the STI-edge term clips to zero and every leakage figure implied here is a LOWER bound."
+ },
+
+ "J_WHAT_PHASE_2_INHERITS": {
+  "1": "the wire model is settled and PDK-bracketed: 0.0930 (isolated) / 0.15 (nominal) / 0.2181 (min-pitch bus) fF/um on min-width Metal2, with the rotate length formula 2r(W-r)/W bit pitches",
+  "2": "put the wire on the SIGNAL nodes for any honest cipher datapath. The rail placement is a rail/clock-distribution result, not a rotate result.",
+  "3": "at the PDK's own XOR2 bit pitch (3.84 um -> Cw = 9.216 fF) the committed configuration STOPS COMPUTING (fcrit S3 27/32, inside the budget) and QAL LOSES to CMOS on the wire term (0.749x). AES AddRoundKey is 128 XOR2 cells wide, so this is the regime Phase 2 vehicle (a) actually sits in, and it must either widen the cells, slow the ramp, or both.",
+  "4": "the adder point the brief asked to be stated: this run does not measure it. What it DOES establish is that the beat is set by the RISE hop and the rise hop is set by the capacitance inside the LC loop, so a wide-and-shallow parallel-prefix adder pays its wire in the RETURN hop and the initiation interval rather than in the beat -- which is the opposite of what the 8-bit-ripple bank-profile argument predicts, and is worth measuring directly.",
+  "5": "budget: a 4-bank x 8-gate row is ~93-100 s of Xyce wall and ~8 MB of .prn, and each configuration needs 8 sequential ZCS probe decks plus one fixed-point iteration re-run. A 128-cell single-level bank is 16x the cell count; Phase 2 should probe at 8 or 16 cells and scale by MEASURED per-cell increments rather than simulating 128 cells at every point."
+ },
+
+ "K_FILES": {
+  "DISK_STATE_BEFORE.txt": "19:32:50 -- sha256 + mtime of every committed input",
+  "wire.py / WIRE_MODEL.json": "19:34 -- (b) the PDK extraction, NO simulation",
+  "PRE_REGISTERED.json / .sha256": "19:40 -- (a), hashed 19:40:04",
+  "btk/bt.py": "VERBATIM copy of the committed banktank generator (sha256 5b3582be...)",
+  "btk/btw.py": "the ONE extension: an explicit interconnect capacitance. selftest() proves byte-identity at cw = 0.",
+  "btk/extract.py": "VERBATIM committed extractor, used for the instrument check",
+  "btk/wext.py": "the wire-aware extractor",
+  "btk/micro8.py": "(e) the single-hop decisive comparison, QAL and CMOS in one file",
+  "btk/iterate.py": "the A2 return-zero fixed point",
+  "btk/superseded_1cell/": "A3 -- the mis-scaled first micro-harness, kept not deleted",
+  "btk/it0/": "the pre-iteration decks, kept so the A2 insensitivity can be re-checked",
+  "INSTRUMENT_CHECK.json": "(c)",
+  "score.py / SCORE.json / SCORE_it0.json": "the fcrit functional criterion, reused from disk",
+  "analyse.py / ANALYSIS.json": "(d) and (e) tables",
+  "AMENDMENT.md": "A1-A5",
+  "RESULTS.json": "this file"
+ }
+}

@@ -1,0 +1,40 @@
+{
+ "role": "SKEPTIC / adversarial re-run of qal/cipher (WIRE Phase 1) and qal/cipher/p2 (CIPHER Phase 2)",
+ "written_before": "any Xyce deck launched from this directory",
+ "own_cache": "/tmp/claude-1001/-usr-local-src/4921ad0c-f17b-4b84-986a-5917c9ebd2a6/scratchpad/vae_cache_ciphskept, built from EMPTY",
+ "own_directory": "/usr/local/src/stat-sim/qal/cipher/skept (new). Nothing in qal/cipher/, qal/cipher/p2/, qal/banktank/, qal/widebank/ is written.",
+
+ "what_I_am_testing": [
+  "(a) FAIRNESS: does the CMOS comparator carry the IDENTICAL wire load and get scored by the IDENTICAL criterion, on EVERY row that feeds a headline?",
+  "(b) WIRE MODEL: is the per-micron figure read from the PDK or assumed? Is the recovery claim measured at the supply (tank) or inferred from a node voltage? How much of the 'recovered' charge is RETURNED versus PARKED in the tank?",
+  "(c) RE-RUN AddRoundKey from scratch and police per-gate settling AND the value check independently.",
+  "(d) BOOKINGS: ideal sources? is tank recharge counted? is switch gate drive counted?",
+  "(e) VERDICT on whether wire-dominated rotate-XOR logic puts QAL ahead, and on which axis."
+ ],
+
+ "S_gates": {
+  "S1_reproduction": "Re-running the parent's own generator in MY directory under MY cache must reproduce the parent's AES row energy to <= 1% relative. A larger deviation means the parent's number is not reproducible and the row is void.",
+  "S2_wire_symmetry": "For every row whose ratio is quoted as a headline, the QAL deck and the CMOS deck must contain the SAME total wire capacitance, counted by summing the actual capacitor cards in each netlist. Any row failing this is reported as a FAIRNESS BREACH with the sign of its bias named.",
+  "S3_criterion_symmetry": "The CMOS side must be scored by the same value/settling rule as the QAL side, and its value_pass must be reported. A CMOS deck whose own value check FAILS may not silently supply a headline energy.",
+  "S4_supply_symmetry": "CMOS vdd must equal the QAL variant's OWN MEASURED swing peak for the level it is paired with, not the commanded dV and not another level's peak.",
+  "S5_pairing_symmetry": "The QAL numerator and the CMOS denominator must cover the SAME hardware scope. If QAL's drive/receiver levels are excluded from the numerator, the whole-chain pairing must ALSO be reported, because excluding them flatters QAL.",
+  "S6_value_oracle": "AddRoundKey-then-ShiftRows must be checked against MY OWN independent FIPS-197 implementation written without reading the parent's veh.py reference code, on the waveform of MY OWN re-run.",
+  "S7_settling": "Per-gate settling policed on my own .prn: every scored cell >= 90% of its own delivered rail, and the worst reported.",
+  "S8_energy_convention": "Every headline energy must be 1/2 C (V0^2 - V1^2) on a LINEAR capacitor, or vdd*dQ on a CONSTANT supply. No integrator-only figure accepted as a headline.",
+  "S9_booking_ledger": "Every ideal source in every scored deck enumerated, with the direction of its bias named. Tank pre-charge and switch gate drive explicitly checked for whether they are counted in the headline."
+ },
+
+ "pre_stated_expectations": {
+  "Q1": "The AES row energy will reproduce to well inside 1% (the parent's G1 machinery is sound and its Phase 1 instrument check was digit-level).",
+  "Q2": "At least one headline row will be found with an ASYMMETRIC wire load. I expect it in the ADDER vehicle, because its wire is 'structural' (derived per netlist) and the two netlists differ in cell count, so 'identical wire' is not literally constructible there.",
+  "Q3": "The recovery claim will be measured at the TANK (a linear capacitor), which is the right place, but the 'recycle_fraction' will be a TANK-RETURN fraction and NOT a demonstration that charge left the system -- the rails do not return to 0 (Phase 1 A4), so a large part of what is called recovered is PARKED, not returned. I expect the parked share to be the dominant limit.",
+  "Q4": "The QAL/CMOS pairing will exclude QAL's drive and receiver levels from the numerator on at least one vehicle, and including them will move the verdict further against QAL.",
+  "Q5": "Tank pre-charge is NOT costed and switch gate drive is metered but not generated; both favour QAL, so the parent's negative verdict is a BOUND and the true position is worse for QAL.",
+  "Q6": "The wire figure will be genuinely PDK-sourced (the LEF CAPACITANCE/EDGECAPACITANCE fields exist in this PDK) and I expect to reproduce 0.0930 fF/um independently.",
+  "Q7": "The verdict 'NEITHER vehicle puts QAL ahead' will SURVIVE, and the one genuine QAL win (the wire term) will survive as a win but on a term too small to carry the vehicle."
+ },
+
+ "runtime_plan": "The box already carries load ~10 from sibling runs and the root filesystem is at 98% (5.2 G free). I therefore warm ONLY the geometries the AES vehicle needs (nmos 8/16/40/80 um, pmos 80/160 um, plus the internals of the PDK cells AES instantiates) in ONE deck, and I run at most 3 concurrent heavy Xyce jobs rather than 6. The AES row .prn is ~67 MB; I delete probe .prn files as soon as their zeros are extracted.",
+
+ "honesty_clause": "Anything I model as an ideal source is a BOOKING and its row is a BOUND. I label MEASURED / DERIVED / ASSUMED. If the parent's favourable wire term survives my audit I say so as plainly as I say the breaches."
+}

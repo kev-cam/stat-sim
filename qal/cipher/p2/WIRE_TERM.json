@@ -1,0 +1,57 @@
+{
+ "_label": "MEASURED",
+ "_what": "incremental cost of the ChaCha20 rotate wire on a 32-bit XOR level, and how it revises Phase 1's signal-wire conclusion",
+ "wire_fF_total": 248.544,
+ "wire_fF_per_bit": 7.767,
+ "nets": 32,
+ "rail_peak_loaded_V": 1.076113,
+ "wire_stored_at_peak_fJ": 143.909,
+ "QAL_dE_chain_fJ": 129.602,
+ "QAL_dE_bank_fJ": 128.895,
+ "QAL_net_over_stored_chain": 0.9006,
+ "QAL_net_over_stored_bank": 0.8957,
+ "_reading": "net/stored = 1.0 would mean charge-the-wire-once-and-strand-it; 2.0 is CMOS by construction (charge up, dump down); an IDEAL adiabatic transfer approaches 0.  So 0.90 means QAL dissipates 90% of one charge's worth -- roughly HALF of CMOS on this term, and still far from recovered.",
+ "CMOS_native_dE_fJ": 275.964,
+ "CMOS_native_net_over_stored": 1.9176,
+ "RATIO_CMOS_over_QAL_wire_term_native": 2.1293,
+ "CMOS_twin_dE_fJ": 266.462,
+ "CMOS_twin_net_over_stored": 1.8516,
+ "RATIO_CMOS_over_QAL_wire_term_twin": 2.056,
+ "phase1_comparison": {
+  "phase1_signal_matched_chain_ratio": 1.003,
+  "phase1_signal_fixed_1hop_ratio": 1.792,
+  "phase1_signal_net_over_stored_range": [
+   1.256,
+   2.074
+  ],
+  "phase1_committed_rise_hop_ps": 124.66,
+  "this_run_rise_hop_ps": 340.04,
+  "phase1_SLOWER_RAMP_probe": {
+   "L_nH": 60,
+   "hop_ps": 257.19,
+   "net_over_stored": 0.721,
+   "ratio": 2.775
+  },
+  "phase1_WIDER_PULLUP_probe": {
+   "wp_um": 4.48,
+   "net_over_stored": 0.78,
+   "ratio": 2.563
+  },
+  "VERDICT": "Phase 1's pessimistic signal-wire result was specific to its 124.66 ps ramp on an EIGHT-cell bank.  Phase 1 itself identified the mechanism -- 'the committed cell's pull-up is too resistive for the committed ramp' -- and MEASURED that slowing the ramp to 257 ps takes net/stored to 0.721 and the ratio to 2.775x.  A real 32-bit cipher bank is 20x the committed capacitance, so its ramp is 322-340 ps WITHOUT any device change: the slow ramp is not a lever here, it is what a cipher-width bank does anyway.  At that ramp this run measures net/stored 0.896-0.901 and CMOS/QAL 2.06-2.13x on the SIGNAL wire, in the direction and roughly the magnitude Phase 1's own mechanism probe predicted.  Phase 1's headline 'QAL does essentially nothing for wire behind a driver' is therefore REVISED: it does roughly halve it, once the bank is wide enough that the ramp is slow."
+ },
+ "but_the_total_still_loses": "This favourable wire term does NOT carry the vehicle.  QAL raises and returns the whole bank rail whatever the data does, so its energy is activity-independent, while CMOS charges only what flips. The measured crossover is activity 0.557 (CMOS-native) / 0.396 (same-netlist); ChaCha20 XORs two pseudorandom words and flips about half its bits, so at activity 0.5 the CMOS-native comparison is 0.897x and QAL LOSES on total energy.",
+ "recycle_fraction_pct": {
+  "1": {
+   "cw0": 38.753,
+   "cw7767": 37.928
+  },
+  "2": {
+   "cw0": 21.801,
+   "cw7767": 6.275
+  },
+  "3": {
+   "cw0": 36.314,
+   "cw7767": 37.291
+  }
+ }
+}

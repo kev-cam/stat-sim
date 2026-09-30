@@ -1,0 +1,304 @@
+.hdl "/usr/local/share/xyce/verilog-a/psp103/psp103.va"
+.include "/usr/local/src/kestrel/sim/models/sg13g2_psp103_tt.lib"
+.include "/usr/local/src/stat-sim/qal/sg13lv_compat.sp"
+.OPTIONS TIMEINT METHOD=GEAR RELTOL=1e-6 ABSTOL=1e-15 CHGTOL=1e-17
+.include "/usr/local/src/IHP-Open-PDK/ihp-sg13g2/libs.ref/sg13g2_stdcell/spice/sg13g2_stdcell.spice"
+VHI vhi 0 1.5
+VMG1 gn1 0 0
+VS_s_a0 s_a0 0 1.65
+VS_s_a1 s_a1 0 1.65
+VS_s_a2 s_a2 0 1.65
+VS_s_a3 s_a3 0 1.65
+VS_s_a4 s_a4 0 1.65
+VS_s_a5 s_a5 0 1.65
+VS_s_a6 s_a6 0 0
+VS_s_a7 s_a7 0 0
+VS_s_b0 s_b0 0 1.65
+VS_s_b1 s_b1 0 0
+VS_s_b2 s_b2 0 0
+VS_s_b3 s_b3 0 0
+VS_s_b4 s_b4 0 0
+VS_s_b5 s_b5 0 0
+VS_s_b6 s_b6 0 1.65
+VS_s_b7 s_b7 0 1.65
+XXOR21_0 o1_0 s_a0 s_b0 rail1 gn1 sg13g2_xor2_1
+CL1_0 o1_0 gn1 2f
+CW1_0 o1_0 gn1 0.360000f
+XAND21_1 o1_1 s_a0 s_b0 rail1 gn1 sg13g2_and2_1
+CL1_1 o1_1 gn1 2f
+CW1_1 o1_1 gn1 0.360000f
+XXOR21_2 o1_2 s_a1 s_b1 rail1 gn1 sg13g2_xor2_1
+CL1_2 o1_2 gn1 2f
+CW1_2 o1_2 gn1 0.360000f
+XAND21_3 o1_3 s_a1 s_b1 rail1 gn1 sg13g2_and2_1
+CL1_3 o1_3 gn1 2f
+CW1_3 o1_3 gn1 0.360000f
+XXOR21_4 o1_4 s_a2 s_b2 rail1 gn1 sg13g2_xor2_1
+CL1_4 o1_4 gn1 2f
+CW1_4 o1_4 gn1 0.360000f
+XAND21_5 o1_5 s_a2 s_b2 rail1 gn1 sg13g2_and2_1
+CL1_5 o1_5 gn1 2f
+CW1_5 o1_5 gn1 0.360000f
+XXOR21_6 o1_6 s_a3 s_b3 rail1 gn1 sg13g2_xor2_1
+CL1_6 o1_6 gn1 2f
+CW1_6 o1_6 gn1 0.360000f
+XAND21_7 o1_7 s_a3 s_b3 rail1 gn1 sg13g2_and2_1
+CL1_7 o1_7 gn1 2f
+CW1_7 o1_7 gn1 0.360000f
+XXOR21_8 o1_8 s_a4 s_b4 rail1 gn1 sg13g2_xor2_1
+CL1_8 o1_8 gn1 2f
+CW1_8 o1_8 gn1 0.360000f
+XAND21_9 o1_9 s_a4 s_b4 rail1 gn1 sg13g2_and2_1
+CL1_9 o1_9 gn1 2f
+CW1_9 o1_9 gn1 0.360000f
+XXOR21_10 o1_10 s_a5 s_b5 rail1 gn1 sg13g2_xor2_1
+CL1_10 o1_10 gn1 2f
+CW1_10 o1_10 gn1 0.360000f
+XAND21_11 o1_11 s_a5 s_b5 rail1 gn1 sg13g2_and2_1
+CL1_11 o1_11 gn1 2f
+CW1_11 o1_11 gn1 0.360000f
+XXOR21_12 o1_12 s_a6 s_b6 rail1 gn1 sg13g2_xor2_1
+CL1_12 o1_12 gn1 2f
+CW1_12 o1_12 gn1 0.360000f
+XAND21_13 o1_13 s_a6 s_b6 rail1 gn1 sg13g2_and2_1
+CL1_13 o1_13 gn1 2f
+CW1_13 o1_13 gn1 0.360000f
+XXOR21_14 o1_14 s_a7 s_b7 rail1 gn1 sg13g2_xor2_1
+CL1_14 o1_14 gn1 2f
+CW1_14 o1_14 gn1 0.360000f
+VMG2 gn2 0 0
+XINV2_0 o2_0 o1_1 rail2 gn2 sg13g2_inv_1
+CL2_0 o2_0 gn2 2f
+CW2_0 o2_0 gn2 0.720000f
+XINV2_1 o2_1 o1_0 rail2 gn2 sg13g2_inv_1
+CL2_1 o2_1 gn2 2f
+CW2_1 o2_1 gn2 0.360000f
+XA21OI2_2 o2_2 o1_2 o1_1 o1_3 rail2 gn2 sg13g2_a21oi_1
+CL2_2 o2_2 gn2 2f
+CW2_2 o2_2 gn2 0.720000f
+XINV2_3 o2_3 o1_2 rail2 gn2 sg13g2_inv_1
+CL2_3 o2_3 gn2 2f
+CW2_3 o2_3 gn2 0.360000f
+XA21OI2_4 o2_4 o1_4 o1_3 o1_5 rail2 gn2 sg13g2_a21oi_1
+CL2_4 o2_4 gn2 2f
+CW2_4 o2_4 gn2 0.720000f
+XNAND22_5 o2_5 o1_4 o1_2 rail2 gn2 sg13g2_nand2_1
+CL2_5 o2_5 gn2 2f
+CW2_5 o2_5 gn2 0.720000f
+XINV2_6 o2_6 o1_4 rail2 gn2 sg13g2_inv_1
+CL2_6 o2_6 gn2 2f
+CW2_6 o2_6 gn2 0.360000f
+XA21OI2_7 o2_7 o1_6 o1_5 o1_7 rail2 gn2 sg13g2_a21oi_1
+CL2_7 o2_7 gn2 2f
+CW2_7 o2_7 gn2 0.720000f
+XNAND22_8 o2_8 o1_6 o1_4 rail2 gn2 sg13g2_nand2_1
+CL2_8 o2_8 gn2 2f
+CW2_8 o2_8 gn2 0.720000f
+XINV2_9 o2_9 o1_6 rail2 gn2 sg13g2_inv_1
+CL2_9 o2_9 gn2 2f
+CW2_9 o2_9 gn2 0.360000f
+XA21OI2_10 o2_10 o1_8 o1_7 o1_9 rail2 gn2 sg13g2_a21oi_1
+CL2_10 o2_10 gn2 2f
+CW2_10 o2_10 gn2 0.720000f
+XNAND22_11 o2_11 o1_8 o1_6 rail2 gn2 sg13g2_nand2_1
+CL2_11 o2_11 gn2 2f
+CW2_11 o2_11 gn2 0.720000f
+XINV2_12 o2_12 o1_8 rail2 gn2 sg13g2_inv_1
+CL2_12 o2_12 gn2 2f
+CW2_12 o2_12 gn2 0.360000f
+XA21OI2_13 o2_13 o1_10 o1_9 o1_11 rail2 gn2 sg13g2_a21oi_1
+CL2_13 o2_13 gn2 2f
+CW2_13 o2_13 gn2 0.360000f
+XNAND22_14 o2_14 o1_10 o1_8 rail2 gn2 sg13g2_nand2_1
+CL2_14 o2_14 gn2 2f
+CW2_14 o2_14 gn2 0.360000f
+XINV2_15 o2_15 o1_10 rail2 gn2 sg13g2_inv_1
+CL2_15 o2_15 gn2 2f
+CW2_15 o2_15 gn2 0.360000f
+XA21OI2_16 o2_16 o1_12 o1_11 o1_13 rail2 gn2 sg13g2_a21oi_1
+CL2_16 o2_16 gn2 2f
+CW2_16 o2_16 gn2 0.360000f
+XNAND22_17 o2_17 o1_12 o1_10 rail2 gn2 sg13g2_nand2_1
+CL2_17 o2_17 gn2 2f
+CW2_17 o2_17 gn2 0.360000f
+XINV2_18 o2_18 o1_12 rail2 gn2 sg13g2_inv_1
+CL2_18 o2_18 gn2 2f
+CW2_18 o2_18 gn2 0.360000f
+XINV2_19 o2_19 o1_14 rail2 gn2 sg13g2_inv_1
+CL2_19 o2_19 gn2 2f
+CW2_19 o2_19 gn2 0.360000f
+VMG3 gn3 0 0
+XINV3_0 o3_0 o2_0 rail3 gn3 sg13g2_inv_1
+CL3_0 o3_0 gn3 2f
+CW3_0 o3_0 gn3 1.440000f
+XINV3_1 o3_1 o2_1 rail3 gn3 sg13g2_inv_1
+CL3_1 o3_1 gn3 2f
+CW3_1 o3_1 gn3 0.360000f
+XINV3_2 o3_2 o2_2 rail3 gn3 sg13g2_inv_1
+CL3_2 o3_2 gn3 2f
+CW3_2 o3_2 gn3 1.440000f
+XINV3_3 o3_3 o2_3 rail3 gn3 sg13g2_inv_1
+CL3_3 o3_3 gn3 2f
+CW3_3 o3_3 gn3 0.360000f
+XO21AI3_4 o3_4 o2_5 o2_0 o2_4 rail3 gn3 sg13g2_o21ai_1
+CL3_4 o3_4 gn3 2f
+CW3_4 o3_4 gn3 1.440000f
+XINV3_5 o3_5 o2_6 rail3 gn3 sg13g2_inv_1
+CL3_5 o3_5 gn3 2f
+CW3_5 o3_5 gn3 0.360000f
+XO21AI3_6 o3_6 o2_8 o2_2 o2_7 rail3 gn3 sg13g2_o21ai_1
+CL3_6 o3_6 gn3 2f
+CW3_6 o3_6 gn3 0.360000f
+XINV3_7 o3_7 o2_9 rail3 gn3 sg13g2_inv_1
+CL3_7 o3_7 gn3 2f
+CW3_7 o3_7 gn3 0.360000f
+XO21AI3_8 o3_8 o2_11 o2_4 o2_10 rail3 gn3 sg13g2_o21ai_1
+CL3_8 o3_8 gn3 2f
+CW3_8 o3_8 gn3 0.360000f
+XNOR23_9 o3_9 o2_11 o2_5 rail3 gn3 sg13g2_nor2_1
+CL3_9 o3_9 gn3 2f
+CW3_9 o3_9 gn3 0.360000f
+XINV3_10 o3_10 o2_12 rail3 gn3 sg13g2_inv_1
+CL3_10 o3_10 gn3 2f
+CW3_10 o3_10 gn3 0.360000f
+XO21AI3_11 o3_11 o2_14 o2_7 o2_13 rail3 gn3 sg13g2_o21ai_1
+CL3_11 o3_11 gn3 2f
+CW3_11 o3_11 gn3 0.360000f
+XNOR23_12 o3_12 o2_14 o2_8 rail3 gn3 sg13g2_nor2_1
+CL3_12 o3_12 gn3 2f
+CW3_12 o3_12 gn3 0.360000f
+XINV3_13 o3_13 o2_15 rail3 gn3 sg13g2_inv_1
+CL3_13 o3_13 gn3 2f
+CW3_13 o3_13 gn3 0.360000f
+XO21AI3_14 o3_14 o2_17 o2_10 o2_16 rail3 gn3 sg13g2_o21ai_1
+CL3_14 o3_14 gn3 2f
+CW3_14 o3_14 gn3 0.360000f
+XNOR23_15 o3_15 o2_17 o2_11 rail3 gn3 sg13g2_nor2_1
+CL3_15 o3_15 gn3 2f
+CW3_15 o3_15 gn3 0.360000f
+XINV3_16 o3_16 o2_18 rail3 gn3 sg13g2_inv_1
+CL3_16 o3_16 gn3 2f
+CW3_16 o3_16 gn3 0.360000f
+XINV3_17 o3_17 o2_19 rail3 gn3 sg13g2_inv_1
+CL3_17 o3_17 gn3 2f
+CW3_17 o3_17 gn3 0.360000f
+VMG4 gn4 0 0
+XINV4_0 o4_0 o3_0 rail4 gn4 sg13g2_inv_1
+CL4_0 o4_0 gn4 2f
+CW4_0 o4_0 gn4 0.360000f
+XINV4_1 o4_1 o3_1 rail4 gn4 sg13g2_inv_1
+CL4_1 o4_1 gn4 2f
+CW4_1 o4_1 gn4 0.360000f
+XINV4_2 o4_2 o3_2 rail4 gn4 sg13g2_inv_1
+CL4_2 o4_2 gn4 2f
+CW4_2 o4_2 gn4 0.360000f
+XINV4_3 o4_3 o3_3 rail4 gn4 sg13g2_inv_1
+CL4_3 o4_3 gn4 2f
+CW4_3 o4_3 gn4 0.360000f
+XINV4_4 o4_4 o3_4 rail4 gn4 sg13g2_inv_1
+CL4_4 o4_4 gn4 2f
+CW4_4 o4_4 gn4 0.360000f
+XINV4_5 o4_5 o3_5 rail4 gn4 sg13g2_inv_1
+CL4_5 o4_5 gn4 2f
+CW4_5 o4_5 gn4 0.360000f
+XINV4_6 o4_6 o3_6 rail4 gn4 sg13g2_inv_1
+CL4_6 o4_6 gn4 2f
+CW4_6 o4_6 gn4 0.360000f
+XINV4_7 o4_7 o3_7 rail4 gn4 sg13g2_inv_1
+CL4_7 o4_7 gn4 2f
+CW4_7 o4_7 gn4 0.360000f
+XA21OI4_8 o4_8 o3_9 o3_0 o3_8 rail4 gn4 sg13g2_a21oi_1
+CL4_8 o4_8 gn4 2f
+CW4_8 o4_8 gn4 0.360000f
+XINV4_9 o4_9 o3_10 rail4 gn4 sg13g2_inv_1
+CL4_9 o4_9 gn4 2f
+CW4_9 o4_9 gn4 0.360000f
+XA21OI4_10 o4_10 o3_12 o3_2 o3_11 rail4 gn4 sg13g2_a21oi_1
+CL4_10 o4_10 gn4 2f
+CW4_10 o4_10 gn4 0.360000f
+XINV4_11 o4_11 o3_13 rail4 gn4 sg13g2_inv_1
+CL4_11 o4_11 gn4 2f
+CW4_11 o4_11 gn4 0.360000f
+XA21OI4_12 o4_12 o3_15 o3_4 o3_14 rail4 gn4 sg13g2_a21oi_1
+CL4_12 o4_12 gn4 2f
+CW4_12 o4_12 gn4 0.360000f
+XINV4_13 o4_13 o3_16 rail4 gn4 sg13g2_inv_1
+CL4_13 o4_13 gn4 2f
+CW4_13 o4_13 gn4 0.360000f
+XINV4_14 o4_14 o3_17 rail4 gn4 sg13g2_inv_1
+CL4_14 o4_14 gn4 2f
+CW4_14 o4_14 gn4 0.360000f
+VMG5 gn5 0 0
+XINV5_0 o5_0 o4_1 rail5 gn5 sg13g2_inv_1
+CL5_0 o5_0 gn5 2f
+CW5_0 o5_0 gn5 0.360000f
+XXOR25_1 o5_1 o4_3 o4_0 rail5 gn5 sg13g2_xor2_1
+CL5_1 o5_1 gn5 2f
+CW5_1 o5_1 gn5 0.360000f
+XXOR25_2 o5_2 o4_5 o4_2 rail5 gn5 sg13g2_xor2_1
+CL5_2 o5_2 gn5 2f
+CW5_2 o5_2 gn5 0.360000f
+XXOR25_3 o5_3 o4_7 o4_4 rail5 gn5 sg13g2_xor2_1
+CL5_3 o5_3 gn5 2f
+CW5_3 o5_3 gn5 0.360000f
+XXOR25_4 o5_4 o4_9 o4_6 rail5 gn5 sg13g2_xor2_1
+CL5_4 o5_4 gn5 2f
+CW5_4 o5_4 gn5 0.360000f
+XXOR25_5 o5_5 o4_11 o4_8 rail5 gn5 sg13g2_xor2_1
+CL5_5 o5_5 gn5 2f
+CW5_5 o5_5 gn5 0.360000f
+XXOR25_6 o5_6 o4_13 o4_10 rail5 gn5 sg13g2_xor2_1
+CL5_6 o5_6 gn5 2f
+CW5_6 o5_6 gn5 0.360000f
+XXOR25_7 o5_7 o4_14 o4_12 rail5 gn5 sg13g2_xor2_1
+CL5_7 o5_7 gn5 2f
+CW5_7 o5_7 gn5 0.360000f
+CT1 tnk1 0 1877.4f
+L1 tnk1 mid1 15n
+R1 mid1 sw1 10
+XSWN1 sw1 gt1 rail1 0 sg13_lv_nmos w=20u l=0.13u
+XSWP1 sw1 gtp1 rail1 vhi sg13_lv_pmos w=40u l=0.13u
+XPK1 sw1 pk1 tnk1 tnk1 sg13_lv_nmos w=4u l=0.13u
+CT2 tnk2 0 1424.83f
+L2 tnk2 mid2 15n
+R2 mid2 sw2 10
+XSWN2 sw2 gt2 rail2 0 sg13_lv_nmos w=20u l=0.13u
+XSWP2 sw2 gtp2 rail2 vhi sg13_lv_pmos w=40u l=0.13u
+XPK2 sw2 pk2 tnk2 tnk2 sg13_lv_nmos w=4u l=0.13u
+CT3 tnk3 0 1231.39f
+L3 tnk3 mid3 15n
+R3 mid3 sw3 10
+XSWN3 sw3 gt3 rail3 0 sg13_lv_nmos w=20u l=0.13u
+XSWP3 sw3 gtp3 rail3 vhi sg13_lv_pmos w=40u l=0.13u
+XPK3 sw3 pk3 tnk3 tnk3 sg13_lv_nmos w=4u l=0.13u
+CT4 tnk4 0 878.449f
+L4 tnk4 mid4 15n
+R4 mid4 sw4 10
+XSWN4 sw4 gt4 rail4 0 sg13_lv_nmos w=14.1421u l=0.13u
+XSWP4 sw4 gtp4 rail4 vhi sg13_lv_pmos w=28.2843u l=0.13u
+XPK4 sw4 pk4 tnk4 tnk4 sg13_lv_nmos w=2.82843u l=0.13u
+CT5 tnk5 0 1087.85f
+L5 tnk5 mid5 15n
+R5 mid5 sw5 10
+XSWN5 sw5 gt5 rail5 0 sg13_lv_nmos w=20u l=0.13u
+XSWP5 sw5 gtp5 rail5 vhi sg13_lv_pmos w=40u l=0.13u
+XPK5 sw5 pk5 tnk5 tnk5 sg13_lv_nmos w=4u l=0.13u
+VGT1 gt1 0 PWL(0 0 198p 0 200p 1.5 415.308p 1.5 417.308p 0)
+VGTP1 gtp1 0 PWL(0 1.5 198p 1.5 200p 0 415.308p 0 417.308p 1.5)
+VPK1 pk1 0 PWL(0 1.5 198p 1.5 200p 0 415.308p 0 417.308p 1.5)
+VGT2 gt2 0 PWL(0 0 798p 0 800p 1.5 991.526p 1.5 993.526p 0)
+VGTP2 gtp2 0 PWL(0 1.5 798p 1.5 800p 0 991.526p 0 993.526p 1.5)
+VPK2 pk2 0 PWL(0 1.5 798p 1.5 800p 0 991.526p 0 993.526p 1.5)
+VGT3 gt3 0 PWL(0 0 1398p 0 1400p 1.5 1596.47p 1.5 1598.47p 0)
+VGTP3 gtp3 0 PWL(0 1.5 1398p 1.5 1400p 0 1596.47p 0 1598.47p 1.5)
+VPK3 pk3 0 PWL(0 1.5 1398p 1.5 1400p 0 1596.47p 0 1598.47p 1.5)
+VGT4 gt4 0 PWL(0 0 1998p 0 2000p 1.5 2156.3p 1.5 2158.3p 0)
+VGTP4 gtp4 0 PWL(0 1.5 1998p 1.5 2000p 0 2156.3p 0 2158.3p 1.5)
+VPK4 pk4 0 PWL(0 1.5 1998p 1.5 2000p 0 2156.3p 0 2158.3p 1.5)
+VGT5 gt5 0 PWL(0 0 2598p 0 2600p 1.5 22262p 1.5)
+VGTP5 gtp5 0 PWL(0 1.5 2598p 1.5 2600p 0 22262p 0)
+VPK5 pk5 0 PWL(0 1.5 2598p 1.5 2600p 0 22262p 0)
+.ic V(tnk1)=0.9075 V(rail1)=0 V(sw1)=0.9075 V(tnk2)=0.9075 V(rail2)=0 V(sw2)=0.9075 V(tnk3)=0.9075 V(rail3)=0 V(sw3)=0.9075 V(tnk4)=0.9075 V(rail4)=0 V(sw4)=0.9075 V(tnk5)=0.9075 V(rail5)=0 V(sw5)=0.9075
+.tran 0.1p 2827.77p 0 0.25p
+.print tran I(L1) I(L2) I(L3) I(L4) I(L5) V(rail1) V(rail2) V(rail3) V(rail4) V(rail5) V(tnk1) V(tnk2) V(tnk3) V(tnk4) V(tnk5)
+.end

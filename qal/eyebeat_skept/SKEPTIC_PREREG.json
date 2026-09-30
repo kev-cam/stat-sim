@@ -1,0 +1,32 @@
+{
+  "_study": "qal/eyebeat_skept -- SKEPTIC re-run of the qal/eyebeat beat sweep. Written BEFORE the first deck (DISK_STATE_BEFORE.txt holds the prior directory state).",
+  "_mandate": "Re-run, do not read. Own PYMS_VAE_CACHE (scratchpad/vae_cache_eyebeat_skept, built from empty). Own directory qal/eyebeat_skept only; qal/eyebeat, qal/eye, qal/banktank are read-only inputs.",
+  "_language_rule": "Inherited: quantities are TRACKING LAG, EYE (width/height/centre), MARGIN AT THE SAMPLING INSTANT. No completion language.",
+
+  "SK_A_eye_rebuild": {
+    "what": "Rebuild the eye at T=150 and T=300 (the endpoints of the sweep's real-edge fractional trend; T=150 is also its flagged anomaly) from scratch: fresh cache, own Newton-on-the-row zeros seeded from qal/eye T=200 measured zeros, patterns P0/P1/P2, m=10 H=4 dV=1.65 L=15nH free, bt.py deck verbatim. Extraction by an INDEPENDENT extractor (skx.py, written from scratch on numpy, reading TRIP.json directly) -- not eyecalc.",
+    "definition_policing": "Confirm the eye is (1) the INTERSECTION over data patterns, (2) joint over both polarities (min over all 8 gates, LOW margins sign-flipped), (3) margined against the receiver trip INTERPOLATED PER DELIVERED RAIL (EYE2: fixed level Trip_S(VR{k+1}B{k+1}) from each pattern's OWN .mt0; EYE1: instantaneous interpolation with in-table condition).",
+    "acceptance": "My EYE2 openings (0mV and 3sigma) within 1.0 ps of the sweep's T150/T300 claims per bank 1-3; the fractional ordering W3s/T(150) > W3s/T(300) reproduced; T=150 post-return floor NEGATIVE (sweep: -17.8 mV) and T=300 floor positive (+18.0 mV) reproduced in sign. Cross-check: my extractor over the sweep's OWN T=200 lane transients must match their T200 EYEBEAT.json openings to <= 0.05 ps (isolates extraction from simulation)."
+  },
+
+  "SK_B_lag_attribution": {
+    "what": "Re-measure rising and draining LAG_A / LAG_B at T=150/T=300 with my own extractor on my own transients. Then the DISCRIMINATION EXPERIMENT the sweep did not run: scale the cell conducting-path resistance at FIXED T=300, pattern P0, by running the row with cell widths x0.5 (R_on x2) and x2.0 (R_on x0.5), CL fixed at 2 fF, tank and switch untouched, zeros re-Newtoned per config (A6 gate unchanged).",
+    "pre_stated_discrimination": "If the draining-side LAG_A median scales UP by >=1.5x when widths halve AND DOWN by <=0.67x when widths double (4x R_on span), the tracking-lag (R_on*C_out conducting-path) attribution of the user's model stands as the mechanism of the data/power separation. If the lag moves by <20% across the 4x span, the lag is NOT R_on*C_out tracking and the attribution fails -- the separation would then be a property of the drain SCHEDULE/ENDPOINT (less time passing / tank floor), not of the cell RC. Intermediate scaling is reported as partial attribution with both mechanisms live. The droop rate during drain is the companion check: pure rail-tracking predicts droop rate ~ rail drain rate (W-invariant); RC-limited tracking predicts droop rate falls as R_on rises.",
+    "caveat_pre_stated": "W-scaling also moves the cell junction/gate loading on the rail (device caps are ~half the bank load beside 8x2 fF CL), so the rail ramp shifts by up to ~15-20%; the 4x R_on span dominates and the verdict is taken on factor-scale changes only."
+  },
+
+  "SK_C_stranded_recheck": {
+    "what": "Stranded-HIGH series re-run at T=150 and T=300 (from the SK_A transients) plus a third lane at T=60 (P0/P1/P2) to check the short-beat end and the claimed early-edge collision.",
+    "acceptance": "Sweep claims min-HIGH during source drain (worst gate/pattern, banks 1-3): 0.662 V at T=150, 0.696 V at T=300, 0.686 V at T=60; my values within +/-10 mV; all far above the committed peer-fed stranded band 0.336-0.455 V; T=60 value-check must FAIL (sweep: 24-32 of 32 gates wrong) while T=150/T=300 compute 32/32. The T=150 dip (approx -30 mV vs neighbours) must reproduce or the sweep's flagged anomaly is an extraction artefact.",
+    "P2_bearing": "If min-HIGH is flat-to-slightly-LOWER at short T (sweep's claim), P2 'milder at short beats' stays REFUTED on this arrangement. If my re-run instead shows a >10 mV monotone improvement toward short T, the sweep's refutation is itself in question."
+  },
+
+  "SK_D_budget_audit": {
+    "what": "Recompute the SWEEP.json cross-T aggregation independently from the per-T EYEBEAT.json files (and from my own T150/T300 numbers); audit the budget composition: which terms are summed vs RSS'd, whether sigma_trip is charged exactly once (in the 3sigma=19.323 mV threshold) and never again in the ps budget, the 61.6+4.6 vs slack comparisons at T=150/200, the 17.6 K erasure claim, the random-data 61.6/sqrt(4)+4.6=35.4 variant, the dual-reported local 7.8-9.2 ps spread composition, and the crossover D* = t_reg/(T-57.143) arithmetic.",
+    "acceptance": "Every quoted number in the sweep's optimum/sustainable-beat fields re-derives to rounding; any term double-counted or mis-scaled is named."
+  },
+
+  "SK_E_verdict": "Confirmed/refuted status of P1 and P2 exactly as the evidence lands, the optimum T, and whether the sustainable beat beats CMOS + flop tax at any D -- with the sweep's own honesty caveats checked rather than inherited.",
+
+  "sim_discipline": "max 3 concurrent Xyce (box load ~10/16 with other campaign runs); one dense transient per (T,pattern,config), everything extracted from the waveform; A6 |I(L)| <= 1 uA at every commanded open on every headline row; binding threshold Vtn=0.5240 V; sg13lv_compat.sp shim (JUNCAP200 enabled, pMOS STI-edge clipped -> leakage LOWER bounds)."
+}

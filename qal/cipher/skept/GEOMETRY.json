@@ -1,0 +1,706 @@
+{
+ "chacha_rotate_geometry_bitpitches": {
+  "mean": 13.484375,
+  "r12": 15.0,
+  "r16": 16.0,
+  "r7": 10.9375,
+  "r8": 12.0
+ },
+ "chacha_rotate_wire_per_bit_fF": {
+  "brief_1.00um": {
+   "HIGH_0.2181": 2.9409,
+   "LOW_0.0930": 1.254,
+   "NOM_0.15": 2.0227,
+   "mean_len_um": 13.4844
+  },
+  "inv_1_1.44um": {
+   "HIGH_0.2181": 4.235,
+   "LOW_0.0930": 1.8058,
+   "NOM_0.15": 2.9126,
+   "mean_len_um": 19.4175
+  },
+  "xor2_1_3.84um": {
+   "HIGH_0.2181": 11.2932,
+   "LOW_0.0930": 4.8155,
+   "NOM_0.15": 7.767,
+   "mean_len_um": 51.78
+  }
+ },
+ "qr_structure_ks32": {
+  "W": 32,
+  "adder": "ks",
+  "adder_levels": 7,
+  "forwarding_cells_per_qr": 3072,
+  "levels_per_qr": 32,
+  "note": "forwarding = one inverter per live word per bit per level",
+  "steps": [
+   [
+    "add",
+    7
+   ],
+   [
+    "xor",
+    1
+   ],
+   [
+    "add",
+    7
+   ],
+   [
+    "xor",
+    1
+   ],
+   [
+    "add",
+    7
+   ],
+   [
+    "xor",
+    1
+   ],
+   [
+    "add",
+    7
+   ],
+   [
+    "xor",
+    1
+   ]
+  ]
+ },
+ "qr_structure_ripple32": {
+  "W": 32,
+  "adder": "ripple",
+  "adder_levels": 34,
+  "forwarding_cells_per_qr": 13440,
+  "levels_per_qr": 140,
+  "note": "forwarding = one inverter per live word per bit per level",
+  "steps": [
+   [
+    "add",
+    34
+   ],
+   [
+    "xor",
+    1
+   ],
+   [
+    "add",
+    34
+   ],
+   [
+    "xor",
+    1
+   ],
+   [
+    "add",
+    34
+   ],
+   [
+    "xor",
+    1
+   ],
+   [
+    "add",
+    34
+   ],
+   [
+    "xor",
+    1
+   ]
+  ]
+ },
+ "shiftrows_geometry": {
+  "floorplan": "4x4 byte tiles, 8 bit-slices across a tile, column pitch = 8 bit pitches, wrap takes the short way",
+  "max_bitpitches": 16,
+  "mean_bitpitches": 8.0,
+  "per_byte_bitpitches": [
+   0,
+   8,
+   16,
+   8,
+   0,
+   8,
+   16,
+   8,
+   0,
+   8,
+   16,
+   8,
+   0,
+   8,
+   16,
+   8
+  ]
+ },
+ "shiftrows_wire_per_bit_fF": {
+  "brief_1.00um": {
+   "HIGH_0.2181": 1.7448,
+   "LOW_0.0930": 0.744,
+   "NOM_0.15": 1.2,
+   "R_ohm": 4.12,
+   "mean_len_um": 8.0
+  },
+  "inv_1_1.44um": {
+   "HIGH_0.2181": 2.5125,
+   "LOW_0.0930": 1.0714,
+   "NOM_0.15": 1.728,
+   "R_ohm": 5.933,
+   "mean_len_um": 11.52
+  },
+  "xor2_1_3.84um": {
+   "HIGH_0.2181": 6.7,
+   "LOW_0.0930": 2.857,
+   "NOM_0.15": 4.608,
+   "R_ohm": 15.821,
+   "mean_len_um": 30.72
+  }
+ },
+ "vehicles": {
+  "adder_ks_w32": {
+   "cells_total": 504,
+   "devices_per_level": [
+    506,
+    362,
+    350,
+    326,
+    278,
+    186,
+    312
+   ],
+   "devices_total": 2320,
+   "kinds_per_level": [
+    {
+     "and2": 31,
+     "xor2": 32
+    },
+    {
+     "a21oi": 30,
+     "inv": 33,
+     "nand2": 29
+    },
+    {
+     "inv": 34,
+     "nor2": 27,
+     "o21ai": 29
+    },
+    {
+     "a21oi": 27,
+     "inv": 36,
+     "nand2": 23
+    },
+    {
+     "inv": 40,
+     "nor2": 15,
+     "o21ai": 23
+    },
+    {
+     "a21oi": 15,
+     "inv": 48
+    },
+    {
+     "inv": 1,
+     "xor2": 31
+    }
+   ],
+   "n_per_level": [
+    63,
+    92,
+    90,
+    86,
+    78,
+    63,
+    32
+   ],
+   "n_sources": 64,
+   "name": "ks_w32",
+   "nb": 7,
+   "note": [
+    "ks 32-bit adder: 7 levels, 504 cells, 2320 devices"
+   ],
+   "vector": {
+    "W": 32,
+    "a": "0x9e379e3f",
+    "b": "0x34ff34c1",
+    "form": "ks",
+    "sum": "0xd336d300"
+   },
+   "wire_nets": 0,
+   "wire_total_fF": 0
+  },
+  "adder_ks_w8": {
+   "cells_total": 76,
+   "devices_per_level": [
+    122,
+    74,
+    62,
+    42,
+    72
+   ],
+   "devices_total": 372,
+   "kinds_per_level": [
+    {
+     "and2": 7,
+     "xor2": 8
+    },
+    {
+     "a21oi": 6,
+     "inv": 9,
+     "nand2": 5
+    },
+    {
+     "inv": 10,
+     "nor2": 3,
+     "o21ai": 5
+    },
+    {
+     "a21oi": 3,
+     "inv": 12
+    },
+    {
+     "inv": 1,
+     "xor2": 7
+    }
+   ],
+   "n_per_level": [
+    15,
+    20,
+    18,
+    15,
+    8
+   ],
+   "n_sources": 16,
+   "name": "ks_w8",
+   "nb": 5,
+   "note": [
+    "ks 8-bit adder: 5 levels, 76 cells, 372 devices"
+   ],
+   "vector": {
+    "W": 8,
+    "a": "0x3f",
+    "b": "0xc1",
+    "form": "ks",
+    "sum": "0x0"
+   },
+   "wire_nets": 0,
+   "wire_total_fF": 0
+  },
+  "adder_ripple_w32": {
+   "cells_total": 2576,
+   "devices_per_level": [
+    506,
+    186,
+    188,
+    186,
+    184,
+    182,
+    180,
+    178,
+    176,
+    174,
+    172,
+    170,
+    168,
+    166,
+    164,
+    162,
+    160,
+    158,
+    156,
+    154,
+    152,
+    150,
+    148,
+    146,
+    144,
+    142,
+    140,
+    138,
+    136,
+    134,
+    132,
+    130,
+    126,
+    312
+   ],
+   "devices_total": 5900,
+   "kinds_per_level": [
+    {
+     "and2": 31,
+     "xor2": 32
+    },
+    {
+     "inv": 93
+    },
+    {
+     "inv": 91,
+     "o21ai": 1
+    },
+    {
+     "a21oi": 1,
+     "inv": 90
+    },
+    {
+     "inv": 89,
+     "o21ai": 1
+    },
+    {
+     "a21oi": 1,
+     "inv": 88
+    },
+    {
+     "inv": 87,
+     "o21ai": 1
+    },
+    {
+     "a21oi": 1,
+     "inv": 86
+    },
+    {
+     "inv": 85,
+     "o21ai": 1
+    },
+    {
+     "a21oi": 1,
+     "inv": 84
+    },
+    {
+     "inv": 83,
+     "o21ai": 1
+    },
+    {
+     "a21oi": 1,
+     "inv": 82
+    },
+    {
+     "inv": 81,
+     "o21ai": 1
+    },
+    {
+     "a21oi": 1,
+     "inv": 80
+    },
+    {
+     "inv": 79,
+     "o21ai": 1
+    },
+    {
+     "a21oi": 1,
+     "inv": 78
+    },
+    {
+     "inv": 77,
+     "o21ai": 1
+    },
+    {
+     "a21oi": 1,
+     "inv": 76
+    },
+    {
+     "inv": 75,
+     "o21ai": 1
+    },
+    {
+     "a21oi": 1,
+     "inv": 74
+    },
+    {
+     "inv": 73,
+     "o21ai": 1
+    },
+    {
+     "a21oi": 1,
+     "inv": 72
+    },
+    {
+     "inv": 71,
+     "o21ai": 1
+    },
+    {
+     "a21oi": 1,
+     "inv": 70
+    },
+    {
+     "inv": 69,
+     "o21ai": 1
+    },
+    {
+     "a21oi": 1,
+     "inv": 68
+    },
+    {
+     "inv": 67,
+     "o21ai": 1
+    },
+    {
+     "a21oi": 1,
+     "inv": 66
+    },
+    {
+     "inv": 65,
+     "o21ai": 1
+    },
+    {
+     "a21oi": 1,
+     "inv": 64
+    },
+    {
+     "inv": 63,
+     "o21ai": 1
+    },
+    {
+     "a21oi": 1,
+     "inv": 62
+    },
+    {
+     "inv": 63
+    },
+    {
+     "inv": 1,
+     "xor2": 31
+    }
+   ],
+   "n_per_level": [
+    63,
+    93,
+    92,
+    91,
+    90,
+    89,
+    88,
+    87,
+    86,
+    85,
+    84,
+    83,
+    82,
+    81,
+    80,
+    79,
+    78,
+    77,
+    76,
+    75,
+    74,
+    73,
+    72,
+    71,
+    70,
+    69,
+    68,
+    67,
+    66,
+    65,
+    64,
+    63,
+    63,
+    32
+   ],
+   "n_sources": 64,
+   "name": "ripple_w32",
+   "nb": 34,
+   "note": [
+    "ripple 32-bit adder: 34 levels, 2576 cells, 5900 devices"
+   ],
+   "vector": {
+    "W": 32,
+    "a": "0x9e379e3f",
+    "b": "0x34ff34c1",
+    "form": "ripple",
+    "sum": "0xd336d300"
+   },
+   "wire_nets": 0,
+   "wire_total_fF": 0
+  },
+  "adder_ripple_w8": {
+   "cells_total": 164,
+   "devices_per_level": [
+    122,
+    42,
+    44,
+    42,
+    40,
+    38,
+    36,
+    34,
+    30,
+    72
+   ],
+   "devices_total": 500,
+   "kinds_per_level": [
+    {
+     "and2": 7,
+     "xor2": 8
+    },
+    {
+     "inv": 21
+    },
+    {
+     "inv": 19,
+     "o21ai": 1
+    },
+    {
+     "a21oi": 1,
+     "inv": 18
+    },
+    {
+     "inv": 17,
+     "o21ai": 1
+    },
+    {
+     "a21oi": 1,
+     "inv": 16
+    },
+    {
+     "inv": 15,
+     "o21ai": 1
+    },
+    {
+     "a21oi": 1,
+     "inv": 14
+    },
+    {
+     "inv": 15
+    },
+    {
+     "inv": 1,
+     "xor2": 7
+    }
+   ],
+   "n_per_level": [
+    15,
+    21,
+    20,
+    19,
+    18,
+    17,
+    16,
+    15,
+    15,
+    8
+   ],
+   "n_sources": 16,
+   "name": "ripple_w8",
+   "nb": 10,
+   "note": [
+    "ripple 8-bit adder: 10 levels, 164 cells, 500 devices"
+   ],
+   "vector": {
+    "W": 8,
+    "a": "0x3f",
+    "b": "0xc1",
+    "form": "ripple",
+    "sum": "0x0"
+   },
+   "wire_nets": 0,
+   "wire_total_fF": 0
+  },
+  "aes_addroundkey": {
+   "cells_total": 384,
+   "devices_per_level": [
+    256,
+    1280,
+    256
+   ],
+   "devices_total": 1792,
+   "kinds_per_level": [
+    {
+     "inv": 128
+    },
+    {
+     "xor2": 128
+    },
+    {
+     "inv": 128
+    }
+   ],
+   "n_per_level": [
+    128,
+    128,
+    128
+   ],
+   "n_sources": 256,
+   "name": "aes_addroundkey",
+   "nb": 3,
+   "note": [
+    "AddRoundKey = 128 XOR2 in ONE level; ShiftRows is the level-2 -> level-3 wiring permutation and costs NO cells."
+   ],
+   "vector": {
+    "addroundkey": [
+     "0xab",
+     "0x96",
+     "0x51",
+     "0x1c",
+     "0x5f",
+     "0x9a",
+     "0x45",
+     "0x0",
+     "0x43",
+     "0x8e",
+     "0x49",
+     "0x74",
+     "0x77",
+     "0x72",
+     "0x7d",
+     "0x78"
+    ],
+    "round_key": [
+     "0xe",
+     "0x13",
+     "0x34",
+     "0x59",
+     "0x7a",
+     "0x9f",
+     "0xa0",
+     "0xc5",
+     "0xe6",
+     "0xb",
+     "0x2c",
+     "0x31",
+     "0x52",
+     "0x77",
+     "0x98",
+     "0xbd"
+    ],
+    "shiftrows": [
+     "0xab",
+     "0x9a",
+     "0x49",
+     "0x78",
+     "0x5f",
+     "0x8e",
+     "0x7d",
+     "0x1c",
+     "0x43",
+     "0x72",
+     "0x51",
+     "0x0",
+     "0x77",
+     "0x96",
+     "0x45",
+     "0x74"
+    ],
+    "state": [
+     "0xa5",
+     "0x85",
+     "0x65",
+     "0x45",
+     "0x25",
+     "0x5",
+     "0xe5",
+     "0xc5",
+     "0xa5",
+     "0x85",
+     "0x65",
+     "0x45",
+     "0x25",
+     "0x5",
+     "0xe5",
+     "0xc5"
+    ]
+   },
+   "wire_nets": 0,
+   "wire_total_fF": 0
+  }
+ }
+}

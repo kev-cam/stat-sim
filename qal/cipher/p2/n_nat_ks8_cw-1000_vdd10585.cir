@@ -1,0 +1,175 @@
+.hdl "/usr/local/share/xyce/verilog-a/psp103/psp103.va"
+.include "/usr/local/src/kestrel/sim/models/sg13g2_psp103_tt.lib"
+.include "/usr/local/src/stat-sim/qal/sg13lv_compat.sp"
+.OPTIONS TIMEINT METHOD=GEAR RELTOL=1e-6 ABSTOL=1e-15 CHGTOL=1e-17
+.include "/usr/local/src/IHP-Open-PDK/ihp-sg13g2/libs.ref/sg13g2_stdcell/spice/sg13g2_stdcell.spice"
+VDD vdd 0 1.0585
+VGNDM gnm 0 0
+VS_a0 s_a0 0 1.65
+VS_a1 s_a1 0 1.65
+VS_a2 s_a2 0 1.65
+VS_a3 s_a3 0 1.65
+VS_a4 s_a4 0 1.65
+VS_a5 s_a5 0 1.65
+VS_a6 s_a6 0 0
+VS_a7 s_a7 0 0
+VS_b0 s_b0 0 PWL(0 1.65 200p 1.65 202p 0 1700p 0 1702p 1.65)
+VS_b1 s_b1 0 PWL(0 0 200p 0 202p 1.65 1700p 1.65 1702p 0)
+VS_b2 s_b2 0 PWL(0 0 200p 0 202p 1.65 1700p 1.65 1702p 0)
+VS_b3 s_b3 0 PWL(0 0 200p 0 202p 1.65 1700p 1.65 1702p 0)
+VS_b4 s_b4 0 PWL(0 0 200p 0 202p 1.65 1700p 1.65 1702p 0)
+VS_b5 s_b5 0 PWL(0 0 200p 0 202p 1.65 1700p 1.65 1702p 0)
+VS_b6 s_b6 0 PWL(0 1.65 200p 1.65 202p 0 1700p 0 1702p 1.65)
+VS_b7 s_b7 0 PWL(0 1.65 200p 1.65 202p 0 1700p 0 1702p 1.65)
+XXOR20 n0 s_a0 s_b0 vdd gnm sg13g2_xor2_1
+CL0 n0 gnm 2f
+XXOR21 n1 s_a1 s_b1 vdd gnm sg13g2_xor2_1
+CL1 n1 gnm 2f
+XXOR22 n2 s_a2 s_b2 vdd gnm sg13g2_xor2_1
+CL2 n2 gnm 2f
+XXOR23 n3 s_a3 s_b3 vdd gnm sg13g2_xor2_1
+CL3 n3 gnm 2f
+XXOR24 n4 s_a4 s_b4 vdd gnm sg13g2_xor2_1
+CL4 n4 gnm 2f
+XXOR25 n5 s_a5 s_b5 vdd gnm sg13g2_xor2_1
+CL5 n5 gnm 2f
+XXOR26 n6 s_a6 s_b6 vdd gnm sg13g2_xor2_1
+CL6 n6 gnm 2f
+XXOR27 n7 s_a7 s_b7 vdd gnm sg13g2_xor2_1
+CL7 n7 gnm 2f
+XAND28 n8 s_a0 s_b0 vdd gnm sg13g2_and2_1
+CL8 n8 gnm 2f
+XAND29 n9 s_a1 s_b1 vdd gnm sg13g2_and2_1
+CL9 n9 gnm 2f
+XAND210 n10 s_a2 s_b2 vdd gnm sg13g2_and2_1
+CL10 n10 gnm 2f
+XAND211 n11 s_a3 s_b3 vdd gnm sg13g2_and2_1
+CL11 n11 gnm 2f
+XAND212 n12 s_a4 s_b4 vdd gnm sg13g2_and2_1
+CL12 n12 gnm 2f
+XAND213 n13 s_a5 s_b5 vdd gnm sg13g2_and2_1
+CL13 n13 gnm 2f
+XAND214 n14 s_a6 s_b6 vdd gnm sg13g2_and2_1
+CL14 n14 gnm 2f
+XAND215 n15 s_a7 s_b7 vdd gnm sg13g2_and2_1
+CL15 n15 gnm 2f
+XA21OI16 n16 n1 n8 n9 vdd gnm sg13g2_a21oi_1
+CL16 n16 gnm 2f
+XNAND217 n17 n1 n0 vdd gnm sg13g2_nand2_1
+CL17 n17 gnm 2f
+XA21OI18 n18 n2 n9 n10 vdd gnm sg13g2_a21oi_1
+CL18 n18 gnm 2f
+XNAND219 n19 n2 n1 vdd gnm sg13g2_nand2_1
+CL19 n19 gnm 2f
+XA21OI20 n20 n3 n10 n11 vdd gnm sg13g2_a21oi_1
+CL20 n20 gnm 2f
+XNAND221 n21 n3 n2 vdd gnm sg13g2_nand2_1
+CL21 n21 gnm 2f
+XA21OI22 n22 n4 n11 n12 vdd gnm sg13g2_a21oi_1
+CL22 n22 gnm 2f
+XNAND223 n23 n4 n3 vdd gnm sg13g2_nand2_1
+CL23 n23 gnm 2f
+XA21OI24 n24 n5 n12 n13 vdd gnm sg13g2_a21oi_1
+CL24 n24 gnm 2f
+XNAND225 n25 n5 n4 vdd gnm sg13g2_nand2_1
+CL25 n25 gnm 2f
+XA21OI26 n26 n6 n13 n14 vdd gnm sg13g2_a21oi_1
+CL26 n26 gnm 2f
+XNAND227 n27 n6 n5 vdd gnm sg13g2_nand2_1
+CL27 n27 gnm 2f
+XA21OI28 n28 n7 n14 n15 vdd gnm sg13g2_a21oi_1
+CL28 n28 gnm 2f
+XNAND229 n29 n7 n6 vdd gnm sg13g2_nand2_1
+CL29 n29 gnm 2f
+XINV30 n30 n8 vdd gnm sg13g2_inv_1
+CL30 n30 gnm 2f
+XINV31 n31 n0 vdd gnm sg13g2_inv_1
+CL31 n31 gnm 2f
+XO21AI32 n32 n19 n30 n18 vdd gnm sg13g2_o21ai_1
+CL32 n32 gnm 2f
+XNOR233 n33 n19 n31 vdd gnm sg13g2_nor2_1
+CL33 n33 gnm 2f
+XO21AI34 n34 n21 n16 n20 vdd gnm sg13g2_o21ai_1
+CL34 n34 gnm 2f
+XNOR235 n35 n21 n17 vdd gnm sg13g2_nor2_1
+CL35 n35 gnm 2f
+XO21AI36 n36 n23 n18 n22 vdd gnm sg13g2_o21ai_1
+CL36 n36 gnm 2f
+XNOR237 n37 n23 n19 vdd gnm sg13g2_nor2_1
+CL37 n37 gnm 2f
+XO21AI38 n38 n25 n20 n24 vdd gnm sg13g2_o21ai_1
+CL38 n38 gnm 2f
+XNOR239 n39 n25 n21 vdd gnm sg13g2_nor2_1
+CL39 n39 gnm 2f
+XO21AI40 n40 n27 n22 n26 vdd gnm sg13g2_o21ai_1
+CL40 n40 gnm 2f
+XNOR241 n41 n27 n23 vdd gnm sg13g2_nor2_1
+CL41 n41 gnm 2f
+XO21AI42 n42 n29 n24 n28 vdd gnm sg13g2_o21ai_1
+CL42 n42 gnm 2f
+XNOR243 n43 n29 n25 vdd gnm sg13g2_nor2_1
+CL43 n43 gnm 2f
+XINV44 n44 n30 vdd gnm sg13g2_inv_1
+CL44 n44 gnm 2f
+XINV45 n45 n31 vdd gnm sg13g2_inv_1
+CL45 n45 gnm 2f
+XINV46 n46 n16 vdd gnm sg13g2_inv_1
+CL46 n46 gnm 2f
+XINV47 n47 n17 vdd gnm sg13g2_inv_1
+CL47 n47 gnm 2f
+XA21OI48 n48 n37 n44 n36 vdd gnm sg13g2_a21oi_1
+CL48 n48 gnm 2f
+XA21OI49 n49 n39 n46 n38 vdd gnm sg13g2_a21oi_1
+CL49 n49 gnm 2f
+XA21OI50 n50 n41 n32 n40 vdd gnm sg13g2_a21oi_1
+CL50 n50 gnm 2f
+XA21OI51 n51 n43 n34 n42 vdd gnm sg13g2_a21oi_1
+CL51 n51 gnm 2f
+XINV52 n52 n44 vdd gnm sg13g2_inv_1
+CL52 n52 gnm 2f
+XINV53 n53 n46 vdd gnm sg13g2_inv_1
+CL53 n53 gnm 2f
+XINV54 n54 n32 vdd gnm sg13g2_inv_1
+CL54 n54 gnm 2f
+XINV55 n55 n34 vdd gnm sg13g2_inv_1
+CL55 n55 gnm 2f
+XXNOR256 n56 n1 n52 vdd gnm sg13g2_xnor2_1
+CL56 n56 gnm 2f
+XXNOR257 n57 n2 n53 vdd gnm sg13g2_xnor2_1
+CL57 n57 gnm 2f
+XXNOR258 n58 n3 n54 vdd gnm sg13g2_xnor2_1
+CL58 n58 gnm 2f
+XXNOR259 n59 n4 n55 vdd gnm sg13g2_xnor2_1
+CL59 n59 gnm 2f
+XXNOR260 n60 n5 n48 vdd gnm sg13g2_xnor2_1
+CL60 n60 gnm 2f
+XXNOR261 n61 n6 n49 vdd gnm sg13g2_xnor2_1
+CL61 n61 gnm 2f
+XXNOR262 n62 n7 n50 vdd gnm sg13g2_xnor2_1
+CL62 n62 gnm 2f
+CXqvdd xqvdd 0 1
+BXqvdd 0 xqvdd I={ -I(VDD) }
+RXqvdd xqvdd 0 0.01
+.tran 0.1p 2202p 0 0.25p
+.measure tran QVDD_Z FIND V(xqvdd) AT=1.500000p
+.measure tran QVDD_A FIND V(xqvdd) AT=201.000000p
+.measure tran QVDD_B FIND V(xqvdd) AT=1701.000000p
+.measure tran QVDD_D FIND V(xqvdd) AT=2198.000000p
+.measure tran M_n0 FIND V(n0) AT=2198.000000p
+.measure tran C_n0 FIND V(n0) AT=1696.000000p
+.measure tran M_n56 FIND V(n56) AT=2198.000000p
+.measure tran C_n56 FIND V(n56) AT=1696.000000p
+.measure tran M_n57 FIND V(n57) AT=2198.000000p
+.measure tran C_n57 FIND V(n57) AT=1696.000000p
+.measure tran M_n58 FIND V(n58) AT=2198.000000p
+.measure tran C_n58 FIND V(n58) AT=1696.000000p
+.measure tran M_n59 FIND V(n59) AT=2198.000000p
+.measure tran C_n59 FIND V(n59) AT=1696.000000p
+.measure tran M_n60 FIND V(n60) AT=2198.000000p
+.measure tran C_n60 FIND V(n60) AT=1696.000000p
+.measure tran M_n61 FIND V(n61) AT=2198.000000p
+.measure tran C_n61 FIND V(n61) AT=1696.000000p
+.measure tran M_n62 FIND V(n62) AT=2198.000000p
+.measure tran C_n62 FIND V(n62) AT=1696.000000p
+.print tran V(vdd) I(VDD) V(xqvdd) V(n0) V(n56) V(n57) V(n58) V(n59) V(n60) V(n61) V(n62)
+.end

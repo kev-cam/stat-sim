@@ -1,0 +1,72 @@
+{
+  "role": "SKEPTIC / ADVERSARIAL AUDITOR of qal/eye Phase 1 (the EYE) and qal/eye/p2 (the BUDGET)",
+  "written_before": "any deck, any extraction, any number of mine. qal/eye_skeptic/ held ONLY DISK_STATE_BEFORE.txt at this instant.",
+  "own_cache": "/tmp/claude-1001/-usr-local-src/4921ad0c-f17b-4b84-986a-5917c9ebd2a6/scratchpad/vae_cache_skeptic -- built FROM EMPTY, distinct from vae_cache_eye (25M, the audited study's). I re-run; I do not reuse their .prn for any number I report as mine.",
+  "own_directory": "/usr/local/src/stat-sim/qal/eye_skeptic/ ONLY. I write nothing into qal/eye, qal/eye/p2, qal/banktank, qal/fcrit, qal/fastwave, qal/widebank, qal/cipher, qal/timer, qal/mcsize. Verified by mtime at the end.",
+
+  "SK1_REBUILD_ONE_BANK_EYE": {
+    "what": "Rebuild bank 2's eye from MY OWN transient with MY OWN independently written margin extractor. I do not import eyecalc.py, eyerun.py or p2eye.py. I do re-use bt.py (the ARRANGEMENT must be identical or I am auditing a different circuit) and fcrit/TRIP.json (the MEASURED decision curve is data, not code).",
+    "arrangement": "bt.py verbatim, m=10, T=200, H=4, dV=1.65 V, mode=free, L=15 nH, calibrated single schedule from a FULL 8-run true-ZCS probe on the centred weight-4 pattern P3 (this is Phase 2's condition, the one the headline beat comes from).",
+    "grid": "0.10 ps max-step ceiling, 0.05 ps print step -- same as the audited study, so any difference is not a grid difference.",
+    "ACCEPT": "my bank-2 EYE2 opening (fixed data level, 0 mV, min over all 8 gates, min over my patterns) agrees with their EYE_P2_T200_H4_calibrated opening for bank 2 to within 1.0 ps.",
+    "FAIL_MEANING": "> 1.0 ps = their eye is not reproducible and the headline is withdrawn. 0.1-1.0 ps = reproducible, flagged. < 0.1 ps = confirmed.",
+    "pre_stated_expectation_SX1": "I expect to reproduce within 0.5 ps, confidence MEDIUM-HIGH. Their instrument check was strong (440/440 .mt0 keys, 100% pass) and their convergence guard was 550x inside its bar, so the extraction is probably sound. My real doubt is not reproducibility, it is what the number MEANS."
+  },
+
+  "SK2_IS_IT_AN_INTERSECTION_OR_AN_ENVELOPE": {
+    "what": "The charge is that a single-pattern eye is not an eye. Test it by measuring the SAME bank's eye three ways on ONE shared calibrated schedule: (i) the committed pattern P0 ALONE, (ii) the claimed-binding pattern P2 ALONE, (iii) the pointwise INTERSECTION min(P0,P1,P2). Also verify the headline curve is min over ALL EIGHT GATES (hence over BOTH polarities present in that pattern), not a per-polarity best case.",
+    "ACCEPT_A": "intersection opening >= max(single-pattern openings) to within 0.05 ps, i.e. the intersection is genuinely the worst case and never wider than any member.",
+    "ACCEPT_B": "the reported headline opening equals the min-over-all-gates curve, NOT the min over one polarity's gates. If the headline came from a polarity-restricted subset it is an envelope and must be relabelled.",
+    "ACCEPT_C": "the single-pattern P0 eye is MEASURABLY more optimistic than the intersection on at least one of {opening, post-return margin floor}. If P0 alone gives the same answer, the intersection is doing no work and their claim that 'measuring one vector would have hidden this' is overstated.",
+    "pre_stated_expectation_SX2": "I expect ACCEPT_A and ACCEPT_B to PASS (I have read the code: the headline mask uses _INTER['all'], which is min over all 8 gates then min over patterns -- that is the strict construction). I expect ACCEPT_C to PASS on the FLOOR (their 133-176 mV single-pattern vs 15-20 mV intersection is a 8-10x claim) and to be MARGINAL on the OPENING (their own measured pattern spread is only 21-34 ps p-p, so P0 may sit close to the worst). Confidence MEDIUM. PREDICTION: the pattern intersection matters far more for the LATE edge than for the EARLY edge, and since the EARLY edge is what sets the beat, the headline beat is only weakly protected by the pattern sweep."
+  },
+
+  "SK3_TRIP_CURVE_POLICING": {
+    "what": "Independently re-implement the trip interpolation from fcrit/TRIP.json cell S and (i) confirm 27 rows, (ii) confirm the MEASURED endpoints 0.7281 at 0.20 V and 0.5179 at 1.50 V, (iii) confirm the interpolation is on trip_V vs vdd at the receiver's DELIVERED rail and is never a constant fraction, (iv) QUANTIFY the error a constant 0.59 would have made at the rails this study actually delivers.",
+    "ACCEPT": "the fraction actually used at the delivered rails is materially different from 0.59, and using 0.59 would move the opening by more than my SK1 bar of 1.0 ps. If 0.59 would have given the same answer, the 'never reuse 0.59' instruction is correct in principle but immaterial here, and I will say so.",
+    "also_check": "whether the EYE2 FIXED level is evaluated at a rail INSIDE the measured table [0.20,1.50] V (so no extrapolation), and whether any headline instant relies on the extrapolating limb of the interpolator.",
+    "pre_stated_expectation_SX3": "the delivered rails are ~0.68-0.75 V; the measured fraction there is ~0.60-0.62, so 0.59 is CLOSE. I predict the constant-0.59 error is SMALL in mV (10-25 mV) but, because the early edge climbs at only 16-25 mV/ps on the calibrated schedule, it is 0.5-1.5 ps -- i.e. borderline at my bar. Confidence LOW on the magnitude."
+  },
+
+  "SK4_BUDGET_AUDIT": {
+    "what": "Audit the composition arithmetic in p2/BUDGET.json without re-simulating it, then re-derive the mismatch term from MY OWN margin curve.",
+    "SK4a_sum_vs_RSS": "Check each of U1 DATA, U2 TIMER, U3 MISMATCH, U4 EXIT is classified as systematic or random, and that only random terms are RSS'd. The brief's own rule: only mismatch is random. Therefore the CORRECT composition is (systematic terms summed linearly) + (mismatch at its chosen sigma multiple). A total that RSS's a systematic with a random term is WRONG; a total that linearly sums everything is CONSERVATIVE and acceptable.",
+    "SK4b_SIGMA_MULTIPLE_OF_U3": "THE CENTRAL QUESTION. Determine whether U3 = 9.235 ps is the shift to the ONE-sigma contour or the THREE-sigma contour of sigma_total = 23.308 mV. A one-sigma allowance admits ~16% one-sided receiver failure and is NOT a budget. Re-derive both from my own margin curve and report the 3-sigma number if theirs is 1-sigma.",
+    "SK4c_DOUBLE_COUNT_OF_3SIGMA_TRIP": "The brief's explicit charge. Check whether a 3*sigma_trip allowance is charged in the budget AT THE SAME TIME as a mismatch contour built from sigma_trip, i.e. the same random variable twice. Also check the reverse error: sigma_trip appearing only inside sigma_total and therefore NOT being charged at 3 sigma anywhere.",
+    "SK4d_U1_ANTI_DOUBLE_COUNT": "Their U1 = 0 rests on the claim that worst-case data is already inside t_valid because the opening is the intersection over all 9 weights. Verify that logic against MY measured intersection: if the intersection opening equals the worst single-pattern opening, the claim holds and adding a raw spread on top WOULD be double-counting. Separately check that the schedule-error term they DO charge is a different quantity from the data spread they decline to charge.",
+    "SK4e_U2_TIMER": "Verify 0.46 ps/K x 16 K = 7.36 ps and the differential 7.272 ps, and that the 10.23% RC-soft limb and the 0.46 ps/K rate are the same measurement (their anti-double-count claim) rather than two independent terms.",
+    "ACCEPT": "every term is charged exactly once, at a stated sigma multiple, with systematic terms summed. Any term charged at 1 sigma and presented as a budget is a FINDING.",
+    "pre_stated_expectation_SX4": "PREDICTION, stated before I open BUDGET.json's numbers: U3 is charged at ONE sigma of sigma_total and labelled '3sigma_total', and this is the single largest defect in the budget. Confidence MEDIUM. If true, the honest beat is LARGER than 143.141 ps. I also predict NO double-count of 3*sigma_trip (their anti-double-count discipline has been good) -- i.e. the brief's suspicion (c) will come back NEGATIVE and the real error will be in the opposite direction, an UNDER-charge."
+  },
+
+  "SK5_FAIRNESS_AUDIT": {
+    "what": "Is the CMOS comparator load-matched and scored the same way?",
+    "checks": [
+      "C1 LOAD: QAL cells carry CL = 2.0 fF; the CMOS level quoted must be the 2 fF one (57.143 ps), not the 6.91 fF one (94.174 ps). Confirm from the deck, not from their prose.",
+      "C2 SAME SCORING: QAL's t_valid is measured to a MEASURED trip at a DELIVERED rail with a mismatch contour charged. Is the CMOS 57.143 ps measured to the same kind of criterion, or is it a 50% crossing with no mismatch and no rail droop? If the two are scored differently the comparison is unfair IN WHICHEVER DIRECTION -- report the direction.",
+      "C3 RELAXATIONS ARE ONE-SIDED: the campaign measured CMOS stage delay bar-invariant (1.0000-1.0001x). So every relaxation granted to QAL (lower bar, noise budget, slower beat) helps QAL and NOT CMOS. Check that no such relaxation is silently inside the 57.143 ps.",
+      "C4 t_reg DIRECTION: t_reg(2 fF) = 315.378 ps is DERIVED by interpolation between MEASURED 307.1 @ 0 fF and 335.7 @ 6.91 fF. Verify the interpolation arithmetic and confirm the 1.11-1.21x liberty optimism is used in the direction that DISADVANTAGES QAL (a smaller flop tax = less QAL advantage).",
+      "C5 II CONVENTION: II = H*T + tzq (strict) vs H*T (fcrit's, omits the return). Confirm the headline uses the STRICT form and that the crossover D is computed from it.",
+      "C6 LEVELS PER BANK: the crossover uses 1 level/bank because banktank's cells are inverters. Confirm the 2-level variant is labelled ARCHITECTURAL and kept out of the headline."
+    ],
+    "ACCEPT": "load matched at 2 fF, strict II in the headline, t_reg conservative, and any scoring asymmetry named with its direction.",
+    "pre_stated_expectation_SX5": "I expect C1, C4, C5, C6 to PASS (their prose already states each choice in the conservative direction, which is a good sign). I expect C2 to be the weak one: a CMOS stage delay measured as a 50%-crossing propagation delay is NOT scored the same way as a QAL t_valid with a 3-sigma mismatch contour, and if CMOS gets no mismatch charge while QAL gets 9.235 ps, the comparison FAVOURS CMOS (QAL is charged something CMOS is not). Direction therefore AGAINST QAL, so it cannot rescue a QAL win but it does mean the reported QAL deficit is overstated. Confidence MEDIUM."
+  },
+
+  "SK6_WHAT_I_WILL_NOT_DO": [
+    "I will not re-derive the 61.6 ps provenance chain from qal_bankN_zcs.json beyond checking the arithmetic they report, because that file is another study's and I was told not to write there.",
+    "I will not run DTA corners; every temperature statement of mine is arithmetic on qal/timer's MEASURED drift, same as theirs, and labelled ASSUMED where the span is assumed.",
+    "I will not attempt H=2 or T<150; their A6 knee makes those unvalidated and I have no budget to re-probe with a modified protocol.",
+    "I will not draw a Monte Carlo mismatch sample. Everything I say about mismatch is a CONTOUR SHIFT on a nominal margin curve, which is exactly what theirs is, and I will say so rather than implying a drawn distribution."
+  ],
+
+  "SK7_FAILURE_HANDLING_PRE_DECLARED": {
+    "F1": "If my probe fails bt.py's A6 gate (|I(L)| <= 1 uA at every commanded open) I QUARANTINE the row and re-probe with the FULL 8-run protocol; I never relax the gate.",
+    "F2": "If a Xyce run is killed (truncated .prn, no .mt0, no End-of-Xyce marker) I re-run it alone and say so; I never extract from a truncated .prn.",
+    "F3": "If my SK1 reproduction misses its 1.0 ps bar I report the miss as the headline finding and do NOT tune my extractor until it agrees.",
+    "F4": "If any expectation SX1-SX5 is refuted I report the refutation explicitly and score myself, hit or miss.",
+    "F5": "If the box load makes 3 concurrent heavy jobs unsafe I cut to 2 and report the reduced scope rather than silently dropping a pattern."
+  },
+
+  "SK8_VERDICT_SHAPE_FIXED_IN_ADVANCE": "The verdict must state: (1) the defensible eye WIDTH with its bound named, (2) the defensible eye HEIGHT at the actual sampling instant, (3) the fastest sustainable beat at MY audited sigma multiple, not theirs, and (4) whether QAL beats CMOS on per-level latency (pre-committed answer: NO, and no latency win may be claimed) and on throughput-at-depth-D (open). If my audit changes the beat, the crossover D moves with it and I must recompute D rather than quoting theirs."
+}

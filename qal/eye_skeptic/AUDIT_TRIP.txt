@@ -1,0 +1,24 @@
+[SK3] TRIP CURVE POLICING -- independently re-implemented from fcrit/TRIP.json
+  cell S  wp=1.12u wn=0.74u   27 MEASURED rows, domain [0.20, 1.50] V
+  brief quotes 0.7281 at 0.20 V -> I measure 0.728124239   MATCH=True
+  brief quotes 0.5179 at 1.50 V -> I measure 0.517850471   MATCH=True
+
+  THE RAILS THIS STUDY ACTUALLY DELIVERS  (dV = 1.65 V, from a committed .mt0)
+    receiver bank 2 rail 0.9542317 V -> MEASURED trip 0.5234374 V  frac 0.548543  extrap=False
+        constant-0.59 would give 0.5629967 V  ->  error +39.559 mV  (trip TOO HIGH -> HIGH-polarity margin lower -> eye opens LATER (pessimistic))
+    receiver bank 3 rail 1.0446960 V -> MEASURED trip 0.5692195 V  frac 0.544866  extrap=False
+        constant-0.59 would give 0.6163706 V  ->  error +47.151 mV  (trip TOO HIGH -> HIGH-polarity margin lower -> eye opens LATER (pessimistic))
+    receiver bank 4 rail 1.0614870 V -> MEASURED trip 0.5776140 V  frac 0.544156  extrap=False
+        constant-0.59 would give 0.6262773 V  ->  error +48.663 mV  (trip TOO HIGH -> HIGH-polarity margin lower -> eye opens LATER (pessimistic))
+
+  WORST constant-0.59 error at the delivered rails: 48.663 mV
+  The calibrated early edge climbs at 16.8-24.6 mV/ps (their Phase 2 measurement).
+  => 48.663 mV / 16.8 mV/ps = 2.90 ps   ...   / 24.6 = 1.98 ps
+  So a constant 0.59 is a 2.0-2.9 ps error -- LARGER than the entire
+  3*sigma_trip early-edge charge (1.76 ps). The instruction to interpolate is
+  MATERIAL, not cosmetic. Direction: PESSIMISTIC (0.59 puts the trip too high,
+  so using it would have made the eye open LATER -- their eye is NOT flattered
+  by the trip treatment.
+
+  NO EXTRAPOLATION at any delivered rail: every headline instant is inside
+  the measured table, so the extrapolating limb is never exercised. PASS.

@@ -1,0 +1,120 @@
+{
+ "_role": "SKEPTIC audit of qal/cipher (WIRE) + qal/cipher/p2 (CIPHER)",
+ "_pre_registered": "PRE_REGISTERED_SKEPTIC.json sha256 1a4fcdff33acb768a290ab99f07489a3f915809b6fc2911fbf2ccfe4c51b1aa4, mtime 2026-09-30 00:05:02 -0700",
+
+ "A_FAIRNESS": {
+  "S2_wire_symmetry": {
+   "verdict": "ONE BREACH, on the adder vehicle only. The two cipher vehicles are wire-fair.",
+   "method": "summed the actual capacitor cards in every deck rather than trusting the reported wire_total_fF",
+   "aes": "QAL c_aes 96 cards = 589.824 fF (64 x 4.608 + 32 x 9.216); CMOS-native n_nat_aes 128 cards = 589.824 fF (flat 4.608); twin = 64/32 like QAL. IDENTICAL TOTAL -> energy-fair. Distribution differs (QAL's worst net is 9.216 fF, the native's is 4.608), which handicaps QAL on DELAY only.",
+   "qrxor": "QAL 32 x 7.767 = 248.544 fF; native and twin both 32 x 7.767 = 248.544 fF. FAIR.",
+   "ks8_BREACH": "QAL c_ks8_T600_cwstruct carries 76 wire cards = 33.480 fF. The CMOS-NATIVE n_nat_ks8 carries ZERO wire cards, 0.000 fF, and its own JSON records wire_total_fF = 0. The ks8 headline ratio (1.3895x) and crossover (0.4798) are computed against that zero-wire deck. The same-netlist twin DOES carry 33.480 fF, so only the native is affected.",
+   "ks8_bias_direction": "removing wire LOWERS CMOS energy, so the breach makes CMOS look cheaper and UNDERSTATES QAL. Priced: 33.480 fF at 1.0585 V = C*V^2 = 37.51 fJ per full cycle, 4.2% of the 895.96 fJ denominator.",
+   "gate_G9_claim": "the parent's pre-registered G9 says 'the CMOS side carries the identical wire' and its failures section reports G9 as held. On the ks8 native row that is FALSE and is reported as PASS."
+  },
+  "S3_criterion_symmetry": {
+   "verdict": "PASS on the criteria that set the numbers; one undisclosed asymmetry in which side's failures are reported.",
+   "delay": "SYMMETRIC -- verified in run.py: the CMOS delay search uses the same settle_pct >= 90.0 AND guard_ok rule as the QAL side.",
+   "value": "SYMMETRIC rule (guard_ok: HIGH >= 0.50*rail, LOW <= 0.10*rail) applied to both sides. QAL additionally faces fcrit S3 (gate G6), which CMOS does not -- so QAL is held to a STRICTER bar, not a looser one.",
+   "UNDISCLOSED": "five CMOS comparator decks FAIL their own value check and none of it is reported: NAT_ks8 @1.0585 (6 of 63), NAT_ks8 @1.2511 (1), TWIN_ks8 both vdd (7 each), TWIN_aes @0.9446 (11 of 384). The report states 'G11 value and G11 reference: PASS on every row' -- true of the QAL rows, silent on the CMOS ones, two of which supply quoted figures."
+  },
+  "S4_supply_symmetry": {
+   "verdict": "PASS. vdd is each row's own MEASURED peak, never the commanded dV.",
+   "detail": "n_nat_aes VDD = 0.944636 V = the QAL AddRoundKey bank's own measured rail_peak. Held sources are at dV = 1.65 V on BOTH sides (QAL DC 0/1.65, CMOS PWL 0<->1.65), so the parent's B7 fix holds. Note the inputs therefore overdrive the CMOS supply 1.75x, which does not change CMOS energy (the output still swings only to vdd) but does make CMOS faster -- so the measured speed gap slightly flatters CMOS.",
+   "bracket_note": "the AES twin was run at both ends of the 3-level peak bracket. Only the LOW end (0.9446) existed when the report was written; it is the one quoted (3910.50 fJ) and it is the one whose value check FAILS. The HIGH end (1.1052 V) completed at 00:04:49, AFTER the report, gives 5454.64 fJ with value_pass TRUE and delay 368.5 ps. The only value-valid same-netlist twin measurement is 39.5% higher in energy than the one reported."
+  },
+  "S5_pairing_symmetry": {
+   "verdict": "THE LARGEST SINGLE EFFECT IN THE RUN, and it flatters QAL.",
+   "what": "for aes and qrxor the CMOS-native (whole function) is paired against the QAL FUNCTIONAL BANK ALONE, excluding QAL's drive and receiver levels. For ks8 it is paired against the whole chain. The convention is therefore not uniform across vehicles.",
+   "aes": "bank-alone 1858.169 fJ of a 2766.499 fJ chain -- 908.3 fJ (32.8%) of QAL's own measured energy is outside the numerator. ratio 1.4776 / crossover 0.6768 as reported; WHOLE-CHAIN ratio 0.9925 / crossover 1.0076.",
+   "aes_consequence": "on the whole-chain pairing QAL loses at EVERY activity including 1.0. The reported crossover of 0.677 exists only because the drive and receiver levels are excluded.",
+   "qrxor_cw7767": "bank-alone 556.54 of 822.248 fJ. reported ratio 1.7946 / crossover 0.5572; WHOLE-CHAIN ratio 1.2147 / crossover 0.8232.",
+   "qrxor_cw0": "reported crossover 0.5927; WHOLE-CHAIN 0.9601.",
+   "why_it_matters": "the report's own forwarding mechanism establishes that a QAL value cannot outlive its rail and must be RE-DRIVEN at every intervening level, and censuses a full quarter-round at 74.25% forwarding cells. The drive and receiver levels are therefore not test scaffolding -- they are the structural tax the report itself identifies. Excluding them is the optimistic end of the range, and the report quotes only that end in its headline."
+  }
+ },
+
+ "B_WIRE_MODEL": {
+  "PDK_sourced": "YES for the primary figure, and I reproduced it independently.",
+  "my_recomputation": "read sg13g2_tech.lef (sha256 054f5b7b24d72365b4b1088be1331e04c1c2e3805de9f99c37e71938ed231efc) and computed C/L = CPERSQDIST*W + 2*EDGECAPACITANCE for every ROUTING layer: Metal1 0.0688, Metal2 0.0930, Metal3 0.0920, Metal4 0.0918, Metal5 0.0888 fF/um; R = RPERSQ/W gives 0.515 ohm/um on Metal2. Every figure matches the parent's to 4 digits.",
+  "band_upper_end_is_DERIVED_not_read": "the 0.2181 fF/um min-pitch-bus figure is a Sakurai-Tamaru closed form over the ITF geometry, not a coupling capacitance read from the PDK. The LEF carries no same-layer coupling. I confirmed the parent's parallel-plate sanity bound: er*e0*T/S = 4.1*8.854e-12*0.450u/0.21u = 0.0778 fF/um per side, so the OpenRCX min-spacing entry of 0.4599 is indeed 5.9x a hard bound and declining it is the conservative choice.",
+  "PHASE_2_IS_NOT_BRACKETED": "Phase 1 ran the band as rows (cw 1.488 / 2.400 / 3.489 / 9.216 fF). Phase 2 -- every cipher vehicle, i.e. every number the verdict rests on -- ran ONE wire point, the 0.15 fF/um midpoint, which is 1.61x the PDK LEF's own isolated figure. The nominal is PDK-bracketed; the cipher measurements are not.",
+  "wire_referenced_to_ideal_ground": "every CW card runs from a cell OUTPUT node to a per-level node held by an ideal 0 V source (VMG1 gn1 0 0). Wire-to-wire coupling -- which is 2 x 0.1033 of the 0.2181 upper figure -- is thus modelled as capacitance to a fixed potential. For random bus data the average Miller factor is ~1 so this is defensible on the mean, but it removes the data-dependence entirely.",
+  "r16_step_underloaded": "the measured ChaCha step is stated as r = 16, 'the QR's first and worst rotate', but is loaded with the FOUR-ROTATE MEAN of 7.767 fF/bit. r = 16's own value from the parent's own formula 2r(W-r)/W is 9.216 fF/bit (294.9 fF total, not 248.5). The worst rotate is loaded 18.7% light, which understates the one term QAL wins.",
+  "recovery_measured_at_the_supply_YES": "the headline is 1/2 C (V0^2 - V1^2) on CT1/CT2/CT3, which are plain linear capacitors to ground. I reproduced AES bank 2 independently: 1/2 * 24441.4 fF * (0.9075^2 - 0.8194544^2) = 1858.26 fJ against the reported 1858.1695 fJ, agreeing to 0.005%. An independent 1 F V*I integrator on the same node gives 2093.99 vs 2105.00 fJ for the rise, agreeing to 0.53%. So recovery is measured at the tank by two instruments, NOT inferred from a node voltage.",
+  "returned_versus_parked": {
+   "answer": "'returned' and 'parked in the tank' are the same thing and that is legitimate -- the tank is the reservoir the next beat draws from. The charge that is really lost to parking sits on the RAILS, not in the tank, and it is large.",
+   "AES_first_cycle_ledger_MEASURED": "tanks gave up 2766.50 fJ; 743.61 fJ came back into the tanks on the return hops; 1107.85 fJ is STILL SITTING on the rails + banks + wire at t_end (rail ends 0.7025 / 0.8093 / 0.7582 V on C_bank 575.7 / 2444.1 / 575.7 fF); the remaining 1658.65 fJ is genuinely dissipated.",
+   "so": "40.0% of the headline 'energy lost' is stored, not dissipated. Every energy in both phases is a FIRST-CYCLE energy (the parent's A4). This cuts BOTH ways and the parent says so but never quantifies it: crediting the parked charge would lower QAL's cost, but a steady-state cycle starting each rail at 0.75-0.81 V collapses the logic swing to ~0.3 V, which cannot compute."
+  }
+ },
+
+ "C_ADDROUNDKEY_RERUN": {
+  "status": "COMPLETE. The AES row REPRODUCES EXACTLY. S1 PASS with enormous margin.",
+  "what_I_ran": "own directory /usr/local/src/stat-sim/qal/cipher/skept, own PYMS_VAE_CACHE built FROM EMPTY (10 PSP103 .so, 1337.1 s), full sequence from scratch: 3 rise ZCS probes + 3 return ZCS probes + the row deck. Total 3612 s of Xyce. No result of the parent's was copied in; only its generators (cg.py/veh.py/run.py sha256 recorded in this directory).",
+  "deck_byte_identity": "my regenerated c_aes_T1150_cw4608_ms1.cir has sha256 7e0c1391ead6b2b66d2831c21ad392945f5899fcb0a5af5fc4b26439b4272993, BYTE-IDENTICAL to the committed deck.",
+  "all_six_ZCS_instants_identical": {
+   "rise1": "mine 385.8439 ps / parent 385.84391072352025",
+   "rise2": "mine 668.0324 ps / parent 668.0324183551043",
+   "rise3": "mine 356.0283 ps / parent 356.02825067384083",
+   "ret1": "mine 428.4403 ps / parent 428.4402534694009",
+   "ret2": "mine 732.1568 ps / parent 732.1568305964402",
+   "ret3": "mine 389.4520 ps / parent 389.45195258360854"
+  },
+  "row_json_comparison": "204 quantities compared; 182 BIT-IDENTICAL; the ONLY deviation above 1e-6 relative is wall_s (766.1 s vs 746.1 s), which is wall-clock, not physics. Every physical quantity is bit-identical, including E_tank_lost_total 2766.499021660389 fJ, E_per_gate 7.2044245355739305 fJ, worst_gate_pct 99.29057295864222, G7_worst_rail_V 0.8868759, LEVEL_TIME_measured_max 1647.319029 ps, OP_TIME 2231.7665989999996 ps, separation_min 878.356305 mV, and bank 2's 1858.1694743683693 fJ / 9.612041103204568 % recycle.",
+  "MY_OWN_SETTLING_POLICE": "computed from MY .prn with MY arithmetic at each level's own boundary instant: level 1 worst 99.2906% (cell 1) at rail 0.9627 V; level 2 worst 99.4912% (cell 20) at rail 0.8869 V; level 3 worst 100.0001% at rail 1.0718 V. ZERO of 384 cells below 90%. My worst-gate figure agrees with the parent's to 1.17e-08 relative. PER-GATE SETTLING POLICED AND CLEAN.",
+  "MY_OWN_VALUE_POLICE": "wrote a FIPS-197 oracle from the standard (state column-major i = 4c+r; ShiftRows rotates row r LEFT by r). My AddRoundKey and my ShiftRows both match the netlist's declared vector byte-for-byte. Level 3 is a bank of inverters fed THROUGH the permutation, and its 128 measured outputs equal NOT(my ShiftRows) exactly -- 0 value fails of 128. The permutation is wired as FIPS-197 demands and the chain computes it.",
+  "also_verified_the_CMOS_side_functionally": "read the M_* measures out of n_nat_aes_cw4608_vdd9446.cir.mt0 and compared to my oracle at its own 0.9446 V supply: 128 of 128 outputs resolve, 0 mismatches against my AddRoundKey bits. The AES headline's CMOS denominator computes the correct function and its value check genuinely passes.",
+  "so": "nothing in the AddRoundKey row is irreproducible, mis-settled, or functionally wrong. The AES vehicle's MEASUREMENTS are sound. Everything I dispute about AddRoundKey is in the ACCOUNTING around it -- the pairing scope -- not in the physics."
+ },
+
+ "D_BOOKINGS": {
+  "ideal_sources_enumerated_in_c_aes_T1150_cw4608_ms1.cir": {
+   "256 x VS_* held operand/key sources": "ideal DC 0 or 1.65 V. Deliver 646.39 fJ, metered, NOT in the headline. The CMOS side has 256 ideal PWL sources at the same 1.65 V and also excludes them, so this largely cancels in the ratio.",
+   "3 x VGT + 3 x VGTP switch gate drive": "ideal PWL, 0 <-> 1.5 V, driving 40/80 um (level 1,3) and 80/160 um (level 2) transfer devices. 42.64 fJ metered, NOT added.",
+   "1 x VHI well rail at 1.5 V": "ideal DC. 233.92 fJ metered, NOT added.",
+   "3 x VMG": "0 V sources used as ammeters -- a 0 V source delivers no power, so these are instruments, not bookings."
+  },
+  "SWITCH_GATE_DRIVE_counted": "NO. Metered at 42.64 fJ and excluded. With the well rail that is 276.56 fJ = 10.0% of the 2766.50 fJ headline, omitted from the QAL side and FAVOURING QAL. Because the gates are driven by ideal PWL the 42.64 fJ is itself a lower bound -- real drive dumps CV^2.",
+  "TANK_RECHARGE_counted": "NO, and the amount is never stated. The tanks are set by '.ic V(tnk1)=0.9075 V(tnk2)=0.9075 V(tnk3)=0.9075' on plain linear capacitors totalling 35954.7 fF. That pre-charge is 1/2*C*V^2 = 14805 fJ = 5.35x the whole row's headline, generated by nothing. As a one-time startup cost its exclusion from a per-beat figure is defensible; its size is not disclosed anywhere. The per-beat replenishment IS what E_tank_lost measures, but only at 100% converter efficiency -- any real replenishment divides the headline by eta.",
+  "TANK_RESIZE_HIDDEN_IN_THE_WIRE_DIFFERENTIAL": "the qrxor cw=0 -> cw=7.767 differential that produces the 2.129x wire win is NOT a fixed-tank differential. Diffing the two decks: CT2 goes 4635.80 fF -> 7121.24 fF, +2485.44 fF (+53.6%). The tank grows by 10.00x the wire capacitance it carries (m = 10), and that added tank's own pre-charge is 1023.4 fJ -- 7.9x the 129.60 fJ increment the wire term is built on -- set by .ic and never costed, plus its silicon area. Phase 1 was careful to report fixed-tank AND rail-matched-tank as two different questions (1.79x vs 1.15x); Phase 2 reports only the matched case and does not label it as such.",
+  "OTHER": {
+   "mstep asymmetry on the AES row": "QAL c_aes runs .tran with max step 1.0 ps (the declared B13 deviation); both AES CMOS decks run at 0.25 ps. The .OPTIONS are identical but the integration resolution is 4x coarser on the QAL side of the row the verdict turns on. The parent validated the step change on qrxor at 2.07e-4 worst headline deviation, so this is bounded and immaterial -- but 'identical .OPTIONS and edges' overstates it.",
+   "derived vs measured bank capacitance": "the tank is sized m x C_bank_DERIVED, and the widebank sibling's own amendment A9 measured its 128-inverter bank secant C at 939.40 fF against a DERIVED 575.66 fF -- a factor 1.632. Applying that factor to AES's cell capacitance drops the ShiftRows wire's share of the bank from 24.1% to 16.3%, and makes the effective tank ratio 6.13 rather than 10 (which is why the AES rail peaks at 0.9446 V and G7 fails).",
+   "H=4": "the initiation interval T(1+H) = 5750 ps sets the 14.91x throughput gap. AES level 2 is valid at 2147 ps against a 2500 ps boundary, so the hold has large margin and a smaller H would shrink the gap. NOT MEASURED here; H=4 is a committed protocol constant the parent did not vary. The throughput figure is therefore partly protocol, not purely physics."
+  }
+ },
+
+ "E_CORRECTED_NUMBERS": {
+  "_method": "the parent's own formulae (ratio = Ec/base, crossover = base/(Ec/a)) with the comparator errors repaired",
+  "ks8": {
+   "as_reported": {"Ec_fJ": 895.96, "ratio": 1.3895, "crossover": 0.4798, "at_0.5": 1.0421},
+   "plus_truncation_fix": {"Ec_fJ": 1021.37, "ratio": 1.5840, "crossover": 0.4209, "at_0.5": 1.1879},
+   "plus_truncation_and_wire": {"Ec_fJ": 1058.88, "ratio": 1.6421, "crossover": 0.4060, "at_0.5": 1.2315},
+   "note": "both repairs move the adder in QAL's FAVOUR. The report's one favourable vehicle is understated, not overstated.",
+   "labelling_error": "VERDICT.json calls Ec/base 'ratio_at_activity_1', but Ec is measured at the comparator's OWN activity. nat_ks8's activity is 0.6667, so ks8's true activity-1.0 ratio is 2.084x, not 1.3895x. aes and qrxor natives measure activity 1.0, so only ks8 is mislabelled."
+  },
+  "whole_chain_pairing": {
+   "aes": {"ratio": 0.9925, "crossover": 1.0076, "reading": "QAL loses at every activity"},
+   "qrxor_cw7767": {"ratio": 1.2147, "crossover": 0.8232},
+   "qrxor_cw0": {"ratio": 1.0416, "crossover": 0.9601}
+  }
+ },
+
+ "F_TRUNCATION_MECHANISM": {
+  "finding": "every CMOS comparator deck gives its FINAL half-cycle only 497 ps (QVDD_B at 1701 ps, QVDD_D at 2198 ps), while amendment B10b widened the FIRST half-cycle to 1499 ps. The value check and the full-cycle charge are both read in the un-widened window.",
+  "correlation": "PERFECT: value_pass fails exactly when the measured propagation delay exceeds 497 ps. Fails: nat_ks8 (654 ps), nat_ks8@1.2511 (452 ps, marginal), twin_aes@0.9446 (547 ps), twin_ks8 (796 and 563 ps). Passes: every depth-1 native (221-386 ps) and every depth-3 qrxor twin (275-381 ps).",
+  "direct_evidence": "in n_nat_ks8_cw-1000_vdd10585.cir.prn, at the QVDD_D instant of 2198 ps the five sum outputs N57-N61 read 0.4481/0.4494/0.4470/0.4579/0.2434 V and are still falling ~17 mV/ps; N62 reads 0.6852 V and is still rising. The simulation ENDS at 2202 ps with all six mid-flight.",
+  "consequence": "the affected decks' supply charge is truncated. On nat_ks8 the settled half-cycle drew 510.69 fJ and the truncated one 385.27 fJ -- a 24.6% mismatch across a cycle that must close, i.e. the 895.96 fJ headline is short by about 125 fJ (14.0%).",
+  "scope": "the AES and ChaCha headlines come from DEPTH-1 natives and are NOT affected. Only the adder headline and the three twins are.",
+  "credit": "the parent diagnosed this exact mechanism in B10b ('the short window was also truncating the energy', C_switched 683.1 -> 876.0 fF once the slow direction is allowed to finish) and fixed the first half-cycle. The residue is the second."
+ },
+
+ "G_WHAT_I_CONFIRMED_AGAINST_MY_OWN_ORACLES": {
+  "FIPS_197": "wrote AddRoundKey and ShiftRows from the standard (state column-major, index 4c+r; row r rotates LEFT by r). My AddRoundKey and my ShiftRows both match the parent's vector byte-for-byte. My independent displacement derivation gives 0/8/16/8 bit pitches by row, mean 8.0, hence 32 nets at 0 fF, 64 at 4.608, 32 at 9.216 = 589.824 fF total -- exactly what the deck carries. The AES vehicle's value reference and wire geometry are sound.",
+  "RFC_8439": "my own ChaCha20 quarter-round on the RFC's s2.1.1 vector (0x11111111, 0x01020304, 0x9b8d6f43, 0x01234567) returns 0xea2a92f4 0xcb1cf8ce 0x4581472e 0x5881c4bb, matching the parent's STRUCTURAL.json got/want. The rotate-wire formula 2r(W-r)/W reproduces 7.767 fF/bit as the four-rotate mean.",
+  "widebank_crosscheck": "the parent's claim that AES level 1 (128 inverters, C_bank 575.664 fF) measures t_hop 385.84 ps against the sibling's 406.72 ps for the identical bank is GENUINE -- I read row_n128_T580_H4_dv1650_free_nb3.json and confirm 406.71767523757694 ps at C_bank_fF_DERIVED 575.664. 5.1% agreement.",
+  "energy_convention": "every headline I checked is convention-free: 1/2 C dV^2 on a linear tank for QAL (reproduced to 0.005%), vdd*dQ on a constant supply for CMOS (the supply is a plain DC source, so this is exact).",
+  "prose_slip": "the adder_forms text says 'QAL ripple/KS = 4.49x cells and 4.38x levels'. Neither figure appears in STRUCTURAL.json; its own table two paragraphs later gives 2.158x/2.000x at W=8 and 5.111x/4.857x at W=32, which do match the JSON. The 4.49/4.38 pair is unreproducible prose, not a data error."
+ }
+}
