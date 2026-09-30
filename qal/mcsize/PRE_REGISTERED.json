@@ -1,0 +1,143 @@
+{
+  "study": "qal/mcsize -- mismatch Monte-Carlo on the QAL chains that COMPUTE, + sizing as the margin lever",
+  "written_before_first_deck": true,
+  "author_note": "Every number in this file is either MEASURED-from-PDK (labelled), MEASURED-from-a-committed-record (labelled with its path), or ASSUMED/PRE-STATED (labelled). Nothing here is a result.",
+
+  "0_WHAT_IS_AND_IS_NOT_COVERED": {
+    "covered": "Local random Vt MISMATCH between nominally identical devices, applied per-device, on the NOMINAL (tt) corner at nominal temperature.",
+    "NOT_covered": [
+      "Global process corners (ff/ss/fs/sf). This is a tt-only run.",
+      "Temperature. .OPTIONS DEVICE TEMP is INERT against PyMS-compiled PSP103 in this toolchain; corners would need instance-level DTA and are NOT swept here.",
+      "Supply/rail tolerance beyond what the chain itself produces.",
+      "factuo (current-factor) mismatch, dw and dl mismatch -- the PDK carries all three (sg13g2_lv_*_factuo_mm = 0.005/0.0033, dw_mm = 4e-9, dl_mm = 2e-9) and this run applies ONLY delvto. Every sigma here is therefore a LOWER bound.",
+      "Junction capacitance: qal/sg13lv_compat.sp passes ad=as=pd=ps=0, so every device in both chains has ZERO junction capacitance. Effect on an MC specifically: the real drain/source junction caps add load that (i) slows every edge and (ii) is itself a mismatched, geometry-dependent quantity. Both omissions bias the yield OPTIMISTICALLY. A yield reported here is an UPPER bound on the yield of the same circuit with junctions.",
+      "Manufacturing yield. A mismatch yield is one term of it. It must not be read as one."
+    ],
+    "sigma_floor_is_a_lower_bound_because": "qal/vtaudit/AUDIT.md:68 states the 6.441 mV composed trip sigma excludes factuo/dw/dl. This study inherits that exclusion."
+  },
+
+  "1_A_VT_SOURCE": {
+    "label": "MEASURED -- read out of the PDK, not assumed",
+    "file": "/usr/local/src/IHP-Open-PDK/ihp-sg13g2/libs.tech/ngspice/models/sg13g2_moslv_mismatch.lib",
+    "params": {
+      "sg13g2_lv_nmos_delvto_mm": 0.0039,
+      "sg13g2_lv_pmos_delvto_mm": 0.0022
+    },
+    "units": "V*um (Pelgrom coefficient), NOT absolute volts",
+    "application_form_verbatim_from_PDK": "delvto = agauss(0, sg13g2_lv_<t>mos_delvto_mm/sqrt(m*l*w*1e12), 1)   [sg13g2_moslv_mod_mismatch.lib:87,100,110,126,139,149,173]",
+    "so_sigma_Vt": "sigma = A_VT / sqrt(W*L*m), W and L in um",
+    "does_PSP103_carry_an_explicit_matching_parameter": "NO. The PSP103.6 model cards in sg13g2_psp103_tt.lib carry no A_VT / AVTO / matching entry. The PDK supplies mismatch OUT OF BAND, as the four *_mm params above plus the agauss wrapper in the *_mod_mismatch.lib. That wrapper is an ngspice construct and is NOT part of the PSP103 card this toolchain compiles through PyMS. This study therefore takes A_VT from the PDK's own mismatch lib (the values above) and applies it through the PSP103 instance parameter DELVTO, which is the same physical knob (a rigid Vt translation) the PDK's own wrapper drives.",
+    "cross_check_that_this_is_the_right_reading": "Re-deriving qal/vtaudit/AUDIT.md's three committed sigmas from these two coefficients reproduces them exactly: 0.74u n -> 12.574 mV, 1.12u p -> 5.766 mV, 10u n -> 3.421 mV.",
+    "supersedes": "qal_a3_mc.cir's header ASSUMED 'A_Vt = 3.5 mV.um' for both polarities. That was never read from the PDK. It is wrong for both: 3.9 for n, 2.2 for p."
+  },
+
+  "2_PER_GEOMETRY_SIGMA_VT_mV": {
+    "label": "DERIVED from section 1 (arithmetic only)",
+    "cell_nMOS_W0.74u": 12.5741,
+    "cell_pMOS_W1.12u": 5.7656,
+    "skewed_rx_pMOS_W0.15u": 15.7545,
+    "skewed_rx_nMOS_W1.48u": 8.8912,
+    "transfer_nMOS_W10u": 3.4205,
+    "transfer_pMOS_W20u": 1.3644,
+    "park_nMOS_W2u": 7.6485,
+    "all_at_L_0.13u_m_1": true
+  },
+
+  "3_DUTS": {
+    "DUT_A": {
+      "name": "per-bank-tank chain (the one that COMPUTES)",
+      "provenance": "qal/banktank, committed 0aae11e",
+      "deck": "/usr/local/src/stat-sim/qal/banktank/c_m10_T200_H4_dv1200_free.cir",
+      "point": "m=10, T=200 ps, H=4 banks, dV=1.2, mode=free -- the committed HEADLINE_pre_registered_point",
+      "committed_nominal_result": "PASS, 32/32 gate values correct, worst gate 90.545 % settled (bank 3, o3), sep_min 612.379 mV, rail at own boundary 0.6767-0.7544 V",
+      "device_census": "4 banks x 8 inverters x 2 = 64 cell devices; 4 x (SWN 10u + SWP 20u + PK 2u) = 12 switch devices; 76 mismatched devices total"
+    },
+    "DUT_B": {
+      "name": "reservoir chain",
+      "provenance": "qal/resv, committed 812a172",
+      "deck": "/usr/local/src/stat-sim/qal/resv/ch_res20/c_res20.cir",
+      "point": "res20, ca_mult=20, K=6 banks, T=300 ps",
+      "committed_nominal_result": "separations 1325.745 -> 282.315 mV over six banks",
+      "device_census": "6 banks x 8 x 2 cell devices + 6 x 8 x 2 skewed boundary-receiver devices (0.15u p / 1.48u n) + 6 x 8 x 2 restoring-b devices, plus tank switches"
+    }
+  },
+
+  "4_THE_CRITERION": {
+    "sibling_fcrit_run": "CHECKED FOR AND ABSENT: no qal/fcrit, qal/f_crit or any *fcrit* path exists under /usr/local/src/stat-sim as of this file's mtime. The criterion below is therefore MINE and is stated in full.",
+    "PRIMARY_FUNC_RX": {
+      "statement": "A bank k PASSES if, at its own committed boundary instant bound_k, EVERY one of its 8 outputs is on the CORRECT side of the receiver trip. A sample PASSES if every bank passes. Anything else is a FAILURE.",
+      "receiver_trip_definition": "trip_k = the DC switching threshold of the actual cell that reads bank k, powered at the supply that cell actually has at bound_k.",
+      "how_trip_is_obtained": "MEASURED as a DC curve trip(Vdd) on the two candidate receivers, swept over the supply range the chains actually produce (0.30-1.25 V), in this study's own decks. The per-sample shift of the receiver's own trip caused by ITS OWN DELVTO draw is applied on top using the sensitivities d(trip)/d(DELVTO_P) = -0.4779 and d(trip)/d(DELVTO_N) = +0.4630 (MEASURED, qal/vtaudit/AUDIT.md section b). That composition step is labelled DERIVED wherever it is used.",
+      "receivers": {
+        "RX_STD": "1.12u p / 0.74u n, the standard cell. Committed trip at Vdd=1.2: 0.6548152 V (qal/skept/trips.json), chain form 0.6535022 V; the 0.6452 V figure in qal/bound/rx_rows.json is the same cell read off a different deck. Range quoted in the brief 0.6452-0.6548 V.",
+        "RX_SKEW": "0.15u p / 1.48u n, the skewed boundary receiver, trip 0.4595 V. This is the receiver the resv chain ALREADY instantiates as its 'a' stage."
+      }
+    },
+    "SECONDARY_FUNC_ABS": "Same, but against a FIXED absolute trip (RX_STD 0.6548 V and RX_SKEW 0.4595 V, both at 1.2 V supply). This answers 'can a synchronous boundary receiver on a real supply read this bank', which is the question the QAL->sync boundary poses.",
+    "TERTIARY_INHERITED_PROXY": "The committed banktank gate: >=90 % settled against the instantaneous rail AND pattern-correct. Reported for continuity with 0aae11e ONLY. It is explicitly NOT the yield criterion.",
+    "why_the_proxy_is_not_the_criterion": "90 % settled against a 0.6767 V rail is 0.613 V, which is BELOW the standard receiver's 0.6548 V trip. The committed nominal PASS can therefore contain gates that a standard receiver would already misread at zero mismatch. The functional criterion is the one that can detect that."
+  },
+
+  "5_N_AND_THE_YIELD_BAR": {
+    "N_per_MC_point": 200,
+    "why_200": "Rule of three: with 0 observed failures, the exact one-sided 95 % upper bound on the failure rate is 3/N. N=200 gives <=1.50 %. N=300 would give 1.00 % but the per-run cost (section 8) does not buy it for both DUTs plus the Phase-2 grid inside the box budget. If a DUT's per-run cost measures cheaper than budgeted, N is RAISED and the raise is recorded as an amendment with mtimes.",
+    "reporting_rule": "A yield is ALWAYS reported as f failures / N samples WITH a Clopper-Pearson 95 % interval. '0 failures' is NEVER reported as '100 % yield'.",
+    "yield_bar_pre_stated": "GO if the 95 % LOWER bound on yield at the primary criterion is >= 99 % (i.e. <=0 failures in 300, or equivalently the upper failure bound <=1 %). MARGINAL if lower bound is 90-99 %. NO-GO below 90 %. This bar is a chain-level bar for a 4-bank / 6-bank chain, NOT a per-gate bar; a real datapath is thousands of gates deep and would need per-gate failure rates several orders lower. That scaling caveat is stated with the result, not used to move the bar.",
+    "both_tails_both_polarities": "Every failure is classified on TWO axes and both are reported: (i) POLARITY OF THE ERROR -- a HIGH-class gate read as LOW (pull-UP shortfall) vs a LOW-class gate read as HIGH (pull-DOWN shortfall); (ii) SIGN OF THE DOMINANT DRAW -- whether the implicated device's DELVTO was positive or negative. A one-sided report is rejected: the campaign has already measured the limiting device SWITCHING regime (free-running chains bind on the pMOS pull-UP, topped-up ones on the nMOS pull-DOWN), so both must be counted."
+  },
+
+  "6_PRE_STATED_EXPECTATION_WHICH_DEVICE_DOMINATES": {
+    "label": "PRE-STATED PREDICTION -- falsifiable, recorded before the first sample",
+    "DUT_A_banktank": {
+      "rank_1": "cell nMOS, W=0.74 um, sigma 12.574 mV",
+      "reasoning": "It has the largest sigma of any device in DUT_A (2.18x the cell pMOS) and the receiver-trip sensitivities are near-symmetric (+0.4630 n vs -0.4779 p), so it carries (0.4630*12.574)^2 / 6.441^2 = 81.7 % of the trip-threshold variance.",
+      "rank_2": "cell pMOS, W=1.12 um, sigma 5.766 mV",
+      "rank_2_reasoning": "Second on threshold variance (18.3 %), but I expect it to LEAD the DRIVE-limited subset of failures: the headline point is mode=free, the worst committed gate (bank 3, o3) is a logic-HIGH output, i.e. a pull-UP, and a free-running bank's rail is the scarce resource. So I predict the failure set SPLITS -- nMOS-dominated threshold failures and pMOS-dominated drive failures -- and I predict the pMOS share rises as the beat period is shortened.",
+      "rank_3": "park nMOS W=2 um (7.649 mV) -- large sigma but held OFF all run, so I expect it to rank near zero despite its sigma. This is a deliberate prediction that sigma alone does NOT rank devices.",
+      "rank_last": "transfer pMOS W=20 um, sigma 1.364 mV"
+    },
+    "DUT_B_resv": {
+      "rank_1": "the skewed boundary-receiver pMOS, W=0.15 um, sigma 15.754 mV",
+      "reasoning": "It is the MINIMUM-WIDTH device in either chain and therefore the worst-matched device in the whole study -- 15.75 mV, 1.25x the cell nMOS and 2.73x the cell pMOS. It sits directly in the decision path as half of the receiver that defines the trip. This is also the most actionable prediction in the study: if it is rank 1, the fix is pure geometry.",
+      "rank_2": "skewed boundary-receiver nMOS, W=1.48 um, sigma 8.891 mV",
+      "rank_3": "cell nMOS W=0.74 um"
+    },
+    "expectation_about_DUT_B_nominal": "SEPARATE PRE-STATED CONCERN, recorded now so it cannot be claimed as an MC finding later: the committed res20 record lists bank 6 outputs at 0.34465 V and 0.06233 V. BOTH are below BOTH candidate trips (0.6548 and 0.4595). If that reads through to my criterion, DUT_B fails the functional criterion at bank 6 with ZERO mismatch, and its mismatch yield at 6 banks is 0 for a reason that has nothing to do with mismatch. I expect this, I will check it as the very first thing on DUT_B, and if it holds I will report DUT_B's mismatch yield at the deepest bank that passes NOMINALLY and say so explicitly."
+  },
+
+  "7_STEP_B_INSTRUMENT_GATE_BLOCKING": {
+    "statement": "NO MC SAMPLE IS TRUSTED until per-device independence of DELVTO is DEMONSTRATED, not assumed.",
+    "test_1_DC_independence": "One deck, TWO devices of the same type, each with its own DELVTO. Sweep device 1's DELVTO with device 2's held at 0 and show device 1's Id-Vg translates while device 2's does NOT move (cross-term must be 0 to the printed precision). Then swap. PASS requires d(Vt_1)/d(DELVTO_1) ~ 1 V/V AND d(Vt_2)/d(DELVTO_1) = 0.",
+    "test_2_through_the_shim": "The chains instantiate devices through qal/sg13lv_compat.sp, whose subckt does NOT currently forward DELVTO. qal_a3_mc.cir's own header records that this shim 'would eat the random param'. Test 1 is therefore repeated THROUGH the shim with a DELVTO pass-through added, and the shim path must give the same sensitivities as the direct M-line path. If it does not, the chain decks are rebuilt with inlined M-lines instead.",
+    "test_3_sampling_independence": "A small .SAMPLING run with two independent AGAUSS DELVTO draws, checking that the two per-device measures have sample correlation ~0 and each has the commanded sigma. A silently SHARED or IGNORED random parameter is this campaign's oldest failure mode (a sweep whose parameter is shared or inert), and the specific known trap here is the stale PyMS device-shell .so: a callback-less shell is judged 'fresh' by a check that only compares against psp103.va, so _pcb() returns 0.0, per-sample DELVTO freezes, and sigma is SILENTLY 0 -- mean looks right, reliability falsely perfect. Caches are cleared first and the shell is checked for the callback getter.",
+    "ABORT_rule": "Any of the three failing aborts the MC. A yield from a deck with a frozen or shared DELVTO is worse than no yield."
+  },
+
+  "8_SIM_DISCIPLINE_AND_BUDGET": {
+    "own_directory": "/usr/local/src/stat-sim/qal/mcsize/",
+    "own_cache": "PYMS_VAE_CACHE=/usr/local/src/stat-sim/qal/mcsize/vae_cache (this study's own; nothing shared with a concurrent workflow)",
+    "concurrency": "<= 3 concurrent heavy Xyce jobs. The box is 16 cores shared with other workflows (load average 6.9 at the time of writing).",
+    "many_short_transients_not_few_long_ones": "The committed DUT decks are expensive for reasons unrelated to the MC question: DUT_A prints 48 node waveforms at 0.1 ps over 2242 ps; DUT_B's committed run cost 1098.3 s wall (its own record). The MC decks DROP the .print block entirely and keep only the .measure set needed by the criterion, and the transient is truncated to the last boundary instant plus one settle window. Per-run cost is MEASURED before N is committed and the measurement is recorded.",
+    "if_the_budget_does_not_close": "N is reduced and the WIDER confidence interval is reported honestly. N is never reduced silently, and a small-N result is never quoted as though it were a large-N one.",
+    "metering_rules_inherited": "1F-integrator or INTEG-I(Vsrc)+PARAM only; 1F integrators carry a t=0 pedestal so ALWAYS t0-reference; re-probe true current zeros per L and per hop; vt/gmin reserved; unique .va module names; corners only via instance-level DTA."
+  },
+
+  "9_PHASE_2_SIZING_PRE_STATED": {
+    "lever": "sigma_Vt = A_VT / sqrt(W*L). Area is the ONLY mismatch lever available without changing the PDK.",
+    "grid": "For the rank-1 device from Phase 1: W multiplier in {1, 2, 4} (sigma x {1.000, 0.707, 0.500}) and, separately, L multiplier in {1, 2} at fixed W (sigma x {1.000, 0.707}) because L and W buy the same sigma at different drive/speed cost.",
+    "cost_axes_reported_with_every_point": ["yield (with CI)", "device area um^2 (W*L, summed over resized devices)", "level time / data-valid instant ps", "switched capacitance proxy"],
+    "pre_stated_tension": "Widening for mismatch is NOT free and the campaign has measured it going the WRONG way twice: the transfer switch widened 30->80 um improved rail drain but DEGRADED level time 116.75 -> 125.18 ps because the switch's own capacitance joins the resonance; and re-sizing the comparator pMOS 1.12 -> 2.05 um ERASED QAL's parity in the vtreq study (0.9426 -> 1.0747) because it helped CMOS more. I therefore expect a NON-MONOTONIC or at least a cost-bounded optimum, and I pre-commit to reporting it as a curve with the tension named as a design rule, not as a single 'fix'.",
+    "also_pre_stated": "If the rank-1 device is the 0.15 um skewed-receiver pMOS, upsizing it directly moves the trip point (that is what skewing it was FOR), so W cannot be raised without re-skewing. In that case the lever is to raise W and L TOGETHER at constant W/L ratio, which holds the trip and buys sqrt(area). That is pre-stated here so it is not invented after the fact."
+  },
+
+  "10_HONESTY_LEDGER": {
+    "labels_used": "MEASURED (this study's own deck), MEASURED-COMMITTED (someone else's committed record, path given), DERIVED (arithmetic on the above), ASSUMED (neither).",
+    "standing_corrections_carried": [
+      "sg13g2_o21ai_1 DOES settle (99.78-99.99 % of rail at every characterised swing); it is 3.12-3.55x SLOWER than an inverter -- a SPEED/DELIVERY failure, not a headroom failure.",
+      "the committed sha_slice mapping is DEPTH 8, not 10.",
+      "sg13g2_nor2_1 has a 2-high pMOS stack and is NOT shallow; sg13g2_and2_1 is.",
+      "single-hop numbers are NEVER quoted as chain results (the 1.34x figure comes from a topology that cannot be chained)."
+    ],
+    "value_statement": "A LOW yield that identifies WHICH device causes it is worth more than a high yield with no sensitivity ranking. If the yield is bad, the ranking is still the deliverable."
+  }
+}

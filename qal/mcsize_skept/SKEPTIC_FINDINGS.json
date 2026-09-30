@@ -1,0 +1,217 @@
+{
+ "audit": "SKEPTIC re-run audit of qal/mcsize (MC + SIZE)",
+ "by": "independent re-run, own PYMS_VAE_CACHE=/usr/local/src/stat-sim/qal/mcsize_skept/{vae_cache,vc_base,vc_k8}",
+ "prereg_sha256_verified": "a99fdd70e0e0b9f64812d55502ae53a78b7c3e4f8dd2a69f12f607e95ab4ef6b OK, 17208 B, mtime 2026-09-29 14:38:29.545 -0700",
+ "fcrit_precedence_verified": "qal/fcrit/PRE_REGISTERED.json mtime 2026-09-29 14:35 -> predates mcsize by ~3m21s. A1 honest.",
+ "a_delvto": {
+  "verdict": "CONFIRMED by my own re-run (sk_a_indep.cir), stronger than the record's",
+  "cross_term_matrix": "exactly diagonal; all 30 off-diagonal terms 0.000000 mV at a commanded +10.000 mV",
+  "identical_geometry_trap": "XA and XB are the SAME 0.74u/0.13u nMOS in the SAME deck through the shim; shifting XA moves XA +10.000000 mV and XB 0.000000 mV",
+  "at_scale": "my own analysis of 3 x .res: 76 devices x 300 samples, 2850 pairs, 0 identical-value pairs, 0 pairs |r|>0.5, mean r -0.00258, sd r 0.05824 vs independence prediction 1/sqrt(300)=0.05774",
+  "expression_text_identical": "all 32 cell nMOS carry byte-identical dvt={AGAUSS(0,1.257410e-02,1)}; Xyce still instantiates one RV per OCCURRENCE. This was the single most important thing to check and it holds.",
+  "record_error_found": "record claims 5700 pairwise correlations; C(76,2)=2850 (ordered-pair double count). Immaterial.",
+  "record_error_found_2": "record's per-class pooled sigma 12.377/5.735/7.414/3.013/1.352 mV does not reproduce. My df-correct pooling about each device's own mean: 12.5676/5.7914/7.5564/3.3991/1.3576 vs commanded 12.5741/5.7656/7.6485/3.4205/1.3644, all |z|<=0.62. The 10u nMOS entry (3.013 vs my 3.399) is 12% low in the record. My numbers are STRONGER for the record's own conclusion."
+ },
+ "d_sigma_model": {
+  "A_VT_source": "MEASURED from PDK, verified by me: /usr/local/src/IHP-Open-PDK/ihp-sg13g2/libs.tech/ngspice/models/sg13g2_moslv_mismatch.lib nmos 0.0039 pmos 0.0022 V.um; application form agauss(0, delvto_mm/sqrt(m*l*w*1e12),1) confirmed verbatim in sg13g2_moslv_mod_mismatch.lib",
+  "psp103_has_no_matching_param": "CONFIRMED. Full param inventory of sg13g2_psp103_tt.lib has no avto/a_vt/matching/delvto entry. The delvtac* entries are DIBL geometry terms, not matching coefficients.",
+  "dVt_dDELVTO_per_geometry": {
+   "n_0.74x0.13": 1.0,
+   "n_2.96x0.13": 1.0,
+   "n_0.74x0.26": 1.0,
+   "p_1.12x0.13": -1.0041,
+   "p_4.48x0.13": -1.0043
+  },
+  "paper_vs_sim": "sigma is COMMANDED by mkmc.py, so the DRAW-side sqrt(WL) is true BY CONSTRUCTION, not a measurement. What IS measurable and DOES hold: the DELVTO knob has unit gain at every geometry including both resized ones (the study never tested a resized geometry).",
+  "circuit_level_scaling_FAILS": "realized PULL-UP margin sd ratio vs the sqrt(WL) prediction: 8x base->Wx2 0.6625 (pred 0.7071, -6.3%); ->Wx4 0.6618 (pred 0.5000, +32.4%); ->Lx2 0.4626 (pred 0.7071, -34.6%). At 1x: -49.2%/+67.9%/-35.9%. Deep-link per-gate sd at Wx4 does NOT fall at all (o4_0/1/2 15.408/18.388/22.040 vs base 14.376/18.304/23.868) despite HALF the commanded sigma."
+ },
+ "b_yield": {
+  "all_CIs_reproduce": "every Clopper-Pearson interval and Fisher p-value in the record reproduces under my own implementation. CP lower bound at k=n matches closed form 0.025^(1/N) to 1e-16.",
+  "zero_failures_not_reported_as_certainty": "correct - record gives [98.78,100]% and <=1.00% one-sided",
+  "N_bar_shortfall": "pre-registered GO bar = 95% LOWER bound >= 99%. At 0/300 the two-sided CP lower bound is 98.7779%, 0.22 points SHORT. N>=368 is required. The record states this and does not move the bar. Defensible claim = failure rate <=1.0% at 95% one-sided.",
+  "exact_one_sided": "1-0.05^(1/300)=0.9936%, slightly tighter than rule-of-three 1.000%",
+  "cost_verified": "bt_mc_2001 100 samples/1746.79 s = 17.47 s/sample (claimed 17.5); rv_mc_3001 10/1505.71 = 150.6 s (claimed 150); p2_lx2 50/1125.38 s (claimed 1126). N justification honest.",
+  "A8_deck_reduction_inert": "VERIFIED STRONGER than claimed: bt_nom rails 0.6767239/0.7312456/0.7200877 vs committed row_m10_T200_H4_dv1200_free.json 0.6767239/0.7312457/0.7200878 -> agreement to 1e-7 V (0.0001 mV), not the 0.0044 mV claimed (record compared against 5-dp rounded values). Integrators verified electrically isolated: each xea*/xeb*/xqlt*/xesw* node appears on exactly 3 lines, its own C/B/R.",
+  "margin_is_real": "my own per-gate analysis: all 24 gates min margin > 0 over 300 samples; tightest gate 3->4:o4_1 at 13.24 sigma; chain worst margin 262.015 +- 15.927 mV, min 142.357"
+ },
+ "c_sensitivity": {
+  "min_statistic_attenuation": "score.py regresses the MIN over 24 gates. min() is nonlinear: multivariate R2 = 0.3551 (univariate sum (b*sig)^2 / var = 0.3788). The argmin hops across 11 different gates (210/300 at link 1->2, 89 at 3->4).",
+  "record_shares_are_of_the_explained_38pct": "record's 'ranks 1+2 carry 92.31% of the variance' is 92.31% of the 37.9% the linear model explains = ~35% of total variance.",
+  "un_attenuated_reranking": "regressing EACH GATE separately (per-gate multivariate R2 median 0.9770, range 0.8304-0.9987) and pooling: cellN 73.24%, cellP 23.19%, park 1.49%, swP 1.09%, swN 0.98%.",
+  "this_VINDICATES_the_prereg_prediction": "record scored its own prediction (cellN 81.7% / cellP 18.3%) as WRONG against its measured 52.42/39.89. Un-attenuated the measurement is 73.24/23.19 - CLOSE to the prediction. The record's self-criticism was itself an artefact of the min-statistic; it under-credited its own model.",
+  "swP_rank": "record puts transfer pMOS 3rd (4.55%) and scores its 'ranks LAST' prediction as WRONG. Un-attenuated it is 4th of 5 (1.09%), i.e. nearly last. The record's finding that XSWP4 has the largest per-mV leverage (dM/dVt = -1.1834, 3-5x a cell device) is CONFIRMED and is the durable part.",
+  "DUT_B_ranking_CONTAMINATED": "rx6.py line 128-129 builds the response as the mean over 8 lanes of the sign-corrected margin. 4 HIGH lanes FAIL at -114 to -117 mV; 4 LOW lanes pass at +393 to +398 mV. The mean is +140.133 mV - POSITIVE while 30/30 samples FAIL. This is the SAME near-cancellation the record caught for the receiver output (AMENDMENT A10 #3) and did not catch here.",
+  "DUT_B_corrected": "re-ranked on the binding (HIGH-lane) half: cellP 37.24% RANK 1, cellN 29.95% rank 2 - the record's top two are INVERTED. rxSkewP_0u15 moves rank 8 (3.67%) -> rank 5 (5.23%), so the prereg 'rank 1' prediction is still refuted, but by less than reported and the multiplicity explanation survives."
+ },
+ "polarity": {
+  "census_reproduces_exactly": "OPEN instant: pull-UP 3694/3900 = 94.72%, pull-DOWN 0/3300 = 0.00%. BOUND instant: 0/3900 and 0/3300. Counts 3900=13 HIGH gates x300 and 3300=11 LOW x300 confirmed.",
+  "overstated_one_sidedness": "'every failure is a pull-up shortfall / there is no other half' is literally true but all those failures are at the OPEN instant, which the record itself rejects as its criterion (300/300 nominal fail). At the PRIMARY bound instant there are no failures to classify.",
+  "regime_switch_within_the_chain": "the record quotes pull-down at 137-474 sigma. That holds only for links 1->2 and 3->4, where LOW outputs are fully discharged (0.0047 V and -0.0034 V, sd 0.5-2.3 mV). At link 2->3 the LOW outputs sit at 43-46 mV, NOT ground, with sd 14.6-17.3 mV -> 18.46-22.05 sigma. That is the SECOND-tightest regime in the chain and it is the OPPOSITE polarity, only 1.39x looser than the tightest pull-up (13.24 sigma). A pMOS-only sizing fix would push it to binding."
+ },
+ "e_cost": {
+  "level_time_reproduces": "138.065/127.637/135.802/169.901 ps for base/Wx2/Wx4/Lx2 - matches the record to the digit. Slack 61.935/72.363/64.198/30.099 ps likewise.",
+  "MISSING_AXIS_nominal_margin": "the record's cost axes were yield/area/level-time/C-proxy. It never reported what resizing does to the NOMINAL margin: base 262.97 mV -> Wx2 268.25 (+2.0%) -> Wx4 206.19 (-21.6%) -> Lx2 107.62 (-59.1%).",
+  "MISSING_AXIS_rail_amplitude": "resizing LOADS the resonant rail: bank-2 rail 0.6767 -> 0.6153 (Wx2) -> 0.5481 (Wx4); Lx2 keeps 0.7040 but cell reach collapses 91.1% -> 66.7%. Two DISTINCT mechanisms: width costs rail amplitude and buys drive; length preserves the rail and destroys drive.",
+  "equal_WL_is_NOT_equal_loading": "Wx2 and Lx2 have identical W*L product and identical sigma, yet rails 0.6153 vs 0.7040. So rail droop is set by the CURRENT the cells draw, not by gate capacitance. An optimiser using C ~ W*L cannot see this.",
+  "margin_in_sigma": "base 20.9, Wx2 59.5, Wx4 19.5, Lx2 18.9 (nominal worst margin / mean pull-up gate sd). Wx2 is the ONLY variant that improves robustness; Wx4 and Lx2 are NO BETTER than base for +95.2% and +31.7% device area.",
+  "AREA_DENOMINATOR_WRONG_BOUNDARY": "the committed banktank row carries tank_area_um2_per_chain = 959.44 um2 (MIM 239.86 x 4 banks). Device area 24.3776 um2 is 2.48% of chain area. So Wx2's '+31.7%' is +0.79% of chain area and Wx4's '+95.2%' is +2.36%. The record flagged that 68.3% of its device area is park+transfer but never noted the tank dominates the real denominator. Area is essentially a non-cost for Wx2.",
+  "turnover_evidence_too_weak_in_record": "record's interior-optimum claim rests on 8.2 ps of level time (Wx2 72.363 vs Wx4 64.198 slack) - but the measurement grid step is 10.155-10.479 ps, so that gap is SUB-RESOLUTION. Chain slack is quantised to 2-3 distinct grid values per variant, and Wx2's link 3->4 is censored at the grid start in 50/50 samples. The record's '15.7 SE' / '86 SE' precision claims on slack are spurious. The W-vs-L gap (42.264 ps, ~4 grid steps) IS resolvable, so 'width beats length on time' stands.",
+  "turnover_CONFIRMED_on_better_axes": "the interior optimum at Wx2 is nonetheless real, on three axes I measured that the record did not use: nominal margin (+2.0% / -21.6% / -59.1%), margin-in-sigma (20.9/59.5/19.5/18.9), and the absolute boundary-receiver margin below."
+ },
+ "sizing_x_receiver_interaction": {
+  "the_record_treated_these_as_independent": "Rule 5 (skewed receiver, 0/300 vs 191/300) was measured only at BASE geometry; Phase 2 recommends resizing. Resizing changes the absolute level, and an absolute trip does not scale with the rail.",
+  "bank4_HIGH_worst_lane_vs_fixed_trips_1x_N50": {
+   "base": {
+    "level_V": 0.6378,
+    "RX_SKEW_marg_mV": 178.29,
+    "RX_SKEW_fail": "0/50",
+    "RX_STD_marg_mV": -7.41,
+    "RX_STD_fail": "29/50"
+   },
+   "W x2": {
+    "level_V": 0.6549,
+    "RX_SKEW_marg_mV": 195.36,
+    "RX_SKEW_fail": "0/50",
+    "RX_STD_marg_mV": 9.66,
+    "RX_STD_fail": "2/50"
+   },
+   "W x4": {
+    "level_V": 0.531,
+    "RX_SKEW_marg_mV": 71.46,
+    "RX_SKEW_fail": "0/50",
+    "RX_STD_marg_mV": -114.24,
+    "RX_STD_fail": "50/50"
+   },
+   "L x2": {
+    "level_V": 0.557,
+    "RX_SKEW_marg_mV": 97.47,
+    "RX_SKEW_fail": "0/50",
+    "RX_STD_marg_mV": -88.23,
+    "RX_STD_fail": "50/50"
+   }
+  },
+  "findings": [
+   "RX_SKEW survives every geometry (0/50 everywhere) - Rule 5 is robust to sizing, which the record asserted but never tested.",
+   "RX_STD base fails 29/50 = 58%, independently replicating the headline 191/300 = 63.7% at a different seed and N.",
+   "Wx2 nearly RESCUES the standard receiver: 29/50 -> 2/50. That is a new result and it is the strongest single argument for Wx2 - it could remove the need for a skewed boundary cell.",
+   "Wx4 and Lx2 take bank 4 BELOW the standard trip outright (-114.24 and -88.23 mV, 50/50) and halve the skewed-receiver margin. Upsizing past Wx2 forfeits the boundary margin Rule 5 depends on."
+  ],
+  "fisher": {
+   "base_vs_Wx2": 2.559e-09,
+   "base_vs_Wx4": 6.595e-08,
+   "base_vs_Lx2": 6.595e-08,
+   "Wx2_vs_Wx4": 7.942e-17,
+   "Wx2_vs_Lx2": 7.942e-17
+  },
+  "RX_STD_yields_1x_N50": {
+   "base": "29/50 fail, yield 42.0% [28.19,56.79]%",
+   "W x2": "2/50 fail, yield 96.0% [86.29,99.51]%",
+   "W x4": "50/50 fail, 0.0% [0,7.11]%",
+   "L x2": "50/50 fail, 0.0% [0,7.11]%"
+  }
+ },
+ "dut_b": {
+  "deterministic_failure_confirmed": "bank 6 HIGH class 0.34406 V vs the 0.4595 V trip = -115.44 mV, 30/30, and at zero mismatch. Class separation 280.27 mV CONFIRMED exactly (record's figure).",
+  "bank5_562mV_is_a_CONFLATION": "record says 'bank 5 clears 0.4595 V with 562 mV'. 561.41 mV is bank 5's CLASS SEPARATION. Its actual margin above the trip is +99.69 mV (worst lane +98.93 mV, sd 6-7 mV, ~15 sigma). The placement recommendation SURVIVES but the quoted headroom is overstated 5.6x.",
+  "per_bank_decline_measured": "margin of the worst HIGH lane vs 0.4595 V: bank2 +589.69 (208 sigma), bank3 +419.72 (301), bank4 +260.40 (258), bank5 +92.22 (21.3), bank6 -128.32 (FAIL 30/30)"
+ },
+ "bounds_confirmed": [
+  "tt corner / nominal temperature only - not PVT sign-off",
+  "delvto only; PDK also carries factuo_mm 0.005/0.0033, dw_mm 4e-9, dl_mm 2e-9 -> every sigma a LOWER bound, every margin-in-sigma an UPPER bound",
+  "ad=as=pd=ps=0 in the shim -> zero junction capacitance, both the load and its own mismatch absent, yields are UPPER bounds",
+  "junction cap scales with W, so it bites the WIDTH variants' advantage hardest: the direction of the Wx2 recommendation is robust, the location of the optimum is not and can only move DOWN",
+  "energy not metered here (integrators dropped) - but the committed banktank row DOES carry per-bank energy (E_out_of_tank_rise 34-39 fJ, recycle 9.6-22%), so a Phase-2 energy cost was obtainable by re-running the 4 variants with integrators. Not done.",
+  "measures are taken at 601/801/1001 ps while the committed boundary is 600/800/1000 ps - 1 ps late, negligible against ~62 ps of slack, but it is 1 ps of extra settling"
+ ],
+ "depth_accumulation_claim": {
+  "record_claim": "'mismatch variance ACCUMULATES with depth: pull-up margin sd 7.3-8.1 mV at link 1->2 vs 19.6-22.7 mV at link 3->4', used as reason (iii) to expect the bar to tighten",
+  "endpoints_reproduce_exactly": "link 1->2 pull-up sd range [7.295,8.116]; link 3->4 [19.640,22.740]",
+  "but_the_middle_link_breaks_it": {
+   "pullUP_sd_mV": [
+    7.772,
+    7.538,
+    21.355
+   ],
+   "pullDOWN_sd_mV": [
+    0.759,
+    16.076,
+    2.479
+   ],
+   "LOW_output_level_V": [
+    0.00468,
+    0.04473,
+    -0.0035
+   ]
+  },
+  "reading": "pull-up sd is FLAT link1->link2 then x2.8 at link3; pull-down sd PEAKS at the middle link. The pull-down excursion tracks bank 3's LOW outputs failing to reach ground (44.7 mV vs 4.7 and -3.5 mV), and bank 3 carries the COMPLEMENT of the pattern at banks 2 and 4. What is measured is bank-to-bank alternation tied to the test pattern, NOT monotone accumulation with depth. The 'deeper datapath is worse' extrapolation is a two-point over-read.",
+  "also": "bank 1's inputs are ideal sources (VI1_0..7), so only 3 of the 4 banks are real-driven; the scored depth is 3 stages / 24 gates, which the record does state as 24 links"
+ },
+ "no_unit_bug": "verified independently: all 76 devices in bt_mc_2001.cir.meta.json parse from /usr/local/src/stat-sim/qal/banktank/c_m10_T200_H4_dv1200_free.cir with 0 mismatches; class census 32 cellP / 32 cellN / 4 swN / 4 swP / 4 park = 76 matches the pre-registered census; every sigma re-derives from the PDK A_VT to <1e-6 mV; area recomputes 24.3776 um2",
+ "my_own_process_errors": [
+  "I launched two Xyce jobs concurrently that hashed to the SAME PyMS .so path; they raced on a shared .so.build/ scratch dir and produced a C++ codegen error (d_zg__sel6_dS undeclared), then a silent fallback to a REDUCED model (376 params, nonzero-only) where every one of the study's own builds was (782 params, full). Caught by diffing my build banner against theirs. Fixed by serialising with per-run PYMS_VAE_CACHE dirs. NOTE: this is a real hazard for the study too - it ran 3 same-geometry chunks concurrently against one cache and got full builds only by timing luck.",
+  "My first .prn parser assumed one 'Index' header per .step block; Xyce emits ONE header and restarts the index. Caught because the cross-term matrix came back empty rather than wrong - re-split on the index reset."
+ ],
+ "my_own_rerun": {
+  "nominal_equivalence": {
+   "deck": "/usr/local/src/stat-sim/qal/mcsize_skept/sk_nom.cir (76 devices, dvt=0, own cache, freshly built 782-param FULL model)",
+   "my_rails_V": [
+    0.6767239,
+    0.7312456,
+    0.7200877
+   ],
+   "study_bt_nom_V": [
+    0.6767239,
+    0.7312456,
+    0.7200877
+   ],
+   "committed_banktank_V": [
+    0.6767239,
+    0.7312457,
+    0.7200878
+   ],
+   "verdict": "BIT-EQUIVALENT. My toolchain and model build reproduce the study's and the committed record's rails to 1e-7 V, so my replication is apples-to-apples AND the A8 deck-reduction claim is independently re-confirmed from scratch.",
+   "solver_time_s": 17.196
+  },
+  "fresh_seed_MC": {
+   "deck": "/usr/local/src/stat-sim/qal/mcsize_skept/sk_rep_base.cir, SEED=97531 (study used 2001/2002/2003), N=100, RC=0, 1633.9 s solver = 16.34 s/sample",
+   "instrument_recheck_on_my_own_draws": {
+    "identical_value_pairs": 0,
+    "pooled_sd_over_commanded": {
+     "cellN": 0.9821,
+     "cellP": 0.9885,
+     "park": 0.9375,
+     "swN": 1.0007,
+     "swP": 0.9522
+    }
+   },
+   "primary_criterion": "0 failures / 100, yield CI95 [96.38,100]% -- CONSISTENT with the study's 0/300 [98.78,100]%",
+   "chain_worst_margin_mV": "263.763 +- 13.162 (study 262.015 +- 15.927); mean agrees to 0.7%",
+   "margin_in_sigma": "20.04 (study 16.45); tightest gate 3->4:o4_0 at 13.99 sigma (study 3->4:o4_1 at 13.24) - same link, adjacent lane, same magnitude",
+   "RX_SKEW": "0/100 fail (study 0/300) - REPLICATED",
+   "RX_STD": "56/100 fail, yield 44.00% [34.08,54.28]% vs study 191/300 = 36.33% [30.88,42.06]% - CIs OVERLAP, the headline standard-receiver failure REPLICATES at an independent seed",
+   "polarity_at_bound": "pull-UP 0/1300, pull-DOWN 0/1100",
+   "un_attenuated_class_share": {
+    "cellN_0u74": 0.6373,
+    "cellP_1u12": 0.3017,
+    "swN_10u": 0.025,
+    "swP_20u": 0.0244,
+    "park_2u": 0.0116
+   },
+   "ranking_robustness": "my N=100 gives cellN 63.7% / cellP 30.2%; my re-analysis of their N=300 gives 73.2% / 23.2%. Both are far above the min-statistic's 52.4% / 39.9%. cellN is rank 1 with a ~64-73% share, not 52%."
+  }
+ },
+ "RX_STD_trip_choice": {
+  "record_used_the_most_favourable_of_three_committed_values": true,
+  "fail_count_at_each_committed_trip_N300": {
+   "0.6452 (used, qal/bound/rx_rows.json)": 191,
+   "0.6535022 (PRE_REG sec4 chain form)": 248,
+   "0.6548152 (PRE_REG sec4, qal/skept/trips.json)": 256
+  },
+  "yields": {
+   "0.6452": "36.33% [30.88,42.06]%",
+   "0.6535": "17.33% [13.22,22.10]%",
+   "0.6548": "14.67% [10.86,19.18]%"
+  },
+  "verdict": "36.33% is an UPPER bound on the standard-receiver yield, not a worst case. Direction is safe; the 'use the skewed receiver' conclusion strengthens."
+ }
+}
