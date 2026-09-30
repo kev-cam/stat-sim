@@ -1,0 +1,139 @@
+{
+"_what": "PHASE 2 of the qal/fastwave run: BUILD THE WAVE at the Phase-1 optimum and compare it to CMOS.  Written BEFORE any Phase-2 deck exists in qal/fastwave/p2/ and AFTER p2/DISK_STATE_BEFORE.txt, which carries sha256 + size + mtime of every committed input this phase reads.  Phase 1's own pre-registration (qal/fastwave/PRE_REGISTERED.json, sha256 c23021e9e97089bf60826b118ec44ddaa874dd1f51049df1ae226c062cc05638) and its ten amendments are inherited verbatim and are NOT reopened here.",
+
+"_labels": "MEASURED = read off a waveform or a .measure in this directory.  DERIVED = arithmetic over MEASURED terms, stated as such.  ASSUMED = neither; every ASSUMED quantity is named and its row is a BOUND.  BOOKING = something modelled as an ideal source; its row is a BOUND in the optimistic direction.",
+
+"A_THE_OBJECTIVE": {
+  "quantity": "THE SUSTAINED BEAT of a >= 6-bank TG-XOR wave: max over k of the MEASURED stage-to-stage time (bank k's validity instant minus bank k-1's), read off the waveform.  NEVER the scheduled T, and NEVER composed from a hop plus a settle.",
+  "why_not_T": "T is what the schedule ASKS for.  If the wave falls behind, the measured stage time exceeds T and T is a lie.  The number quoted is the measured one; T is reported alongside as the request.",
+  "energy": "Reported, never used as a gate.  The user's instruction is explicit: 'I don't care about recovered charge so much as SPEED for this.'",
+  "secondary": ["per-gate settling and a VALUE check at EVERY bank", "separation by depth against the corrected 6.441 mV 1-sigma floor", "latency for a fixed logic depth", "the interconnect delta, measured against a zero-interconnect control"]
+},
+
+"B_THE_DESIGN_POINT -- INHERITED FROM PHASE 1, NOT RE-SEARCHED": {
+  "source": "qal/fastwave/RESULTS.json sections I2 and I4",
+  "PRIMARY -- the Phase-1 CASCADABLE optimum": {"N": 4, "W_total_um": 30.0, "L_nH": 15.0, "VGH": 2.4, "dV": 1.65, "phase1_single_hop_cascadable_beat_ps": 243.638023, "why": "Phase 1 concluded that the ONLY beat a wave may quote is the level-restoring/cascadable one, and this is the (N,W,L,VGH) that minimises it.  A wave is what Phase 2 builds, so this is the point it is built at."},
+  "SECONDARY -- the Phase-1 FUNCTIONAL optimum": {"N": 4, "W_total_um": 30.0, "L_nH": 6.0, "VGH": 2.174, "dV": 1.65, "phase1_single_hop_functional_beat_ps": 130.914848, "phase1_single_hop_cascadable_beat_ps": 289.914848, "why": "Carried because Phase 1's fastest FEASIBLE single hop sits here, and the claim that its shorter L cannot cascade is a Phase-1 PREDICTION about a chain that Phase 1 did not build.  Phase 2 can test it directly, so it must."},
+  "W_convention": "inherited: wn = W/3 = 10 um, wp = 2W/3 = 20 um, park = PARK_W = 1.0 um (Phase 1's declared deviation from total/15, kept for consistency within this run).  ALL FOUR device geometries of the primary point, and the cell's 1.12/0.74, are ALREADY WARM in this run's own PYMS_VAE_CACHE (listed in p2/DISK_STATE_BEFORE.txt) -- no PyMS build is expected and fw.run() warns on stderr if one happens.",
+  "gate_drive_is_a_DEVICE_ASK_not_a_free_parameter": "VGH = dV + Vtn = 2.174 V and VGH = 2.4 V are OVERDRIVES on a 1.5 V-tolerant LV device.  Phase 1 measured that at the committed VGH = 1.5 V the feasible frontier is EMPTY, so the wave cannot be built at 1.5 V at all.  Every Phase-2 row inherits that unanswered oxide-reliability question and says so."
+},
+
+"C_THE_TOPOLOGY -- FIXED BEFORE ANY DECK": {
+  "banks": 6,
+  "cells_per_bank": 4,
+  "gates_total": 24,
+  "cell": "the Phase-1 cell VERBATIM: qal/pgcell tg_xnor2, tgM widths (TG wn 0.74 / wp 1.12 um), inverters wp 1.12 / wn 0.74, pass-pMOS n-well on VGH ('fixedwell'), CL = 2 fF per output referenced to the cell ground.  8 devices, data-path depth 1.  XOR and XNOR are THE SAME 8 DEVICES with the two TG source taps exchanged, so a bank containing both forms is content-uniform in device count, device width and rail loading -- which is what 'the bank settles as one' requires.",
+  "per_bank_tank": "qal/banktank 0aae11e arrangement, the ONLY one that computes unbuffered: bank k has its OWN tank CT_k, its OWN inductor L_k, its OWN tg15p-class switch triple, and its rail is NOT shared with any other bank.  The park is TANK-referenced (banktank AMENDMENT A6) and anti-phase to the transfer gate.",
+  "chain_legal_cut": "tnk_k -> L_k -> R_s -> sw_k -> [transfer nMOS+pMOS] -> rail_k.  The cut is on the SOURCE side of the destination rail, at the measured current zero (ZCS), on every hop and on every return -- inherited verbatim from Phase 1's _common() and banktank's tank_branch().",
+  "NOTHING_BETWEEN_BANKS": "bank k's cell inputs are literally bank k-1's output nets, through the declared wire model and nothing else.  No buffer, no keeper, no restoring stage.",
+  "head": "bank 1's 8 cell inputs are ideal DC sources at VINHI = 1.20 V or 0 V, inherited from Phase 1 section C.  THIS IS A BOOKING and bank 1's row is a BOUND; banks 2-6 are chain-fed and are not.",
+  "schedule": "banktank verbatim: bank k's rail-raise closes at c_k = T1 + (k-1)T, opens at its OWN MEASURED current zero; its return closes at c_k + H*T and opens at its OWN MEASURED zero.  H = 4 (banktank committed).  T1 = 200 ps pre-roll.  Bank k's stage boundary is min(c_k + T, r_k - EDGE, r_{k-1} - EDGE) -- the inherited one-beat-to-become-valid rule with the last-undisturbed-instant clause, which can only move a checkpoint EARLIER."
+},
+
+"D_THE_LOGIC AND THE VALUE TABLE -- FIXED BEFORE ANY DECK": {
+  "function": "bank k cell i computes  y_k[i] = y_{k-1}[i]  (XOR | XNOR)  y_{k-1}[(i+r_k) mod 4].  The A operand is the STRAIGHT net, the B operand is the ROTATE net.  This is the rotate-XOR wave shape of a real cipher round: the rotate costs ZERO gates and ZERO logic levels and REAL capacitance, which is the whole reason Phase 2 must carry interconnect.",
+  "COMPLETE_not_a_slice": "All four bits of the 4-bit word are built and every input of every bank 2-6 is chain-fed from a real predecessor output.  There is no logically-absent neighbour bit anywhere.  This is a deliberate guard against the campaign's own recorded error of generalising a narrow slice to a cipher.",
+  "why_the_forms_must_mix": "A GF(2) map whose every row has exactly two ones is the incidence matrix of a 4-edge graph on 4 vertices; any such graph contains a cycle, so the matrix is ALWAYS singular and a pure XOR-rotate chain collapses to a constant within 4 banks.  MEASURED by exhaustive check before any deck (pat.py, and it is why the first pattern search returned NONE).  Mixing XNOR cells makes the map AFFINE, which removes the collapse at zero device cost.",
+  "path_asymmetry_that_sets_the_mix": "For xor_form TG1 passes the raw input `a` and TG2 passes the inverter output `ab`; xnor_form exchanges them.  A cell is therefore RESTORED (its output must wait for its own bank rail) iff (XOR and B=1) or (XNOR and B=0), and TRANSPARENT (its output is the predecessor's raw level passed through a pass-gate with no gain) otherwise.  Phase 1 AMENDMENT A1 established that the RESTORED cell is the BINDING one and that a bank with too few of them flatters the result.",
+  "THE_MIX_IS_UNIFORM_BY_DEPTH_BY_CONSTRUCTION": "The pattern below was selected to put EXACTLY 3 RESTORED + 1 TRANSPARENT cell in every one of the six banks.  That is 75% restored against Phase 1's 50% data mix -- HARSHER, not easier -- and it removes the depth-vs-mix confound that Phase 1 AMENDMENT A7 had to add a control for.",
+  "selection_constraints_all_fixed_before_the_search": ["no bank output is all-zero or all-one", "no bank output equals its own input (so 'the bank computed identity' is distinguishable from 'the bank did not compute')", "all six bank outputs DISTINCT (so a stuck or bypassed bank is caught at every depth)", "both logic values present at every bank output", "exactly 3 RESTORED + 1 TRANSPARENT per bank"],
+  "search": "randomised search under those constraints, seed 20260929, 6000 trials; the winning tuple is frozen here and hand-verified for bank 1 in the run log.",
+  "head_word_x0": [0, 0, 1, 0],
+  "banks": [
+    {"k": 1, "rot": 2, "forms": ["XOR", "XNOR", "XNOR", "XOR"], "expect_out": [1, 1, 0, 0], "paths": ["R", "R", "R", "T"]},
+    {"k": 2, "rot": 3, "forms": ["XOR", "XOR", "XOR", "XNOR"], "expect_out": [1, 0, 1, 1], "paths": ["T", "R", "R", "R"]},
+    {"k": 3, "rot": 2, "forms": ["XOR", "XOR", "XNOR", "XNOR"], "expect_out": [0, 1, 1, 0], "paths": ["R", "R", "T", "R"]},
+    {"k": 4, "rot": 3, "forms": ["XOR", "XNOR", "XOR", "XOR"], "expect_out": [0, 0, 0, 1], "paths": ["T", "R", "R", "R"]},
+    {"k": 5, "rot": 1, "forms": ["XNOR", "XOR", "XOR", "XNOR"], "expect_out": [1, 0, 1, 0], "paths": ["R", "T", "R", "R"]},
+    {"k": 6, "rot": 3, "forms": ["XNOR", "XOR", "XOR", "XOR"], "expect_out": [0, 1, 1, 1], "paths": ["R", "R", "T", "R"]}
+  ],
+  "restored_count": 18,
+  "transparent_count": 6
+},
+
+"E_THE_INTERCONNECT -- THE THING NO DECK IN THIS CAMPAIGN HAS EVER CARRIED": {
+  "statement_of_the_gap": "Every committed deck in this campaign, Phase 1 included, models a gate's load as a lumped CL = 2 fF and carries NO interconnect at all.  Phase 2's brief requires the rotate wiring to be present.  It is present as an explicit, separately-parameterised element so its cost is MEASURED against a zero-interconnect control rather than argued about.",
+  "model": "one single-segment pi per wire: C_wire/2 at the driver node, a series R_wire, C_wire/2 at the receiver node, both capacitances returned to global ground (the substrate).  Every predecessor output drives TWO segments: a STRAIGHT segment to the next bank's A input and a ROTATE segment to the next bank's B input.  5 bank boundaries x 4 bits x 2 segments = 40 segments.",
+  "provenance_PRIMARY": {
+    "tag": "W2",
+    "c_fF_per_um": 0.21806223458062743,
+    "label": "DERIVED from MEASURED PDK data",
+    "source": "qal/cipher/WIRE_MODEL.json, Metal2 C_bus_minpitch, itself built from /usr/local/src/IHP-Open-PDK/ihp-sg13g2/libs.ref/sg13g2_stdcell/lef/sg13g2_tech.lef (CAPACITANCE CPERSQDIST 0.0181 pF/um^2 + EDGECAPACITANCE 0.0447 pF/um per edge) and the OpenRCX nom rules (libs.tech/librelane/openrcx/ihp-sg13g2.nom.magic.rules) for the two-sided coupling at minimum spacing.  Split: 0.01140622 ground-shielded + 0.20665601 coupling on two sides.",
+    "why_bus_and_not_isolated": "a rotate is a BUS -- all bits run in parallel at pitch -- so the min-pitch two-sided-coupling figure is the correct one.  The LEF isolated figure 0.09302 fF/um would be the wrong model and 2.34x optimistic.",
+    "R_ohm_per_um": 0.5149999999999999,
+    "bit_pitch_um": 3.84,
+    "bit_pitch_provenance": "MEASURED: sg13g2_xor2_1 cell width in libs.ref/sg13g2_stdcell/lef/sg13g2_stdcell.lef -- the PDK's own width for a functionally identical 2-input XOR.",
+    "rotate_pitches": 13.484375,
+    "rotate_pitches_provenance": "DERIVED: mean |delta index| = 2r(W-r)/W over the four ChaCha20 rotates {16,12,8,7} on a 32-bit word = 13.484375 bit pitches.",
+    "rotate_len_um": 51.78, "rotate_C_fF": 11.2913, "rotate_R_ohm": 26.6667,
+    "straight_len_um": 3.84, "straight_C_fF": 0.8374, "straight_R_ohm": 1.9776,
+    "THE_DECLARED_CONSERVATISM": "the LOGIC is a complete 4-bit word; the WIRE LENGTH is that of a 32-bit datapath rotate.  Those are deliberately mismatched in the HARSH direction: a 4-bit word's own rotate is only 1.5-2.0 pitches.  W2 therefore charges each net the full datapath rotate length while the value check keeps the integrity of a complete word.  This is labelled, not hidden, and WL below is the matched-but-optimistic reading."
+  },
+  "provenance_CONTROLS": [
+    {"tag": "W0", "rotate_C_fF": 0.0, "straight_C_fF": 0.0, "rotate_R_ohm": 0.0, "straight_R_ohm": 0.0, "label": "CONTROL -- the campaign's status quo, zero interconnect.  Its only purpose is to MEASURE the interconnect delta instead of asserting it."},
+    {"tag": "W1", "c_fF_per_um": 0.15, "bit_pitch_um": 1.0, "rotate_pitches": 16.0, "rotate_C_fF": 2.4, "rotate_R_ohm": 8.24, "straight_C_fF": 0.15, "straight_R_ohm": 0.515, "label": "ASSUMED -- the figure named in the brief (0.15 fF/um on a ~32 um datapath).  Carried so the brief's own number is on the table; it is 4.7x optimistic against the PDK bus extraction."},
+    {"tag": "WL", "c_fF_per_um": 0.21806223458062743, "bit_pitch_um": 3.84, "rotate_pitches": {"1": 1.5, "2": 2.0, "3": 1.5}, "rotate_C_fF": {"1": 1.256, "2": 1.6747, "3": 1.256}, "straight_C_fF": 0.8374, "label": "DERIVED, and the OPTIMISTIC BOUND: the rotate of the 4-bit word this chain actually computes, at the same PDK bus figure.  Reported so the reader can see how much of W2's cost is datapath width rather than physics."}
+  ]
+},
+
+"F_THE_GATES -- FIXED BEFORE ANY DECK": {
+  "K1_VALUE_at_every_bank_THE_BINDING_GATE": "all 24 gates on the correct side of the receiver's MEASURED trip, qal/fcrit/TRIP.json receiver S interpolated at THAT BANK's OWN delivered rail (the trip FRACTION is not a constant: 0.7281 at 0.20 V falling to 0.5179 at 1.50 V), by the noise budget NB = 3 sigma = 19.323 mV, evaluated at that bank's own stage boundary.  The expected bits are the pre-registered table in section D.",
+  "K2_level_restoring_floor_NOW_ONLY_A_DIAGNOSTIC": "every want-1 output at or above Vtn + |Vtp| = 0.9642 V and every want-0 output at or below dV - 0.9642 = 0.6858 V at its own stage boundary.  In Phase 1 this was the CASCADABLE PROXY, because Phase 1 had no successor bank.  In Phase 2 the successor is physically present and K1 at bank k+1 is the real test, so K2 is reported as a diagnostic and is NOT allowed to overrule a measured K1 pass.  If K2 fails while K1 passes at every depth, that is a Phase-1 prediction FALSIFIED and must be reported as such.",
+  "K3_SETTLING": "per-gate settling at the stage boundary as a percentage of that bank's own delivered rail (the inherited 90% bar) AND under the fcrit functional criterion.  Phase 1 AMENDMENT A2 established the 90% bar is structurally wrong for this cell (a transparent cell read 120.79% settled); the functional criterion binds and the 90% reading is carried on every row.",
+  "K4_SUSTAINED": "max over k of the MEASURED stage time <= T.  If any measured stage time exceeds T the wave is falling behind and the row does NOT sustain that T, whatever its value check says.",
+  "K5_ZCS_AND_CLOSURE": "|I(L_k)| <= 1 uA at every rise cut and every return cut, per bank; charge/energy identity at each bank within 0.02 fJ.  Phase 1 AMENDMENT A5 applies: the 1 F integrator pedestal is ALWAYS t0-subtracted and the reading is taken from the 9-digit .prn, never from the 7-digit .mt0, whenever it is a difference of two nearly-equal pedestal-heavy numbers.",
+  "K6_SEPARATION": "min over all 24 gates of |V_out - trip_at(own rail)| reported at every depth against the corrected 1-sigma floor 6.441 mV (qal/vtaudit/AUDIT.md, itself a LOWER bound -- dw/dl excluded -- so every PASS here inherits lower-bound status).",
+  "PER_DECK_INSTRUMENT_CHECK": "every Phase-2 deck carries Phase 1's companion(): the 1.12/0.74 inverter into 2 fF at 1.2 V whose committed t90 is 57.1428 ps (qal/fcrit/cmos.cir.mt0 T90R2, digit-reproduced at rel 0.00e+00 by Phase 1's INSTRUMENT_CHECK.json).  A deck whose companion drifts is an instrument failure, not a result.",
+  "MEASURE_FIND_LAG": "the MEASURED 1.0 ps .measure-FIND lag of this Xyce build is applied to every FIND, inherited from qal/lsweep."
+},
+
+"G_THE_GRID -- FIXED BEFORE ANY DECK": {
+  "T_ps": [150, 200, 250, 300, 350, 400],
+  "T_refinement": "the boundary between sustaining and not is bisected to 10 ps once bracketed; every refinement point is a real deck, never an interpolation.",
+  "wire": ["W2", "W0", "W1", "WL"],
+  "design_point": [["L15_VGH2400 (PRIMARY, Phase-1 cascadable optimum)"], ["L6_VGH2174 (Phase-1 functional optimum)"]],
+  "m_tank_multiplier": [1, 10],
+  "m_meaning": "CT_k = m * C_bank_in_situ, pre-charged to the lossless-linear value dV(m+1)/2m (banktank vtank0).  m = 1 is the PHASE-1-FAITHFUL source -- a partner capacitance equal to the bank's own, pre-charged to dV, which is exactly Phase 1's lumped CA.  m = 10 is banktank's committed tank.  Both are carried because Phase 1's optimum was found at m = 1 and banktank's working chain needed m = 10; which one a wave needs is a MEASUREMENT, not a choice.",
+  "H": 4,
+  "C_bank_in_situ": "MEASURED in this directory, not inherited: the rail load of one N=4 TG-XOR bank AS WIRED IN THE CHAIN, i.e. including its output wire segments and the fan-out gate load of the next bank.  Metered AT THE RAIL SOURCE (Phase 1 AMENDMENT A4 -- the KCL form folds a pass-gate crowbar into the rail charge and inflated an N=4 bank 51.5 -> 216 fF).  One calibration per wire setting.",
+  "ZCS_zeros": "MEASURED per bank per row by a probe deck in which that bank's switch closes at its beat and NEVER opens; the true zero is the first interpolated downward crossing of I(L_k) after the current peak.  Never reused across rows, never predicted -- Phase 1 recorded the analytic pi*sqrt(LC) reading 33% early once."
+},
+
+"H_PRE_STATED_EXPECTATIONS -- to be scored honestly in RESULTS.json whether they hold or not": {
+  "Q0": "The chain's SUSTAINED BEAT will be SLOWER than Phase 1's 243.638 ps single-hop cascadable number, for three reasons I can name now: the predecessor is a real bank instead of an ideal 1.20 V source, the interconnect is present for the first time, and the mix is 75% restored instead of 50%.  I predict the primary (W2) sustained beat lands in 280-400 ps.  I will also state which of the three causes dominates, measured against the W0 control.",
+  "Q1": "The interconnect will be the single largest NEW cost: the W2-minus-W0 delta on the sustained beat will exceed 15%.",
+  "Q2": "The TRANSPARENT path will be the failing path.  As T is reduced, the FIRST gate to fail its value check will be a transparent cell, because it is handed the predecessor's raw level through a pass-gate with no gain.",
+  "Q3": "QAL will NOT beat the load-matched 2 fF / 57.1428 ps CMOS logic level.  I predict a ratio above 4x.",
+  "Q4": "The crossover D* against CMOS + flop tax at the 2 fF load will come out BELOW 2, i.e. QAL wins only at D = 1 -- a flop after every single logic level -- which is not a design point.  Phase 1 got D* = 1.69 from a single hop.",
+  "Q5": "The chain WILL compute: all 24 gates value-correct at some T, i.e. the banktank per-bank-tank arrangement carries over from the static-inverter bank to the TG-XOR bank.  Confidence only moderate -- the TG cell is not level-restoring on its transparent path and a 6-deep TG chain has never been run in this campaign.  If it does not compute at any T in the grid, that is the headline and it will be stated as such.",
+  "Q6": "Phase 1 predicted that its L = 6 nH functional optimum cannot cascade (its own outputs sat 367 mV below the restoring floor at the 130.9 ps commit).  I expect the L = 6 secondary point to sustain a WORSE beat than L = 15 in the chain, confirming that Phase-1 prediction on a real chain rather than a proxy."
+},
+
+"I_WHAT_IS_A_BOOKING AND WHAT THIS PHASE WILL NOT LICENSE": [
+  "Bank 1's cell inputs are IDEAL DC sources at VINHI = 1.20 V.  Bank 1's row is a BOUND.  Banks 2-6 are chain-fed and are not.  The chain's verdict rests on the DEEPEST banks, not on bank 1.",
+  "Every tank pre-charge is an .ic on an ideal capacitor.  The recharge is not costed -- that is banktank's topup question, not this phase's -- so every energy figure is a BOUND in the optimistic direction.  Energy gates nothing here in any case.",
+  "The TG-XOR crowbar Phase 1 measured (176 fC per transparent cell out of its own input over a 4 ns ramp, because both TG pMOS conduct while the rail is below the select separation) is in Phase 2 drawn out of the PREDECESSOR BANK's real outputs, not out of an ideal source.  Phase 2 therefore PAYS a cost Phase 1 booked.  This is expected to show up as a real effect and is not a defect if it does.",
+  "The sg13lv_compat shim DISCARDS ad/as/pd/ps, so PSP103 defaults apply, JUNCAP200 is enabled, and the default PD = 1.00 um is smaller than the 1.12 um pMOS, clipping the STI-edge term to zero: every leakage figure is a LOWER bound.",
+  "Interconnect is present ONLY as the declared rotate/straight pi segments.  Rail routing, tank routing, switch routing and cell-internal parasitics are still absent, so even the W2 rows remain BOUNDS in the optimistic direction.",
+  "VGH = 2.174/2.4 V is an OVERDRIVE on a 1.5 V-tolerant LV device.  The oxide-reliability question is UNANSWERED.  The whole Phase-2 result rests on that device ask, exactly as Phase 1's frontier did.",
+  "The inductors are ideal L with a lumped series RS = 10 ohm.  Phase 1 MEASURED that the switch, not the inductor, is the loss wall (Ron 30-34 ohm at the frontier vs RS = 10), so this is the committed and load-bearing-in-the-right-place model -- but on-die inductor Q, area and coupling are not modelled anywhere in this campaign."
+],
+
+"J_SIM DISCIPLINE -- inherited verbatim from Phase 1 section H": {
+  "cache": "this run OWNS its PYMS_VAE_CACHE (path in p2/DISK_STATE_BEFORE.txt).  No other run writes it.",
+  "directory": "everything Phase 2 writes goes in qal/fastwave/p2/.  The sibling qal/widebank/ is NOT touched and neither is anything outside qal/fastwave/.",
+  "device": "sg13_lv via qal/sg13lv_compat.sp; PSP103 via .hdl + sg13g2_psp103_tt.lib, tt only; corners if ever taken only via instance-level DTA; vt/gmin RESERVED.",
+  "options": ".OPTIONS TIMEINT METHOD=GEAR RELTOL=1e-6 ABSTOL=1e-15 CHGTOL=1e-17, inherited verbatim.",
+  "metering": "1 F integrators with the t=0 PEDESTAL always subtracted, or INTEG-I(Vsrc)+PARAM.  Unique .va module names.",
+  "runtime": "target < 4 min per deck.  A deck that stalls is retried with a FINER timestep and nothing else changed (Phase 1 AMENDMENT A8); a point that never converges is NAMED, never estimated."
+},
+
+"K_WHAT_WOULD_MAKE_THIS_PHASE_WRONG": [
+  "Quoting T instead of the measured stage time.  Guard: K4 compares them on every row and the reported beat is always the measured max.",
+  "Scoring the chain on bank 1, which is fed by an ideal source.  Guard: the verdict is taken from the deepest banks and bank 1 is labelled a BOUND on every row.",
+  "Letting a global-variable default leak a parameter between decks -- Phase 1's A9 was exactly this and would have produced a wrong headline.  Guard: every deck-building parameter is an explicit argument with NO default that reads a module global, and an audit re-reads the generated netlist for VGH, dV, L, wire C and the per-cell input sources against the spec that asked for it, on EVERY deck, not a sample.",
+  "Reading the ZCS zero from pi*sqrt(LC).  Guard: every zero is re-probed per bank per row.",
+  "Composing the beat from a hop plus a settle.  Guard: the beat is a difference of two waveform instants.",
+  "Claiming a wire model without provenance.  Guard: section E carries the file, the layer, the units and the split into ground and coupling terms, and a zero-interconnect control measures the delta."
+]
+}

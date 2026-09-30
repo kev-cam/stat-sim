@@ -1,0 +1,52 @@
+* fcrit -- the CMOS comparator scored under the IDENTICAL commit criterion.
+* Topology, sizing, load, edge and .OPTIONS are qal/vtreq/cm_d000.cir VERBATIM
+* (1.12u/0.74u inverter, 6.91 fF, 2 ps ideal edge starting at t=100 ps).
+* Both bars are measured in the SAME run:
+*   T90* = committed bar, output reaches 90% of rail      (reproduces 94.174 ps)
+*   TTR* = commit bar, output crosses the MEASURED trip of the receiver it
+*          drives (same cell, same 1.2 V supply -> 0.645162 V) by the noise
+*          budget NB = 3*sigma_trip = 19.323 mV.
+*   TT0* = the same with NB = 0 (pure threshold crossing).
+.hdl "/usr/local/share/xyce/verilog-a/psp103/psp103.va"
+.include "/usr/local/src/kestrel/sim/models/sg13g2_psp103_tt.lib"
+.include "/usr/local/src/stat-sim/qal/sg13lv_compat.sp"
+.OPTIONS TIMEINT METHOD=GEAR RELTOL=1e-6 ABSTOL=1e-15 CHGTOL=1e-17
+VS1p2 s1p2 0 1.2
+VIR ir 0 PWL(0 1.2 100p 1.2 102p 0)
+XPR or ir s1p2 s1p2 sg13_lv_pmos w=1.12u l=0.13u
+XNR or ir 0 0 sg13_lv_nmos w=0.74u l=0.13u
+CLR or 0 6.91f
+VIF if 0 PWL(0 0 100p 0 102p 1.2)
+XPF of if s1p2 s1p2 sg13_lv_pmos w=1.12u l=0.13u
+XNF of if 0 0 sg13_lv_nmos w=0.74u l=0.13u
+CLF of 0 6.91f
+* --- CL = 2 fF arm, the lighter committed load, same two bars
+VIR2 ir2 0 PWL(0 1.2 100p 1.2 102p 0)
+XPR2 or2 ir2 s1p2 s1p2 sg13_lv_pmos w=1.12u l=0.13u
+XNR2 or2 ir2 0 0 sg13_lv_nmos w=0.74u l=0.13u
+CLR2 or2 0 2f
+VIF2 if2 0 PWL(0 0 100p 0 102p 1.2)
+XPF2 of2 if2 s1p2 s1p2 sg13_lv_pmos w=1.12u l=0.13u
+XNF2 of2 if2 0 0 sg13_lv_nmos w=0.74u l=0.13u
+CLF2 of2 0 2f
+.tran 0.02p 400p 0 0.1p
+* committed bar: 90% of rail
+.measure tran T90R WHEN V(or)=1.08 RISE=1
+.measure tran T90F WHEN V(of)=0.12 FALL=1
+.measure tran T90R2 WHEN V(or2)=1.08 RISE=1
+.measure tran T90F2 WHEN V(of2)=0.12 FALL=1
+* 50% reference
+.measure tran T50R WHEN V(or)=0.6 RISE=1
+.measure tran T50F WHEN V(of)=0.6 FALL=1
+* commit bar with the 3-sigma noise budget
+.measure tran TTRR WHEN V(or)=0.664485 RISE=1
+.measure tran TTRF WHEN V(of)=0.625839 FALL=1
+.measure tran TTRR2 WHEN V(or2)=0.664485 RISE=1
+.measure tran TTRF2 WHEN V(of2)=0.625839 FALL=1
+* commit bar at NB = 0
+.measure tran TT0R WHEN V(or)=0.645162 RISE=1
+.measure tran TT0F WHEN V(of)=0.645162 FALL=1
+.measure tran TT0R2 WHEN V(or2)=0.645162 RISE=1
+.measure tran TT0F2 WHEN V(of2)=0.645162 FALL=1
+.print tran V(or) V(of) V(or2) V(of2)
+.end

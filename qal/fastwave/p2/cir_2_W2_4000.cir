@@ -1,0 +1,151 @@
+.hdl "/usr/local/share/xyce/verilog-a/psp103/psp103.va"
+.include "/usr/local/src/kestrel/sim/models/sg13g2_psp103_tt.lib"
+.include "/usr/local/src/stat-sim/qal/sg13lv_compat.sp"
+.OPTIONS TIMEINT METHOD=GEAR RELTOL=1e-6 ABSTOL=1e-15 CHGTOL=1e-17
+VS rail2 0 PWL(0 0 4000p 1.65)
+VHI vhi 0 2.4
+VMG2 gn2 0 0
+VMGD gnd3 0 0
+VRD rail3 0 0
+VW0 wsrc0 gn2 1.2
+VW1 wsrc1 gn2 1.2
+VW2 wsrc2 gn2 0
+VW3 wsrc3 gn2 0
+XPIA2_0 ab2_0 wsrc0 rail2 rail2 sg13_lv_pmos w=1.12u l=0.13u
+XNIA2_0 ab2_0 wsrc0 gn2 gn2 sg13_lv_nmos w=0.74u l=0.13u
+XPIB2_0 bb2_0 wsrc3 rail2 rail2 sg13_lv_pmos w=1.12u l=0.13u
+XNIB2_0 bb2_0 wsrc3 gn2 gn2 sg13_lv_nmos w=0.74u l=0.13u
+XTN12_0 ab2_0 bb2_0 yi2_0 gn2 sg13_lv_nmos w=0.74u l=0.13u
+XTP12_0 ab2_0 wsrc3 yi2_0 vhi sg13_lv_pmos w=1.12u l=0.13u
+XTN22_0 wsrc0 wsrc3 yi2_0 gn2 sg13_lv_nmos w=0.74u l=0.13u
+XTP22_0 wsrc0 bb2_0 yi2_0 vhi sg13_lv_pmos w=1.12u l=0.13u
+CL2_0 yi2_0 gn2 2f
+XPOR2_0 y2_0 yi2_0 rail2 rail2 sg13_lv_pmos w=1.12u l=0.13u
+XNOR2_0 y2_0 yi2_0 gn2 gn2 sg13_lv_nmos w=0.74u l=0.13u
+CLO2_0 y2_0 gn2 2f
+XPIA2_1 ab2_1 wsrc1 rail2 rail2 sg13_lv_pmos w=1.12u l=0.13u
+XNIA2_1 ab2_1 wsrc1 gn2 gn2 sg13_lv_nmos w=0.74u l=0.13u
+XPIB2_1 bb2_1 wsrc0 rail2 rail2 sg13_lv_pmos w=1.12u l=0.13u
+XNIB2_1 bb2_1 wsrc0 gn2 gn2 sg13_lv_nmos w=0.74u l=0.13u
+XTN12_1 ab2_1 bb2_1 yi2_1 gn2 sg13_lv_nmos w=0.74u l=0.13u
+XTP12_1 ab2_1 wsrc0 yi2_1 vhi sg13_lv_pmos w=1.12u l=0.13u
+XTN22_1 wsrc1 wsrc0 yi2_1 gn2 sg13_lv_nmos w=0.74u l=0.13u
+XTP22_1 wsrc1 bb2_1 yi2_1 vhi sg13_lv_pmos w=1.12u l=0.13u
+CL2_1 yi2_1 gn2 2f
+XPOR2_1 y2_1 yi2_1 rail2 rail2 sg13_lv_pmos w=1.12u l=0.13u
+XNOR2_1 y2_1 yi2_1 gn2 gn2 sg13_lv_nmos w=0.74u l=0.13u
+CLO2_1 y2_1 gn2 2f
+XPIA2_2 ab2_2 wsrc2 rail2 rail2 sg13_lv_pmos w=1.12u l=0.13u
+XNIA2_2 ab2_2 wsrc2 gn2 gn2 sg13_lv_nmos w=0.74u l=0.13u
+XPIB2_2 bb2_2 wsrc1 rail2 rail2 sg13_lv_pmos w=1.12u l=0.13u
+XNIB2_2 bb2_2 wsrc1 gn2 gn2 sg13_lv_nmos w=0.74u l=0.13u
+XTN12_2 ab2_2 bb2_2 yi2_2 gn2 sg13_lv_nmos w=0.74u l=0.13u
+XTP12_2 ab2_2 wsrc1 yi2_2 vhi sg13_lv_pmos w=1.12u l=0.13u
+XTN22_2 wsrc2 wsrc1 yi2_2 gn2 sg13_lv_nmos w=0.74u l=0.13u
+XTP22_2 wsrc2 bb2_2 yi2_2 vhi sg13_lv_pmos w=1.12u l=0.13u
+CL2_2 yi2_2 gn2 2f
+XPOR2_2 y2_2 yi2_2 rail2 rail2 sg13_lv_pmos w=1.12u l=0.13u
+XNOR2_2 y2_2 yi2_2 gn2 gn2 sg13_lv_nmos w=0.74u l=0.13u
+CLO2_2 y2_2 gn2 2f
+XPIA2_3 ab2_3 wsrc3 rail2 rail2 sg13_lv_pmos w=1.12u l=0.13u
+XNIA2_3 ab2_3 wsrc3 gn2 gn2 sg13_lv_nmos w=0.74u l=0.13u
+XPIB2_3 bb2_3 wsrc2 rail2 rail2 sg13_lv_pmos w=1.12u l=0.13u
+XNIB2_3 bb2_3 wsrc2 gn2 gn2 sg13_lv_nmos w=0.74u l=0.13u
+XTN12_3 wsrc3 bb2_3 yi2_3 gn2 sg13_lv_nmos w=0.74u l=0.13u
+XTP12_3 wsrc3 wsrc2 yi2_3 vhi sg13_lv_pmos w=1.12u l=0.13u
+XTN22_3 ab2_3 wsrc2 yi2_3 gn2 sg13_lv_nmos w=0.74u l=0.13u
+XTP22_3 ab2_3 bb2_3 yi2_3 vhi sg13_lv_pmos w=1.12u l=0.13u
+CL2_3 yi2_3 gn2 2f
+XPOR2_3 y2_3 yi2_3 rail2 rail2 sg13_lv_pmos w=1.12u l=0.13u
+XNOR2_3 y2_3 yi2_3 gn2 gn2 sg13_lv_nmos w=0.74u l=0.13u
+CLO2_3 y2_3 gn2 2f
+CWs3_0d y2_0 0 0.418700f
+RWs3_0 y2_0 a3_0 1.977600
+CWs3_0r a3_0 0 0.418700f
+CWr3_0d y2_2 0 5.645650f
+RWr3_0 y2_2 b3_0 26.666700
+CWr3_0r b3_0 0 5.645650f
+XPIA3_0 ab3_0 a3_0 rail3 rail3 sg13_lv_pmos w=1.12u l=0.13u
+XNIA3_0 ab3_0 a3_0 gnd3 gnd3 sg13_lv_nmos w=0.74u l=0.13u
+XPIB3_0 bb3_0 b3_0 rail3 rail3 sg13_lv_pmos w=1.12u l=0.13u
+XNIB3_0 bb3_0 b3_0 gnd3 gnd3 sg13_lv_nmos w=0.74u l=0.13u
+XTN13_0 ab3_0 bb3_0 yi3_0 gnd3 sg13_lv_nmos w=0.74u l=0.13u
+XTP13_0 ab3_0 b3_0 yi3_0 vhi sg13_lv_pmos w=1.12u l=0.13u
+XTN23_0 a3_0 b3_0 yi3_0 gnd3 sg13_lv_nmos w=0.74u l=0.13u
+XTP23_0 a3_0 bb3_0 yi3_0 vhi sg13_lv_pmos w=1.12u l=0.13u
+CL3_0 yi3_0 gnd3 2f
+XPOR3_0 y3_0 yi3_0 rail3 rail3 sg13_lv_pmos w=1.12u l=0.13u
+XNOR3_0 y3_0 yi3_0 gnd3 gnd3 sg13_lv_nmos w=0.74u l=0.13u
+CLO3_0 y3_0 gnd3 2f
+CWs3_1d y2_1 0 0.418700f
+RWs3_1 y2_1 a3_1 1.977600
+CWs3_1r a3_1 0 0.418700f
+CWr3_1d y2_3 0 5.645650f
+RWr3_1 y2_3 b3_1 26.666700
+CWr3_1r b3_1 0 5.645650f
+XPIA3_1 ab3_1 a3_1 rail3 rail3 sg13_lv_pmos w=1.12u l=0.13u
+XNIA3_1 ab3_1 a3_1 gnd3 gnd3 sg13_lv_nmos w=0.74u l=0.13u
+XPIB3_1 bb3_1 b3_1 rail3 rail3 sg13_lv_pmos w=1.12u l=0.13u
+XNIB3_1 bb3_1 b3_1 gnd3 gnd3 sg13_lv_nmos w=0.74u l=0.13u
+XTN13_1 ab3_1 bb3_1 yi3_1 gnd3 sg13_lv_nmos w=0.74u l=0.13u
+XTP13_1 ab3_1 b3_1 yi3_1 vhi sg13_lv_pmos w=1.12u l=0.13u
+XTN23_1 a3_1 b3_1 yi3_1 gnd3 sg13_lv_nmos w=0.74u l=0.13u
+XTP23_1 a3_1 bb3_1 yi3_1 vhi sg13_lv_pmos w=1.12u l=0.13u
+CL3_1 yi3_1 gnd3 2f
+XPOR3_1 y3_1 yi3_1 rail3 rail3 sg13_lv_pmos w=1.12u l=0.13u
+XNOR3_1 y3_1 yi3_1 gnd3 gnd3 sg13_lv_nmos w=0.74u l=0.13u
+CLO3_1 y3_1 gnd3 2f
+CWs3_2d y2_2 0 0.418700f
+RWs3_2 y2_2 a3_2 1.977600
+CWs3_2r a3_2 0 0.418700f
+CWr3_2d y2_0 0 5.645650f
+RWr3_2 y2_0 b3_2 26.666700
+CWr3_2r b3_2 0 5.645650f
+XPIA3_2 ab3_2 a3_2 rail3 rail3 sg13_lv_pmos w=1.12u l=0.13u
+XNIA3_2 ab3_2 a3_2 gnd3 gnd3 sg13_lv_nmos w=0.74u l=0.13u
+XPIB3_2 bb3_2 b3_2 rail3 rail3 sg13_lv_pmos w=1.12u l=0.13u
+XNIB3_2 bb3_2 b3_2 gnd3 gnd3 sg13_lv_nmos w=0.74u l=0.13u
+XTN13_2 a3_2 bb3_2 yi3_2 gnd3 sg13_lv_nmos w=0.74u l=0.13u
+XTP13_2 a3_2 b3_2 yi3_2 vhi sg13_lv_pmos w=1.12u l=0.13u
+XTN23_2 ab3_2 b3_2 yi3_2 gnd3 sg13_lv_nmos w=0.74u l=0.13u
+XTP23_2 ab3_2 bb3_2 yi3_2 vhi sg13_lv_pmos w=1.12u l=0.13u
+CL3_2 yi3_2 gnd3 2f
+XPOR3_2 y3_2 yi3_2 rail3 rail3 sg13_lv_pmos w=1.12u l=0.13u
+XNOR3_2 y3_2 yi3_2 gnd3 gnd3 sg13_lv_nmos w=0.74u l=0.13u
+CLO3_2 y3_2 gnd3 2f
+CWs3_3d y2_3 0 0.418700f
+RWs3_3 y2_3 a3_3 1.977600
+CWs3_3r a3_3 0 0.418700f
+CWr3_3d y2_1 0 5.645650f
+RWr3_3 y2_1 b3_3 26.666700
+CWr3_3r b3_3 0 5.645650f
+XPIA3_3 ab3_3 a3_3 rail3 rail3 sg13_lv_pmos w=1.12u l=0.13u
+XNIA3_3 ab3_3 a3_3 gnd3 gnd3 sg13_lv_nmos w=0.74u l=0.13u
+XPIB3_3 bb3_3 b3_3 rail3 rail3 sg13_lv_pmos w=1.12u l=0.13u
+XNIB3_3 bb3_3 b3_3 gnd3 gnd3 sg13_lv_nmos w=0.74u l=0.13u
+XTN13_3 a3_3 bb3_3 yi3_3 gnd3 sg13_lv_nmos w=0.74u l=0.13u
+XTP13_3 a3_3 b3_3 yi3_3 vhi sg13_lv_pmos w=1.12u l=0.13u
+XTN23_3 ab3_3 b3_3 yi3_3 gnd3 sg13_lv_nmos w=0.74u l=0.13u
+XTP23_3 ab3_3 bb3_3 yi3_3 vhi sg13_lv_pmos w=1.12u l=0.13u
+CL3_3 yi3_3 gnd3 2f
+XPOR3_3 y3_3 yi3_3 rail3 rail3 sg13_lv_pmos w=1.12u l=0.13u
+XNOR3_3 y3_3 yi3_3 gnd3 gnd3 sg13_lv_nmos w=0.74u l=0.13u
+CLO3_3 y3_3 gnd3 2f
+CXqvs xqvs 0 1
+BXqvs 0 xqvs I={ -I(VS) }
+RXqvs xqvs 0 0.01
+CXqmg xqmg 0 1
+BXqmg 0 xqmg I={ I(VMG2) }
+RXqmg xqmg 0 0.01
+CXqmgd xqmgd 0 1
+BXqmgd 0 xqmgd I={ I(VMGD) }
+RXqmgd xqmgd 0 0.01
+CXqrd xqrd 0 1
+BXqrd 0 xqrd I={ -I(VRD) }
+RXqrd xqrd 0 0.01
+CXqin xqin 0 1
+BXqin 0 xqin I={ I(VW0)+I(VW1)+I(VW2)+I(VW3) }
+RXqin xqin 0 0.01
+.print tran V(rail2) V(xqvs) V(xqmg) V(xqmgd) V(xqrd) V(xqin) V(y2_0) V(y2_1) V(y2_2) V(y2_3) V(y3_0) V(y3_1) V(y3_2) V(y3_3)
+.tran 2p 4000p 0 4p
+.end

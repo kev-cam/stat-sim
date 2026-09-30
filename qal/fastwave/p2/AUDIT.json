@@ -1,0 +1,229 @@
+{
+ "_what": "final integrity audit of qal/fastwave/p2",
+ "writes_contained": {
+  "verdict": "PASS",
+  "method": "every open(...,'w') in w.py/drive.py/cal.py/diag.py writes a path built as os.path.join(HERE, fn); grep confirms no other write target.",
+  "note": "An EARLIER containment check in this session was INVALID: it ran `find . -not -path './qal/fastwave/p2/*'` while the shell cwd had persisted into p2, so the exclusion pattern matched nothing and the check returned a vacuous PASS.  Redone with absolute paths.",
+  "other_writers_in_the_repo": "qal/upsize/ and /usr/local/src/stat-sim/log_crux.txt, log_T300_P1.txt belong to a DIFFERENT concurrent run (its own DISK_STATE_BEFORE.txt reads 'qal/upsize (PHASE 2, cell upsizing)').  Not written by this phase.",
+  "sibling_qal_widebank": "untouched; newest file 2026-09-29 21:35, before this phase's first chain deck."
+ },
+ "netlist_audit": {
+  "verdict": "PASS on every deck",
+  "method": "w.audit() re-reads the GENERATED netlist for VGH, every CT_k, every L_k, RS, switch/park widths, the head word and its level, the tank pre-charge, the wire-segment count and values, every cell's effective TG form, and bank-to-bank + rotate connectivity, and REFUSES to invoke Xyce on a mismatch.  237 decks written, zero AUDIT FAIL.",
+  "negative_controls": "the audit was proven to CATCH tampering: a VGH edited 2.4->1.5 is caught ('VGH: netlist 1.5 != spec 2.4') and a CT5 node edited is caught.",
+  "a_bug_in_the_guard_itself": "audit()'s patterns are ^-anchored and re.findall was called WITHOUT re.MULTILINE, so the guard matched nothing and fail-CLOSED on every deck.  Found by a smoke test BEFORE any chain deck ran; fixed; no result was affected."
+ },
+ "per_deck_instrument": {
+  "verdict": "PASS on 10 of 14 converged rows at rel <= 5.3e-06 (57.1424-57.1428 ps against the committed 57.1428 ps)",
+  "four_rows_without_it": [
+   "W2_L15_g2400_m10_T200",
+   "W2_L15_g2400_m10_T250",
+   "W2_L15_g2400_m10_T300",
+   "W2_L15_g2400_m10_T350"
+  ],
+  "why": "those four predate the AMENDMENT P8 fix of Phase 1's companion, which measured the wrong edge and returned FAILED.  Their electrical content is backed by the independent F1 comparator anchor at rel 0.00e+00, and none of them is a quoted result -- all four reach depth 1 of 6."
+ },
+ "pyms_cache": {
+  "verdict": "PASS",
+  "geometries_before": 15,
+  "geometries_after": 15,
+  "note": "no deck triggered a cold PyMS build, so no deck raced the cache and no wall-clock figure includes a 400-500 s Instantiate."
+ },
+ "convergence_failures_named_not_estimated": [
+  "W2_L15_g2400_m10_T300_sync, W1_L15_g2400_m10_T300_sync, WL_L15_g2400_m10_T300_sync -- seven simultaneous switch closes; the deck stalls at t = 198 ps and the A8 4x/16x retries do not recover it.  AMENDMENT P10 added a 5 ps stagger for later sync rows.",
+  "the ORIGINAL full H=4 skewed deck at T=300 with the return cuts enabled -- stalls at t ~ 1831 ps where a rise cut and a return cut land 2.2 ps apart.  AMENDMENT P5."
+ ],
+ "files": {
+  "AMENDMENT.md": {
+   "bytes": 14712,
+   "sha256": "961afe2ced19fb59",
+   "mtime": "2026-09-30 01:19:03.066141759 -0700"
+  },
+  "CBANK_INSITU.json": {
+   "bytes": 33401,
+   "sha256": "337f77482c93283e",
+   "mtime": "2026-09-29 22:15:38.952471460 -0700"
+  },
+  "CBANK_INSITU_RESTORE.json": {
+   "bytes": 17617,
+   "sha256": "c0a2f84649ca5406",
+   "mtime": "2026-09-30 00:24:20.131430177 -0700"
+  },
+  "DIAG_CROWBAR.json": {
+   "bytes": 7653,
+   "sha256": "edb0540f4ea6fa8e",
+   "mtime": "2026-09-29 23:47:02.437549636 -0700"
+  },
+  "DISK_STATE_BEFORE.txt": {
+   "bytes": 6236,
+   "sha256": "84853f825800797a",
+   "mtime": "2026-09-29 21:42:54.428256363 -0700"
+  },
+  "FINAL_ROWS.json": {
+   "bytes": 112226,
+   "sha256": "4864816e3f82fdfb",
+   "mtime": "2026-09-30 01:17:33.261052773 -0700"
+  },
+  "INSTRUMENT_CHECK.json": {
+   "bytes": 3318,
+   "sha256": "f5f05b6a00b2325a",
+   "mtime": "2026-09-29 21:57:17.010031976 -0700"
+  },
+  "PRE_REGISTERED.json": {
+   "bytes": 23056,
+   "sha256": "ca778b4ea1c65e2a",
+   "mtime": "2026-09-29 21:45:52.947060882 -0700"
+  },
+  "REANALYSIS_RESTORE.json": {
+   "bytes": 50420,
+   "sha256": "392fd5b300e64f82",
+   "mtime": "2026-09-30 01:16:17.508178646 -0700"
+  },
+  "REANALYSIS_SKEWED.json": {
+   "bytes": 19655,
+   "sha256": "16d69189c92a36fc",
+   "mtime": "2026-09-30 01:16:13.252130882 -0700"
+  },
+  "REANALYSIS_SYNC.json": {
+   "bytes": 12601,
+   "sha256": "c90fb1c64c129fbf",
+   "mtime": "2026-09-30 01:16:14.176141239 -0700"
+  },
+  "RESULTS.json": {
+   "bytes": 196568,
+   "sha256": "7506b9e3a07ba1e9",
+   "mtime": "2026-09-30 01:21:47.236252103 -0700"
+  },
+  "ROWS.json": {
+   "bytes": 72508,
+   "sha256": "5d5ce2c92d519bf4",
+   "mtime": "2026-09-29 23:36:13.455755281 -0700"
+  },
+  "ROWS_RESTORE.json": {
+   "bytes": 145937,
+   "sha256": "c035853a51aaa383",
+   "mtime": "2026-09-30 01:13:34.570469715 -0700"
+  },
+  "ROWS_SYNC.json": {
+   "bytes": 38771,
+   "sha256": "147caaeb6f260aa3",
+   "mtime": "2026-09-30 00:09:14.564111071 -0700"
+  },
+  "ZQ_W2_L15_g2400_m10.json": {
+   "bytes": 400,
+   "sha256": "d4a0760ef49b824b",
+   "mtime": "2026-09-29 23:19:45.093036288 -0700"
+  },
+  "_jobs.json": {
+   "bytes": 330,
+   "sha256": "47aebbfe8a3b7d3c",
+   "mtime": "2026-09-30 00:54:21.891168593 -0700"
+  },
+  "analyse.py": {
+   "bytes": 3929,
+   "sha256": "7d1dad5871894cf7",
+   "mtime": "2026-09-29 22:27:55.197835909 -0700"
+  },
+  "cal.py": {
+   "bytes": 12727,
+   "sha256": "a0d3c8e450fd8c1a",
+   "mtime": "2026-09-30 00:22:29.285926156 -0700"
+  },
+  "chain.py": {
+   "bytes": 12049,
+   "sha256": "11e3b081cf5cbbde",
+   "mtime": "2026-09-29 23:20:35.097765714 -0700"
+  },
+  "comp.py": {
+   "bytes": 4833,
+   "sha256": "4f67723fe410219c",
+   "mtime": "2026-09-29 21:56:25.057457186 -0700"
+  },
+  "diag.py": {
+   "bytes": 6265,
+   "sha256": "a587027dc5f5af93",
+   "mtime": "2026-09-29 23:44:41.535422336 -0700"
+  },
+  "drive.py": {
+   "bytes": 7159,
+   "sha256": "1cca6520bc9070d5",
+   "mtime": "2026-09-30 00:54:21.903168808 -0700"
+  },
+  "final.py": {
+   "bytes": 9021,
+   "sha256": "7f1f5ebc0f688332",
+   "mtime": "2026-09-30 01:17:29.689010584 -0700"
+  },
+  "instr.py": {
+   "bytes": 5592,
+   "sha256": "97cc9b9cff453dcc",
+   "mtime": "2026-09-29 21:55:48.585064645 -0700"
+  },
+  "log_cal.txt": {
+   "bytes": 5791,
+   "sha256": "249312b3207b3cf5",
+   "mtime": "2026-09-29 22:15:38.952471460 -0700"
+  },
+  "log_cal_restore.txt": {
+   "bytes": 2941,
+   "sha256": "d5bc64bc148253b9",
+   "mtime": "2026-09-30 00:24:20.131430177 -0700"
+  },
+  "log_diag.txt": {
+   "bytes": 2572,
+   "sha256": "288aa01e22dc7b5c",
+   "mtime": "2026-09-29 23:47:02.437549636 -0700"
+  },
+  "log_instr.txt": {
+   "bytes": 269,
+   "sha256": "217a986da21d067b",
+   "mtime": "2026-09-29 21:57:17.010031976 -0700"
+  },
+  "log_mtank.txt": {
+   "bytes": 450,
+   "sha256": "d6514442028ba3b9",
+   "mtime": "2026-09-30 01:13:34.570469715 -0700"
+  },
+  "log_reanalyse.txt": {
+   "bytes": 10843,
+   "sha256": "f93ae4cd3e01b1bf",
+   "mtime": "2026-09-30 01:16:17.508178646 -0700"
+  },
+  "log_rskew.txt": {
+   "bytes": 448,
+   "sha256": "955826d5eae729f8",
+   "mtime": "2026-09-30 00:42:24.084830730 -0700"
+  },
+  "log_rsync.txt": {
+   "bytes": 319,
+   "sha256": "2489ba45efb97d56",
+   "mtime": "2026-09-30 00:52:39.625314154 -0700"
+  },
+  "log_sync.txt": {
+   "bytes": 624,
+   "sha256": "8c6403e332d48507",
+   "mtime": "2026-09-30 00:09:14.564111071 -0700"
+  },
+  "log_tsweep.txt": {
+   "bytes": 563,
+   "sha256": "0f6fd0f55228a7ec",
+   "mtime": "2026-09-29 23:36:13.455755281 -0700"
+  },
+  "mkresults.py": {
+   "bytes": 26583,
+   "sha256": "e5ea08029241d382",
+   "mtime": "2026-09-30 01:21:47.188251467 -0700"
+  },
+  "reanalyse.py": {
+   "bytes": 12272,
+   "sha256": "d333b7b7aff901cb",
+   "mtime": "2026-09-30 01:16:11.748114038 -0700"
+  },
+  "w.py": {
+   "bytes": 30171,
+   "sha256": "dbbad57f1aa47ce4",
+   "mtime": "2026-09-30 00:19:41.359686422 -0700"
+  }
+ },
+ "deck_count": 237
+}

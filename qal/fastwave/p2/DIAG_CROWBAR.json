@@ -1,0 +1,303 @@
+{
+ "_what": "p2 DIAGNOSTIC -- why the unbuffered TG-XOR wave does not restore.\n\nThe T-sweep beat decks came back with every scored bank failing its value check by\n100-520 mV, and bank 1 -- whose inputs are IDEAL 1.20 V sources -- delivering only\n62.8% of its own rail on a cell that is RESTORED, fully selected and should track\nthe rail.  Something is HOLDING THE OUTPUTS DOWN.\n\nHYPOTHESIS, read off the netlist: while the SUCCESSOR bank's rail is still at 0\n(it rises one beat later), that bank's select nodes bb cannot go high, so BOTH of\nits transmission-gate pMOS conduct.  Its cell therefore ties the predecessor's\noutput, through TG1's pMOS, to its own y node, and that y node is tied through\nTG2's pMOS to ab -- which its own grounded nMOS holds at 0.  Every predecessor\noutput is thus RESISTIVELY SHORTED TO GROUND through two series pMOS for the whole\nbeat before its successor rises, and a pass-gate output has no strength to hold\nagainst that.\n\nTHE TEST.  Hold bank 1's rail at dV and bank 1's inputs at their chain values, and\nmeasure the DC current out of each of bank 1's four outputs, with the successor's\nrail held at 0 (the chain condition) and then at dV (the control).  If the\nhypothesis is right the current is tens of microamps at rail2 = 0 and collapses at\nrail2 = dV.  A capacitive load draws NO DC current in either case.\n",
+ "W2": {
+  "bank1": {
+   "successor_rail_0_THE_CHAIN_CONDITION": {
+    "rail_V": 1.65,
+    "wall_s": 15.6,
+    "cell0": {
+     "path": "R",
+     "form": "X",
+     "want": 1,
+     "V_out": 1.40084378,
+     "I_out_uA": -78.6441637,
+     "successor_bb_V": 0.262427972
+    },
+    "cell1": {
+     "path": "R",
+     "form": "N",
+     "want": 1,
+     "V_out": 1.64990512,
+     "I_out_uA": -0.032665060999999995,
+     "successor_bb_V": -1.29038463e-06
+    },
+    "cell2": {
+     "path": "R",
+     "form": "N",
+     "want": 0,
+     "V_out": 0.00422395793,
+     "I_out_uA": -0.0174375516,
+     "successor_bb_V": -1.40837375e-05
+    },
+    "cell3": {
+     "path": "T",
+     "form": "X",
+     "want": 0,
+     "V_out": -7.41076461e-06,
+     "I_out_uA": -0.010430307,
+     "successor_bb_V": -0.0902795167
+    }
+   },
+   "successor_rail_dV_THE_CONTROL": {
+    "rail_V": 1.65,
+    "wall_s": 16.9,
+    "cell0": {
+     "path": "R",
+     "form": "X",
+     "want": 1,
+     "V_out": 1.64756805,
+     "I_out_uA": -4.30567466e-05,
+     "successor_bb_V": 1.64999998
+    },
+    "cell1": {
+     "path": "R",
+     "form": "N",
+     "want": 1,
+     "V_out": 1.64999987,
+     "I_out_uA": -2.205263e-05,
+     "successor_bb_V": 2.54552056e-08
+    },
+    "cell2": {
+     "path": "R",
+     "form": "N",
+     "want": 0,
+     "V_out": 0.00425366502,
+     "I_out_uA": 2.36100968e-05,
+     "successor_bb_V": 2.43431288e-08
+    },
+    "cell3": {
+     "path": "T",
+     "form": "X",
+     "want": 0,
+     "V_out": 3.61303154e-08,
+     "I_out_uA": 2.6152262699999998e-05,
+     "successor_bb_V": 1.64999998
+    }
+   }
+  },
+  "bank3": {
+   "successor_rail_0_THE_CHAIN_CONDITION": {
+    "rail_V": 1.65,
+    "wall_s": 18.1,
+    "cell0": {
+     "path": "R",
+     "form": "X",
+     "want": 0,
+     "V_out": 0.00424902966,
+     "I_out_uA": -0.0023453928,
+     "successor_bb_V": -0.0922856667
+    },
+    "cell1": {
+     "path": "R",
+     "form": "X",
+     "want": 1,
+     "V_out": 1.38641175,
+     "I_out_uA": -82.5051493,
+     "successor_bb_V": 0.279570078
+    },
+    "cell2": {
+     "path": "T",
+     "form": "N",
+     "want": 1,
+     "V_out": 1.19999809,
+     "I_out_uA": -0.000859470372,
+     "successor_bb_V": -1.69020228e-06
+    },
+    "cell3": {
+     "path": "R",
+     "form": "N",
+     "want": 0,
+     "V_out": 0.00425362942,
+     "I_out_uA": 2.38345071e-06,
+     "successor_bb_V": 6.90369425e-10
+    }
+   },
+   "successor_rail_dV_THE_CONTROL": {
+    "rail_V": 1.65,
+    "wall_s": 17.9,
+    "cell0": {
+     "path": "R",
+     "form": "X",
+     "want": 0,
+     "V_out": 0.00425363714,
+     "I_out_uA": 2.38287395e-05,
+     "successor_bb_V": 1.64999998
+    },
+    "cell1": {
+     "path": "R",
+     "form": "X",
+     "want": 1,
+     "V_out": 1.64756812,
+     "I_out_uA": -2.21102901e-05,
+     "successor_bb_V": 1.64999998
+    },
+    "cell2": {
+     "path": "T",
+     "form": "N",
+     "want": 1,
+     "V_out": 1.19999996,
+     "I_out_uA": -1.06388333e-05,
+     "successor_bb_V": 2.51737622e-08
+    },
+    "cell3": {
+     "path": "R",
+     "form": "N",
+     "want": 0,
+     "V_out": 0.00567328557,
+     "I_out_uA": 0.845654566,
+     "successor_bb_V": 0.00425359087
+    }
+   }
+  }
+ },
+ "W0": {
+  "bank1": {
+   "successor_rail_0_THE_CHAIN_CONDITION": {
+    "rail_V": 1.65,
+    "wall_s": 15.8,
+    "cell0": {
+     "path": "R",
+     "form": "X",
+     "want": 1,
+     "V_out": 1.40056624,
+     "I_out_uA": -78.718708,
+     "successor_bb_V": 0.26190097
+    },
+    "cell1": {
+     "path": "R",
+     "form": "N",
+     "want": 1,
+     "V_out": 1.6499106,
+     "I_out_uA": -0.0308166289,
+     "successor_bb_V": -1.26209988e-06
+    },
+    "cell2": {
+     "path": "R",
+     "form": "N",
+     "want": 0,
+     "V_out": 0.00422580949,
+     "I_out_uA": -0.0163609001,
+     "successor_bb_V": -1.34987242e-05
+    },
+    "cell3": {
+     "path": "T",
+     "form": "X",
+     "want": 0,
+     "V_out": -7.24698705e-06,
+     "I_out_uA": -0.010200619199999999,
+     "successor_bb_V": -0.0928627269
+    }
+   },
+   "successor_rail_dV_THE_CONTROL": {
+    "rail_V": 1.65,
+    "wall_s": 17.1,
+    "cell0": {
+     "path": "R",
+     "form": "X",
+     "want": 1,
+     "V_out": 1.6475681,
+     "I_out_uA": -2.87992623e-05,
+     "successor_bb_V": 1.64999998
+    },
+    "cell1": {
+     "path": "R",
+     "form": "N",
+     "want": 1,
+     "V_out": 1.64999987,
+     "I_out_uA": -2.24988665e-05,
+     "successor_bb_V": 2.51741951e-08
+    },
+    "cell2": {
+     "path": "R",
+     "form": "N",
+     "want": 0,
+     "V_out": 0.00425366504,
+     "I_out_uA": 2.36188991e-05,
+     "successor_bb_V": 2.43518957e-08
+    },
+    "cell3": {
+     "path": "T",
+     "form": "X",
+     "want": 0,
+     "V_out": 3.50786667e-08,
+     "I_out_uA": 2.47543009e-05,
+     "successor_bb_V": 1.64999998
+    }
+   }
+  },
+  "bank3": {
+   "successor_rail_0_THE_CHAIN_CONDITION": {
+    "rail_V": 1.65,
+    "wall_s": 16.1,
+    "cell0": {
+     "path": "R",
+     "form": "X",
+     "want": 0,
+     "V_out": 0.00424922499,
+     "I_out_uA": -0.0022455587800000003,
+     "successor_bb_V": -0.0949171411
+    },
+    "cell1": {
+     "path": "R",
+     "form": "X",
+     "want": 1,
+     "V_out": 1.38606596,
+     "I_out_uA": -82.5956147,
+     "successor_bb_V": 0.278862635
+    },
+    "cell2": {
+     "path": "T",
+     "form": "N",
+     "want": 1,
+     "V_out": 1.19999817,
+     "I_out_uA": -0.000827011647,
+     "successor_bb_V": -1.63726611e-06
+    },
+    "cell3": {
+     "path": "R",
+     "form": "N",
+     "want": 0,
+     "V_out": 0.0042536294,
+     "I_out_uA": 2.37519061e-06,
+     "successor_bb_V": 6.60641837e-10
+    }
+   },
+   "successor_rail_dV_THE_CONTROL": {
+    "rail_V": 1.65,
+    "wall_s": 17.0,
+    "cell0": {
+     "path": "R",
+     "form": "X",
+     "want": 0,
+     "V_out": 0.00425363713,
+     "I_out_uA": 2.38256055e-05,
+     "successor_bb_V": 1.64999998
+    },
+    "cell1": {
+     "path": "R",
+     "form": "X",
+     "want": 1,
+     "V_out": 1.64756812,
+     "I_out_uA": -2.2081104000000002e-05,
+     "successor_bb_V": 1.64999998
+    },
+    "cell2": {
+     "path": "T",
+     "form": "N",
+     "want": 1,
+     "V_out": 1.19999996,
+     "I_out_uA": -1.06403432e-05,
+     "successor_bb_V": 2.51728646e-08
+    },
+    "cell3": {
+     "path": "R",
+     "form": "N",
+     "want": 0,
+     "V_out": 0.00567328871,
+     "I_out_uA": 0.845656434,
+     "successor_bb_V": 0.00425359086
+    }
+   }
+  }
+ }
+}

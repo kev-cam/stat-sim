@@ -1,0 +1,104 @@
+{
+  "_what": "qal/fastwave PHASE 1 -- the SELF-CONSISTENT (N_bank, W_switch, L) CORNER SEARCH FOR MINIMUM BEAT. Written BEFORE any deck of this run exists; qal/fastwave/ held exactly one file (DISK_STATE_BEFORE.txt, 2026-09-29 19:46:26 -0700) at this instant. The objective is the BEAT PERIOD. Energy is reported and NEVER used as a gate.",
+  "_labels": "MEASURED = read off a .prn/.mt0 produced in this directory or in a committed one. DERIVED = arithmetic on MEASURED values. ASSUMED = neither -- and every ideal-source or lumped element is a BOOKING whose row is a BOUND.",
+  "_direction": "This run goes the OPPOSITE way from every committed deck. Every committed deck uses 8 STATIC INVERTERS per bank, a 15-30 um transfer switch and L = 15-278 nH -- a bank sized so the transfer energy amortises over many gates, with a deliberately slow hop. The sibling run qal/widebank/ (its PRE_REGISTERED.json mtime 2026-09-29 19:21:28, witnessed in DISK_STATE_BEFORE.txt) sweeps N = 8..256 UPWARD for energy. This run sweeps N DOWNWARD for speed and writes ONLY in qal/fastwave/.",
+
+  "A_THE_OBJECTIVE": {
+    "primary_metric": "t_level_ps -- the MEASURED END-TO-END level time of one bank: from the transfer switch closing to the instant ALL N cell outputs of the receiving bank are simultaneously valid. NEVER composed from t_hop + t_settle; both parts are reported separately for attribution only.",
+    "definition_inherited_verbatim": "qal/lsweep AMENDMENT A2: t_level = max(t_hop, t_valid90), where t_hop is the switch-close-to-true-current-zero time and t_valid90 is the first instant after which ALL cell outputs stay within 90% of the INSTANTANEOUS rail. t_valid95 and t_valid80 carried on every row.",
+    "secondary_metric": "t_level_fcrit_ps -- the same end-to-end time under qal/fcrit's FUNCTIONAL criterion: each output on the correct side of the receiver's MEASURED trip at the receiver's DELIVERED rail by the noise budget NB = 3*sigma_trip = 19.323 mV. The trip FRACTION is not a constant (MEASURED 0.7281 at 0.20 V falling to 0.5179 at 1.50 V, qal/fcrit/TRIP.json) so it is interpolated at the row's own delivered rail, never assumed.",
+    "energy": "E_hop_open_fJ, E_gate_drive_fJ, rails_net_fJ reported on every row. NO energy quantity appears in any gate, any ranking or any frontier."
+  },
+
+  "B_THE_CIRCULARITY TO BE SOLVED SELF-CONSISTENTLY": {
+    "statement": "t_hop = pi*sqrt(L*C_ser) wants SMALL C_ser and SMALL L. Transfer completeness wants Q = Z0/(R_s+R_on) = sqrt(L/C_ser)/(R_s+R_on) LARGE, which wants LARGE L and SMALL R_on, i.e. a WIDE switch -- whose own capacitance then joins C_ser and lengthens the hop. The three axes cannot be swept one at a time.",
+    "the_measured_fact_that_makes_it_bind": "The wall is the SWITCH, not the inductor. qal/lsweep MEASURED the effective transfer-gate channel resistance DURING the hop at 96-130 ohm at W = 15 um -- ~12x the 10 ohm series R every earlier analysis assumed -- and DIRECTLY TESTED it: dropping R_s from 10 to 1 ohm moved VBEND only 0.4885 -> 0.4922 V at L = 1 nH. R_s is not the limiter.",
+    "the_campaign_result_this_run_must_confirm_or_overturn": "qal/lsweep, MEASURED: (i) at FIXED L, widening is COUNTERPRODUCTIVE -- 30 -> 80 um degraded the level time 116.75 -> 125.18 ps; (ii) at L = 1 nH the loop Q SATURATES near 7 even at 240 um total, because each doubling of W cuts R_on and raises C_ser at similar rates so Z0 = sqrt(L/C_ser) falls as fast as R does, and VA_open only improves 0.598 -> 0.344. Both are re-tested here WITH L reduced in step, which lsweep never did.",
+    "THE_THIRD_CIRCULARITY_THE_BRIEF_DOES_NOT_NAME_AND_THIS_RUN_ASSERTS_IS_REAL": {
+      "claim_DERIVED_from_committed_MEASURED_rows": "The committed hop harness (qal/lsweep/lsw.py, inherited verbatim from swsweep -> gateb) books the SOURCE bank as a LUMPED CA = 35.979 fF while the DESTINATION bank is 8 real static cells. Fitting C_ser from the committed MEASURED t_hop (265.598 ps at L = 277.8 nH) gives C_ser_eff = 25.73 fF, and 1/25.73 = 1/35.98 + 1/C_B requires C_B = 89.9 fF. The two banks in every committed hop deck are MISMATCHED by ~2.5x.",
+      "why_it_matters_for_the_delivered_rail": "A resonant half-cycle between UNEQUAL capacitances cannot deliver the full swing even at infinite Q: it is bounded by charge, not by loss. That is visible in the committed rows -- VBEND/dV SATURATES at ~0.675 (dV = 1.0) / ~0.689 (dV = 1.2) even at Q = 23.4, never approaching 1.0, while VA_open reaches 0.098, i.e. the SOURCE is emptied. Loss alone cannot explain a delivered rail that stops at 69% when the source is 90% drained; a capacitance mismatch can.",
+      "PRE_REGISTERED_PREDICTION_P0": "Making the hop genuinely bank-to-bank SYMMETRIC (CA set to the MEASURED rail capacitance of the SAME N-cell bank) will raise the delivered-rail fraction VBEND/dV materially above the committed ~0.69 saturation at comparable Q. I predict VBEND/dV >= 0.80 at Q >= 8. FALSIFIED if the symmetric-bank rows still saturate below 0.72.",
+      "honesty": "CA remains a LUMPED BOOKING and every row carrying it is a BOUND. The booking's size is measured, not assumed (stage `cbank`), and ONE row at the located optimum is re-run with a REAL N-cell source bank (stage `realsrc`) so the booking's error is measured rather than argued."
+    }
+  },
+
+  "C_THE_BANK_CELL -- CHOSEN BEFORE ANY DECK": {
+    "chosen": "the PASS-GATE transmission-gate XOR2 (qal/pgcell/pg.py tg_xnor2 with xor_form=True), widths tgM = (wn 0.74 um, wp 1.12 um), pass-pMOS n-well on the global VGH = 1.5 V supply (pbulk = vhi, pgcell's 'fixedwell').",
+    "why_1_depth": "MEASURED depth 1 on the data path A -> Y (pgcell): one transmission gate between the data input and the output. The user's constraint is AT MOST TWO transistor levels per bank; this spends one and leaves one.",
+    "why_2_no_series_pull_up": "A QAL rail RAMPS FROM ZERO. Any series stack must wait for the rail to clear the sum of the stacked thresholds before it conducts at all. qal/strip + qal/sha256 MEASURED that the BINDING device is Vtn = 0.5240 V (NOT |Vtp| = 0.4403 V, a claim this campaign had wrong for many increments) and that the remap moved the 2-high stack to the N-side, the side that binds. The TG cell has NO stack on the data path.",
+    "why_3_uniform_bank": "XOR and XNOR are the SAME 8 devices with the two TG source taps exchanged (MEASURED, pgcell) -- so an XOR-class bank is content-uniform, which a bank that must settle as one requires.",
+    "why_4_the_SPEED_reason": "The TG data path NEVER touches the rail (pgcell: 'NO connection of the DATA path to the rail'). The XOR cell's rail load is only its two input inverters; the committed static-inverter bank puts a 2 fF load DIRECTLY on the rail through every conducting pMOS. Less rail capacitance per unit of logic is exactly what a minimum-beat corner needs. This is a PREDICTION about C_bank(N) to be MEASURED in stage `cbank`, not an assumption.",
+    "why_5_fixedwell_is_forced": "pgcell MEASURED that the naive port puts the pass-pMOS n-well on the bank rail, so a data input already at the predecessor's HIGH sits ~0.7 V ABOVE its own well for the whole ramp and FORWARD BIASES the p+/n-well junction. pbulk = vhi is the only admissible choice; the cost is body effect on |Vtp|, which is carried.",
+    "the_KNOWN_LIMITATION_stated_before_the_first_deck": "A TG cell is NOT level-restoring on its data path. pgcell MEASURED that restoring the pass-gate chain gives back the whole device saving (device-NEUTRAL, 2.38x depth) and that the unrestored pass-gate chain 'still does not compute'. Phase 1 scores ONE hop into ONE bank with a per-gate VALUE check, which is exactly what this cell is entitled to be scored on. Nothing in Phase 1 licenses a cascade claim, and no Phase 1 row will be quoted as a chain result.",
+    "the_rejected_alternative": "a static 2-level XOR. Rejected on the MEASURED N-side stack fact above and because its rail load per cell is higher; it is NOT rejected on device count (pgcell MEASURED pass-gate cells at 0.68x cells pure, which is a saving this run does not need)."
+  },
+
+  "D_THE_SWEEP -- GRID FIXED BEFORE ANY DECK": {
+    "dV": "1.65 V on every row. Chosen BEFORE any deck: below Vtn + |Vtp| = 0.9642 V the cascade is not level-restoring, so a corner search run at the committed dV = 1.0/1.2 could not produce a usable rail. dV = 1.65 V is Phase 2's value; Phase 1 must search at the swing Phase 2 will use.",
+    "N_bank": [2, 4, 8, 16],
+    "L_nH": [15, 6, 3, 1, 0.5, 0.3],
+    "W_total_um": [7.5, 15, 30, 60, 120, 240],
+    "W_convention_inherited": "1:2 n:p transmission gate plus a park device, total/15 each: wn = W/3, wp = 2W/3, park = W/15. W = 15 reproduces the committed tg15p triple exactly. The range reaches 240 um so the lsweep Q-saturation claim is re-tested at its own width, and adds 7.5 um BELOW the committed minimum because a smaller bank may want a smaller switch.",
+    "coverage_rule": "The full 4 x 6 x 6 = 144-point product is NOT promised. What IS promised: (i) the full N x L grid (24 points) at the committed W = 15 um and at one wider width; (ii) the full W ladder at every (N, L) that is a frontier candidate; (iii) the full W ladder at N = 2 and N = 8 at L = 1 nH, which is the exact cell where lsweep measured Q saturating near 7. Any point omitted is listed with its reason in RESULTS.json.",
+    "per_point_reported": ["measured effective switch resistance R_on_eff_ohm during the hop and the resulting Q -- NEITHER assumed", "t_hop_ps with the true current zero RE-PROBED at every single point", "VBEND (delivered rail) and VA_open (rail-drain measure) with the completeness gates marked", "t_settle_ps and the MEASURED END-TO-END t_level_ps, never composed", "per-gate settling percentage for all N cells and a per-gate VALUE check", "C_ser_eff_fF fitted from the point's own measured t_hop, and Z0_ohm"]
+  },
+
+  "E_THE_COMPLETENESS CONSTRAINT -- THE GATES, FIXED BEFORE ANY DECK": {
+    "K1_level_restoring_rail": "VBEND >= 0.9642 V. The delivered rail must exceed Vtn + |Vtp| or the receiving bank is not level-restoring. This is a DEVICE CONSTANT (qal/strip, qal/vtaudit) and is the physically binding form.",
+    "K2_swing_inherited": "VBEND >= 0.60*dV = 0.9900 V. The pre-registered C3 form from qal/lsweep, carried verbatim. At dV = 1.65 V it is marginally HARSHER than K1; both are reported and the HARSHER one governs.",
+    "K3_rail_drain_inherited": "VA_open <= 0.1478*dV = 0.24387 V. The pre-registered C2 form from qal/lsweep, carried verbatim. The source bank must actually be emptied or the charge was never transferred.",
+    "K4_settle": "all N cell outputs >= 90% settled against the instantaneous rail at the settle checkpoint (lsweep C1_settle_end), AND every cell output on the correct logic side (the VALUE check).",
+    "K5_instrument": "|I(L)| at the commanded switch open <= 1 uA (the true-zero gate), charge closure |dQ| <= 1%, energy closure |dE| <= 1%, and the path identity ea - esw - er at the zero <= 0.02 fJ. A row failing K5 is reported as an INSTRUMENT FAILURE, never as a result.",
+    "FEASIBLE": "a row is FEASIBLE iff K1 and K2 and K3 and K4 and K5 all pass. The FRONTIER is the minimum t_level_ps over FEASIBLE rows. Infeasible rows are reported with their numbers and their failing gate, not dropped.",
+    "no_loosening": "These five gates are the gates. If the frontier is empty, the answer is that the frontier is empty, and the R that would be required is reported instead."
+  },
+
+  "F_INSTRUMENT CHECK -- BEFORE ANY SWEEP POINT": {
+    "F1_the_comparator_anchor": "Re-run qal/fcrit/cmos.cir byte-identical in THIS directory under THIS run's own PYMS_VAE_CACHE and digit-check its committed .mt0. Pass requires T90R = 1.941745e-10 and T90R2 = 1.571428e-10 to the committed digits, i.e. 94.174 ps at 6.91 fF and 57.143 ps at 2 fF after subtracting the t = 100 ps edge. This anchor DECIDES the run, so it is checked first and under my own cache.",
+    "F2_the_hop_anchor": "Re-run the committed qal/swsweep/sw_tg15p_z.cir byte-identical here under my own cache and digit-check all eight committed tg15p headlines against qal/swsweep/sw_tg15p_z.cir.mt0: E_hop_open 8.3828171771408 fJ, VBEND 0.6758936, VBPK 0.7374377, VA_open 0.09778203952305342, cells_burn 1.6954746104994207 fJ, E_R_toC 0.049543034863200004 fJ, IZ -0.3793985 uA, IPK 194.3655 uA. This validates the PSP103 model cache AND my hop extractor together.",
+    "F3_the_known_instrument_defect_is_inherited_not_rediscovered": "qal/lsweep MEASURED that in this Xyce build '.measure tran <NAME> FIND <expr> AT=T' returns the waveform value at T - 1.0 ps, constant, verified on an 11-point offset ladder. Every .measure AT time in this run is requested LAG_PS = 1.0 ps late, and every row carries an INDEPENDENT waveform-only ledger read straight off the .prn as a cross-check. A row whose .mt0 and waveform ledgers disagree by more than 1% is an instrument failure.",
+    "gate": "If F1 or F2 fails, NO sweep point is believed and the run reports the instrument failure as its result."
+  },
+
+  "G_PRE_STATED_EXPECTATIONS -- scored honestly in RESULTS.json whether they hold or not": {
+    "P1_THE_DOMINANT_LEVER_CLAIM": {
+      "statement": "N is the DOMINANT axis and it is the only one of the three that moves speed and completeness in the SAME direction. C_ser_eff should be affine in N, C_ser_eff = c0 + c1*N, with c0 the switch-and-parasitic floor. Then t_hop ~ sqrt(c0 + c1*N) and Q ~ sqrt(L/(c0+c1*N))/(Rs+Ron): HALVING N cuts t_hop by up to sqrt(2) AND RAISES Q by up to sqrt(2). Halving L cuts t_hop by sqrt(2) but CUTS Q by sqrt(2). Widening W cuts Ron but raises c0.",
+      "therefore_I_PREDICT_THE_FRONTIER_SHAPE": "the minimum FEASIBLE beat sits at the SMALLEST N (= 2), a MODERATE W, and a MODERATE L -- NOT at the smallest L. I predict L_opt >= 3 nH and specifically that L = 0.3 and L = 0.5 nH are INFEASIBLE at every N and every W.",
+      "falsified_if": "c0 + c1*N does not fit the measured C_ser_eff(N) to 10%, or the located frontier sits at L <= 1 nH, or N = 16 beats N = 2 on t_level."
+    },
+    "P2_MY_NUMBER_FOR_THE_MINIMUM_BEAT": {
+      "DERIVED_estimate": "Taking the committed 8-static-cell bank's fitted C_ser_eff = 25.7 fF at W = 15 um and the MEASURED fact that an XOR cell's rail load is its two input inverters with NO rail-side 2 fF load, I estimate C_ser_eff(N = 2, W = 15) ~ 7-11 fF. With the MEASURED R_on_eff = 96-130 ohm and Rs = 10 ohm: at L = 15 nH, Z0 ~ 1330 ohm and Q ~ 9.5 with t_hop ~ 35 ps; at L = 6 nH, Q ~ 6.0 with t_hop ~ 22 ps; at L = 1 nH, Q ~ 2.5 with t_hop ~ 9 ps.",
+      "so_my_pre_stated_minimum_FEASIBLE_beat": "I predict the minimum FEASIBLE t_level lands in 70-95 ps, at N = 2, L between 6 and 15 nH, W between 15 and 60 um, and that it is set by the CELL SETTLE, not by the hop. I predict t_hop at the frontier point is under 40 ps and under 45% of t_level.",
+      "I_pre_state_the_brief_s_own_arithmetic_will_NOT_be_reproduced": "the brief's DERIVED ~60 ps beat (17 ps hop + 40 ps settle at 30 fF and L = 1 nH) requires Q ~ 1.8, which the MEASURED completeness relation forbids. I predict the L = 1 nH rows are FAST and INFEASIBLE at every N and every W -- exactly the trade the brief names.",
+      "falsified_if": "the minimum feasible beat is outside 70-95 ps, or the frontier point's t_hop exceeds 55% of its t_level."
+    },
+    "P3_DOES_Q_FORBID_IT": {
+      "my_pre_stated_answer": "Q does NOT forbid a beat under the 94.174 ps 6.91 fF CMOS comparator, and Q DOES forbid a beat under the 57.143 ps 2 fF comparator. I pre-state that the load-matched comparator for a bank of TG-XOR cells each carrying a 2 fF output load is the 2 fF / 57.143 ps one, and therefore that QAL LOSES at the level and the whole speed case must rest on the flop tax and the crossover depth D.",
+      "the_saturation_claim": "I predict lsweep's Q-saturates-near-7-at-240-um result is CONFIRMED at N = 8 and PARTLY OVERTURNED at N = 2 -- because the saturation mechanism is that widening raises C_ser as fast as it cuts R, and at N = 2 the bank contributes less of C_ser so the switch's own capacitance dominates SOONER, making the saturation set in at a SMALLER width and a LOWER Q. I predict max Q at N = 2, L = 1 nH is between 3 and 6 and does NOT reach 10 at any width in the ladder.",
+      "the_device_spec_to_be_delivered_either_way": "whatever the outcome, RESULTS.json states the R_on that Q = 10 would require at the frontier (N, L) and whether any width in the ladder reaches it -- so a negative result is a DEVICE SPEC and not a dead end."
+    },
+    "P4_the_widening_result": "I predict lsweep's fixed-L widening penalty (116.75 -> 125.18 ps, 30 -> 80 um) is CONFIRMED in direction at every (N, L) in this run, i.e. dt_level/dW > 0 once W exceeds the minimum passing width -- and that reducing L in step does NOT reverse it, because the added switch capacitance enters C_ser regardless of L.",
+    "P5_the_comparator_to_be_used": "Both committed comparators are reported on every frontier row: 94.174 ps at 6.91 fF and 57.143 ps at 2 fF (MEASURED, qal/fcrit/cmos.cir.mt0). The LOAD-MATCHED one is named explicitly and used for the headline. The crossover depth D* = t_reg / (beat - t_level_CMOS) is reported against both, with t_reg = 307.1 / 335.7 / 390.0 ps at 0 / 6.91 / 20 fF (OpenSTA on the vendor liberty; transistor cross-check 258.9-302 ps, i.e. the liberty figure is 1.11-1.21x OPTIMISTIC -- so D* computed from liberty is a figure that FLATTERS CMOS, which is the right direction for a QAL claim)."
+  },
+
+  "H_SIM DISCIPLINE -- inherited verbatim": {
+    "own_cache": "PYMS_VAE_CACHE = /tmp/claude-1001/-usr-local-src/4921ad0c-f17b-4b84-986a-5917c9ebd2a6/scratchpad/vae_cache_fastwave, owned by this run alone. Every geometry the sweep needs is pre-warmed in one serial deck before any parallel worker starts, so no worker ever triggers a PyMS compile on a shared cache.",
+    "own_directory": "every file this run writes is under /usr/local/src/stat-sim/qal/fastwave/. Nothing in any other qal/ directory is written. qal/widebank/ is not read or written.",
+    "devices": "sg13_lv via qal/sg13lv_compat.sp, which DECLARES ad/as/pd/ps and DISCARDS them, so the PSP103 model-card junction defaults apply and JUNCAP200 IS ENABLED. The default PD = 1.00 um is SMALLER than the 1.12 um pMOS, so the STI-edge term clips to zero and every leakage figure is a LOWER BOUND. No layout parasitics are present in any Phase 1 deck; Phase 1 numbers are therefore BOUNDS in the optimistic direction and Phase 2 adds explicit interconnect.",
+    "models": "PSP103 via .hdl + sg13g2_psp103_tt.lib, tt only. Corners, if ever taken, only via instance-level DTA. vt/gmin are RESERVED and not used.",
+    "options": ".OPTIONS TIMEINT METHOD=GEAR RELTOL=1e-6 ABSTOL=1e-15 CHGTOL=1e-17, inherited verbatim.",
+    "metering": "1 F integrators with an explicit t = 0 PEDESTAL that is ALWAYS subtracted at extraction, or INTEG-I(Vsrc) + PARAM. Never .measure INTEGRAL.",
+    "runtime": "every deck under 4 minutes. A point that cannot be measured in 4 minutes is reported as omitted with its reason, never estimated.",
+    "convergence": "the MANDATORY DC-biased companion case (dvopt AMENDMENT A2) is present in every deck: a deck of only supply-stepped cases has every node at 0 V at t = 0 and will not converge. The companion doubles as a per-deck instrument check against the committed 57.143 ps inverter.",
+    "unique_names": "no .va module name is redefined."
+  },
+
+  "I_WHAT_WOULD_MAKE_THIS_RUN_WRONG": {
+    "i1": "quoting a single-hop number as a chain result. Phase 1 measures ONE hop into ONE bank. No Phase 1 row is a beat for a wave.",
+    "i2": "treating the lumped CA source booking as a measurement. Every CA row is a BOUND and says so.",
+    "i3": "letting a t_level be composed from t_hop + t_settle. The end-to-end number is read off the waveform.",
+    "i4": "reusing a current zero across points. The true zero is RE-PROBED at every single point; the analytic pi*sqrt(LC) value read 33% early once and is used ONLY to size timesteps and run lengths.",
+    "i5": "comparing against the wrong CMOS load. The load-matched comparator is named on the frontier row and the unmatched one is reported alongside so the reader can see the difference the load makes.",
+    "i6": "declaring a frontier from rows that fail completeness. An infeasible fast row is reported as infeasible, in the same table, with its failing gate."
+  }
+}
