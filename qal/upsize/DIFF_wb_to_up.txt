@@ -1,0 +1,512 @@
+--- widebank/wb.py	2026-09-29 20:47:16.481202242 -0700
++++ upsize/up.py	2026-09-29 21:49:35.133761107 -0700
+@@ -1,28 +1,41 @@
+ #!/usr/bin/env python3
+-"""WIDEBANK -- the BANK-WIDTH SWEEP.  Phase 1 of the QAL amortisation question.
++"""UPSIZE -- the CELL-SCALE SWEEP.  Phase 2 of the QAL amortisation question.
+ 
+-Architecture, cell, switch triple, park referencing, gate phases, true-ZCS
+-probe-then-cut protocol, 1F-integrator metering and .OPTIONS are
+-qal/banktank/bt.py VERBATIM (sha256 5b3582be..., recorded in
+-DISK_STATE_BEFORE.txt).  What is NEW here and nowhere else:
+-
+-  * the bank POPULATION N is the swept axis: N in {8,16,32,64,128,256} identical
+-    inverters per bank, pattern PAT tiled N/8 times so the HIGH fraction is
+-    exactly 5/8 at every N.
+-  * C_bank(N) = CBANK8 * N/8 and C_tank(N) = m * C_bank(N).  L and RS are HELD
+-    FIXED, so t_hop grows as sqrt(N) by construction -- that is the trade under
+-    test, not an oversight.
+-  * the switch nominal total width grows as W0 * sqrt(N/8), from the pre-stated
+-    constant-Q requirement (PRE_REGISTERED.json : SCALING LAWS).
++This file is qal/widebank/wb.py (sha256 188cf264..., recorded in
++DISK_STATE_BEFORE.txt) with the CELL SCALE threaded through.  `diff wb.py up.py`
++is the audit record and is reproduced in DIFF_wb_to_up.txt.  Everything else --
++architecture, switch triple, park referencing, gate phases, true-ZCS
++probe-then-cut, 1F-integrator metering, .OPTIONS -- is untouched, and
++acceptance B0a REQUIRES that at scale = 1 this file emits decks BYTE-IDENTICAL
++to Phase 1's, which is what licenses calling the s=1 point the same experiment.
++
++WHAT IS NEW IN PHASE 2:
++  * the CELL scale s is the swept axis: WP = 1.12*s, WN = 0.74*s um, L
++    unchanged.  s in {1,2,4,8}.
++  * C_bank_nominal(N,s) = CBANK8*(N/8)*s and C_tank = m*C_bank_nominal, so the
++    nominal tank ratio is held while the cells grow.
++  * the switch grows as W ~ sqrt(N*s) from the same constant-Q argument.
++  * max timestep is NOT scaled by s (upsizing makes the cells FASTER while the
++    hop gets slower; coarsening the grid there would blur the axis under test).
++  * `scale` may be a per-bank list, for the E1 control where the measured bank
++    drives an UNSCALED load inside the real chain.
++  * stage `cellchain`: the CRUX instrument -- five cells at a FIXED rail, three
++    load conventions, which is where the driver-and-load co-scaling question is
++    actually answered.  The 3-bank rows cannot answer it (they are
++    rail-delivery-bound) and are not asked to.
++
++Inherited from Phase 1 (the bank-width sweep), unchanged:
++
++  * the pattern PAT tiled N/8 times so the HIGH fraction is exactly 5/8.
++  * L and RS are HELD FIXED, so t_hop is free to move and the trade is exposed.
+   * NBANK = 3 (ideal head / BANK UNDER TEST / real receiver), validated at N=8
+-    against the NBANK=4 committed configuration (acceptance A0b).
++    against the NBANK=4 committed configuration (Phase 1 acceptance A0b).
+   * .print carries only rails/tanks/I(L)/sw and TWO class representatives per
+-    bank; ALL N outputs of every bank are sampled by .measure.  This is a DISK
+-    decision (8.0 G free), declared in the pre-registration.
+-  * max timestep scaled as 0.25*sqrt(N/8) ps, falsified at N=64 by A8.
++    bank; ALL N outputs of every bank are sampled by .measure.
++  * the park-branch ammeter (Phase 1 A5) and the PRE-CLOSE gate-charge
++    reference (Phase 1 A6).
+ 
+-Stages:  warm | probe <N> <dv> [T H] | row <N> <T> <H> <dv> <mode> <zeros.json>
+-         [--nb K] [--wmul X] [--mstep S] [--tag S]
++Stages:  warm | cellchain | probe | row
+ """
+ import json, math, os, re, subprocess, sys, time
+ 
+@@ -32,7 +45,7 @@
+ MODEL = "/usr/local/src/kestrel/sim/models/sg13g2_psp103_tt.lib"
+ SHIM  = "/usr/local/src/stat-sim/qal/sg13lv_compat.sp"
+ CACHE = os.environ.get("PYMS_VAE_CACHE") or \
+-    "/tmp/claude-1001/-usr-local-src/4921ad0c-f17b-4b84-986a-5917c9ebd2a6/scratchpad/vae_cache_widebank"
++    "/tmp/claude-1001/-usr-local-src/4921ad0c-f17b-4b84-986a-5917c9ebd2a6/scratchpad/vae_cache_upsize"
+ ENV = dict(os.environ, PYMS_DIR="/usr/local/share/xyce/PyMS", PYMS_VAE_CACHE=CACHE)
+ 
+ # ---- inherited constants (committed banktank; NOT touched) -----------------
+@@ -55,14 +68,28 @@
+ 
+ 
+ # ------------------------------------------------------------------ geometry
+-def cbank(n):
+-    """DERIVED: bank capacitance scales with population.  A9 checks it."""
+-    return CBANK8 * n / 8.0
+-
+-
+-def wtot(n, wmul=1.0):
+-    """PRE-STATED: constant-Q requires R_on ~ 1/sqrt(N), hence W ~ sqrt(N)."""
+-    return W0 * math.sqrt(n / 8.0) * wmul
++def sc_list(scale, nb):
++    """PHASE 2: `scale` is a float (all banks) or a list of nb floats (E1, where
++    the measured bank drives an UNSCALED load inside the real chain)."""
++    if isinstance(scale, (list, tuple)):
++        s = [float(x) for x in scale]
++        if len(s) != nb:
++            raise ValueError("scale list length %d != nb %d" % (len(s), nb))
++        return s
++    return [float(scale)] * nb
++
++
++def cbank(n, scale=1.0):
++    """DERIVED: bank capacitance scales with population AND with cell width --
++    it IS the cells' rail-side junction/overlap parasitics, both ~ W.  Used
++    ONLY to size the tank; the real secant C is MEASURED per row (B9)."""
++    return CBANK8 * n / 8.0 * scale
++
++
++def wtot(n, wmul=1.0, scale=1.0):
++    """PRE-STATED: constant-Q requires R_on ~ 1/sqrt(C), and C ~ N*s, hence
++    W ~ sqrt(N*s).  The two exponents compose."""
++    return W0 * math.sqrt(n / 8.0) * wmul * math.sqrt(scale)
+ 
+ 
+ def widths(total_um):
+@@ -71,6 +98,9 @@
+ 
+ 
+ def mstep_of(n, override=None):
++    """PHASE 2: deliberately NOT scaled by s.  Upsizing makes the CELLS faster
++    while lengthening the hop; scaling the step with the hop would coarsen the
++    grid exactly where the dynamics under test sharpen.  B11 falsifies it."""
+     return override if override else 0.25 * math.sqrt(n / 8.0)
+ 
+ 
+@@ -130,7 +160,12 @@
+             '.OPTIONS TIMEINT METHOD=GEAR RELTOL=1e-6 ABSTOL=1e-15 CHGTOL=1e-17']
+ 
+ 
+-def bank_cells(k, dv, n, P):
++def bank_cells(k, dv, n, P, sc=1.0, cload=CLOAD):
++    """PHASE 2: cell widths are WP*sc / WN*sc.  cload is the output node's
++    WIRING load and is HELD FIXED in the main series -- routing capacitance
++    does not scale with transistor width.  The load that DOES scale is the next
++    bank's gates, which is structural here (bank k's outputs ARE bank k+1's
++    gate nets), so the co-scaling the crux asks about happens by construction."""
+     L = ["VMG%d gn%d 0 0" % (k, k)]
+     if k == 1:
+         for i in range(n):
+@@ -138,24 +173,26 @@
+     for i in range(n):
+         s = in_net(k, i)
+         L.append("XP%d_%d o%d_%d %s rail%d rail%d sg13_lv_pmos w=%gu l=0.13u"
+-                 % (k, i, k, i, s, k, k, WP))
++                 % (k, i, k, i, s, k, k, WP * sc))
+         L.append("XN%d_%d o%d_%d %s gn%d gn%d sg13_lv_nmos w=%gu l=0.13u"
+-                 % (k, i, k, i, s, k, k, WN))
+-        L.append("CL%d_%d o%d_%d gn%d %gf" % (k, i, k, i, k, CLOAD))
++                 % (k, i, k, i, s, k, k, WN * sc))
++        L.append("CL%d_%d o%d_%d gn%d %gf" % (k, i, k, i, k, cload))
+     return L
+ 
+ 
+ PARK_AMMETER = os.environ.get("WB_NO_PARK_AMMETER", "") == ""
+ 
+ 
+-def tank_branch(k, m, total_um, l_nh, rs, n):
+-    """committed banktank tank branch with the A6 TANK-REFERENCED park."""
++def tank_branch(k, m, total_um, l_nh, rs, n, sc=1.0, ct_fF=None):
++    """committed banktank tank branch with the A6 TANK-REFERENCED park.
++    PHASE 2: C_tank = m*cbank(n,sc) unless ct_fF overrides it (control E2)."""
++    ct = ct_fF if ct_fF is not None else m * cbank(n, sc)
+     w = widths(total_um)
+     if not PARK_AMMETER:
+         # TRANSPARENCY CONTROL: the committed wiring, park source straight on
+         # tnk{k}, no ammeter.  Used once at N=8 to prove the ammeter changes
+         # nothing measurable.
+-        return ["CT%d tnk%d 0 %gf" % (k, k, m * cbank(n)),
++        return ["CT%d tnk%d 0 %gf" % (k, k, ct),
+                 "L%d tnk%d mid%d %gn" % (k, k, k, l_nh),
+                 "R%d mid%d sw%d %g" % (k, k, k, rs),
+                 "XSWN%d sw%d gt%d rail%d 0 sg13_lv_nmos w=%gu l=0.13u"
+@@ -166,7 +203,7 @@
+                 % (k, k, k, k, k, w["park"]),
+                 "VPKA%d pks%d tnk%d 0" % (k, k, k),
+                 "RPKD%d pks%d tnk%d 1e12" % (k, k, k)]
+-    return ["CT%d tnk%d 0 %gf" % (k, k, m * cbank(n)),
++    return ["CT%d tnk%d 0 %gf" % (k, k, ct),
+             "L%d tnk%d mid%d %gn" % (k, k, k, l_nh),
+             "R%d mid%d sw%d %g" % (k, k, k, rs),
+             "XSWN%d sw%d gt%d rail%d 0 sg13_lv_nmos w=%gu l=0.13u"
+@@ -254,11 +291,17 @@
+ 
+ # --------------------------------------------------------------------- decks
+ def deck(n, m, T, H, dv, mode="free", l_nh=L_REF, rs=RS_REF, wmul=1.0,
+-         tzr=None, tzq=None, probe=None, nb=NBANK, mstep=None, P=None):
++         tzr=None, tzq=None, probe=None, nb=NBANK, mstep=None, P=None,
++         scale=1.0, cload=CLOAD, ct_fF=None):
+     P = P or pat(n)
+-    total_um = wtot(n, wmul)
+-    tzr = tzr or [TZ8 * math.sqrt(n / 8.0)] * nb
+-    tzq = tzq or [TZ8 * math.sqrt(n / 8.0)] * nb
++    SC = sc_list(scale, nb)
++    # the switch of bank k is sized for BANK k's OWN capacitance, so under the
++    # E1 control (per-bank scales) each bank gets its own constant-Q width.
++    tot_um = [wtot(n, wmul, SC[k - 1]) for k in range(1, nb + 1)]
++    tzr = tzr or [TZ8 * math.sqrt(n / 8.0) * math.sqrt(SC[k - 1])
++                  for k in range(1, nb + 1)]
++    tzq = tzq or [TZ8 * math.sqrt(n / 8.0) * math.sqrt(SC[k - 1])
++                  for k in range(1, nb + 1)]
+     S = schedule(T, H, dv, tzr, tzq, nb)
+     vt0 = dv if mode == "vfull" else vtank0(m, dv)
+     big = S["tend"] * 4.0
+@@ -266,9 +309,10 @@
+ 
+     L = head_lines() + ["VHI vhi 0 %g" % VGH]
+     for k in range(1, nb + 1):
+-        L += bank_cells(k, dv, n, P)
++        L += bank_cells(k, dv, n, P, sc=SC[k - 1], cload=cload)
+     for k in range(1, nb + 1):
+-        L += tank_branch(k, m, total_um, l_nh, rs, n)
++        L += tank_branch(k, m, tot_um[k - 1], l_nh, rs, n, sc=SC[k - 1],
++                         ct_fF=ct_fF)
+ 
+     for k in range(1, nb + 1):
+         if probe is None:
+@@ -299,10 +343,10 @@
+         tend = S["tend"]
+     elif probe[0] == "rise":
+         tend = S["c"][probe[1]] + 2.6 * TZ8 * math.sqrt(n / 8.0) \
+-               * math.sqrt(l_nh / L_REF)
++               * math.sqrt(l_nh / L_REF) * math.sqrt(SC[probe[1] - 1])
+     else:
+         tend = S["r"][probe[1]] + 2.6 * TZ8 * math.sqrt(n / 8.0) \
+-               * math.sqrt(l_nh / L_REF)
++               * math.sqrt(l_nh / L_REF) * math.sqrt(SC[probe[1] - 1])
+ 
+     L.append(".ic " + " ".join("V(tnk%d)=%g V(rail%d)=0 V(sw%d)=%g"
+                                % (k, vt0, k, k, vt0) for k in range(1, nb + 1)))
+@@ -464,11 +508,26 @@
+ 
+ 
+ # -------------------------------------------------------------------- stages
++SCALES = (1.0, 2.0, 4.0, 8.0)
++
++
++def geom_set():
++    """every (w) this study instantiates.  PyMS keys its .so on geometry and
++    sg13lv_compat.sp DISCARDS m= (Phase 1 A3), so every distinct width is its
++    own compile and the warm must cover all of them."""
++    g = set()
++    for s in SCALES:
++        g.add(round(WP * s, 6)); g.add(round(WN * s, 6))
++        for n in (8, 64):
++            for x in widths(wtot(n, 1.0, s)).values():
++                g.add(round(x, 6))
++    # E3 iso-hop and E1 per-bank controls reuse the same widths; E2 changes
++    # only C_tank.  Nothing else is instantiated.
++    return sorted(g)
++
++
+ def stage_warm():
+-    ws = sorted(set([WN, WP] + [x for n in (8, 16, 32, 64, 128, 256)
+-                                for x in widths(wtot(n)).values()]
+-                    + [x for n in (32, 256) for w in (0.5, 2.0)
+-                       for x in widths(wtot(n, w)).values()]))
++    ws = geom_set()
+     L = head_lines() + ["V1 a 0 0.5", "V2 b 0 0.5"]
+     k = 0
+     for x in ws:
+@@ -477,25 +536,94 @@
+         L.append("XWP%d e%d a b b sg13_lv_pmos w=%gu l=0.13u" % (k, k, x))
+         L.append("RP%d e%d 0 1k" % (k, k)); k += 1
+     L += [".tran 1p 10p", ".print tran V(a)", ".end"]
+-    p, msg = run("warm_wb.cir", L, timeout=1800)
++    print("warming %d geometries: %s" % (len(ws), ws), flush=True)
++    p, msg = run("warm_up.cir", L, timeout=3600)
+     print(msg, flush=True)
+     return p is not None
+ 
+ 
++# ------------------------------------------------------- THE CRUX INSTRUMENT
++NSTG = 5          # cells in the chain; stage 3 is measured
++STG_MEAS = 3
++CC_TSTEP = 0.02   # ps max step -- the cells are fast and get faster with s
++CC_EDGE = 2.0     # ps input edge (committed EDGE), two stages upstream
++
++
++def cellchain_deck(scale, rail, variant, nstg=NSTG, tsw=200.0, tend=600.0):
++    """FIVE inverters in series at a FIXED DC rail.  Stage 3 is measured, so
++    its input edge is CELL-GENERATED and its load is a REAL CELL.
++
++    variant A  REAL CHAIN    : all cells scale, CLOAD fixed 2 fF   (main series)
++    variant B  PURE COSCALE  : all cells scale, CLOAD = 2*s fF
++    variant C  FIXED LOAD    : stages 1..STG_MEAS scale, the REST stay x1
++                               (drive into a load that does NOT scale)
++
++    The input to stage 1 is an ideal PWL edge -- a BOOKING, and it is two
++    stages upstream of the measurement precisely so the measured stage never
++    sees it."""
++    sc = []
++    for j in range(1, nstg + 1):
++        if variant == "C" and j > STG_MEAS:
++            sc.append(1.0)
++        else:
++            sc.append(float(scale))
++    cl = CLOAD * float(scale) if variant == "B" else CLOAD
++
++    L = head_lines() + ["VR rail 0 %.9g" % rail, "VG gnd0 0 0"]
++    # a full HIGH->LOW->HIGH input so BOTH edges of the measured stage are seen
++    L.append("VIN s0 0 PWL(0 %.9g %gp %.9g %gp 0 %gp 0 %gp %.9g %gp %.9g)"
++             % (rail, tsw - CC_EDGE, rail, tsw, tsw + tend / 2.0 - CC_EDGE,
++                tsw + tend / 2.0, rail, tend * 2.0, rail))
++    for j in range(1, nstg + 1):
++        L.append("XP%d s%d s%d rail rail sg13_lv_pmos w=%gu l=0.13u"
++                 % (j, j, j - 1, WP * sc[j - 1]))
++        L.append("XN%d s%d s%d gnd0 gnd0 sg13_lv_nmos w=%gu l=0.13u"
++                 % (j, j, j - 1, WN * sc[j - 1]))
++        L.append("CL%d s%d gnd0 %gf" % (j, j, cl))
++    L.append(".tran 0.005p %gp 0 %gp" % (tend * 2.0, CC_TSTEP))
++    L.append(".print tran " + " ".join("V(s%d)" % j for j in range(nstg + 1)))
++    L.append(".end")
++    return L
++
++
++def stage_cellchain():
++    """runs the whole crux grid and writes CRUX_RAW.json.  Small decks."""
++    out = []
++    for rail in (1.65, 0.9422477):
++        for variant in ("A", "B", "C"):
++            for s in SCALES:
++                tag = "cc_r%d_%s_s%g" % (round(rail * 10000), variant, s)
++                lines = cellchain_deck(s, rail, variant)
++                fn = "%s.cir" % tag
++                p, msg = run(fn, lines, timeout=1800)
++                print("  %s %s" % (tag, msg), flush=True)
++                if p is None:
++                    return False
++                out.append(dict(tag=tag, rail=rail, variant=variant, scale=s,
++                                path=p))
++    open(os.path.join(HERE, "CRUX_INDEX.json"), "w").write(
++        json.dumps(out, indent=1))
++    return True
++
++
+ def do_probe(n, dv, T, H, m=10.0, l_nh=L_REF, nb=NBANK, wmul=1.0, tag="",
+-             P=None):
+-    """committed sequential true-ZCS probe, at the row's OWN T and H (A7)."""
++             P=None, scale=1.0, cload=CLOAD, ct_fF=None):
++    """committed sequential true-ZCS probe, at the row's OWN T, H AND SCALE."""
+     tg = tag or "n%d_dv%g_T%g_H%d" % (n, dv * 1000, T, H)
+     if wmul != 1.0:
+         tg += "_w%g" % wmul
++    SC = sc_list(scale, nb)
+     tzr, tzq = [], []
+     for ph in ("rise", "ret"):
+         lst = tzr if ph == "rise" else tzq
+         for k in range(1, nb + 1):
+-            padr = (tzr + [TZ8 * math.sqrt(n / 8.0)] * nb)[:nb]
+-            padq = (tzq + [TZ8 * math.sqrt(n / 8.0)] * nb)[:nb]
++            pad = [TZ8 * math.sqrt(n / 8.0) * math.sqrt(SC[j])
++                   for j in range(nb)]
++            padr = (tzr + pad)[:nb]
++            padq = (tzq + pad)[:nb]
+             lines, S = deck(n, m, T, H, dv, l_nh=l_nh, wmul=wmul, nb=nb,
+-                            tzr=padr, tzq=padq, probe=(ph, k), P=P)
++                            tzr=padr, tzq=padq, probe=(ph, k), P=P,
++                            scale=scale, cload=cload, ct_fF=ct_fF)
+             fn = "p_%s_%s%d.cir" % (tg, ph, k)
+             path = os.path.join(HERE, fn)
+             cached = (os.path.exists(path) and os.path.exists(path + ".prn")
+@@ -519,51 +647,131 @@
+             except OSError:
+                 pass
+     return dict(N=n, m=m, dv=dv, L_nH=l_nh, wmul=wmul, nb=nb, T_probe=T,
+-                H_probe=H, tzr=tzr, tzq=tzq)
++                H_probe=H, tzr=tzr, tzq=tzq, scale=scale, cload=cload,
++                ct_fF=ct_fF)
+ 
+ 
+-def tag_of(n, T, H, dv, mode, wmul=1.0, nb=NBANK, extra=""):
++def sctag(scale):
++    """PHASE 2: the scale goes in the tag, so a Phase-1 filename can never be
++    silently overwritten by a Phase-2 row and vice versa."""
++    if isinstance(scale, (list, tuple)):
++        return "_s" + "-".join("%g" % float(x) for x in scale)
++    return "" if float(scale) == 1.0 else "_s%g" % float(scale)
++
++
++def tag_of(n, T, H, dv, mode, wmul=1.0, nb=NBANK, extra="", scale=1.0):
+     t = "n%d_T%g_H%d_dv%g_%s_nb%d" % (n, T, H, dv * 1000, mode, nb)
+     if wmul != 1.0:
+         t += "_w%g" % wmul
++    t += sctag(scale)
+     if extra:
+         t += "_" + extra
+     return t
+ 
+ 
+ def do_row(n, T, H, dv, mode, z, m=10.0, l_nh=L_REF, wmul=1.0, nb=NBANK,
+-           mstep=None, extra="", P=None, timeout=5400):
++           mstep=None, extra="", P=None, timeout=10800, scale=1.0,
++           cload=CLOAD, ct_fF=None):
+     lines, S = deck(n, m, T, H, dv, mode=mode, l_nh=l_nh, wmul=wmul, nb=nb,
+-                    tzr=z["tzr"], tzq=z["tzq"], mstep=mstep, P=P)
+-    fn = "c_%s.cir" % tag_of(n, T, H, dv, mode, wmul, nb, extra)
++                    tzr=z["tzr"], tzq=z["tzq"], mstep=mstep, P=P, scale=scale,
++                    cload=cload, ct_fF=ct_fF)
++    fn = "c_%s.cir" % tag_of(n, T, H, dv, mode, wmul, nb, extra, scale)
+     p, msg = run(fn, lines, timeout=timeout)
+     print("  row %s" % msg, flush=True)
+     return (p, S, msg) if p else (None, None, msg)
+ 
+ 
++SETTLE_PAD_PS = 73.5      # committed Phase 1 beat rule: T = ceil10(t_zcs + pad)
++
++
++def ceil10(x):
++    return 10.0 * math.ceil(x / 10.0)
++
++
++def zname(n, dv, T, H, nb, scale, l_nh, extra=""):
++    s = "zeros_n%d_dv%g_T%g_H%d_nb%d%s" % (n, dv * 1000, T, H, nb,
++                                           sctag(scale))
++    if abs(l_nh - L_REF) > 1e-12:
++        s += "_L%g" % l_nh
++    if extra:
++        s += "_" + extra
++    return s + ".json"
++
++
++def do_point(n, dv=1.65, H=4, mode="free", scale=1.0, nb=NBANK, l_nh=L_REF,
++             wmul=1.0, mstep=None, cload=CLOAD, ct_fF=None, extra="",
++             T_force=None, maxit=3):
++    """probe -> T rule -> re-probe until T is SELF-CONSISTENT -> row.
++
++    The committed rule is T = ceil10(t_zcs + 73.5), but the probe's own
++    schedule depends on T, so a single pass is circular.  Phase 1's instrument
++    check found exactly that trap in the committed rows (their zeros came from
++    a probe at a DIFFERENT T, which is why their own A6_zcs_pass is False).
++    This iterates to a fixed point, so the zeros used by the row were probed at
++    the T the row actually runs."""
++    SC = sc_list(scale, nb)
++    T = T_force or ceil10(TZ8 * math.sqrt(n / 8.0) * math.sqrt(SC[1])
++                          * math.sqrt(l_nh / L_REF) + SETTLE_PAD_PS)
++    z = None
++    for it in range(maxit):
++        print("[point n=%d s=%s L=%g] probe pass %d at T=%g"
++              % (n, scale, l_nh, it + 1, T), flush=True)
++        z = do_probe(n, dv, T, H, nb=nb, l_nh=l_nh, wmul=wmul, scale=scale,
++                     cload=cload, ct_fF=ct_fF)
++        if z is None:
++            return None
++        Tnew = T_force or ceil10(z["tzr"][1] + SETTLE_PAD_PS)
++        if abs(Tnew - T) < 1e-9:
++            break
++        print("  T %g -> %g, re-probing" % (T, Tnew), flush=True)
++        T = Tnew
++    z["T_used"] = T
++    z["T_selfconsistent"] = bool(abs(
++        (T_force or ceil10(z["tzr"][1] + SETTLE_PAD_PS)) - T) < 1e-9)
++    z["cload"] = cload
++    z["ct_fF"] = ct_fF
++    nm = zname(n, dv, T, H, nb, scale, l_nh, extra)
++    open(os.path.join(HERE, nm), "w").write(json.dumps(z, indent=1))
++    p, S, msg = do_row(n, T, H, dv, mode, z, nb=nb, l_nh=l_nh, wmul=wmul,
++                       mstep=mstep, extra=extra, scale=scale, cload=cload,
++                       ct_fF=ct_fF)
++    if p is None:
++        return None
++    return dict(T=T, zeros=nm, deck=p,
++                tag=tag_of(n, T, H, dv, mode, wmul, nb, extra, scale))
++
++
++def _pscale(s):
++    return [float(x) for x in s.split(",")] if "," in s else float(s)
++
++
+ if __name__ == "__main__":
+     a = sys.argv[1:]
+     if not a or a[0] == "warm":
+         sys.exit(0 if stage_warm() else 1)
+-    if a[0] == "probe":
+-        n, dv, T, H = int(a[1]), float(a[2]), float(a[3]), int(a[4])
+-        nb = int(a[5]) if len(a) > 5 else NBANK
+-        wmul = float(a[6]) if len(a) > 6 else 1.0
+-        z = do_probe(n, dv, T, H, nb=nb, wmul=wmul)
+-        if z is None:
++    if a[0] == "cellchain":
++        sys.exit(0 if stage_cellchain() else 1)
++    if a[0] == "point":
++        # point N SCALE [L_nH] [mstep] [cload] [ct_fF] [extra] [T_force]
++        n = int(a[1]); sc = _pscale(a[2])
++        l_nh = float(a[3]) if len(a) > 3 and a[3] != "-" else L_REF
++        ms = float(a[4]) if len(a) > 4 and a[4] != "-" else None
++        cl = float(a[5]) if len(a) > 5 and a[5] != "-" else CLOAD
++        ct = float(a[6]) if len(a) > 6 and a[6] != "-" else None
++        ex = a[7] if len(a) > 7 and a[7] != "-" else ""
++        tf = float(a[8]) if len(a) > 8 and a[8] != "-" else None
++        r = do_point(n, scale=sc, l_nh=l_nh, mstep=ms, cload=cl, ct_fF=ct,
++                     extra=ex, T_force=tf)
++        if r is None:
+             sys.exit(1)
+-        nm = "zeros_n%d_dv%g_T%g_H%d_nb%d%s.json" % (
+-            n, dv * 1000, T, H, nb, ("_w%g" % wmul) if wmul != 1.0 else "")
+-        open(os.path.join(HERE, nm), "w").write(json.dumps(z, indent=1))
+-        print(nm, flush=True)
+-    elif a[0] == "row":
++        print("POINT OK %s" % json.dumps(r), flush=True)
++    elif a[0] == "deckonly":
++        # deckonly N T H dv mode zerosfile [scale] -- B0a transcription check
+         n, T, H, dv, mode, zf = (int(a[1]), float(a[2]), int(a[3]),
+                                  float(a[4]), a[5], a[6])
+-        nb = int(a[7]) if len(a) > 7 else NBANK
+-        wmul = float(a[8]) if len(a) > 8 else 1.0
+-        ms = float(a[9]) if len(a) > 9 and a[9] != "-" else None
+-        extra = a[10] if len(a) > 10 else ""
+-        z = json.load(open(os.path.join(HERE, zf)))
+-        p, S, msg = do_row(n, T, H, dv, mode, z, nb=nb, wmul=wmul,
+-                           mstep=ms, extra=extra)
+-        sys.exit(0 if p else 1)
++        sc = _pscale(a[7]) if len(a) > 7 else 1.0
++        z = json.load(open(a[6]) if os.path.exists(a[6])
++                      else os.path.join(HERE, zf))
++        lines, S = deck(n, 10.0, T, H, dv, mode=mode, tzr=z["tzr"],
++                        tzq=z["tzq"], scale=sc)
++        sys.stdout.write("\n".join(lines) + "\n")

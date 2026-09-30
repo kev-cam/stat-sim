@@ -1,0 +1,3268 @@
+{
+ "_doc": "qal/upsize PHASE 2 -- CELL UPSIZING AS THE SPEED LEVER. The answers to (a) crux, (b) numbers, (c) trade curve and exchange rate, (d) per-gate settling and VALUE. MEASURED unless a key says DERIVED or ASSUMED.",
+ "A_THE_CRUX": {
+  "question": "in a real chain the driver AND its load both scale -- does t_settle fall at all, or is it scale-INVARIANT?",
+  "ANSWER": "NEARLY SCALE-INVARIANT. 8x the cell width buys only 28.2% less settling time in the real chain (32.2% with the QAL-bias load), and the whole improvement is the 1/s dilution of a FIXED load component. t = a + b/s fits with R2 = 0.9995. Even INFINITE width can only reach 0.676 of the x1 delay. The area-for-speed trade does NOT exist at the cell level.",
+  "instrument": "CELL-LEVEL, fixed DC rail, 5-stage inverter chain, stage 3 measured so its input edge is cell-generated and its load is a real cell. NEVER quoted as a chain result.",
+  "why_a_separate_instrument": "in the 3-bank chain t_settle is measured from the bank's own rail start and is RAIL-DELIVERY-BOUND; at N=64 the gates finish 65.93 ps BEFORE the rail does, so the chain cannot isolate cell drive.",
+  "variants": {
+   "A": "REAL CHAIN: all cells scale, CLOAD 2 fF fixed (wiring does not scale with transistor width).  This is what the main series runs.",
+   "B": "PURE COSCALE: all cells scale, CLOAD = 2*s fF.  Everything the driver sees scales -- the theoretical invariance test.",
+   "C": "FIXED LOAD: stages 1-3 scale, stages 4-5 stay x1.  Drive into a load that does NOT scale -- the naive 1/s expectation, and the positive control that proves the instrument can see a speed-up.",
+   "D": "QAL-BIAS LOAD: like A, but the load stages' rail is tied to 0 V, because in the real chain bank k+1's rail has NOT been raised while bank k settles, so the gate load is UNPOWERED and its C_gg bias differs.  Both driver and load still scale, so the scaling conclusion should be unchanged -- measured, not assumed."
+  },
+  "worst_edge_t_set90_ps": {
+   "r9422_A": {
+    "scales": [
+     1.0,
+     2.0,
+     4.0,
+     8.0
+    ],
+    "values": [
+     139.58824915168714,
+     116.85327310238927,
+     102.99824491237933,
+     97.37380726946304
+    ],
+    "ratio_x1_to_x8": 0.697578828169478,
+    "pct_change": -30.242117183052198,
+    "exponent_in_s": -0.17319061351668938,
+    "fit": {
+     "a_const_ps": 91.4505485764692,
+     "b_over_s_ps": 48.5394027360224,
+     "R2": 0.9982921759259497,
+     "pred_ps": [
+      139.9899513124916,
+      115.7202499444804,
+      103.5853992604748,
+      97.51797391847201
+     ],
+     "asymptote_ps": 91.4505485764692,
+     "fixed_load_share_at_s1_pct": 34.67349069053582
+    }
+   },
+   "r9422_B": {
+    "scales": [
+     1.0,
+     2.0,
+     4.0,
+     8.0
+    ],
+    "values": [
+     139.58824915168714,
+     130.53456422640528,
+     122.60410859390635,
+     119.40235681503822
+    ],
+    "ratio_x1_to_x8": 0.8553897447720445,
+    "pct_change": -14.461025522795545,
+    "exponent_in_s": -0.07511539465777674,
+    "fit": {
+     "a_const_ps": 117.21014204407489,
+     "b_over_s_ps": 23.087312325726657,
+     "R2": 0.9823662339183519,
+     "pred_ps": [
+      140.29745436980153,
+      128.7537982069382,
+      122.98197012550655,
+      120.09605608479072
+     ],
+     "asymptote_ps": 117.21014204407489,
+     "fixed_load_share_at_s1_pct": 16.45597379470066
+    }
+   },
+   "r9422_C": {
+    "scales": [
+     1.0,
+     2.0,
+     4.0,
+     8.0
+    ],
+    "values": [
+     139.58824915168714,
+     98.21939524444241,
+     74.30433586573304,
+     62.44335463107262
+    ],
+    "ratio_x1_to_x8": 0.44733962214267015,
+    "pct_change": -55.266037785732976,
+    "exponent_in_s": -0.3868525157607698,
+    "fit": {
+     "a_const_ps": 52.4145170225427,
+     "b_over_s_ps": 87.94520896147435,
+     "R2": 0.9985940856978759,
+     "pred_ps": [
+      140.35972598401705,
+      96.38712150327987,
+      74.40081926291128,
+      63.40766814272699
+     ],
+     "asymptote_ps": 52.4145170225427,
+     "fixed_load_share_at_s1_pct": 62.65701100861994
+    }
+   },
+   "r9422_D": {
+    "scales": [
+     1.0,
+     2.0,
+     4.0,
+     8.0
+    ],
+    "values": [
+     136.1224038959466,
+     109.21304435257707,
+     93.52180565824506,
+     85.87855716885684
+    ],
+    "ratio_x1_to_x8": 0.6308921581674631,
+    "pct_change": -36.91078418325369,
+    "exponent_in_s": -0.22151155877514342,
+    "fit": {
+     "a_const_ps": 79.31513291721524,
+     "b_over_s_ps": 57.32014901694113,
+     "R2": 0.9985302878461817,
+     "pred_ps": [
+      136.63528193415635,
+      107.9752074256858,
+      93.64517017145052,
+      86.48015154433288
+     ],
+     "asymptote_ps": 79.31513291721524,
+     "fixed_load_share_at_s1_pct": 41.951206310360845
+    }
+   },
+   "r16500_A": {
+    "scales": [
+     1.0,
+     2.0,
+     4.0,
+     8.0
+    ],
+    "values": [
+     72.73431326986872,
+     60.59160762306519,
+     55.073723682862266,
+     52.21849049508626
+    ],
+    "ratio_x1_to_x8": 0.7179347428680343,
+    "pct_change": -28.206525713196573,
+    "exponent_in_s": -0.1593584598522303,
+    "fit": {
+     "a_const_ps": 49.16033359430163,
+     "b_over_s_ps": 23.454293703293818,
+     "R2": 0.9995133558583746,
+     "pred_ps": [
+      72.61462729759545,
+      60.88748044594854,
+      55.02390702012509,
+      52.092120307213364
+     ],
+     "asymptote_ps": 49.16033359430163,
+     "fixed_load_share_at_s1_pct": 32.29968200094375
+    }
+   },
+   "r16500_B": {
+    "scales": [
+     1.0,
+     2.0,
+     4.0,
+     8.0
+    ],
+    "values": [
+     72.73431326986872,
+     66.93147585332011,
+     64.72208047631403,
+     63.62054273381645
+    ],
+    "ratio_x1_to_x8": 0.8746977853185041,
+    "pct_change": -12.530221468149595,
+    "exponent_in_s": -0.06438115128932231,
+    "fit": {
+     "a_const_ps": 62.09337695175671,
+     "b_over_s_ps": 10.471949080689322,
+     "R2": 0.9952607799881211,
+     "pred_ps": [
+      72.56532603244604,
+      67.32935149210137,
+      64.71136422192905,
+      63.40237058684288
+     ],
+     "asymptote_ps": 62.09337695175671,
+     "fixed_load_share_at_s1_pct": 14.431064605162819
+    }
+   },
+   "r16500_C": {
+    "scales": [
+     1.0,
+     2.0,
+     4.0,
+     8.0
+    ],
+    "values": [
+     72.73431326986872,
+     46.41689176961961,
+     34.60306798569317,
+     28.809778949692145
+    ],
+    "ratio_x1_to_x8": 0.3960961154991344,
+    "pct_change": -60.390388450086554,
+    "exponent_in_s": -0.4453591806785593,
+    "fit": {
+     "a_const_ps": 22.03977909118834,
+     "b_over_s_ps": 50.349298992064156,
+     "R2": 0.9991377886571903,
+     "pred_ps": [
+      72.3890780832525,
+      47.21442858722042,
+      34.62710383920438,
+      28.33344146519636
+     ],
+     "asymptote_ps": 22.03977909118834,
+     "fixed_load_share_at_s1_pct": 69.55372319310234
+    }
+   },
+   "r16500_D": {
+    "scales": [
+     1.0,
+     2.0,
+     4.0,
+     8.0
+    ],
+    "values": [
+     66.8572665040704,
+     53.876850812295004,
+     48.13941331877169,
+     45.305318847094355
+    ],
+    "ratio_x1_to_x8": 0.6776424047240412,
+    "pct_change": -32.235759527595874,
+    "exponent_in_s": -0.18713464602926946,
+    "fit": {
+     "a_const_ps": 41.96484343038226,
+     "b_over_s_ps": 24.703720405707944,
+     "R2": 0.9989329423275854,
+     "pred_ps": [
+      66.6685638360902,
+      54.31670363323623,
+      48.140773531809245,
+      45.05280848109575
+     ],
+     "asymptote_ps": 41.96484343038226,
+     "fixed_load_share_at_s1_pct": 37.05452612785232
+    }
+   }
+  },
+  "capacitance_decomposition": {
+   "rail_1.65V": {
+    "rail_V": 1.65,
+    "k_ps_per_fF_DERIVED": 6.491172311302248,
+    "b_A_ps": 23.454293703293818,
+    "b_B_ps": 10.471949080689322,
+    "b_C_ps": 50.349298992064156,
+    "b_D_ps": 24.703720405707944,
+    "a_A_ps": 49.16033359430163,
+    "a_B_ps": 62.09337695175671,
+    "a_C_ps": 22.03977909118834,
+    "a_D_ps": 41.96484343038226,
+    "C_wire_fF_EXACT": 2.0,
+    "C_junction_fixed_fF_DERIVED": 1.6132600674389521,
+    "C_gate_x1_fF_DERIVED": 4.143320189165447,
+    "C_gate_per_um_fF_DERIVED": 2.2275914995513153,
+    "C_junction_from_variantD_fF_DERIVED": 1.8057409695771773,
+    "total_x1_load_fF_DERIVED": 7.7565802566043995,
+    "fixed_share_of_x1_load_pct": 46.58315840105457,
+    "NOT_A_CHECK": {
+     "_warning": "the three-equation solve above is ALGEBRAICALLY CLOSED (3 equations, 3 unknowns, C_wire given), so comparing b_C/k against the sum of parts is TAUTOLOGICAL and returns ~1e-16. It is NOT a validation and must not be quoted as one. I originally wrote it up as a cross-check; that was wrong and is corrected here.",
+     "b_C_over_k_fF": 7.756580256604399,
+     "sum_of_parts_fF": 7.7565802566043995,
+     "tautological_rel_error": 1.145064436023696e-16
+    },
+    "GENUINE_CHECKS": {
+     "_what": "checks that do NOT enter the solve",
+     "variantD_not_used_in_solve": {
+      "b_D_ps": 24.703720405707944,
+      "implied_fixed_load_fF": 3.8057409695771773,
+      "variantA_fixed_load_fF": 3.613260067438952,
+      "rel_diff": 0.053270702508456315,
+      "note": "D differs from A only in the load cell's BIAS (rail tied to 0 V), so its fixed load should be CLOSE to A's but not identical"
+     },
+     "C_gate_vs_first_principles": {
+      "derived_fF_per_um": 2.2275914995513153,
+      "expected_fF_per_um": "1.95 (C_ox at L=0.13 um) plus overlap, so ~2.0-2.5",
+      "note": "EXTERNAL check, independent of these decks"
+     },
+     "C_junction_vs_model_file": {
+      "zero_bias_total_fF": 3.0,
+      "basis": "AD=1e-12 m^2 x CJORBOT=1e-3 F/m^2 = 1.0 fF, plus LSDRAIN=1e-6 m x CJORSTI=1e-9 F/m = 1.0 fF, plus LGDRAIN=1e-6 m x CJORGAT=1e-9 F/m = 1.0 fF, read straight out of the .so.params of the 1.12 um device",
+      "derived_at_reverse_bias_fF": 1.6132600674389521,
+      "note": "EXTERNAL check: at reverse bias the cap falls as (1+V/VBIR)^-P, so 1.5-2.1 fF is the expected window and the DERIVED value lands in it. The W-INDEPENDENCE is not inferred at all -- AS/AD/PS/PD are literally the same constants in every .params file."
+     }
+    }
+   },
+   "rail_0.942248V": {
+    "rail_V": 0.9422477,
+    "k_ps_per_fF_DERIVED": 12.726045205147873,
+    "b_A_ps": 48.5394027360224,
+    "b_B_ps": 23.087312325726657,
+    "b_C_ps": 87.94520896147435,
+    "b_D_ps": 57.32014901694113,
+    "a_A_ps": 91.4505485764692,
+    "a_B_ps": 117.21014204407489,
+    "a_C_ps": 52.4145170225427,
+    "a_D_ps": 79.31513291721524,
+    "C_wire_fF_EXACT": 2.0,
+    "C_junction_fixed_fF_DERIVED": 1.814178085457963,
+    "C_gate_x1_fF_DERIVED": 3.096469137915031,
+    "C_gate_per_um_fF_DERIVED": 1.6647683537177584,
+    "C_junction_from_variantD_fF_DERIVED": 2.5041604122036505,
+    "total_x1_load_fF_DERIVED": 6.910647223372994,
+    "fixed_share_of_x1_load_pct": 55.1927766267356,
+    "NOT_A_CHECK": {
+     "_warning": "the three-equation solve above is ALGEBRAICALLY CLOSED (3 equations, 3 unknowns, C_wire given), so comparing b_C/k against the sum of parts is TAUTOLOGICAL and returns ~1e-16. It is NOT a validation and must not be quoted as one. I originally wrote it up as a cross-check; that was wrong and is corrected here.",
+     "b_C_over_k_fF": 6.910647223372994,
+     "sum_of_parts_fF": 6.910647223372994,
+     "tautological_rel_error": 0.0
+    },
+    "GENUINE_CHECKS": {
+     "_what": "checks that do NOT enter the solve",
+     "variantD_not_used_in_solve": {
+      "b_D_ps": 57.32014901694113,
+      "implied_fixed_load_fF": 4.5041604122036505,
+      "variantA_fixed_load_fF": 3.814178085457963,
+      "rel_diff": 0.18089934745740702,
+      "note": "D differs from A only in the load cell's BIAS (rail tied to 0 V), so its fixed load should be CLOSE to A's but not identical"
+     },
+     "C_gate_vs_first_principles": {
+      "derived_fF_per_um": 1.6647683537177584,
+      "expected_fF_per_um": "1.95 (C_ox at L=0.13 um) plus overlap, so ~2.0-2.5",
+      "note": "EXTERNAL check, independent of these decks"
+     },
+     "C_junction_vs_model_file": {
+      "zero_bias_total_fF": 3.0,
+      "basis": "AD=1e-12 m^2 x CJORBOT=1e-3 F/m^2 = 1.0 fF, plus LSDRAIN=1e-6 m x CJORSTI=1e-9 F/m = 1.0 fF, plus LGDRAIN=1e-6 m x CJORGAT=1e-9 F/m = 1.0 fF, read straight out of the .so.params of the 1.12 um device",
+      "derived_at_reverse_bias_fF": 1.814178085457963,
+      "note": "EXTERNAL check: at reverse bias the cap falls as (1+V/VBIR)^-P, so 1.5-2.1 fF is the expected window and the DERIVED value lands in it. The W-INDEPENDENCE is not inferred at all -- AS/AD/PS/PD are literally the same constants in every .params file."
+     }
+    }
+   },
+   "_bias_consistency": {
+    "_what": "the junction capacitance must be LARGER at the LOWER rail (less reverse bias) and the gate capacitance SMALLER (less inversion).  Both signs are predictions, not fits.",
+    "rails_V": [
+     1.65,
+     0.9422477
+    ],
+    "C_junction_fF": [
+     1.6132600674389521,
+     1.814178085457963
+    ],
+    "C_junction_sign_correct": true,
+    "C_gate_fF": [
+     4.143320189165447,
+     3.096469137915031
+    ],
+    "C_gate_sign_correct": true
+   }
+  },
+  "shim_caveat": "qal/sg13lv_compat.sp declares ad/as/pd/ps and DISCARDS them, so AS=AD=1e-12 m^2 and PS=PD=1e-6 m for EVERY device at EVERY width. Junction capacitance is therefore W-INDEPENDENT in every deck in this campaign. That makes the measured benefit of upsizing an UPPER BOUND.",
+  "B10_gate": "PASSED: R2 = 0.99951 on variant A at 1.65 V, against the pre-registered 0.98. The mechanism claim stands rather than being withdrawn."
+ },
+ "B_CHAIN_NUMBERS": {
+  "_keys": {
+   "level_floor_ps": "MEASURED max(t_hop_rise, t_settle90) -- the rule-independent floor under any beat, and the right quantity for the trade curve",
+   "stage_time_ps": "MEASURED bank3-valid minus bank2-valid, the end-to-end level time actually observed",
+   "T_ps": "the SCHEDULED beat from the committed analytic rule T = ceil10(TZ8*sqrt(N/8)*sqrt(s)*sqrt(L/15) + 73.5), which reproduces Phase 1's accepted T at every N"
+  },
+  "N8": [
+   {
+    "tag": "n8_T200_H4_dv1650_free_nb3",
+    "N": 8,
+    "scale": 1.0,
+    "sc_scored": 1.0,
+    "scale_per_bank": [
+     1.0,
+     1.0,
+     1.0
+    ],
+    "WP_um": 1.12,
+    "WN_um": 0.74,
+    "L_nH": 15.0,
+    "ct_override": null,
+    "cload_fF": 2.0,
+    "extra": "",
+    "T_ps": 200.0,
+    "ACCEPTED": true,
+    "A1": true,
+    "A1_fail": 0,
+    "A2": true,
+    "A2_mV": 461.0893429727245,
+    "A2_3sig": true,
+    "A4": true,
+    "A5": true,
+    "A6": true,
+    "worst_gate_pct": 99.25766964593686,
+    "worst_per_bank": {
+     "1": 99.30255546592319,
+     "2": 99.25766964593686,
+     "3": 99.95695836780486
+    },
+    "intra_class_spread": {
+     "1": {
+      "in_HIGH": 0.0,
+      "in_LOW": 0.0
+     },
+     "2": {
+      "in_HIGH": 0.0,
+      "in_LOW": 0.0
+     },
+     "3": {
+      "in_HIGH": 0.0,
+      "in_LOW": 0.0
+     }
+    },
+    "sep_min_mV": 951.7074140000001,
+    "t_hop_ps": 126.56568784500337,
+    "t_hop_ret_ps": 155.82110796290203,
+    "t_set90_ps": 150.73273300000005,
+    "t_setfunc_ps": 102.05063999999999,
+    "bound_by": "SETTLE",
+    "slack_ps": -24.167045154996686,
+    "level_floor_ps": 150.73273300000005,
+    "stage_time_ps": 185.10582399999987,
+    "stage_time_func_ps": 185.76864200000006,
+    "x_CMOS_level_floor": 1.6242751400862074,
+    "x_CMOS_level_T": 2.1551724137931036,
+    "x_CMOS_level_stage": 1.9946748275862056,
+    "E_tank_fJ": 47.13277827629565,
+    "E_sw_cond_fJ": 7.382770000000001,
+    "E_seriesR_fJ": 0.8593661996728189,
+    "E_park_fJ": 12.396501,
+    "E_gd_floor_fJ": 0.9523000000000009,
+    "E_gd_conv_fJ": 163.58548605000001,
+    "Qg_fC": 109.05699070000001,
+    "Qg_per_um": 3.635233023333334,
+    "Qg_cycle_fC": 215.94147470000001,
+    "Qg_cycle_per_um": 7.198049156666667,
+    "Qg_return_over_rise": 0.9800791614911118,
+    "E_gd_conv_cycle_fJ": 323.91221205,
+    "E_g_convcyc": 46.380623790786956,
+    "x_convcyc": 11.203049224827767,
+    "E_g_convcyc_t": 46.820961290786954,
+    "x_convcyc_t": 11.309410939803612,
+    "W_um": 30.0,
+    "I_pk_uA": 1184.855,
+    "E_g_floor": 6.010634784536957,
+    "x_floor": 1.4518441508543376,
+    "E_g_floor_t": 6.450972284536957,
+    "x_floor_t": 1.558205865830183,
+    "E_g_conv": 26.33978304078696,
+    "x_conv": 6.362266434972696,
+    "E_g_conv_t": 26.780120540786957,
+    "x_conv_t": 6.4686281499485405,
+    "x_floor_iso": 0.7679175673940298,
+    "x_floor_inv": 0.5961098059661173,
+    "E_well_per_gate_fJ": 1.6812083333333396,
+    "E_g_floor_wellcharged": 7.691843117870296,
+    "x_floor_wellcharged": 1.8579331202585259,
+    "E_bank_floor_fJ": 48.085078276295654,
+    "recycle_pct": 17.332336380288087,
+    "m_eff": 3.621213565201035,
+    "C_meas_fF": 99.35619469050175,
+    "C_nom_fF": 35.979,
+    "C_tank_fF": 359.78999999999996,
+    "A9_ratio": 2.7615051749771187,
+    "tank_um2": 239.85999999999999,
+    "tank_um2_pg": 29.982499999999998,
+    "cells_um2_pg": 0.24180000000000001,
+    "switch_um2_pg": 0.52,
+    "total_um2_pg": 30.7443,
+    "wall_s": null,
+    "mstep_ps": 0.25
+   },
+   {
+    "tag": "n8_T260_H4_dv1650_free_nb3_s2",
+    "N": 8,
+    "scale": 2.0,
+    "sc_scored": 2.0,
+    "scale_per_bank": [
+     2.0,
+     2.0,
+     2.0
+    ],
+    "WP_um": 2.24,
+    "WN_um": 1.48,
+    "L_nH": 15.0,
+    "ct_override": null,
+    "cload_fF": 2.0,
+    "extra": "",
+    "T_ps": 260.0,
+    "ACCEPTED": true,
+    "A1": true,
+    "A1_fail": 0,
+    "A2": true,
+    "A2_mV": 514.5084252329996,
+    "A2_3sig": true,
+    "A4": true,
+    "A5": true,
+    "A6": true,
+    "worst_gate_pct": 99.00161997941788,
+    "worst_per_bank": {
+     "1": 99.10941832947836,
+     "2": 99.00161997941788,
+     "3": 99.99998231129074
+    },
+    "intra_class_spread": {
+     "1": {
+      "in_HIGH": 0.0,
+      "in_LOW": 0.0
+     },
+     "2": {
+      "in_HIGH": 0.0,
+      "in_LOW": 0.0
+     },
+     "3": {
+      "in_HIGH": 0.0,
+      "in_LOW": 0.0
+     }
+    },
+    "sep_min_mV": 1016.549,
+    "t_hop_ps": 161.65787409178904,
+    "t_hop_ret_ps": 187.48782714516187,
+    "t_set90_ps": 151.23186600000008,
+    "t_setfunc_ps": 99.23186599999997,
+    "bound_by": "HOP",
+    "slack_ps": 10.426008091788958,
+    "level_floor_ps": 161.65787409178904,
+    "stage_time_ps": 229.1104979999999,
+    "stage_time_func_ps": 240.61049800000012,
+    "x_CMOS_level_floor": 1.742002953575313,
+    "x_CMOS_level_T": 2.8017241379310347,
+    "x_CMOS_level_stage": 2.468863124999999,
+    "E_tank_fJ": 71.04979334418879,
+    "E_sw_cond_fJ": 13.591409999999996,
+    "E_seriesR_fJ": 1.6662439996743081,
+    "E_park_fJ": 17.164136,
+    "E_gd_floor_fJ": -0.5864999999999996,
+    "E_gd_conv_fJ": 233.14878614999998,
+    "Qg_fC": 155.4325241,
+    "Qg_per_um": 3.663579726935049,
+    "Qg_cycle_fC": 308.1211331,
+    "Qg_cycle_per_um": 7.262484754729759,
+    "Qg_return_over_rise": 0.9823465834072498,
+    "E_gd_conv_cycle_fJ": 462.18169965000004,
+    "E_g_convcyc": 66.6539366242736,
+    "x_convcyc": 16.09998469185353,
+    "E_g_convcyc_t": 67.0942741242736,
+    "x_convcyc_t": 16.206346406829372,
+    "W_um": 42.42640687119285,
+    "I_pk_uA": 1473.643,
+    "E_g_floor": 8.807911668023598,
+    "x_floor": 2.127514895657874,
+    "E_g_floor_t": 9.248249168023598,
+    "x_floor_t": 2.2338766106337196,
+    "E_g_conv": 38.0248224367736,
+    "x_conv": 9.184739719027439,
+    "E_g_conv_t": 38.465159936773595,
+    "x_conv_t": 9.291101434003284,
+    "x_floor_iso": 1.125297134893421,
+    "x_floor_inv": 0.8735321149273139,
+    "E_well_per_gate_fJ": 2.482916666666673,
+    "E_g_floor_wellcharged": 11.290828334690271,
+    "x_floor_wellcharged": 2.727253220939679,
+    "E_bank_floor_fJ": 70.46329334418878,
+    "recycle_pct": 27.063337053571416,
+    "m_eff": 4.675912081049646,
+    "C_meas_fF": 153.89083189059212,
+    "C_nom_fF": 71.958,
+    "C_tank_fF": 719.5799999999999,
+    "A9_ratio": 2.1386201935933755,
+    "tank_um2": 479.71999999999997,
+    "tank_um2_pg": 59.964999999999996,
+    "cells_um2_pg": 0.48360000000000003,
+    "switch_um2_pg": 0.7353910524340095,
+    "total_um2_pg": 61.18399105243401,
+    "wall_s": null,
+    "mstep_ps": 0.25
+   },
+   {
+    "tag": "n8_T330_H4_dv1650_free_nb3_s4",
+    "N": 8,
+    "scale": 4.0,
+    "sc_scored": 4.0,
+    "scale_per_bank": [
+     4.0,
+     4.0,
+     4.0
+    ],
+    "WP_um": 4.48,
+    "WN_um": 2.96,
+    "L_nH": 15.0,
+    "ct_override": null,
+    "cload_fF": 2.0,
+    "extra": "",
+    "T_ps": 330.0,
+    "ACCEPTED": true,
+    "A1": true,
+    "A1_fail": 0,
+    "A2": true,
+    "A2_mV": 533.7680657145971,
+    "A2_3sig": true,
+    "A4": true,
+    "A5": true,
+    "A6": true,
+    "worst_gate_pct": 98.9521801198855,
+    "worst_per_bank": {
+     "1": 99.08339907155407,
+     "2": 98.9521801198855,
+     "3": 99.99998587507393
+    },
+    "intra_class_spread": {
+     "1": {
+      "in_HIGH": 0.0,
+      "in_LOW": 0.0
+     },
+     "2": {
+      "in_HIGH": 0.0,
+      "in_LOW": 0.0
+     },
+     "3": {
+      "in_HIGH": 0.0,
+      "in_LOW": 0.0
+     }
+    },
+    "sep_min_mV": 1042.29028,
+    "t_hop_ps": 209.13791985541582,
+    "t_hop_ret_ps": 235.37005273407476,
+    "t_set90_ps": 161.96209999999996,
+    "t_setfunc_ps": 104.96209999999996,
+    "bound_by": "HOP",
+    "slack_ps": 47.17581985541585,
+    "level_floor_ps": 209.13791985541582,
+    "stage_time_ps": 288.4135480000001,
+    "stage_time_func_ps": 306.163548,
+    "x_CMOS_level_floor": 2.253641377752326,
+    "x_CMOS_level_T": 3.556034482758621,
+    "x_CMOS_level_stage": 3.1079046120689666,
+    "E_tank_fJ": 115.79507509519203,
+    "E_sw_cond_fJ": 24.462390000000028,
+    "E_seriesR_fJ": 3.449438999676607,
+    "E_park_fJ": 25.530250000000002,
+    "E_gd_floor_fJ": -1.530433333333334,
+    "E_gd_conv_fJ": 333.059802,
+    "Qg_fC": 222.03986799999998,
+    "Qg_per_um": 3.7006644666666664,
+    "Qg_cycle_fC": 440.592338,
+    "Qg_cycle_per_um": 7.343205633333333,
+    "Qg_return_over_rise": 0.9842938206034243,
+    "E_gd_conv_cycle_fJ": 660.888507,
+    "E_g_convcyc": 97.085447761899,
+    "x_convcyc": 23.45059124683551,
+    "E_g_convcyc_t": 97.525785261899,
+    "x_convcyc_t": 23.556952961811355,
+    "W_um": 60.0,
+    "I_pk_uA": 1872.009,
+    "E_g_floor": 14.283080220232337,
+    "x_floor": 3.4500193768677145,
+    "E_g_floor_t": 14.723417720232337,
+    "x_floor_t": 3.55638109184356,
+    "E_g_conv": 56.106859636899,
+    "x_conv": 13.552381554806523,
+    "E_g_conv_t": 56.547197136899,
+    "x_conv_t": 13.658743269782368,
+    "x_floor_iso": 1.8248036373515186,
+    "x_floor_inv": 1.416536602853521,
+    "E_well_per_gate_fJ": 3.587249999999982,
+    "E_g_floor_wellcharged": 17.87033022023232,
+    "x_floor_wellcharged": 4.316504884114087,
+    "E_bank_floor_fJ": 114.2646417618587,
+    "recycle_pct": 32.20904883902742,
+    "m_eff": 5.874219138244461,
+    "C_meas_fF": 244.9959673159384,
+    "C_nom_fF": 143.916,
+    "C_tank_fF": 1439.1599999999999,
+    "A9_ratio": 1.7023539239274188,
+    "tank_um2": 959.4399999999999,
+    "tank_um2_pg": 119.92999999999999,
+    "cells_um2_pg": 0.9672000000000001,
+    "switch_um2_pg": 1.04,
+    "total_um2_pg": 121.9372,
+    "wall_s": null,
+    "mstep_ps": 0.25
+   },
+   {
+    "tag": "n8_T440_H4_dv1650_free_nb3_s8",
+    "N": 8,
+    "scale": 8.0,
+    "sc_scored": 8.0,
+    "scale_per_bank": [
+     8.0,
+     8.0,
+     8.0
+    ],
+    "WP_um": 8.96,
+    "WN_um": 5.92,
+    "L_nH": 15.0,
+    "ct_override": null,
+    "cload_fF": 2.0,
+    "extra": "",
+    "T_ps": 440.0,
+    "ACCEPTED": true,
+    "A1": true,
+    "A1_fail": 0,
+    "A2": true,
+    "A2_mV": 545.2982511848913,
+    "A2_3sig": true,
+    "A4": true,
+    "A5": true,
+    "A6": true,
+    "worst_gate_pct": 99.0343360528555,
+    "worst_per_bank": {
+     "1": 99.16304834187406,
+     "2": 99.0343360528555,
+     "3": 99.99999219355765
+    },
+    "intra_class_spread": {
+     "1": {
+      "in_HIGH": 0.0,
+      "in_LOW": 0.0
+     },
+     "2": {
+      "in_HIGH": 0.0,
+      "in_LOW": 0.0
+     },
+     "3": {
+      "in_HIGH": 0.0,
+      "in_LOW": 0.0
+     }
+    },
+    "sep_min_mV": 1057.6857100000002,
+    "t_hop_ps": 273.30326523587837,
+    "t_hop_ret_ps": 300.9534275423166,
+    "t_set90_ps": 179.05317100000002,
+    "t_setfunc_ps": 118.05317100000002,
+    "bound_by": "HOP",
+    "slack_ps": 94.25009423587835,
+    "level_floor_ps": 273.30326523587837,
+    "stage_time_ps": 389.57409899999993,
+    "stage_time_func_ps": 410.07409899999993,
+    "x_CMOS_level_floor": 2.945078289179724,
+    "x_CMOS_level_T": 4.741379310344827,
+    "x_CMOS_level_stage": 4.197996756465517,
+    "E_tank_fJ": 201.15398651053806,
+    "E_sw_cond_fJ": 43.108070000000055,
+    "E_seriesR_fJ": 7.64432499968013,
+    "E_park_fJ": 39.638942,
+    "E_gd_floor_fJ": -2.1430333333333382,
+    "E_gd_conv_fJ": 475.59669750000006,
+    "Qg_fC": 317.06446500000004,
+    "Qg_per_um": 3.736640554579746,
+    "Qg_cycle_fC": 629.3707615,
+    "Qg_cycle_per_um": 7.417205555619854,
+    "Qg_return_over_rise": 0.9849930565382026,
+    "E_gd_conv_cycle_fJ": 944.05614225,
+    "E_g_convcyc": 143.15126609506726,
+    "x_convcyc": 34.57760050605489,
+    "E_g_convcyc_t": 143.59160359506726,
+    "x_convcyc_t": 34.68396222103074,
+    "W_um": 84.8528137423857,
+    "I_pk_uA": 2424.48,
+    "E_g_floor": 24.87636914715059,
+    "x_floor": 6.008784818152317,
+    "E_g_floor_t": 25.31670664715059,
+    "x_floor_t": 6.115146533128162,
+    "E_g_conv": 84.59383550131727,
+    "x_conv": 20.433293599351998,
+    "E_g_conv_t": 85.03417300131727,
+    "x_conv_t": 20.539655314327845,
+    "x_floor_iso": 3.1782002343946143,
+    "x_floor_inv": 2.4671350226766164,
+    "E_well_per_gate_fJ": 5.114958333333333,
+    "E_g_floor_wellcharged": 29.991327480483925,
+    "x_floor_wellcharged": 7.244282000116891,
+    "E_bank_floor_fJ": 199.01095317720473,
+    "recycle_pct": 34.70893398107412,
+    "m_eff": 7.077662029636851,
+    "C_meas_fF": 406.67666638324687,
+    "C_nom_fF": 287.832,
+    "C_tank_fF": 2878.3199999999997,
+    "A9_ratio": 1.4128959475779166,
+    "tank_um2": 1918.8799999999999,
+    "tank_um2_pg": 239.85999999999999,
+    "cells_um2_pg": 1.9344000000000001,
+    "switch_um2_pg": 1.470782104868019,
+    "total_um2_pg": 243.26518210486802,
+    "wall_s": null,
+    "mstep_ps": 0.25
+   }
+  ],
+  "N64": [
+   {
+    "tag": "n64_T440_H4_dv1650_free_nb3",
+    "N": 64,
+    "scale": 1.0,
+    "sc_scored": 1.0,
+    "scale_per_bank": [
+     1.0,
+     1.0,
+     1.0
+    ],
+    "WP_um": 1.12,
+    "WN_um": 0.74,
+    "L_nH": 15.0,
+    "ct_override": null,
+    "cload_fF": 2.0,
+    "extra": "",
+    "T_ps": 440.0,
+    "ACCEPTED": true,
+    "A1": true,
+    "A1_fail": 0,
+    "A2": true,
+    "A2_mV": 438.5049808044904,
+    "A2_3sig": true,
+    "A4": true,
+    "A5": true,
+    "A6": true,
+    "worst_gate_pct": 99.39687536515079,
+    "worst_per_bank": {
+     "1": 99.4628644608928,
+     "2": 99.39687536515079,
+     "3": 99.99997858802945
+    },
+    "intra_class_spread": {
+     "1": {
+      "in_HIGH": 0.0,
+      "in_LOW": 0.0
+     },
+     "2": {
+      "in_HIGH": 0.0,
+      "in_LOW": 0.0
+     },
+     "3": {
+      "in_HIGH": 0.0,
+      "in_LOW": 0.0
+     }
+    },
+    "sep_min_mV": 941.4719719999999,
+    "t_hop_ps": 295.8342590866064,
+    "t_hop_ret_ps": 319.2211759975121,
+    "t_set90_ps": 229.90618599999993,
+    "t_setfunc_ps": 156.36705799999993,
+    "bound_by": "HOP",
+    "slack_ps": 65.92807308660645,
+    "level_floor_ps": 295.8342590866064,
+    "stage_time_ps": 400.3863140000001,
+    "stage_time_func_ps": 417.35688200000016,
+    "x_CMOS_level_floor": 3.1878691711918794,
+    "x_CMOS_level_T": 4.741379310344827,
+    "x_CMOS_level_stage": 4.314507693965519,
+    "E_tank_fJ": 267.1474882266289,
+    "E_sw_cond_fJ": 55.28747000000004,
+    "E_seriesR_fJ": 9.51238499968013,
+    "E_park_fJ": 25.740921999999998,
+    "E_gd_floor_fJ": -4.528466666666672,
+    "E_gd_conv_fJ": 468.994461,
+    "Qg_fC": 312.662974,
+    "Qg_per_um": 3.68476848568922,
+    "Qg_cycle_fC": 622.146564,
+    "Qg_cycle_per_um": 7.332067571605173,
+    "Qg_return_over_rise": 0.9898312743612553,
+    "E_gd_conv_cycle_fJ": 933.219846,
+    "E_g_convcyc": 18.755739597291075,
+    "x_convcyc": 4.5303718834036415,
+    "E_g_convcyc_t": 18.810781784791075,
+    "x_convcyc_t": 4.543667097775622,
+    "W_um": 84.8528137423857,
+    "I_pk_uA": 2680.58,
+    "E_g_floor": 4.103422211874411,
+    "x_floor": 0.9911647854769109,
+    "E_g_floor_t": 4.15846439937441,
+    "x_floor_t": 1.0044599998488914,
+    "E_g_conv": 11.502217956666076,
+    "x_conv": 2.778313516102917,
+    "E_g_conv_t": 11.557260144166076,
+    "x_conv_t": 2.7916087304748975,
+    "x_floor_iso": 0.5242524485167132,
+    "x_floor_inv": 0.40696038042610017,
+    "E_well_per_gate_fJ": 0.6073906250000011,
+    "E_g_floor_wellcharged": 4.710812836874411,
+    "x_floor_wellcharged": 1.137877496829568,
+    "E_bank_floor_fJ": 262.6190215599623,
+    "recycle_pct": 27.76510051763535,
+    "m_eff": 5.6457152111176745,
+    "C_meas_fF": 509.8238030731597,
+    "C_nom_fF": 287.832,
+    "C_tank_fF": 2878.3199999999997,
+    "A9_ratio": 1.77125477039787,
+    "tank_um2": 1918.8799999999999,
+    "tank_um2_pg": 29.982499999999998,
+    "cells_um2_pg": 0.24180000000000001,
+    "switch_um2_pg": 0.18384776310850237,
+    "total_um2_pg": 30.408147763108502,
+    "wall_s": null,
+    "mstep_ps": 0.7071067811865476
+   },
+   {
+    "tag": "n64_T580_H4_dv1650_free_nb3_s2",
+    "N": 64,
+    "scale": 2.0,
+    "sc_scored": 2.0,
+    "scale_per_bank": [
+     2.0,
+     2.0,
+     2.0
+    ],
+    "WP_um": 2.24,
+    "WN_um": 1.48,
+    "L_nH": 15.0,
+    "ct_override": null,
+    "cload_fF": 2.0,
+    "extra": "",
+    "T_ps": 580.0,
+    "ACCEPTED": true,
+    "A1": true,
+    "A1_fail": 0,
+    "A2": true,
+    "A2_mV": 504.3374891280702,
+    "A2_3sig": true,
+    "A4": true,
+    "A5": true,
+    "A6": true,
+    "worst_gate_pct": 99.40210065662676,
+    "worst_per_bank": {
+     "1": 99.45173306679604,
+     "2": 99.40210065662676,
+     "3": 99.99999230384255
+    },
+    "intra_class_spread": {
+     "1": {
+      "in_HIGH": 0.0,
+      "in_LOW": 0.0
+     },
+     "2": {
+      "in_HIGH": 0.0,
+      "in_LOW": 0.0
+     },
+     "3": {
+      "in_HIGH": 0.0,
+      "in_LOW": 0.0
+     }
+    },
+    "sep_min_mV": 1018.881056,
+    "t_hop_ps": 380.11852756444387,
+    "t_hop_ret_ps": 408.3775912375163,
+    "t_set90_ps": 235.27558,
+    "t_setfunc_ps": 162.44356400000004,
+    "bound_by": "HOP",
+    "slack_ps": 144.84294756444388,
+    "level_floor_ps": 380.11852756444387,
+    "stage_time_ps": 527.42084,
+    "stage_time_func_ps": 550.0482559999999,
+    "x_CMOS_level_floor": 4.096104822892714,
+    "x_CMOS_level_T": 6.25,
+    "x_CMOS_level_stage": 5.683414224137931,
+    "E_tank_fJ": 413.08796341813223,
+    "E_sw_cond_fJ": 89.27985000000001,
+    "E_seriesR_fJ": 20.995049999685474,
+    "E_park_fJ": 51.749989,
+    "E_gd_floor_fJ": -4.84156666666667,
+    "E_gd_conv_fJ": 673.6814175,
+    "Qg_fC": 449.120945,
+    "Qg_per_um": 3.7426745416666662,
+    "Qg_cycle_fC": 893.9758360999999,
+    "Qg_cycle_per_um": 7.449798634166665,
+    "Qg_return_over_rise": 0.9905013249827392,
+    "E_gd_conv_cycle_fJ": 1340.9637541499999,
+    "E_g_convcyc": 27.407058087002063,
+    "x_convcyc": 6.620062339855571,
+    "E_g_convcyc_t": 27.462100274502063,
+    "x_convcyc_t": 6.633357554227552,
+    "W_um": 120.00000000000001,
+    "I_pk_uA": 3399.712,
+    "E_g_floor": 6.3788499492416495,
+    "x_floor": 1.5407850118941184,
+    "E_g_floor_t": 6.433892136741649,
+    "x_floor_t": 1.5540802262660989,
+    "E_g_conv": 16.980771576845815,
+    "x_conv": 4.101635646581115,
+    "E_g_conv_t": 17.035813764345814,
+    "x_conv_t": 4.114930860953096,
+    "x_floor_iso": 0.8149606674481288,
+    "x_floor_inv": 0.6326278574289306,
+    "E_well_per_gate_fJ": 0.8797916666666649,
+    "E_g_floor_wellcharged": 7.2586416159083145,
+    "x_floor_wellcharged": 1.7532950763063564,
+    "E_bank_floor_fJ": 408.24639675146557,
+    "recycle_pct": 36.425330882379455,
+    "m_eff": 7.130349259221737,
+    "C_meas_fF": 807.3433419204383,
+    "C_nom_fF": 575.664,
+    "C_tank_fF": 5756.639999999999,
+    "A9_ratio": 1.4024558456329357,
+    "tank_um2": 3837.7599999999998,
+    "tank_um2_pg": 59.964999999999996,
+    "cells_um2_pg": 0.48360000000000003,
+    "switch_um2_pg": 0.26000000000000006,
+    "total_um2_pg": 60.7086,
+    "wall_s": null,
+    "mstep_ps": 0.7071067811865476
+   },
+   {
+    "tag": "n64_T790_H4_dv1650_free_nb3_s4",
+    "N": 64,
+    "scale": 4.0,
+    "sc_scored": 4.0,
+    "scale_per_bank": [
+     4.0,
+     4.0,
+     4.0
+    ],
+    "WP_um": 4.48,
+    "WN_um": 2.96,
+    "L_nH": 15.0,
+    "ct_override": null,
+    "cload_fF": 2.0,
+    "extra": "",
+    "T_ps": 790.0,
+    "ACCEPTED": true,
+    "A1": true,
+    "A1_fail": 0,
+    "A2": true,
+    "A2_mV": 539.7258762871149,
+    "A2_3sig": true,
+    "A4": true,
+    "A5": true,
+    "A6": true,
+    "worst_gate_pct": 99.4723264372812,
+    "worst_per_bank": {
+     "1": 99.50890393487806,
+     "2": 99.4723264372812,
+     "3": 99.99999706622815
+    },
+    "intra_class_spread": {
+     "1": {
+      "in_HIGH": 0.0,
+      "in_LOW": 0.0
+     },
+     "2": {
+      "in_HIGH": 0.0,
+      "in_LOW": 0.0
+     },
+     "3": {
+      "in_HIGH": 0.0,
+      "in_LOW": 0.0
+     }
+    },
+    "sep_min_mV": 1056.7724460000002,
+    "t_hop_ps": 495.8461721585802,
+    "t_hop_ret_ps": 531.6073721110242,
+    "t_set90_ps": 263.87746000000016,
+    "t_setfunc_ps": 185.38858000000005,
+    "bound_by": "HOP",
+    "slack_ps": 231.96871215858005,
+    "level_floor_ps": 495.8461721585802,
+    "stage_time_ps": 722.5054499999999,
+    "stage_time_func_ps": 746.54709,
+    "x_CMOS_level_floor": 5.34316995860539,
+    "x_CMOS_level_T": 8.512931034482758,
+    "x_CMOS_level_stage": 7.7856190732758614,
+    "E_tank_fJ": 742.6527507073797,
+    "E_sw_cond_fJ": 147.35852999999997,
+    "E_seriesR_fJ": 49.43605999969343,
+    "E_park_fJ": 86.208562,
+    "E_gd_floor_fJ": -4.932399999999999,
+    "E_gd_conv_fJ": 962.194929,
+    "Qg_fC": 641.463286,
+    "Qg_per_um": 3.7798586617733814,
+    "Qg_cycle_fC": 1275.1886860000002,
+    "Qg_cycle_per_um": 7.514121393024693,
+    "Qg_return_over_rise": 0.9879371334745415,
+    "E_gd_conv_cycle_fJ": 1912.7830290000002,
+    "E_g_convcyc": 41.49118405792781,
+    "x_convcyc": 10.022025134765173,
+    "E_g_convcyc_t": 41.54622624542781,
+    "x_convcyc_t": 10.035320349137153,
+    "W_um": 169.7056274847714,
+    "I_pk_uA": 4481.269,
+    "E_g_floor": 11.526880479802807,
+    "x_floor": 2.784270647295364,
+    "E_g_floor_t": 11.581922667302807,
+    "x_floor_t": 2.797565861667345,
+    "E_g_conv": 26.638244995427808,
+    "x_conv": 6.434358694547781,
+    "E_g_conv_t": 26.693287182927808,
+    "x_conv_t": 6.447653908919761,
+    "x_floor_iso": 1.472672077908292,
+    "x_floor_inv": 1.1431881544170748,
+    "E_well_per_gate_fJ": 1.2591145833333306,
+    "E_g_floor_wellcharged": 12.785995063136138,
+    "x_floor_wellcharged": 3.088404604622256,
+    "E_bank_floor_fJ": 737.7203507073797,
+    "recycle_pct": 36.6964981729598,
+    "m_eff": 8.446541691209513,
+    "C_meas_fF": 1363.076205730696,
+    "C_nom_fF": 1151.328,
+    "C_tank_fF": 11513.279999999999,
+    "A9_ratio": 1.1839164909831916,
+    "tank_um2": 7675.5199999999995,
+    "tank_um2_pg": 119.92999999999999,
+    "cells_um2_pg": 0.9672000000000001,
+    "switch_um2_pg": 0.36769552621700474,
+    "total_um2_pg": 121.264895526217,
+    "wall_s": null,
+    "mstep_ps": 0.7071067811865476
+   },
+   {
+    "tag": "n64_T1090_H4_dv1650_free_nb3_s8",
+    "N": 64,
+    "scale": 8.0,
+    "sc_scored": 8.0,
+    "scale_per_bank": [
+     8.0,
+     8.0,
+     8.0
+    ],
+    "WP_um": 8.96,
+    "WN_um": 5.92,
+    "L_nH": 15.0,
+    "ct_override": null,
+    "cload_fF": 2.0,
+    "extra": "",
+    "T_ps": 1090.0,
+    "ACCEPTED": true,
+    "A1": true,
+    "A1_fail": 0,
+    "A2": true,
+    "A2_mV": 555.206991587062,
+    "A2_3sig": true,
+    "A4": true,
+    "A5": true,
+    "A6": true,
+    "worst_gate_pct": 99.55640599683778,
+    "worst_per_bank": {
+     "1": 99.58822503068355,
+     "2": 99.55640599683778,
+     "3": 99.99999875070043
+    },
+    "intra_class_spread": {
+     "1": {
+      "in_HIGH": 0.0,
+      "in_LOW": 0.0
+     },
+     "2": {
+      "in_HIGH": 0.0,
+      "in_LOW": 0.0
+     },
+     "3": {
+      "in_HIGH": 0.0,
+      "in_LOW": 0.0
+     }
+    },
+    "sep_min_mV": 1071.5409100000002,
+    "t_hop_ps": 658.7695410407498,
+    "t_hop_ret_ps": 703.6281724157298,
+    "t_set90_ps": 316.08998999999994,
+    "t_setfunc_ps": 221.33764999999994,
+    "bound_by": "HOP",
+    "slack_ps": 342.67955104074986,
+    "level_floor_ps": 658.7695410407498,
+    "stage_time_ps": 997.9544999999998,
+    "stage_time_func_ps": 1028.36011,
+    "x_CMOS_level_floor": 7.098809709490839,
+    "x_CMOS_level_T": 11.745689655172415,
+    "x_CMOS_level_stage": 10.753820043103447,
+    "E_tank_fJ": 1417.0986727614957,
+    "E_sw_cond_fJ": 251.8870599999998,
+    "E_seriesR_fJ": 120.83759999970489,
+    "E_park_fJ": 128.454505,
+    "E_gd_floor_fJ": -6.051900000000004,
+    "E_gd_conv_fJ": 1368.341277,
+    "Qg_fC": 912.2275179999999,
+    "Qg_per_um": 3.800947991666666,
+    "Qg_cycle_fC": 1810.790775,
+    "Qg_cycle_per_um": 7.544961562499999,
+    "Qg_return_over_rise": 0.9850209945102754,
+    "E_gd_conv_cycle_fJ": 2716.1861625,
+    "E_g_convcyc": 64.58257555096087,
+    "x_convcyc": 15.599655930183786,
+    "E_g_convcyc_t": 64.63761773846088,
+    "x_convcyc_t": 15.612951144555769,
+    "W_um": 240.00000000000003,
+    "I_pk_uA": 6084.411,
+    "E_g_floor": 22.04760582439837,
+    "x_floor": 5.325508653236322,
+    "E_g_floor_t": 22.10264801189837,
+    "x_floor_t": 5.338803867608302,
+    "E_g_conv": 43.52249921502337,
+    "x_conv": 10.51268096981241,
+    "E_g_conv_t": 43.57754140252337,
+    "x_conv_t": 10.52597618418439,
+    "x_floor_iso": 2.816797965348137,
+    "x_floor_inv": 2.1865900193787993,
+    "E_well_per_gate_fJ": 1.7989583333333403,
+    "E_g_floor_wellcharged": 23.846564157731713,
+    "x_floor_wellcharged": 5.760039651626018,
+    "E_bank_floor_fJ": 1411.0467727614957,
+    "recycle_pct": 34.63908475536343,
+    "m_eff": 9.569391458382293,
+    "C_meas_fF": 2406.272133410314,
+    "C_nom_fF": 2302.656,
+    "C_tank_fF": 23026.559999999998,
+    "A9_ratio": 1.0449985292680775,
+    "tank_um2": 15351.039999999999,
+    "tank_um2_pg": 239.85999999999999,
+    "cells_um2_pg": 1.9344000000000001,
+    "switch_um2_pg": 0.5200000000000001,
+    "total_um2_pg": 242.3144,
+    "wall_s": null,
+    "mstep_ps": 0.7071067811865476
+   }
+  ]
+ },
+ "C_TRADE_AND_EXCHANGE_RATE": {
+  "ANSWER": "THERE IS NO POSITIVE EXCHANGE RATE ON THIS AXIS. Every upsized point is worse than s=1 on ALL THREE axes at once -- slower, more energy, more area. The 'trade curve' is a single dominated ray, not a frontier. Pareto frontier in (level_floor, E/gate) = {s=1} at both N.",
+  "per_N": {
+   "8": {
+    "N": 8,
+    "scales": [
+     1.0,
+     2.0,
+     4.0,
+     8.0
+    ],
+    "n_accepted": 4,
+    "n_points": 4,
+    "all_accepted": true,
+    "exp_LEVEL_FLOOR_measured": {
+     "exponent_end_to_end": 0.2861699836038794,
+     "per_step": [
+      {
+       "s_from": 1.0,
+       "s_to": 2.0,
+       "exponent": 0.101,
+       "v_from": 150.73273300000005,
+       "v_to": 161.65787409178904
+      },
+      {
+       "s_from": 2.0,
+       "s_to": 4.0,
+       "exponent": 0.3715,
+       "v_from": 161.65787409178904,
+       "v_to": 209.13791985541582
+      },
+      {
+       "s_from": 4.0,
+       "s_to": 8.0,
+       "exponent": 0.386,
+       "v_from": 209.13791985541582,
+       "v_to": 273.30326523587837
+      }
+     ],
+     "v_first": 150.73273300000005,
+     "v_last": 273.30326523587837,
+     "ratio": 1.8131646643458543
+    },
+    "exp_stage_time_measured": {
+     "exponent_end_to_end": 0.3578491582856378,
+     "per_step": [
+      {
+       "s_from": 1.0,
+       "s_to": 2.0,
+       "exponent": 0.3077,
+       "v_from": 185.10582399999987,
+       "v_to": 229.1104979999999
+      },
+      {
+       "s_from": 2.0,
+       "s_to": 4.0,
+       "exponent": 0.3321,
+       "v_from": 229.1104979999999,
+       "v_to": 288.4135480000001
+      },
+      {
+       "s_from": 4.0,
+       "s_to": 8.0,
+       "exponent": 0.4338,
+       "v_from": 288.4135480000001,
+       "v_to": 389.57409899999993
+      }
+     ],
+     "v_first": 185.10582399999987,
+     "v_last": 389.57409899999993,
+     "ratio": 2.104602062655793
+    },
+    "exp_T_scheduled": {
+     "exponent_end_to_end": 0.3791678412499784,
+     "per_step": [
+      {
+       "s_from": 1.0,
+       "s_to": 2.0,
+       "exponent": 0.3785,
+       "v_from": 200.0,
+       "v_to": 260.0
+      },
+      {
+       "s_from": 2.0,
+       "s_to": 4.0,
+       "exponent": 0.344,
+       "v_from": 260.0,
+       "v_to": 330.0
+      },
+      {
+       "s_from": 4.0,
+       "s_to": 8.0,
+       "exponent": 0.415,
+       "v_from": 330.0,
+       "v_to": 440.0
+      }
+     ],
+     "v_first": 200.0,
+     "v_last": 440.0,
+     "ratio": 2.2
+    },
+    "exp_t_hop": {
+     "exponent_end_to_end": 0.37020545179063225,
+     "per_step": [
+      {
+       "s_from": 1.0,
+       "s_to": 2.0,
+       "exponent": 0.3531,
+       "v_from": 126.56568784500337,
+       "v_to": 161.65787409178904
+      },
+      {
+       "s_from": 2.0,
+       "s_to": 4.0,
+       "exponent": 0.3715,
+       "v_from": 161.65787409178904,
+       "v_to": 209.13791985541582
+      },
+      {
+       "s_from": 4.0,
+       "s_to": 8.0,
+       "exponent": 0.386,
+       "v_from": 209.13791985541582,
+       "v_to": 273.30326523587837
+      }
+     ],
+     "v_first": 126.56568784500337,
+     "v_last": 273.30326523587837,
+     "ratio": 2.159378816560258
+    },
+    "exp_t_settle90": {
+     "exponent_end_to_end": 0.08279844109901295,
+     "per_step": [
+      {
+       "s_from": 1.0,
+       "s_to": 2.0,
+       "exponent": 0.0048,
+       "v_from": 150.73273300000005,
+       "v_to": 151.23186600000008
+      },
+      {
+       "s_from": 2.0,
+       "s_to": 4.0,
+       "exponent": 0.0989,
+       "v_from": 151.23186600000008,
+       "v_to": 161.96209999999996
+      },
+      {
+       "s_from": 4.0,
+       "s_to": 8.0,
+       "exponent": 0.1447,
+       "v_from": 161.96209999999996,
+       "v_to": 179.05317100000002
+      }
+     ],
+     "v_first": 150.73273300000005,
+     "v_last": 179.05317100000002,
+     "ratio": 1.187885122470379
+    },
+    "exp_E_per_gate_floor_timer0": {
+     "exponent_end_to_end": 0.6830622211756185,
+     "per_step": [
+      {
+       "s_from": 1.0,
+       "s_to": 2.0,
+       "exponent": 0.5513,
+       "v_from": 6.010634784536957,
+       "v_to": 8.807911668023598
+      },
+      {
+       "s_from": 2.0,
+       "s_to": 4.0,
+       "exponent": 0.6974,
+       "v_from": 8.807911668023598,
+       "v_to": 14.283080220232337
+      },
+      {
+       "s_from": 4.0,
+       "s_to": 8.0,
+       "exponent": 0.8005,
+       "v_from": 14.283080220232337,
+       "v_to": 24.87636914715059
+      }
+     ],
+     "v_first": 6.010634784536957,
+     "v_last": 24.87636914715059,
+     "ratio": 4.138725781700776
+    },
+    "exp_E_per_gate_conventional": {
+     "exponent_end_to_end": 0.5611030244163548,
+     "per_step": [
+      {
+       "s_from": 1.0,
+       "s_to": 2.0,
+       "exponent": 0.5297,
+       "v_from": 26.33978304078696,
+       "v_to": 38.0248224367736
+      },
+      {
+       "s_from": 2.0,
+       "s_to": 4.0,
+       "exponent": 0.5612,
+       "v_from": 38.0248224367736,
+       "v_to": 56.106859636899
+      },
+      {
+       "s_from": 4.0,
+       "s_to": 8.0,
+       "exponent": 0.5924,
+       "v_from": 56.106859636899,
+       "v_to": 84.59383550131727
+      }
+     ],
+     "v_first": 26.33978304078696,
+     "v_last": 84.59383550131727,
+     "ratio": 3.211637520716262
+    },
+    "exp_E_per_gate_conventional_FULL_CYCLE": {
+     "exponent_end_to_end": 0.541982100553603,
+     "per_step": [
+      {
+       "s_from": 1.0,
+       "s_to": 2.0,
+       "exponent": 0.5232,
+       "v_from": 46.380623790786956,
+       "v_to": 66.6539366242736
+      },
+      {
+       "s_from": 2.0,
+       "s_to": 4.0,
+       "exponent": 0.5426,
+       "v_from": 66.6539366242736,
+       "v_to": 97.085447761899
+      },
+      {
+       "s_from": 4.0,
+       "s_to": 8.0,
+       "exponent": 0.5602,
+       "v_from": 97.085447761899,
+       "v_to": 143.15126609506726
+      }
+     ],
+     "v_first": 46.380623790786956,
+     "v_last": 143.15126609506726,
+     "ratio": 3.086445467848641
+    },
+    "exp_E_tank_loss_bank": {
+     "exponent_end_to_end": 0.6978325667256446,
+     "per_step": [
+      {
+       "s_from": 1.0,
+       "s_to": 2.0,
+       "exponent": 0.5921,
+       "v_from": 47.13277827629565,
+       "v_to": 71.04979334418879
+      },
+      {
+       "s_from": 2.0,
+       "s_to": 4.0,
+       "exponent": 0.7047,
+       "v_from": 71.04979334418879,
+       "v_to": 115.79507509519203
+      },
+      {
+       "s_from": 4.0,
+       "s_to": 8.0,
+       "exponent": 0.7967,
+       "v_from": 115.79507509519203,
+       "v_to": 201.15398651053806
+      }
+     ],
+     "v_first": 47.13277827629565,
+     "v_last": 201.15398651053806,
+     "ratio": 4.267815178035109
+    },
+    "exp_Q_gate_measured": {
+     "exponent_end_to_end": 0.5132313149388362,
+     "per_step": [
+      {
+       "s_from": 1.0,
+       "s_to": 2.0,
+       "exponent": 0.5112,
+       "v_from": 109.05699070000001,
+       "v_to": 155.4325241
+      },
+      {
+       "s_from": 2.0,
+       "s_to": 4.0,
+       "exponent": 0.5145,
+       "v_from": 155.4325241,
+       "v_to": 222.03986799999998
+      },
+      {
+       "s_from": 4.0,
+       "s_to": 8.0,
+       "exponent": 0.514,
+       "v_from": 222.03986799999998,
+       "v_to": 317.06446500000004
+      }
+     ],
+     "v_first": 109.05699070000001,
+     "v_last": 317.06446500000004,
+     "ratio": 2.9073282048667424
+    },
+    "exp_I_pk": {
+     "exponent_end_to_end": 0.34432161223265834,
+     "per_step": [
+      {
+       "s_from": 1.0,
+       "s_to": 2.0,
+       "exponent": 0.3147,
+       "v_from": 1184.855,
+       "v_to": 1473.643
+      },
+      {
+       "s_from": 2.0,
+       "s_to": 4.0,
+       "exponent": 0.3452,
+       "v_from": 1473.643,
+       "v_to": 1872.009
+      },
+      {
+       "s_from": 4.0,
+       "s_to": 8.0,
+       "exponent": 0.3731,
+       "v_from": 1872.009,
+       "v_to": 2424.48
+      }
+     ],
+     "v_first": 1184.855,
+     "v_last": 2424.48,
+     "ratio": 2.0462250655143457
+    },
+    "exp_tank_area_per_gate": {
+     "exponent_end_to_end": 1.0,
+     "per_step": [
+      {
+       "s_from": 1.0,
+       "s_to": 2.0,
+       "exponent": 1.0,
+       "v_from": 29.982499999999998,
+       "v_to": 59.964999999999996
+      },
+      {
+       "s_from": 2.0,
+       "s_to": 4.0,
+       "exponent": 1.0,
+       "v_from": 59.964999999999996,
+       "v_to": 119.92999999999999
+      },
+      {
+       "s_from": 4.0,
+       "s_to": 8.0,
+       "exponent": 1.0,
+       "v_from": 119.92999999999999,
+       "v_to": 239.85999999999999
+      }
+     ],
+     "v_first": 29.982499999999998,
+     "v_last": 239.85999999999999,
+     "ratio": 8.0
+    },
+    "exp_cell_area_per_gate": {
+     "exponent_end_to_end": 1.0,
+     "per_step": [
+      {
+       "s_from": 1.0,
+       "s_to": 2.0,
+       "exponent": 1.0,
+       "v_from": 0.24180000000000001,
+       "v_to": 0.48360000000000003
+      },
+      {
+       "s_from": 2.0,
+       "s_to": 4.0,
+       "exponent": 1.0,
+       "v_from": 0.48360000000000003,
+       "v_to": 0.9672000000000001
+      },
+      {
+       "s_from": 4.0,
+       "s_to": 8.0,
+       "exponent": 1.0,
+       "v_from": 0.9672000000000001,
+       "v_to": 1.9344000000000001
+      }
+     ],
+     "v_first": 0.24180000000000001,
+     "v_last": 1.9344000000000001,
+     "ratio": 8.0
+    },
+    "exp_total_active_area_per_gate": {
+     "exponent_end_to_end": 0.9947129938634006,
+     "per_step": [
+      {
+       "s_from": 1.0,
+       "s_to": 2.0,
+       "exponent": 0.9928,
+       "v_from": 30.7443,
+       "v_to": 61.18399105243401
+      },
+      {
+       "s_from": 2.0,
+       "s_to": 4.0,
+       "exponent": 0.9949,
+       "v_from": 61.18399105243401,
+       "v_to": 121.9372
+      },
+      {
+       "s_from": 4.0,
+       "s_to": 8.0,
+       "exponent": 0.9964,
+       "v_from": 121.9372,
+       "v_to": 243.26518210486802
+      }
+     ],
+     "v_first": 30.7443,
+     "v_last": 243.26518210486802,
+     "ratio": 7.91252954547243
+    },
+    "exp_m_eff_measured": {
+     "exponent_end_to_end": 0.3222665361214689,
+     "per_step": [
+      {
+       "s_from": 1.0,
+       "s_to": 2.0,
+       "exponent": 0.3688,
+       "v_from": 3.621213565201035,
+       "v_to": 4.675912081049646
+      },
+      {
+       "s_from": 2.0,
+       "s_to": 4.0,
+       "exponent": 0.3291,
+       "v_from": 4.675912081049646,
+       "v_to": 5.874219138244461
+      },
+      {
+       "s_from": 4.0,
+       "s_to": 8.0,
+       "exponent": 0.2689,
+       "v_from": 5.874219138244461,
+       "v_to": 7.077662029636851
+      }
+     ],
+     "v_first": 3.621213565201035,
+     "v_last": 7.077662029636851,
+     "ratio": 1.9545000321581223
+    },
+    "exp_recycle_fraction": {
+     "exponent_end_to_end": 0.3339469716220099,
+     "per_step": [
+      {
+       "s_from": 1.0,
+       "s_to": 2.0,
+       "exponent": 0.6429,
+       "v_from": 17.332336380288087,
+       "v_to": 27.063337053571416
+      },
+      {
+       "s_from": 2.0,
+       "s_to": 4.0,
+       "exponent": 0.2511,
+       "v_from": 27.063337053571416,
+       "v_to": 32.20904883902742
+      },
+      {
+       "s_from": 4.0,
+       "s_to": 8.0,
+       "exponent": 0.1078,
+       "v_from": 32.20904883902742,
+       "v_to": 34.70893398107412
+      }
+     ],
+     "v_first": 17.332336380288087,
+     "v_last": 34.70893398107412,
+     "ratio": 2.0025536788305285
+    },
+    "bound_by_per_scale": {
+     "1.0": "SETTLE",
+     "2.0": "HOP",
+     "4.0": "HOP",
+     "8.0": "HOP"
+    },
+    "slack_ps_per_scale": {
+     "1.0": -24.167045154996686,
+     "2.0": 10.426008091788958,
+     "4.0": 47.17581985541585,
+     "8.0": 94.25009423587835
+    },
+    "PARETO_level_floor_vs_E_floor": [
+     {
+      "tag": "n8_T200_H4_dv1650_free_nb3",
+      "scale": 1.0,
+      "time_ps": 150.73273300000005,
+      "energy_fJ_per_gate": 6.010634784536957,
+      "dominated_by": [],
+      "on_frontier": true
+     },
+     {
+      "tag": "n8_T260_H4_dv1650_free_nb3_s2",
+      "scale": 2.0,
+      "time_ps": 161.65787409178904,
+      "energy_fJ_per_gate": 8.807911668023598,
+      "dominated_by": [
+       "n8_T200_H4_dv1650_free_nb3"
+      ],
+      "on_frontier": false
+     },
+     {
+      "tag": "n8_T330_H4_dv1650_free_nb3_s4",
+      "scale": 4.0,
+      "time_ps": 209.13791985541582,
+      "energy_fJ_per_gate": 14.283080220232337,
+      "dominated_by": [
+       "n8_T200_H4_dv1650_free_nb3",
+       "n8_T260_H4_dv1650_free_nb3_s2"
+      ],
+      "on_frontier": false
+     },
+     {
+      "tag": "n8_T440_H4_dv1650_free_nb3_s8",
+      "scale": 8.0,
+      "time_ps": 273.30326523587837,
+      "energy_fJ_per_gate": 24.87636914715059,
+      "dominated_by": [
+       "n8_T200_H4_dv1650_free_nb3",
+       "n8_T260_H4_dv1650_free_nb3_s2",
+       "n8_T330_H4_dv1650_free_nb3_s4"
+      ],
+      "on_frontier": false
+     }
+    ],
+    "PARETO_stage_time_vs_E_floor": [
+     {
+      "tag": "n8_T200_H4_dv1650_free_nb3",
+      "scale": 1.0,
+      "time_ps": 185.10582399999987,
+      "energy_fJ_per_gate": 6.010634784536957,
+      "dominated_by": [],
+      "on_frontier": true
+     },
+     {
+      "tag": "n8_T260_H4_dv1650_free_nb3_s2",
+      "scale": 2.0,
+      "time_ps": 229.1104979999999,
+      "energy_fJ_per_gate": 8.807911668023598,
+      "dominated_by": [
+       "n8_T200_H4_dv1650_free_nb3"
+      ],
+      "on_frontier": false
+     },
+     {
+      "tag": "n8_T330_H4_dv1650_free_nb3_s4",
+      "scale": 4.0,
+      "time_ps": 288.4135480000001,
+      "energy_fJ_per_gate": 14.283080220232337,
+      "dominated_by": [
+       "n8_T200_H4_dv1650_free_nb3",
+       "n8_T260_H4_dv1650_free_nb3_s2"
+      ],
+      "on_frontier": false
+     },
+     {
+      "tag": "n8_T440_H4_dv1650_free_nb3_s8",
+      "scale": 8.0,
+      "time_ps": 389.57409899999993,
+      "energy_fJ_per_gate": 24.87636914715059,
+      "dominated_by": [
+       "n8_T200_H4_dv1650_free_nb3",
+       "n8_T260_H4_dv1650_free_nb3_s2",
+       "n8_T330_H4_dv1650_free_nb3_s4"
+      ],
+      "on_frontier": false
+     }
+    ],
+    "VS_S1": [
+     {
+      "scale": 2.0,
+      "pct_level_floor_change": 7.248021630304402,
+      "pct_energy_change": 46.53879305199102,
+      "pct_area_change": 99.00921813940799,
+      "faster": false,
+      "cheaper": false,
+      "smaller": false,
+      "speedup_x": 0.9324181321004771,
+      "EXCHANGE_pct_speed_per_pct_area": -0.07320552334934073,
+      "EXCHANGE_pct_speed_per_pct_energy": -0.15574150412983942,
+      "verdict": "COSTS SPEED AND ENERGY AND AREA"
+     },
+     {
+      "scale": 4.0,
+      "pct_level_floor_change": 38.747514022329675,
+      "pct_energy_change": 137.63014610332323,
+      "pct_area_change": 296.6172591342135,
+      "faster": false,
+      "cheaper": false,
+      "smaller": false,
+      "speedup_x": 0.7207336340736618,
+      "EXCHANGE_pct_speed_per_pct_area": -0.13063135346684995,
+      "EXCHANGE_pct_speed_per_pct_energy": -0.28153362558549283,
+      "verdict": "COSTS SPEED AND ENERGY AND AREA"
+     },
+     {
+      "scale": 8.0,
+      "pct_level_floor_change": 81.31646643458544,
+      "pct_energy_change": 313.8725781700776,
+      "pct_area_change": 691.252954547243,
+      "faster": false,
+      "cheaper": false,
+      "smaller": false,
+      "speedup_x": 0.5515218885874195,
+      "EXCHANGE_pct_speed_per_pct_area": -0.11763633833268186,
+      "EXCHANGE_pct_speed_per_pct_energy": -0.2590747713886704,
+      "verdict": "COSTS SPEED AND ENERGY AND AREA"
+     }
+    ]
+   },
+   "64": {
+    "N": 64,
+    "scales": [
+     1.0,
+     2.0,
+     4.0,
+     8.0
+    ],
+    "n_accepted": 4,
+    "n_points": 4,
+    "all_accepted": true,
+    "exp_LEVEL_FLOOR_measured": {
+     "exponent_end_to_end": 0.3849949061825768,
+     "per_step": [
+      {
+       "s_from": 1.0,
+       "s_to": 2.0,
+       "exponent": 0.3617,
+       "v_from": 295.8342590866064,
+       "v_to": 380.11852756444387
+      },
+      {
+       "s_from": 2.0,
+       "s_to": 4.0,
+       "exponent": 0.3834,
+       "v_from": 380.11852756444387,
+       "v_to": 495.8461721585802
+      },
+      {
+       "s_from": 4.0,
+       "s_to": 8.0,
+       "exponent": 0.4099,
+       "v_from": 495.8461721585802,
+       "v_to": 658.7695410407498
+      }
+     ],
+     "v_first": 295.8342590866064,
+     "v_last": 658.7695410407498,
+     "ratio": 2.226819649200578
+    },
+    "exp_stage_time_measured": {
+     "exponent_end_to_end": 0.43919379301921063,
+     "per_step": [
+      {
+       "s_from": 1.0,
+       "s_to": 2.0,
+       "exponent": 0.3976,
+       "v_from": 400.3863140000001,
+       "v_to": 527.42084
+      },
+      {
+       "s_from": 2.0,
+       "s_to": 4.0,
+       "exponent": 0.4541,
+       "v_from": 527.42084,
+       "v_to": 722.5054499999999
+      },
+      {
+       "s_from": 4.0,
+       "s_to": 8.0,
+       "exponent": 0.466,
+       "v_from": 722.5054499999999,
+       "v_to": 997.9544999999998
+      }
+     ],
+     "v_first": 400.3863140000001,
+     "v_last": 997.9544999999998,
+     "ratio": 2.4924790511196133
+    },
+    "exp_T_scheduled": {
+     "exponent_end_to_end": 0.43625090204654304,
+     "per_step": [
+      {
+       "s_from": 1.0,
+       "s_to": 2.0,
+       "exponent": 0.3985,
+       "v_from": 440.0,
+       "v_to": 580.0
+      },
+      {
+       "s_from": 2.0,
+       "s_to": 4.0,
+       "exponent": 0.4458,
+       "v_from": 580.0,
+       "v_to": 790.0
+      },
+      {
+       "s_from": 4.0,
+       "s_to": 8.0,
+       "exponent": 0.4644,
+       "v_from": 790.0,
+       "v_to": 1090.0
+      }
+     ],
+     "v_first": 440.0,
+     "v_last": 1090.0,
+     "ratio": 2.477272727272727
+    },
+    "exp_t_hop": {
+     "exponent_end_to_end": 0.3849949061825768,
+     "per_step": [
+      {
+       "s_from": 1.0,
+       "s_to": 2.0,
+       "exponent": 0.3617,
+       "v_from": 295.8342590866064,
+       "v_to": 380.11852756444387
+      },
+      {
+       "s_from": 2.0,
+       "s_to": 4.0,
+       "exponent": 0.3834,
+       "v_from": 380.11852756444387,
+       "v_to": 495.8461721585802
+      },
+      {
+       "s_from": 4.0,
+       "s_to": 8.0,
+       "exponent": 0.4099,
+       "v_from": 495.8461721585802,
+       "v_to": 658.7695410407498
+      }
+     ],
+     "v_first": 295.8342590866064,
+     "v_last": 658.7695410407498,
+     "ratio": 2.226819649200578
+    },
+    "exp_t_settle90": {
+     "exponent_end_to_end": 0.15309668792655307,
+     "per_step": [
+      {
+       "s_from": 1.0,
+       "s_to": 2.0,
+       "exponent": 0.0333,
+       "v_from": 229.90618599999993,
+       "v_to": 235.27558
+      },
+      {
+       "s_from": 2.0,
+       "s_to": 4.0,
+       "exponent": 0.1655,
+       "v_from": 235.27558,
+       "v_to": 263.87746000000016
+      },
+      {
+       "s_from": 4.0,
+       "s_to": 8.0,
+       "exponent": 0.2605,
+       "v_from": 263.87746000000016,
+       "v_to": 316.08998999999994
+      }
+     ],
+     "v_first": 229.90618599999993,
+     "v_last": 316.08998999999994,
+     "ratio": 1.3748650938865996
+    },
+    "exp_E_per_gate_floor_timer0": {
+     "exponent_end_to_end": 0.8085741635565538,
+     "per_step": [
+      {
+       "s_from": 1.0,
+       "s_to": 2.0,
+       "exponent": 0.6365,
+       "v_from": 4.103422211874411,
+       "v_to": 6.3788499492416495
+      },
+      {
+       "s_from": 2.0,
+       "s_to": 4.0,
+       "exponent": 0.8536,
+       "v_from": 6.3788499492416495,
+       "v_to": 11.526880479802807
+      },
+      {
+       "s_from": 4.0,
+       "s_to": 8.0,
+       "exponent": 0.9356,
+       "v_from": 11.526880479802807,
+       "v_to": 22.04760582439837
+      }
+     ],
+     "v_first": 4.103422211874411,
+     "v_last": 22.04760582439837,
+     "ratio": 5.37298008491483
+    },
+    "exp_E_per_gate_conventional": {
+     "exponent_end_to_end": 0.6399497742406247,
+     "per_step": [
+      {
+       "s_from": 1.0,
+       "s_to": 2.0,
+       "exponent": 0.562,
+       "v_from": 11.502217956666076,
+       "v_to": 16.980771576845815
+      },
+      {
+       "s_from": 2.0,
+       "s_to": 4.0,
+       "exponent": 0.6496,
+       "v_from": 16.980771576845815,
+       "v_to": 26.638244995427808
+      },
+      {
+       "s_from": 4.0,
+       "s_to": 8.0,
+       "exponent": 0.7083,
+       "v_from": 26.638244995427808,
+       "v_to": 43.52249921502337
+      }
+     ],
+     "v_first": 11.502217956666076,
+     "v_last": 43.52249921502337,
+     "ratio": 3.7838353767066324
+    },
+    "exp_E_per_gate_conventional_FULL_CYCLE": {
+     "exponent_end_to_end": 0.594604274214858,
+     "per_step": [
+      {
+       "s_from": 1.0,
+       "s_to": 2.0,
+       "exponent": 0.5472,
+       "v_from": 18.755739597291075,
+       "v_to": 27.407058087002063
+      },
+      {
+       "s_from": 2.0,
+       "s_to": 4.0,
+       "exponent": 0.5983,
+       "v_from": 27.407058087002063,
+       "v_to": 41.49118405792781
+      },
+      {
+       "s_from": 4.0,
+       "s_to": 8.0,
+       "exponent": 0.6383,
+       "v_from": 41.49118405792781,
+       "v_to": 64.58257555096087
+      }
+     ],
+     "v_first": 18.755739597291075,
+     "v_last": 64.58257555096087,
+     "ratio": 3.4433499791332487
+    },
+    "exp_E_tank_loss_bank": {
+     "exponent_end_to_end": 0.802410619653176,
+     "per_step": [
+      {
+       "s_from": 1.0,
+       "s_to": 2.0,
+       "exponent": 0.6288,
+       "v_from": 267.1474882266289,
+       "v_to": 413.08796341813223
+      },
+      {
+       "s_from": 2.0,
+       "s_to": 4.0,
+       "exponent": 0.8462,
+       "v_from": 413.08796341813223,
+       "v_to": 742.6527507073797
+      },
+      {
+       "s_from": 4.0,
+       "s_to": 8.0,
+       "exponent": 0.9322,
+       "v_from": 742.6527507073797,
+       "v_to": 1417.0986727614957
+      }
+     ],
+     "v_first": 267.1474882266289,
+     "v_last": 1417.0986727614957,
+     "ratio": 5.3045554804517945
+    },
+    "exp_Q_gate_measured": {
+     "exponent_end_to_end": 0.5149284358116142,
+     "per_step": [
+      {
+       "s_from": 1.0,
+       "s_to": 2.0,
+       "exponent": 0.5225,
+       "v_from": 312.662974,
+       "v_to": 449.120945
+      },
+      {
+       "s_from": 2.0,
+       "s_to": 4.0,
+       "exponent": 0.5143,
+       "v_from": 449.120945,
+       "v_to": 641.463286
+      },
+      {
+       "s_from": 4.0,
+       "s_to": 8.0,
+       "exponent": 0.508,
+       "v_from": 641.463286,
+       "v_to": 912.2275179999999
+      }
+     ],
+     "v_first": 312.662974,
+     "v_last": 912.2275179999999,
+     "ratio": 2.917606476806556
+    },
+    "exp_I_pk": {
+     "exponent_end_to_end": 0.39419080599668194,
+     "per_step": [
+      {
+       "s_from": 1.0,
+       "s_to": 2.0,
+       "exponent": 0.3429,
+       "v_from": 2680.58,
+       "v_to": 3399.712
+      },
+      {
+       "s_from": 2.0,
+       "s_to": 4.0,
+       "exponent": 0.3985,
+       "v_from": 3399.712,
+       "v_to": 4481.269
+      },
+      {
+       "s_from": 4.0,
+       "s_to": 8.0,
+       "exponent": 0.4412,
+       "v_from": 4481.269,
+       "v_to": 6084.411
+      }
+     ],
+     "v_first": 2680.58,
+     "v_last": 6084.411,
+     "ratio": 2.2698113841034404
+    },
+    "exp_tank_area_per_gate": {
+     "exponent_end_to_end": 1.0,
+     "per_step": [
+      {
+       "s_from": 1.0,
+       "s_to": 2.0,
+       "exponent": 1.0,
+       "v_from": 29.982499999999998,
+       "v_to": 59.964999999999996
+      },
+      {
+       "s_from": 2.0,
+       "s_to": 4.0,
+       "exponent": 1.0,
+       "v_from": 59.964999999999996,
+       "v_to": 119.92999999999999
+      },
+      {
+       "s_from": 4.0,
+       "s_to": 8.0,
+       "exponent": 1.0,
+       "v_from": 119.92999999999999,
+       "v_to": 239.85999999999999
+      }
+     ],
+     "v_first": 29.982499999999998,
+     "v_last": 239.85999999999999,
+     "ratio": 8.0
+    },
+    "exp_cell_area_per_gate": {
+     "exponent_end_to_end": 1.0,
+     "per_step": [
+      {
+       "s_from": 1.0,
+       "s_to": 2.0,
+       "exponent": 1.0,
+       "v_from": 0.24180000000000001,
+       "v_to": 0.48360000000000003
+      },
+      {
+       "s_from": 2.0,
+       "s_to": 4.0,
+       "exponent": 1.0,
+       "v_from": 0.48360000000000003,
+       "v_to": 0.9672000000000001
+      },
+      {
+       "s_from": 4.0,
+       "s_to": 8.0,
+       "exponent": 1.0,
+       "v_from": 0.9672000000000001,
+       "v_to": 1.9344000000000001
+      }
+     ],
+     "v_first": 0.24180000000000001,
+     "v_last": 1.9344000000000001,
+     "ratio": 8.0
+    },
+    "exp_total_active_area_per_gate": {
+     "exponent_end_to_end": 0.9981167654336001,
+     "per_step": [
+      {
+       "s_from": 1.0,
+       "s_to": 2.0,
+       "exponent": 0.9974,
+       "v_from": 30.408147763108502,
+       "v_to": 60.7086
+      },
+      {
+       "s_from": 2.0,
+       "s_to": 4.0,
+       "exponent": 0.9982,
+       "v_from": 60.7086,
+       "v_to": 121.264895526217
+      },
+      {
+       "s_from": 4.0,
+       "s_to": 8.0,
+       "exponent": 0.9987,
+       "v_from": 121.264895526217,
+       "v_to": 242.3144
+      }
+     ],
+     "v_first": 30.408147763108502,
+     "v_last": 242.3144,
+     "ratio": 7.968732653094329
+    },
+    "exp_m_eff_measured": {
+     "exponent_end_to_end": 0.2537569422673343,
+     "per_step": [
+      {
+       "s_from": 1.0,
+       "s_to": 2.0,
+       "exponent": 0.3368,
+       "v_from": 5.6457152111176745,
+       "v_to": 7.130349259221737
+      },
+      {
+       "s_from": 2.0,
+       "s_to": 4.0,
+       "exponent": 0.2444,
+       "v_from": 7.130349259221737,
+       "v_to": 8.446541691209513
+      },
+      {
+       "s_from": 4.0,
+       "s_to": 8.0,
+       "exponent": 0.1801,
+       "v_from": 8.446541691209513,
+       "v_to": 9.569391458382293
+      }
+     ],
+     "v_first": 5.6457152111176745,
+     "v_last": 9.569391458382293,
+     "ratio": 1.694983027046427
+    },
+    "exp_recycle_fraction": {
+     "exponent_end_to_end": 0.10637606410774356,
+     "per_step": [
+      {
+       "s_from": 1.0,
+       "s_to": 2.0,
+       "exponent": 0.3917,
+       "v_from": 27.76510051763535,
+       "v_to": 36.425330882379455
+      },
+      {
+       "s_from": 2.0,
+       "s_to": 4.0,
+       "exponent": 0.0107,
+       "v_from": 36.425330882379455,
+       "v_to": 36.6964981729598
+      },
+      {
+       "s_from": 4.0,
+       "s_to": 8.0,
+       "exponent": -0.0832,
+       "v_from": 36.6964981729598,
+       "v_to": 34.63908475536343
+      }
+     ],
+     "v_first": 27.76510051763535,
+     "v_last": 34.63908475536343,
+     "ratio": 1.247576421823576
+    },
+    "bound_by_per_scale": {
+     "1.0": "HOP",
+     "2.0": "HOP",
+     "4.0": "HOP",
+     "8.0": "HOP"
+    },
+    "slack_ps_per_scale": {
+     "1.0": 65.92807308660645,
+     "2.0": 144.84294756444388,
+     "4.0": 231.96871215858005,
+     "8.0": 342.67955104074986
+    },
+    "PARETO_level_floor_vs_E_floor": [
+     {
+      "tag": "n64_T440_H4_dv1650_free_nb3",
+      "scale": 1.0,
+      "time_ps": 295.8342590866064,
+      "energy_fJ_per_gate": 4.103422211874411,
+      "dominated_by": [],
+      "on_frontier": true
+     },
+     {
+      "tag": "n64_T580_H4_dv1650_free_nb3_s2",
+      "scale": 2.0,
+      "time_ps": 380.11852756444387,
+      "energy_fJ_per_gate": 6.3788499492416495,
+      "dominated_by": [
+       "n64_T440_H4_dv1650_free_nb3"
+      ],
+      "on_frontier": false
+     },
+     {
+      "tag": "n64_T790_H4_dv1650_free_nb3_s4",
+      "scale": 4.0,
+      "time_ps": 495.8461721585802,
+      "energy_fJ_per_gate": 11.526880479802807,
+      "dominated_by": [
+       "n64_T440_H4_dv1650_free_nb3",
+       "n64_T580_H4_dv1650_free_nb3_s2"
+      ],
+      "on_frontier": false
+     },
+     {
+      "tag": "n64_T1090_H4_dv1650_free_nb3_s8",
+      "scale": 8.0,
+      "time_ps": 658.7695410407498,
+      "energy_fJ_per_gate": 22.04760582439837,
+      "dominated_by": [
+       "n64_T440_H4_dv1650_free_nb3",
+       "n64_T580_H4_dv1650_free_nb3_s2",
+       "n64_T790_H4_dv1650_free_nb3_s4"
+      ],
+      "on_frontier": false
+     }
+    ],
+    "PARETO_stage_time_vs_E_floor": [
+     {
+      "tag": "n64_T440_H4_dv1650_free_nb3",
+      "scale": 1.0,
+      "time_ps": 400.3863140000001,
+      "energy_fJ_per_gate": 4.103422211874411,
+      "dominated_by": [],
+      "on_frontier": true
+     },
+     {
+      "tag": "n64_T580_H4_dv1650_free_nb3_s2",
+      "scale": 2.0,
+      "time_ps": 527.42084,
+      "energy_fJ_per_gate": 6.3788499492416495,
+      "dominated_by": [
+       "n64_T440_H4_dv1650_free_nb3"
+      ],
+      "on_frontier": false
+     },
+     {
+      "tag": "n64_T790_H4_dv1650_free_nb3_s4",
+      "scale": 4.0,
+      "time_ps": 722.5054499999999,
+      "energy_fJ_per_gate": 11.526880479802807,
+      "dominated_by": [
+       "n64_T440_H4_dv1650_free_nb3",
+       "n64_T580_H4_dv1650_free_nb3_s2"
+      ],
+      "on_frontier": false
+     },
+     {
+      "tag": "n64_T1090_H4_dv1650_free_nb3_s8",
+      "scale": 8.0,
+      "time_ps": 997.9544999999998,
+      "energy_fJ_per_gate": 22.04760582439837,
+      "dominated_by": [
+       "n64_T440_H4_dv1650_free_nb3",
+       "n64_T580_H4_dv1650_free_nb3_s2",
+       "n64_T790_H4_dv1650_free_nb3_s4"
+      ],
+      "on_frontier": false
+     }
+    ],
+    "VS_S1": [
+     {
+      "scale": 2.0,
+      "pct_level_floor_change": 28.49036779515215,
+      "pct_energy_change": 55.45195253811919,
+      "pct_area_change": 99.6458333238315,
+      "faster": false,
+      "cheaper": false,
+      "smaller": false,
+      "speedup_x": 0.7782684547952,
+      "EXCHANGE_pct_speed_per_pct_area": -0.28591629820148573,
+      "EXCHANGE_pct_speed_per_pct_energy": -0.51378475402768,
+      "verdict": "COSTS SPEED AND ENERGY AND AREA"
+     },
+     {
+      "scale": 4.0,
+      "pct_level_floor_change": 67.60944918601186,
+      "pct_energy_change": 180.90895561384164,
+      "pct_area_change": 298.7907993308849,
+      "faster": false,
+      "cheaper": false,
+      "smaller": false,
+      "speedup_x": 0.5966250738585785,
+      "EXCHANGE_pct_speed_per_pct_area": -0.22627687779348338,
+      "EXCHANGE_pct_speed_per_pct_energy": -0.37372085288208334,
+      "verdict": "COSTS SPEED AND ENERGY AND AREA"
+     },
+     {
+      "scale": 8.0,
+      "pct_level_floor_change": 122.68196492005781,
+      "pct_energy_change": 437.298008491483,
+      "pct_area_change": 696.8732653094329,
+      "faster": false,
+      "cheaper": false,
+      "smaller": false,
+      "speedup_x": 0.44907094310892987,
+      "EXCHANGE_pct_speed_per_pct_area": -0.17604630716545466,
+      "EXCHANGE_pct_speed_per_pct_energy": -0.2805454462124476,
+      "verdict": "COSTS SPEED AND ENERGY AND AREA"
+     }
+    ]
+   }
+  },
+  "headline_N64": [
+   {
+    "scale": 2.0,
+    "pct_level_time": 28.49036779515215,
+    "pct_energy": 55.45195253811919,
+    "pct_area": 99.6458333238315,
+    "verdict": "COSTS SPEED AND ENERGY AND AREA"
+   },
+   {
+    "scale": 4.0,
+    "pct_level_time": 67.60944918601186,
+    "pct_energy": 180.90895561384164,
+    "pct_area": 298.7907993308849,
+    "verdict": "COSTS SPEED AND ENERGY AND AREA"
+   },
+   {
+    "scale": 8.0,
+    "pct_level_time": 122.68196492005781,
+    "pct_energy": 437.298008491483,
+    "pct_area": 696.8732653094329,
+    "verdict": "COSTS SPEED AND ENERGY AND AREA"
+   }
+  ],
+  "headline_N8": [
+   {
+    "scale": 2.0,
+    "pct_level_time": 7.248021630304402,
+    "pct_energy": 46.53879305199102,
+    "pct_area": 99.00921813940799,
+    "verdict": "COSTS SPEED AND ENERGY AND AREA"
+   },
+   {
+    "scale": 4.0,
+    "pct_level_time": 38.747514022329675,
+    "pct_energy": 137.63014610332323,
+    "pct_area": 296.6172591342135,
+    "verdict": "COSTS SPEED AND ENERGY AND AREA"
+   },
+   {
+    "scale": 8.0,
+    "pct_level_time": 81.31646643458544,
+    "pct_energy": 313.8725781700776,
+    "pct_area": 691.252954547243,
+    "verdict": "COSTS SPEED AND ENERGY AND AREA"
+   }
+  ]
+ },
+ "D_SETTLING_AND_VALUE": {
+  "A1_value_failures_total": 0,
+  "gate_nodes_checked": 1632,
+  "n_rows": 12,
+  "every_row_A2_bare_pass": true,
+  "every_row_A2_3sigma_pass": true,
+  "worst_gate_pct_range": [
+   98.9521801198855,
+   99.55640599683778
+  ],
+  "A2_margin_mV_range": [
+   283.46833929889414,
+   565.8583791784486
+  ],
+  "intra_class_spread_mV_max": 0.0,
+  "per_row": [
+   {
+    "tag": "n8_T200_H4_dv1650_free_nb3",
+    "N": 8,
+    "scale": 1.0,
+    "A1_fail": 0,
+    "worst_gate_pct": 99.25766964593686,
+    "worst_per_bank": {
+     "1": 99.30255546592319,
+     "2": 99.25766964593686,
+     "3": 99.95695836780486
+    },
+    "A2_margin_mV": 461.0893429727245,
+    "sep_min_mV": 951.7074140000001,
+    "ACCEPTED": true
+   },
+   {
+    "tag": "n8_T260_H4_dv1650_free_nb3_s2",
+    "N": 8,
+    "scale": 2.0,
+    "A1_fail": 0,
+    "worst_gate_pct": 99.00161997941788,
+    "worst_per_bank": {
+     "1": 99.10941832947836,
+     "2": 99.00161997941788,
+     "3": 99.99998231129074
+    },
+    "A2_margin_mV": 514.5084252329996,
+    "sep_min_mV": 1016.549,
+    "ACCEPTED": true
+   },
+   {
+    "tag": "n8_T330_H4_dv1650_free_nb3_s4",
+    "N": 8,
+    "scale": 4.0,
+    "A1_fail": 0,
+    "worst_gate_pct": 98.9521801198855,
+    "worst_per_bank": {
+     "1": 99.08339907155407,
+     "2": 98.9521801198855,
+     "3": 99.99998587507393
+    },
+    "A2_margin_mV": 533.7680657145971,
+    "sep_min_mV": 1042.29028,
+    "ACCEPTED": true
+   },
+   {
+    "tag": "n8_T440_H4_dv1650_free_nb3_s8",
+    "N": 8,
+    "scale": 8.0,
+    "A1_fail": 0,
+    "worst_gate_pct": 99.0343360528555,
+    "worst_per_bank": {
+     "1": 99.16304834187406,
+     "2": 99.0343360528555,
+     "3": 99.99999219355765
+    },
+    "A2_margin_mV": 545.2982511848913,
+    "sep_min_mV": 1057.6857100000002,
+    "ACCEPTED": true
+   },
+   {
+    "tag": "n64_T260_H4_dv1650_free_nb3_E6Lcut",
+    "N": 64,
+    "scale": 1.0,
+    "A1_fail": 0,
+    "worst_gate_pct": 99.11517643868589,
+    "worst_per_bank": {
+     "1": 99.26063516589498,
+     "2": 99.11517643868589,
+     "3": 99.99820982742197
+    },
+    "A2_margin_mV": 283.46833929889414,
+    "sep_min_mV": 737.7862240000001,
+    "ACCEPTED": true
+   },
+   {
+    "tag": "n64_T440_H4_dv1650_free_nb3",
+    "N": 64,
+    "scale": 1.0,
+    "A1_fail": 0,
+    "worst_gate_pct": 99.39687536515079,
+    "worst_per_bank": {
+     "1": 99.4628644608928,
+     "2": 99.39687536515079,
+     "3": 99.99997858802945
+    },
+    "A2_margin_mV": 438.5049808044904,
+    "sep_min_mV": 941.4719719999999,
+    "ACCEPTED": true
+   },
+   {
+    "tag": "n64_T580_H4_dv1650_free_nb3_s2",
+    "N": 64,
+    "scale": 2.0,
+    "A1_fail": 0,
+    "worst_gate_pct": 99.40210065662676,
+    "worst_per_bank": {
+     "1": 99.45173306679604,
+     "2": 99.40210065662676,
+     "3": 99.99999230384255
+    },
+    "A2_margin_mV": 504.3374891280702,
+    "sep_min_mV": 1018.881056,
+    "ACCEPTED": true
+   },
+   {
+    "tag": "n64_T440_H4_dv1650_free_nb3_s4_E3isohop",
+    "N": 64,
+    "scale": 4.0,
+    "A1_fail": 0,
+    "worst_gate_pct": 99.16700325662521,
+    "worst_per_bank": {
+     "1": 99.25488106648335,
+     "2": 99.16700325662521,
+     "3": 99.99998931196535
+    },
+    "A2_margin_mV": 418.1445743837553,
+    "sep_min_mV": 881.216798,
+    "ACCEPTED": true
+   },
+   {
+    "tag": "n64_T790_H4_dv1650_free_nb3_s4",
+    "N": 64,
+    "scale": 4.0,
+    "A1_fail": 0,
+    "worst_gate_pct": 99.4723264372812,
+    "worst_per_bank": {
+     "1": 99.50890393487806,
+     "2": 99.4723264372812,
+     "3": 99.99999706622815
+    },
+    "A2_margin_mV": 539.7258762871149,
+    "sep_min_mV": 1056.7724460000002,
+    "ACCEPTED": true
+   },
+   {
+    "tag": "n64_T790_H4_dv1650_free_nb3_s4-4-1_E1load",
+    "N": 64,
+    "scale": 4.0,
+    "A1_fail": 0,
+    "worst_gate_pct": 99.47133460577219,
+    "worst_per_bank": {
+     "1": 99.47133460577219,
+     "2": 99.77040515925589,
+     "3": 100.0
+    },
+    "A2_margin_mV": 565.8583791784486,
+    "sep_min_mV": 1112.2390009960436,
+    "ACCEPTED": true
+   },
+   {
+    "tag": "n64_T1090_H4_dv1650_free_nb3_s8",
+    "N": 64,
+    "scale": 8.0,
+    "A1_fail": 0,
+    "worst_gate_pct": 99.55640599683778,
+    "worst_per_bank": {
+     "1": 99.58822503068355,
+     "2": 99.55640599683778,
+     "3": 99.99999875070043
+    },
+    "A2_margin_mV": 555.206991587062,
+    "sep_min_mV": 1071.5409100000002,
+    "ACCEPTED": true
+   },
+   {
+    "tag": "n64_T1090_H4_dv1650_free_nb3_s8_E4halfstep",
+    "N": 64,
+    "scale": 8.0,
+    "A1_fail": 0,
+    "worst_gate_pct": 99.55640455865938,
+    "worst_per_bank": {
+     "1": 99.58822323816212,
+     "2": 99.55640455865938,
+     "3": 99.9999987507109
+    },
+    "A2_margin_mV": 555.206480516154,
+    "sep_min_mV": 1071.539899,
+    "ACCEPTED": true
+   }
+  ]
+ },
+ "E_MECHANISM": {
+  "LAW": "t_hop = k * sqrt(C_bank_MEASURED), with k CONSTANT while C_tank moves 64x. So the hop is set by C_bank -- which IS the cells' rail-side capacitance -- and NOT by the tank. Growing the cells necessarily lengthens the hop, and no tank-sizing or switch-width choice can avoid it.",
+  "k_ps_per_sqrt_fF_range": [
+   12.69750840038154,
+   13.55252424599013
+  ],
+  "k_spread_pct": 6.733729316397996,
+  "C_tank_range_fF": [
+   359.78999999999996,
+   23026.559999999998
+  ],
+  "C_tank_span_x": 64.0,
+  "points": [
+   {
+    "N": 8,
+    "scale": 1.0,
+    "t_hop_ps": 126.56568784500337,
+    "C_bank_measured_fF": 99.35619469050175,
+    "C_tank_fF": 359.78999999999996,
+    "k_ps_per_sqrt_fF": 12.69750840038154
+   },
+   {
+    "N": 8,
+    "scale": 2.0,
+    "t_hop_ps": 161.65787409178904,
+    "C_bank_measured_fF": 153.89083189059212,
+    "C_tank_fF": 719.5799999999999,
+    "k_ps_per_sqrt_fF": 13.031382412839273
+   },
+   {
+    "N": 8,
+    "scale": 4.0,
+    "t_hop_ps": 209.13791985541582,
+    "C_bank_measured_fF": 244.9959673159384,
+    "C_tank_fF": 1439.1599999999999,
+    "k_ps_per_sqrt_fF": 13.361441549527923
+   },
+   {
+    "N": 8,
+    "scale": 8.0,
+    "t_hop_ps": 273.30326523587837,
+    "C_bank_measured_fF": 406.67666638324687,
+    "C_tank_fF": 2878.3199999999997,
+    "k_ps_per_sqrt_fF": 13.55252424599013
+   },
+   {
+    "N": 64,
+    "scale": 1.0,
+    "t_hop_ps": 295.8342590866064,
+    "C_bank_measured_fF": 509.8238030731597,
+    "C_tank_fF": 2878.3199999999997,
+    "k_ps_per_sqrt_fF": 13.102024641562153
+   },
+   {
+    "N": 64,
+    "scale": 2.0,
+    "t_hop_ps": 380.11852756444387,
+    "C_bank_measured_fF": 807.3433419204383,
+    "C_tank_fF": 5756.639999999999,
+    "k_ps_per_sqrt_fF": 13.377960345008026
+   },
+   {
+    "N": 64,
+    "scale": 4.0,
+    "t_hop_ps": 495.8461721585802,
+    "C_bank_measured_fF": 1363.076205730696,
+    "C_tank_fF": 11513.279999999999,
+    "k_ps_per_sqrt_fF": 13.430336574744432
+   },
+   {
+    "N": 64,
+    "scale": 8.0,
+    "t_hop_ps": 658.7695410407498,
+    "C_bank_measured_fF": 2406.272133410314,
+    "C_tank_fF": 23026.559999999998,
+    "k_ps_per_sqrt_fF": 13.429540091512969
+   }
+  ],
+  "phase1_cross_check": "Phase 1's N-sweep gives k = 12.70-13.27 ps/sqrt(fF) over a 32x range of N, and its exponents agree to 2.6% (C_bank ~ N^0.831, t_hop ~ N^0.426 vs the predicted 0.415). Phase 2 extends the SAME law to the cell-scale axis.",
+  "WHY_THE_LEVER_IS_INVERTED": "in CMOS, upsizing a gate pays for itself in the NEXT stage's load -- a local, linear cost, and the speed-up is real. In QAL the same capacitance IS the resonant load of the hop that charges the whole bank, and the hop goes as sqrt(LC). So a factor s of cell width costs sqrt(s) on the ENTIRE LEVEL while buying back only the fixed-load fraction of ONE cell's settling.",
+  "E2_answered_without_running_it": "the pre-registered E2 control (tank sized from the MEASURED C) was NOT run. Its question -- is the C_tank sizing rule a confound? -- is answered by this law: C_tank varies 64x across these points while k stays constant to 6.7%, so the hop does not depend on C_tank."
+ },
+ "F_THE_MATCHED_PAIR": {
+  "_why": "C_bank_nominal = 35.979*(N/8)*s, so (N=8,s=8) and (N=64,s=1) have IDENTICAL nominal C_bank (287.832 fF), IDENTICAL C_tank (2878.32 fF) and IDENTICAL switch width (84.853 um). The resonant cost is the same by construction and the ONLY difference is how it is SPENT: 8 gates of 8x width, or 64 gates of 1x width. This is the user's challenge in its cleanest form.",
+  "few_big": {
+   "tag": "n8_T440_H4_dv1650_free_nb3_s8",
+   "N": 8,
+   "scale": 8.0,
+   "E_bank_floor_fJ": 199.01095317720473,
+   "E_per_gate_fJ": 24.87636914715059,
+   "x_CMOS": 6.008784818152317,
+   "level_floor_ps": 273.30326523587837,
+   "t_hop_ps": 273.30326523587837,
+   "t_set90_ps": 179.05317100000002,
+   "bound_by": "HOP",
+   "total_um2_pg": 243.26518210486802,
+   "C_tank_fF": 2878.3199999999997,
+   "W_um": 84.8528137423857,
+   "ACCEPTED": true
+  },
+  "many_small": {
+   "tag": "n64_T440_H4_dv1650_free_nb3",
+   "N": 64,
+   "scale": 1.0,
+   "E_bank_floor_fJ": 262.6190215599623,
+   "E_per_gate_fJ": 4.103422211874411,
+   "x_CMOS": 0.9911647854769109,
+   "level_floor_ps": 295.8342590866064,
+   "t_hop_ps": 295.8342590866064,
+   "t_set90_ps": 229.90618599999993,
+   "bound_by": "HOP",
+   "total_um2_pg": 30.408147763108502,
+   "C_tank_fF": 2878.3199999999997,
+   "W_um": 84.8528137423857,
+   "ACCEPTED": true
+  },
+  "ratio_E_per_gate_fewbig_over_manysmall": 6.062346954004341,
+  "ratio_level_floor_fewbig_over_manysmall": 0.9238391323564321,
+  "C_tank_identical": true,
+  "W_identical": true
+ },
+ "G_WHERE_THE_SPEED_LEVER_ACTUALLY_IS": {
+  "ANSWER": "THE INDUCTOR, and it is CHEAP -- which is what makes cell upsizing not merely weak but DOMINATED.",
+  "at_s4_cut_L_4x": {
+   "from_tag": "n64_T790_H4_dv1650_free_nb3_s4",
+   "to_tag": "n64_T440_H4_dv1650_free_nb3_s4_E3isohop",
+   "L_nH": [
+    15.0,
+    3.75
+   ],
+   "level_floor_ps": [
+    495.8461721585802,
+    263.0853985351696
+   ],
+   "faster_x": 1.8847346714009856,
+   "E_per_gate_fJ": [
+    11.526880479802807,
+    12.1323407982957
+   ],
+   "energy_pct": 5.252594746286898
+  },
+  "at_s1_cut_L_4x": {
+   "from_tag": "n64_T440_H4_dv1650_free_nb3",
+   "to_tag": "n64_T260_H4_dv1650_free_nb3_E6Lcut",
+   "L_nH": [
+    15.0,
+    3.75
+   ],
+   "level_floor_ps": [
+    295.8342590866064,
+    152.32153799999992
+   ],
+   "faster_x": 1.9421695905316196,
+   "E_per_gate_fJ": [
+    4.103422211874411,
+    4.7442262971399165
+   ],
+   "energy_pct": 15.616333201374166,
+   "CAVEAT": "E6's recycle fraction goes NEGATIVE (-11.8% vs +27.8%) and its delivered rail droops 21% (0.9422 -> 0.7405 V), so it has STOPPED BEING ADIABATIC and its +15.6% is NOT an iso-swing figure. See AMENDMENT A8, including the hypothesis I formed and then falsified.",
+   "iso_swing_correction_DERIVED": {
+    "rail_V": [
+     0.9422477,
+     0.740495
+    ],
+    "factor": 1.6191456269864908,
+    "E_per_gate_iso_fJ": 7.681593262448407,
+    "x_CMOS_iso": 1.8554573097701468,
+    "speed_x": 1.9421695905316196,
+    "exchange_speed_over_energy": 1.0374855273805905,
+    "note": "energy ~ V^2 applied to the MEASURED delivered rails. A proper iso-swing point would re-run E6 at a higher dV; that was NOT run."
+   }
+  },
+  "DOMINANCE": {
+   "_what": "at the SAME L = 3.75 nH, s=1 (E6) vs s=4 (E3)",
+   "level_floor_ps": [
+    152.32153799999992,
+    263.0853985351696
+   ],
+   "E_per_gate_fJ": [
+    4.7442262971399165,
+    12.1323407982957
+   ],
+   "total_um2_per_gate": [
+    30.408147763108502,
+    121.264895526217
+   ],
+   "s1_faster_x": 1.7271713638761297,
+   "s1_cheaper_x": 2.5572854325287455,
+   "s1_smaller_x": 3.9879079933088493,
+   "VERDICT": "cell upsizing is STRICTLY DOMINATED by inductor reduction on all three axes simultaneously"
+  },
+  "X10_WAS_WRONG": "I pre-stated that buying the speed back with L would cost QUADRATICALLY (45-90 fJ/gate at s=4). MEASURED 12.13 fJ/gate, i.e. +5.3% over the same-scale L=15 row. Reducing L is a CHEAP speed lever, not an expensive one. That is a bigger correction than it looks: it means the axis the brief asked about is not merely weak, it is beaten outright."
+ },
+ "H_E1_LOAD_NOT_SCALED": {
+  "_what": "N=64 with banks 1,2 at s=4 and bank 3 (the receiver) left at s=1, so the measured bank drives an UNSCALED load inside the REAL chain -- the crux's variant C, in the chain.",
+  "tag": "n64_T790_H4_dv1650_free_nb3_s4-4-1_E1load",
+  "t_settle90_ps": [
+   263.87746000000016,
+   221.61706000000004
+  ],
+  "settle_improvement_pct": 16.015160976613952,
+  "t_hop_ps": [
+   495.8461721585802,
+   451.6507676926192
+  ],
+  "level_floor_ps": [
+   495.8461721585802,
+   451.6507676926192
+  ],
+  "bound_by": "HOP",
+  "vs_s1_baseline_floor_ps": 295.8342590866064,
+  "VERDICT": "the pre-stated E1 signature FIRED: bank 2's settling improves 16.0% when its load does not scale, and the level time still does not improve, because the level is HOP-bound and the hop is set by bank 2's OWN bank capacitance. Confirms the crux inside the chain."
+ },
+ "I_SCORING": {
+  "RIGHT": 13,
+  "WRONG": 18,
+  "INFORMATIVE": 3,
+  "NARROWLY-WRONG": 1
+ },
+ "I_SCORING_DETAIL": [
+  {
+   "id": "X1_crux_A_rail16500",
+   "claim": "variant A (REAL CHAIN) t_set90(x8)/t_set90(x1) = 0.68-0.80; falls only by the fixed-WIRING fraction then saturates",
+   "measured": 0.7179347428680343,
+   "verdict": "RIGHT",
+   "note": "rail 1.65 V; exponent_in_s -0.1593584598522303; fit a=49.16033359430163 b=23.454293703293818 R2=0.9995133558583746"
+  },
+  {
+   "id": "X2_crux_B_rail16500",
+   "claim": "variant B (PURE COSCALE) FLAT within 5%: ratio in 0.95-1.05, i.e. genuinely scale-INVARIANT",
+   "measured": 0.8746977853185041,
+   "verdict": "WRONG",
+   "note": "rail 1.65 V; exponent -0.06438115128932231"
+  },
+  {
+   "id": "X3_crux_C_rail16500",
+   "claim": "variant C (FIXED LOAD) ratio 0.15-0.30, roughly the naive 1/s -- the positive control proving the instrument CAN see a speed-up",
+   "measured": 0.3960961154991344,
+   "verdict": "WRONG",
+   "note": "rail 1.65 V; exponent -0.4453591806785593"
+  },
+  {
+   "id": "X1d_crux_D_rail16500",
+   "claim": "variant D (QAL-BIAS LOAD, added as amendment A3) should behave like A: both driver and load still scale",
+   "measured": 0.6776424047240412,
+   "verdict": "INFORMATIVE",
+   "note": "rail 1.65 V; exponent -0.18713464602926946"
+  },
+  {
+   "id": "X1_crux_A_rail9422",
+   "claim": "variant A (REAL CHAIN) t_set90(x8)/t_set90(x1) = 0.68-0.80; falls only by the fixed-WIRING fraction then saturates",
+   "measured": 0.697578828169478,
+   "verdict": "RIGHT",
+   "note": "rail 0.9422 V; exponent_in_s -0.17319061351668938; fit a=91.4505485764692 b=48.5394027360224 R2=0.9982921759259497"
+  },
+  {
+   "id": "X2_crux_B_rail9422",
+   "claim": "variant B (PURE COSCALE) FLAT within 5%: ratio in 0.95-1.05, i.e. genuinely scale-INVARIANT",
+   "measured": 0.8553897447720445,
+   "verdict": "WRONG",
+   "note": "rail 0.9422 V; exponent -0.07511539465777674"
+  },
+  {
+   "id": "X3_crux_C_rail9422",
+   "claim": "variant C (FIXED LOAD) ratio 0.15-0.30, roughly the naive 1/s -- the positive control proving the instrument CAN see a speed-up",
+   "measured": 0.44733962214267015,
+   "verdict": "WRONG",
+   "note": "rail 0.9422 V; exponent -0.3868525157607698"
+  },
+  {
+   "id": "X1d_crux_D_rail9422",
+   "claim": "variant D (QAL-BIAS LOAD, added as amendment A3) should behave like A: both driver and load still scale",
+   "measured": 0.6308921581674631,
+   "verdict": "INFORMATIVE",
+   "note": "rail 0.9422 V; exponent -0.22151155877514342"
+  },
+  {
+   "id": "B10_mechanism_gate",
+   "claim": "variant A must fit t = a + b/s with R2 >= 0.98, and variant B must be flat within 5%, or the mechanism claim is WITHDRAWN not asserted",
+   "measured": 0.9995133558583746,
+   "verdict": "RIGHT",
+   "note": "R2 of the a+b/s fit on variant A at 1.65 V"
+  },
+  {
+   "id": "X4_t_hop_exponent",
+   "claim": "t_hop grows as sqrt(s): measured exponent in s of 0.45-0.55",
+   "measured": 0.3849949061825768,
+   "verdict": "WRONG",
+   "note": "N=64 main series"
+  },
+  {
+   "id": "X4_t_hop_abs_s2",
+   "claim": "t_hop at N=64 s=2 in 410-425 ps",
+   "measured": 380.11852756444387,
+   "verdict": "WRONG",
+   "note": ""
+  },
+  {
+   "id": "X4_t_hop_abs_s4",
+   "claim": "t_hop at N=64 s=4 in 580-600 ps",
+   "measured": 495.8461721585802,
+   "verdict": "WRONG",
+   "note": ""
+  },
+  {
+   "id": "X4_t_hop_abs_s8",
+   "claim": "t_hop at N=64 s=8 in 820-850 ps",
+   "measured": 658.7695410407498,
+   "verdict": "WRONG",
+   "note": ""
+  },
+  {
+   "id": "X5_level_time_rises_N64",
+   "claim": "level time RISES monotonically with s at N=64 -- NO speed win at any scale, because the level is already HOP-bound by 65.93 ps at s=1",
+   "measured": {
+    "T_monotonic_rising": true,
+    "level_floor_monotonic_rising": true,
+    "T_ps": [
+     440.0,
+     580.0,
+     790.0,
+     1090.0
+    ],
+    "level_floor_ps": [
+     295.8342590866064,
+     380.11852756444387,
+     495.8461721585802,
+     658.7695410407498
+    ]
+   },
+   "verdict": "RIGHT",
+   "note": ""
+  },
+  {
+   "id": "X5_xCMOS_level_s2",
+   "claim": "x_CMOS_level (on the SCHEDULED beat T) at N=64 s=2 in 6.3-6.8",
+   "measured": 6.25,
+   "verdict": "NARROWLY-WRONG",
+   "note": "scored on T because the 4.74 figure the band was built from is Phase 1's T/92.8; the additive 73.5 ps in the beat rule does NOT scale with s, so T grows slower than sqrt(s)"
+  },
+  {
+   "id": "X5_xCMOS_level_s4",
+   "claim": "x_CMOS_level (on the SCHEDULED beat T) at N=64 s=4 in 8.8-9.5",
+   "measured": 8.512931034482758,
+   "verdict": "WRONG",
+   "note": "scored on T because the 4.74 figure the band was built from is Phase 1's T/92.8; the additive 73.5 ps in the beat rule does NOT scale with s, so T grows slower than sqrt(s)"
+  },
+  {
+   "id": "X5_xCMOS_level_s8",
+   "claim": "x_CMOS_level (on the SCHEDULED beat T) at N=64 s=8 in 12.2-13.2",
+   "measured": 11.745689655172415,
+   "verdict": "WRONG",
+   "note": "scored on T because the 4.74 figure the band was built from is Phase 1's T/92.8; the additive 73.5 ps in the beat rule does NOT scale with s, so T grows slower than sqrt(s)"
+  },
+  {
+   "id": "X6_E_per_gate_s2",
+   "claim": "E/gate (ideal-PWL floor, timer 0) at N=64 s=2 in 7.5-8.8 fJ",
+   "measured": 6.3788499492416495,
+   "verdict": "WRONG",
+   "note": ""
+  },
+  {
+   "id": "X6_E_per_gate_s4",
+   "claim": "E/gate (ideal-PWL floor, timer 0) at N=64 s=4 in 14-18 fJ",
+   "measured": 11.526880479802807,
+   "verdict": "WRONG",
+   "note": ""
+  },
+  {
+   "id": "X6_E_per_gate_s8",
+   "claim": "E/gate (ideal-PWL floor, timer 0) at N=64 s=8 in 27-36 fJ",
+   "measured": 22.04760582439837,
+   "verdict": "WRONG",
+   "note": ""
+  },
+  {
+   "id": "X6_E_exponent",
+   "claim": "E/gate rises roughly LINEARLY in s (exponent near 1.0, band 0.8-1.2)",
+   "measured": 0.8085741635565538,
+   "verdict": "RIGHT",
+   "note": ""
+  },
+  {
+   "id": "X6_crossing_destroyed",
+   "claim": "the Phase 1 crossing at N=64 (0.991x CMOS) is DESTROYED by any upsizing: x_CMOS > 1 at every s > 1",
+   "measured": {
+    "x_at_s1": 0.9911647854769109,
+    "x_at_s": [
+     [
+      2.0,
+      1.5407850118941184
+     ],
+     [
+      4.0,
+      2.784270647295364
+     ],
+     [
+      8.0,
+      5.325508653236322
+     ]
+    ]
+   },
+   "verdict": "RIGHT",
+   "note": ""
+  },
+  {
+   "id": "X7_area",
+   "claim": "tank um2/gate = 29.98*s EXACTLY by construction; cell active um2/gate = 0.242*s",
+   "measured": {
+    "tank_exact": [
+     true,
+     true,
+     true,
+     true
+    ],
+    "cell_matches": [
+     true,
+     true,
+     true,
+     true
+    ]
+   },
+   "verdict": "RIGHT",
+   "note": ""
+  },
+  {
+   "id": "X8_lever_fails_even_at_N8",
+   "claim": "EVEN AT N=8, where the level is SETTLE-bound with only 24.17 ps of slack, upsizing does NOT shorten the level: s=2 alone adds ~52 ps of hop, more than the whole slack. Level time minimised at s=1 at EVERY N",
+   "measured": {
+    "level_floor_ps": [
+     [
+      1.0,
+      150.73273300000005
+     ],
+     [
+      2.0,
+      161.65787409178904
+     ],
+     [
+      4.0,
+      209.13791985541582
+     ],
+     [
+      8.0,
+      273.30326523587837
+     ]
+    ],
+    "none_faster_than_s1": true
+   },
+   "verdict": "RIGHT",
+   "note": ""
+  },
+  {
+   "id": "X8_level_floor_N8_s1",
+   "claim": "N=8 level floor at s=1 ~ 145-156 ps",
+   "measured": 150.73273300000005,
+   "verdict": "RIGHT",
+   "note": ""
+  },
+  {
+   "id": "X8_level_floor_N8_s2",
+   "claim": "N=8 level floor at s=2 ~ 170-188 ps",
+   "measured": 161.65787409178904,
+   "verdict": "WRONG",
+   "note": ""
+  },
+  {
+   "id": "X8_level_floor_N8_s4",
+   "claim": "N=8 level floor at s=4 ~ 243-263 ps",
+   "measured": 209.13791985541582,
+   "verdict": "WRONG",
+   "note": ""
+  },
+  {
+   "id": "X8_level_floor_N8_s8",
+   "claim": "N=8 level floor at s=8 ~ 345-371 ps",
+   "measured": 273.30326523587837,
+   "verdict": "WRONG",
+   "note": ""
+  },
+  {
+   "id": "X9_bound_by_flips_to_HOP",
+   "claim": "the MECHANISM: cell load and resonant tank are the SAME capacitance, so growing the cell grows the thing that sets the speed limit. Signature: N=8 is SETTLE-bound at s=1 and flips to HOP-bound by s=2",
+   "measured": {
+    "1.0": "SETTLE",
+    "2.0": "HOP",
+    "4.0": "HOP",
+    "8.0": "HOP"
+   },
+   "verdict": "RIGHT",
+   "note": "keys are scales; SETTLE at s=1 then HOP thereafter is the predicted signature"
+  },
+  {
+   "id": "X10_isohop_holds_t_hop",
+   "claim": "dropping L as 1/s holds t_hop within 10% of its s=1 value",
+   "measured": {
+    "t_hop_ps": 263.0853985351696,
+    "s1_t_hop_ps": 295.8342590866064,
+    "ratio": 0.8892999727193548
+   },
+   "verdict": "WRONG",
+   "note": ""
+  },
+  {
+   "id": "X10_isohop_costs_quadratically",
+   "claim": "and the price is quadratic: E/gate 45-90 fJ (11-22x CMOS) at N=64 s=4 with L=3.75 nH",
+   "measured": 12.1323407982957,
+   "verdict": "WRONG",
+   "note": "E_seriesR ~ s^2 at fixed t_hop, and Q falls as 1/s with R_S pinned at 10 ohm"
+  },
+  {
+   "id": "A4_E6_L_reduction_at_s1",
+   "claim": "EXTENSION (amendment A4): shrink L at s=1 instead of growing the cells. Tests whether cell upsizing is DOMINATED on the speed axis.",
+   "measured": {
+    "level_floor_ps": 152.32153799999992,
+    "baseline_level_floor_ps": 295.8342590866064,
+    "speedup_x": 1.9421695905316196,
+    "E_per_gate_fJ": 4.7442262971399165,
+    "baseline_E_per_gate_fJ": 4.103422211874411,
+    "energy_pct": 15.616333201374166,
+    "bound_by": "SETTLE",
+    "recycle_pct": -11.83254993492595,
+    "rail_droop_note": "recycle went NEGATIVE and the delivered rail dropped 21%: E6 has stopped being adiabatic, so its +15.6% energy is NOT an iso-swing figure (see AMENDMENT A8)"
+   },
+   "verdict": "INFORMATIVE",
+   "note": ""
+  },
+  {
+   "id": "A4_upsizing_is_DOMINATED",
+   "claim": "at the SAME L=3.75 nH, is s=1 better than s=4 on ALL of speed, energy and area simultaneously?",
+   "measured": {
+    "E6_s1_floor_ps": 152.32153799999992,
+    "E3_s4_floor_ps": 263.0853985351696,
+    "faster_x": 1.7271713638761297,
+    "E6_s1_E_per_gate": 4.7442262971399165,
+    "E3_s4_E_per_gate": 12.1323407982957,
+    "cheaper_x": 2.5572854325287455,
+    "E6_s1_um2_pg": 30.408147763108502,
+    "E3_s4_um2_pg": 121.264895526217,
+    "smaller_x": 3.9879079933088493
+   },
+   "verdict": "RIGHT",
+   "note": ""
+  },
+  {
+   "id": "X11_no_positive_exchange_rate",
+   "claim": "NO positive exchange rate on this axis: every scale point is worse than s=1 on BOTH energy and speed, so the 'curve' is a dominated ray, not a frontier. If ANY point beats s=1 on level time, X8/X9 are WRONG and the trade EXISTS -- to be reported as a major positive result",
+   "measured": {
+    "points_faster_than_s1": []
+   },
+   "verdict": "RIGHT",
+   "note": ""
+  },
+  {
+   "id": "X11_pareto_frontier",
+   "claim": "the Pareto frontier in (level_floor, E/gate) should contain ONLY s=1",
+   "measured": {
+    "8": [
+     1.0
+    ],
+    "64": [
+     1.0
+    ]
+   },
+   "verdict": "RIGHT",
+   "note": ""
+  }
+ ]
+}

@@ -1,0 +1,115 @@
+{
+ "_doc": "qal/upsize -- the capacitance decomposition behind the crux. C_wire is EXACT (set in the deck). k, C_junction and C_gate are DERIVED from differences between the four variants' fitted b coefficients. Nothing here is simulated.",
+ "_shim_defect": "qal/sg13lv_compat.sp declares ad/as/pd/ps and DISCARDS them, so AS=AD=1e-12 m^2 and PS=PD=1e-6 m for EVERY device at EVERY width. Junction capacitance is therefore W-INDEPENDENT in every deck in this campaign. That makes the measured benefit of upsizing an UPPER BOUND.",
+ "decomposition": {
+  "rail_1.65V": {
+   "rail_V": 1.65,
+   "k_ps_per_fF_DERIVED": 6.491172311302248,
+   "b_A_ps": 23.454293703293818,
+   "b_B_ps": 10.471949080689322,
+   "b_C_ps": 50.349298992064156,
+   "b_D_ps": 24.703720405707944,
+   "a_A_ps": 49.16033359430163,
+   "a_B_ps": 62.09337695175671,
+   "a_C_ps": 22.03977909118834,
+   "a_D_ps": 41.96484343038226,
+   "C_wire_fF_EXACT": 2.0,
+   "C_junction_fixed_fF_DERIVED": 1.6132600674389521,
+   "C_gate_x1_fF_DERIVED": 4.143320189165447,
+   "C_gate_per_um_fF_DERIVED": 2.2275914995513153,
+   "C_junction_from_variantD_fF_DERIVED": 1.8057409695771773,
+   "total_x1_load_fF_DERIVED": 7.7565802566043995,
+   "fixed_share_of_x1_load_pct": 46.58315840105457,
+   "NOT_A_CHECK": {
+    "_warning": "the three-equation solve above is ALGEBRAICALLY CLOSED (3 equations, 3 unknowns, C_wire given), so comparing b_C/k against the sum of parts is TAUTOLOGICAL and returns ~1e-16. It is NOT a validation and must not be quoted as one. I originally wrote it up as a cross-check; that was wrong and is corrected here.",
+    "b_C_over_k_fF": 7.756580256604399,
+    "sum_of_parts_fF": 7.7565802566043995,
+    "tautological_rel_error": 1.145064436023696e-16
+   },
+   "GENUINE_CHECKS": {
+    "_what": "checks that do NOT enter the solve",
+    "variantD_not_used_in_solve": {
+     "b_D_ps": 24.703720405707944,
+     "implied_fixed_load_fF": 3.8057409695771773,
+     "variantA_fixed_load_fF": 3.613260067438952,
+     "rel_diff": 0.053270702508456315,
+     "note": "D differs from A only in the load cell's BIAS (rail tied to 0 V), so its fixed load should be CLOSE to A's but not identical"
+    },
+    "C_gate_vs_first_principles": {
+     "derived_fF_per_um": 2.2275914995513153,
+     "expected_fF_per_um": "1.95 (C_ox at L=0.13 um) plus overlap, so ~2.0-2.5",
+     "note": "EXTERNAL check, independent of these decks"
+    },
+    "C_junction_vs_model_file": {
+     "zero_bias_total_fF": 3.0,
+     "basis": "AD=1e-12 m^2 x CJORBOT=1e-3 F/m^2 = 1.0 fF, plus LSDRAIN=1e-6 m x CJORSTI=1e-9 F/m = 1.0 fF, plus LGDRAIN=1e-6 m x CJORGAT=1e-9 F/m = 1.0 fF, read straight out of the .so.params of the 1.12 um device",
+     "derived_at_reverse_bias_fF": 1.6132600674389521,
+     "note": "EXTERNAL check: at reverse bias the cap falls as (1+V/VBIR)^-P, so 1.5-2.1 fF is the expected window and the DERIVED value lands in it. The W-INDEPENDENCE is not inferred at all -- AS/AD/PS/PD are literally the same constants in every .params file."
+    }
+   }
+  },
+  "rail_0.942248V": {
+   "rail_V": 0.9422477,
+   "k_ps_per_fF_DERIVED": 12.726045205147873,
+   "b_A_ps": 48.5394027360224,
+   "b_B_ps": 23.087312325726657,
+   "b_C_ps": 87.94520896147435,
+   "b_D_ps": 57.32014901694113,
+   "a_A_ps": 91.4505485764692,
+   "a_B_ps": 117.21014204407489,
+   "a_C_ps": 52.4145170225427,
+   "a_D_ps": 79.31513291721524,
+   "C_wire_fF_EXACT": 2.0,
+   "C_junction_fixed_fF_DERIVED": 1.814178085457963,
+   "C_gate_x1_fF_DERIVED": 3.096469137915031,
+   "C_gate_per_um_fF_DERIVED": 1.6647683537177584,
+   "C_junction_from_variantD_fF_DERIVED": 2.5041604122036505,
+   "total_x1_load_fF_DERIVED": 6.910647223372994,
+   "fixed_share_of_x1_load_pct": 55.1927766267356,
+   "NOT_A_CHECK": {
+    "_warning": "the three-equation solve above is ALGEBRAICALLY CLOSED (3 equations, 3 unknowns, C_wire given), so comparing b_C/k against the sum of parts is TAUTOLOGICAL and returns ~1e-16. It is NOT a validation and must not be quoted as one. I originally wrote it up as a cross-check; that was wrong and is corrected here.",
+    "b_C_over_k_fF": 6.910647223372994,
+    "sum_of_parts_fF": 6.910647223372994,
+    "tautological_rel_error": 0.0
+   },
+   "GENUINE_CHECKS": {
+    "_what": "checks that do NOT enter the solve",
+    "variantD_not_used_in_solve": {
+     "b_D_ps": 57.32014901694113,
+     "implied_fixed_load_fF": 4.5041604122036505,
+     "variantA_fixed_load_fF": 3.814178085457963,
+     "rel_diff": 0.18089934745740702,
+     "note": "D differs from A only in the load cell's BIAS (rail tied to 0 V), so its fixed load should be CLOSE to A's but not identical"
+    },
+    "C_gate_vs_first_principles": {
+     "derived_fF_per_um": 1.6647683537177584,
+     "expected_fF_per_um": "1.95 (C_ox at L=0.13 um) plus overlap, so ~2.0-2.5",
+     "note": "EXTERNAL check, independent of these decks"
+    },
+    "C_junction_vs_model_file": {
+     "zero_bias_total_fF": 3.0,
+     "basis": "AD=1e-12 m^2 x CJORBOT=1e-3 F/m^2 = 1.0 fF, plus LSDRAIN=1e-6 m x CJORSTI=1e-9 F/m = 1.0 fF, plus LGDRAIN=1e-6 m x CJORGAT=1e-9 F/m = 1.0 fF, read straight out of the .so.params of the 1.12 um device",
+     "derived_at_reverse_bias_fF": 1.814178085457963,
+     "note": "EXTERNAL check: at reverse bias the cap falls as (1+V/VBIR)^-P, so 1.5-2.1 fF is the expected window and the DERIVED value lands in it. The W-INDEPENDENCE is not inferred at all -- AS/AD/PS/PD are literally the same constants in every .params file."
+    }
+   }
+  },
+  "_bias_consistency": {
+   "_what": "the junction capacitance must be LARGER at the LOWER rail (less reverse bias) and the gate capacitance SMALLER (less inversion).  Both signs are predictions, not fits.",
+   "rails_V": [
+    1.65,
+    0.9422477
+   ],
+   "C_junction_fF": [
+    1.6132600674389521,
+    1.814178085457963
+   ],
+   "C_junction_sign_correct": true,
+   "C_gate_fF": [
+    4.143320189165447,
+    3.096469137915031
+   ],
+   "C_gate_sign_correct": true
+  }
+ }
+}

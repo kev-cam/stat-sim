@@ -1,0 +1,169 @@
+{
+"_WHAT": "qal/upsize -- PHASE 2 of the QAL amortisation question: CELL UPSIZING AS THE SPEED LEVER. Written BEFORE the first deck. Scored line by line in README.md at the end. Nothing in this file is to be edited; corrections go to AMENDMENT_PHASE2.md.",
+"_WHEN": "2026-09-29 ~21:45 -0700, after DISK_STATE_BEFORE.txt (21:42) and before any .cir exists in this directory.",
+"_JOB": "(a) sweep cell scale x1/x2/x4/x8, THE CRUX FIRST: in a real chain the driver AND its load both scale, so measure whether t_settle falls at all or is scale-INVARIANT. (b) t_hop, level time end to end MEASURED never composed, energy per gate and per op, area. (c) the trade curve with the exchange rate quantified if one exists. (d) per-gate settling and a VALUE check at every scale.",
+
+"CONFIGURATION_HELD_FIXED": {
+  "topology": "qal/banktank per-bank tanks (0aae11e) as transcribed into qal/widebank/wb.py sha256 188cf264. Per-bank tank islands, committed tg15p switch triple (wn=W/3, wp=2W/3, park=W/15), A6 tank-referenced park with the Phase-1 A5 park-branch ammeter, FIXED buck sequencing (break-before-make both edges, diode freewheel) as embodied in phase_pwl, chain-legal source-side cuts (structural: bank k's tank island shares no node with k+/-1, per Phase 1 A7 as restated).",
+  "NBANK": 3,
+  "NBANK_basis": "Phase 1 acceptance A0b VALIDATED the 3-vs-4 reduction at N=8 (bank-2 rail 0.005%, I_pk 0.005%, tank loss 0.34%, t_hop 0.058%, all inside 0.5%). Inherited, not re-litigated.",
+  "dV_V": 1.65,
+  "dV_basis": "the block needs it: below Vtn+|Vtp| = 0.9642 V the cascade is not level-restoring, and at dV=1.2 the block fails 59/161.",
+  "L_nH": 15.0,
+  "R_S_ohm": 10.0,
+  "L_RS_basis": "HELD FIXED across the whole scale sweep, exactly as Phase 1 held them across the width sweep, so t_hop is free to move and the trade is exposed rather than hidden. ONE clearly-labelled EXTENSION row (E3, iso-hop) deliberately breaks this and is reported separately, never inside the main series.",
+  "m_nominal": 10.0,
+  "H": 4,
+  "mode": "free",
+  "PSP103": "via .hdl psp103.va + sg13g2_psp103_tt.lib, sg13_lv via qal/sg13lv_compat.sp. Corners only via instance-level DTA (none drawn here: tt only).",
+  "metering": "1F integrators ONLY, every one t0-referenced against its own Z checkpoint, gate-charge integrators referenced PRE-CLOSE (Phase 1 A6). True-ZCS probe-then-cut with zeros PROBED AT EACH ROW'S OWN T, H AND SCALE (Phase 1's instrument check found the committed rows used zeros probed at a different T; this study repeats that discipline per scale).",
+  "vt_gmin": "reserved, not used",
+  "cache": "this study owns PYMS_VAE_CACHE=<scratchpad>/vae_cache_upsize, seeded by COPY from Phase 1's cache and then verified by B0b. No other study writes it."
+},
+
+"THE_SWEPT_AXIS": {
+  "name": "cell scale s",
+  "values": [1, 2, 4, 8],
+  "what_scales": "the CELL inverter only: WP = 1.12*s um, WN = 0.74*s um, L = 0.13 um unchanged. The committed campaign-standard cell is s=1.",
+  "N": 64,
+  "N_basis": "the BEST N from Phase 1: the first N that crosses the 4.14 fJ/cell/op bar on the ideal-PWL floor row (4.1034 fJ/gate = 0.991x CMOS, measured N_min 59.5). Mandated by the brief.",
+  "SECOND_N": 8,
+  "SECOND_N_basis": "PRE-STATED AND LOAD-BEARING. Phase 1's own measured numbers say the N=64 level time is HOP-BOUND with 65.93 ps of slack (t_hop 295.83 vs t_settle90 229.91), so at N=64 a faster cell CANNOT shorten the level even if it settled instantly. The settle/hop crossover sits between N=16 (settle-bound by 13.70 ps) and N=32 (hop-bound by 19.86 ps). N=8 is settle-bound by 24.17 ps and is therefore THE ONLY REGIME IN THE WHOLE ARCHITECTURE where a faster cell can buy level time. Running the scale sweep at N=64 alone would return 'no trade' without testing where the trade could have existed. Both N are swept; N=64 is the mandated headline, N=8 is the fair test of the lever.",
+  "PAT": "committed PAT8 = [1,1,1,0,1,0,0,1] tiled N/8 times, HIGH fraction exactly 5/8 at both N. Phase 1 A11 MEASURED that a bank of identical cells on one lumped rail is a function of the HIGH COUNT only, so the arrangement is electrically irrelevant; inherited knowingly, and the VALUE and functional checks are still evaluated on all N nodes individually."
+},
+
+"SCALING_LAWS_STATED_AND_WHY": {
+  "C_bank": {
+    "rule": "C_bank_nominal(N,s) = 35.979 * (N/8) * s fF",
+    "why": "the bank capacitance IS the cells' rail-side parasitics (pMOS source/drain junction area and overlap, both proportional to W). There is no explicit capacitor on rail{k} in this harness; C_bank_nominal is used ONLY to size the tank. Linear in s is the DERIVED expectation.",
+    "label": "DERIVED. The real secant C is MEASURED per row as Q_through_L/swing and reported as m_eff, exactly as Phase 1 A9 did (which found m_eff = 3.62..6.51 against a nominal 10, i.e. the committed 35.979 fF basis understates the charge that actually flows). Phase 2 does NOT retune the basis; it reports the drift so the axis stays comparable with Phase 1."
+  },
+  "C_tank": {
+    "rule": "C_tank(N,s) = m * C_bank_nominal(N,s) = 10 * 35.979 * (N/8) * s fF",
+    "why": "holds the NOMINAL tank ratio, so the scale axis is not confounded by a simultaneous change of tank sizing rule. Falsified by control E2."
+  },
+  "switch_width": {
+    "rule": "W(N,s) = 30 * sqrt(N/8) * sqrt(s) um nominal total, split tg15p",
+    "why": "constant-Q. Q = (1/R_tot)*sqrt(L/C). C grows as s at fixed L, so sqrt(L/C) falls as 1/sqrt(s); holding Q needs R_on ~ 1/sqrt(s), hence W ~ sqrt(s). Same argument Phase 1 used for W ~ sqrt(N), and the two compose: W ~ sqrt(N*s).",
+    "note": "Phase 1 MEASURED that this law OVER-SIZES by >=2x at N=32 (energy- and speed-optimal at 0.5x) and is about right at N=256. Carried unchanged so the scale axis is clean; W is not re-optimised per scale in the main series.",
+    "convenience": "W(64,s) = 84.85/120.0/169.71/240.0 um for s=1/2/4/8, of which the first three are exactly the N=64/128/256 widths Phase 1 already warmed."
+  },
+  "t_hop": {
+    "rule": "PREDICTED to grow as sqrt(s) at fixed L, MEASURED per row by the true-ZCS probe. Never composed.",
+    "why": "t_hop = pi*sqrt(L*C_eff) and C_eff ~ s."
+  },
+  "T_beat": {
+    "rule": "T(N,s) = ceil to 10 ps of (t_zcs_rise(bank 2, own probe) + 73.5 ps), Phase 1's committed rule.",
+    "escalation": "if a row fails B1 or B2 at that T, T is raised by 10% and re-probed, up to twice; the failures are reported as failures, never dropped."
+  },
+  "max_timestep": {
+    "rule": "0.25 * sqrt(N/8) ps -- Phase 1's value AT THAT N, NOT additionally scaled by s.",
+    "why": "upsizing makes the CELLS faster while making the hop slower. Scaling the step with sqrt(s) as the hop lengthens would coarsen the grid exactly where the cell dynamics under test sharpen. Held at the finer value and the runtime is paid. Falsified at s=8 by B11."
+  },
+  "CLOAD": {
+    "rule": "2.0 fF per cell output, HELD FIXED at every scale in the main series.",
+    "why": "CLOAD models the output node's WIRING/routing load, which does not scale with transistor width. The gate load that DOES scale is the next bank's transistors, and in this harness that is already structural (bank k's outputs are bank k+1's gates), so the co-scaling the crux asks about happens by construction. Holding CLOAD fixed is therefore the REAL CHAIN. Variant B of the crux experiment scales it, to separate the two mechanisms."
+  }
+},
+
+"THE_CRUX_EXPERIMENT": {
+  "question": "in a real chain the driver AND its load both scale -- does t_settle fall at all, or is it scale-INVARIANT? Answer that before anything else.",
+  "why_a_dedicated_instrument": "in the 3-bank chain, t_settle is measured from the bank's own rail start and is therefore RAIL-DELIVERY-BOUND: the cells cannot reach 90% of rail until the resonant hop has delivered the rail. At N=64 Phase 1 MEASURED t_settle_after_hop = -65.93 ps, i.e. the gates are done 66 ps BEFORE the rail is. So the chain rows cannot isolate the cell's drive-into-load time; they can only show whether the LEVEL moves. Both are needed and they are different questions.",
+  "deck": "CELL_CHAIN: five identical inverters in series at a FIXED DC rail, stage 3 measured (so its input edge is cell-generated, not an ideal source, and its load is a real cell). Input to stage 1 is an ideal PWL step with the committed 2 ps edge -- a BOOKING, two stages upstream of the measurement.",
+  "rails_V": [1.65, 0.9422477],
+  "rails_why": "1.65 V is the nominal dV. 0.9422477 V is the MEASURED delivered rail of bank 2 at its own boundary in Phase 1's accepted N=64 row -- the bias the cells actually see. Two bias points so the answer is not an artefact of one.",
+  "variants": {
+    "A_REAL_CHAIN": "all five cells scale s, CLOAD = 2.0 fF fixed on every output. This is the configuration the main series runs.",
+    "B_PURE_COSCALE": "all five cells scale s, CLOAD = 2.0*s fF. Everything the driver sees scales. The theoretical scale-invariance test.",
+    "C_FIXED_LOAD": "stages 1-3 scale s, stages 4-5 stay at s=1, CLOAD = 2.0 fF fixed. Drive into a load that does NOT scale -- the naive '1/scale' expectation the brief names."
+  },
+  "scales": [1, 2, 4, 8],
+  "metrics": "(i) 50%-crossing stage delay stage2->stage3, both edges; (ii) t_settle90 of stage 3 referenced to the instant its INPUT crosses the fcrit trip, both edges; (iii) the fcrit functional-criterion time at the same fixed rail. All MEASURED from .prn/.mt0.",
+  "decomposition_to_be_fitted": "t(s) = a + b/s, from C_load = C_gate_next(~s) + C_wire(fixed) and I_drive ~ s, giving t ~ (a*s + C_wire)/(k*s) = a/k + C_wire/(k*s).",
+  "B10_gate": "variant A's t(s) must fit a + b/s with R^2 >= 0.98 on four points, and variant B must be flat within 5%, or the mechanism claim is NOT supported and will be withdrawn rather than asserted."
+},
+
+"ENERGY_LEDGER": {
+  "inherited": "qal/widebank/wbx.py LEDGER verbatim (sha256 214b722a). E_bank_per_hop = E_tank_loss (MEASURED, convention-free) + E_switch_gate_drive + E_timer.",
+  "EXPLICIT_DOUBLE_COUNT_WARNING": "switch conduction and inductor series R are INSIDE E_tank_loss and MUST NOT be added again. Carried from Phase 1 and restated here because it is the easiest error to make in this ledger.",
+  "rows_reported_at_every_point": [
+    "idealPWL_floor_MEASURED, timer 0 -- a strict BOUND, and the row Phase 1's crossing lives on",
+    "idealPWL_floor_MEASURED, timer 3.5227 fJ -- ASSUMED",
+    "conventional_from_own_measured_charge, timer 0 -- this study's OWN measured |Q| per hop x 1.5 V",
+    "conventional_from_own_measured_charge, timer 3.5227 fJ"
+  ],
+  "Q_gate": "MEASURED per device per hop in every row (close and open edges separately, pre-close reference). Phase 1 measured 3.635-3.739 fC/um, 23.4-24.1x the committed qal/lsweep 0.155 fC/um fit, and cross-checked it against first principles (C_ox ~1.95 fF/um at L=0.13 -> 2.93 fC/um plus 0.9-1.5 fC/um overlap at 1.5 V = 3.8-4.4 fC/um expected). Phase 2 re-measures it at every width rather than inheriting either number.",
+  "CMOS_bars": {
+    "HARD_BAR_fJ_per_cell_per_op": 4.14,
+    "hard_basis": "232 fJ/op / 56 cells, SG13G2 typ 1.2 V. THE bar.",
+    "EASY_BAR_fJ_per_inverter_cycle": 10.0831,
+    "easy_basis": "one hi+lo cycle of the same 1.12p/0.74n cell at 1.2 V. Phase 1 showed QAL is below this at EVERY N including N=8 (0.596x); it is reported ONLY so it cannot be presented as the result.",
+    "LEVEL_ps": 92.8,
+    "level_basis": "928 ps / 10 levels",
+    "swing_note": "QAL runs at 1.65 V because QAL requires it; CMOS bars are at 1.2 V. The PRIMARY comparison charges QAL the 1.891x swing penalty. The iso-swing DERIVED column (CMOS forced to 1.65 V) is carried and is the FLATTERING one; no headline will rest on it."
+  }
+},
+
+"ACCEPTANCE": {
+  "B0a_TRANSCRIPTION": "up.py at s=1 must generate decks BYTE-IDENTICAL to Phase 1's c_n64_T440_H4_dv1650_free_nb3.cir (sha256 4a4c4ace) and c_n8_T200_H4_dv1650_free_nb3.cir (sha256 74318972). ZERO tolerance -- this is what licenses calling Phase 2's s=1 point the same experiment as Phase 1's.",
+  "B0b_RERUN": "that s=1 N=64 deck, re-run in THIS study's own cache, must reproduce Phase 1's row to <=0.01% on E/gate, t_hop, A2 margin, worst-gate %, I_pk and rail.",
+  "B1_VALUE": "the committed guard on ALL N outputs of ALL 3 banks individually at each bank's own stage boundary: pull-DOWN <= 0.10*rail, pull-UP >= 0.50*rail. 0 failures required.",
+  "B2_FUNCTIONAL": "qal/fcrit's criterion, imported UNMODIFIED from qal/fcrit/rescore.py (sha256 f219dd65) against TRIP.json (105f3030). Bank 2's gates scored against bank 3's MEASURED trip at bank 3's DELIVERED rail at the instant bank 3 commits (its own rise ZCS). NOISE BUDGET DETERMINISTIC TERMS ONLY: the BARE 0 mV threshold is primary. The 3*sigma_trip = 19.323 mV column is carried for continuity ONLY and labelled with the standing correction that it double-counts mismatch when mismatch is not being drawn. The trip FRACTION is not treated as constant.",
+  "B4_ZCS": "|I(L)| <= 1 uA at both the rise and return zero, all banks.",
+  "B5_PATH_IDENTITY": "|E_out_of_tank - E_switchblock - E_seriesR| <= 1% of E_out_of_tank.",
+  "B6_TANK_CLOSURE": "|residual| <= 5% of tank loss, with the park branch METERED (Phase 1 A5).",
+  "B9_C_BANK": "the measured secant C and m_eff are REPORTED at every scale, and the linearity of C_bank in s is tested. NOT a pass/fail gate: Phase 1 established the committed 35.979 fF basis is wrong, so gating on it would only re-fail a known defect.",
+  "B10_CRUX_MECHANISM": "as stated in THE_CRUX_EXPERIMENT.",
+  "B11_TIMESTEP": "at N=64, s=8 (the largest tank in the study) the pre-registered step and HALF that step must agree within 0.5% on E/gate and 1 mV on the delivered rail.",
+  "ACCEPTED": "B1 AND B2 AND B4 AND B5 AND B6. Stated up front this time, because Phase 1 had to amend it in (its A10)."
+},
+
+"PRE_STATED_EXPECTATIONS_TO_BE_SCORED": {
+  "_rule": "each is a falsifiable claim with a number or a band. Every one gets RIGHT / WRONG / NARROWLY-WRONG in README.md against the measurement, whichever way it goes.",
+
+  "X1_CRUX_variant_A": "t_settle does NOT fall as 1/s. It falls only by the FIXED-WIRING fraction of the load and then saturates. Quantitatively: t_settle(x8)/t_settle(x1) = 0.68-0.80 in variant A. Mechanism: C_load = C_gate_next(prop s) + C_wire(fixed), I_drive prop s, so t = a + b/s. At s=1 the x1 cell's gate load is ~3.7 fF (1.86 um total width x ~2.0 fF/um) against 2.0 fF of wiring, so the fixed fraction is ~35% and that is the whole prize.",
+  "X2_CRUX_variant_B": "with CLOAD also scaled, t_settle is FLAT within 5% across x1..x8 -- genuinely scale-INVARIANT. If this comes out flat, the area/power-for-speed trade DOES NOT EXIST at the cell level and must be stated plainly.",
+  "X3_CRUX_variant_C": "driving a load that does NOT scale, t_settle(x8)/t_settle(x1) = 0.15-0.30, i.e. roughly the naive 1/s. This row exists to prove the instrument CAN see a speed-up, so that variant A's flatness is a measurement and not a dead probe.",
+
+  "X4_t_hop_at_N64": "t_hop grows as sqrt(s), MEASURED exponent in s of 0.45-0.55. Absolute: 295.8 -> 410-425 -> 580-600 -> 820-850 ps for s=1/2/4/8.",
+  "X5_LEVEL_TIME_at_N64": "RISES monotonically with s, roughly as sqrt(s), because the level is already HOP-BOUND by 65.93 ps at s=1. x_CMOS_level goes 4.74 -> ~6.3-6.8 -> ~8.8-9.5 -> ~12.2-13.2. NO speed win at N=64 at any scale.",
+  "X6_ENERGY_at_N64": "E/gate RISES roughly LINEARLY in s. E_tank_loss ~ C_bank ~ s at constant Q, and the switch drive ~ W ~ sqrt(s). On the ideal-PWL floor row: 4.103 fJ/gate at s=1 -> 7.5-8.8 at s=2 -> 14-18 at s=4 -> 27-36 at s=8. CONSEQUENCE: the crossing Phase 1 found at N=64 (0.991x) is DESTROYED by any upsizing; x_CMOS ~= s.",
+  "X7_AREA_at_N64": "tank um2/gate = 29.98*s exactly by construction (C_tank ~ s); cell active area/gate = 0.242*s um2; switch active/gate ~ sqrt(s). So area rises linearly in s while speed FALLS as sqrt(s) and energy rises as s.",
+
+  "X8_THE_LEVER_AT_N8_the_fair_test": "EVEN AT N=8, WHERE THE LEVEL IS SETTLE-BOUND, UPSIZING DOES NOT SHORTEN THE LEVEL. The settle slack at N=8 is only 24.17 ps (t_settle90 150.72 vs t_hop 126.55), and s=2 alone adds sqrt(2)-1 = 41% to the hop = +52 ps, which already exceeds the entire slack. So the level time is minimised at s=1 at EVERY N, and there is no (N,s) in this architecture where upsizing buys speed. Predicted N=8 level times: 150.7(s=1, settle-bound) -> ~179(s=2, now hop-bound) -> ~253(s=4) -> ~358(s=8).",
+  "X9_THE_MECHANISM_THAT_DEFEATS_THE_LEVER": "THE CELL'S LOAD AND THE BANK'S RESONANT TANK ARE THE SAME CAPACITANCE. In CMOS, upsizing a gate pays for itself in the NEXT stage's load, a local and linear cost, and the speed-up is real. In QAL, upsizing pays into the LC hop that charges the whole bank, and the hop is pi*sqrt(LC), so a factor s of cell width costs sqrt(s) on the ENTIRE LEVEL while buying back only the fixed-wiring fraction of one cell's settling. The lever is not merely weak, it is structurally inverted: the thing you must grow to go faster is the thing that sets the speed limit.",
+  "X10_ISO_HOP_EXTENSION": "the obvious rescue -- drop L as 1/s to hold t_hop constant -- is WORSE, not better. At L ~ 1/s: I_pk ~ s, so series-R loss ~ I^2*R*t ~ s^2 at fixed t_hop; and Q = (1/R)*sqrt(L/C) falls as 1/s with R_S pinned at 10 ohm, so the fractional resonant loss pi/Q RISES as s and E/gate ~ s^2. Predicted at N=64 s=4, L=3.75 nH: t_hop within 10% of 295.8 ps, and E/gate 45-90 fJ, i.e. 11-22x CMOS. So the speed can be bought back with L, and the price is quadratic -- a NEGATIVE exchange rate against the sqrt(s)-hop baseline.",
+  "X11_EXCHANGE_RATE": "there will be NO positive exchange rate on this axis. Predicted signature: every scale point is worse than s=1 on BOTH energy and speed simultaneously, so the 'curve' is not a frontier but a single dominated ray. If instead any point beats s=1 on level time, X8/X9 are WRONG and the trade exists -- that is the falsification and it will be reported as a major positive result if it fires.",
+  "X12_WHAT_WOULD_FALSIFY_THE_MECHANISM": "(i) variant A t(x8)/t(x1) < 0.5 would mean the load does not co-scale as claimed; (ii) variant B not flat would mean the decomposition is wrong; (iii) any level time at any (N,s>1) below the s=1 level time at the same N would mean the lever exists."
+},
+
+"BOOKINGS_ideal_sources_every_one_a_BOUND": {
+  "1_buck": "the converter that must resupply the tank loss is NOT simulated. Declared here, before the first deck, with the reason: the fixed buck sequencing is embodied in the gate PWL, but no switching converter is in the loop. Every energy row is therefore a BOUND on a complete system, not a measurement of one.",
+  "2_timer": "not simulated. Reported at 0 (a strict BOUND) and at the campaign's 3.5227 fJ ideal-PWL floor (ASSUMED).",
+  "3_gate_drive_idealPWL": "the switch gate drive is PWL voltage sources. Phase 1 MEASURED that this integrator goes NEGATIVE (the sources RECEIVE energy, -0.30 to -10.21 fJ/bank), so the floor row is SUBSIDISED -- a perfectly recovering driver nets zero, not negative. Expected to worsen with s since W ~ sqrt(s). Reported per row.",
+  "4_well_rail": "the pMOS well rail (VHI) draws negative energy and is uncharged under the committed ideal-rails convention. Phase 1 measured -38.87 fJ/bank at N=64 s=1 = 0.607 fJ/gate, and charging it ERASES the Phase 1 crossing (4.711 fJ/gate = 1.138x). Reported at every scale, and the 'well-charged' variant is carried as a named column.",
+  "5_bank1_inputs": "bank 1's N inputs are ideal DC sources.",
+  "6_crux_input_step": "the CELL_CHAIN input is an ideal 2 ps PWL edge, two stages upstream of the measured stage.",
+  "7_JUNCAP200_leakage": "LOWER bounds only: the shim's default PD = 1.00 um is smaller than the 1.12 um pMOS, so the STI-edge term clips to zero. Worse at s>1, where the drawn width is 2.24-8.96 um against the same 1.00 um default.",
+  "8_area": "DERIVED from MIM 1.5 fF/um^2 and drawn width x 0.13 um channel length. Not laid out. The ONE 15 nH inductor per bank is NOT area-modelled and the committed record calls it the architecture's largest and scarcest component."
+},
+
+"CONTROLS_AND_EXTENSIONS": {
+  "E1_load_not_scaled_in_the_CHAIN": "N=64, s=4 on banks 1-2 with bank 3 left at s=1, so the measured bank drives an UNSCALED load inside the real chain. Separates 'the cell got faster' from 'the load grew with it' where it actually matters. Pre-stated signature: bank 2's settling improves relative to the all-s=4 row, and the level time still does not, because the hop is set by bank 2's own tank.",
+  "E2_tank_sized_from_MEASURED_C": "N=64, s=4 with C_tank set from the MEASURED secant C_bank at s=4 rather than the nominal, holding m_eff at its s=1 value. Falsifies the C_tank sizing rule as a confound.",
+  "E3_ISO_HOP": "N=64, s=4 with L = 15/4 = 3.75 nH, holding t_hop at its s=1 value. Tests X10. Clearly labelled an EXTENSION beyond the brief's fixed-L configuration and never folded into the main series.",
+  "E4_HALF_STEP": "N=64, s=8 at half the pre-registered max step. B11.",
+  "E5_s16": "if and only if the s=1..8 trend is ambiguous, one s=16 point at N=64. Not planned; recorded so that running it is not a silent addition."
+},
+
+"RUNTIME_PLAN": {
+  "box": "16 cores, load ~6.5 at start, 31 GB RAM, 6.8 GB free on / (97% full). Up to ~6 concurrent heavy jobs permitted.",
+  "disk": "THE BINDING CONSTRAINT. Phase 1's N=64 .prn is 2.3 MB and s does not change the device count, only widths, so Phase 2's rows are the same order. Probe .prn files are DELETED as soon as their zero is read (inherited from wb.do_probe). Budget < 150 MB total; checked before and after.",
+  "warm": "8 NEW PyMS geometries (cells 1.48/2.24/2.96/4.48/5.92/8.96 um, switch 16.0/160.0 um); 16 of the 24 needed are already in Phase 1's cache, which is COPIED not shared. Warm is SEQUENTIAL -- concurrent PyMS compiles race on the cache.",
+  "order": "(1) transcription check B0a, no simulation. (2) copy cache, warm. (3) B0b re-run. (4) the CRUX cell chains -- 24 tiny decks, seconds each, THE CRUX IS ANSWERED FIRST as the brief demands. (5) N=64 probes+rows s=2,4,8 (s=1 is B0b's deck). (6) N=8 probes+rows s=2,4,8. (7) controls E1/E2/E3/E4. (8) analysis.",
+  "concurrency": "probes and rows at DIFFERENT scales are independent and run up to 5 at once after the warm; each scale's 6 probes are sequential among themselves only because the later probes need the earlier zeros.",
+  "expected_wall": "warm ~15 min, crux ~5 min, N=64 rows ~8 min each at s=8 (tend ~2.8x Phase 1's 123 s plus probe overhead), N=8 rows ~2 min each, controls ~20 min. Total ~2 h if nothing needs re-probing."
+},
+
+"LABELLING_DISCIPLINE": "every reported quantity carries MEASURED, DERIVED or ASSUMED. Anything modelled as an ideal source is a BOOKING and its row is a BOUND. A single-cell or single-hop number is NEVER quoted as a chain result, and the tank-only energy is NEVER quoted as the block energy. If upsizing delivers the promise that is a major positive result and it will be stated as clearly as the negatives; if it does not, the MECHANISM that defeats it is the deliverable."
+}

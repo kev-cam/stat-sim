@@ -1,0 +1,52 @@
+SKEPTIC topology check on the AS-SHIPPED N=64 scored deck
+(/usr/local/src/stat-sim/qal/upsize/c_n64_T440_H4_dv1650_free_nb3.cir,
+ which my own generator reproduces byte-for-byte -- SK_INSTRUMENT_CHECK.json S0c).
+
+This settles the well-rail question WITHOUT a simulation, and more strongly than
+a measurement could: it is a statement about what is connected to what.
+
+NODE vhi -- complete list of every element that touches it:
+   VHI  vhi 0 1.5                                            <- the ideal source
+   XSWP1 sw1 gtp1 rail1 vhi   (D G S B)  -> BULK only
+   XSWP2 sw2 gtp2 rail2 vhi   (D G S B)  -> BULK only
+   XSWP3 sw3 gtp3 rail3 vhi   (D G S B)  -> BULK only
+   ...and NOTHING else.
+
+CONSEQUENCE.  The only path by which charge can reach vhi is a switch-pMOS bulk
+junction.  That device's other terminals are rail{k} (source), sw{k} (drain) and
+gtp{k} (gate).  rail{k} and sw{k} are both ON THE TANK'S OWN CHARGE PATH; gtp{k}
+is the ideal gate PWL and is metered separately by the egt integrator.
+
+Therefore every joule the 1.5 V well supply ABSORBS (E_wellrail is measured
+NEGATIVE = the supply receives) had already left the tank, and is therefore
+ALREADY INSIDE the MEASURED tank droop 0.5*C_tank*(V0^2 - V1^2) that the ledger
+charges as E_tank_loss.  Adding |E_wellrail| as a further cost counts the same
+joules TWICE.
+
+So the record's own sensitivity -- "charging the pMOS well rail puts N=64 at
+4.711 fJ/gate = 1.138x and ERASES THE CROSSING" -- is the WRONG SIGN of
+correction.  This one favours the record.
+
+THE SAME ARGUMENT, same deck, for the other two ideal sources:
+
+NODE in1_0 (representative of bank 1's N ideal DC inputs):
+   VI1_0 in1_0 0 1.65
+   XP1_0 o1_0 in1_0 rail1 rail1   -> GATE only
+   XN1_0 o1_0 in1_0 gn1   gn1     -> GATE only
+E_ideal_inputs_bank1 is likewise measured NEGATIVE (a sink), and the charge it
+absorbs transited bank 1's cell gates from bank 1's rail/gn -- inside bank 1's
+own tank droop.  Not a missing cost either.  (It IS still a booking: bank 1 is
+an ideal head, so bank 1 is not a measurement of a real driving stage.)
+
+NODE gn2 (bank 2's nMOS source/bulk rail), 129 mentions, of which exactly one
+is not a cell:
+   VMG2 gn2 0 0                                              <- 0 V ammeter
+A 0 V source transports charge at zero potential, so its energy is identically
+zero.  qg{k} is therefore a CHARGE meter and contributes nothing to the ledger,
+correctly.
+
+WHAT IS ACTUALLY UNCOSTED, and it is not any of the above:
+  * the CONVERTER that must resupply E_tank_loss every cycle -- not simulated in
+    any row of either phase.  E_tank_loss is 98%+ of the floor row.
+  * the TIMER -- reported at 0 (a strict BOUND) and at 3.5227 fJ (ASSUMED).
+  * the tank PRE-CHARGE, which arrives free via .ic.

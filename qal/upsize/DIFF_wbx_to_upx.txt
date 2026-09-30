@@ -1,0 +1,231 @@
+--- ../widebank/wbx.py	2026-09-29 19:46:06.810247352 -0700
++++ upx.py	2026-09-29 21:52:52.059317433 -0700
+@@ -1,5 +1,23 @@
+ #!/usr/bin/env python3
+-"""Per-row extraction for the WIDEBANK sweep.
++"""Per-row extraction for the UPSIZE (cell-scale) sweep -- PHASE 2.
++
++This file is qal/widebank/wbx.py (sha256 214b722a..., recorded in
++DISK_STATE_BEFORE.txt) with the CELL SCALE threaded through.
++`diff wbx.py upx.py` is the audit record (DIFF_wbx_to_upx.txt).  The criteria,
++the guards, the ledger and the CMOS bars are UNCHANGED.
++
++WHAT IS ADDED IN PHASE 2, and only this:
++  * scale (float or per-bank list) enters C_bank, C_tank, W and the cell area.
++  * the SETTLE-vs-HOP classification, which is the whole question: a level can
++    only be shortened by a faster cell if it is SETTLE-BOUND.  Phase 1's own
++    numbers say N=64 is HOP-bound by 65.93 ps and N=8 is SETTLE-bound by
++    24.17 ps, so the classification is reported per row rather than assumed.
++  * the MEASURED end-to-end level time (bank 3 valid minus bank 2 valid), which
++    is what the brief means by "level time end to end, MEASURED, never
++    composed".  T is reported alongside as the SCHEDULED beat, clearly labelled.
++  * m_eff from the measured secant C, per Phase 1 A9.
++
++Conventions inherited VERBATIM below.
+ 
+ Conventions inherited VERBATIM from qal/banktank/extract.py (sha256 75336909...,
+ recorded in DISK_STATE_BEFORE.txt), which inherits skip4/chain3/lsweep/swsweep:
+@@ -28,10 +46,10 @@
+     it double-counts mismatch when mismatch is not being drawn.
+ """
+ import json, math, os, sys
+-import wb
+-from wb import (EDGE, TAIL, cbank, wtot, widths, pat, in_hi, out_hi, reps,
++import up as wb
++from up import (EDGE, TAIL, cbank, wtot, widths, pat, in_hi, out_hi, reps,
+                 schedule, parse_mt0, read_prn, vtank0, QGATE_PER_UM, VGH,
+-                RS_REF, L_REF)
++                RS_REF, L_REF, sc_list, WP, WN, CLOAD)
+ 
+ HERE = os.path.dirname(os.path.abspath(__file__))
+ sys.path.insert(0, "/usr/local/src/stat-sim/qal/fcrit")
+@@ -126,22 +144,30 @@
+ 
+ 
+ def row_extract(n, m, T, H, dv, mode, z, path, wmul=1.0, nb=3, mstep=None,
+-                P=None, wall_s=None):
++                P=None, wall_s=None, scale=1.0, l_nh=L_REF, cload=CLOAD,
++                ct_fF=None):
+     P = P or pat(n)
+     mt = parse_mt0(path + ".mt0")
+     hdr, rows = read_prn(path + ".prn")
+     S = schedule(T, H, dv, z["tzr"], z["tzq"], nb)
+     vt0 = dv if mode == "vfull" else vtank0(m, dv)
+-    cb = cbank(n)
+-    ct = m * cb
+-    W = wtot(n, wmul)
++    SC = sc_list(scale, nb)
++    k2 = 2 if nb >= 2 else 1              # the SCORED bank
++    sc2 = SC[k2 - 1]
++    cb = cbank(n, sc2)
++    ct = ct_fF if ct_fF is not None else m * cb
++    W = wtot(n, wmul, sc2)
+     w3 = widths(W)
+     Wdev = w3["wn"] + w3["wp"] + w3["park"]
+ 
+     r = dict(_LABELS="MEASURED unless the key says DERIVED or ASSUMED",
+              N=n, m=m, T_ps=T, H=H, dv=dv, mode=mode, nb=nb, wmul=wmul,
+-             L_nH=L_REF, RS_ohm=RS_REF, wall_s=wall_s,
++             scale=scale, scale_per_bank=SC, scale_scored_bank=sc2,
++             cload_fF=cload, ct_override_fF=ct_fF,
++             WP_um=WP * sc2, WN_um=WN * sc2,
++             L_nH=l_nh, RS_ohm=RS_REF, wall_s=wall_s,
+              C_bank_fF_DERIVED=cb, C_tank_fF_DERIVED=ct, V_tank0_DERIVED=vt0,
++             m_nominal_used=(ct / cb if cb else None),
+              W_nominal_um=W, W_device_total_um=Wdev,
+              mstep_ps=wb.mstep_of(n, mstep),
+              tzr=z["tzr"], tzq=z["tzq"], c=S["c"], o=S["o"], rcl=S["r"],
+@@ -272,6 +298,34 @@
+         r["t_settle_functional_from_own_rail_start_ps"].get(2)
+     r["stage_time_measured_ps"] = ((fv[3] - fv[2]) if (nb >= 3 and fv.get(3)
+                                                        and fv.get(2)) else None)
++    r["stage_time_measured_functional_ps"] = (
++        (ff[3] - ff[2]) if (nb >= 3 and ff.get(3) and ff.get(2)) else None)
++
++    # -------- PHASE 2: is the LEVEL hop-bound or settle-bound?
++    # This is the whole question.  A faster cell can only shorten a level that
++    # is SETTLE-bound.  Reported per row, never assumed.
++    th = r["t_hop_rise_ps"]
++    ts = r["LEVEL_TIME_measured_bank2_ps"]
++    tsf = r["LEVEL_TIME_measured_functional_bank2_ps"]
++    r["BOUND_BY"] = dict(
++        _rule="t_hop_rise (the resonant charge delivery, MEASURED by the ZCS "
++              "probe) vs t_settle90 of the scored bank from its own rail "
++              "start (MEASURED from .prn).  Whichever is larger sets the "
++              "floor under the beat.",
++        t_hop_rise_ps=th, t_settle90_ps=ts, t_settle_functional_ps=tsf,
++        bound_by=("HOP" if (th is not None and ts is not None and th > ts)
++                  else "SETTLE" if (th is not None and ts is not None)
++                  else None),
++        slack_hop_minus_settle90_ps=((th - ts) if (th is not None
++                                                   and ts is not None) else None),
++        slack_hop_minus_settlefunc_ps=((th - tsf) if (th is not None
++                                                      and tsf is not None)
++                                       else None),
++        level_floor_ps=(max(th, ts) if (th is not None and ts is not None)
++                        else None),
++        note="if bound_by is HOP the settling has ZERO influence on the level "
++             "and a faster cell cannot help; the slack is how much settling "
++             "time is being thrown away.")
+ 
+     # ---------------- INSTRUMENT gates
+     r["IZ_uA"] = {k: 1e6 * mt["IZ%d" % k] for k in range(1, nb + 1)}
+@@ -361,17 +415,21 @@
+         * abs(en[k]["tank_energy_lost_fJ"]) for k in en
+         if en[k]["tank_energy_lost_fJ"])
+ 
+-    # ---------------- A9: is the swept axis labelled correctly?
+-    k2 = 2 if nb >= 2 else 1
++    # ---------------- B9: is the swept axis labelled correctly?
+     swing = r["rail_at_own_open_V"][k2]
+     q_meas = en[k2]["Q_through_L_rise_fC"]
+     c_meas = q_meas / swing if swing else None
+     r["A9_C_bank_measured_secant_fF"] = c_meas
+     r["A9_C_bank_ratio_measured_over_derived"] = (c_meas / cb) if c_meas else None
+     r["A9_pass"] = bool(c_meas and 0.5 <= c_meas / cb <= 2.0)
++    # the REAL tank ratio, per Phase 1 A9 (which found m_eff = 3.6..6.5 against
++    # a nominal 10).  REPORTED, not gated: the committed 35.979 fF basis is
++    # known wrong and gating on it would only re-fail a known defect.
++    r["m_eff_MEASURED"] = (ct / c_meas) if c_meas else None
+ 
+-    # ---------------- THE LEDGER (PRE_REGISTERED : ENERGY LEDGER)
++    # ---------------- THE LEDGER (PRE_REGISTERED_PHASE2 : ENERGY LEDGER)
+     e2 = en[k2]
++    _ = e2
+     e_tank = e2["tank_energy_lost_fJ"]
+     egd_floor = r["E_gate_drive_idealPWL_total_fJ"] / nb
+     qg_derived = QGATE_PER_UM * W
+@@ -420,40 +478,71 @@
+         L1["idealPWL_floor_MEASURED__timer0_BOUND"]["E_per_gate_fJ"]
+ 
+     # ---------------- AREA (the other half of the trade)
++    cells_um2 = n * (WP + WN) * sc2 * 0.13
+     r["area"] = dict(
+         _basis="MIM 1.5 fF/um^2 (sg13g2) for the tank; switch area = nominal "
+                "total width x 0.13 um channel length (device active only, no "
+-               "routing/contacts); cells = N x (1.12+0.74) um x 0.13 um. "
+-               "DERIVED, not laid out.",
++               "routing/contacts); cells = N x (1.12+0.74)*scale um x 0.13 um. "
++               "DERIVED, not laid out.  The ONE 15 nH inductor per bank is NOT "
++               "area-modelled and the committed record calls it the "
++               "architecture's largest and scarcest component.",
+         tank_um2=ct / 1.5, switch_um2=Wdev * 0.13,
+-        cells_um2=n * (1.12 + 0.74) * 0.13,
+-        tank_um2_per_gate=ct / 1.5 / n)
++        cells_um2=cells_um2,
++        tank_um2_per_gate=ct / 1.5 / n,
++        cells_um2_per_gate=cells_um2 / n,
++        switch_um2_per_gate=Wdev * 0.13 / n,
++        total_active_um2_per_gate=(ct / 1.5 + Wdev * 0.13 + cells_um2) / n)
+     return r
+ 
+ 
+-if __name__ == "__main__":
+-    n, T, H, dv, mode, zf = (int(sys.argv[1]), float(sys.argv[2]),
+-                             int(sys.argv[3]), float(sys.argv[4]),
+-                             sys.argv[5], sys.argv[6])
+-    nb = int(sys.argv[7]) if len(sys.argv) > 7 else 3
+-    wmul = float(sys.argv[8]) if len(sys.argv) > 8 else 1.0
+-    ms = float(sys.argv[9]) if len(sys.argv) > 9 and sys.argv[9] != "-" else None
+-    extra = sys.argv[10] if len(sys.argv) > 10 else ""
+-    z = json.load(open(os.path.join(HERE, zf)))
+-    tag = wb.tag_of(n, T, H, dv, mode, wmul, nb, extra)
++def extract_from_zeros(zpath, extra="", wall_s=None, mstep=None):
++    """PHASE 2 entry point: every parameter comes from the zeros JSON the row
++    was actually built with, so the extraction cannot disagree with the deck."""
++    z = json.load(open(zpath))
++    n, dv, H = z["N"], z["dv"], z["H_probe"]
++    T = z["T_used"]
++    nb, wmul = z["nb"], z["wmul"]
++    scale = z.get("scale", 1.0)
++    l_nh = z.get("L_nH", L_REF)
++    cload = z.get("cload", CLOAD)
++    ct_fF = z.get("ct_fF")
++    tag = wb.tag_of(n, T, H, dv, "free", wmul, nb, extra, scale)
+     path = os.path.join(HERE, "c_%s.cir" % tag)
+-    r = row_extract(n, 10.0, T, H, dv, mode, z, path, wmul=wmul, nb=nb, mstep=ms)
++    r = row_extract(n, 10.0, T, H, dv, "free", z, path, wmul=wmul, nb=nb,
++                    mstep=mstep, wall_s=wall_s, scale=scale, l_nh=l_nh,
++                    cload=cload, ct_fF=ct_fF)
++    r["tag"] = tag
++    r["zeros_file"] = os.path.basename(zpath)
++    r["T_selfconsistent"] = z.get("T_selfconsistent")
++    r["ACCEPTED"] = bool(r["A1_value_all_banks_pass"] and r["A2_value_pass"]
++                         and r["A4_zcs_pass"] and r["A5_path_identity_pass"]
++                         and r["A6_tank_closure_pass"])
+     open(os.path.join(HERE, "row_%s.json" % tag), "w").write(
+         json.dumps(r, indent=1, default=str))
++    return r
++
++
++if __name__ == "__main__":
++    zp = sys.argv[1]
++    extra = sys.argv[2] if len(sys.argv) > 2 and sys.argv[2] != "-" else ""
++    ms = float(sys.argv[3]) if len(sys.argv) > 3 and sys.argv[3] != "-" else None
++    r = extract_from_zeros(zp if os.path.exists(zp)
++                           else os.path.join(HERE, zp), extra=extra, mstep=ms)
+     A2 = r["A2_functional"]
+-    print("%s  N=%d PASS=%s A1=%s A2=%s(min %.2f mV) worst90=%.2f%% "
+-          "t_hop=%.1f Lvl=%s E/gate=%.4f fJ (%.3fx CMOS4.14) Ipk=%.0fuA "
+-          "W=%.1fum Qg=%.2ffC"
+-          % (tag, n, r["PASS"], r["A1_value_all_banks_pass"],
++    B = r["BOUND_BY"]
++    print("%s  N=%d s=%s ACC=%s A1=%s A2=%s(min %.1f mV) A4=%s worst=%.2f%% "
++          "t_hop=%.1f t_set90=%.1f %s(slack %+.1f) stage=%.1f T=%g "
++          "E/gate=%.4f (%.3fx) Ipk=%.0fuA W=%.1f Qg=%.1f m_eff=%.2f"
++          % (r["tag"], r["N"], r["scale"], r["ACCEPTED"],
++             r["A1_value_all_banks_pass"],
+              A2["PASS_bare"] if A2 else None,
+              A2["margin_min_mV"] if A2 else float("nan"),
+-             r["worst_gate_pct"], r["t_hop_rise_ps"],
+-             r["LEVEL_TIME_measured_bank2_ps"], r["E_per_gate_headline_fJ"],
++             r["A4_zcs_pass"], r["worst_gate_pct"], r["t_hop_rise_ps"],
++             B["t_settle90_ps"] or float("nan"), B["bound_by"],
++             B["slack_hop_minus_settle90_ps"] or float("nan"),
++             r["stage_time_measured_ps"] or float("nan"), r["T_ps"],
++             r["E_per_gate_headline_fJ"],
+              r["E_per_gate_headline_fJ"] / CMOS_BLOCK_PER_CELL_FJ,
+              r["IPK_uA"][2], r["W_nominal_um"],
+-             r["LEDGER"]["Q_gate_MEASURED_fC"]))
++             r["LEDGER"]["Q_gate_MEASURED_fC"],
++             r["m_eff_MEASURED"] or float("nan")))

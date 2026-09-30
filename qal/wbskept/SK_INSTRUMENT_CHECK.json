@@ -1,0 +1,91 @@
+{
+ "_what": "SKEPTIC instrument check. Pure TEXT checks -- no simulation.",
+ "S0a_my_generator_is_theirs": {
+  "up.py": {
+   "mine": "8264d7c5a15de605aa2fa8a6258e4a1c0ccef7e284a173d3b3bf9c5fc440274f",
+   "under_audit": "8264d7c5a15de605aa2fa8a6258e4a1c0ccef7e284a173d3b3bf9c5fc440274f",
+   "identical": true
+  },
+  "upx.py": {
+   "mine": "2c071bdd646205a4a6e369d6910ff790295deeb7e4ce2445519fc1014ee871ba",
+   "under_audit": "2c071bdd646205a4a6e369d6910ff790295deeb7e4ce2445519fc1014ee871ba",
+   "identical": true
+  },
+  "pt.py": {
+   "mine": "f0b6f1c662f9f06ad3652406455b0c341b87e8153b3da1949ab31c1b9c7c17c5",
+   "under_audit": "f0b6f1c662f9f06ad3652406455b0c341b87e8153b3da1949ab31c1b9c7c17c5",
+   "identical": true
+  }
+ },
+ "S0b_generator_reproduces_PHASE1_deck_bytes_with_UP_NO_RETQG": {
+  "n8_T160": {
+   "identical": true,
+   "sha256_mine": "106751d4a618e2d351581e06c12fc9e0a9d2a4b04ce3637de5d7da21115c6ca9",
+   "lines": 662
+  },
+  "n16_T260": {
+   "identical": true,
+   "sha256_mine": "8ada170c8549e169b03dbe12b24dd3a954552a69bcc39913c6019325aa87ee69",
+   "lines": 790
+  },
+  "n32_T330": {
+   "identical": true,
+   "sha256_mine": "e46f1891e96e0c214b33cfde590ad0574372eb519a9a7133195c8f5a17e49406",
+   "lines": 1046
+  },
+  "n64_T440": {
+   "identical": true,
+   "sha256_mine": "4a4c4ace7f4d09d7bda9e57380c52b7417f589c9a084cf4d8fe8197417baaf88",
+   "lines": 1558
+  },
+  "n128_T580": {
+   "identical": true,
+   "sha256_mine": "49731632c9c3b4e6584bbe91fdfe933ea1de9e9c2ed8d6de315797a0a0910d7e",
+   "lines": 2582
+  },
+  "n256_T790": {
+   "identical": true,
+   "sha256_mine": "f27ef8abc630ad7cf08ee0abcff1e8cef2e3ffa3b24d92f98787fa56dd8f3d50",
+   "lines": 4630
+  }
+ },
+ "S0c_generator_reproduces_PHASE2_deck_bytes_as_shipped": {
+  "n64_T440": {
+   "identical": true,
+   "sha256": "cc3d099fbd13e50f5bd0ccbbcbdcbe30e924505c2250177cdf6ff90a134cbe67"
+  }
+ },
+ "S0d_amendment_A1_is_passive": {
+  "n8_T160": {
+   "lines_added_by_A1": 36,
+   "all_added_are_passive_measure_tran": true,
+   "n_added_nonmeasure": 0
+  },
+  "n16_T260": {
+   "lines_added_by_A1": 36,
+   "all_added_are_passive_measure_tran": true,
+   "n_added_nonmeasure": 0
+  },
+  "n32_T330": {
+   "lines_added_by_A1": 36,
+   "all_added_are_passive_measure_tran": true,
+   "n_added_nonmeasure": 0
+  },
+  "n64_T440": {
+   "lines_added_by_A1": 36,
+   "all_added_are_passive_measure_tran": true,
+   "n_added_nonmeasure": 0
+  },
+  "n128_T580": {
+   "lines_added_by_A1": 36,
+   "all_added_are_passive_measure_tran": true,
+   "n_added_nonmeasure": 0
+  },
+  "n256_T790": {
+   "lines_added_by_A1": 36,
+   "all_added_are_passive_measure_tran": true,
+   "n_added_nonmeasure": 0
+  }
+ },
+ "VERDICT": "my up.py/upx.py/pt.py are byte-identical to the files under audit; the generator reproduces SIX committed Phase 1 decks byte-for-byte under UP_NO_RETQG=1 and Phase 2's shipped N=64 deck byte-for-byte as-is; amendment A1 adds ONLY passive .measure tran lines.  So any disagreement in my numbers is the SIMULATION, not the instrument."
+}

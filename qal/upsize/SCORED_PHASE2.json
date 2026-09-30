@@ -1,0 +1,358 @@
+{
+ "_doc": "qal/upsize PHASE 2 -- pre-stated expectations scored line by line. Bands copied from PRE_REGISTERED_PHASE2.json (sha256 621f7289..., mtime 2026-09-29 21:45:42 -0700); score.py was written before any sweep number existed.",
+ "summary": {
+  "RIGHT": 13,
+  "WRONG": 18,
+  "INFORMATIVE": 3,
+  "NARROWLY-WRONG": 1
+ },
+ "scored": [
+  {
+   "id": "X1_crux_A_rail16500",
+   "claim": "variant A (REAL CHAIN) t_set90(x8)/t_set90(x1) = 0.68-0.80; falls only by the fixed-WIRING fraction then saturates",
+   "measured": 0.7179347428680343,
+   "verdict": "RIGHT",
+   "note": "rail 1.65 V; exponent_in_s -0.1593584598522303; fit a=49.16033359430163 b=23.454293703293818 R2=0.9995133558583746"
+  },
+  {
+   "id": "X2_crux_B_rail16500",
+   "claim": "variant B (PURE COSCALE) FLAT within 5%: ratio in 0.95-1.05, i.e. genuinely scale-INVARIANT",
+   "measured": 0.8746977853185041,
+   "verdict": "WRONG",
+   "note": "rail 1.65 V; exponent -0.06438115128932231"
+  },
+  {
+   "id": "X3_crux_C_rail16500",
+   "claim": "variant C (FIXED LOAD) ratio 0.15-0.30, roughly the naive 1/s -- the positive control proving the instrument CAN see a speed-up",
+   "measured": 0.3960961154991344,
+   "verdict": "WRONG",
+   "note": "rail 1.65 V; exponent -0.4453591806785593"
+  },
+  {
+   "id": "X1d_crux_D_rail16500",
+   "claim": "variant D (QAL-BIAS LOAD, added as amendment A3) should behave like A: both driver and load still scale",
+   "measured": 0.6776424047240412,
+   "verdict": "INFORMATIVE",
+   "note": "rail 1.65 V; exponent -0.18713464602926946"
+  },
+  {
+   "id": "X1_crux_A_rail9422",
+   "claim": "variant A (REAL CHAIN) t_set90(x8)/t_set90(x1) = 0.68-0.80; falls only by the fixed-WIRING fraction then saturates",
+   "measured": 0.697578828169478,
+   "verdict": "RIGHT",
+   "note": "rail 0.9422 V; exponent_in_s -0.17319061351668938; fit a=91.4505485764692 b=48.5394027360224 R2=0.9982921759259497"
+  },
+  {
+   "id": "X2_crux_B_rail9422",
+   "claim": "variant B (PURE COSCALE) FLAT within 5%: ratio in 0.95-1.05, i.e. genuinely scale-INVARIANT",
+   "measured": 0.8553897447720445,
+   "verdict": "WRONG",
+   "note": "rail 0.9422 V; exponent -0.07511539465777674"
+  },
+  {
+   "id": "X3_crux_C_rail9422",
+   "claim": "variant C (FIXED LOAD) ratio 0.15-0.30, roughly the naive 1/s -- the positive control proving the instrument CAN see a speed-up",
+   "measured": 0.44733962214267015,
+   "verdict": "WRONG",
+   "note": "rail 0.9422 V; exponent -0.3868525157607698"
+  },
+  {
+   "id": "X1d_crux_D_rail9422",
+   "claim": "variant D (QAL-BIAS LOAD, added as amendment A3) should behave like A: both driver and load still scale",
+   "measured": 0.6308921581674631,
+   "verdict": "INFORMATIVE",
+   "note": "rail 0.9422 V; exponent -0.22151155877514342"
+  },
+  {
+   "id": "B10_mechanism_gate",
+   "claim": "variant A must fit t = a + b/s with R2 >= 0.98, and variant B must be flat within 5%, or the mechanism claim is WITHDRAWN not asserted",
+   "measured": 0.9995133558583746,
+   "verdict": "RIGHT",
+   "note": "R2 of the a+b/s fit on variant A at 1.65 V"
+  },
+  {
+   "id": "X4_t_hop_exponent",
+   "claim": "t_hop grows as sqrt(s): measured exponent in s of 0.45-0.55",
+   "measured": 0.3849949061825768,
+   "verdict": "WRONG",
+   "note": "N=64 main series"
+  },
+  {
+   "id": "X4_t_hop_abs_s2",
+   "claim": "t_hop at N=64 s=2 in 410-425 ps",
+   "measured": 380.11852756444387,
+   "verdict": "WRONG",
+   "note": ""
+  },
+  {
+   "id": "X4_t_hop_abs_s4",
+   "claim": "t_hop at N=64 s=4 in 580-600 ps",
+   "measured": 495.8461721585802,
+   "verdict": "WRONG",
+   "note": ""
+  },
+  {
+   "id": "X4_t_hop_abs_s8",
+   "claim": "t_hop at N=64 s=8 in 820-850 ps",
+   "measured": 658.7695410407498,
+   "verdict": "WRONG",
+   "note": ""
+  },
+  {
+   "id": "X5_level_time_rises_N64",
+   "claim": "level time RISES monotonically with s at N=64 -- NO speed win at any scale, because the level is already HOP-bound by 65.93 ps at s=1",
+   "measured": {
+    "T_monotonic_rising": true,
+    "level_floor_monotonic_rising": true,
+    "T_ps": [
+     440.0,
+     580.0,
+     790.0,
+     1090.0
+    ],
+    "level_floor_ps": [
+     295.8342590866064,
+     380.11852756444387,
+     495.8461721585802,
+     658.7695410407498
+    ]
+   },
+   "verdict": "RIGHT",
+   "note": ""
+  },
+  {
+   "id": "X5_xCMOS_level_s2",
+   "claim": "x_CMOS_level (on the SCHEDULED beat T) at N=64 s=2 in 6.3-6.8",
+   "measured": 6.25,
+   "verdict": "NARROWLY-WRONG",
+   "note": "scored on T because the 4.74 figure the band was built from is Phase 1's T/92.8; the additive 73.5 ps in the beat rule does NOT scale with s, so T grows slower than sqrt(s)"
+  },
+  {
+   "id": "X5_xCMOS_level_s4",
+   "claim": "x_CMOS_level (on the SCHEDULED beat T) at N=64 s=4 in 8.8-9.5",
+   "measured": 8.512931034482758,
+   "verdict": "WRONG",
+   "note": "scored on T because the 4.74 figure the band was built from is Phase 1's T/92.8; the additive 73.5 ps in the beat rule does NOT scale with s, so T grows slower than sqrt(s)"
+  },
+  {
+   "id": "X5_xCMOS_level_s8",
+   "claim": "x_CMOS_level (on the SCHEDULED beat T) at N=64 s=8 in 12.2-13.2",
+   "measured": 11.745689655172415,
+   "verdict": "WRONG",
+   "note": "scored on T because the 4.74 figure the band was built from is Phase 1's T/92.8; the additive 73.5 ps in the beat rule does NOT scale with s, so T grows slower than sqrt(s)"
+  },
+  {
+   "id": "X6_E_per_gate_s2",
+   "claim": "E/gate (ideal-PWL floor, timer 0) at N=64 s=2 in 7.5-8.8 fJ",
+   "measured": 6.3788499492416495,
+   "verdict": "WRONG",
+   "note": ""
+  },
+  {
+   "id": "X6_E_per_gate_s4",
+   "claim": "E/gate (ideal-PWL floor, timer 0) at N=64 s=4 in 14-18 fJ",
+   "measured": 11.526880479802807,
+   "verdict": "WRONG",
+   "note": ""
+  },
+  {
+   "id": "X6_E_per_gate_s8",
+   "claim": "E/gate (ideal-PWL floor, timer 0) at N=64 s=8 in 27-36 fJ",
+   "measured": 22.04760582439837,
+   "verdict": "WRONG",
+   "note": ""
+  },
+  {
+   "id": "X6_E_exponent",
+   "claim": "E/gate rises roughly LINEARLY in s (exponent near 1.0, band 0.8-1.2)",
+   "measured": 0.8085741635565538,
+   "verdict": "RIGHT",
+   "note": ""
+  },
+  {
+   "id": "X6_crossing_destroyed",
+   "claim": "the Phase 1 crossing at N=64 (0.991x CMOS) is DESTROYED by any upsizing: x_CMOS > 1 at every s > 1",
+   "measured": {
+    "x_at_s1": 0.9911647854769109,
+    "x_at_s": [
+     [
+      2.0,
+      1.5407850118941184
+     ],
+     [
+      4.0,
+      2.784270647295364
+     ],
+     [
+      8.0,
+      5.325508653236322
+     ]
+    ]
+   },
+   "verdict": "RIGHT",
+   "note": ""
+  },
+  {
+   "id": "X7_area",
+   "claim": "tank um2/gate = 29.98*s EXACTLY by construction; cell active um2/gate = 0.242*s",
+   "measured": {
+    "tank_exact": [
+     true,
+     true,
+     true,
+     true
+    ],
+    "cell_matches": [
+     true,
+     true,
+     true,
+     true
+    ]
+   },
+   "verdict": "RIGHT",
+   "note": ""
+  },
+  {
+   "id": "X8_lever_fails_even_at_N8",
+   "claim": "EVEN AT N=8, where the level is SETTLE-bound with only 24.17 ps of slack, upsizing does NOT shorten the level: s=2 alone adds ~52 ps of hop, more than the whole slack. Level time minimised at s=1 at EVERY N",
+   "measured": {
+    "level_floor_ps": [
+     [
+      1.0,
+      150.73273300000005
+     ],
+     [
+      2.0,
+      161.65787409178904
+     ],
+     [
+      4.0,
+      209.13791985541582
+     ],
+     [
+      8.0,
+      273.30326523587837
+     ]
+    ],
+    "none_faster_than_s1": true
+   },
+   "verdict": "RIGHT",
+   "note": ""
+  },
+  {
+   "id": "X8_level_floor_N8_s1",
+   "claim": "N=8 level floor at s=1 ~ 145-156 ps",
+   "measured": 150.73273300000005,
+   "verdict": "RIGHT",
+   "note": ""
+  },
+  {
+   "id": "X8_level_floor_N8_s2",
+   "claim": "N=8 level floor at s=2 ~ 170-188 ps",
+   "measured": 161.65787409178904,
+   "verdict": "WRONG",
+   "note": ""
+  },
+  {
+   "id": "X8_level_floor_N8_s4",
+   "claim": "N=8 level floor at s=4 ~ 243-263 ps",
+   "measured": 209.13791985541582,
+   "verdict": "WRONG",
+   "note": ""
+  },
+  {
+   "id": "X8_level_floor_N8_s8",
+   "claim": "N=8 level floor at s=8 ~ 345-371 ps",
+   "measured": 273.30326523587837,
+   "verdict": "WRONG",
+   "note": ""
+  },
+  {
+   "id": "X9_bound_by_flips_to_HOP",
+   "claim": "the MECHANISM: cell load and resonant tank are the SAME capacitance, so growing the cell grows the thing that sets the speed limit. Signature: N=8 is SETTLE-bound at s=1 and flips to HOP-bound by s=2",
+   "measured": {
+    "1.0": "SETTLE",
+    "2.0": "HOP",
+    "4.0": "HOP",
+    "8.0": "HOP"
+   },
+   "verdict": "RIGHT",
+   "note": "keys are scales; SETTLE at s=1 then HOP thereafter is the predicted signature"
+  },
+  {
+   "id": "X10_isohop_holds_t_hop",
+   "claim": "dropping L as 1/s holds t_hop within 10% of its s=1 value",
+   "measured": {
+    "t_hop_ps": 263.0853985351696,
+    "s1_t_hop_ps": 295.8342590866064,
+    "ratio": 0.8892999727193548
+   },
+   "verdict": "WRONG",
+   "note": ""
+  },
+  {
+   "id": "X10_isohop_costs_quadratically",
+   "claim": "and the price is quadratic: E/gate 45-90 fJ (11-22x CMOS) at N=64 s=4 with L=3.75 nH",
+   "measured": 12.1323407982957,
+   "verdict": "WRONG",
+   "note": "E_seriesR ~ s^2 at fixed t_hop, and Q falls as 1/s with R_S pinned at 10 ohm"
+  },
+  {
+   "id": "A4_E6_L_reduction_at_s1",
+   "claim": "EXTENSION (amendment A4): shrink L at s=1 instead of growing the cells. Tests whether cell upsizing is DOMINATED on the speed axis.",
+   "measured": {
+    "level_floor_ps": 152.32153799999992,
+    "baseline_level_floor_ps": 295.8342590866064,
+    "speedup_x": 1.9421695905316196,
+    "E_per_gate_fJ": 4.7442262971399165,
+    "baseline_E_per_gate_fJ": 4.103422211874411,
+    "energy_pct": 15.616333201374166,
+    "bound_by": "SETTLE",
+    "recycle_pct": -11.83254993492595,
+    "rail_droop_note": "recycle went NEGATIVE and the delivered rail dropped 21%: E6 has stopped being adiabatic, so its +15.6% energy is NOT an iso-swing figure (see AMENDMENT A8)"
+   },
+   "verdict": "INFORMATIVE",
+   "note": ""
+  },
+  {
+   "id": "A4_upsizing_is_DOMINATED",
+   "claim": "at the SAME L=3.75 nH, is s=1 better than s=4 on ALL of speed, energy and area simultaneously?",
+   "measured": {
+    "E6_s1_floor_ps": 152.32153799999992,
+    "E3_s4_floor_ps": 263.0853985351696,
+    "faster_x": 1.7271713638761297,
+    "E6_s1_E_per_gate": 4.7442262971399165,
+    "E3_s4_E_per_gate": 12.1323407982957,
+    "cheaper_x": 2.5572854325287455,
+    "E6_s1_um2_pg": 30.408147763108502,
+    "E3_s4_um2_pg": 121.264895526217,
+    "smaller_x": 3.9879079933088493
+   },
+   "verdict": "RIGHT",
+   "note": ""
+  },
+  {
+   "id": "X11_no_positive_exchange_rate",
+   "claim": "NO positive exchange rate on this axis: every scale point is worse than s=1 on BOTH energy and speed, so the 'curve' is a dominated ray, not a frontier. If ANY point beats s=1 on level time, X8/X9 are WRONG and the trade EXISTS -- to be reported as a major positive result",
+   "measured": {
+    "points_faster_than_s1": []
+   },
+   "verdict": "RIGHT",
+   "note": ""
+  },
+  {
+   "id": "X11_pareto_frontier",
+   "claim": "the Pareto frontier in (level_floor, E/gate) should contain ONLY s=1",
+   "measured": {
+    "8": [
+     1.0
+    ],
+    "64": [
+     1.0
+    ]
+   },
+   "verdict": "RIGHT",
+   "note": ""
+  }
+ ]
+}

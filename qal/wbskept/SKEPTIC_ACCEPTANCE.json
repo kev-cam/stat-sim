@@ -1,0 +1,123 @@
+{
+  "_what": "SKEPTIC acceptance, written to disk BEFORE any measurement deck.",
+  "_honesty_about_ordering": [
+    "warm_sk.cir was launched at 23:39:07 and is a COMPILE-ONLY deck: 20 devices",
+    "at DC, .tran 1p 10p, .print V(a).  It contains no measurement used anywhere",
+    "in this audit and exists only to populate my private PyMS cache.  No",
+    "measurement deck had run when this file was written.",
+    "INSTRUMENT_PROVENANCE.txt (23:39:07) and SKEPT_PRESTATE.txt (23:35:18)",
+    "precede it."
+  ],
+
+  "S0_instrument_identity": {
+    "claim": "my up.py/upx.py/pt.py are byte-identical to the ones under audit",
+    "evidence": "INSTRUMENT_PROVENANCE.txt sha256, already recorded",
+    "so": "any difference in my numbers is the SIMULATION, not the instrument"
+  },
+
+  "S1_rerun_headline": {
+    "point": "N=64, s=1, T=440, dv=1.65, nb=3, L=15nH, RS=10ohm, m=10, W=84.853um",
+    "from": "scratch: own empty PYMS_VAE_CACHE, own directory, full 6-probe ZCS then row",
+    "targets_to_reproduce": {
+      "E_per_gate_headline_fJ": 4.1034,
+      "x_vs_CMOS_4p14": 0.991,
+      "t_hop_rise_ps": 295.83,
+      "t_settle90_ps": 229.91,
+      "A2_margin_min_mV": 438.5,
+      "worst_gate_pct": 99.40,
+      "IPK_bank2_uA": 2680.60,
+      "Q_gate_MEASURED_fC": 312.66,
+      "A1_value_fail_count": 0
+    },
+    "PASS": "every target within 0.5% (energies/times) and A1 fail count exactly 0",
+    "FAIL_means": "the published row is not reproducible; report as such"
+  },
+
+  "S2_police_value_and_settling": {
+    "rule": "A1 guard on ALL N outputs of ALL 3 banks individually, from .mt0",
+    "must": "0 failures out of 3*N nodes; ONE failing gate fails the point",
+    "also": "report intra_class_spread_mV.  If it is exactly 0 the 'per-gate' check",
+    "also2": "has only TWO distinct trajectories per bank and I will say so plainly:",
+    "also3": "N identical cells on one lumped rail are degenerate by construction,",
+    "also4": "so a wide bank of IDENTICAL cells cannot exhibit a single-gate outlier.",
+    "also5": "That makes it the EASIEST case, not a demonstration of robustness."
+  },
+
+  "S3_amortisation_audit": {
+    "question": "is every cost counted at every N, or is something frozen while the logic grows?",
+    "terms_to_track_per_N": [
+      "E_tank_loss (MEASURED tank droop) -- must scale ~N",
+      "E_gate_drive_idealPWL (the 'floor' row's driver term) -- SIGN CHECK",
+      "E_timer (0 or 3.5227 fJ) -- fixed per bank, so per-gate falls as 1/N",
+      "E_wellrail (vhi) -- computed by the instrument but NOT in the ledger sum",
+      "E_ideal_inputs_bank1 -- ideal DC sources, not in the ledger",
+      "buck / converter resupply of E_tank_loss -- NOT SIMULATED AT ALL"
+    ],
+    "S3a_negative_driver_credit": {
+      "hypothesis_PRE_STATED": "the floor row's driver term is NEGATIVE and grows more negative with N, so the 'floor' is a CREDIT, not a floor",
+      "test": "measure E_gate_drive_idealPWL_per_bank at every N I run; if < 0, recompute the floor row with the driver floored at its PHYSICAL minimum of ZERO (a perfectly recovering driver nets zero, never negative)",
+      "pre_stated_consequence": "N=64 goes from 4.1034 (0.991x) to E_tank/64 ~ 4.174 (1.008x) and the crossing at N=64 DISAPPEARS; first crossing moves to N=128",
+      "if_wrong": "report that the subsidy is negligible and the crossing stands"
+    },
+    "S3b_real_driver_convention": {
+      "hypothesis_PRE_STATED": "Q_abs = |Q_close| + |Q_open| double-counts a conventional driver. A conventional driver pays Q_close*V on the RISE of the gate and NOTHING from the supply on the FALL (the stored half is dumped to ground). So E_real_per_gate_cycle = |Q_close|*V, and per QAL cycle (two gate cycles) = (|Q_close_rise| + |Q_close_return|)*V.",
+      "test": "extract Q_close and Q_open SEPARATELY per device from my own rows and check |Q_open|/|Q_close|",
+      "pre_stated_consequence": "if |Q_open| ~ |Q_close| then Phase 2 amendment A1's per-CYCLE figure is ~2x the real driver cost, and Phase 1's rise-hop figure was already the correct FULL-CYCLE number",
+      "pre_stated_numbers": "N=64 buildable row ~11.5 fJ/gate (2.78x), NOT 18.756 (4.53x); conclusion 'no crossing on the buildable row' STANDS either way"
+    },
+    "S3c_buck": {
+      "test": "compute the converter efficiency eta at which the floor row stops crossing, since E_tank_loss is exactly what a converter must resupply and no converter is simulated",
+      "pre_stated": "eta_breakeven ~ 0.88 at N=256 and ~0.93 at N=128; below that there is no crossing at any N"
+    },
+    "S3d_wellrail_double_count": {
+      "hypothesis_PRE_STATED": "E_wellrail is NEGATIVE (the 1.5 V well supply RECEIVES charge). The charge it receives came through the switch from the tank, so it is ALREADY inside the MEASURED tank droop. Adding |E_wellrail| as an extra cost DOUBLE-COUNTS and is the wrong SIGN of correction.",
+      "test": "per-bank sign and magnitude of E_wellrail; A6 tank-closure residual (does the tank droop equal net energy out of the tank?); and, if time allows, a control row with the switch pMOS bulk moved OFF vhi",
+      "note": "this correction goes AGAINST my own other findings and will be reported as such"
+    }
+  },
+
+  "S4_scale_invariance_independent": {
+    "instrument": "up.py's own cellchain (5 inverters, fixed DC rail, stage 3 measured)",
+    "rerun": "variants A (real chain, CLOAD 2 fF fixed), B (pure coscale), C (FIXED LOAD = the positive control), D (QAL-bias unpowered load), at s = 1/2/4/8, rail 1.65 V",
+    "targets": {
+      "A_ratio_s8_over_s1": 0.7179,
+      "B_ratio": 0.8747,
+      "C_ratio": 0.3961,
+      "D_ratio": 0.6776
+    },
+    "PASS": "reproduce each ratio within 2%, and C must be much steeper than A (that is what proves A's flatness is a measurement and not a dead probe)",
+    "S4_NEW_CONTROL_variant_E": {
+      "why": "the record's own caveat is that qal/sg13lv_compat.sp DISCARDS ad/as/pd/ps, so junction capacitance is W-INDEPENDENT in every deck in this campaign. A fixed self-load is exactly what 1/s dilution feeds on, so variant A's 28% improvement is an UPPER bound and real silicon would be FLATTER.",
+      "test": "variant A plus an EXPLICIT lumped capacitor of (s-1)*C_j per cell output node, emulating AD proportional to W, with C_j taken from my OWN variant-difference solve",
+      "pre_stated": "if the caveat is right, variant E is FLATTER than A -- ratio closer to 1 -- and the scale-invariance finding is STRONGER than the record's numbers show",
+      "falsification": "if E is STEEPER than A the caveat is backwards and I must say so"
+    }
+  },
+
+  "S5_booking_audit": {
+    "enumerate": "every ideal source in the scored deck, with its MEASURED energy",
+    "known_sources": [
+      "VGT/VGTP/VPK ideal PWL gate drive (3 per bank) -- metered by egt",
+      "VHI ideal 1.5 V pMOS-switch well rail -- metered by ehi",
+      "VI1_* ideal DC inputs to bank 1 (N of them) -- metered by ei1",
+      "VMG(k) 0 V nMOS ground ammeter -- zero energy by construction, verify V=0",
+      "VPKA(k) 0 V park ammeter -- zero energy by construction",
+      ".ic pre-charge of every tank -- the FREE initial energy; no converter",
+      "no buck, no timer, no clock/sequencer of any kind"
+    ],
+    "verdict_rule": "every row that contains any of these is a BOUND, not a system measurement, and I will label it so"
+  },
+
+  "S6_verdict_rule": {
+    "question": "does QAL deliver HIGHER PERFORMANCE at an area/power cost, and at what N and scale?",
+    "performance_unit": "ONE LEVEL. Both technologies evaluate a level's gates in parallel, so gates/ps is NOT a throughput win. CMOS bar 92.8 ps/level.",
+    "decision": "if level time is >= CMOS at every (N, s) then the answer is NO on the performance axis regardless of what the energy does, and I will say so without hedging",
+    "energy_bar": "4.14 fJ/cell/op is the hard bar; 10.0831 fJ/inverter-cycle is the easy one and means nothing"
+  },
+
+  "S7_disk_and_runtime": {
+    "constraint": "/ is 98% full with 5.4 GB free, SHARED with other live studies",
+    "plan": "probe .prn are deleted by the instrument as each zero is read; I delete row .prn after extraction keeping sha256 of both .cir and .prn; cap concurrency at 4-5",
+    "must": "never let this audit be the study that fills the disk"
+  }
+}

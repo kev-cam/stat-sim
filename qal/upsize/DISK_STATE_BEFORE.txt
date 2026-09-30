@@ -1,0 +1,47 @@
+DISK STATE BEFORE ANY DECK -- qal/upsize  (PHASE 2, cell upsizing)
+2026-09-30T04:42:33Z
+--- ls -la /usr/local/src/stat-sim/qal/upsize
+total 48
+drwxrwxr-x  2 claude claude  4096 Sep 29 21:42 .
+drwxrwxr-x 58 claude claude 36864 Sep 29 21:42 ..
+-rw-rw-r--  1 claude claude   134 Sep 29 21:42 DISK_STATE_BEFORE.txt
+--- df
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/nvme0n1p6  232G  213G  6.8G  97% /
+tmpfs            16G  7.4G  8.2G  48% /tmp
+--- git HEAD
+b87d6212e282bc125342479493d8b95aa77500c8
+--- WHY A SEPARATE DIRECTORY
+Phase 1 left qal/widebank/ (77 MB) uncommitted for the parent to integrate.
+Phase 2 writes ONLY to qal/upsize/ so that bundle is untouched.  Phase 1's
+analyse.py globs row_n*_nb3.json in its OWN directory; no Phase 2 file can
+collide with or pollute it.
+--- sha256 of every input I will read, import or transcribe
+188cf264f48597909df96a00aa46b6e03c7bbc00719d18ab5de1a958967219f0  qal/widebank/wb.py
+214b722a855e4ab769ef60c32049ba2e6f1e6eb0b26f653fa9fc2d40e60e5590  qal/widebank/wbx.py
+b46a3fe2a8a1dbd85afb9d600ba3166cdcbf7ae0c10ddb72a966168492161c3d  qal/widebank/analyse.py
+31b95b6b438774b6741452e28f753ab0a6362ecb61753c4df522803e0c73c643  qal/widebank/RESULTS.json
+c98fa10887b91177194b59a1d994ec7b83b18561658563f02fab7e09f6ef2f3f  qal/widebank/PRE_REGISTERED.json
+304d8ece7460ec9aa8e6b71931e9791725a871a3a22697e7692e8383b877a95f  qal/widebank/AMENDMENT.md
+a54c6b6835008d9a60bddb26986d8640afe8c74748fc8ceae69f537a0c430941  qal/widebank/INSTRUMENT_CHECK.json
+27b969a16937d5100340e0c1e24f63b25e5c1f62d74079ce88e5357262641938  qal/widebank/row_n64_T440_H4_dv1650_free_nb3.json
+b81727b27bc92230332f8c7161f4d5850d5782efb5967086b598f38c2562e609  qal/widebank/row_n8_T200_H4_dv1650_free_nb3.json
+d6bdcdeafcea681a00224296973963ac0b6cdb0fdec6ae480ab61c47d90f1bad  qal/widebank/zeros_n64_dv1650_T440_H4_nb3.json
+83652f8edf478dc21c53f50271c446562c533022bb5d799064affafd356d1fee  qal/widebank/zeros_n8_dv1650_T200_H4_nb3.json
+4a4c4ace7f4d09d7bda9e57380c52b7417f589c9a084cf4d8fe8197417baaf88  qal/widebank/c_n64_T440_H4_dv1650_free_nb3.cir
+74318972934e471f8c7d60d9c6a6d3058f6d1ddf452dd983fda9accd295fd4c5  qal/widebank/c_n8_T200_H4_dv1650_free_nb3.cir
+f219dd654bee8ebbaffb89a209356cdbc39041aacd955eec34ff57a82f156da3  qal/fcrit/rescore.py
+105f30308cda42d6ec7e849ba2ae450a349f060e86842209bf639688e9e748a7  qal/fcrit/TRIP.json
+0ddc486635f716d7e41d9193dd8328adc30dd146a35d2d6334dc19d86f88b2f0  qal/sg13lv_compat.sp
+0a2428eb3564a096bb5ec3cca44e56968aa797d939a510636519ba5a935e4450  /usr/local/src/kestrel/sim/models/sg13g2_psp103_tt.lib
+eb688f52711c20c79579c8b09beaebfdd14333d1a444fe0e18e531af3c8fcd0e  /usr/local/share/xyce/verilog-a/psp103/psp103.va
+--- mtimes of the load-bearing ones
+-rw-rw-r-- 1 claude claude  11957 2026-09-29 14:57:00.617106761 -0700 qal/fcrit/rescore.py
+-rw-rw-r-- 1 claude claude  17124 2026-09-29 14:46:30.719991579 -0700 qal/fcrit/TRIP.json
+-rw-rw-r-- 1 claude claude  72341 2026-09-29 20:01:33.486237964 -0700 qal/widebank/c_n64_T440_H4_dv1650_free_nb3.cir
+-rw-rw-r-- 1 claude claude 121463 2026-09-29 21:30:56.444796005 -0700 qal/widebank/RESULTS.json
+-rw-rw-r-- 1 claude claude  24703 2026-09-29 20:47:16.481202242 -0700 qal/widebank/wb.py
+-rw-rw-r-- 1 claude claude  23196 2026-09-29 19:46:06.810247352 -0700 qal/widebank/wbx.py
+--- Xyce
+-rwxrwxr-x 1 claude claude 18160 Sep 26 19:02 /usr/local/src/xyce-build/src/Xyce
+bfacf8d71c0410bcf2cad20efc62b3357f04ea656222082861b8ba49bf58e9bb  /usr/local/src/xyce-build/src/Xyce
