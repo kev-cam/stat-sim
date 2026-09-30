@@ -1,0 +1,37 @@
+{
+ "EXB1": {
+  "claim": "opening T-invariant 129+-8 ps for T>=150; collision between 120 and 150",
+  "measured": "opening 129.583-129.654 (0mV, worst bank) over T=150-300; T=120 COMPUTES with +2.6 ps slack; T=90/60 fail",
+  "verdict": "HIT on invariance; collision band MISSED LOW (real band 90-120)"
+ },
+ "EXB2": {
+  "claim": "W3s/T grows as T shrinks; opening flat; late edge r+150+-100",
+  "measured": "4.089->4.100->4.117->4.120 at 300->250->200->150; closes r+148.3-161.0",
+  "verdict": "HIT"
+ },
+ "EXB3": {
+  "claim": "rising LAG_A 5-25 ps; draining large or censored",
+  "measured": "rising LAG_A 55-72 ps median; draining 59-88 ps median, 0 censored at every T",
+  "verdict": "MISS on rising magnitude; draining half-right (large, never censored; tank-floor endpoint preserves data)"
+ },
+ "EXB4": {
+  "claim": "stranded-HIGH <30 mV T-spread, milder at short T, >=0.455 V everywhere",
+  "measured": "0.662-0.697 V, 34 mV spread, non-monotone (dip at T=150), extremes 0.686@60 < 0.696@300 (opposite sign)",
+  "verdict": "mostly HIT on flat+high; direction OPPOSITE; T=150 dip unanticipated"
+ },
+ "EXB5": {
+  "claim": "fractional optimum T=150; absolute T=300; height interior optimum 200-250",
+  "measured": "fractional 150 (real edges); absolute 300; heights SATURATE (+174.7->+178.5 from 200->300)",
+  "verdict": "HIT / HIT / MISS (saturation, not interior peak)"
+ },
+ "EXB6": {
+  "claim": "sustainable beat 200 (slack ~68-70 vs 66.2); T=150 fails at ~19",
+  "measured": "slack@3s 69.69 at T=200 (passes 66.2 by 3.5 ps); 19.68 at T=150",
+  "verdict": "HIT (T=150 slack within 0.7 ps of the stated guess)"
+ },
+ "protocol": {
+  "claim": "oddeven4-at-own-T probes with A6 catch",
+  "measured": "fails at T=60 (NO ZERO window + overlap environment, 12.7 uA even full8)",
+  "verdict": "REFUTED -> AMENDMENT B2 newton-on-row (A6 unchanged), converged 1-4 iters everywhere"
+ }
+}

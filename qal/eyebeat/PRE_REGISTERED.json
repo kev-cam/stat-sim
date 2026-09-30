@@ -1,0 +1,80 @@
+{
+  "_study": "qal/eyebeat -- THE BEAT SWEEP: does the eye, as a fraction of the beat, grow as T shrinks?",
+  "_written": "2026-09-29 23:32 PDT, BEFORE the first deck. DISK_STATE_BEFORE.txt shows the directory held only itself.",
+  "_language_rule": "No 'settling', no 't_valid90', no completion percentages in any deliverable. The quantities are TRACKING LAG, EYE (width/height/centre), and MARGIN AT THE SAMPLING INSTANT. Committed numbers may keep their original names in quotes with reinterpretation alongside.",
+  "_direction": "SPEED, NOT EFFICIENCY (user). Energy is reported, never a gate. Per-level LATENCY cannot beat CMOS; any win is THROUGHPUT via the absent flop tax. No latency win will be claimed.",
+
+  "THE_PREDICTION_UNDER_TEST": {
+    "model_of_record": "A cell output TRACKS its ramping rail through a conducting path with lag ~ R_on*C_out. It never completes and is never meant to. The lag SEPARATES the data phase from the power phase: when the rail begins draining, the output has not yet followed it down -- the data is still good while the power is leaving. The lag IS the permission to move power and data on the same cycle.",
+    "P1_fractional_eye": "The lag is roughly FIXED by the cell RC while the beat T is a knob, so the VALID WINDOW AS A FRACTION OF THE BEAT should GROW as T shrinks, until the early edge (the output has not yet risen) collides with it.",
+    "P2_stranded_high_corollary": "The stranded-HIGH collapse (HIGHs sagging toward ~Vtn-referenced levels as the source rail drains) should be MILDER at short beats -- the output has less time to track the dying rail -- meaning the committed slow-beat chain failures were a SLOW-BEAT ARTEFACT, not a property of the architecture.",
+    "evidence_in_record": "skip-chain worst-gate series at dV=1.2: 23.63/27.48/31.62/25.18 % at T=60/120/200/300 ps -- an INTERIOR OPTIMUM, read as the eye opening (early edge, T=60) and closing (late edge, T=300)."
+  },
+
+  "OPERATIONALIZATION": {
+    "arrangement": "qal/banktank 0aae11e per-bank tanks (m=10, H=4, L=15 nH, mode=free, 4 banks x 8 committed 1.12/0.74 um inverter cells, CL 2 fF, no flop/latch/buffer/keeper between banks), dV = 1.65 V. bt.py imported VERBATIM; only PAT, HERE, CACHE, TPROBE/HPROBE and the .tran steps are overridden (the qal/eye discipline).",
+    "T_sweep_ps": [60, 90, 120, 150, 200, 250, 300],
+    "eye_definition": "REUSED from qal/eye (PRE_REGISTERED STEP_d + AMENDMENT E1/E3/E4, extractor eyecalc.py VERBATIM): margin against the receiver's MEASURED trip (qal/fcrit TRIP.json cell S, 27 rails 0.20-1.50 V, linearly interpolated; trip FRACTION runs 0.7281@0.20V to 0.5179@1.50V, never a constant). EYE2_DATA_FIXED (fixed level Trip_S(VR{k+1}B)) is the headline reference (it bounds the beat); EYE1_RX_INSTANTANEOUS reported alongside. Edges by sub-grid linear interpolation of the root of margin(t)=threshold. Intersection over data patterns. FIRST contiguous open interval is the operational eye; largest-run reported alongside. Banks 1-3 MEASURED receivers; bank 4 DERIVED (V(rail3)(t-T)), never a headline.",
+    "fractional_eye_quantities_the_verdict_is_taken_on": {
+      "primary": "W3s(T)/T where W3s = first-run eye WIDTH at the 3*sigma_trip=19.323 mV threshold, W_EXTENDED window (qal/eye E4 showed the 3-sigma threshold is where a REAL right edge exists in-deck; the 0 mV width is deck-clipped and its T-scaling would be an artefact).",
+      "also_reported": ["W0(T)/T at 0 mV (flagged LOWER BOUND where deck-clipped)", "setup-slack fraction (T - opening_after_own_rail_start)/T", "pipelined width H*T - opening (DERIVED) and its /T", "opening_after_own_rail_start vs T (the early-edge collision detector)"],
+      "honesty_note": "W3s contains the H*T hold by construction (right edge trails the return at r_k = c_k + H*T). The fraction W3s/T = ~H + (const)/T can grow as T shrinks partly BY CONSTRUCTION. The report must separate the schedule-driven part from the physics (the opening and the post-return floor), and the verdict on P1 must survive that separation: the physics carriers are (a) opening vs T and (b) the post-return margin floor vs T."
+    },
+    "lag_definitions": {
+      "LAG_A_same_level_tracking": "Per bank k, HIGH gates, per pattern. Rising: t(V(o_k_i) up through 0.5*VRkPK) - t(V(rail_k) up through 0.5*VRkPK), first crossings after c_k - EDGE. Draining: Vref = 0.5*(V(rail_k at r_k) + min rail over [r_k, min(r_k+2*tzq_k, tend)]); lag = t(output down through Vref) - t(rail down through Vref), first crossings after r_k - EDGE. A HIGH output that never crosses Vref in the window is CENSORED and reported as such with the window end and the output's minimum -- censoring IS the user's premise (data still good while power leaving) and is a result, not a failure.",
+      "LAG_B_rail_to_data": "Rising only: t(HIGH output up through the link's fixed decision level Trip_S(VR{k+1}B)) - t(rail_k up through VR{k}B{k}, its own-boundary value, committed .mt0 key 'rail_at_own_boundary_V' reinterpreted as the delivered rail). The delay between power present and data valid at the decision level.",
+      "droop_during_drain": "min over HIGH gates/patterns of V(o_k_i) during [r_k - EDGE, min(ro_k + 200 ps, tend)], and the mean droop slope mV/ps of the binding HIGH across the drain, compared against the committed peer-fed 'bleed' 1.29 mV/ps and stranded levels 0.336-0.455 V."
+    },
+    "patterns": {
+      "set": ["P0=[1,1,1,0,1,0,0,1] (committed anchor, w5)", "P1=all-0 (w0)", "P2=all-1 (w8)"],
+      "justification": "qal/eye MEASURED at T=200/dv1650 that the eye depends only on Hamming weight and the WEIGHT EXTREMES (all-0/all-1) already bind the intersection on every measured bank; arrangement-independence proven by its P4 control. ASSUMED here: this transfers to other T.",
+      "guard": "At T=60 and T=300 an additional mid-weight pattern P3=[1,0,1,0,1,0,1,0] (w4) is run; if P3's per-bank EYE2 opening is LATER than the {P0,P1,P2} intersection opening by >2 ps at any bank, the weight-extremes-bind transfer FAILS and the full weight set is run at every T (declared escalation)."
+    },
+    "probes_zeros": "A7 (zeros are beat-period dependent) forces per-T probes. Per (T,pattern): bt.do_probe_oddeven at the row's OWN T,H (4 runs) -- the protocol all nine non-P0 qal/eye rows used at T=200/dv1650, all passing A6 (worst 0.0094-0.0290 uA). At T=200 the qal/eye measured zeros (P0 full8_sequential, P1/P2 oddeven4-at-T200) are REUSED as numbers (same operating point, same deck generator; provenance recorded). CATCH: the unchanged A6 gate |I(L)| <= 1 uA at every commanded open, on every row. A6 failure -> full 8-run sequential re-probe for that (T,pattern); still failing -> the row is excluded and reported.",
+    "time_resolution": "Rows at bt.py's committed 0.1/0.25 ps steps; extraction on the qal/eye 0.10 ps common grid with sub-grid edge interpolation. Justified by qal/eye CONVERGENCE.json: 0.25 vs 0.10 ps decks agree to 0.0018 ps on eye openings (550x inside the 1 ps bar). GUARD: the T=60 P0 row is re-run at 0.05/0.10 ps; openings must agree within 1.0 ps or the whole sweep re-runs fine.",
+    "sim_discipline": "Own PYMS_VAE_CACHE (scratchpad/vae_cache_eyebeat, built from empty via bt warm before any lane). Own directory qal/eyebeat only; qal/eye and qal/banktank are read-only. ~3 concurrent Xyce processes max (loadavg checked; other campaign runs share the box). One dense transient per (T,pattern); everything extracted from the waveform; never re-simulated per sampling instant. sg13_lv via sg13lv_compat.sp (ad/as/pd/ps declared+discarded -> PSP103 defaults, JUNCAP200 enabled, pMOS STI-edge clipped -> leakage figures are LOWER bounds). Binding threshold Vtn = 0.5240 V."
+  },
+
+  "EXPECTED_BEFORE_MEASUREMENT": {
+    "EXB1_opening": "EYE2 opening after own rail start is ~T-invariant at 129 +/- 8 ps for T in {150,200,250,300} (set by the LC rail ramp ~125 ps + tracking lag, not by T). For T < ~130 ps the receiver's rail starts BEFORE the driver's data is valid: opening-after-own-rail-start INFLATES (input-not-yet-valid delay adds ~(130 - T) ps per hop) and the chain degrades toward value failure. Expected early-edge collision T: between 120 and 150 ps.",
+    "EXB2_fractional_eye": "W3s/T grows monotonically as T shrinks over the value-correct range (largely by H*T construction), and the physics carriers move as P1 predicts: opening stays flat (not growing with T) while the late edge (post-return floor crossing) trails r_k by a roughly T-invariant offset of 150 +/- 100 ps.",
+    "EXB3_lag": "Rising LAG_A 5-25 ps (R_on*C_out order, R_on ~ few kOhm at these overdrives x 2 fF, plus slope-limited tracking). Draining LAG_A: LARGE or CENSORED -- the pMOS cuts off as the rail sags below Vout+|Vtp| and strands the HIGH; expected censoring at most T on most gates. This is the user's premise and I expect it CONFIRMED on the draining side.",
+    "EXB4_stranded_high_vs_T": "On THIS arrangement the drain is the LC return (tzq ~150 ps, T-invariant), so the min-HIGH during drain is only WEAKLY T-dependent (< 30 mV across 60-300 ps, milder at short T via shorter pre-drain droop). The committed 0.336-0.455 V stranded levels were PEER-FED (drain = next transfer, beat-coupled); I expect banktank min-HIGH well ABOVE 0.455 V at every T. If instead a strong T-trend appears here too, P2 gains; if banktank min-HIGH is flat AND high, P2's strong form ('slow-beat artefact') is only PARTIALLY testable here and the peer-fed re-reading rests on the committed record plus the measured lag.",
+    "EXB5_optimum": "Fractional optimum (max W3s/T) at T = 150 ps (smallest swept T above the ~129 ps opening floor). Absolute W3s optimum at T = 300 ps. Height at the sampling instant: interior optimum near T = 200-250 ps.",
+    "EXB6_sustainable_beat": "Composed budget charged against the 3-sigma setup slack (T - opening_3s): 61.6 ps (worst-case data, N-invariant) + 4.6 ps drift (0.46 ps/K x ASSUMED +/-10 K) = 66.2 ps. Expected fastest passing T: 200 ps (slack ~68-70 ps at T=200 from qal/eye; T=150 expected to fail with ~19 ps). Random-data variant (61.6/sqrt(N), N=4 hops -> 30.8 ps): expected fastest passing T still 200 (T=150 slack ~19 < 35.4)."
+  },
+
+  "BUDGET_AND_CMOS_CONSTANTS_AS_GIVEN": {
+    "data_dependent_zero_spread_ps": 61.6,
+    "zero_spread_scaling": "N-invariant for worst-case data; 1/sqrt(N) for random",
+    "drift_ps_per_K": 0.46,
+    "drift_range_K_ASSUMED": 10,
+    "sigma_trip_mV_LOWER_BOUND": 6.441,
+    "flag": "qal/eye RESULTS could NOT reproduce 61.6 ps as a zero-crossing spread at this operating point (measured 7.8-9.2 ps p-p rise-zero over 9 weights). BOTH compositions will be reported: the 61.6 ps brief number as primary, the locally measured spread alongside.",
+    "cmos_load_matched_level_ps": 57.143,
+    "cmos_load_matched_which": "57.143 ps at 2 fF -- THIS deck's CL is 2 fF per cell, so 2 fF is the load-matched choice; 94.174 ps at 6.91 fF is the other committed level and is reported only as context",
+    "cmos_flop_tax_t_reg_ps_MEASURED": [307.1, 335.7, 390.0],
+    "liberty_optimism": "1.11-1.21x",
+    "crossover_D": "D* = t_reg / (T_sustainable - 57.143), the pipeline chop depth beyond which the QAL wave (one datum per beat per level, hold depth permitting) out-throughputs flopped CMOS; H*T initiation interval and the measured H_min bound reported alongside. THROUGHPUT only; never latency."
+  },
+
+  "ACCEPTANCE": {
+    "A_IC1_committed_row": "c_m10_T200_H4_dv1200_free.cir regenerated from bt.py + committed zeros_m10_dv1200.json must be BYTE-IDENTICAL (sha256) to qal/banktank's committed deck; run under this study's own cache, >= 99% of .mt0 numeric keys within 1e-6 relative; the quoted rails 0.7544238/0.6767239/0.7312457/0.7200878 and 'worst_gate' margins digit-checked (brief's 0.7312456/0.7200877 are last-digit roundings per qal/eye IC).",
+    "A_IC2_extractor": "This study's extraction pipeline, run read-only over qal/eye's own P0/P1/P2 transients, must reproduce EYE.json per-pattern EYE2 W_EXTENDED 0mV openings for banks 1-3 to <= 0.01 ps and heights to <= 0.1 mV.",
+    "A_A6": "Every row in every headline number passes |I(L)| <= 1 uA at every commanded open.",
+    "A_CONV": "T=60 P0 openings at 0.1/0.25 vs 0.05/0.10 steps within 1.0 ps.",
+    "A_GUARD": "P3 at T=60 and T=300 does not push any bank's intersection opening later by > 2 ps.",
+    "P1_CONFIRMED_iff": "The fractional eye (primary W3s/T, corroborated by the physics carriers) increases as T decreases over the value-correct range, and an early-edge collision exists at short T (opening >= T, or value failure).",
+    "P1_REFUTED_iff": "The fractional eye SHRINKS as T shrinks (after separating the H*T construction), or the opening grows proportionally with T so no fixed-lag separation exists. Refutation will be stated as plainly as confirmation: it refutes same-cycle power-and-data at speed.",
+    "P2_CONFIRMED_iff": "min-HIGH during the source drain is materially closer to the rail at short T (> 10 mV trend across the sweep in the predicted direction), or is high (> committed 0.455 V stranded ceiling) at short T while the slow-beat end reproduces material sag.",
+    "P2_REFUTED_iff": "The stranded-HIGH depth is NOT beat-dependent (flat within measurement) AND sits at committed stranded levels -- i.e. the collapse is architectural, not a slow-beat artefact.",
+    "failure_handling": "F1 A6-fail -> full8 re-probe once -> exclude+report. F2 Xyce fail/timeout -> that T reported UNMEASURED, never interpolated. F3 guard trip -> escalate weights everywhere. F4 value-incorrect chain at a T -> that T reported NOT COMPUTING; the eye is still extracted and the collapse mechanism attributed."
+  },
+
+  "PROVENANCE": {
+    "banktank_commit": "0aae11e", "eye_dir": "qal/eye (PRE_REGISTERED sha256 a053126c15..., RESULTS.md read before this file was written)",
+    "committed_row_digit_check_target": "qal/banktank/row_m10_T200_H4_dv1200_free.json",
+    "trip_table": "qal/fcrit/TRIP.json cell S", "shim": "qal/sg13lv_compat.sp", "xyce": "/usr/local/src/xyce-build/src/Xyce",
+    "vae_cache": "scratchpad/vae_cache_eyebeat, built from empty"
+  }
+}
