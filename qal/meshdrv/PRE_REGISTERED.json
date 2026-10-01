@@ -1,0 +1,86 @@
+{
+ "study": "qal/meshdrv -- PRICING THE FLAT-TOP MESH DRIVER. The committed three-phase win (stat-sim 5b9d05b, qal/mesh3 trap_tt92_d3: 12.0x wave-advance, 129.03 ps standing eye) rides on an ASSUMED ideal flat-top rail. This run prices the per-phase DRIVER that makes the flat top, against the MEASURED interface spec the win handed over. It does NOT price the global LC distribution grid (inductors, wire, Q across the die) -- that stays ASSUMED beyond this run, stated now, up front.",
+ "date": "2026-10-01",
+ "written_before_any_deck": "This file is the ONLY file in qal/meshdrv/ at its mtime. Every candidate circuit, acceptance threshold, booking rule, and the pick below are fixed BEFORE the first deck and BEFORE any harness file exists. Honesty regime carried: ~35 corrections stand; three verdicts were overturned by ideal-source bookings and one by a converter wired as a short -- every active device's own drive is counted here, nothing booked from an ideal source without an explicit labeled booking rule.",
+
+ "THE_SPEC_TO_MEET_committed_measured": {
+  "source": "qal/mesh3/runs/trap_tt92_d3/OUT.json charge_spec_reported_not_gated + TABLES3.json stiffness (MEASURED; not re-derived here, only digit-checked)",
+  "per_bank_per_cycle": "Q_hold 92.1-124.9 fC / E_hold 151.9-206.1 fJ through the hold third (bank 1 ideal floor 92.072 fC; the excess is input-death corruption current the driver must SOURCE); Q_rise 138.7-155.6 fC / E_rise 143.5-151.4 fJ; Q_fall -132.2..-151.4 fC / E_fall -107.1..-126.2 fJ REABSORBED (a driver that cannot receive on the fall forfeits that recovery). Net draw 96-125 fC/bank/cycle.",
+  "timing": "T_third = 92 ps, T = 276 ps, dV = 1.65 V, three phases at 120 degrees, rise/hold/fall each one third.",
+  "droop_budget": "committed stiffness: rs=100 ohm/bank -> worst hold droop 249.39 mV, still PASS (the robust point); rs=10 -> 26.81 mV (the 80-ps-edge point). The DRIVER's OWN added droop at the shared phase node must be <= 27 mV so the system stays inside the committed stiffness envelope; the total at the bank (driver + per-bank rs) is scored by the committed acceptance A/B/C.",
+  "system_energy_reference": "E_ledger(bank 4, the worst interior bank) = E_rise + E_hold + E_fall = 149.513 + 206.090 - 115.311 = 240.292 fJ/bank/cycle (MEASURED, committed). This is the denominator for every fraction below. Mean over interior banks 2-5 = 239.9 fJ; bank-4 is used because the driven bank in every candidate run IS bank 4."
+ },
+
+ "instrument_check_pre_stated": {
+  "what": "re-run the committed c_trap_tt92_d3 deck VERBATIM (mesh3.deck() imported from committed mesh3.py, same Xyce, own fresh PYMS_VAE_CACHE built serially) into my own scratch, extract with committed mesh3.extract().",
+  "digits_that_must_match_committed_OUT.json": {
+   "Q_hold_bank1_fC": 92.072, "Q_hold_bank4_fC": 124.903, "E_hold_bank4_fJ": 206.09,
+   "Q_rise_bank4_fC": 145.544, "Q_fall_bank4_fC": -144.721,
+   "asymptotic_eye_ps": 129.03, "widths_links_w3_ps": [135.546, 129.259, 129.358, 129.022, 129.029, 123.666],
+   "worst_margin_at_commit_mV": 509.67, "acceptance_PASS": true
+  },
+  "tolerance": "equal to printed precision; any nonzero delta (e.g. from the fresh .so cache) is REPORTED, and > 0.1% on any charge book FAILS the instrument and stops the run."
+ },
+
+ "metering_discipline": {
+  "integrators": "1F-integrator (CX 1F + BX current + RX 0.01) or INTEG-I only; EVERY read t0-referenced by differencing FIND reads (the committed mesh3 convention); .ic 0 forced on every integrator node and .print PRECISION raised where driver internals carry DC bias (the Track B instrument defect, carried).",
+  "cache": "own PYMS_VAE_CACHE at <scratchpad>/vae_cache_meshdrv, built SERIALLY by the instrument-check run before any parallel runs (the buckfix race-contamination lesson).",
+  "zeros": "every ZCS instant is RE-PROBED from the measured current zero in the first iteration's prn, never taken from the nominal schedule (committed swsweep/buckfix discipline).",
+  "repo_hygiene": "no .prn in git; runs execute on tmpfs scratch; qal/meshdrv/ keeps OUT.json + decks + this file only.",
+  "concurrency": "<= 8 Xyce processes, after the serial cache build."
+ },
+
+ "ENERGY_BOOKING_RULES_fixed_now": {
+  "E_driver_total_per_bank_per_cycle": "sum over: (1) metered DC rails (VHOLD 1.65 V, VMID 0.825 V): NET metered draw per cycle (the rail is credited with fall-third reabsorption ONLY if the topology actually routes charge back into it -- the net is what the integrator says). RIDER, stated: these rails are booked at 1.0x exactly as the committed mesh3 ledger books its ideal trapezoid rails, so the FRACTION comparison is apples-to-apples; the rail-generation multiplier (the qal/amp I8 trap) and the bidirectional-regulator requirement are riders carried on BOTH sides, flagged, not priced here. (2) resonant sine sources (the free-running tank waveform): E_net_delivered METERED on the real load, then divided by the MEASURED sustaining-amplifier efficiency eta_amp = 25.46% (qal/amp RESULTS_TRACKB headline z_t040_v056, Q_ind=19; eta-vs-Q ladder 14.98/19.96/25.24/29.52/33.02% at Q=8/12/19/30/50 available for sensitivity). Labeled DERIVED-from-MEASURED-eta; Q=19 at every harmonic frequency is ASSUMED (favorable to candidate A, said so). (3) switch/clamp GATE DRIVE: gate charge METERED in-deck per device per cycle, booked at E = Q_gate * VGH * 1.33 (conventional CMOS driver: final stage CV^2 plus the geometric buffer-chain tax 1/(1-1/4)); cross-checked against the corrected committed fit 3.635-3.739 fC/um (qal/widebank Q_gate_MEASURED_per_um -- NOT the 24x-wrong 0.155). (4) CONTROL PULSE GENERATION (the M1-C/M2 recursion): 15.5 fJ per pulse-generator per cycle (the MEASURED minimum real park-pulse driver, qal/recov 15.018-16.002 fJ band, one minimum inverter, lower bound), divided by N_banks -- this is the term that amortises. (5) any DC bias, metered.",
+  "E_overhead": "E_driver_total - 240.292 fJ (what the committed ideal ledger already books for the same bank). The ideal mesh scores 0 by construction.",
+  "recursion_audit": "mandatory per candidate: every active device's gate listed with its drive booked under rule 3/4; any control edge not generated by a costed generator is a FAIL of the audit, not a footnote."
+ },
+
+ "acceptance_pre_stated": {
+  "S1_droop": "driven-bank rail min over the hold third within 250 mV of dV at the committed rs=0.001 (driver's own contribution; target class <= 27 mV); winner re-measured at rs=10 and rs=100.",
+  "S2_sources_the_hold_current": "driven bank 4's Q_hold within +-15% of the committed 124.903 fC AND the run's committed acceptance A (value) stays PASS -- proof the driver sources tracking-AND-corruption current into the real mesh3 load, not a static cap.",
+  "S3_wave_sustains": "mesh3 erosion sign = SUSTAINS on the driven run AND asymptotic standing eye >= 110 ps (<= 15% shrink from the committed 129.03 ps; 15% is the committed SUSTAINS band). Final adjudication on the FULLY driven mesh (all three phases from driver instances) for the best candidate.",
+  "S4_energy": "E_overhead (per bank, amortised at the candidate's demonstrated N_banks) as a fraction of 240.292 fJ: <= 25% ADMITTED; 25-100% PRICED-BUT-HEAVY; > 100% CLOSES that candidate. Reported BOTH standalone (N=1) and shared.",
+  "overall": "a candidate is THE DRIVER if S1-S4 all hold; if none fits inside a sane fraction while sustaining the wave, that CLOSES the mesh route honestly."
+ },
+
+ "candidates_fixed_now": {
+  "A_harmonic_sum_resonant": {
+   "circuit": "series stack of DC + K sine sources (exact truncated Fourier coefficients of the committed trapezoid, BOTH parities -- pre-computed note: this trapezoid (equal thirds, no low dwell) is NOT half-wave symmetric, so EVEN harmonics are present; the task's odd-only framing will be corrected by measurement), behind the committed rs, driving bank 4 of the verbatim trap_tt92_d3 testbench. Each source's E metered separately (series stack shares one current).",
+   "anchor": "qal/recov m1d 5-harmonic free-running network (2.974 fJ pair, digit-anchored via qal/park 2.9742694747776133); sustainer eta qal/amp 25.46%.",
+   "runs": "K = 2, 3, 5 (K = harmonics above DC). Droop vs K MEASURED on the real load; smallest K meeting S1 is the priced row.",
+   "cost_booking": "rule 2 per harmonic (plus rule 5 amplifier bias, measured ~0 in Track B); no switches, no rule 3/4 terms; recursion audit clean by construction (cross-coupled sustainer has no gate-driver recursion -- the one topology qal/amp chose for exactly that reason).",
+   "pre_stated_expectation": "meets S1 at K ~ 3-5; FAILS S4 standalone at roughly 1/eta - 1 = 2.9x the ledger (~700 fJ overhead); sharing does NOT rescue it (eta is B-invariant, qal/amp B_scaling + I10: amplifier parasitics scale with the load, never amortise)."
+  },
+  "B_stepped_clamped_resonant": {
+   "circuit": "mesh-fundamental sine (f0 = 1/276 ps, amplitude dV/2 about dV/2) behind the tank impedance, PLUS a real sg13_lv transmission-gate clamp from the phase node to a metered VHOLD = 1.65 V rail, closed over exactly the hold third. Two tank-impedance readings, both run: B-R (committed stiff-grid reading, 10 ohm) and B-L (physical tank reading, series L = 1/(w0^2 * C_eff), C_eff = Q_rise/dV from the committed book). GEOMETRY NOTE, pre-computed: the f0 sine is at 0.75*dV at both hold-third edges, so the clamp YANKS the node up 0.4125 V at hold start (paid from VHOLD resistively) and releases a 0.4125 V step into the tank at hold end (partially unrecoverable) -- these two yank events plus the hold fight current ARE candidate B's price; the m2-stepwise and m1-c recursion failures are the anchors.",
+   "anchor": "qal/recov m2 stepwise family + qal/park clamp; clamp R_on calibrated in own deck; gate charge rule 3.",
+   "cost_booking": "sine net delivered / eta_amp (rule 2) + VHOLD net draw (rule 1) + clamp gate (rule 3) + 1 pulse-generator (rule 4) / N.",
+   "recursion_trap_check": "the clamp gate booking must NOT scale with bank load beyond its sized width; verified by the N=2 sharing run (the M1-C B-invariant-recursion failure, named in advance).",
+   "pre_stated_expectation": "meets S1 inside the hold third by construction; the yanks distort the rise/fall thirds -- eye shrink is the risk; E_overhead expected 60-150% of ledger (PRICED-BUT-HEAVY or CLOSES)."
+  },
+  "C_switched_LC_with_hold_clamp": {
+   "circuit": "metered VMID = 0.825 V rail -> series L -> real tg series switch -> phase node; real tg clamp from phase node to metered VHOLD = 1.65 V; small pMOS park holds the switch-side inductor node at VHOLD during the open (the swsweep tg15p park lesson, riding the clamp's own control -- no extra generator). Cycle: switch closed through fall + trough + rise (one full LC period, 184 ps), OPEN at the re-probed crest current zero (ZCS), clamp closed across the hold third, break-before-make 2 ps BOTH edges (the buckfix anti-dead-time bug, fixed, carried). The LC rise is cosine-shaped completing in ONE third (unlike the failed 3-phase sine whose rise spans 1.5 thirds) -- the eye run adjudicates the shape.",
+   "anchor": "qal/swsweep tg15p (16 um optimum, park variant) + qal/buckfix BBM sequencing + corrected gate-charge fit; switch sized DOWN from tg15p for the ~3 uA peak (vs 194 uA there): starting widths tg wn=1/wp=2 um, clamp wn=1/wp=2 um, park 0.5 um, refined by the R_on calibration.",
+   "tuning": "L0 = (T_third/pi)^2 / C_eff ~ 9.7 nH; L in {8.5, 9.7, 11} nH run concurrently, pick crest closest to dV at the third boundary; ZCS re-probed; one refinement round.",
+   "cost_booking": "VMID net (rule 1 -- the fall RECOVERY lands here, metered, only as the net) + VHOLD net (rule 1) + 2 tg gate drives + park (rule 3) + 2 pulse-generators (rule 4) / N.",
+   "pre_stated_expectation": "meets S1 (true flat top from the DC clamp) AND receives on the fall (through L into VMID); E_overhead expected ~ +10-60 fJ/bank standalone, dominated by gate drive + pulse-gen; ADMITTED (<= 25%) at N >= ~4-8 shared."
+  }
+ },
+
+ "sharing_runs_pre_stated": {
+  "N1": "every candidate priced standalone on bank 4 (the per-bank worst case).",
+  "N2": "best candidate: ONE driver instance drives BOTH phase-A banks (1 and 4); droop re-measured at the shared node; the rule-4 term halves; gate-drive term re-measured (must stay per-bank-constant, NOT grow superlinearly -- the recursion-scaling check).",
+  "full_mesh": "best candidate: THREE driver instances replace all six committed phase sources (one per phase, each loaded by 2 banks); the committed mesh3 extractor re-scores value/eye/handoff/erosion -- THE 129-ps-eye SURVIVAL TEST.",
+  "N_extrapolation": "beyond N=2 the curve is DERIVED from the measured N=1/N=2 decomposition (terms tagged fixed vs proportional-to-N) and capped by the committed sharing precedents: qal/muxbuck hard ceiling N ~ 24.4 and the committed rs=100 ohm robustness; the N at which sharing stops helping is reported from droop-vs-fanout arithmetic at the measured R_on, LABELED DERIVED. The global distribution grid stays ASSUMED -- repeated in the verdict."
+ },
+
+ "pre_stated_pick": "C (switched-LC with hold clamp) wins: it is the only candidate that makes a TRUE flat top AND receives the fall-third charge back, and its recurring costs (gate drive + control) amortise across the phase's banks while A's amplifier loss (1/eta - 1 ~ 2.9x the ledger) is structurally B-invariant and B pays two 0.41 V yanks per cycle plus hold-fight. Pre-stated expected verdict: A CLOSES on S4 (~290% overhead), B PRICED-BUT-HEAVY or CLOSES, C ADMITTED at <= 25% for N_banks >= ~4-8 with the 129 ps eye surviving within 15%.",
+
+ "riders_carried_not_priced": [
+  "the global resonant DISTRIBUTION network (grid inductors, wire RC, die-scale Q) -- ASSUMED, this run prices the per-phase driver only",
+  "rail generation above the 1.5 V primary (dV = 1.65 V; the qal/amp I6/I8 traps) -- carried on both sides of the comparison",
+  "bidirectional rail regulation for the recovery charge absorbed by VMID/VHOLD",
+  "mesh jitter zero, sg13lv_compat drops junction caps (every driver cost here is therefore a LOWER bound, as in every committed study)"
+ ]
+}
