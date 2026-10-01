@@ -1,5 +1,15 @@
 # QAL — Quasi-Adiabatic Logic as a third Mylex RTL backend
 
+> **STATE OF PLAY (2026-10-01) — read the durable record first:**
+> `/home/claude/qal_threeway/QAL-CAMPAIGN.md` (diagrams) + the "SG13G2 Energy–Delay Map" artifact
+> (interactive, transistor-level schematics). One-line verdict, all MEASURED:
+> **energy loses on every duty axis** (busy excluded; wide-bank ≤1.15×; bursty closed vs power-gated
+> CMOS); **latency never wins** (structural); **throughput wins 12.0× per level** on a three-phase
+> resonant-mesh clock (`qal/mesh3`, 5b9d05b) — **at a measured 2.2× system-energy price** for the
+> flat-top driver (`qal/meshdrv`, 8d1fd18). A throughput-for-energy trade, for GP-GPU lanes.
+> The sections below are the per-experiment appends in chronological order; the durable doc is the
+> synthesis.
+
 Feasibility A-track for the QAL backend (`~/QAL_PLAN.md`). One RTL, three backends:
 **static** (clocked), **bundled-data async** (self-timed), and **QAL** (ephemeral wave
 pipeline, low-swing ΔV², adiabatic recovery). The operating map that puts all three on
