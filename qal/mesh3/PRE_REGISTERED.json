@@ -1,0 +1,96 @@
+{
+ "study": "qal/mesh3 -- THREE-PHASE MESH WITH A HOLD PHASE: the named fix from the committed two-phase closure (2be4644). Banks on phases A/B/C at 120 degrees; when a bank evaluates, its predecessor sits in its HOLD third -- data parked at crest. PURE SPEED; the erosion SIGN is the headline.",
+ "date": "2026-09-30",
+ "written_before_any_deck": "This file is the ONLY file in qal/mesh3/ at its mtime. Every deck, harness line, window, threshold and prediction below is fixed BEFORE the first simulation and BEFORE mesh3.py exists.",
+
+ "ASSUMED_by_user_license": {
+  "mesh_in_place": "The three-phase resonant mesh EXISTS (user's standing licence, carried from qal/mesh): each phase modeled as a DRIVEN RAIL WAVEFORM behind a uniform small series R (0.001 ohm main sweep); zero mesh jitter. The per-bank charge books (now including the HOLD third) are REPORTED as the mesh interface spec; mesh Q, drive loss, wiring are the mesh designer's problem BY ASSUMPTION.",
+  "trapezoid_feasibility_rider": "HONESTY RIDER, stated up front: a resonant mesh makes TRAPEZOIDS less naturally than sines (flat top = odd-harmonic content; rotary/standing-wave meshes are quasi-sinusoidal; trapezoidal power-clocks in the adiabatic literature come from switched/stepwise drivers). If only the trapezoid sustains, the flat top is a MESH-DESIGN SPEC handed over with the charge books, not an assumption discharged here. The 3-phase SINE control adjudicates whether resonant-native suffices. The stiffness sensitivity (series R sweep at the best point) bounds the ideal-source idealisation; the two-phase run MEASURED that assumption to be CONSERVATIVE (100 ohm IMPROVED surviving links) -- re-verified here at the best point.",
+  "costs_deleted": "Carried from qal/mesh, now claimed for the CHAIN: NO transfer switch, NO per-bank inductor, NO timer, NO return-ZCS schedule. Banks hang directly off the mesh phases (supply AND pMOS bulk on the phase node). The phase order IS the schedule."
+ },
+
+ "architecture": {
+  "banks": 6, "MGATE": 8, "d_levels": [1, 2, 3, 4],
+  "phasing": "bank k on phase (k-1) mod 3: banks 1,4 on A; 2,5 on B; 3,6 on C. Order A -> B -> C -> A. Outputs direct-wired to the next bank's inputs; no flop, latch, buffer, keeper anywhere (standing architecture).",
+  "cell_netlist": "Campaign-standard RESTORING inverter VERBATIM (qal/banktank bt.py bank_cells lineage, identical lines to qal/mesh/mesh.py): sg13_lv_pmos w=1.12u l=0.13u, source AND bulk on the bank's phase node; sg13_lv_nmos w=0.74u l=0.13u, source+bulk on the bank's metered ground (VMG k, 0 V); CL = 2 fF per cell output. dV = 1.65 V.",
+  "head": "Bank 1 inputs are ideal full-swing PWL words, 2 ps edges, ALTERNATING PAT / complement(PAT) at every period boundary t = n*T (one wave per period; wave spacing = 3 banks). NOTE, pre-stated: the ideal head does not die, so LINK 1 LACKS the predecessor-fall channel that links >= 2 carry -- link-1-vs-links-2+ asymmetry is a pre-registered diagnostic signature, see prediction.",
+  "patterns": {"P0": [1,1,1,0,1,0,0,1], "P1": [1,0,1,0,0,1,1,0], "P2": [1,1,1,1,1,1,1,1]},
+  "pattern_roles": "P0-alt (mixed word, alternating every period) is THE grid pattern -- the class that killed the two-phase run. P1-alt (a second mixed word) confirms each frontier cell; the frontier d requires the INTERSECTION P0 AND P1. P2-alt (uniform word) is run at the headline point as the CONTROL IT IS (it passed even on two phases and proves nothing)."
+ },
+
+ "waveforms": {
+  "timeline": "T = 3*T_third. slot(k, n) = n*T + (k-1)*T_third = bank k's trough / rise start for wave n. Sampling instant (value diagnostics, charge crest reads) = slot + 1.5*T_third for BOTH waveforms: mid-hold for the trapezoid, crest for the sine. tran end = 7*T; waves 0,1 warm-up; waves 2,3,4 scored (first wave is not the wave -- committed lesson).",
+  "trapezoid_PRIMARY": "Per phase: linear rise 0->dV over T/3, HOLD at dV over T/3, linear fall dV->0 over T/3; phase p shifted by p*T_third. PWL knots at (m*T + p*T_third + {0, T_third, 2*T_third}) with values {0, dV, dV}; the fall endpoint is the next period's zero knot. Exact knots exist at t=0 for all three phases (A: 0 V rising; B: dV starting its fall; C: dV holding).",
+  "sine_CONTROL": "V_p(t) = dV/2 * (1 - cos(2*pi*(t - p*T_third)/T)). Xyce SIN(dV/2, dV/2, 1e12/T Hz, 0, 0, -90 - 120*p degrees). Trough at slot, crest at slot + 1.5*T_third, rise occupies HALF the period (1.5*T_third), fall likewise.",
+  "hold_third_definition": "Bank k's hold third for wave n = [slot + T_third, slot + 2*T_third] for BOTH waveforms (for the sine this is the crest-centered middle third). GEOMETRY NOTE, pre-computed: the sine rail's floor over that third is cos-math 0.75*dV at the third's edges (1.2375 V); the mean over the third is 0.913*dV. The user's '~87% of peak for the middle third' is between those two; we report the MEASURED rail min and mean over the hold third and score margins only at instants, never from a nominal percentage.",
+  "two_phase_lesson_carried": "Waveform shape genuinely moves lifetimes (sawtooth beat sine exactly as predicted in qal/mesh) -- both waveforms here are MEASURED on identical grids, no shape claim is assumed."
+ },
+
+ "PREDICTION_erosion_sign": {
+  "task": "Pre-state the sign of validity erosion per hop with its arithmetic. The committed two-phase chain law (2be4644, MEASURED): establishment(link k) = srx + 90..110 ps for d <= 2 (+25..30 ps per extra level); data lifetime = srx + 0.75..1.04*T_half because the predecessor's rail FALLS from srx onward. Erosion = establishment - lifetime = +25..45 ps/hop; run-widths 64 -> 56 -> 40 -> 0.2 ps; extinction at bank 3-6.",
+  "PRIMARY_user_model_rail_death": {
+   "mechanism": "Three phases park the predecessor's RAIL at crest for the receiver's whole rise third: the predecessor's fall starts at srx + T_third instead of srx. Lifetime = srx + T_third (hold) + 0.75..1.04 * (fall persistence on its own falling rail, trip tracking down with it).",
+   "trapezoid_at_92": "lifetime ~ srx + 92 + (0.75..1.04)*92 = srx + 161..188 ps vs establishment ~ srx + 90..110 ps (d<=2) -> EROSION NEGATIVE by 51..98 ps per hop. The wave SUSTAINS; run-widths should stop shrinking and stand at an asymptotic eye.",
+   "trapezoid_all_T_third": "erosion negative for d<=2 at EVERY grid T_third (70: +12..+53 margin; 130: +117..+175). d=3 adds 25..30 ps establishment: negative at T_third >= 80..92. d=4: establishment 140..170 ps must also fit the powered window 2*T_third: fails at 70, marginal at 92, fits at >= 117.",
+   "sine_at_92": "crest arrives at srx + 0.5*T_third, fall lasts 1.5*T_third: lifetime ~ srx + 0.5*92 + (0.75..1.04)*138 = srx + 150..190 ps; establishment carries a slow-early-rise penalty ~ +0.3..0.5*T_third -> srx + 118..156 ps -> erosion still negative but THINNER than trapezoid. Prediction: sine sustains at T_third >= 80 for d<=2; trapezoid sustains everywhere d<=2 with the wider standing eye."
+  },
+  "PRE_IDENTIFIED_RISK_channel_input_death": {
+   "mechanism": "THE HOLD HOLDS THE RAIL, NOT THE INPUTS. With three phases and combinational banks, during the critical third of link k->k+1 (k+1 rises, k holds) bank k-1 necessarily FALLS (three thirds, three states -- structural). Bank k-1's dying HIGH outputs cross bank k's FIXED full-rail trip (no tracking relief: bank k's rail is held, trip pinned at ~0.854 V) at ~ (1 - 0.854/1.65) * t_fall = 0.48 * t_fall after srx; bank k's outputs then leave the good region ~1 bank response later (+~25..30 ps per level -- the depth defense), heading for the committed two-phase fight/park level AT the receiver trip and then fully WRONG once the input is fully dead.",
+   "arithmetic_trapezoid_92_d1": "lifetime_B ~ srx + 0.48*92 + 25..30 = srx + 69..74 ps vs establishment srx + 90..110 -> EROSION POSITIVE again (+16..+41/hop) on links >= 2. d=2: both sides gain 25..30 ps -- the committed cancellation.",
+   "sine_relief": "sine's fall lasts 1.5*T_third -> crossing at 0.66*T_third: lifetime_B ~ srx + 86..91 ps (92 ps point, d=1) -- the slow fall partially compensates its slow rise.",
+   "which_binds": "The measured die instant is min(rail-death, input-death). ADJUDICATOR, pre-registered: per link k >= 2 we record (i) t_inputdeath = first instant after srx that the minimum expected-HIGH input to bank k crosses below bank k's instantaneous trip, (ii) bank k's own fall start, (iii) die_raw. SIGNATURE: if input-death binds, link 1 (ideal head, cannot die) stays wide while links 2+ erode; if rail-death binds (user model), all links stand together and the erosion sign is negative everywhere.",
+   "honesty": "The 0.48*t_fall crossing is a derived bound, not a measurement; the two-phase 0.75..1.04 persistence was measured WITH trip tracking. Which channel binds is exactly what this run measures. Both models are stated BEFORE the first deck; neither is assumed."
+  },
+  "expected_frontier_PRIMARY": "Under the user model: trapezoid max_d = 2 at every T_third (headline 8.0x wave-advance at 92), d=3 from T_third >= 92 (12.0x), d=4 from >= 117; sine d=1 everywhere, d=2 from >= 80, d=3 from >= 117. Under the risk channel: frontier empty or d=2-at->=117-only, with the link-1-wide signature. The task's own hint (two-phase d=2 passed VALUE at T_half >= 105 while margins failed) is consistent with d=2 banking first.",
+  "level_restoration": "Crest 1.65 V > 0.9642 V (Vtn = 0.5240 V cascade requirement): level-restoring by construction AT CREST. VERIFIED at T_third = 70: minimum expected-HIGH last-level output at the sampling instant across banks must be reported (sine: shortest crest time; trapezoid: the hold absorbs it)."
+ },
+
+ "scoring_definitions": {
+  "carried_verbatim_from_qal_mesh": "Trip_S instantaneous-rail interpolation (qal/fcrit TRIP.json, extrapolated-above-1.50V labeled, in-table-from-below required at >= 0.20 V); margin sign by expected bit; expected bit(bank k, level j, wave n, gate i) = PAT[i] XOR (n AND 1) XOR (((k-1)*d + j) AND 1); eye = contiguous min-over-8-gates margin runs at thresholds 0 mV and 69.924 mV; E1 edge interpolation on the 0.10 ps grid; commit/die run = LARGEST run intersecting the window (M2a); commit_raw from bank k's OWN rise, powered window [slot, slot + 2*T_third] (M4/M4c: slot + crest_offset + T_third/2 with crest_offset = 1.5*T_third); die = close of the gated link eye run; overlap(link k) = t_die(k) - t_commit_raw(k+1); value (acceptance A) = LAST-LEVEL word vs the receiver's instantaneous trip at the raw-validity MIDPOINT (M4b/M4d), interior levels reported not gated; crest-instant .mt0 FINDs retained as diagnostic (M2c); rising-side tracking lag reported (M2d); +1.0 ps Xyce FIND lag convention; model language throughout: tracking lag / eye / margin at the sampling instant.",
+  "three_phase_windows": "crest_offset = 1.5*T_third (both waveforms). Receiver rise window for eye-run picking = [srx, srx + 1.5*T_third]. Analysis window per link per wave = [slot_k - 10 ps, srx + 2*T_third + 40 ps]. Link 6's receiver rail is bank 1's phase-A waveform (same phase as the would-be bank 7), labeled DERIVED.",
+  "erosion_measurements_THE_HEADLINE": "Per link, per steady wave: establishment instant (commit_raw), data-death instant (die_raw and gated die), and the RUN-WIDTH SERIES across banks (gated 0 mV eye widths, links 1..6) -- the exact quantities that measured 64 -> 56 -> 40 -> 0.2 ps on two phases. THE HEADLINE IS THE SIGN: widths growing/stable along the chain = the wave sustains (report the asymptotic width as the standing eye, mean of the last two real links if they agree within 15%); shrinking = still erodes (report WHAT the hold failed to hold via the input-death adjudicator).",
+  "hold_third_books": "Per bank, per phase, steady waves: Q_rise = q(slot+T_third) - q(slot); Q_hold = q(slot+2*T_third) - q(slot+T_third); Q_fall = q(next slot) - q(slot+2*T_third); E_rise/E_hold/E_fall likewise from the energy integrators. The HOLD book is the tracking current an ideal flat-top supplies for free -- METERED and reported as the mesh interface spec. Plus rail min/mean over the hold third per bank (crest droop; re-measured under the stiffness sweep).",
+  "hold_bump_meter": "What the hold failed to hold, measured directly: for interior banks 3 and 4, max rise of expected-LOW last-level outputs across the bank's own hold third relative to their level at hold start. Diagnostic, not gated.",
+  "trough_check": "Carried: banks 3 (phase C) and 4 (phase A) around their troughs -- I(VMG), I(VPH) peaks/means over trough +/- 2 ps and over the rail < 10% window, net Q from the 1F integrators. Two-phase measured bounded cap discharge 19.1 fC, NOT crowbar; re-verify on three-phase timing. Ceiling for comparison: d*8*2fF*1.65V of the bank's own loads.",
+  "throughput_and_II": "Wave-advance ratio (the task's named frontier metric) = (d / T_third) / (1 / 367.888 ps) = d*367.888/T_third; at d=1, T_third=92: 4.0x; d=2: 8.0x. Corner = d*467.888/T_third. STATED ALONGSIDE, NEVER CONFLATED (committed H*T lesson): a bank's initiation interval is one evaluation per FULL period 3*T_third (occupancy 1/3: one wave per 3 banks); per-bank level throughput = d/(3*T_third), ratio = d*367.888/(3*T_third) = 1.33x at d=1,92. Latency per level = T_third/d reported alongside; NO latency claim (standing rule: per-level latency never wins)."
+ },
+
+ "acceptance": {
+  "A_value": "ALL banks, steady waves 2..4: last-level 8-bit word bit-correct vs the receiver's instantaneous trip at the raw-validity midpoint. BOTH polarities live (two-phase REFUTED low-side vacuousness on full-swing rails: dying HIGHs park LOWs exactly AT the trip).",
+  "B_eye": "links 1..5: min-gate margin at the handoff commit sample >= 69.924 mV (3*sigma_total, the timer-less budget, MEASURED qal/eye/p2 U3) for every wave 2..4, both polarities scored.",
+  "C_handoff": "overlap(link k) > 0 for links 1..5, every wave 2..4 -- positive overlap every link.",
+  "PASS": "A and B and C on the P0-alt grid cell; a FRONTIER cell additionally requires the P1-alt mixed-word confirm to PASS (intersection over the killing pattern class). P2-alt is control only, never gating.",
+  "frontier": "max d meeting the above per (waveform, T_third); throughput ratios as defined. If the wave sustains, this is the campaign's first outright throughput WIN and is stated WITH ITS RIDERS: mesh assumed-in-place; trapezoid feasibility if the sine control fails; no latency claim. If it still erodes: the input-death adjudicator says what the hold failed to hold, and the pre-registered contingencies below are the named next probes."
+ },
+
+ "grid": {
+  "core": "waveform {trapezoid, sine} x T_third {70, 80, 92, 105, 117, 130} ps x d {1,2,3,4}, P0-alt, 6 banks, one dense transient per cell (0.10 ps extraction grid, .tran 0.1p 7*T 0 0.25p), extraction from waveform prints, full d grid (no early stop -- committed M3).",
+  "confirms": "P1-alt at each (waveform, T_third) frontier d; P2-alt control at the headline point.",
+  "stiffness_sensitivity": "series R_s in {1, 10, 30, 100} ohm at the BEST accepted point: acceptance re-check + crest droop over the hold third + surviving-link count. Two-phase measured the ideal-mesh assumption CONSERVATIVE (100 ohm IMPROVED surviving links) -- re-verify at the best point here.",
+  "contingencies_pre_registered_run_only_if_erosion_persists": {
+   "fourth_phase": "rise/hold/hold/fall quarters, A->B->C->D: when k+1 rises, k holds-1 AND k-1 holds-2 -- the predecessor's INPUTS are also parked; the input-death channel is pushed one quarter further upstream.",
+   "asymmetric_duty": "3 phases, hold stretched at the fall's expense (e.g. rise T/3, hold T/2, fall T/6): delays the predecessor's fall start by T/6 at the cost of a faster death once started; net +~0.09*T of input stability at the handoff."
+  }
+ },
+
+ "instrument_anchors": {
+  "ICA3": "Reproduce the committed two-phase near-miss row sine_th130_d1 (qal/mesh, commit 2be4644) from the COMMITTED mesh.py code under qal/mesh3's own fresh cache: deck regenerated byte-identical to the retained local deck, .mt0 digit-checked (rel 1e-6) against the retained local .mt0, extractor output checked against the committed OUT.json headline fields (value 72 checked / 9 fail; worst margin_at_commit 40.35 mV; worst overlap +5.554 ps; link1 wave2 eye 68.314 ps). Anchors the harness to the known result BEFORE any three-phase deck is trusted.",
+  "ICB3": "Three-phase smoke at the LARGEST T_third (130 ps), d=1, NB=3 (the smallest full phase set A/B/C -- the three-phase analogue of the committed 2-bank smoke; link 3 receiver DERIVED): waveform digit-checks (trapezoid: V_A(0)=0, V_A(T_third)=dV, V_A(2*T_third)=dV, V_B(0)=dV falling, V_C(0)=dV holding; sine: V_A(0)~0, V_A(1.5*T_third)=1.65, V_A(T_third)=1.2375), trip hand-checks (trip(1.65)=0.85445 EXTRAPOLATED, trip(1.20)=0.64516 in-table), integrator sign, hold-book sanity (trapezoid |Q_hold| << Q_rise)."
+ },
+
+ "sim_discipline": {
+  "cache": "own PYMS_VAE_CACHE = scratchpad/vae_cache_mesh3; PYMS_DIR=/usr/local/share/xyce/PyMS",
+  "models": "sg13_lv via qal/sg13lv_compat.sp; PSP103 via .hdl /usr/local/share/xyce/verilog-a/psp103/psp103.va + sg13g2_psp103_tt.lib; .OPTIONS TIMEINT METHOD=GEAR RELTOL=1e-6 ABSTOL=1e-15 CHGTOL=1e-17 (bt.py head verbatim). Unique .va module names: only psp103 used. vt/gmin reserved, untouched.",
+  "metering": "t0-referenced 1F integrators ONLY (1F cap + B-source + 0.01 ohm bleed): q_phase = -I(VPH_k), e_phase = -V(rail_k)*I(VPH_k), q_gnd = I(VMG_k). INTEG-I(Vsrc) class; no other metering.",
+  "disk": "root at 99%: Xyce executes on the tmpfs scratchpad; qal/mesh3/runs/<tag>/ keeps OUT.json + deck + .mt0 ONLY; every .prn deleted after extraction except ONE gzipped exemplar at the headline point kept on the scratchpad. NO waveform archives in git (*.prn/*.gz excluded; the two-phase commit had to be stripped of ~150 MB).",
+  "concurrency": "box idle; <= 8 concurrent Xyce, lanes = (waveform, T_third) with d ascending inside a lane.",
+  "labels": "every reported number labeled MEASURED / DERIVED / ASSUMED; the mesh itself ASSUMED-IN-PLACE (user licence) with the per-bank charge books as its interface."
+ },
+
+ "carried_measured_constants": {
+  "GATE_mV": 69.924, "sigma_total_mV": 23.308, "T_CMOS_ps": 367.888, "T_CMOS_corner_ps": 467.888,
+  "LAG_ps": 1.0, "dV": 1.65, "Vtn_binding_V": 0.5240, "cascade_requirement_V": 0.9642,
+  "cell": "pMOS 1.12u / nMOS 0.74u, l=0.13u, CL 2 fF", "trip_table": "qal/fcrit/TRIP.json cell S",
+  "two_phase_chain_law": "establishment srx + 90..110 ps (d<=2, +25..30/level); lifetime srx + 0.75..1.04*T_half; erosion +25..45 ps/hop; run-widths 64->56->40->0.2 ps (2be4644, MEASURED)"
+ }
+}
