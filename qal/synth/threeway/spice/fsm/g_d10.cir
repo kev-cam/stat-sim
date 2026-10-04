@@ -1,0 +1,53 @@
+* g_d10: golden 4-bit accumulator, 4 ops, duty 1/10 cyc
+.hdl "/usr/local/share/xyce/verilog-a/psp103/psp103.va"
+.include "/usr/local/src/kestrel/sim/models/sg13g2_psp103_tt.lib"
+.include "/usr/local/src/stat-sim/qal/sg13lv_compat.sp"
+.include "/usr/local/src/IHP-Open-PDK/ihp-sg13g2/libs.ref/sg13g2_stdcell/spice/sg13g2_stdcell.spice"
+
+.subckt accum4 x0 x1 x2 x3 clk rstb s0 s1 s2 s3 VDD VSS
+Xxab0 axb0 s0 x0 VDD VSS sg13g2_xor2_1
+Xsum0 sum0 axb0 VSS VDD VSS sg13g2_xor2_1
+Xab0 ab0 s0 x0 VDD VSS sg13g2_and2_1
+Xacb0 acb0 axb0 VSS VDD VSS sg13g2_and2_1
+Xco0 c1 ab0 acb0 VDD VSS sg13g2_or2_1
+Xxab1 axb1 s1 x1 VDD VSS sg13g2_xor2_1
+Xsum1 sum1 axb1 c1 VDD VSS sg13g2_xor2_1
+Xab1 ab1 s1 x1 VDD VSS sg13g2_and2_1
+Xacb1 acb1 axb1 c1 VDD VSS sg13g2_and2_1
+Xco1 c2 ab1 acb1 VDD VSS sg13g2_or2_1
+Xxab2 axb2 s2 x2 VDD VSS sg13g2_xor2_1
+Xsum2 sum2 axb2 c2 VDD VSS sg13g2_xor2_1
+Xab2 ab2 s2 x2 VDD VSS sg13g2_and2_1
+Xacb2 acb2 axb2 c2 VDD VSS sg13g2_and2_1
+Xco2 c3 ab2 acb2 VDD VSS sg13g2_or2_1
+Xxab3 axb3 s3 x3 VDD VSS sg13g2_xor2_1
+Xsum3 sum3 axb3 c3 VDD VSS sg13g2_xor2_1
+Xff0 s0 sn0 clk sum0 rstb VDD VSS sg13g2_dfrbp_1
+Xff1 s1 sn1 clk sum1 rstb VDD VSS sg13g2_dfrbp_1
+Xff2 s2 sn2 clk sum2 rstb VDD VSS sg13g2_dfrbp_1
+Xff3 s3 sn3 clk sum3 rstb VDD VSS sg13g2_dfrbp_1
+.ends accum4
+.subckt capgen req cap VDD VSS
+Xd0 d0 req VDD VSS sg13g2_buf_4
+Xd1 d1 d0 VDD VSS sg13g2_buf_4
+Xd2 d2 d1 VDD VSS sg13g2_buf_4
+Xd3 done d2 VDD VSS sg13g2_buf_4
+Xcb cap done VDD VSS sg13g2_buf_2
+.ends capgen
+VDDs VDD 0 1.2
+VSSs VSS 0 0
+Vx1 x1 0 0
+Vx2 x2 0 0
+Vx3 x3 0 0
+Vx0 x0 0 PWL(0n 0 0.5n 0 0.58n 1.2 2.4n 1.2 2.48n 0 15.5n 0 15.58n 1.2 17.4n 1.2 17.48n 0 30.5n 0 30.58n 1.2 32.4n 1.2 32.48n 0 45.5n 0 45.58n 1.2 47.4n 1.2 47.48n 0 61.5n 0)
+Vrst rstb 0 PWL(0 0 0.3n 0 0.33n 1.2 61.5n 1.2)
+Xacc x0 x1 x2 x3 capnet rstb s0 s1 s2 s3 VDD VSS accum4
+Vclk capnet 0 PWL(0n 0 0.5n 0 0.58n 1.2 1.25n 1.2 1.33n 0 2n 0 2.08n 1.2 2.75n 1.2 2.83n 0 3.5n 0 3.58n 1.2 4.25n 1.2 4.33n 0 5n 0 5.08n 1.2 5.75n 1.2 5.83n 0 6.5n 0 6.58n 1.2 7.25n 1.2 7.33n 0 8n 0 8.08n 1.2 8.75n 1.2 8.83n 0 9.5n 0 9.58n 1.2 10.25n 1.2 10.33n 0 11n 0 11.08n 1.2 11.75n 1.2 11.83n 0 12.5n 0 12.58n 1.2 13.25n 1.2 13.33n 0 14n 0 14.08n 1.2 14.75n 1.2 14.83n 0 15.5n 0 15.58n 1.2 16.25n 1.2 16.33n 0 17n 0 17.08n 1.2 17.75n 1.2 17.83n 0 18.5n 0 18.58n 1.2 19.25n 1.2 19.33n 0 20n 0 20.08n 1.2 20.75n 1.2 20.83n 0 21.5n 0 21.58n 1.2 22.25n 1.2 22.33n 0 23n 0 23.08n 1.2 23.75n 1.2 23.83n 0 24.5n 0 24.58n 1.2 25.25n 1.2 25.33n 0 26n 0 26.08n 1.2 26.75n 1.2 26.83n 0 27.5n 0 27.58n 1.2 28.25n 1.2 28.33n 0 29n 0 29.08n 1.2 29.75n 1.2 29.83n 0 30.5n 0 30.58n 1.2 31.25n 1.2 31.33n 0 32n 0 32.08n 1.2 32.75n 1.2 32.83n 0 33.5n 0 33.58n 1.2 34.25n 1.2 34.33n 0 35n 0 35.08n 1.2 35.75n 1.2 35.83n 0 36.5n 0 36.58n 1.2 37.25n 1.2 37.33n 0 38n 0 38.08n 1.2 38.75n 1.2 38.83n 0 39.5n 0 39.58n 1.2 40.25n 1.2 40.33n 0 41n 0 41.08n 1.2 41.75n 1.2 41.83n 0 42.5n 0 42.58n 1.2 43.25n 1.2 43.33n 0 44n 0 44.08n 1.2 44.75n 1.2 44.83n 0 45.5n 0 45.58n 1.2 46.25n 1.2 46.33n 0 47n 0 47.08n 1.2 47.75n 1.2 47.83n 0 48.5n 0 48.58n 1.2 49.25n 1.2 49.33n 0 50n 0 50.08n 1.2 50.75n 1.2 50.83n 0 51.5n 0 51.58n 1.2 52.25n 1.2 52.33n 0 53n 0 53.08n 1.2 53.75n 1.2 53.83n 0 54.5n 0 54.58n 1.2 55.25n 1.2 55.33n 0 56n 0 56.08n 1.2 56.75n 1.2 56.83n 0 57.5n 0 57.58n 1.2 58.25n 1.2 58.33n 0 59n 0 59.08n 1.2 59.75n 1.2 59.83n 0 60.5n 0 60.58n 1.2 61.25n 1.2 61.33n 0)
+.tran 2p 61.5n
+.options device gmin=1e-13
+.options timeint reltol=1e-6 abstol=1e-12 delmax=5e-12
+.options nonlin-tran abstol=1e-12 reltol=1e-6
+.measure tran QVDD INTEG I(VDDs) from=0.4n to=61.5n
+.measure tran EVDD PARAM {-1.2*QVDD}
+.print tran format=noindex I(VDDs) V(s0) V(s1) V(s2) V(s3) V(capnet)
+.end

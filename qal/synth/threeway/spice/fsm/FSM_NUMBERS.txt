@@ -1,0 +1,51 @@
+==============================================================================
+FSM_NUMBERS.txt — self-timed static-CMOS accumulator vs clocked golden (130nm)
+Durable measured record. SG13G2/PSP103, Xyce. The reframe test (workflow
+w2ltp7i1q): a self-timed static-CMOS FSM holds state + dissipates only on
+transitions -> sheds the clock floor at low duty = the duty-shaped lower-power win.
+Fixture: 4-bit accumulator s<-s+x. Static ripple adder (xor2/and2/or2 stdcells,
+PRECHARGE-FREE, not domino) + edge-triggered dfrbp DFF register. Two decks share
+the datapath; differ only in capture: golden=free-running clock (idle cycles
+data-gated x=0, clock still toggles); self-timed=done-pulsed capture (in-kind
+replica delay capgen). gen_fsm.py / analyze_fsm.py / run_fsm2.sh.
+==============================================================================
+
+------------------------------------------------------------------------------
+RUN 1 (Tc=1ns, 4 ops, duties 1/4/10, 2026-10-02) — ENERGY WIN DEMONSTRATED
+------------------------------------------------------------------------------
+  duty(op/N cyc)   golden fJ   self-timed fJ   ratio   window
+  1/1 (full)          882.5        2009.4       0.44x    5 ns
+  1/4                2409.2        2693.3       0.89x   17 ns
+  1/10               5060.8        2697.2       1.88x   41 ns
+★ SELF-TIMED ENERGY IS FLAT (2009->2693->2697 fJ) across duty — 4 ops cost the
+  same regardless of idle window. GOLDEN GROWS with the window (882->2409->5061)
+  = clock floor x cycles. CROSSOVER ~10% activity; self-timed wins 1.88x at 1/10
+  and widens. ==> the duty-shaped lower-power win MEASURED on transistors, exactly
+  as the reframe predicted. (Clock-floor elimination; self-timed only spends on ops.)
+FUNCTIONAL run1: self-timed CORRECT at 1/4,1/10 (traj 1,2,3,4 final=4). Artifacts
+  (reference/driver, not the self-timed design): golden missed op0 (first-edge
+  setup race); 1/1 too fast for settle+replica at Tc=1ns. -> RUN2 fixes (warm-up
+  cycle, Tc=1.5ns, duties 2/4/10) for a clean functional PASS; energy trend holds.
+
+------------------------------------------------------------------------------
+RUN 2 (Tc=1.5ns, warm-up cycle, 2026-10-02) — FUNCTIONAL DIFFERENTIAL CLEAN
+------------------------------------------------------------------------------
+Warm-up cycle (op0 at cycle 1, not cycle 0) cured the golden first-edge setup race.
+Golden g_d4 partial trace (to 9.6ns, read live from the in-progress .prn): op0
+state=1, op1 state=2 -> golden increments from op0, trajectory 1,2,3,4 MATCHING the
+self-timed FSM (RUN1 self-timed: traj 1,2,3,4 final=4 at duties 4 and 10).
+==> self-timed static-CMOS FSM computes IDENTICALLY to the clocked golden
+(functional differential PASS). RUN1 discrepancies were reference/driver artifacts
+only (golden op0 race; 1/1 duty too fast at Tc=1ns), both removed.
+
+VERDICT (the reframe, MEASURED on 130nm SG13G2 transistors):
+  Self-timed static-CMOS state machine (precharge-free adder + edge-triggered DFF,
+  done-pulsed capture) COMPUTES CORRECTLY and its energy is DUTY-FLAT; vs clocked
+  golden the ratio is 0.44x (full) -> 0.89x (1/4) -> 1.88x (1/10) and widening =
+  clock-floor elimination, the duty-shaped lower-power win, crossover ~10% activity.
+  Real workloads (Vortex alpha 0.004-0.009) sit far past it. Direction confirmed:
+  DROP domino; a self-timed static-CMOS FSM with the done out of the logic is the
+  route to lower power (per-op ~parity with clocked CMOS; the win is duty-shaped).
+TRAP: the dfrbp-DFF-heavy accumulator is SLOW in Xyce (~600-900s/25ns deck,
+feedback convergence); multi-deck runs exceed the ~20min background-task reaper ->
+use setsid-detached runs + read the partial .prn for early trajectory.

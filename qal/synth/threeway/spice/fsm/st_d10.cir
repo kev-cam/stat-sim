@@ -1,0 +1,54 @@
+* st_d10: selftimed 4-bit accumulator, 4 ops, duty 1/10 cyc
+.hdl "/usr/local/share/xyce/verilog-a/psp103/psp103.va"
+.include "/usr/local/src/kestrel/sim/models/sg13g2_psp103_tt.lib"
+.include "/usr/local/src/stat-sim/qal/sg13lv_compat.sp"
+.include "/usr/local/src/IHP-Open-PDK/ihp-sg13g2/libs.ref/sg13g2_stdcell/spice/sg13g2_stdcell.spice"
+
+.subckt accum4 x0 x1 x2 x3 clk rstb s0 s1 s2 s3 VDD VSS
+Xxab0 axb0 s0 x0 VDD VSS sg13g2_xor2_1
+Xsum0 sum0 axb0 VSS VDD VSS sg13g2_xor2_1
+Xab0 ab0 s0 x0 VDD VSS sg13g2_and2_1
+Xacb0 acb0 axb0 VSS VDD VSS sg13g2_and2_1
+Xco0 c1 ab0 acb0 VDD VSS sg13g2_or2_1
+Xxab1 axb1 s1 x1 VDD VSS sg13g2_xor2_1
+Xsum1 sum1 axb1 c1 VDD VSS sg13g2_xor2_1
+Xab1 ab1 s1 x1 VDD VSS sg13g2_and2_1
+Xacb1 acb1 axb1 c1 VDD VSS sg13g2_and2_1
+Xco1 c2 ab1 acb1 VDD VSS sg13g2_or2_1
+Xxab2 axb2 s2 x2 VDD VSS sg13g2_xor2_1
+Xsum2 sum2 axb2 c2 VDD VSS sg13g2_xor2_1
+Xab2 ab2 s2 x2 VDD VSS sg13g2_and2_1
+Xacb2 acb2 axb2 c2 VDD VSS sg13g2_and2_1
+Xco2 c3 ab2 acb2 VDD VSS sg13g2_or2_1
+Xxab3 axb3 s3 x3 VDD VSS sg13g2_xor2_1
+Xsum3 sum3 axb3 c3 VDD VSS sg13g2_xor2_1
+Xff0 s0 sn0 clk sum0 rstb VDD VSS sg13g2_dfrbp_1
+Xff1 s1 sn1 clk sum1 rstb VDD VSS sg13g2_dfrbp_1
+Xff2 s2 sn2 clk sum2 rstb VDD VSS sg13g2_dfrbp_1
+Xff3 s3 sn3 clk sum3 rstb VDD VSS sg13g2_dfrbp_1
+.ends accum4
+.subckt capgen req cap VDD VSS
+Xd0 d0 req VDD VSS sg13g2_buf_4
+Xd1 d1 d0 VDD VSS sg13g2_buf_4
+Xd2 d2 d1 VDD VSS sg13g2_buf_4
+Xd3 done d2 VDD VSS sg13g2_buf_4
+Xcb cap done VDD VSS sg13g2_buf_2
+.ends capgen
+VDDs VDD 0 1.2
+VSSs VSS 0 0
+Vx1 x1 0 0
+Vx2 x2 0 0
+Vx3 x3 0 0
+Vx0 x0 0 1.2
+Vrst rstb 0 PWL(0 0 0.3n 0 0.33n 1.2 61.5n 1.2)
+Xacc x0 x1 x2 x3 capnet rstb s0 s1 s2 s3 VDD VSS accum4
+Vreq reqnet 0 PWL(0n 0 2n 0 2.08n 1.2 2.75n 1.2 2.83n 0 17n 0 17.08n 1.2 17.75n 1.2 17.83n 0 32n 0 32.08n 1.2 32.75n 1.2 32.83n 0 47n 0 47.08n 1.2 47.75n 1.2 47.83n 0)
+Xcap reqnet capnet VDD VSS capgen
+.tran 2p 61.5n
+.options device gmin=1e-13
+.options timeint reltol=1e-6 abstol=1e-12 delmax=5e-12
+.options nonlin-tran abstol=1e-12 reltol=1e-6
+.measure tran QVDD INTEG I(VDDs) from=0.4n to=61.5n
+.measure tran EVDD PARAM {-1.2*QVDD}
+.print tran format=noindex I(VDDs) V(s0) V(s1) V(s2) V(s3) V(capnet)
+.end

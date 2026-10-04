@@ -1,0 +1,201 @@
+* sr_g_d10: golden SHA round-core slice (8b), 4 ops, duty 1/10 cyc
+.hdl "/usr/local/share/xyce/verilog-a/psp103/psp103.va"
+.include "/usr/local/src/kestrel/sim/models/sg13g2_psp103_tt.lib"
+.include "/usr/local/src/stat-sim/qal/sg13lv_compat.sp"
+.include "/usr/local/src/IHP-Open-PDK/ihp-sg13g2/libs.ref/sg13g2_stdcell/spice/sg13g2_stdcell.spice"
+
+.subckt sharound c0 c1 c2 c3 c4 c5 c6 c7 f0 f1 f2 f3 f4 f5 f6 f7 clk rstb q0 q1 q2 q3 q4 q5 q6 q7 VDD VSS
+Xmab0 m_ab0 q0 q1 VDD VSS sg13g2_and2_1
+Xmac0 m_ac0 q0 c0 VDD VSS sg13g2_and2_1
+Xmbc0 m_bc0 q1 c0 VDD VSS sg13g2_and2_1
+Xmt0 m_t0 m_ab0 m_ac0 VDD VSS sg13g2_xor2_1
+Xmaj0 maj0 m_t0 m_bc0 VDD VSS sg13g2_xor2_1
+Xcef0 c_ef0 q0 f0 VDD VSS sg13g2_and2_1
+Xcne0 c_ne0 q0 VDD VSS sg13g2_inv_1
+Xcng0 c_neg0 c_ne0 q7 VDD VSS sg13g2_and2_1
+Xch0 ch0 c_ef0 c_neg0 VDD VSS sg13g2_xor2_1
+Xmab1 m_ab1 q1 q2 VDD VSS sg13g2_and2_1
+Xmac1 m_ac1 q1 c1 VDD VSS sg13g2_and2_1
+Xmbc1 m_bc1 q2 c1 VDD VSS sg13g2_and2_1
+Xmt1 m_t1 m_ab1 m_ac1 VDD VSS sg13g2_xor2_1
+Xmaj1 maj1 m_t1 m_bc1 VDD VSS sg13g2_xor2_1
+Xcef1 c_ef1 q1 f1 VDD VSS sg13g2_and2_1
+Xcne1 c_ne1 q1 VDD VSS sg13g2_inv_1
+Xcng1 c_neg1 c_ne1 q0 VDD VSS sg13g2_and2_1
+Xch1 ch1 c_ef1 c_neg1 VDD VSS sg13g2_xor2_1
+Xmab2 m_ab2 q2 q3 VDD VSS sg13g2_and2_1
+Xmac2 m_ac2 q2 c2 VDD VSS sg13g2_and2_1
+Xmbc2 m_bc2 q3 c2 VDD VSS sg13g2_and2_1
+Xmt2 m_t2 m_ab2 m_ac2 VDD VSS sg13g2_xor2_1
+Xmaj2 maj2 m_t2 m_bc2 VDD VSS sg13g2_xor2_1
+Xcef2 c_ef2 q2 f2 VDD VSS sg13g2_and2_1
+Xcne2 c_ne2 q2 VDD VSS sg13g2_inv_1
+Xcng2 c_neg2 c_ne2 q1 VDD VSS sg13g2_and2_1
+Xch2 ch2 c_ef2 c_neg2 VDD VSS sg13g2_xor2_1
+Xmab3 m_ab3 q3 q4 VDD VSS sg13g2_and2_1
+Xmac3 m_ac3 q3 c3 VDD VSS sg13g2_and2_1
+Xmbc3 m_bc3 q4 c3 VDD VSS sg13g2_and2_1
+Xmt3 m_t3 m_ab3 m_ac3 VDD VSS sg13g2_xor2_1
+Xmaj3 maj3 m_t3 m_bc3 VDD VSS sg13g2_xor2_1
+Xcef3 c_ef3 q3 f3 VDD VSS sg13g2_and2_1
+Xcne3 c_ne3 q3 VDD VSS sg13g2_inv_1
+Xcng3 c_neg3 c_ne3 q2 VDD VSS sg13g2_and2_1
+Xch3 ch3 c_ef3 c_neg3 VDD VSS sg13g2_xor2_1
+Xmab4 m_ab4 q4 q5 VDD VSS sg13g2_and2_1
+Xmac4 m_ac4 q4 c4 VDD VSS sg13g2_and2_1
+Xmbc4 m_bc4 q5 c4 VDD VSS sg13g2_and2_1
+Xmt4 m_t4 m_ab4 m_ac4 VDD VSS sg13g2_xor2_1
+Xmaj4 maj4 m_t4 m_bc4 VDD VSS sg13g2_xor2_1
+Xcef4 c_ef4 q4 f4 VDD VSS sg13g2_and2_1
+Xcne4 c_ne4 q4 VDD VSS sg13g2_inv_1
+Xcng4 c_neg4 c_ne4 q3 VDD VSS sg13g2_and2_1
+Xch4 ch4 c_ef4 c_neg4 VDD VSS sg13g2_xor2_1
+Xmab5 m_ab5 q5 q6 VDD VSS sg13g2_and2_1
+Xmac5 m_ac5 q5 c5 VDD VSS sg13g2_and2_1
+Xmbc5 m_bc5 q6 c5 VDD VSS sg13g2_and2_1
+Xmt5 m_t5 m_ab5 m_ac5 VDD VSS sg13g2_xor2_1
+Xmaj5 maj5 m_t5 m_bc5 VDD VSS sg13g2_xor2_1
+Xcef5 c_ef5 q5 f5 VDD VSS sg13g2_and2_1
+Xcne5 c_ne5 q5 VDD VSS sg13g2_inv_1
+Xcng5 c_neg5 c_ne5 q4 VDD VSS sg13g2_and2_1
+Xch5 ch5 c_ef5 c_neg5 VDD VSS sg13g2_xor2_1
+Xmab6 m_ab6 q6 q7 VDD VSS sg13g2_and2_1
+Xmac6 m_ac6 q6 c6 VDD VSS sg13g2_and2_1
+Xmbc6 m_bc6 q7 c6 VDD VSS sg13g2_and2_1
+Xmt6 m_t6 m_ab6 m_ac6 VDD VSS sg13g2_xor2_1
+Xmaj6 maj6 m_t6 m_bc6 VDD VSS sg13g2_xor2_1
+Xcef6 c_ef6 q6 f6 VDD VSS sg13g2_and2_1
+Xcne6 c_ne6 q6 VDD VSS sg13g2_inv_1
+Xcng6 c_neg6 c_ne6 q5 VDD VSS sg13g2_and2_1
+Xch6 ch6 c_ef6 c_neg6 VDD VSS sg13g2_xor2_1
+Xmab7 m_ab7 q7 q0 VDD VSS sg13g2_and2_1
+Xmac7 m_ac7 q7 c7 VDD VSS sg13g2_and2_1
+Xmbc7 m_bc7 q0 c7 VDD VSS sg13g2_and2_1
+Xmt7 m_t7 m_ab7 m_ac7 VDD VSS sg13g2_xor2_1
+Xmaj7 maj7 m_t7 m_bc7 VDD VSS sg13g2_xor2_1
+Xcef7 c_ef7 q7 f7 VDD VSS sg13g2_and2_1
+Xcne7 c_ne7 q7 VDD VSS sg13g2_inv_1
+Xcng7 c_neg7 c_ne7 q6 VDD VSS sg13g2_and2_1
+Xch7 ch7 c_ef7 c_neg7 VDD VSS sg13g2_xor2_1
+Xxab_A0 Aaxb0 maj0 ch0 VDD VSS sg13g2_xor2_1
+Xsum_A0 As0 Aaxb0 VSS VDD VSS sg13g2_xor2_1
+Xab_A0 Aab0 maj0 ch0 VDD VSS sg13g2_and2_1
+Xacb_A0 Aacb0 Aaxb0 VSS VDD VSS sg13g2_and2_1
+Xco_A0 Ac1 Aab0 Aacb0 VDD VSS sg13g2_or2_1
+Xxab_A1 Aaxb1 maj1 ch1 VDD VSS sg13g2_xor2_1
+Xsum_A1 As1 Aaxb1 Ac1 VDD VSS sg13g2_xor2_1
+Xab_A1 Aab1 maj1 ch1 VDD VSS sg13g2_and2_1
+Xacb_A1 Aacb1 Aaxb1 Ac1 VDD VSS sg13g2_and2_1
+Xco_A1 Ac2 Aab1 Aacb1 VDD VSS sg13g2_or2_1
+Xxab_A2 Aaxb2 maj2 ch2 VDD VSS sg13g2_xor2_1
+Xsum_A2 As2 Aaxb2 Ac2 VDD VSS sg13g2_xor2_1
+Xab_A2 Aab2 maj2 ch2 VDD VSS sg13g2_and2_1
+Xacb_A2 Aacb2 Aaxb2 Ac2 VDD VSS sg13g2_and2_1
+Xco_A2 Ac3 Aab2 Aacb2 VDD VSS sg13g2_or2_1
+Xxab_A3 Aaxb3 maj3 ch3 VDD VSS sg13g2_xor2_1
+Xsum_A3 As3 Aaxb3 Ac3 VDD VSS sg13g2_xor2_1
+Xab_A3 Aab3 maj3 ch3 VDD VSS sg13g2_and2_1
+Xacb_A3 Aacb3 Aaxb3 Ac3 VDD VSS sg13g2_and2_1
+Xco_A3 Ac4 Aab3 Aacb3 VDD VSS sg13g2_or2_1
+Xxab_A4 Aaxb4 maj4 ch4 VDD VSS sg13g2_xor2_1
+Xsum_A4 As4 Aaxb4 Ac4 VDD VSS sg13g2_xor2_1
+Xab_A4 Aab4 maj4 ch4 VDD VSS sg13g2_and2_1
+Xacb_A4 Aacb4 Aaxb4 Ac4 VDD VSS sg13g2_and2_1
+Xco_A4 Ac5 Aab4 Aacb4 VDD VSS sg13g2_or2_1
+Xxab_A5 Aaxb5 maj5 ch5 VDD VSS sg13g2_xor2_1
+Xsum_A5 As5 Aaxb5 Ac5 VDD VSS sg13g2_xor2_1
+Xab_A5 Aab5 maj5 ch5 VDD VSS sg13g2_and2_1
+Xacb_A5 Aacb5 Aaxb5 Ac5 VDD VSS sg13g2_and2_1
+Xco_A5 Ac6 Aab5 Aacb5 VDD VSS sg13g2_or2_1
+Xxab_A6 Aaxb6 maj6 ch6 VDD VSS sg13g2_xor2_1
+Xsum_A6 As6 Aaxb6 Ac6 VDD VSS sg13g2_xor2_1
+Xab_A6 Aab6 maj6 ch6 VDD VSS sg13g2_and2_1
+Xacb_A6 Aacb6 Aaxb6 Ac6 VDD VSS sg13g2_and2_1
+Xco_A6 Ac7 Aab6 Aacb6 VDD VSS sg13g2_or2_1
+Xxab_A7 Aaxb7 maj7 ch7 VDD VSS sg13g2_xor2_1
+Xsum_A7 As7 Aaxb7 Ac7 VDD VSS sg13g2_xor2_1
+Xxab_B0 Baxb0 q0 As0 VDD VSS sg13g2_xor2_1
+Xsum_B0 Bs0 Baxb0 VDD VDD VSS sg13g2_xor2_1
+Xab_B0 Bab0 q0 As0 VDD VSS sg13g2_and2_1
+Xacb_B0 Bacb0 Baxb0 VDD VDD VSS sg13g2_and2_1
+Xco_B0 Bc1 Bab0 Bacb0 VDD VSS sg13g2_or2_1
+Xxab_B1 Baxb1 q1 As1 VDD VSS sg13g2_xor2_1
+Xsum_B1 Bs1 Baxb1 Bc1 VDD VSS sg13g2_xor2_1
+Xab_B1 Bab1 q1 As1 VDD VSS sg13g2_and2_1
+Xacb_B1 Bacb1 Baxb1 Bc1 VDD VSS sg13g2_and2_1
+Xco_B1 Bc2 Bab1 Bacb1 VDD VSS sg13g2_or2_1
+Xxab_B2 Baxb2 q2 As2 VDD VSS sg13g2_xor2_1
+Xsum_B2 Bs2 Baxb2 Bc2 VDD VSS sg13g2_xor2_1
+Xab_B2 Bab2 q2 As2 VDD VSS sg13g2_and2_1
+Xacb_B2 Bacb2 Baxb2 Bc2 VDD VSS sg13g2_and2_1
+Xco_B2 Bc3 Bab2 Bacb2 VDD VSS sg13g2_or2_1
+Xxab_B3 Baxb3 q3 As3 VDD VSS sg13g2_xor2_1
+Xsum_B3 Bs3 Baxb3 Bc3 VDD VSS sg13g2_xor2_1
+Xab_B3 Bab3 q3 As3 VDD VSS sg13g2_and2_1
+Xacb_B3 Bacb3 Baxb3 Bc3 VDD VSS sg13g2_and2_1
+Xco_B3 Bc4 Bab3 Bacb3 VDD VSS sg13g2_or2_1
+Xxab_B4 Baxb4 q4 As4 VDD VSS sg13g2_xor2_1
+Xsum_B4 Bs4 Baxb4 Bc4 VDD VSS sg13g2_xor2_1
+Xab_B4 Bab4 q4 As4 VDD VSS sg13g2_and2_1
+Xacb_B4 Bacb4 Baxb4 Bc4 VDD VSS sg13g2_and2_1
+Xco_B4 Bc5 Bab4 Bacb4 VDD VSS sg13g2_or2_1
+Xxab_B5 Baxb5 q5 As5 VDD VSS sg13g2_xor2_1
+Xsum_B5 Bs5 Baxb5 Bc5 VDD VSS sg13g2_xor2_1
+Xab_B5 Bab5 q5 As5 VDD VSS sg13g2_and2_1
+Xacb_B5 Bacb5 Baxb5 Bc5 VDD VSS sg13g2_and2_1
+Xco_B5 Bc6 Bab5 Bacb5 VDD VSS sg13g2_or2_1
+Xxab_B6 Baxb6 q6 As6 VDD VSS sg13g2_xor2_1
+Xsum_B6 Bs6 Baxb6 Bc6 VDD VSS sg13g2_xor2_1
+Xab_B6 Bab6 q6 As6 VDD VSS sg13g2_and2_1
+Xacb_B6 Bacb6 Baxb6 Bc6 VDD VSS sg13g2_and2_1
+Xco_B6 Bc7 Bab6 Bacb6 VDD VSS sg13g2_or2_1
+Xxab_B7 Baxb7 q7 As7 VDD VSS sg13g2_xor2_1
+Xsum_B7 Bs7 Baxb7 Bc7 VDD VSS sg13g2_xor2_1
+Xff0 q0 qn0 clk Bs0 rstb VDD VSS sg13g2_dfrbp_1
+Xff1 q1 qn1 clk Bs1 rstb VDD VSS sg13g2_dfrbp_1
+Xff2 q2 qn2 clk Bs2 rstb VDD VSS sg13g2_dfrbp_1
+Xff3 q3 qn3 clk Bs3 rstb VDD VSS sg13g2_dfrbp_1
+Xff4 q4 qn4 clk Bs4 rstb VDD VSS sg13g2_dfrbp_1
+Xff5 q5 qn5 clk Bs5 rstb VDD VSS sg13g2_dfrbp_1
+Xff6 q6 qn6 clk Bs6 rstb VDD VSS sg13g2_dfrbp_1
+Xff7 q7 qn7 clk Bs7 rstb VDD VSS sg13g2_dfrbp_1
+.ends sharound
+.subckt capgen req cap VDD VSS
+Xd0 d0 req VDD VSS sg13g2_buf_4
+Xd1 d1 d0 VDD VSS sg13g2_buf_4
+Xd2 d2 d1 VDD VSS sg13g2_buf_4
+Xd3 d3 d2 VDD VSS sg13g2_buf_4
+Xd4 d4 d3 VDD VSS sg13g2_buf_4
+Xd5 d5 d4 VDD VSS sg13g2_buf_4
+Xd6 done d5 VDD VSS sg13g2_buf_4
+Xcb cap done VDD VSS sg13g2_buf_2
+.ends capgen
+VDDs VDD 0 1.2
+VSSs VSS 0 0
+Vc0 c0 0 0
+Vc1 c1 0 1.2
+Vc2 c2 0 0
+Vc3 c3 0 1.2
+Vc4 c4 0 1.2
+Vc5 c5 0 0
+Vc6 c6 0 1.2
+Vc7 c7 0 0
+Vf0 f0 0 0
+Vf1 f1 0 0
+Vf2 f2 0 1.2
+Vf3 f3 0 1.2
+Vf4 f4 0 1.2
+Vf5 f5 0 1.2
+Vf6 f6 0 0
+Vf7 f7 0 0
+Vrst rstb 0 PWL(0 0 0.3n 0 0.33n 1.2 61.5n 1.2)
+Xrc c0 c1 c2 c3 c4 c5 c6 c7 f0 f1 f2 f3 f4 f5 f6 f7 capnet rstb q0 q1 q2 q3 q4 q5 q6 q7 VDD VSS sharound
+Vclk capnet 0 PWL(0n 0 0.5n 0 0.58n 1.2 1.25n 1.2 1.33n 0 2n 0 2.08n 1.2 2.75n 1.2 2.83n 0 3.5n 0 3.58n 1.2 4.25n 1.2 4.33n 0 5n 0 5.08n 1.2 5.75n 1.2 5.83n 0 6.5n 0 6.58n 1.2 7.25n 1.2 7.33n 0 8n 0 8.08n 1.2 8.75n 1.2 8.83n 0 9.5n 0 9.58n 1.2 10.25n 1.2 10.33n 0 11n 0 11.08n 1.2 11.75n 1.2 11.83n 0 12.5n 0 12.58n 1.2 13.25n 1.2 13.33n 0 14n 0 14.08n 1.2 14.75n 1.2 14.83n 0 15.5n 0 15.58n 1.2 16.25n 1.2 16.33n 0 17n 0 17.08n 1.2 17.75n 1.2 17.83n 0 18.5n 0 18.58n 1.2 19.25n 1.2 19.33n 0 20n 0 20.08n 1.2 20.75n 1.2 20.83n 0 21.5n 0 21.58n 1.2 22.25n 1.2 22.33n 0 23n 0 23.08n 1.2 23.75n 1.2 23.83n 0 24.5n 0 24.58n 1.2 25.25n 1.2 25.33n 0 26n 0 26.08n 1.2 26.75n 1.2 26.83n 0 27.5n 0 27.58n 1.2 28.25n 1.2 28.33n 0 29n 0 29.08n 1.2 29.75n 1.2 29.83n 0 30.5n 0 30.58n 1.2 31.25n 1.2 31.33n 0 32n 0 32.08n 1.2 32.75n 1.2 32.83n 0 33.5n 0 33.58n 1.2 34.25n 1.2 34.33n 0 35n 0 35.08n 1.2 35.75n 1.2 35.83n 0 36.5n 0 36.58n 1.2 37.25n 1.2 37.33n 0 38n 0 38.08n 1.2 38.75n 1.2 38.83n 0 39.5n 0 39.58n 1.2 40.25n 1.2 40.33n 0 41n 0 41.08n 1.2 41.75n 1.2 41.83n 0 42.5n 0 42.58n 1.2 43.25n 1.2 43.33n 0 44n 0 44.08n 1.2 44.75n 1.2 44.83n 0 45.5n 0 45.58n 1.2 46.25n 1.2 46.33n 0 47n 0 47.08n 1.2 47.75n 1.2 47.83n 0 48.5n 0 48.58n 1.2 49.25n 1.2 49.33n 0 50n 0 50.08n 1.2 50.75n 1.2 50.83n 0 51.5n 0 51.58n 1.2 52.25n 1.2 52.33n 0 53n 0 53.08n 1.2 53.75n 1.2 53.83n 0 54.5n 0 54.58n 1.2 55.25n 1.2 55.33n 0 56n 0 56.08n 1.2 56.75n 1.2 56.83n 0 57.5n 0 57.58n 1.2 58.25n 1.2 58.33n 0 59n 0 59.08n 1.2 59.75n 1.2 59.83n 0 60.5n 0 60.58n 1.2 61.25n 1.2 61.33n 0)
+.tran 2p 61.5n
+.options device gmin=1e-13
+.options timeint reltol=1e-6 abstol=1e-12 delmax=5e-12
+.options nonlin-tran abstol=1e-12 reltol=1e-6
+.measure tran QVDD INTEG I(VDDs) from=0.4n to=61.5n
+.measure tran EVDD PARAM {-1.2*QVDD}
+.print tran format=noindex I(VDDs) V(q0) V(q1) V(q2) V(q3) V(q4) V(q5) V(q6) V(q7) V(capnet)
+.end
