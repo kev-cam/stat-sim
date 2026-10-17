@@ -36,7 +36,7 @@ XENV = dict(os.environ, PYMS_DIR="/usr/local/share/xyce/PyMS",
 TRIPJSON = "/usr/local/src/stat-sim/qal/fcrit/TRIP.json"
 sys.path.insert(0, "/usr/local/src/VACASK/python")
 
-WP, WN, LCH = 1.12, 0.74, 0.13
+WP, WN, LCH = 1.12 * float(os.environ.get("MB_WP", "1")), 0.74, 0.13   # MB_WP: pMOS width scale (lane experiments)
 CLOAD = 2.0            # fF
 DV = 1.65
 EDGE = 2.0             # ps
@@ -607,12 +607,31 @@ def build_mesh3_ic(d=3, kind="inv", nb=6):
     fan = int(os.environ.get("MB_FANOUT", "1"))   # extra identical consumers per node (dummy loads)
     for i in range(8):
         nl.pi("in1_%d" % i)
+    if kind == "nandh":          # nand2 with the other input held HIGH (one-pMOS pull-up); one HIGH
+        for i in range(8):       # source per chain so its delay taps carry the chain's own fanout only
+            nl.pi("hi_%d" % i)
+    if kind == "xorh":           # the CRC primitive as a lane: dual-rail depth-2 XOR with a real
+        for i in range(8):       # (HIGH, LOW) pair per chain (PIs, so nothing folds): y = a ^ 1 = a~
+            nl.pi("hi_%d" % i)
+            nl.pi("lo_%d" % i)
+            nl.pi("in1n_%d" % i)
+            nl.comp["in1_%d" % i] = "in1n_%d" % i
+            nl.comp["in1n_%d" % i] = "in1_%d" % i
     for i in range(8):
+        if kind == "xorh":
+            cur, curn = "in1_%d" % i, "in1n_%d" % i
+            for j in range(nb * d // 2):
+                cur, curn = nl.xor_dual(cur, curn, "hi_%d" % i, "lo_%d" % i)
+            nl.gates[cur]["out"] = i
+            nl.outs.append((cur, i))
+            continue
+        cell = {"inv": nl.inv, "nand": lambda x: nl.nand(x, x),
+                "nandh": lambda x, i=i: nl.nand(x, "hi_%d" % i)}[kind]
         cur = "in1_%d" % i
         for j in range(nb * d):
-            nxt = nl.inv(cur) if kind == "inv" else nl.nand(cur, cur)
+            nxt = cell(cur)
             for _ in range(fan - 1):
-                nl.inv(cur) if kind == "inv" else nl.nand(cur, cur)
+                cell(cur)
             cur = nxt
         nl.gates[cur]["out"] = i
         nl.outs.append((cur, i))
@@ -647,7 +666,12 @@ def pivals_of(block, word, N=8):
         return crc_pivals(word)
     if block == "mul":
         return mul_pivals(N, word)
-    return {"in1_%d" % i: (word >> i) & 1 for i in range(8)}
+    v = {"in1_%d" % i: (word >> i) & 1 for i in range(8)}
+    for i in range(8):
+        v["hi_%d" % i] = 1
+        v["lo_%d" % i] = 0
+        v["in1n_%d" % i] = 1 - v["in1_%d" % i]
+    return v
 
 
 # ============================================================== decks
@@ -1206,7 +1230,7 @@ def build_block(block, N=8, group=None):
     elif block == "mul":
         nl = build_mul(N)
     elif block == "icn":
-        nl = build_mesh3_ic(d=N, kind="nand")
+        nl = build_mesh3_ic(d=N, kind=os.environ.get("MB_ICN_KIND", "nand"))
     else:
         nl = build_mesh3_ic()
     nd = insert_delays(nl)
@@ -1262,6 +1286,10 @@ def cmd_run(block, engine="vacask", N=8, group=None, nw=NW, tt=TT, tag=None, dle
             tag += "_rl"
         if block == "icn" and os.environ.get("MB_FANOUT", "1") != "1":
             tag += "_f%s" % os.environ["MB_FANOUT"]
+        if block == "icn" and os.environ.get("MB_ICN_KIND", "nand") != "nand":
+            tag += "_" + os.environ["MB_ICN_KIND"]
+        if os.environ.get("MB_WP", "1") != "1":
+            tag += "_wp%s" % os.environ["MB_WP"]
         if engine != "vacask":
             tag = engine + "_" + tag
     oj = os.path.join(HERE, "runs", tag, "OUT.json")

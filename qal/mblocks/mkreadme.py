@@ -41,7 +41,16 @@ P("2. **Load.** Fanout lanes (the same nand2(x,x) chain with f identical consume
 P("")
 P("The CRC (XOR trees, fanout <= 2) is the only block that computes correctly on the wave at 92 ps; it still misses the "
   "pre-registered B/C gates at one link (margin -218 mV at commit, overlap -18 ps, link 3) because its banks commit "
-  "20-40 ps later than the uniform lane (slot + 142..172 ps vs 123 ps) -- see the per-link tables. Honest reading: on this node "
+  "20-40 ps later than the uniform lane (slot + 142..172 ps vs 123 ps, growing ~9 ps per bank) -- see the per-link tables. "
+  "Per-signal extraction on a kept waveform (6 words): every HIGH output crosses the receiver's trip on time; the late ones are the "
+  "LOW outputs of second-level nands whose two inputs are both rail-tracking HIGHs pulled up through ONE pMOS each (the XOR's "
+  "first-level nands). Lane tests of that mechanism (table below): a nand2 chain with the other input held HIGH (one-pMOS pull-up, "
+  "own HIGH source per chain) PASSES at 92 ps with the lane's margin (340 vs 356 mV, commit slot+124) -- one-pMOS pull-up alone "
+  "is NOT the cause; the dual-rail XOR primitive itself as a lane PASSES (304 mV, commit slot+131, lag 62-86 ps vs 38-57) -- it "
+  "costs ~8 ps per bank; 2x pMOS does not buy it back (xorh_wp2 slot+126). The CRC's remaining ~12 ps and its per-bank drift are "
+  "UNEXPLAINED here (candidates: random-data vs alternating patterns -- a HIGH that lags the rail by 60-86 ps is still short of "
+  "full rail when the next bank samples it, weakening that bank's nMOS stacks and compounding; two data inputs per XOR vs one). "
+  "Honest reading: on this node "
   "the wave carries narrow-fanout, uniform-depth logic (hash/XOR/CRC class) at 1 result per 276 ps per lane; arithmetic with "
   "reconvergent fanout does not map without a load-aware synthesis step that was not pre-registered and is not measured here.")
 P("")
@@ -90,12 +99,13 @@ for name, b in R["blocks"].items():
 P("")
 P("### nand2 cell-class calibration lanes (mesh3 harness, 8 nand2(x,x) chains x 6 banks, P0-alt, VACASK)")
 P("")
-P("| d levels/bank (fanout = consumers per node) | T_third ps | period ps | A value | B eye (>=69.9 mV) | C handoff | worst margin mV | worst overlap ps | min eye ps | commit - slot (bank 2) ps | lag ps | verdict |")
+P("| d levels/bank (fanout = consumers per node, cell variant) | T_third ps | period ps | A value | B eye (>=69.9 mV) | C handoff | worst margin mV | worst overlap ps | min eye ps | commit - slot (bank 2) ps | lag ps | verdict |")
 P("|---|---|---|---|---|---|---|---|---|---|---|---|")
-for tag, l in sorted(R["nand2_lanes"].items(), key=lambda kv: (kv[1]["d"], int(kv[0].split("_f")[1]) if "_f" in kv[0] else 1, kv[1]["tt"])):
-    fo = int(tag.split("_f")[1]) if "_f" in tag else 1
-    P("| %d (fanout %d) | %g | %g | %s | %s | %s | %s | %s | %s | %s | %s..%s | **%s** |" % (
-        l["d"], fo, l["tt"], 3 * l["tt"], l["A"], l["B"], l["C"], f(l["worst_margin_mV"]), f(l["worst_overlap_ps"], 2),
+for tag, l in sorted(R["nand2_lanes"].items(), key=lambda kv: (kv[1]["d"], int(kv[0].split("_f")[1].split("_")[0]) if "_f" in kv[0] else 1, kv[0], kv[1]["tt"])):
+    fo = int(tag.split("_f")[1].split("_")[0]) if "_f" in tag else 1
+    var = ("nand(x,HIGH) one-pMOS" if "nandh" in tag else "dual-rail XOR primitive" if "xorh" in tag else "nand(x,x)") + (" 2x pMOS" if "_wp2" in tag else "")
+    P("| %d (fanout %d, %s) | %g | %g | %s | %s | %s | %s | %s | %s | %s | %s..%s | **%s** |" % (
+        l["d"], fo, var, l["tt"], 3 * l["tt"], l["A"], l["B"], l["C"], f(l["worst_margin_mV"]), f(l["worst_overlap_ps"], 2),
         f(l["eye_min_ps"]), f(l["commit_minus_slot_b2_ps"]), f(l["rising_lag_ps"]["min"]), f(l["rising_lag_ps"]["max"]),
         "PASS" if l["PASS"] else "FAIL"))
 P("")

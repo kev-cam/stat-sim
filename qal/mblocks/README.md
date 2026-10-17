@@ -12,8 +12,9 @@ Energy is REPORTED, never gated. Model language: tracking lag / eye / margin at 
 1. **Level order.** A bank's outputs are destroyed by the death of its own inputs one gate delay per level after the previous bank dies, while the next bank's consumers commit one gate delay per level after their rail rises; the two rates are equal, so a producer at level-in-bank j may feed a next-bank consumer at level-in-bank i only if j >= i. The committed alignment rule allowed (1->2) edges (78 in the 8x8 multiplier, 0 in the lane). Rule implemented (`MB_RETIME=last`, parity-aware inverter-chain retiming; multiplier 13 -> 18 banks, 658 -> 1366 delay inverters). It removed every value failure from the CRC at 92 ps (0/2910 boundary bits wrong, 6/6 words) but did not rescue the multiplier.
 2. **Load.** Fanout lanes (the same nand2(x,x) chain with f identical consumers per node, d = 2): f = 1 passes at 92 ps (356 mV), f = 2 passes with the margin halved (210 mV, overlap 16 ps, tracking lag 57 -> 85 ps), f = 4 FAILS at 92 and at 117 ps (lag 104-174 ps: the output never reaches the receiver's trip before the hold ends). The multiplier has 302 boundary signals driving 3-5 gate inputs (FA/HA outputs in the Dadda tree); the CRC has none above 2. The multiplier is extinct under both rules for this reason; it would need load-limited duplication (every node <= ~4 gate inputs) to be mapped at all.
 
-The CRC (XOR trees, fanout <= 2) is the only block that computes correctly on the wave at 92 ps; it still misses the pre-registered B/C gates at one link (margin -218 mV at commit, overlap -18 ps, link 3) because its banks commit 20-40 ps later than the uniform lane (slot + 142..172 ps vs 123 ps) -- see the per-link tables. Honest reading: on this node the wave carries narrow-fanout, uniform-depth logic (hash/XOR/CRC class) at 1 result per 276 ps per lane; arithmetic with reconvergent fanout does not map without a load-aware synthesis step that was not pre-registered and is not measured here.
+The CRC (XOR trees, fanout <= 2) is the only block that computes correctly on the wave at 92 ps; it still misses the pre-registered B/C gates at one link (margin -218 mV at commit, overlap -18 ps, link 3) because its banks commit 20-40 ps later than the uniform lane (slot + 142..172 ps vs 123 ps, growing ~9 ps per bank) -- see the per-link tables. Per-signal extraction on a kept waveform (6 words): every HIGH output crosses the receiver's trip on time; the late ones are the LOW outputs of second-level nands whose two inputs are both rail-tracking HIGHs pulled up through ONE pMOS each (the XOR's first-level nands). Lane tests of that mechanism (table below): a nand2 chain with the other input held HIGH (one-pMOS pull-up, own HIGH source per chain) PASSES at 92 ps with the lane's margin (340 vs 356 mV, commit slot+124) -- one-pMOS pull-up alone is NOT the cause; the dual-rail XOR primitive itself as a lane PASSES (304 mV, commit slot+131, lag 62-86 ps vs 38-57) -- it costs ~8 ps per bank; 2x pMOS does not buy it back (xorh_wp2 slot+126). The CRC's remaining ~12 ps and its per-bank drift are UNEXPLAINED here (candidates: random-data vs alternating patterns -- a HIGH that lags the rail by 60-86 ps is still short of full rail when the next bank samples it, weakening that bank's nMOS stacks and compounding; two data inputs per XOR vs one). Honest reading: on this node the wave carries narrow-fanout, uniform-depth logic (hash/XOR/CRC class) at 1 result per 276 ps per lane; arithmetic with reconvergent fanout does not map without a load-aware synthesis step that was not pre-registered and is not measured here.
 
+* **crc32_d2_tt92_rl_nw6** (last(level-order rule)): 1450 gates (1392 nand2 + 58 delay inverters), 5684 FETs, 6 banks; **FAIL** -- 1940/1940 boundary bits correct at every bank on every scored wave, final word == software reference on 4/4 words; worst commit margin -218.1 mV (budget 69.924), worst handoff overlap -17.95 ps, min link eye 79.6 ps, standing eye 96.33 ps, erosion ERODES_SLOW/SUSTAINS. Latency 572.4..597.0 ps (first input edge -> final word committed; 598.1 ps at the 69.924 mV gate), throughput **1 result / 276 ps = 3.623 G/s per lane** (a new word launched every period, 4/4 landed correct).
 * **crc32_d2_tt92_rl_nw8** (last(level-order rule)): 1450 gates (1392 nand2 + 58 delay inverters), 5684 FETs, 6 banks; **FAIL** -- 2910/2910 boundary bits correct at every bank on every scored wave, final word == software reference on 6/6 words; worst commit margin -218.1 mV (budget 69.924), worst handoff overlap -17.95 ps, min link eye 79.6 ps, standing eye 97.65 ps, erosion ERODES_SLOW/SUSTAINS. Latency 572.4..597.0 ps (first input edge -> final word committed; 598.1 ps at the 69.924 mV gate), throughput **1 result / 276 ps = 3.623 G/s per lane** (a new word launched every period, 6/6 landed correct).
 * **mul8x8_d2_tt92_rl_nw8** (last(level-order rule)): 2626 gates (1130 nand2 + 1366 delay inverters), 7512 FETs, 18 banks; **FAIL** -- 2962/3043 boundary bits correct at every bank on every scored wave, final word == software reference on 1/6 words; worst commit margin -595.1 mV (budget 69.924), worst handoff overlap -38.54 ps, min link eye 20.1 ps, standing eye 102.69 ps, erosion EXTINCT. Latency 1670.3..1670.3 ps (first input edge -> final word committed; 1672.4 ps at the 69.924 mV gate), throughput **1 result / 276 ps = 3.623 G/s per lane** (a new word launched every period, 1/6 landed correct).
 * **crc32_d2_tt92** (first(committed)): 1421 gates (1392 nand2 + 29 delay inverters), 5626 FETs, 6 banks; **FAIL** -- 10161/10177 boundary bits correct at every bank on every scored wave, final word == software reference on 22/22 words; worst commit margin -350.4 mV (budget 69.924), worst handoff overlap -30.11 ps, min link eye 28.7 ps, standing eye 86.72 ps, erosion ERODES/ERODES_SLOW/SUSTAINS. Latency 553.0..618.6 ps (first input edge -> final word committed; 622.3 ps at the 69.924 mV gate), throughput **1 result / 276 ps = 3.623 G/s per lane** (a new word launched every period, 22/22 landed correct).
@@ -29,28 +30,120 @@ Other T_third rows (committed rule, nw = 24): CRC d=2 at 117 ps: value PASS (0/1
 
 ### nand2 cell-class calibration lanes (mesh3 harness, 8 nand2(x,x) chains x 6 banks, P0-alt, VACASK)
 
-| d levels/bank (fanout = consumers per node) | T_third ps | period ps | A value | B eye (>=69.9 mV) | C handoff | worst margin mV | worst overlap ps | min eye ps | commit - slot (bank 2) ps | lag ps | verdict |
+| d levels/bank (fanout = consumers per node, cell variant) | T_third ps | period ps | A value | B eye (>=69.9 mV) | C handoff | worst margin mV | worst overlap ps | min eye ps | commit - slot (bank 2) ps | lag ps | verdict |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 (fanout 1) | 92 | 276 | True | False | False | -114.7 | -10.19 | 79.4 | 95.0 | 21.2..49.5 | **FAIL** |
-| 1 (fanout 1) | 105 | 315 | True | False | False | -244.8 | -41.83 | 77.4 | 106.6 | 22.0..55.6 | **FAIL** |
-| 1 (fanout 1) | 117 | 351 | False | False | False | -323.4 | -35.35 | 76.0 | 117.8 | 22.7..182.0 | **FAIL** |
-| 2 (fanout 1) | 92 | 276 | True | True | True | 356.1 | 24.07 | 113.7 | 123.4 | 38.3..56.8 | **PASS** |
-| 2 (fanout 1) | 105 | 315 | True | True | True | 458.0 | 34.34 | 136.4 | 133.7 | 37.4..57.8 | **PASS** |
-| 2 (fanout 1) | 117 | 351 | True | True | True | 552.7 | 46.08 | 157.5 | 140.6 | 36.8..59.1 | **PASS** |
-| 2 (fanout 2) | 92 | 276 | True | True | True | 210.2 | 16.15 | 100.7 | 131.6 | 64.4..88.3 | **PASS** |
-| 2 (fanout 2) | 117 | 351 | True | True | True | 429.4 | 37.77 | 145.7 | 150.9 | 49.5..84.9 | **PASS** |
-| 2 (fanout 4) | 92 | 276 | False | False | True | n/a | n/a | 108.9 | n/a | 103.3..103.9 | **FAIL** |
-| 2 (fanout 4) | 117 | 351 | False | False | True | 281.8 | 30.14 | 160.8 | 171.8 | 115.7..174.1 | **FAIL** |
-| 3 (fanout 1) | 92 | 276 | False | False | False | -1231.4 | -32.76 | 31.7 | 166.8 | 8.2..134.2 | **FAIL** |
-| 3 (fanout 1) | 105 | 315 | True | False | False | -237.4 | -18.72 | 92.6 | 165.9 | 9.1..127.8 | **FAIL** |
-| 3 (fanout 1) | 117 | 351 | True | True | True | 206.6 | 17.04 | 134.0 | 168.2 | 80.7..95.2 | **PASS** |
-| 3 (fanout 1) | 130 | 390 | True | True | True | 351.9 | 31.83 | 161.8 | 173.1 | 67.3..97.7 | **PASS** |
+| 1 (fanout 1, nand(x,x)) | 105 | 315 | True | False | False | -244.8 | -41.83 | 77.4 | 106.6 | 22.0..55.6 | **FAIL** |
+| 1 (fanout 1, nand(x,x)) | 117 | 351 | False | False | False | -323.4 | -35.35 | 76.0 | 117.8 | 22.7..182.0 | **FAIL** |
+| 1 (fanout 1, nand(x,x)) | 92 | 276 | True | False | False | -114.7 | -10.19 | 79.4 | 95.0 | 21.2..49.5 | **FAIL** |
+| 2 (fanout 1, nand(x,x)) | 105 | 315 | True | True | True | 458.0 | 34.34 | 136.4 | 133.7 | 37.4..57.8 | **PASS** |
+| 2 (fanout 1, nand(x,x)) | 117 | 351 | True | True | True | 552.7 | 46.08 | 157.5 | 140.6 | 36.8..59.1 | **PASS** |
+| 2 (fanout 1, nand(x,HIGH) one-pMOS) | 117 | 351 | True | True | True | 534.1 | 49.97 | 163.9 | 141.0 | 38.5..60.8 | **PASS** |
+| 2 (fanout 1, dual-rail XOR primitive) | 117 | 351 | True | True | True | 506.1 | 47.46 | 162.7 | 148.2 | 54.5..87.8 | **PASS** |
+| 2 (fanout 1, nand(x,x)) | 92 | 276 | True | True | True | 356.1 | 24.07 | 113.7 | 123.4 | 38.3..56.8 | **PASS** |
+| 2 (fanout 1, nand(x,HIGH) one-pMOS) | 92 | 276 | True | True | True | 339.7 | 28.11 | 120.7 | 124.2 | 39.7..56.3 | **PASS** |
+| 2 (fanout 1, nand(x,HIGH) one-pMOS 2x pMOS) | 92 | 276 | True | True | True | 260.2 | 28.36 | 116.2 | 119.2 | 23.8..55.4 | **PASS** |
+| 2 (fanout 1, nand(x,x) 2x pMOS) | 92 | 276 | True | True | True | 315.5 | 23.96 | 100.9 | 121.1 | 40.5..59.2 | **PASS** |
+| 2 (fanout 1, dual-rail XOR primitive) | 92 | 276 | True | True | True | 303.6 | 24.82 | 118.9 | 131.4 | 61.7..86.3 | **PASS** |
+| 2 (fanout 1, dual-rail XOR primitive 2x pMOS) | 92 | 276 | True | True | True | 324.8 | 25.68 | 115.0 | 125.8 | 52.8..79.0 | **PASS** |
+| 2 (fanout 2, nand(x,x)) | 117 | 351 | True | True | True | 429.4 | 37.77 | 145.7 | 150.9 | 49.5..84.9 | **PASS** |
+| 2 (fanout 2, nand(x,x)) | 92 | 276 | True | True | True | 210.2 | 16.15 | 100.7 | 131.6 | 64.4..88.3 | **PASS** |
+| 2 (fanout 4, nand(x,x)) | 117 | 351 | False | False | True | 281.8 | 30.14 | 160.8 | 171.8 | 115.7..174.1 | **FAIL** |
+| 2 (fanout 4, nand(x,x)) | 92 | 276 | False | False | True | n/a | n/a | 108.9 | n/a | 103.3..103.9 | **FAIL** |
+| 3 (fanout 1, nand(x,x)) | 105 | 315 | True | False | False | -237.4 | -18.72 | 92.6 | 165.9 | 9.1..127.8 | **FAIL** |
+| 3 (fanout 1, nand(x,x)) | 117 | 351 | True | True | True | 206.6 | 17.04 | 134.0 | 168.2 | 80.7..95.2 | **PASS** |
+| 3 (fanout 1, nand(x,x)) | 130 | 390 | True | True | True | 351.9 | 31.83 | 161.8 | 173.1 | 67.3..97.7 | **PASS** |
+| 3 (fanout 1, nand(x,x)) | 92 | 276 | False | False | False | -1231.4 | -32.76 | 31.7 | 166.8 | 8.2..134.2 | **FAIL** |
 
 Reading: the nand2 bank's commit instant moves ~+45 ps per added level; at 92 ps the receiver's rise third can absorb two levels, not three. d=1 fails on handoff (negative overlap at link 5: the input-death channel mesh3 pre-identified for shallow banks).
 
 CMOS comparator (same nand2/inv netlist, registers every D levels): period = D*t_level + t_reg with **t_level(nand2, 2 fF) = 83.54 ps @1.2 V (campaign comparator supply; inverter 52.51 reproduced) / 47.74 ps @1.65 V (iso-voltage, MEASURED here)**, t_reg(2 fF) = 315.378 ps DERIVED (lower bound). OpenSTA on the actual netlist (vendor liberty, real fanout) alongside.
 
 **Where the win lives:** results/s per lane (no register tax in the period: 276 ps vs D*t_level + t_reg) and end-to-end latency vs *registered* CMOS at every D (the single flop tax, 315 ps, is comparable to the wave's whole bank-to-bank step). It is NOT a per-level latency win against the bare unregistered chain at iso-voltage -- see the bare-chain rows. Per-bank initiation interval (276 ps) is never conflated with the wavefront level-rate (d levels per 92 ps).
+
+## Block crc32_d2_tt92_rl_nw6 (d=2, T_third=92 ps, last(level-order rule))
+
+Structure: 32 dual-rail nand2 XOR trees (24..34 terms each, leaves at XOR-depth D or D-1 only), 4 groups of 8 trees simulated separately (electrical union, PRE_REGISTERED). NB = 6 banks, logic nand-levels L = 12, 58 delay inverters (bank-alignment tax, real devices). Boundary signals scored per bank: {}.
+
+| link k (bank k -> k+1) | eye 0 mV min..max (ps) | commit_raw - slot (ps) | overlap min (ps) | margin at commit min (mV) | receiver |
+|---|---|---|---|---|---|
+| 1 | 100.7..101.3 | 142.2..142.7 | -0.21 | -1.8 | real (bank k+1 rail) |
+| 2 | 107.3..111.6 | 148.7..151.7 | 4.39 | 50.2 | real (bank k+1 rail) |
+| 3 | 83.1..89.7 | 155.3..161.7 | -17.95 | -218.1 | real (bank k+1 rail) |
+| 4 | 86.3..114.0 | 143.1..170.8 | 0.80 | 9.0 | real (bank k+1 rail) |
+| 5 | 79.6..111.4 | 133.1..165.5 | 16.09 | 220.7 | real (bank k+1 rail) |
+| 6 | 107.4..131.8 | 112.4..137.0 | n/a | n/a | DERIVED ideal next-phase rail |
+
+Rising-side tracking lag (last boundary HIGH 50% after own rail 50%): 9.4..91.7 ps. Latency per word (raw commit): 572.4..597.0 ps; at the 69.924 mV gate: 598.1 ps max.
+
+Per-bank rail books (REPORTED, not gated; offline trapezoid on the engine grid, mean over scored waves, SUMMED over the 4 groups):
+
+| bank | phase | Q_rise fC | Q_hold fC | Q_fall fC | E_rise fJ | E_hold fJ | E_fall fJ |
+|---|---|---|---|---|---|---|---|
+| 1 | A | 8261.7 | 1786.4 | -7872.9 | 7646.1 | 2947.6 | -6268.7 |
+| 2 | B | 3435.3 | 1942.6 | -3668.9 | 3358.1 | 3205.2 | -2869.6 |
+| 3 | C | 1808.5 | 965.0 | -2036.9 | 1788.8 | 1592.2 | -1594.0 |
+| 4 | A | 926.2 | 551.7 | -1010.3 | 908.8 | 910.3 | -796.1 |
+| 5 | B | 453.6 | 273.3 | -524.2 | 455.1 | 450.9 | -414.6 |
+| 6 | C | 137.4 | 78.0 | -133.3 | 139.8 | 128.8 | -103.9 |
+
+Net rail energy per result (sum of thirds over all banks, ideal-source convention, fall third recovers): **11484.8 fJ/result** (ideal mesh; the measured flat-top driver price of qal/meshdrv, 2.2x, applies on top). Delay inverters are inside these books.
+
+### CMOS comparison, crc32
+
+QAL: 3.623 G results/s per lane (period 276 ps), latency 597.0 ps (max over words), 6 banks.
+
+**Formula comparator, t_level = 83.54 ps (nand2_1.2V), t_reg = 315.378 ps** (corner: +100 ps clock uncertainty):
+
+| D | stages | period ps (corner) | results/s G (corner) | latency ps (corner) | QAL/CMOS throughput (corner) | CMOS/QAL latency |
+|---|---|---|---|---|---|---|
+| 3 | 4 | 566.0 (666.0) | 1.767 (1.501) | 2264.0 (2664.0) | 2.05x (2.41x) | 3.79x |
+| 6 | 2 | 816.6 (916.6) | 1.225 (1.091) | 1633.2 (1833.2) | 2.96x (3.32x) | 2.74x |
+| 9 | 2 | 1067.2 (1167.2) | 0.937 (0.857) | 2134.5 (2334.5) | 3.87x (4.23x) | 3.58x |
+| 12 | 1 | 1317.9 (1417.9) | 0.759 (0.705) | 1317.9 (1417.9) | 4.77x (5.14x) | 2.21x |
+
+Bare unregistered chain (the load-matched level comparator, no flop): L*t_level = **1002.5 ps**; bare-chain / QAL latency = **1.679x** (QAL is faster end-to-end than the bare chain).
+
+**Formula comparator, t_level = 47.74 ps (nand2_1.65V), t_reg = 315.378 ps** (corner: +100 ps clock uncertainty):
+
+| D | stages | period ps (corner) | results/s G (corner) | latency ps (corner) | QAL/CMOS throughput (corner) | CMOS/QAL latency |
+|---|---|---|---|---|---|---|
+| 3 | 4 | 458.6 (558.6) | 2.181 (1.790) | 1834.4 (2234.4) | 1.66x (2.02x) | 3.07x |
+| 6 | 2 | 601.8 (701.8) | 1.662 (1.425) | 1203.6 (1403.6) | 2.18x (2.54x) | 2.02x |
+| 9 | 2 | 745.0 (845.0) | 1.342 (1.183) | 1490.0 (1690.0) | 2.70x (3.06x) | 2.50x |
+| 12 | 1 | 888.2 (988.2) | 1.126 (1.012) | 888.2 (988.2) | 3.22x (3.58x) | 1.49x |
+
+Bare unregistered chain (the load-matched level comparator, no flop): L*t_level = **572.8 ps**; bare-chain / QAL latency = **0.960x** (QAL is slower end-to-end than the bare chain).
+
+**OpenSTA, liberty typ_1p20V_25C** (real fanout incl. head; head-free in parentheses = false-path from the input registers):
+
+| D | stages | min period ps (head-free) | results/s G | latency ps | QAL/CMOS throughput | CMOS/QAL latency |
+|---|---|---|---|---|---|---|
+| 3 | 4 | 953.2 (499.2) | 1.049 | 3812.8 | 3.45x | 6.39x |
+| 6 | 2 | 1100.5 (631.5) | 0.909 | 2201.0 | 3.99x | 3.69x |
+| 9 | 2 | 1253.0 (485.2) | 0.798 | 2506.0 | 4.54x | 4.20x |
+| 12 | 1 | 1297.8 (n/a) | 0.771 | 1297.8 | 4.70x | 2.17x |
+
+**OpenSTA, liberty typ_1p50V_25C** (real fanout incl. head; head-free in parentheses = false-path from the input registers):
+
+| D | stages | min period ps (head-free) | results/s G | latency ps | QAL/CMOS throughput | CMOS/QAL latency |
+|---|---|---|---|---|---|---|
+| 3 | 4 | 647.1 (327.5) | 1.545 | 2588.4 | 2.34x | 4.34x |
+| 6 | 2 | 741.8 (418.0) | 1.348 | 1483.6 | 2.69x | 2.49x |
+| 9 | 2 | 844.3 (318.9) | 1.184 | 1688.6 | 3.06x | 2.83x |
+| 12 | 1 | 874.6 (n/a) | 1.143 | 874.6 | 3.17x | 1.46x |
+
+**OpenSTA, liberty fast_1p65V_m40C** (real fanout incl. head; head-free in parentheses = false-path from the input registers):
+
+| D | stages | min period ps (head-free) | results/s G | latency ps | QAL/CMOS throughput | CMOS/QAL latency |
+|---|---|---|---|---|---|---|
+| 3 | 4 | 457.6 (230.0) | 2.185 | 1830.4 | 1.66x | 3.07x |
+| 6 | 2 | 531.3 (301.1) | 1.882 | 1062.6 | 1.93x | 1.78x |
+| 9 | 2 | 600.0 (226.4) | 1.667 | 1200.0 | 2.17x | 2.01x |
+| 12 | 1 | 627.1 (n/a) | 1.595 | 627.1 | 2.27x | 1.05x |
+
+### Engine agreement, crc32 (Xyce anchor = same deck, first 6 periods, waves n/a)
+
+Xyce anchor not available (see RESULTS.json other_runs).
 
 ## Block crc32_d2_tt92_rl_nw8 (d=2, T_third=92 ps, last(level-order rule))
 
