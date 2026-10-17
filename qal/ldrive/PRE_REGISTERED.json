@@ -1,0 +1,69 @@
+{
+ "campaign": "qal/ldrive STEP 1 -- current-source drive shapes that sustain the 3-phase mesh wave (trap_tt92_d3 design point, 6 banks, d=3)",
+ "written_before_first_deck": true,
+ "written_at": "2026-10-16T21:22:47.501274",
+ "everything_here_is_IDEAL": "current sources, 1.65 V DC clamp rail, VSWITCH clamps (RON 1 mOhm = committed RS), floor diode-switch. Every result is a BOUND on what an inductor-switched drive can do, not a buildable number.",
+ "baseline": {
+  "run": "qal/mesh3/runs/trap_tt92_d3 (commit 5b9d05b)",
+  "worst_margin_at_commit_mV": 509.67,
+  "worst_overlap_ps": 37.021,
+  "standing_eye_ps": 129.0,
+  "open_minus_srx_ps_links_2to5": [
+   24.789,
+   24.71,
+   25.047,
+   25.041
+  ],
+  "width_links": [
+   135.546,
+   129.26,
+   129.358,
+   129.022,
+   129.028,
+   123.666
+  ],
+  "instrument_check": "extract() of mesh3.py re-run on the parent's re-run .prn of the committed deck (scratchpad/ldrive/ref) must reproduce 509.67 mV / 37.021 ps / 129.0 ps and all link widths digit-for-digit BEFORE any ldrive row is scored"
+ },
+ "drive_model": {
+  "rise_third": "ideal constant current +I_r into the rail (0.5 ps edges), the natural output of an inductor",
+  "hold_third": "ideal clamp (VSWITCH RON=1 mOhm) to a 1.65 V DC rail; FIXED mode = engaged exactly on [tt,2tt] of the bank's slot; LATCHED mode = engaged when V(rail) first reaches 1.649 V inside the rise+hold window (comparator latch, tau 1 ps), released at 2tt; in LATCHED mode the current source stays on until that arrival (inductor-until-arrival), so under-drive shows as LATE arrival and over-drive as EARLY arrival",
+  "fall_third": "ideal constant current -I_f (0.5 ps edges); FIXED mode = floor switch to 0 V engaged on [3tt-2ps, 3tt]; LATCHED mode = floor engaged when V(rail) first reaches 1 mV, released at 3tt; a floor diode-switch (closes for V<-2 mV, the body-diode role) is present in ALL rows and labelled as such",
+  "everything_else": "committed deck VERBATIM (cells, loads, words, node names ph1..ph6, .print list, .tran 0.1p 1932p maxstep 0.25p, .options, QPH/EPH measures); VPHk kept as a 0 V ammeter in series so I(VPHk) sign and print columns are unchanged",
+  "metering": "per bank: t0-referenced 1F integrators of charge and energy from (a) the current source, (b) the 1.65 V clamp rail, (c) the floor; read by .measure FIND at third boundaries (T/R/H, waves 2-5) exactly as the committed QPH/EPH reads -- the split 'transferred by current source vs supplied by DC rail' is MEASURED, never inferred"
+ },
+ "rows": {
+  "FIXED_grid": "I_r x I_f = {1.3,1.57,1.9} x {1.3,1.6,2.0} mA (9 rows, full grid = diagonal + corners + mid-edges for the tolerance band)",
+  "LATCHED": "diagonal (1.3,1.3) (1.57,1.6) (1.9,2.0) (3 rows) -- the arrival-time-error rows",
+  "TWO_SLOPE": "FIXED clamp, I_f=1.6, rise = 0.86 mA for the first 46 ps then 2.29 mA for the last 46 ps (DERIVED from the measured 12-twelfth demand shape of banks 2-6, same total 144.9 fC as 1.575 mA x 92 ps) -- separates constant-current SHAPE from charge AMOUNT",
+  "P1": "the killing mixed-word pattern on the best FIXED row (center if it passes)"
+ },
+ "acceptance_PRE_REGISTERED": {
+  "A_value": "value-correct at every bank, every last-level output, waves 2,3,4 (committed extract value check, 144 checks)",
+  "B_eye": "margin at the commit sample >= 69.924 mV (3 sigma_total = 3 x 23.308 mV, the timer-less gate) on every link 1..5, waves 2-4",
+  "C_handoff": "overlap (die_k - commit_{k+1}) > 0 on every link 1..5, waves 2-4",
+  "PASS": "A and B and C (committed extract acceptance, unchanged code)",
+  "reported_not_gated": [
+   "standing eye (asymptotic 0 mV width) vs 129.0 ps",
+   "establishment per link (open_minus_srx, commit_raw) vs baseline",
+   "arrival-time error at the top clamp and at the floor",
+   "pre-boundary rail deficit/overshoot in FIXED mode",
+   "Q and E per third from source / clamp rail / floor",
+   "energy totals (BOUND)"
+  ]
+ },
+ "pre_stated_expectations": {
+  "shape_question": "Does the constant-current rise (dV/dt = I/C_eff(V), fast early, slow late) DELAY establishment vs the linear ramp?",
+  "answer_pre_stated": "NO. Expectation: establishment EARLIER or equal. The measured demand at constant dV/dt grows 0.78 -> 2.85 mA across the rise third (banks 2-6), i.e. C_eff(V) grows ~3.6x from the foot to the top; with constant I_r = 1.57 mA the initial dV/dt is ~2x the linear ramp, so the rail crosses the trip band (0.6-0.85 V) earlier, and data outputs (which track their own rail) are established earlier; the LAST 0.3 V is slower (~0.55x ramp) which delays only the final margin build-up, not the commit. Prediction for the center FIXED row: open_minus_srx on links 2-5 smaller than the baseline 24.7-25.0 ps by 5-15 ps; standing eye WIDER than 129.0 ps (front earlier by 5-15 ps, back later by 15-30 ps because the constant-current FALL is slow at the top: the upper-half charge ~105 fC at 1.6 mA takes ~66 ps vs 44 ps linear to bring the sender rail through the receiver trip ~0.86 V); overlap larger than 37.0 ps; margin at commit still >= gate; value PASS.",
+  "fixed_mode_mismatch_DERIVED": "dV at the clamp boundary = (I_r*92ps - Q_rise)/C_eff,top with C_eff,top ~ 159 fF (2.85 mA / 17.93 V/ns, DERIVED): I_r=1.3 -> ~-0.16 V deficit yanked up at tt; I_r=1.9 -> ~+0.19 V overshoot (~1.84 V peak) yanked down at tt. Both value-correct (sampling instant is mid-hold, 46 ps after the yank).",
+  "latched_arrival_error_DERIVED": "t_arr - 92 ps = Q_rise/I_r - 92 with Q_rise ~145 fC: 1.3 mA -> +19.5 ps LATE; 1.57 -> -0.3 ps; 1.9 -> -15.7 ps EARLY. The late row eats 19.5 ps of hold: receiver commit shifts late, overlap drops toward ~17-27 ps; predicted still PASS (margin at the mid-hold sample still > gate). Floor arrival: I_f=1.3 -> ~+20 ps late (never reaches 0 before 3tt on banks with Q_fall > 120 fC: the next rise starts from a 0.2-0.6 V residual, LATCHED mode); 2.0 -> ~-20 ps early (floor diode conducts the surplus).",
+  "fall_fixed_mode": "I_f=1.3 -> residual 0.2-0.6 V at the floor yank (3tt-2ps) on banks with Q_fall 130-151 fC; I_f=2.0 -> rail reaches 0 at ~70 ps into the fall, floor diode conducts; both harmless to value (the trough is after the receiver sample).",
+  "tolerance_band_pre_stated": "FIXED mode: all 9 grid rows PASS A+B+C (the boundary clamp fixes the end state; +-20% current mismatch is a <=0.2 V boundary yank invisible at the mid-hold sample). LATCHED mode: PASS at 1.57 and 1.9; 1.3 at risk (19.5 ps late) but predicted PASS. TWO_SLOPE: PASS, with establishment later than constant-current (slow foot) and close to the linear-ramp baseline (within 5 ps of 24.7-25.0 ps).",
+  "energy_BOUND_pre_stated": "center row per bank per cycle (banks 2-6): source rise energy 125-150 fJ (constant I, concave V), clamp rail 1.65 V x Q_hold ~ 190-210 fJ (+ the mismatch correction), fall energy absorbed by the sink 100-130 fJ (what an inductor would recover, upper bound). Compared with the committed 240.3 fJ/bank/cycle ledger (149.5+206.1-115.3) only as a bound; energy REPORTED never gated."
+ },
+ "falsifiers": [
+  "if the center FIXED row's establishment (open_minus_srx) is LATER than the baseline by >3 ps the shape answer is FALSIFIED",
+  "if any FIXED grid row fails A/B/C the +-20% tolerance claim is FALSIFIED",
+  "if the LATCHED 1.3 row fails C the 'late arrival survives' claim is FALSIFIED",
+  "if the standing eye is NARROWER than 129.0 ps on the center row the slow-top-fall prediction is FALSIFIED"
+ ]
+}
