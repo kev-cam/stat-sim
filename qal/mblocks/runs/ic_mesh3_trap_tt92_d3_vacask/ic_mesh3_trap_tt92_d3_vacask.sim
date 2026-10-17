@@ -1,0 +1,482 @@
+qal/mblocks ic_mesh3_trap_tt92_d3_vacask
+load "/usr/local/lib/vacask/mod/psp103v4.osdi"
+load "/usr/local/lib/vacask/mod/capacitor.osdi"
+load "/usr/local/lib/vacask/mod/spice/resistor.osdi"
+include "/usr/local/src/stat-sim/qal/p620a/vacask_port/sg13g2_models.inc"
+model v vsource
+model rmod sp_resistor
+model cmod capacitor
+subckt sg13_lv_nmos (d g s b)
+  parameters w=0.15u l=0.13u
+  m1 (d g s b) sg13g2_nmos w=w l=l
+ends
+subckt sg13_lv_pmos (d g s b)
+  parameters w=0.15u l=0.13u
+  m1 (d g s b) sg13g2_pmos w=w l=l
+ends
+vph1 (phs1 0) v type="pwl" wave=[0,0, 9.2e-11,1.65, 1.84e-10,1.65, 2.76e-10,0, 3.68e-10,1.65, 4.6e-10,1.65, 5.52e-10,0, 6.44e-10,1.65, 7.36e-10,1.65, 8.28e-10,0, 9.2e-10,1.65, 1.012e-09,1.65, 1.104e-09,0, 1.196e-09,1.65, 1.288e-09,1.65, 1.38e-09,0, 1.472e-09,1.65, 1.564e-09,1.65, 1.656e-09,0, 1.748e-09,1.65, 1.84e-09,1.65, 1.932e-09,0, 2.024e-09,1.65, 2.116e-09,1.65, 2.208e-09,0, 2.3e-09,1.65, 2.392e-09,1.65, 2.484e-09,0, 2.576e-09,1.65, 2.668e-09,1.65]
+rs1 (phs1 ph1) rmod r=0.001
+vmg1 (gn1 0) v dc=0
+vph2 (phs2 0) v type="pwl" wave=[0,1.65, 9.2e-11,0, 1.84e-10,1.65, 2.76e-10,1.65, 3.68e-10,0, 4.6e-10,1.65, 5.52e-10,1.65, 6.44e-10,0, 7.36e-10,1.65, 8.28e-10,1.65, 9.2e-10,0, 1.012e-09,1.65, 1.104e-09,1.65, 1.196e-09,0, 1.288e-09,1.65, 1.38e-09,1.65, 1.472e-09,0, 1.564e-09,1.65, 1.656e-09,1.65, 1.748e-09,0, 1.84e-09,1.65, 1.932e-09,1.65, 2.024e-09,0, 2.116e-09,1.65, 2.208e-09,1.65, 2.3e-09,0, 2.392e-09,1.65, 2.484e-09,1.65, 2.576e-09,0, 2.668e-09,1.65, 2.76e-09,1.65]
+rs2 (phs2 ph2) rmod r=0.001
+vmg2 (gn2 0) v dc=0
+vph3 (phs3 0) v type="pwl" wave=[0,1.65, 9.2e-11,1.65, 1.84e-10,0, 2.76e-10,1.65, 3.68e-10,1.65, 4.6e-10,0, 5.52e-10,1.65, 6.44e-10,1.65, 7.36e-10,0, 8.28e-10,1.65, 9.2e-10,1.65, 1.012e-09,0, 1.104e-09,1.65, 1.196e-09,1.65, 1.288e-09,0, 1.38e-09,1.65, 1.472e-09,1.65, 1.564e-09,0, 1.656e-09,1.65, 1.748e-09,1.65, 1.84e-09,0, 1.932e-09,1.65, 2.024e-09,1.65, 2.116e-09,0, 2.208e-09,1.65, 2.3e-09,1.65, 2.392e-09,0, 2.484e-09,1.65, 2.576e-09,1.65, 2.668e-09,0, 2.76e-09,1.65, 2.852e-09,1.65]
+rs3 (phs3 ph3) rmod r=0.001
+vmg3 (gn3 0) v dc=0
+vph4 (phs4 0) v type="pwl" wave=[0,0, 9.2e-11,1.65, 1.84e-10,1.65, 2.76e-10,0, 3.68e-10,1.65, 4.6e-10,1.65, 5.52e-10,0, 6.44e-10,1.65, 7.36e-10,1.65, 8.28e-10,0, 9.2e-10,1.65, 1.012e-09,1.65, 1.104e-09,0, 1.196e-09,1.65, 1.288e-09,1.65, 1.38e-09,0, 1.472e-09,1.65, 1.564e-09,1.65, 1.656e-09,0, 1.748e-09,1.65, 1.84e-09,1.65, 1.932e-09,0, 2.024e-09,1.65, 2.116e-09,1.65, 2.208e-09,0, 2.3e-09,1.65, 2.392e-09,1.65, 2.484e-09,0, 2.576e-09,1.65, 2.668e-09,1.65]
+rs4 (phs4 ph4) rmod r=0.001
+vmg4 (gn4 0) v dc=0
+vph5 (phs5 0) v type="pwl" wave=[0,1.65, 9.2e-11,0, 1.84e-10,1.65, 2.76e-10,1.65, 3.68e-10,0, 4.6e-10,1.65, 5.52e-10,1.65, 6.44e-10,0, 7.36e-10,1.65, 8.28e-10,1.65, 9.2e-10,0, 1.012e-09,1.65, 1.104e-09,1.65, 1.196e-09,0, 1.288e-09,1.65, 1.38e-09,1.65, 1.472e-09,0, 1.564e-09,1.65, 1.656e-09,1.65, 1.748e-09,0, 1.84e-09,1.65, 1.932e-09,1.65, 2.024e-09,0, 2.116e-09,1.65, 2.208e-09,1.65, 2.3e-09,0, 2.392e-09,1.65, 2.484e-09,1.65, 2.576e-09,0, 2.668e-09,1.65, 2.76e-09,1.65]
+rs5 (phs5 ph5) rmod r=0.001
+vmg5 (gn5 0) v dc=0
+vph6 (phs6 0) v type="pwl" wave=[0,1.65, 9.2e-11,1.65, 1.84e-10,0, 2.76e-10,1.65, 3.68e-10,1.65, 4.6e-10,0, 5.52e-10,1.65, 6.44e-10,1.65, 7.36e-10,0, 8.28e-10,1.65, 9.2e-10,1.65, 1.012e-09,0, 1.104e-09,1.65, 1.196e-09,1.65, 1.288e-09,0, 1.38e-09,1.65, 1.472e-09,1.65, 1.564e-09,0, 1.656e-09,1.65, 1.748e-09,1.65, 1.84e-09,0, 1.932e-09,1.65, 2.024e-09,1.65, 2.116e-09,0, 2.208e-09,1.65, 2.3e-09,1.65, 2.392e-09,0, 2.484e-09,1.65, 2.576e-09,1.65, 2.668e-09,0, 2.76e-09,1.65, 2.852e-09,1.65]
+rs6 (phs6 ph6) rmod r=0.001
+vmg6 (gn6 0) v dc=0
+vi_in1_0 (in1_0 0) v type="pwl" wave=[0,1.65, 2.75e-10,1.65, 2.77e-10,0, 5.51e-10,0, 5.53e-10,1.65, 8.27e-10,1.65, 8.29e-10,0, 1.103e-09,0, 1.105e-09,1.65, 1.379e-09,1.65, 1.381e-09,0, 1.655e-09,0, 1.657e-09,1.65]
+vi_in1_1 (in1_1 0) v type="pwl" wave=[0,1.65, 2.75e-10,1.65, 2.77e-10,0, 5.51e-10,0, 5.53e-10,1.65, 8.27e-10,1.65, 8.29e-10,0, 1.103e-09,0, 1.105e-09,1.65, 1.379e-09,1.65, 1.381e-09,0, 1.655e-09,0, 1.657e-09,1.65]
+vi_in1_2 (in1_2 0) v type="pwl" wave=[0,1.65, 2.75e-10,1.65, 2.77e-10,0, 5.51e-10,0, 5.53e-10,1.65, 8.27e-10,1.65, 8.29e-10,0, 1.103e-09,0, 1.105e-09,1.65, 1.379e-09,1.65, 1.381e-09,0, 1.655e-09,0, 1.657e-09,1.65]
+vi_in1_3 (in1_3 0) v type="pwl" wave=[0,0, 2.75e-10,0, 2.77e-10,1.65, 5.51e-10,1.65, 5.53e-10,0, 8.27e-10,0, 8.29e-10,1.65, 1.103e-09,1.65, 1.105e-09,0, 1.379e-09,0, 1.381e-09,1.65, 1.655e-09,1.65, 1.657e-09,0]
+vi_in1_4 (in1_4 0) v type="pwl" wave=[0,1.65, 2.75e-10,1.65, 2.77e-10,0, 5.51e-10,0, 5.53e-10,1.65, 8.27e-10,1.65, 8.29e-10,0, 1.103e-09,0, 1.105e-09,1.65, 1.379e-09,1.65, 1.381e-09,0, 1.655e-09,0, 1.657e-09,1.65]
+vi_in1_5 (in1_5 0) v type="pwl" wave=[0,0, 2.75e-10,0, 2.77e-10,1.65, 5.51e-10,1.65, 5.53e-10,0, 8.27e-10,0, 8.29e-10,1.65, 1.103e-09,1.65, 1.105e-09,0, 1.379e-09,0, 1.381e-09,1.65, 1.655e-09,1.65, 1.657e-09,0]
+vi_in1_6 (in1_6 0) v type="pwl" wave=[0,0, 2.75e-10,0, 2.77e-10,1.65, 5.51e-10,1.65, 5.53e-10,0, 8.27e-10,0, 8.29e-10,1.65, 1.103e-09,1.65, 1.105e-09,0, 1.379e-09,0, 1.381e-09,1.65, 1.655e-09,1.65, 1.657e-09,0]
+vi_in1_7 (in1_7 0) v type="pwl" wave=[0,1.65, 2.75e-10,1.65, 2.77e-10,0, 5.51e-10,0, 5.53e-10,1.65, 8.27e-10,1.65, 8.29e-10,0, 1.103e-09,0, 1.105e-09,1.65, 1.379e-09,1.65, 1.381e-09,0, 1.655e-09,0, 1.657e-09,1.65]
+xp_i1 (i1 in1_0 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xn_i1 (i1 in1_0 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_i1 (i1 gn1) cmod c=2f
+xp_i109 (i109 in1_6 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xn_i109 (i109 in1_6 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_i109 (i109 gn1) cmod c=2f
+xp_i127 (i127 in1_7 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xn_i127 (i127 in1_7 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_i127 (i127 gn1) cmod c=2f
+xp_i19 (i19 in1_1 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xn_i19 (i19 in1_1 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_i19 (i19 gn1) cmod c=2f
+xp_i37 (i37 in1_2 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xn_i37 (i37 in1_2 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_i37 (i37 gn1) cmod c=2f
+xp_i55 (i55 in1_3 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xn_i55 (i55 in1_3 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_i55 (i55 gn1) cmod c=2f
+xp_i73 (i73 in1_4 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xn_i73 (i73 in1_4 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_i73 (i73 gn1) cmod c=2f
+xp_i91 (i91 in1_5 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xn_i91 (i91 in1_5 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_i91 (i91 gn1) cmod c=2f
+xp_i110 (i110 i109 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xn_i110 (i110 i109 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_i110 (i110 gn1) cmod c=2f
+xp_i128 (i128 i127 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xn_i128 (i128 i127 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_i128 (i128 gn1) cmod c=2f
+xp_i2 (i2 i1 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xn_i2 (i2 i1 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_i2 (i2 gn1) cmod c=2f
+xp_i20 (i20 i19 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xn_i20 (i20 i19 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_i20 (i20 gn1) cmod c=2f
+xp_i38 (i38 i37 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xn_i38 (i38 i37 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_i38 (i38 gn1) cmod c=2f
+xp_i56 (i56 i55 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xn_i56 (i56 i55 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_i56 (i56 gn1) cmod c=2f
+xp_i74 (i74 i73 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xn_i74 (i74 i73 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_i74 (i74 gn1) cmod c=2f
+xp_i92 (i92 i91 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xn_i92 (i92 i91 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_i92 (i92 gn1) cmod c=2f
+xp_i111 (i111 i110 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xn_i111 (i111 i110 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_i111 (i111 gn1) cmod c=2f
+xp_i129 (i129 i128 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xn_i129 (i129 i128 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_i129 (i129 gn1) cmod c=2f
+xp_i21 (i21 i20 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xn_i21 (i21 i20 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_i21 (i21 gn1) cmod c=2f
+xp_i3 (i3 i2 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xn_i3 (i3 i2 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_i3 (i3 gn1) cmod c=2f
+xp_i39 (i39 i38 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xn_i39 (i39 i38 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_i39 (i39 gn1) cmod c=2f
+xp_i57 (i57 i56 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xn_i57 (i57 i56 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_i57 (i57 gn1) cmod c=2f
+xp_i75 (i75 i74 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xn_i75 (i75 i74 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_i75 (i75 gn1) cmod c=2f
+xp_i93 (i93 i92 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xn_i93 (i93 i92 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_i93 (i93 gn1) cmod c=2f
+xp_i112 (i112 i111 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xn_i112 (i112 i111 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_i112 (i112 gn2) cmod c=2f
+xp_i130 (i130 i129 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xn_i130 (i130 i129 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_i130 (i130 gn2) cmod c=2f
+xp_i22 (i22 i21 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xn_i22 (i22 i21 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_i22 (i22 gn2) cmod c=2f
+xp_i4 (i4 i3 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xn_i4 (i4 i3 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_i4 (i4 gn2) cmod c=2f
+xp_i40 (i40 i39 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xn_i40 (i40 i39 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_i40 (i40 gn2) cmod c=2f
+xp_i58 (i58 i57 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xn_i58 (i58 i57 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_i58 (i58 gn2) cmod c=2f
+xp_i76 (i76 i75 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xn_i76 (i76 i75 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_i76 (i76 gn2) cmod c=2f
+xp_i94 (i94 i93 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xn_i94 (i94 i93 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_i94 (i94 gn2) cmod c=2f
+xp_i113 (i113 i112 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xn_i113 (i113 i112 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_i113 (i113 gn2) cmod c=2f
+xp_i131 (i131 i130 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xn_i131 (i131 i130 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_i131 (i131 gn2) cmod c=2f
+xp_i23 (i23 i22 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xn_i23 (i23 i22 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_i23 (i23 gn2) cmod c=2f
+xp_i41 (i41 i40 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xn_i41 (i41 i40 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_i41 (i41 gn2) cmod c=2f
+xp_i5 (i5 i4 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xn_i5 (i5 i4 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_i5 (i5 gn2) cmod c=2f
+xp_i59 (i59 i58 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xn_i59 (i59 i58 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_i59 (i59 gn2) cmod c=2f
+xp_i77 (i77 i76 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xn_i77 (i77 i76 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_i77 (i77 gn2) cmod c=2f
+xp_i95 (i95 i94 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xn_i95 (i95 i94 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_i95 (i95 gn2) cmod c=2f
+xp_i114 (i114 i113 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xn_i114 (i114 i113 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_i114 (i114 gn2) cmod c=2f
+xp_i132 (i132 i131 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xn_i132 (i132 i131 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_i132 (i132 gn2) cmod c=2f
+xp_i24 (i24 i23 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xn_i24 (i24 i23 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_i24 (i24 gn2) cmod c=2f
+xp_i42 (i42 i41 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xn_i42 (i42 i41 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_i42 (i42 gn2) cmod c=2f
+xp_i6 (i6 i5 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xn_i6 (i6 i5 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_i6 (i6 gn2) cmod c=2f
+xp_i60 (i60 i59 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xn_i60 (i60 i59 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_i60 (i60 gn2) cmod c=2f
+xp_i78 (i78 i77 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xn_i78 (i78 i77 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_i78 (i78 gn2) cmod c=2f
+xp_i96 (i96 i95 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xn_i96 (i96 i95 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_i96 (i96 gn2) cmod c=2f
+xp_i115 (i115 i114 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xn_i115 (i115 i114 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_i115 (i115 gn3) cmod c=2f
+xp_i133 (i133 i132 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xn_i133 (i133 i132 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_i133 (i133 gn3) cmod c=2f
+xp_i25 (i25 i24 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xn_i25 (i25 i24 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_i25 (i25 gn3) cmod c=2f
+xp_i43 (i43 i42 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xn_i43 (i43 i42 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_i43 (i43 gn3) cmod c=2f
+xp_i61 (i61 i60 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xn_i61 (i61 i60 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_i61 (i61 gn3) cmod c=2f
+xp_i7 (i7 i6 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xn_i7 (i7 i6 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_i7 (i7 gn3) cmod c=2f
+xp_i79 (i79 i78 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xn_i79 (i79 i78 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_i79 (i79 gn3) cmod c=2f
+xp_i97 (i97 i96 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xn_i97 (i97 i96 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_i97 (i97 gn3) cmod c=2f
+xp_i116 (i116 i115 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xn_i116 (i116 i115 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_i116 (i116 gn3) cmod c=2f
+xp_i134 (i134 i133 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xn_i134 (i134 i133 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_i134 (i134 gn3) cmod c=2f
+xp_i26 (i26 i25 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xn_i26 (i26 i25 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_i26 (i26 gn3) cmod c=2f
+xp_i44 (i44 i43 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xn_i44 (i44 i43 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_i44 (i44 gn3) cmod c=2f
+xp_i62 (i62 i61 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xn_i62 (i62 i61 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_i62 (i62 gn3) cmod c=2f
+xp_i8 (i8 i7 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xn_i8 (i8 i7 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_i8 (i8 gn3) cmod c=2f
+xp_i80 (i80 i79 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xn_i80 (i80 i79 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_i80 (i80 gn3) cmod c=2f
+xp_i98 (i98 i97 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xn_i98 (i98 i97 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_i98 (i98 gn3) cmod c=2f
+xp_i117 (i117 i116 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xn_i117 (i117 i116 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_i117 (i117 gn3) cmod c=2f
+xp_i135 (i135 i134 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xn_i135 (i135 i134 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_i135 (i135 gn3) cmod c=2f
+xp_i27 (i27 i26 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xn_i27 (i27 i26 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_i27 (i27 gn3) cmod c=2f
+xp_i45 (i45 i44 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xn_i45 (i45 i44 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_i45 (i45 gn3) cmod c=2f
+xp_i63 (i63 i62 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xn_i63 (i63 i62 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_i63 (i63 gn3) cmod c=2f
+xp_i81 (i81 i80 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xn_i81 (i81 i80 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_i81 (i81 gn3) cmod c=2f
+xp_i9 (i9 i8 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xn_i9 (i9 i8 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_i9 (i9 gn3) cmod c=2f
+xp_i99 (i99 i98 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xn_i99 (i99 i98 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_i99 (i99 gn3) cmod c=2f
+xp_i10 (i10 i9 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xn_i10 (i10 i9 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_i10 (i10 gn4) cmod c=2f
+xp_i100 (i100 i99 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xn_i100 (i100 i99 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_i100 (i100 gn4) cmod c=2f
+xp_i118 (i118 i117 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xn_i118 (i118 i117 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_i118 (i118 gn4) cmod c=2f
+xp_i136 (i136 i135 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xn_i136 (i136 i135 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_i136 (i136 gn4) cmod c=2f
+xp_i28 (i28 i27 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xn_i28 (i28 i27 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_i28 (i28 gn4) cmod c=2f
+xp_i46 (i46 i45 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xn_i46 (i46 i45 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_i46 (i46 gn4) cmod c=2f
+xp_i64 (i64 i63 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xn_i64 (i64 i63 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_i64 (i64 gn4) cmod c=2f
+xp_i82 (i82 i81 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xn_i82 (i82 i81 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_i82 (i82 gn4) cmod c=2f
+xp_i101 (i101 i100 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xn_i101 (i101 i100 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_i101 (i101 gn4) cmod c=2f
+xp_i11 (i11 i10 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xn_i11 (i11 i10 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_i11 (i11 gn4) cmod c=2f
+xp_i119 (i119 i118 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xn_i119 (i119 i118 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_i119 (i119 gn4) cmod c=2f
+xp_i137 (i137 i136 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xn_i137 (i137 i136 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_i137 (i137 gn4) cmod c=2f
+xp_i29 (i29 i28 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xn_i29 (i29 i28 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_i29 (i29 gn4) cmod c=2f
+xp_i47 (i47 i46 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xn_i47 (i47 i46 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_i47 (i47 gn4) cmod c=2f
+xp_i65 (i65 i64 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xn_i65 (i65 i64 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_i65 (i65 gn4) cmod c=2f
+xp_i83 (i83 i82 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xn_i83 (i83 i82 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_i83 (i83 gn4) cmod c=2f
+xp_i102 (i102 i101 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xn_i102 (i102 i101 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_i102 (i102 gn4) cmod c=2f
+xp_i12 (i12 i11 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xn_i12 (i12 i11 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_i12 (i12 gn4) cmod c=2f
+xp_i120 (i120 i119 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xn_i120 (i120 i119 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_i120 (i120 gn4) cmod c=2f
+xp_i138 (i138 i137 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xn_i138 (i138 i137 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_i138 (i138 gn4) cmod c=2f
+xp_i30 (i30 i29 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xn_i30 (i30 i29 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_i30 (i30 gn4) cmod c=2f
+xp_i48 (i48 i47 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xn_i48 (i48 i47 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_i48 (i48 gn4) cmod c=2f
+xp_i66 (i66 i65 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xn_i66 (i66 i65 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_i66 (i66 gn4) cmod c=2f
+xp_i84 (i84 i83 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xn_i84 (i84 i83 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_i84 (i84 gn4) cmod c=2f
+xp_i103 (i103 i102 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xn_i103 (i103 i102 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_i103 (i103 gn5) cmod c=2f
+xp_i121 (i121 i120 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xn_i121 (i121 i120 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_i121 (i121 gn5) cmod c=2f
+xp_i13 (i13 i12 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xn_i13 (i13 i12 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_i13 (i13 gn5) cmod c=2f
+xp_i139 (i139 i138 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xn_i139 (i139 i138 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_i139 (i139 gn5) cmod c=2f
+xp_i31 (i31 i30 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xn_i31 (i31 i30 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_i31 (i31 gn5) cmod c=2f
+xp_i49 (i49 i48 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xn_i49 (i49 i48 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_i49 (i49 gn5) cmod c=2f
+xp_i67 (i67 i66 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xn_i67 (i67 i66 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_i67 (i67 gn5) cmod c=2f
+xp_i85 (i85 i84 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xn_i85 (i85 i84 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_i85 (i85 gn5) cmod c=2f
+xp_i104 (i104 i103 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xn_i104 (i104 i103 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_i104 (i104 gn5) cmod c=2f
+xp_i122 (i122 i121 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xn_i122 (i122 i121 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_i122 (i122 gn5) cmod c=2f
+xp_i14 (i14 i13 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xn_i14 (i14 i13 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_i14 (i14 gn5) cmod c=2f
+xp_i140 (i140 i139 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xn_i140 (i140 i139 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_i140 (i140 gn5) cmod c=2f
+xp_i32 (i32 i31 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xn_i32 (i32 i31 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_i32 (i32 gn5) cmod c=2f
+xp_i50 (i50 i49 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xn_i50 (i50 i49 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_i50 (i50 gn5) cmod c=2f
+xp_i68 (i68 i67 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xn_i68 (i68 i67 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_i68 (i68 gn5) cmod c=2f
+xp_i86 (i86 i85 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xn_i86 (i86 i85 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_i86 (i86 gn5) cmod c=2f
+xp_i105 (i105 i104 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xn_i105 (i105 i104 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_i105 (i105 gn5) cmod c=2f
+xp_i123 (i123 i122 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xn_i123 (i123 i122 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_i123 (i123 gn5) cmod c=2f
+xp_i141 (i141 i140 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xn_i141 (i141 i140 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_i141 (i141 gn5) cmod c=2f
+xp_i15 (i15 i14 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xn_i15 (i15 i14 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_i15 (i15 gn5) cmod c=2f
+xp_i33 (i33 i32 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xn_i33 (i33 i32 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_i33 (i33 gn5) cmod c=2f
+xp_i51 (i51 i50 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xn_i51 (i51 i50 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_i51 (i51 gn5) cmod c=2f
+xp_i69 (i69 i68 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xn_i69 (i69 i68 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_i69 (i69 gn5) cmod c=2f
+xp_i87 (i87 i86 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xn_i87 (i87 i86 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_i87 (i87 gn5) cmod c=2f
+xp_i106 (i106 i105 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xn_i106 (i106 i105 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_i106 (i106 gn6) cmod c=2f
+xp_i124 (i124 i123 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xn_i124 (i124 i123 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_i124 (i124 gn6) cmod c=2f
+xp_i142 (i142 i141 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xn_i142 (i142 i141 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_i142 (i142 gn6) cmod c=2f
+xp_i16 (i16 i15 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xn_i16 (i16 i15 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_i16 (i16 gn6) cmod c=2f
+xp_i34 (i34 i33 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xn_i34 (i34 i33 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_i34 (i34 gn6) cmod c=2f
+xp_i52 (i52 i51 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xn_i52 (i52 i51 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_i52 (i52 gn6) cmod c=2f
+xp_i70 (i70 i69 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xn_i70 (i70 i69 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_i70 (i70 gn6) cmod c=2f
+xp_i88 (i88 i87 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xn_i88 (i88 i87 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_i88 (i88 gn6) cmod c=2f
+xp_i107 (i107 i106 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xn_i107 (i107 i106 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_i107 (i107 gn6) cmod c=2f
+xp_i125 (i125 i124 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xn_i125 (i125 i124 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_i125 (i125 gn6) cmod c=2f
+xp_i143 (i143 i142 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xn_i143 (i143 i142 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_i143 (i143 gn6) cmod c=2f
+xp_i17 (i17 i16 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xn_i17 (i17 i16 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_i17 (i17 gn6) cmod c=2f
+xp_i35 (i35 i34 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xn_i35 (i35 i34 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_i35 (i35 gn6) cmod c=2f
+xp_i53 (i53 i52 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xn_i53 (i53 i52 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_i53 (i53 gn6) cmod c=2f
+xp_i71 (i71 i70 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xn_i71 (i71 i70 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_i71 (i71 gn6) cmod c=2f
+xp_i89 (i89 i88 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xn_i89 (i89 i88 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_i89 (i89 gn6) cmod c=2f
+xp_i108 (i108 i107 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xn_i108 (i108 i107 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_i108 (i108 gn6) cmod c=2f
+xp_i126 (i126 i125 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xn_i126 (i126 i125 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_i126 (i126 gn6) cmod c=2f
+xp_i144 (i144 i143 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xn_i144 (i144 i143 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_i144 (i144 gn6) cmod c=2f
+xp_i18 (i18 i17 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xn_i18 (i18 i17 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_i18 (i18 gn6) cmod c=2f
+xp_i36 (i36 i35 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xn_i36 (i36 i35 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_i36 (i36 gn6) cmod c=2f
+xp_i54 (i54 i53 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xn_i54 (i54 i53 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_i54 (i54 gn6) cmod c=2f
+xp_i72 (i72 i71 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xn_i72 (i72 i71 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_i72 (i72 gn6) cmod c=2f
+xp_i90 (i90 i89 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xn_i90 (i90 i89 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_i90 (i90 gn6) cmod c=2f
+control
+  options tran_method="gear" reltol=1e-5
+  save v(ph1) v(ph2) v(ph3) v(ph4) v(ph5) v(ph6) i(vph1) i(vph2) i(vph3) i(vph4) i(vph5) i(vph6) i(vmg1) i(vmg2) i(vmg3) i(vmg4) i(vmg5) i(vmg6) v(i111) v(i129)
+  save v(i21) v(i3) v(i39) v(i57) v(i75) v(i93) v(i114) v(i132) v(i24) v(i42) v(i6) v(i60) v(i78) v(i96) v(i117) v(i135) v(i27) v(i45) v(i63) v(i81)
+  save v(i9) v(i99) v(i102) v(i12) v(i120) v(i138) v(i30) v(i48) v(i66) v(i84) v(i105) v(i123) v(i141) v(i15) v(i33) v(i51) v(i69) v(i87) v(i18) v(i36)
+  save v(i54) v(i72) v(i90) v(i108) v(i126) v(i144)
+  analysis tr tran step=0.1p stop=2442p maxstep=0.25p icmode="op"
+endc

@@ -1,0 +1,166 @@
+* nand2 level chain vdd=1.2
+.hdl "/usr/local/share/xyce/verilog-a/psp103/psp103.va"
+.include "/usr/local/src/kestrel/sim/models/sg13g2_psp103_tt.lib"
+.include "/usr/local/src/stat-sim/qal/sg13lv_compat.sp"
+.OPTIONS TIMEINT METHOD=GEAR RELTOL=1e-6 ABSTOL=1e-15 CHGTOL=1e-17
+VSUP sup 0 1.2
+VIN din 0 PWL(0 0 100p 0 102p 1.2)
+XPA_a1 a1 din sup sup sg13_lv_pmos w=1.12u l=0.13u
+XPB_a1 a1 din sup sup sg13_lv_pmos w=1.12u l=0.13u
+XNA_a1 a1 din m_a1 0 sg13_lv_nmos w=0.74u l=0.13u
+XNB_a1 m_a1 din 0 0 sg13_lv_nmos w=0.74u l=0.13u
+CL_a1 a1 0 2f
+XPA_a2 a2 a1 sup sup sg13_lv_pmos w=1.12u l=0.13u
+XPB_a2 a2 a1 sup sup sg13_lv_pmos w=1.12u l=0.13u
+XNA_a2 a2 a1 m_a2 0 sg13_lv_nmos w=0.74u l=0.13u
+XNB_a2 m_a2 a1 0 0 sg13_lv_nmos w=0.74u l=0.13u
+CL_a2 a2 0 2f
+XPA_a3 a3 a2 sup sup sg13_lv_pmos w=1.12u l=0.13u
+XPB_a3 a3 a2 sup sup sg13_lv_pmos w=1.12u l=0.13u
+XNA_a3 a3 a2 m_a3 0 sg13_lv_nmos w=0.74u l=0.13u
+XNB_a3 m_a3 a2 0 0 sg13_lv_nmos w=0.74u l=0.13u
+CL_a3 a3 0 2f
+XPA_a4 a4 a3 sup sup sg13_lv_pmos w=1.12u l=0.13u
+XPB_a4 a4 a3 sup sup sg13_lv_pmos w=1.12u l=0.13u
+XNA_a4 a4 a3 m_a4 0 sg13_lv_nmos w=0.74u l=0.13u
+XNB_a4 m_a4 a3 0 0 sg13_lv_nmos w=0.74u l=0.13u
+CL_a4 a4 0 2f
+XPA_a5 a5 a4 sup sup sg13_lv_pmos w=1.12u l=0.13u
+XPB_a5 a5 a4 sup sup sg13_lv_pmos w=1.12u l=0.13u
+XNA_a5 a5 a4 m_a5 0 sg13_lv_nmos w=0.74u l=0.13u
+XNB_a5 m_a5 a4 0 0 sg13_lv_nmos w=0.74u l=0.13u
+CL_a5 a5 0 2f
+XPA_a6 a6 a5 sup sup sg13_lv_pmos w=1.12u l=0.13u
+XPB_a6 a6 a5 sup sup sg13_lv_pmos w=1.12u l=0.13u
+XNA_a6 a6 a5 m_a6 0 sg13_lv_nmos w=0.74u l=0.13u
+XNB_a6 m_a6 a5 0 0 sg13_lv_nmos w=0.74u l=0.13u
+CL_a6 a6 0 2f
+XPA_a7 a7 a6 sup sup sg13_lv_pmos w=1.12u l=0.13u
+XPB_a7 a7 a6 sup sup sg13_lv_pmos w=1.12u l=0.13u
+XNA_a7 a7 a6 m_a7 0 sg13_lv_nmos w=0.74u l=0.13u
+XNB_a7 m_a7 a6 0 0 sg13_lv_nmos w=0.74u l=0.13u
+CL_a7 a7 0 2f
+XPA_a8 a8 a7 sup sup sg13_lv_pmos w=1.12u l=0.13u
+XPB_a8 a8 a7 sup sup sg13_lv_pmos w=1.12u l=0.13u
+XNA_a8 a8 a7 m_a8 0 sg13_lv_nmos w=0.74u l=0.13u
+XNB_a8 m_a8 a7 0 0 sg13_lv_nmos w=0.74u l=0.13u
+CL_a8 a8 0 2f
+XPA_a9 a9 a8 sup sup sg13_lv_pmos w=1.12u l=0.13u
+XPB_a9 a9 a8 sup sup sg13_lv_pmos w=1.12u l=0.13u
+XNA_a9 a9 a8 m_a9 0 sg13_lv_nmos w=0.74u l=0.13u
+XNB_a9 m_a9 a8 0 0 sg13_lv_nmos w=0.74u l=0.13u
+CL_a9 a9 0 2f
+XPA_a10 a10 a9 sup sup sg13_lv_pmos w=1.12u l=0.13u
+XPB_a10 a10 a9 sup sup sg13_lv_pmos w=1.12u l=0.13u
+XNA_a10 a10 a9 m_a10 0 sg13_lv_nmos w=0.74u l=0.13u
+XNB_a10 m_a10 a9 0 0 sg13_lv_nmos w=0.74u l=0.13u
+CL_a10 a10 0 2f
+XPA_a11 a11 a10 sup sup sg13_lv_pmos w=1.12u l=0.13u
+XPB_a11 a11 a10 sup sup sg13_lv_pmos w=1.12u l=0.13u
+XNA_a11 a11 a10 m_a11 0 sg13_lv_nmos w=0.74u l=0.13u
+XNB_a11 m_a11 a10 0 0 sg13_lv_nmos w=0.74u l=0.13u
+CL_a11 a11 0 2f
+XPA_a12 a12 a11 sup sup sg13_lv_pmos w=1.12u l=0.13u
+XPB_a12 a12 a11 sup sup sg13_lv_pmos w=1.12u l=0.13u
+XNA_a12 a12 a11 m_a12 0 sg13_lv_nmos w=0.74u l=0.13u
+XNB_a12 m_a12 a11 0 0 sg13_lv_nmos w=0.74u l=0.13u
+CL_a12 a12 0 2f
+XPA_b1 b1 din sup sup sg13_lv_pmos w=1.12u l=0.13u
+XPB_b1 b1 sup sup sup sg13_lv_pmos w=1.12u l=0.13u
+XNA_b1 b1 din m_b1 0 sg13_lv_nmos w=0.74u l=0.13u
+XNB_b1 m_b1 sup 0 0 sg13_lv_nmos w=0.74u l=0.13u
+CL_b1 b1 0 2f
+XPA_b2 b2 b1 sup sup sg13_lv_pmos w=1.12u l=0.13u
+XPB_b2 b2 sup sup sup sg13_lv_pmos w=1.12u l=0.13u
+XNA_b2 b2 b1 m_b2 0 sg13_lv_nmos w=0.74u l=0.13u
+XNB_b2 m_b2 sup 0 0 sg13_lv_nmos w=0.74u l=0.13u
+CL_b2 b2 0 2f
+XPA_b3 b3 b2 sup sup sg13_lv_pmos w=1.12u l=0.13u
+XPB_b3 b3 sup sup sup sg13_lv_pmos w=1.12u l=0.13u
+XNA_b3 b3 b2 m_b3 0 sg13_lv_nmos w=0.74u l=0.13u
+XNB_b3 m_b3 sup 0 0 sg13_lv_nmos w=0.74u l=0.13u
+CL_b3 b3 0 2f
+XPA_b4 b4 b3 sup sup sg13_lv_pmos w=1.12u l=0.13u
+XPB_b4 b4 sup sup sup sg13_lv_pmos w=1.12u l=0.13u
+XNA_b4 b4 b3 m_b4 0 sg13_lv_nmos w=0.74u l=0.13u
+XNB_b4 m_b4 sup 0 0 sg13_lv_nmos w=0.74u l=0.13u
+CL_b4 b4 0 2f
+XPA_b5 b5 b4 sup sup sg13_lv_pmos w=1.12u l=0.13u
+XPB_b5 b5 sup sup sup sg13_lv_pmos w=1.12u l=0.13u
+XNA_b5 b5 b4 m_b5 0 sg13_lv_nmos w=0.74u l=0.13u
+XNB_b5 m_b5 sup 0 0 sg13_lv_nmos w=0.74u l=0.13u
+CL_b5 b5 0 2f
+XPA_b6 b6 b5 sup sup sg13_lv_pmos w=1.12u l=0.13u
+XPB_b6 b6 sup sup sup sg13_lv_pmos w=1.12u l=0.13u
+XNA_b6 b6 b5 m_b6 0 sg13_lv_nmos w=0.74u l=0.13u
+XNB_b6 m_b6 sup 0 0 sg13_lv_nmos w=0.74u l=0.13u
+CL_b6 b6 0 2f
+XPA_b7 b7 b6 sup sup sg13_lv_pmos w=1.12u l=0.13u
+XPB_b7 b7 sup sup sup sg13_lv_pmos w=1.12u l=0.13u
+XNA_b7 b7 b6 m_b7 0 sg13_lv_nmos w=0.74u l=0.13u
+XNB_b7 m_b7 sup 0 0 sg13_lv_nmos w=0.74u l=0.13u
+CL_b7 b7 0 2f
+XPA_b8 b8 b7 sup sup sg13_lv_pmos w=1.12u l=0.13u
+XPB_b8 b8 sup sup sup sg13_lv_pmos w=1.12u l=0.13u
+XNA_b8 b8 b7 m_b8 0 sg13_lv_nmos w=0.74u l=0.13u
+XNB_b8 m_b8 sup 0 0 sg13_lv_nmos w=0.74u l=0.13u
+CL_b8 b8 0 2f
+XPA_b9 b9 b8 sup sup sg13_lv_pmos w=1.12u l=0.13u
+XPB_b9 b9 sup sup sup sg13_lv_pmos w=1.12u l=0.13u
+XNA_b9 b9 b8 m_b9 0 sg13_lv_nmos w=0.74u l=0.13u
+XNB_b9 m_b9 sup 0 0 sg13_lv_nmos w=0.74u l=0.13u
+CL_b9 b9 0 2f
+XPA_b10 b10 b9 sup sup sg13_lv_pmos w=1.12u l=0.13u
+XPB_b10 b10 sup sup sup sg13_lv_pmos w=1.12u l=0.13u
+XNA_b10 b10 b9 m_b10 0 sg13_lv_nmos w=0.74u l=0.13u
+XNB_b10 m_b10 sup 0 0 sg13_lv_nmos w=0.74u l=0.13u
+CL_b10 b10 0 2f
+XPA_b11 b11 b10 sup sup sg13_lv_pmos w=1.12u l=0.13u
+XPB_b11 b11 sup sup sup sg13_lv_pmos w=1.12u l=0.13u
+XNA_b11 b11 b10 m_b11 0 sg13_lv_nmos w=0.74u l=0.13u
+XNB_b11 m_b11 sup 0 0 sg13_lv_nmos w=0.74u l=0.13u
+CL_b11 b11 0 2f
+XPA_b12 b12 b11 sup sup sg13_lv_pmos w=1.12u l=0.13u
+XPB_b12 b12 sup sup sup sg13_lv_pmos w=1.12u l=0.13u
+XNA_b12 b12 b11 m_b12 0 sg13_lv_nmos w=0.74u l=0.13u
+XNB_b12 m_b12 sup 0 0 sg13_lv_nmos w=0.74u l=0.13u
+CL_b12 b12 0 2f
+XP_i1 i1 din sup sup sg13_lv_pmos w=1.12u l=0.13u
+XN_i1 i1 din 0 0 sg13_lv_nmos w=0.74u l=0.13u
+CL_i1 i1 0 2f
+XP_i2 i2 i1 sup sup sg13_lv_pmos w=1.12u l=0.13u
+XN_i2 i2 i1 0 0 sg13_lv_nmos w=0.74u l=0.13u
+CL_i2 i2 0 2f
+XP_i3 i3 i2 sup sup sg13_lv_pmos w=1.12u l=0.13u
+XN_i3 i3 i2 0 0 sg13_lv_nmos w=0.74u l=0.13u
+CL_i3 i3 0 2f
+XP_i4 i4 i3 sup sup sg13_lv_pmos w=1.12u l=0.13u
+XN_i4 i4 i3 0 0 sg13_lv_nmos w=0.74u l=0.13u
+CL_i4 i4 0 2f
+XP_i5 i5 i4 sup sup sg13_lv_pmos w=1.12u l=0.13u
+XN_i5 i5 i4 0 0 sg13_lv_nmos w=0.74u l=0.13u
+CL_i5 i5 0 2f
+XP_i6 i6 i5 sup sup sg13_lv_pmos w=1.12u l=0.13u
+XN_i6 i6 i5 0 0 sg13_lv_nmos w=0.74u l=0.13u
+CL_i6 i6 0 2f
+XP_i7 i7 i6 sup sup sg13_lv_pmos w=1.12u l=0.13u
+XN_i7 i7 i6 0 0 sg13_lv_nmos w=0.74u l=0.13u
+CL_i7 i7 0 2f
+XP_i8 i8 i7 sup sup sg13_lv_pmos w=1.12u l=0.13u
+XN_i8 i8 i7 0 0 sg13_lv_nmos w=0.74u l=0.13u
+CL_i8 i8 0 2f
+XP_i9 i9 i8 sup sup sg13_lv_pmos w=1.12u l=0.13u
+XN_i9 i9 i8 0 0 sg13_lv_nmos w=0.74u l=0.13u
+CL_i9 i9 0 2f
+XP_i10 i10 i9 sup sup sg13_lv_pmos w=1.12u l=0.13u
+XN_i10 i10 i9 0 0 sg13_lv_nmos w=0.74u l=0.13u
+CL_i10 i10 0 2f
+XP_i11 i11 i10 sup sup sg13_lv_pmos w=1.12u l=0.13u
+XN_i11 i11 i10 0 0 sg13_lv_nmos w=0.74u l=0.13u
+CL_i11 i11 0 2f
+XP_i12 i12 i11 sup sup sg13_lv_pmos w=1.12u l=0.13u
+XN_i12 i12 i11 0 0 sg13_lv_nmos w=0.74u l=0.13u
+CL_i12 i12 0 2f
+.tran 0.1p 1500p 0 0.25p
+.print tran V(a1) V(a2) V(a3) V(a4) V(a5) V(a6) V(a7) V(a8) V(a9) V(a10) V(a11) V(a12) V(b1) V(b2) V(b3) V(b4) V(b5) V(b6) V(b7) V(b8) V(b9) V(b10) V(b11) V(b12) V(i1) V(i2) V(i3) V(i4) V(i5) V(i6) V(i7) V(i8) V(i9) V(i10) V(i11) V(i12)
+.end

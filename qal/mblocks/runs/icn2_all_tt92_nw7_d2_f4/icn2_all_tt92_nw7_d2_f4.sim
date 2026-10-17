@@ -1,0 +1,1970 @@
+qal/mblocks icn2_all_tt92_nw7_d2_f4
+load "/usr/local/lib/vacask/mod/psp103v4.osdi"
+load "/usr/local/lib/vacask/mod/capacitor.osdi"
+load "/usr/local/lib/vacask/mod/spice/resistor.osdi"
+include "/usr/local/src/stat-sim/qal/p620a/vacask_port/sg13g2_models.inc"
+model v vsource
+model rmod sp_resistor
+model cmod capacitor
+subckt sg13_lv_nmos (d g s b)
+  parameters w=0.15u l=0.13u
+  m1 (d g s b) sg13g2_nmos w=w l=l
+ends
+subckt sg13_lv_pmos (d g s b)
+  parameters w=0.15u l=0.13u
+  m1 (d g s b) sg13g2_pmos w=w l=l
+ends
+vph1 (phs1 0) v type="pwl" wave=[0,0, 9.2e-11,1.65, 1.84e-10,1.65, 2.76e-10,0, 3.68e-10,1.65, 4.6e-10,1.65, 5.52e-10,0, 6.44e-10,1.65, 7.36e-10,1.65, 8.28e-10,0, 9.2e-10,1.65, 1.012e-09,1.65, 1.104e-09,0, 1.196e-09,1.65, 1.288e-09,1.65, 1.38e-09,0, 1.472e-09,1.65, 1.564e-09,1.65, 1.656e-09,0, 1.748e-09,1.65, 1.84e-09,1.65, 1.932e-09,0, 2.024e-09,1.65, 2.116e-09,1.65, 2.208e-09,0, 2.3e-09,1.65, 2.392e-09,1.65, 2.484e-09,0, 2.576e-09,1.65, 2.668e-09,1.65]
+rs1 (phs1 ph1) rmod r=0.001
+vmg1 (gn1 0) v dc=0
+vph2 (phs2 0) v type="pwl" wave=[0,1.65, 9.2e-11,0, 1.84e-10,1.65, 2.76e-10,1.65, 3.68e-10,0, 4.6e-10,1.65, 5.52e-10,1.65, 6.44e-10,0, 7.36e-10,1.65, 8.28e-10,1.65, 9.2e-10,0, 1.012e-09,1.65, 1.104e-09,1.65, 1.196e-09,0, 1.288e-09,1.65, 1.38e-09,1.65, 1.472e-09,0, 1.564e-09,1.65, 1.656e-09,1.65, 1.748e-09,0, 1.84e-09,1.65, 1.932e-09,1.65, 2.024e-09,0, 2.116e-09,1.65, 2.208e-09,1.65, 2.3e-09,0, 2.392e-09,1.65, 2.484e-09,1.65, 2.576e-09,0, 2.668e-09,1.65, 2.76e-09,1.65]
+rs2 (phs2 ph2) rmod r=0.001
+vmg2 (gn2 0) v dc=0
+vph3 (phs3 0) v type="pwl" wave=[0,1.65, 9.2e-11,1.65, 1.84e-10,0, 2.76e-10,1.65, 3.68e-10,1.65, 4.6e-10,0, 5.52e-10,1.65, 6.44e-10,1.65, 7.36e-10,0, 8.28e-10,1.65, 9.2e-10,1.65, 1.012e-09,0, 1.104e-09,1.65, 1.196e-09,1.65, 1.288e-09,0, 1.38e-09,1.65, 1.472e-09,1.65, 1.564e-09,0, 1.656e-09,1.65, 1.748e-09,1.65, 1.84e-09,0, 1.932e-09,1.65, 2.024e-09,1.65, 2.116e-09,0, 2.208e-09,1.65, 2.3e-09,1.65, 2.392e-09,0, 2.484e-09,1.65, 2.576e-09,1.65, 2.668e-09,0, 2.76e-09,1.65, 2.852e-09,1.65]
+rs3 (phs3 ph3) rmod r=0.001
+vmg3 (gn3 0) v dc=0
+vph4 (phs4 0) v type="pwl" wave=[0,0, 9.2e-11,1.65, 1.84e-10,1.65, 2.76e-10,0, 3.68e-10,1.65, 4.6e-10,1.65, 5.52e-10,0, 6.44e-10,1.65, 7.36e-10,1.65, 8.28e-10,0, 9.2e-10,1.65, 1.012e-09,1.65, 1.104e-09,0, 1.196e-09,1.65, 1.288e-09,1.65, 1.38e-09,0, 1.472e-09,1.65, 1.564e-09,1.65, 1.656e-09,0, 1.748e-09,1.65, 1.84e-09,1.65, 1.932e-09,0, 2.024e-09,1.65, 2.116e-09,1.65, 2.208e-09,0, 2.3e-09,1.65, 2.392e-09,1.65, 2.484e-09,0, 2.576e-09,1.65, 2.668e-09,1.65]
+rs4 (phs4 ph4) rmod r=0.001
+vmg4 (gn4 0) v dc=0
+vph5 (phs5 0) v type="pwl" wave=[0,1.65, 9.2e-11,0, 1.84e-10,1.65, 2.76e-10,1.65, 3.68e-10,0, 4.6e-10,1.65, 5.52e-10,1.65, 6.44e-10,0, 7.36e-10,1.65, 8.28e-10,1.65, 9.2e-10,0, 1.012e-09,1.65, 1.104e-09,1.65, 1.196e-09,0, 1.288e-09,1.65, 1.38e-09,1.65, 1.472e-09,0, 1.564e-09,1.65, 1.656e-09,1.65, 1.748e-09,0, 1.84e-09,1.65, 1.932e-09,1.65, 2.024e-09,0, 2.116e-09,1.65, 2.208e-09,1.65, 2.3e-09,0, 2.392e-09,1.65, 2.484e-09,1.65, 2.576e-09,0, 2.668e-09,1.65, 2.76e-09,1.65]
+rs5 (phs5 ph5) rmod r=0.001
+vmg5 (gn5 0) v dc=0
+vph6 (phs6 0) v type="pwl" wave=[0,1.65, 9.2e-11,1.65, 1.84e-10,0, 2.76e-10,1.65, 3.68e-10,1.65, 4.6e-10,0, 5.52e-10,1.65, 6.44e-10,1.65, 7.36e-10,0, 8.28e-10,1.65, 9.2e-10,1.65, 1.012e-09,0, 1.104e-09,1.65, 1.196e-09,1.65, 1.288e-09,0, 1.38e-09,1.65, 1.472e-09,1.65, 1.564e-09,0, 1.656e-09,1.65, 1.748e-09,1.65, 1.84e-09,0, 1.932e-09,1.65, 2.024e-09,1.65, 2.116e-09,0, 2.208e-09,1.65, 2.3e-09,1.65, 2.392e-09,0, 2.484e-09,1.65, 2.576e-09,1.65, 2.668e-09,0, 2.76e-09,1.65, 2.852e-09,1.65]
+rs6 (phs6 ph6) rmod r=0.001
+vmg6 (gn6 0) v dc=0
+vi_in1_0 (in1_0 0) v type="pwl" wave=[0,1.65, 2.75e-10,1.65, 2.77e-10,0, 5.51e-10,0, 5.53e-10,1.65, 8.27e-10,1.65, 8.29e-10,0, 1.103e-09,0, 1.105e-09,1.65, 1.379e-09,1.65, 1.381e-09,0, 1.655e-09,0, 1.657e-09,1.65]
+vi_in1_1 (in1_1 0) v type="pwl" wave=[0,1.65, 2.75e-10,1.65, 2.77e-10,0, 5.51e-10,0, 5.53e-10,1.65, 8.27e-10,1.65, 8.29e-10,0, 1.103e-09,0, 1.105e-09,1.65, 1.379e-09,1.65, 1.381e-09,0, 1.655e-09,0, 1.657e-09,1.65]
+vi_in1_2 (in1_2 0) v type="pwl" wave=[0,1.65, 2.75e-10,1.65, 2.77e-10,0, 5.51e-10,0, 5.53e-10,1.65, 8.27e-10,1.65, 8.29e-10,0, 1.103e-09,0, 1.105e-09,1.65, 1.379e-09,1.65, 1.381e-09,0, 1.655e-09,0, 1.657e-09,1.65]
+vi_in1_3 (in1_3 0) v type="pwl" wave=[0,0, 2.75e-10,0, 2.77e-10,1.65, 5.51e-10,1.65, 5.53e-10,0, 8.27e-10,0, 8.29e-10,1.65, 1.103e-09,1.65, 1.105e-09,0, 1.379e-09,0, 1.381e-09,1.65, 1.655e-09,1.65, 1.657e-09,0]
+vi_in1_4 (in1_4 0) v type="pwl" wave=[0,1.65, 2.75e-10,1.65, 2.77e-10,0, 5.51e-10,0, 5.53e-10,1.65, 8.27e-10,1.65, 8.29e-10,0, 1.103e-09,0, 1.105e-09,1.65, 1.379e-09,1.65, 1.381e-09,0, 1.655e-09,0, 1.657e-09,1.65]
+vi_in1_5 (in1_5 0) v type="pwl" wave=[0,0, 2.75e-10,0, 2.77e-10,1.65, 5.51e-10,1.65, 5.53e-10,0, 8.27e-10,0, 8.29e-10,1.65, 1.103e-09,1.65, 1.105e-09,0, 1.379e-09,0, 1.381e-09,1.65, 1.655e-09,1.65, 1.657e-09,0]
+vi_in1_6 (in1_6 0) v type="pwl" wave=[0,0, 2.75e-10,0, 2.77e-10,1.65, 5.51e-10,1.65, 5.53e-10,0, 8.27e-10,0, 8.29e-10,1.65, 1.103e-09,1.65, 1.105e-09,0, 1.379e-09,0, 1.381e-09,1.65, 1.655e-09,1.65, 1.657e-09,0]
+vi_in1_7 (in1_7 0) v type="pwl" wave=[0,1.65, 2.75e-10,1.65, 2.77e-10,0, 5.51e-10,0, 5.53e-10,1.65, 8.27e-10,1.65, 8.29e-10,0, 1.103e-09,0, 1.105e-09,1.65, 1.379e-09,1.65, 1.381e-09,0, 1.655e-09,0, 1.657e-09,1.65]
+xpa_n1 (n1 in1_0 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n1 (n1 in1_0 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n1 (n1 in1_0 m_n1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n1 (m_n1 in1_0 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n1 (n1 gn1) cmod c=2f
+xpa_n100 (n100 in1_2 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n100 (n100 in1_2 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n100 (n100 in1_2 m_n100 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n100 (m_n100 in1_2 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n100 (n100 gn1) cmod c=2f
+xpa_n145 (n145 in1_3 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n145 (n145 in1_3 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n145 (n145 in1_3 m_n145 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n145 (m_n145 in1_3 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n145 (n145 gn1) cmod c=2f
+xpa_n146 (n146 in1_3 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n146 (n146 in1_3 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n146 (n146 in1_3 m_n146 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n146 (m_n146 in1_3 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n146 (n146 gn1) cmod c=2f
+xpa_n147 (n147 in1_3 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n147 (n147 in1_3 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n147 (n147 in1_3 m_n147 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n147 (m_n147 in1_3 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n147 (n147 gn1) cmod c=2f
+xpa_n148 (n148 in1_3 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n148 (n148 in1_3 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n148 (n148 in1_3 m_n148 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n148 (m_n148 in1_3 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n148 (n148 gn1) cmod c=2f
+xpa_n193 (n193 in1_4 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n193 (n193 in1_4 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n193 (n193 in1_4 m_n193 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n193 (m_n193 in1_4 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n193 (n193 gn1) cmod c=2f
+xpa_n194 (n194 in1_4 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n194 (n194 in1_4 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n194 (n194 in1_4 m_n194 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n194 (m_n194 in1_4 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n194 (n194 gn1) cmod c=2f
+xpa_n195 (n195 in1_4 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n195 (n195 in1_4 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n195 (n195 in1_4 m_n195 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n195 (m_n195 in1_4 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n195 (n195 gn1) cmod c=2f
+xpa_n196 (n196 in1_4 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n196 (n196 in1_4 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n196 (n196 in1_4 m_n196 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n196 (m_n196 in1_4 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n196 (n196 gn1) cmod c=2f
+xpa_n2 (n2 in1_0 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n2 (n2 in1_0 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n2 (n2 in1_0 m_n2 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n2 (m_n2 in1_0 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n2 (n2 gn1) cmod c=2f
+xpa_n241 (n241 in1_5 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n241 (n241 in1_5 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n241 (n241 in1_5 m_n241 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n241 (m_n241 in1_5 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n241 (n241 gn1) cmod c=2f
+xpa_n242 (n242 in1_5 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n242 (n242 in1_5 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n242 (n242 in1_5 m_n242 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n242 (m_n242 in1_5 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n242 (n242 gn1) cmod c=2f
+xpa_n243 (n243 in1_5 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n243 (n243 in1_5 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n243 (n243 in1_5 m_n243 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n243 (m_n243 in1_5 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n243 (n243 gn1) cmod c=2f
+xpa_n244 (n244 in1_5 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n244 (n244 in1_5 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n244 (n244 in1_5 m_n244 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n244 (m_n244 in1_5 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n244 (n244 gn1) cmod c=2f
+xpa_n289 (n289 in1_6 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n289 (n289 in1_6 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n289 (n289 in1_6 m_n289 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n289 (m_n289 in1_6 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n289 (n289 gn1) cmod c=2f
+xpa_n290 (n290 in1_6 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n290 (n290 in1_6 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n290 (n290 in1_6 m_n290 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n290 (m_n290 in1_6 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n290 (n290 gn1) cmod c=2f
+xpa_n291 (n291 in1_6 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n291 (n291 in1_6 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n291 (n291 in1_6 m_n291 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n291 (m_n291 in1_6 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n291 (n291 gn1) cmod c=2f
+xpa_n292 (n292 in1_6 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n292 (n292 in1_6 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n292 (n292 in1_6 m_n292 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n292 (m_n292 in1_6 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n292 (n292 gn1) cmod c=2f
+xpa_n3 (n3 in1_0 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n3 (n3 in1_0 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n3 (n3 in1_0 m_n3 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n3 (m_n3 in1_0 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n3 (n3 gn1) cmod c=2f
+xpa_n337 (n337 in1_7 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n337 (n337 in1_7 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n337 (n337 in1_7 m_n337 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n337 (m_n337 in1_7 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n337 (n337 gn1) cmod c=2f
+xpa_n338 (n338 in1_7 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n338 (n338 in1_7 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n338 (n338 in1_7 m_n338 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n338 (m_n338 in1_7 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n338 (n338 gn1) cmod c=2f
+xpa_n339 (n339 in1_7 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n339 (n339 in1_7 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n339 (n339 in1_7 m_n339 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n339 (m_n339 in1_7 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n339 (n339 gn1) cmod c=2f
+xpa_n340 (n340 in1_7 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n340 (n340 in1_7 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n340 (n340 in1_7 m_n340 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n340 (m_n340 in1_7 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n340 (n340 gn1) cmod c=2f
+xpa_n4 (n4 in1_0 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n4 (n4 in1_0 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n4 (n4 in1_0 m_n4 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n4 (m_n4 in1_0 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n4 (n4 gn1) cmod c=2f
+xpa_n49 (n49 in1_1 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n49 (n49 in1_1 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n49 (n49 in1_1 m_n49 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n49 (m_n49 in1_1 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n49 (n49 gn1) cmod c=2f
+xpa_n50 (n50 in1_1 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n50 (n50 in1_1 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n50 (n50 in1_1 m_n50 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n50 (m_n50 in1_1 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n50 (n50 gn1) cmod c=2f
+xpa_n51 (n51 in1_1 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n51 (n51 in1_1 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n51 (n51 in1_1 m_n51 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n51 (m_n51 in1_1 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n51 (n51 gn1) cmod c=2f
+xpa_n52 (n52 in1_1 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n52 (n52 in1_1 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n52 (n52 in1_1 m_n52 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n52 (m_n52 in1_1 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n52 (n52 gn1) cmod c=2f
+xpa_n97 (n97 in1_2 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n97 (n97 in1_2 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n97 (n97 in1_2 m_n97 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n97 (m_n97 in1_2 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n97 (n97 gn1) cmod c=2f
+xpa_n98 (n98 in1_2 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n98 (n98 in1_2 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n98 (n98 in1_2 m_n98 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n98 (m_n98 in1_2 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n98 (n98 gn1) cmod c=2f
+xpa_n99 (n99 in1_2 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n99 (n99 in1_2 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n99 (n99 in1_2 m_n99 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n99 (m_n99 in1_2 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n99 (n99 gn1) cmod c=2f
+xpa_n101 (n101 n97 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n101 (n101 n97 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n101 (n101 n97 m_n101 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n101 (m_n101 n97 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n101 (n101 gn1) cmod c=2f
+xpa_n102 (n102 n97 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n102 (n102 n97 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n102 (n102 n97 m_n102 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n102 (m_n102 n97 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n102 (n102 gn1) cmod c=2f
+xpa_n103 (n103 n97 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n103 (n103 n97 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n103 (n103 n97 m_n103 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n103 (m_n103 n97 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n103 (n103 gn1) cmod c=2f
+xpa_n104 (n104 n97 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n104 (n104 n97 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n104 (n104 n97 m_n104 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n104 (m_n104 n97 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n104 (n104 gn1) cmod c=2f
+xpa_n149 (n149 n145 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n149 (n149 n145 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n149 (n149 n145 m_n149 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n149 (m_n149 n145 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n149 (n149 gn1) cmod c=2f
+xpa_n150 (n150 n145 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n150 (n150 n145 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n150 (n150 n145 m_n150 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n150 (m_n150 n145 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n150 (n150 gn1) cmod c=2f
+xpa_n151 (n151 n145 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n151 (n151 n145 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n151 (n151 n145 m_n151 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n151 (m_n151 n145 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n151 (n151 gn1) cmod c=2f
+xpa_n152 (n152 n145 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n152 (n152 n145 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n152 (n152 n145 m_n152 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n152 (m_n152 n145 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n152 (n152 gn1) cmod c=2f
+xpa_n197 (n197 n193 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n197 (n197 n193 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n197 (n197 n193 m_n197 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n197 (m_n197 n193 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n197 (n197 gn1) cmod c=2f
+xpa_n198 (n198 n193 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n198 (n198 n193 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n198 (n198 n193 m_n198 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n198 (m_n198 n193 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n198 (n198 gn1) cmod c=2f
+xpa_n199 (n199 n193 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n199 (n199 n193 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n199 (n199 n193 m_n199 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n199 (m_n199 n193 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n199 (n199 gn1) cmod c=2f
+xpa_n200 (n200 n193 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n200 (n200 n193 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n200 (n200 n193 m_n200 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n200 (m_n200 n193 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n200 (n200 gn1) cmod c=2f
+xpa_n245 (n245 n241 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n245 (n245 n241 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n245 (n245 n241 m_n245 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n245 (m_n245 n241 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n245 (n245 gn1) cmod c=2f
+xpa_n246 (n246 n241 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n246 (n246 n241 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n246 (n246 n241 m_n246 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n246 (m_n246 n241 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n246 (n246 gn1) cmod c=2f
+xpa_n247 (n247 n241 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n247 (n247 n241 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n247 (n247 n241 m_n247 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n247 (m_n247 n241 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n247 (n247 gn1) cmod c=2f
+xpa_n248 (n248 n241 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n248 (n248 n241 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n248 (n248 n241 m_n248 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n248 (m_n248 n241 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n248 (n248 gn1) cmod c=2f
+xpa_n293 (n293 n289 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n293 (n293 n289 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n293 (n293 n289 m_n293 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n293 (m_n293 n289 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n293 (n293 gn1) cmod c=2f
+xpa_n294 (n294 n289 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n294 (n294 n289 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n294 (n294 n289 m_n294 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n294 (m_n294 n289 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n294 (n294 gn1) cmod c=2f
+xpa_n295 (n295 n289 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n295 (n295 n289 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n295 (n295 n289 m_n295 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n295 (m_n295 n289 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n295 (n295 gn1) cmod c=2f
+xpa_n296 (n296 n289 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n296 (n296 n289 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n296 (n296 n289 m_n296 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n296 (m_n296 n289 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n296 (n296 gn1) cmod c=2f
+xpa_n341 (n341 n337 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n341 (n341 n337 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n341 (n341 n337 m_n341 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n341 (m_n341 n337 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n341 (n341 gn1) cmod c=2f
+xpa_n342 (n342 n337 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n342 (n342 n337 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n342 (n342 n337 m_n342 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n342 (m_n342 n337 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n342 (n342 gn1) cmod c=2f
+xpa_n343 (n343 n337 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n343 (n343 n337 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n343 (n343 n337 m_n343 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n343 (m_n343 n337 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n343 (n343 gn1) cmod c=2f
+xpa_n344 (n344 n337 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n344 (n344 n337 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n344 (n344 n337 m_n344 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n344 (m_n344 n337 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n344 (n344 gn1) cmod c=2f
+xpa_n5 (n5 n1 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n5 (n5 n1 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n5 (n5 n1 m_n5 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n5 (m_n5 n1 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n5 (n5 gn1) cmod c=2f
+xpa_n53 (n53 n49 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n53 (n53 n49 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n53 (n53 n49 m_n53 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n53 (m_n53 n49 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n53 (n53 gn1) cmod c=2f
+xpa_n54 (n54 n49 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n54 (n54 n49 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n54 (n54 n49 m_n54 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n54 (m_n54 n49 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n54 (n54 gn1) cmod c=2f
+xpa_n55 (n55 n49 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n55 (n55 n49 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n55 (n55 n49 m_n55 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n55 (m_n55 n49 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n55 (n55 gn1) cmod c=2f
+xpa_n56 (n56 n49 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n56 (n56 n49 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n56 (n56 n49 m_n56 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n56 (m_n56 n49 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n56 (n56 gn1) cmod c=2f
+xpa_n6 (n6 n1 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n6 (n6 n1 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n6 (n6 n1 m_n6 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n6 (m_n6 n1 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n6 (n6 gn1) cmod c=2f
+xpa_n7 (n7 n1 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n7 (n7 n1 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n7 (n7 n1 m_n7 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n7 (m_n7 n1 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n7 (n7 gn1) cmod c=2f
+xpa_n8 (n8 n1 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n8 (n8 n1 ph1 ph1) sg13_lv_pmos w=1.12u l=0.13u
+xna_n8 (n8 n1 m_n8 gn1) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n8 (m_n8 n1 gn1 gn1) sg13_lv_nmos w=0.74u l=0.13u
+cl_n8 (n8 gn1) cmod c=2f
+xpa_n10 (n10 n5 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n10 (n10 n5 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n10 (n10 n5 m_n10 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n10 (m_n10 n5 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n10 (n10 gn2) cmod c=2f
+xpa_n105 (n105 n101 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n105 (n105 n101 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n105 (n105 n101 m_n105 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n105 (m_n105 n101 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n105 (n105 gn2) cmod c=2f
+xpa_n106 (n106 n101 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n106 (n106 n101 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n106 (n106 n101 m_n106 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n106 (m_n106 n101 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n106 (n106 gn2) cmod c=2f
+xpa_n107 (n107 n101 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n107 (n107 n101 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n107 (n107 n101 m_n107 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n107 (m_n107 n101 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n107 (n107 gn2) cmod c=2f
+xpa_n108 (n108 n101 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n108 (n108 n101 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n108 (n108 n101 m_n108 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n108 (m_n108 n101 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n108 (n108 gn2) cmod c=2f
+xpa_n11 (n11 n5 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n11 (n11 n5 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n11 (n11 n5 m_n11 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n11 (m_n11 n5 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n11 (n11 gn2) cmod c=2f
+xpa_n12 (n12 n5 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n12 (n12 n5 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n12 (n12 n5 m_n12 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n12 (m_n12 n5 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n12 (n12 gn2) cmod c=2f
+xpa_n153 (n153 n149 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n153 (n153 n149 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n153 (n153 n149 m_n153 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n153 (m_n153 n149 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n153 (n153 gn2) cmod c=2f
+xpa_n154 (n154 n149 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n154 (n154 n149 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n154 (n154 n149 m_n154 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n154 (m_n154 n149 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n154 (n154 gn2) cmod c=2f
+xpa_n155 (n155 n149 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n155 (n155 n149 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n155 (n155 n149 m_n155 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n155 (m_n155 n149 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n155 (n155 gn2) cmod c=2f
+xpa_n156 (n156 n149 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n156 (n156 n149 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n156 (n156 n149 m_n156 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n156 (m_n156 n149 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n156 (n156 gn2) cmod c=2f
+xpa_n201 (n201 n197 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n201 (n201 n197 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n201 (n201 n197 m_n201 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n201 (m_n201 n197 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n201 (n201 gn2) cmod c=2f
+xpa_n202 (n202 n197 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n202 (n202 n197 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n202 (n202 n197 m_n202 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n202 (m_n202 n197 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n202 (n202 gn2) cmod c=2f
+xpa_n203 (n203 n197 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n203 (n203 n197 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n203 (n203 n197 m_n203 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n203 (m_n203 n197 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n203 (n203 gn2) cmod c=2f
+xpa_n204 (n204 n197 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n204 (n204 n197 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n204 (n204 n197 m_n204 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n204 (m_n204 n197 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n204 (n204 gn2) cmod c=2f
+xpa_n249 (n249 n245 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n249 (n249 n245 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n249 (n249 n245 m_n249 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n249 (m_n249 n245 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n249 (n249 gn2) cmod c=2f
+xpa_n250 (n250 n245 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n250 (n250 n245 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n250 (n250 n245 m_n250 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n250 (m_n250 n245 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n250 (n250 gn2) cmod c=2f
+xpa_n251 (n251 n245 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n251 (n251 n245 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n251 (n251 n245 m_n251 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n251 (m_n251 n245 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n251 (n251 gn2) cmod c=2f
+xpa_n252 (n252 n245 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n252 (n252 n245 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n252 (n252 n245 m_n252 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n252 (m_n252 n245 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n252 (n252 gn2) cmod c=2f
+xpa_n297 (n297 n293 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n297 (n297 n293 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n297 (n297 n293 m_n297 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n297 (m_n297 n293 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n297 (n297 gn2) cmod c=2f
+xpa_n298 (n298 n293 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n298 (n298 n293 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n298 (n298 n293 m_n298 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n298 (m_n298 n293 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n298 (n298 gn2) cmod c=2f
+xpa_n299 (n299 n293 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n299 (n299 n293 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n299 (n299 n293 m_n299 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n299 (m_n299 n293 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n299 (n299 gn2) cmod c=2f
+xpa_n300 (n300 n293 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n300 (n300 n293 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n300 (n300 n293 m_n300 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n300 (m_n300 n293 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n300 (n300 gn2) cmod c=2f
+xpa_n345 (n345 n341 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n345 (n345 n341 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n345 (n345 n341 m_n345 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n345 (m_n345 n341 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n345 (n345 gn2) cmod c=2f
+xpa_n346 (n346 n341 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n346 (n346 n341 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n346 (n346 n341 m_n346 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n346 (m_n346 n341 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n346 (n346 gn2) cmod c=2f
+xpa_n347 (n347 n341 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n347 (n347 n341 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n347 (n347 n341 m_n347 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n347 (m_n347 n341 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n347 (n347 gn2) cmod c=2f
+xpa_n348 (n348 n341 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n348 (n348 n341 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n348 (n348 n341 m_n348 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n348 (m_n348 n341 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n348 (n348 gn2) cmod c=2f
+xpa_n57 (n57 n53 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n57 (n57 n53 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n57 (n57 n53 m_n57 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n57 (m_n57 n53 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n57 (n57 gn2) cmod c=2f
+xpa_n58 (n58 n53 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n58 (n58 n53 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n58 (n58 n53 m_n58 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n58 (m_n58 n53 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n58 (n58 gn2) cmod c=2f
+xpa_n59 (n59 n53 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n59 (n59 n53 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n59 (n59 n53 m_n59 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n59 (m_n59 n53 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n59 (n59 gn2) cmod c=2f
+xpa_n60 (n60 n53 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n60 (n60 n53 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n60 (n60 n53 m_n60 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n60 (m_n60 n53 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n60 (n60 gn2) cmod c=2f
+xpa_n9 (n9 n5 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n9 (n9 n5 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n9 (n9 n5 m_n9 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n9 (m_n9 n5 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n9 (n9 gn2) cmod c=2f
+xpa_n109 (n109 n105 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n109 (n109 n105 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n109 (n109 n105 m_n109 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n109 (m_n109 n105 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n109 (n109 gn2) cmod c=2f
+xpa_n110 (n110 n105 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n110 (n110 n105 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n110 (n110 n105 m_n110 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n110 (m_n110 n105 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n110 (n110 gn2) cmod c=2f
+xpa_n111 (n111 n105 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n111 (n111 n105 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n111 (n111 n105 m_n111 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n111 (m_n111 n105 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n111 (n111 gn2) cmod c=2f
+xpa_n112 (n112 n105 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n112 (n112 n105 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n112 (n112 n105 m_n112 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n112 (m_n112 n105 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n112 (n112 gn2) cmod c=2f
+xpa_n13 (n13 n9 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n13 (n13 n9 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n13 (n13 n9 m_n13 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n13 (m_n13 n9 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n13 (n13 gn2) cmod c=2f
+xpa_n14 (n14 n9 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n14 (n14 n9 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n14 (n14 n9 m_n14 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n14 (m_n14 n9 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n14 (n14 gn2) cmod c=2f
+xpa_n15 (n15 n9 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n15 (n15 n9 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n15 (n15 n9 m_n15 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n15 (m_n15 n9 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n15 (n15 gn2) cmod c=2f
+xpa_n157 (n157 n153 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n157 (n157 n153 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n157 (n157 n153 m_n157 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n157 (m_n157 n153 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n157 (n157 gn2) cmod c=2f
+xpa_n158 (n158 n153 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n158 (n158 n153 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n158 (n158 n153 m_n158 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n158 (m_n158 n153 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n158 (n158 gn2) cmod c=2f
+xpa_n159 (n159 n153 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n159 (n159 n153 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n159 (n159 n153 m_n159 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n159 (m_n159 n153 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n159 (n159 gn2) cmod c=2f
+xpa_n16 (n16 n9 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n16 (n16 n9 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n16 (n16 n9 m_n16 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n16 (m_n16 n9 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n16 (n16 gn2) cmod c=2f
+xpa_n160 (n160 n153 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n160 (n160 n153 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n160 (n160 n153 m_n160 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n160 (m_n160 n153 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n160 (n160 gn2) cmod c=2f
+xpa_n205 (n205 n201 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n205 (n205 n201 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n205 (n205 n201 m_n205 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n205 (m_n205 n201 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n205 (n205 gn2) cmod c=2f
+xpa_n206 (n206 n201 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n206 (n206 n201 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n206 (n206 n201 m_n206 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n206 (m_n206 n201 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n206 (n206 gn2) cmod c=2f
+xpa_n207 (n207 n201 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n207 (n207 n201 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n207 (n207 n201 m_n207 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n207 (m_n207 n201 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n207 (n207 gn2) cmod c=2f
+xpa_n208 (n208 n201 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n208 (n208 n201 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n208 (n208 n201 m_n208 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n208 (m_n208 n201 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n208 (n208 gn2) cmod c=2f
+xpa_n253 (n253 n249 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n253 (n253 n249 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n253 (n253 n249 m_n253 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n253 (m_n253 n249 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n253 (n253 gn2) cmod c=2f
+xpa_n254 (n254 n249 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n254 (n254 n249 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n254 (n254 n249 m_n254 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n254 (m_n254 n249 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n254 (n254 gn2) cmod c=2f
+xpa_n255 (n255 n249 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n255 (n255 n249 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n255 (n255 n249 m_n255 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n255 (m_n255 n249 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n255 (n255 gn2) cmod c=2f
+xpa_n256 (n256 n249 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n256 (n256 n249 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n256 (n256 n249 m_n256 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n256 (m_n256 n249 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n256 (n256 gn2) cmod c=2f
+xpa_n301 (n301 n297 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n301 (n301 n297 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n301 (n301 n297 m_n301 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n301 (m_n301 n297 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n301 (n301 gn2) cmod c=2f
+xpa_n302 (n302 n297 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n302 (n302 n297 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n302 (n302 n297 m_n302 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n302 (m_n302 n297 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n302 (n302 gn2) cmod c=2f
+xpa_n303 (n303 n297 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n303 (n303 n297 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n303 (n303 n297 m_n303 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n303 (m_n303 n297 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n303 (n303 gn2) cmod c=2f
+xpa_n304 (n304 n297 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n304 (n304 n297 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n304 (n304 n297 m_n304 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n304 (m_n304 n297 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n304 (n304 gn2) cmod c=2f
+xpa_n349 (n349 n345 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n349 (n349 n345 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n349 (n349 n345 m_n349 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n349 (m_n349 n345 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n349 (n349 gn2) cmod c=2f
+xpa_n350 (n350 n345 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n350 (n350 n345 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n350 (n350 n345 m_n350 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n350 (m_n350 n345 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n350 (n350 gn2) cmod c=2f
+xpa_n351 (n351 n345 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n351 (n351 n345 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n351 (n351 n345 m_n351 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n351 (m_n351 n345 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n351 (n351 gn2) cmod c=2f
+xpa_n352 (n352 n345 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n352 (n352 n345 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n352 (n352 n345 m_n352 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n352 (m_n352 n345 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n352 (n352 gn2) cmod c=2f
+xpa_n61 (n61 n57 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n61 (n61 n57 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n61 (n61 n57 m_n61 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n61 (m_n61 n57 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n61 (n61 gn2) cmod c=2f
+xpa_n62 (n62 n57 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n62 (n62 n57 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n62 (n62 n57 m_n62 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n62 (m_n62 n57 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n62 (n62 gn2) cmod c=2f
+xpa_n63 (n63 n57 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n63 (n63 n57 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n63 (n63 n57 m_n63 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n63 (m_n63 n57 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n63 (n63 gn2) cmod c=2f
+xpa_n64 (n64 n57 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n64 (n64 n57 ph2 ph2) sg13_lv_pmos w=1.12u l=0.13u
+xna_n64 (n64 n57 m_n64 gn2) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n64 (m_n64 n57 gn2 gn2) sg13_lv_nmos w=0.74u l=0.13u
+cl_n64 (n64 gn2) cmod c=2f
+xpa_n113 (n113 n109 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n113 (n113 n109 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n113 (n113 n109 m_n113 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n113 (m_n113 n109 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n113 (n113 gn3) cmod c=2f
+xpa_n114 (n114 n109 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n114 (n114 n109 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n114 (n114 n109 m_n114 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n114 (m_n114 n109 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n114 (n114 gn3) cmod c=2f
+xpa_n115 (n115 n109 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n115 (n115 n109 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n115 (n115 n109 m_n115 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n115 (m_n115 n109 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n115 (n115 gn3) cmod c=2f
+xpa_n116 (n116 n109 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n116 (n116 n109 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n116 (n116 n109 m_n116 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n116 (m_n116 n109 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n116 (n116 gn3) cmod c=2f
+xpa_n161 (n161 n157 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n161 (n161 n157 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n161 (n161 n157 m_n161 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n161 (m_n161 n157 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n161 (n161 gn3) cmod c=2f
+xpa_n162 (n162 n157 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n162 (n162 n157 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n162 (n162 n157 m_n162 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n162 (m_n162 n157 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n162 (n162 gn3) cmod c=2f
+xpa_n163 (n163 n157 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n163 (n163 n157 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n163 (n163 n157 m_n163 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n163 (m_n163 n157 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n163 (n163 gn3) cmod c=2f
+xpa_n164 (n164 n157 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n164 (n164 n157 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n164 (n164 n157 m_n164 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n164 (m_n164 n157 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n164 (n164 gn3) cmod c=2f
+xpa_n17 (n17 n13 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n17 (n17 n13 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n17 (n17 n13 m_n17 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n17 (m_n17 n13 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n17 (n17 gn3) cmod c=2f
+xpa_n18 (n18 n13 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n18 (n18 n13 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n18 (n18 n13 m_n18 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n18 (m_n18 n13 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n18 (n18 gn3) cmod c=2f
+xpa_n19 (n19 n13 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n19 (n19 n13 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n19 (n19 n13 m_n19 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n19 (m_n19 n13 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n19 (n19 gn3) cmod c=2f
+xpa_n20 (n20 n13 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n20 (n20 n13 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n20 (n20 n13 m_n20 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n20 (m_n20 n13 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n20 (n20 gn3) cmod c=2f
+xpa_n209 (n209 n205 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n209 (n209 n205 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n209 (n209 n205 m_n209 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n209 (m_n209 n205 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n209 (n209 gn3) cmod c=2f
+xpa_n210 (n210 n205 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n210 (n210 n205 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n210 (n210 n205 m_n210 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n210 (m_n210 n205 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n210 (n210 gn3) cmod c=2f
+xpa_n211 (n211 n205 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n211 (n211 n205 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n211 (n211 n205 m_n211 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n211 (m_n211 n205 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n211 (n211 gn3) cmod c=2f
+xpa_n212 (n212 n205 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n212 (n212 n205 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n212 (n212 n205 m_n212 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n212 (m_n212 n205 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n212 (n212 gn3) cmod c=2f
+xpa_n257 (n257 n253 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n257 (n257 n253 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n257 (n257 n253 m_n257 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n257 (m_n257 n253 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n257 (n257 gn3) cmod c=2f
+xpa_n258 (n258 n253 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n258 (n258 n253 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n258 (n258 n253 m_n258 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n258 (m_n258 n253 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n258 (n258 gn3) cmod c=2f
+xpa_n259 (n259 n253 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n259 (n259 n253 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n259 (n259 n253 m_n259 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n259 (m_n259 n253 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n259 (n259 gn3) cmod c=2f
+xpa_n260 (n260 n253 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n260 (n260 n253 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n260 (n260 n253 m_n260 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n260 (m_n260 n253 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n260 (n260 gn3) cmod c=2f
+xpa_n305 (n305 n301 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n305 (n305 n301 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n305 (n305 n301 m_n305 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n305 (m_n305 n301 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n305 (n305 gn3) cmod c=2f
+xpa_n306 (n306 n301 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n306 (n306 n301 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n306 (n306 n301 m_n306 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n306 (m_n306 n301 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n306 (n306 gn3) cmod c=2f
+xpa_n307 (n307 n301 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n307 (n307 n301 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n307 (n307 n301 m_n307 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n307 (m_n307 n301 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n307 (n307 gn3) cmod c=2f
+xpa_n308 (n308 n301 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n308 (n308 n301 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n308 (n308 n301 m_n308 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n308 (m_n308 n301 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n308 (n308 gn3) cmod c=2f
+xpa_n353 (n353 n349 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n353 (n353 n349 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n353 (n353 n349 m_n353 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n353 (m_n353 n349 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n353 (n353 gn3) cmod c=2f
+xpa_n354 (n354 n349 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n354 (n354 n349 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n354 (n354 n349 m_n354 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n354 (m_n354 n349 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n354 (n354 gn3) cmod c=2f
+xpa_n355 (n355 n349 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n355 (n355 n349 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n355 (n355 n349 m_n355 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n355 (m_n355 n349 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n355 (n355 gn3) cmod c=2f
+xpa_n356 (n356 n349 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n356 (n356 n349 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n356 (n356 n349 m_n356 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n356 (m_n356 n349 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n356 (n356 gn3) cmod c=2f
+xpa_n65 (n65 n61 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n65 (n65 n61 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n65 (n65 n61 m_n65 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n65 (m_n65 n61 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n65 (n65 gn3) cmod c=2f
+xpa_n66 (n66 n61 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n66 (n66 n61 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n66 (n66 n61 m_n66 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n66 (m_n66 n61 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n66 (n66 gn3) cmod c=2f
+xpa_n67 (n67 n61 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n67 (n67 n61 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n67 (n67 n61 m_n67 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n67 (m_n67 n61 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n67 (n67 gn3) cmod c=2f
+xpa_n68 (n68 n61 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n68 (n68 n61 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n68 (n68 n61 m_n68 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n68 (m_n68 n61 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n68 (n68 gn3) cmod c=2f
+xpa_n117 (n117 n113 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n117 (n117 n113 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n117 (n117 n113 m_n117 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n117 (m_n117 n113 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n117 (n117 gn3) cmod c=2f
+xpa_n118 (n118 n113 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n118 (n118 n113 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n118 (n118 n113 m_n118 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n118 (m_n118 n113 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n118 (n118 gn3) cmod c=2f
+xpa_n119 (n119 n113 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n119 (n119 n113 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n119 (n119 n113 m_n119 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n119 (m_n119 n113 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n119 (n119 gn3) cmod c=2f
+xpa_n120 (n120 n113 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n120 (n120 n113 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n120 (n120 n113 m_n120 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n120 (m_n120 n113 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n120 (n120 gn3) cmod c=2f
+xpa_n165 (n165 n161 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n165 (n165 n161 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n165 (n165 n161 m_n165 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n165 (m_n165 n161 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n165 (n165 gn3) cmod c=2f
+xpa_n166 (n166 n161 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n166 (n166 n161 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n166 (n166 n161 m_n166 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n166 (m_n166 n161 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n166 (n166 gn3) cmod c=2f
+xpa_n167 (n167 n161 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n167 (n167 n161 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n167 (n167 n161 m_n167 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n167 (m_n167 n161 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n167 (n167 gn3) cmod c=2f
+xpa_n168 (n168 n161 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n168 (n168 n161 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n168 (n168 n161 m_n168 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n168 (m_n168 n161 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n168 (n168 gn3) cmod c=2f
+xpa_n21 (n21 n17 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n21 (n21 n17 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n21 (n21 n17 m_n21 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n21 (m_n21 n17 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n21 (n21 gn3) cmod c=2f
+xpa_n213 (n213 n209 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n213 (n213 n209 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n213 (n213 n209 m_n213 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n213 (m_n213 n209 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n213 (n213 gn3) cmod c=2f
+xpa_n214 (n214 n209 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n214 (n214 n209 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n214 (n214 n209 m_n214 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n214 (m_n214 n209 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n214 (n214 gn3) cmod c=2f
+xpa_n215 (n215 n209 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n215 (n215 n209 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n215 (n215 n209 m_n215 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n215 (m_n215 n209 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n215 (n215 gn3) cmod c=2f
+xpa_n216 (n216 n209 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n216 (n216 n209 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n216 (n216 n209 m_n216 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n216 (m_n216 n209 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n216 (n216 gn3) cmod c=2f
+xpa_n22 (n22 n17 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n22 (n22 n17 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n22 (n22 n17 m_n22 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n22 (m_n22 n17 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n22 (n22 gn3) cmod c=2f
+xpa_n23 (n23 n17 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n23 (n23 n17 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n23 (n23 n17 m_n23 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n23 (m_n23 n17 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n23 (n23 gn3) cmod c=2f
+xpa_n24 (n24 n17 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n24 (n24 n17 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n24 (n24 n17 m_n24 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n24 (m_n24 n17 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n24 (n24 gn3) cmod c=2f
+xpa_n261 (n261 n257 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n261 (n261 n257 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n261 (n261 n257 m_n261 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n261 (m_n261 n257 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n261 (n261 gn3) cmod c=2f
+xpa_n262 (n262 n257 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n262 (n262 n257 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n262 (n262 n257 m_n262 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n262 (m_n262 n257 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n262 (n262 gn3) cmod c=2f
+xpa_n263 (n263 n257 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n263 (n263 n257 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n263 (n263 n257 m_n263 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n263 (m_n263 n257 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n263 (n263 gn3) cmod c=2f
+xpa_n264 (n264 n257 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n264 (n264 n257 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n264 (n264 n257 m_n264 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n264 (m_n264 n257 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n264 (n264 gn3) cmod c=2f
+xpa_n309 (n309 n305 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n309 (n309 n305 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n309 (n309 n305 m_n309 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n309 (m_n309 n305 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n309 (n309 gn3) cmod c=2f
+xpa_n310 (n310 n305 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n310 (n310 n305 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n310 (n310 n305 m_n310 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n310 (m_n310 n305 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n310 (n310 gn3) cmod c=2f
+xpa_n311 (n311 n305 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n311 (n311 n305 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n311 (n311 n305 m_n311 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n311 (m_n311 n305 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n311 (n311 gn3) cmod c=2f
+xpa_n312 (n312 n305 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n312 (n312 n305 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n312 (n312 n305 m_n312 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n312 (m_n312 n305 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n312 (n312 gn3) cmod c=2f
+xpa_n357 (n357 n353 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n357 (n357 n353 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n357 (n357 n353 m_n357 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n357 (m_n357 n353 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n357 (n357 gn3) cmod c=2f
+xpa_n358 (n358 n353 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n358 (n358 n353 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n358 (n358 n353 m_n358 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n358 (m_n358 n353 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n358 (n358 gn3) cmod c=2f
+xpa_n359 (n359 n353 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n359 (n359 n353 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n359 (n359 n353 m_n359 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n359 (m_n359 n353 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n359 (n359 gn3) cmod c=2f
+xpa_n360 (n360 n353 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n360 (n360 n353 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n360 (n360 n353 m_n360 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n360 (m_n360 n353 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n360 (n360 gn3) cmod c=2f
+xpa_n69 (n69 n65 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n69 (n69 n65 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n69 (n69 n65 m_n69 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n69 (m_n69 n65 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n69 (n69 gn3) cmod c=2f
+xpa_n70 (n70 n65 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n70 (n70 n65 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n70 (n70 n65 m_n70 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n70 (m_n70 n65 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n70 (n70 gn3) cmod c=2f
+xpa_n71 (n71 n65 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n71 (n71 n65 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n71 (n71 n65 m_n71 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n71 (m_n71 n65 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n71 (n71 gn3) cmod c=2f
+xpa_n72 (n72 n65 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n72 (n72 n65 ph3 ph3) sg13_lv_pmos w=1.12u l=0.13u
+xna_n72 (n72 n65 m_n72 gn3) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n72 (m_n72 n65 gn3 gn3) sg13_lv_nmos w=0.74u l=0.13u
+cl_n72 (n72 gn3) cmod c=2f
+xpa_n121 (n121 n117 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n121 (n121 n117 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n121 (n121 n117 m_n121 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n121 (m_n121 n117 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n121 (n121 gn4) cmod c=2f
+xpa_n122 (n122 n117 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n122 (n122 n117 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n122 (n122 n117 m_n122 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n122 (m_n122 n117 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n122 (n122 gn4) cmod c=2f
+xpa_n123 (n123 n117 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n123 (n123 n117 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n123 (n123 n117 m_n123 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n123 (m_n123 n117 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n123 (n123 gn4) cmod c=2f
+xpa_n124 (n124 n117 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n124 (n124 n117 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n124 (n124 n117 m_n124 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n124 (m_n124 n117 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n124 (n124 gn4) cmod c=2f
+xpa_n169 (n169 n165 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n169 (n169 n165 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n169 (n169 n165 m_n169 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n169 (m_n169 n165 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n169 (n169 gn4) cmod c=2f
+xpa_n170 (n170 n165 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n170 (n170 n165 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n170 (n170 n165 m_n170 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n170 (m_n170 n165 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n170 (n170 gn4) cmod c=2f
+xpa_n171 (n171 n165 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n171 (n171 n165 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n171 (n171 n165 m_n171 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n171 (m_n171 n165 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n171 (n171 gn4) cmod c=2f
+xpa_n172 (n172 n165 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n172 (n172 n165 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n172 (n172 n165 m_n172 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n172 (m_n172 n165 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n172 (n172 gn4) cmod c=2f
+xpa_n217 (n217 n213 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n217 (n217 n213 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n217 (n217 n213 m_n217 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n217 (m_n217 n213 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n217 (n217 gn4) cmod c=2f
+xpa_n218 (n218 n213 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n218 (n218 n213 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n218 (n218 n213 m_n218 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n218 (m_n218 n213 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n218 (n218 gn4) cmod c=2f
+xpa_n219 (n219 n213 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n219 (n219 n213 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n219 (n219 n213 m_n219 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n219 (m_n219 n213 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n219 (n219 gn4) cmod c=2f
+xpa_n220 (n220 n213 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n220 (n220 n213 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n220 (n220 n213 m_n220 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n220 (m_n220 n213 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n220 (n220 gn4) cmod c=2f
+xpa_n25 (n25 n21 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n25 (n25 n21 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n25 (n25 n21 m_n25 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n25 (m_n25 n21 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n25 (n25 gn4) cmod c=2f
+xpa_n26 (n26 n21 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n26 (n26 n21 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n26 (n26 n21 m_n26 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n26 (m_n26 n21 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n26 (n26 gn4) cmod c=2f
+xpa_n265 (n265 n261 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n265 (n265 n261 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n265 (n265 n261 m_n265 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n265 (m_n265 n261 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n265 (n265 gn4) cmod c=2f
+xpa_n266 (n266 n261 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n266 (n266 n261 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n266 (n266 n261 m_n266 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n266 (m_n266 n261 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n266 (n266 gn4) cmod c=2f
+xpa_n267 (n267 n261 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n267 (n267 n261 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n267 (n267 n261 m_n267 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n267 (m_n267 n261 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n267 (n267 gn4) cmod c=2f
+xpa_n268 (n268 n261 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n268 (n268 n261 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n268 (n268 n261 m_n268 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n268 (m_n268 n261 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n268 (n268 gn4) cmod c=2f
+xpa_n27 (n27 n21 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n27 (n27 n21 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n27 (n27 n21 m_n27 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n27 (m_n27 n21 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n27 (n27 gn4) cmod c=2f
+xpa_n28 (n28 n21 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n28 (n28 n21 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n28 (n28 n21 m_n28 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n28 (m_n28 n21 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n28 (n28 gn4) cmod c=2f
+xpa_n313 (n313 n309 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n313 (n313 n309 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n313 (n313 n309 m_n313 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n313 (m_n313 n309 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n313 (n313 gn4) cmod c=2f
+xpa_n314 (n314 n309 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n314 (n314 n309 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n314 (n314 n309 m_n314 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n314 (m_n314 n309 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n314 (n314 gn4) cmod c=2f
+xpa_n315 (n315 n309 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n315 (n315 n309 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n315 (n315 n309 m_n315 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n315 (m_n315 n309 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n315 (n315 gn4) cmod c=2f
+xpa_n316 (n316 n309 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n316 (n316 n309 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n316 (n316 n309 m_n316 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n316 (m_n316 n309 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n316 (n316 gn4) cmod c=2f
+xpa_n361 (n361 n357 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n361 (n361 n357 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n361 (n361 n357 m_n361 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n361 (m_n361 n357 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n361 (n361 gn4) cmod c=2f
+xpa_n362 (n362 n357 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n362 (n362 n357 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n362 (n362 n357 m_n362 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n362 (m_n362 n357 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n362 (n362 gn4) cmod c=2f
+xpa_n363 (n363 n357 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n363 (n363 n357 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n363 (n363 n357 m_n363 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n363 (m_n363 n357 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n363 (n363 gn4) cmod c=2f
+xpa_n364 (n364 n357 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n364 (n364 n357 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n364 (n364 n357 m_n364 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n364 (m_n364 n357 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n364 (n364 gn4) cmod c=2f
+xpa_n73 (n73 n69 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n73 (n73 n69 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n73 (n73 n69 m_n73 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n73 (m_n73 n69 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n73 (n73 gn4) cmod c=2f
+xpa_n74 (n74 n69 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n74 (n74 n69 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n74 (n74 n69 m_n74 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n74 (m_n74 n69 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n74 (n74 gn4) cmod c=2f
+xpa_n75 (n75 n69 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n75 (n75 n69 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n75 (n75 n69 m_n75 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n75 (m_n75 n69 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n75 (n75 gn4) cmod c=2f
+xpa_n76 (n76 n69 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n76 (n76 n69 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n76 (n76 n69 m_n76 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n76 (m_n76 n69 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n76 (n76 gn4) cmod c=2f
+xpa_n125 (n125 n121 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n125 (n125 n121 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n125 (n125 n121 m_n125 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n125 (m_n125 n121 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n125 (n125 gn4) cmod c=2f
+xpa_n126 (n126 n121 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n126 (n126 n121 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n126 (n126 n121 m_n126 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n126 (m_n126 n121 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n126 (n126 gn4) cmod c=2f
+xpa_n127 (n127 n121 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n127 (n127 n121 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n127 (n127 n121 m_n127 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n127 (m_n127 n121 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n127 (n127 gn4) cmod c=2f
+xpa_n128 (n128 n121 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n128 (n128 n121 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n128 (n128 n121 m_n128 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n128 (m_n128 n121 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n128 (n128 gn4) cmod c=2f
+xpa_n173 (n173 n169 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n173 (n173 n169 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n173 (n173 n169 m_n173 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n173 (m_n173 n169 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n173 (n173 gn4) cmod c=2f
+xpa_n174 (n174 n169 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n174 (n174 n169 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n174 (n174 n169 m_n174 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n174 (m_n174 n169 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n174 (n174 gn4) cmod c=2f
+xpa_n175 (n175 n169 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n175 (n175 n169 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n175 (n175 n169 m_n175 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n175 (m_n175 n169 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n175 (n175 gn4) cmod c=2f
+xpa_n176 (n176 n169 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n176 (n176 n169 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n176 (n176 n169 m_n176 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n176 (m_n176 n169 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n176 (n176 gn4) cmod c=2f
+xpa_n221 (n221 n217 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n221 (n221 n217 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n221 (n221 n217 m_n221 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n221 (m_n221 n217 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n221 (n221 gn4) cmod c=2f
+xpa_n222 (n222 n217 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n222 (n222 n217 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n222 (n222 n217 m_n222 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n222 (m_n222 n217 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n222 (n222 gn4) cmod c=2f
+xpa_n223 (n223 n217 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n223 (n223 n217 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n223 (n223 n217 m_n223 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n223 (m_n223 n217 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n223 (n223 gn4) cmod c=2f
+xpa_n224 (n224 n217 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n224 (n224 n217 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n224 (n224 n217 m_n224 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n224 (m_n224 n217 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n224 (n224 gn4) cmod c=2f
+xpa_n269 (n269 n265 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n269 (n269 n265 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n269 (n269 n265 m_n269 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n269 (m_n269 n265 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n269 (n269 gn4) cmod c=2f
+xpa_n270 (n270 n265 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n270 (n270 n265 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n270 (n270 n265 m_n270 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n270 (m_n270 n265 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n270 (n270 gn4) cmod c=2f
+xpa_n271 (n271 n265 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n271 (n271 n265 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n271 (n271 n265 m_n271 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n271 (m_n271 n265 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n271 (n271 gn4) cmod c=2f
+xpa_n272 (n272 n265 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n272 (n272 n265 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n272 (n272 n265 m_n272 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n272 (m_n272 n265 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n272 (n272 gn4) cmod c=2f
+xpa_n29 (n29 n25 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n29 (n29 n25 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n29 (n29 n25 m_n29 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n29 (m_n29 n25 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n29 (n29 gn4) cmod c=2f
+xpa_n30 (n30 n25 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n30 (n30 n25 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n30 (n30 n25 m_n30 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n30 (m_n30 n25 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n30 (n30 gn4) cmod c=2f
+xpa_n31 (n31 n25 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n31 (n31 n25 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n31 (n31 n25 m_n31 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n31 (m_n31 n25 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n31 (n31 gn4) cmod c=2f
+xpa_n317 (n317 n313 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n317 (n317 n313 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n317 (n317 n313 m_n317 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n317 (m_n317 n313 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n317 (n317 gn4) cmod c=2f
+xpa_n318 (n318 n313 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n318 (n318 n313 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n318 (n318 n313 m_n318 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n318 (m_n318 n313 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n318 (n318 gn4) cmod c=2f
+xpa_n319 (n319 n313 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n319 (n319 n313 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n319 (n319 n313 m_n319 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n319 (m_n319 n313 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n319 (n319 gn4) cmod c=2f
+xpa_n32 (n32 n25 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n32 (n32 n25 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n32 (n32 n25 m_n32 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n32 (m_n32 n25 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n32 (n32 gn4) cmod c=2f
+xpa_n320 (n320 n313 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n320 (n320 n313 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n320 (n320 n313 m_n320 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n320 (m_n320 n313 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n320 (n320 gn4) cmod c=2f
+xpa_n365 (n365 n361 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n365 (n365 n361 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n365 (n365 n361 m_n365 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n365 (m_n365 n361 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n365 (n365 gn4) cmod c=2f
+xpa_n366 (n366 n361 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n366 (n366 n361 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n366 (n366 n361 m_n366 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n366 (m_n366 n361 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n366 (n366 gn4) cmod c=2f
+xpa_n367 (n367 n361 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n367 (n367 n361 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n367 (n367 n361 m_n367 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n367 (m_n367 n361 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n367 (n367 gn4) cmod c=2f
+xpa_n368 (n368 n361 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n368 (n368 n361 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n368 (n368 n361 m_n368 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n368 (m_n368 n361 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n368 (n368 gn4) cmod c=2f
+xpa_n77 (n77 n73 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n77 (n77 n73 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n77 (n77 n73 m_n77 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n77 (m_n77 n73 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n77 (n77 gn4) cmod c=2f
+xpa_n78 (n78 n73 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n78 (n78 n73 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n78 (n78 n73 m_n78 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n78 (m_n78 n73 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n78 (n78 gn4) cmod c=2f
+xpa_n79 (n79 n73 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n79 (n79 n73 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n79 (n79 n73 m_n79 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n79 (m_n79 n73 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n79 (n79 gn4) cmod c=2f
+xpa_n80 (n80 n73 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n80 (n80 n73 ph4 ph4) sg13_lv_pmos w=1.12u l=0.13u
+xna_n80 (n80 n73 m_n80 gn4) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n80 (m_n80 n73 gn4 gn4) sg13_lv_nmos w=0.74u l=0.13u
+cl_n80 (n80 gn4) cmod c=2f
+xpa_n129 (n129 n125 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n129 (n129 n125 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n129 (n129 n125 m_n129 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n129 (m_n129 n125 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n129 (n129 gn5) cmod c=2f
+xpa_n130 (n130 n125 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n130 (n130 n125 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n130 (n130 n125 m_n130 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n130 (m_n130 n125 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n130 (n130 gn5) cmod c=2f
+xpa_n131 (n131 n125 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n131 (n131 n125 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n131 (n131 n125 m_n131 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n131 (m_n131 n125 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n131 (n131 gn5) cmod c=2f
+xpa_n132 (n132 n125 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n132 (n132 n125 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n132 (n132 n125 m_n132 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n132 (m_n132 n125 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n132 (n132 gn5) cmod c=2f
+xpa_n177 (n177 n173 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n177 (n177 n173 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n177 (n177 n173 m_n177 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n177 (m_n177 n173 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n177 (n177 gn5) cmod c=2f
+xpa_n178 (n178 n173 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n178 (n178 n173 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n178 (n178 n173 m_n178 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n178 (m_n178 n173 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n178 (n178 gn5) cmod c=2f
+xpa_n179 (n179 n173 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n179 (n179 n173 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n179 (n179 n173 m_n179 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n179 (m_n179 n173 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n179 (n179 gn5) cmod c=2f
+xpa_n180 (n180 n173 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n180 (n180 n173 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n180 (n180 n173 m_n180 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n180 (m_n180 n173 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n180 (n180 gn5) cmod c=2f
+xpa_n225 (n225 n221 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n225 (n225 n221 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n225 (n225 n221 m_n225 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n225 (m_n225 n221 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n225 (n225 gn5) cmod c=2f
+xpa_n226 (n226 n221 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n226 (n226 n221 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n226 (n226 n221 m_n226 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n226 (m_n226 n221 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n226 (n226 gn5) cmod c=2f
+xpa_n227 (n227 n221 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n227 (n227 n221 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n227 (n227 n221 m_n227 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n227 (m_n227 n221 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n227 (n227 gn5) cmod c=2f
+xpa_n228 (n228 n221 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n228 (n228 n221 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n228 (n228 n221 m_n228 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n228 (m_n228 n221 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n228 (n228 gn5) cmod c=2f
+xpa_n273 (n273 n269 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n273 (n273 n269 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n273 (n273 n269 m_n273 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n273 (m_n273 n269 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n273 (n273 gn5) cmod c=2f
+xpa_n274 (n274 n269 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n274 (n274 n269 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n274 (n274 n269 m_n274 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n274 (m_n274 n269 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n274 (n274 gn5) cmod c=2f
+xpa_n275 (n275 n269 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n275 (n275 n269 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n275 (n275 n269 m_n275 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n275 (m_n275 n269 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n275 (n275 gn5) cmod c=2f
+xpa_n276 (n276 n269 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n276 (n276 n269 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n276 (n276 n269 m_n276 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n276 (m_n276 n269 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n276 (n276 gn5) cmod c=2f
+xpa_n321 (n321 n317 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n321 (n321 n317 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n321 (n321 n317 m_n321 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n321 (m_n321 n317 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n321 (n321 gn5) cmod c=2f
+xpa_n322 (n322 n317 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n322 (n322 n317 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n322 (n322 n317 m_n322 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n322 (m_n322 n317 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n322 (n322 gn5) cmod c=2f
+xpa_n323 (n323 n317 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n323 (n323 n317 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n323 (n323 n317 m_n323 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n323 (m_n323 n317 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n323 (n323 gn5) cmod c=2f
+xpa_n324 (n324 n317 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n324 (n324 n317 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n324 (n324 n317 m_n324 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n324 (m_n324 n317 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n324 (n324 gn5) cmod c=2f
+xpa_n33 (n33 n29 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n33 (n33 n29 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n33 (n33 n29 m_n33 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n33 (m_n33 n29 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n33 (n33 gn5) cmod c=2f
+xpa_n34 (n34 n29 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n34 (n34 n29 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n34 (n34 n29 m_n34 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n34 (m_n34 n29 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n34 (n34 gn5) cmod c=2f
+xpa_n35 (n35 n29 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n35 (n35 n29 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n35 (n35 n29 m_n35 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n35 (m_n35 n29 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n35 (n35 gn5) cmod c=2f
+xpa_n36 (n36 n29 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n36 (n36 n29 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n36 (n36 n29 m_n36 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n36 (m_n36 n29 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n36 (n36 gn5) cmod c=2f
+xpa_n369 (n369 n365 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n369 (n369 n365 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n369 (n369 n365 m_n369 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n369 (m_n369 n365 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n369 (n369 gn5) cmod c=2f
+xpa_n370 (n370 n365 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n370 (n370 n365 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n370 (n370 n365 m_n370 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n370 (m_n370 n365 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n370 (n370 gn5) cmod c=2f
+xpa_n371 (n371 n365 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n371 (n371 n365 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n371 (n371 n365 m_n371 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n371 (m_n371 n365 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n371 (n371 gn5) cmod c=2f
+xpa_n372 (n372 n365 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n372 (n372 n365 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n372 (n372 n365 m_n372 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n372 (m_n372 n365 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n372 (n372 gn5) cmod c=2f
+xpa_n81 (n81 n77 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n81 (n81 n77 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n81 (n81 n77 m_n81 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n81 (m_n81 n77 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n81 (n81 gn5) cmod c=2f
+xpa_n82 (n82 n77 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n82 (n82 n77 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n82 (n82 n77 m_n82 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n82 (m_n82 n77 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n82 (n82 gn5) cmod c=2f
+xpa_n83 (n83 n77 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n83 (n83 n77 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n83 (n83 n77 m_n83 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n83 (m_n83 n77 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n83 (n83 gn5) cmod c=2f
+xpa_n84 (n84 n77 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n84 (n84 n77 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n84 (n84 n77 m_n84 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n84 (m_n84 n77 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n84 (n84 gn5) cmod c=2f
+xpa_n133 (n133 n129 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n133 (n133 n129 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n133 (n133 n129 m_n133 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n133 (m_n133 n129 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n133 (n133 gn5) cmod c=2f
+xpa_n134 (n134 n129 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n134 (n134 n129 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n134 (n134 n129 m_n134 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n134 (m_n134 n129 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n134 (n134 gn5) cmod c=2f
+xpa_n135 (n135 n129 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n135 (n135 n129 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n135 (n135 n129 m_n135 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n135 (m_n135 n129 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n135 (n135 gn5) cmod c=2f
+xpa_n136 (n136 n129 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n136 (n136 n129 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n136 (n136 n129 m_n136 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n136 (m_n136 n129 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n136 (n136 gn5) cmod c=2f
+xpa_n181 (n181 n177 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n181 (n181 n177 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n181 (n181 n177 m_n181 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n181 (m_n181 n177 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n181 (n181 gn5) cmod c=2f
+xpa_n182 (n182 n177 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n182 (n182 n177 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n182 (n182 n177 m_n182 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n182 (m_n182 n177 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n182 (n182 gn5) cmod c=2f
+xpa_n183 (n183 n177 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n183 (n183 n177 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n183 (n183 n177 m_n183 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n183 (m_n183 n177 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n183 (n183 gn5) cmod c=2f
+xpa_n184 (n184 n177 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n184 (n184 n177 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n184 (n184 n177 m_n184 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n184 (m_n184 n177 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n184 (n184 gn5) cmod c=2f
+xpa_n229 (n229 n225 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n229 (n229 n225 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n229 (n229 n225 m_n229 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n229 (m_n229 n225 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n229 (n229 gn5) cmod c=2f
+xpa_n230 (n230 n225 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n230 (n230 n225 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n230 (n230 n225 m_n230 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n230 (m_n230 n225 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n230 (n230 gn5) cmod c=2f
+xpa_n231 (n231 n225 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n231 (n231 n225 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n231 (n231 n225 m_n231 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n231 (m_n231 n225 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n231 (n231 gn5) cmod c=2f
+xpa_n232 (n232 n225 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n232 (n232 n225 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n232 (n232 n225 m_n232 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n232 (m_n232 n225 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n232 (n232 gn5) cmod c=2f
+xpa_n277 (n277 n273 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n277 (n277 n273 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n277 (n277 n273 m_n277 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n277 (m_n277 n273 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n277 (n277 gn5) cmod c=2f
+xpa_n278 (n278 n273 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n278 (n278 n273 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n278 (n278 n273 m_n278 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n278 (m_n278 n273 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n278 (n278 gn5) cmod c=2f
+xpa_n279 (n279 n273 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n279 (n279 n273 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n279 (n279 n273 m_n279 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n279 (m_n279 n273 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n279 (n279 gn5) cmod c=2f
+xpa_n280 (n280 n273 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n280 (n280 n273 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n280 (n280 n273 m_n280 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n280 (m_n280 n273 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n280 (n280 gn5) cmod c=2f
+xpa_n325 (n325 n321 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n325 (n325 n321 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n325 (n325 n321 m_n325 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n325 (m_n325 n321 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n325 (n325 gn5) cmod c=2f
+xpa_n326 (n326 n321 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n326 (n326 n321 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n326 (n326 n321 m_n326 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n326 (m_n326 n321 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n326 (n326 gn5) cmod c=2f
+xpa_n327 (n327 n321 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n327 (n327 n321 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n327 (n327 n321 m_n327 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n327 (m_n327 n321 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n327 (n327 gn5) cmod c=2f
+xpa_n328 (n328 n321 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n328 (n328 n321 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n328 (n328 n321 m_n328 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n328 (m_n328 n321 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n328 (n328 gn5) cmod c=2f
+xpa_n37 (n37 n33 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n37 (n37 n33 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n37 (n37 n33 m_n37 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n37 (m_n37 n33 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n37 (n37 gn5) cmod c=2f
+xpa_n373 (n373 n369 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n373 (n373 n369 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n373 (n373 n369 m_n373 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n373 (m_n373 n369 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n373 (n373 gn5) cmod c=2f
+xpa_n374 (n374 n369 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n374 (n374 n369 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n374 (n374 n369 m_n374 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n374 (m_n374 n369 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n374 (n374 gn5) cmod c=2f
+xpa_n375 (n375 n369 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n375 (n375 n369 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n375 (n375 n369 m_n375 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n375 (m_n375 n369 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n375 (n375 gn5) cmod c=2f
+xpa_n376 (n376 n369 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n376 (n376 n369 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n376 (n376 n369 m_n376 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n376 (m_n376 n369 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n376 (n376 gn5) cmod c=2f
+xpa_n38 (n38 n33 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n38 (n38 n33 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n38 (n38 n33 m_n38 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n38 (m_n38 n33 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n38 (n38 gn5) cmod c=2f
+xpa_n39 (n39 n33 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n39 (n39 n33 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n39 (n39 n33 m_n39 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n39 (m_n39 n33 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n39 (n39 gn5) cmod c=2f
+xpa_n40 (n40 n33 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n40 (n40 n33 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n40 (n40 n33 m_n40 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n40 (m_n40 n33 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n40 (n40 gn5) cmod c=2f
+xpa_n85 (n85 n81 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n85 (n85 n81 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n85 (n85 n81 m_n85 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n85 (m_n85 n81 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n85 (n85 gn5) cmod c=2f
+xpa_n86 (n86 n81 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n86 (n86 n81 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n86 (n86 n81 m_n86 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n86 (m_n86 n81 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n86 (n86 gn5) cmod c=2f
+xpa_n87 (n87 n81 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n87 (n87 n81 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n87 (n87 n81 m_n87 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n87 (m_n87 n81 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n87 (n87 gn5) cmod c=2f
+xpa_n88 (n88 n81 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n88 (n88 n81 ph5 ph5) sg13_lv_pmos w=1.12u l=0.13u
+xna_n88 (n88 n81 m_n88 gn5) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n88 (m_n88 n81 gn5 gn5) sg13_lv_nmos w=0.74u l=0.13u
+cl_n88 (n88 gn5) cmod c=2f
+xpa_n137 (n137 n133 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n137 (n137 n133 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n137 (n137 n133 m_n137 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n137 (m_n137 n133 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n137 (n137 gn6) cmod c=2f
+xpa_n138 (n138 n133 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n138 (n138 n133 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n138 (n138 n133 m_n138 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n138 (m_n138 n133 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n138 (n138 gn6) cmod c=2f
+xpa_n139 (n139 n133 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n139 (n139 n133 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n139 (n139 n133 m_n139 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n139 (m_n139 n133 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n139 (n139 gn6) cmod c=2f
+xpa_n140 (n140 n133 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n140 (n140 n133 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n140 (n140 n133 m_n140 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n140 (m_n140 n133 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n140 (n140 gn6) cmod c=2f
+xpa_n185 (n185 n181 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n185 (n185 n181 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n185 (n185 n181 m_n185 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n185 (m_n185 n181 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n185 (n185 gn6) cmod c=2f
+xpa_n186 (n186 n181 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n186 (n186 n181 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n186 (n186 n181 m_n186 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n186 (m_n186 n181 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n186 (n186 gn6) cmod c=2f
+xpa_n187 (n187 n181 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n187 (n187 n181 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n187 (n187 n181 m_n187 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n187 (m_n187 n181 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n187 (n187 gn6) cmod c=2f
+xpa_n188 (n188 n181 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n188 (n188 n181 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n188 (n188 n181 m_n188 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n188 (m_n188 n181 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n188 (n188 gn6) cmod c=2f
+xpa_n233 (n233 n229 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n233 (n233 n229 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n233 (n233 n229 m_n233 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n233 (m_n233 n229 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n233 (n233 gn6) cmod c=2f
+xpa_n234 (n234 n229 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n234 (n234 n229 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n234 (n234 n229 m_n234 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n234 (m_n234 n229 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n234 (n234 gn6) cmod c=2f
+xpa_n235 (n235 n229 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n235 (n235 n229 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n235 (n235 n229 m_n235 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n235 (m_n235 n229 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n235 (n235 gn6) cmod c=2f
+xpa_n236 (n236 n229 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n236 (n236 n229 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n236 (n236 n229 m_n236 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n236 (m_n236 n229 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n236 (n236 gn6) cmod c=2f
+xpa_n281 (n281 n277 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n281 (n281 n277 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n281 (n281 n277 m_n281 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n281 (m_n281 n277 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n281 (n281 gn6) cmod c=2f
+xpa_n282 (n282 n277 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n282 (n282 n277 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n282 (n282 n277 m_n282 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n282 (m_n282 n277 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n282 (n282 gn6) cmod c=2f
+xpa_n283 (n283 n277 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n283 (n283 n277 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n283 (n283 n277 m_n283 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n283 (m_n283 n277 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n283 (n283 gn6) cmod c=2f
+xpa_n284 (n284 n277 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n284 (n284 n277 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n284 (n284 n277 m_n284 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n284 (m_n284 n277 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n284 (n284 gn6) cmod c=2f
+xpa_n329 (n329 n325 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n329 (n329 n325 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n329 (n329 n325 m_n329 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n329 (m_n329 n325 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n329 (n329 gn6) cmod c=2f
+xpa_n330 (n330 n325 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n330 (n330 n325 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n330 (n330 n325 m_n330 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n330 (m_n330 n325 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n330 (n330 gn6) cmod c=2f
+xpa_n331 (n331 n325 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n331 (n331 n325 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n331 (n331 n325 m_n331 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n331 (m_n331 n325 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n331 (n331 gn6) cmod c=2f
+xpa_n332 (n332 n325 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n332 (n332 n325 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n332 (n332 n325 m_n332 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n332 (m_n332 n325 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n332 (n332 gn6) cmod c=2f
+xpa_n377 (n377 n373 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n377 (n377 n373 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n377 (n377 n373 m_n377 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n377 (m_n377 n373 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n377 (n377 gn6) cmod c=2f
+xpa_n378 (n378 n373 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n378 (n378 n373 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n378 (n378 n373 m_n378 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n378 (m_n378 n373 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n378 (n378 gn6) cmod c=2f
+xpa_n379 (n379 n373 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n379 (n379 n373 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n379 (n379 n373 m_n379 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n379 (m_n379 n373 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n379 (n379 gn6) cmod c=2f
+xpa_n380 (n380 n373 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n380 (n380 n373 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n380 (n380 n373 m_n380 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n380 (m_n380 n373 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n380 (n380 gn6) cmod c=2f
+xpa_n41 (n41 n37 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n41 (n41 n37 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n41 (n41 n37 m_n41 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n41 (m_n41 n37 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n41 (n41 gn6) cmod c=2f
+xpa_n42 (n42 n37 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n42 (n42 n37 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n42 (n42 n37 m_n42 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n42 (m_n42 n37 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n42 (n42 gn6) cmod c=2f
+xpa_n43 (n43 n37 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n43 (n43 n37 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n43 (n43 n37 m_n43 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n43 (m_n43 n37 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n43 (n43 gn6) cmod c=2f
+xpa_n44 (n44 n37 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n44 (n44 n37 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n44 (n44 n37 m_n44 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n44 (m_n44 n37 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n44 (n44 gn6) cmod c=2f
+xpa_n89 (n89 n85 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n89 (n89 n85 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n89 (n89 n85 m_n89 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n89 (m_n89 n85 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n89 (n89 gn6) cmod c=2f
+xpa_n90 (n90 n85 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n90 (n90 n85 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n90 (n90 n85 m_n90 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n90 (m_n90 n85 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n90 (n90 gn6) cmod c=2f
+xpa_n91 (n91 n85 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n91 (n91 n85 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n91 (n91 n85 m_n91 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n91 (m_n91 n85 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n91 (n91 gn6) cmod c=2f
+xpa_n92 (n92 n85 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n92 (n92 n85 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n92 (n92 n85 m_n92 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n92 (m_n92 n85 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n92 (n92 gn6) cmod c=2f
+xpa_n141 (n141 n137 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n141 (n141 n137 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n141 (n141 n137 m_n141 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n141 (m_n141 n137 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n141 (n141 gn6) cmod c=2f
+xpa_n142 (n142 n137 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n142 (n142 n137 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n142 (n142 n137 m_n142 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n142 (m_n142 n137 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n142 (n142 gn6) cmod c=2f
+xpa_n143 (n143 n137 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n143 (n143 n137 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n143 (n143 n137 m_n143 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n143 (m_n143 n137 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n143 (n143 gn6) cmod c=2f
+xpa_n144 (n144 n137 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n144 (n144 n137 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n144 (n144 n137 m_n144 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n144 (m_n144 n137 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n144 (n144 gn6) cmod c=2f
+xpa_n189 (n189 n185 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n189 (n189 n185 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n189 (n189 n185 m_n189 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n189 (m_n189 n185 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n189 (n189 gn6) cmod c=2f
+xpa_n190 (n190 n185 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n190 (n190 n185 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n190 (n190 n185 m_n190 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n190 (m_n190 n185 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n190 (n190 gn6) cmod c=2f
+xpa_n191 (n191 n185 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n191 (n191 n185 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n191 (n191 n185 m_n191 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n191 (m_n191 n185 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n191 (n191 gn6) cmod c=2f
+xpa_n192 (n192 n185 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n192 (n192 n185 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n192 (n192 n185 m_n192 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n192 (m_n192 n185 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n192 (n192 gn6) cmod c=2f
+xpa_n237 (n237 n233 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n237 (n237 n233 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n237 (n237 n233 m_n237 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n237 (m_n237 n233 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n237 (n237 gn6) cmod c=2f
+xpa_n238 (n238 n233 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n238 (n238 n233 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n238 (n238 n233 m_n238 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n238 (m_n238 n233 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n238 (n238 gn6) cmod c=2f
+xpa_n239 (n239 n233 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n239 (n239 n233 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n239 (n239 n233 m_n239 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n239 (m_n239 n233 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n239 (n239 gn6) cmod c=2f
+xpa_n240 (n240 n233 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n240 (n240 n233 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n240 (n240 n233 m_n240 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n240 (m_n240 n233 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n240 (n240 gn6) cmod c=2f
+xpa_n285 (n285 n281 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n285 (n285 n281 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n285 (n285 n281 m_n285 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n285 (m_n285 n281 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n285 (n285 gn6) cmod c=2f
+xpa_n286 (n286 n281 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n286 (n286 n281 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n286 (n286 n281 m_n286 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n286 (m_n286 n281 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n286 (n286 gn6) cmod c=2f
+xpa_n287 (n287 n281 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n287 (n287 n281 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n287 (n287 n281 m_n287 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n287 (m_n287 n281 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n287 (n287 gn6) cmod c=2f
+xpa_n288 (n288 n281 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n288 (n288 n281 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n288 (n288 n281 m_n288 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n288 (m_n288 n281 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n288 (n288 gn6) cmod c=2f
+xpa_n333 (n333 n329 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n333 (n333 n329 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n333 (n333 n329 m_n333 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n333 (m_n333 n329 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n333 (n333 gn6) cmod c=2f
+xpa_n334 (n334 n329 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n334 (n334 n329 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n334 (n334 n329 m_n334 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n334 (m_n334 n329 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n334 (n334 gn6) cmod c=2f
+xpa_n335 (n335 n329 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n335 (n335 n329 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n335 (n335 n329 m_n335 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n335 (m_n335 n329 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n335 (n335 gn6) cmod c=2f
+xpa_n336 (n336 n329 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n336 (n336 n329 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n336 (n336 n329 m_n336 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n336 (m_n336 n329 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n336 (n336 gn6) cmod c=2f
+xpa_n381 (n381 n377 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n381 (n381 n377 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n381 (n381 n377 m_n381 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n381 (m_n381 n377 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n381 (n381 gn6) cmod c=2f
+xpa_n382 (n382 n377 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n382 (n382 n377 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n382 (n382 n377 m_n382 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n382 (m_n382 n377 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n382 (n382 gn6) cmod c=2f
+xpa_n383 (n383 n377 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n383 (n383 n377 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n383 (n383 n377 m_n383 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n383 (m_n383 n377 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n383 (n383 gn6) cmod c=2f
+xpa_n384 (n384 n377 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n384 (n384 n377 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n384 (n384 n377 m_n384 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n384 (m_n384 n377 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n384 (n384 gn6) cmod c=2f
+xpa_n45 (n45 n41 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n45 (n45 n41 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n45 (n45 n41 m_n45 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n45 (m_n45 n41 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n45 (n45 gn6) cmod c=2f
+xpa_n46 (n46 n41 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n46 (n46 n41 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n46 (n46 n41 m_n46 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n46 (m_n46 n41 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n46 (n46 gn6) cmod c=2f
+xpa_n47 (n47 n41 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n47 (n47 n41 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n47 (n47 n41 m_n47 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n47 (m_n47 n41 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n47 (n47 gn6) cmod c=2f
+xpa_n48 (n48 n41 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n48 (n48 n41 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n48 (n48 n41 m_n48 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n48 (m_n48 n41 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n48 (n48 gn6) cmod c=2f
+xpa_n93 (n93 n89 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n93 (n93 n89 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n93 (n93 n89 m_n93 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n93 (m_n93 n89 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n93 (n93 gn6) cmod c=2f
+xpa_n94 (n94 n89 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n94 (n94 n89 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n94 (n94 n89 m_n94 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n94 (m_n94 n89 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n94 (n94 gn6) cmod c=2f
+xpa_n95 (n95 n89 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n95 (n95 n89 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n95 (n95 n89 m_n95 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n95 (m_n95 n89 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n95 (n95 gn6) cmod c=2f
+xpa_n96 (n96 n89 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xpb_n96 (n96 n89 ph6 ph6) sg13_lv_pmos w=1.12u l=0.13u
+xna_n96 (n96 n89 m_n96 gn6) sg13_lv_nmos w=0.74u l=0.13u
+xnb_n96 (m_n96 n89 gn6 gn6) sg13_lv_nmos w=0.74u l=0.13u
+cl_n96 (n96 gn6) cmod c=2f
+control
+  options tran_method="gear" reltol=1e-5
+  save v(ph1) v(ph2) v(ph3) v(ph4) v(ph5) v(ph6) i(vph1) i(vph2) i(vph3) i(vph4) i(vph5) i(vph6) i(vmg1) i(vmg2) i(vmg3) i(vmg4) i(vmg5) i(vmg6) v(n101) v(n149)
+  save v(n197) v(n245) v(n293) v(n341) v(n5) v(n53) v(n109) v(n13) v(n157) v(n205) v(n253) v(n301) v(n349) v(n61) v(n117) v(n165) v(n21) v(n213) v(n261) v(n309)
+  save v(n357) v(n69) v(n125) v(n173) v(n221) v(n269) v(n29) v(n317) v(n365) v(n77) v(n133) v(n181) v(n229) v(n277) v(n325) v(n37) v(n373) v(n85) v(n45) v(n93)
+  save v(n141) v(n189) v(n237) v(n285) v(n333) v(n381)
+  analysis tr tran step=0.1p stop=2442p maxstep=0.25p icmode="op"
+endc
