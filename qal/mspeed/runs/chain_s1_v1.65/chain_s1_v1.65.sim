@@ -1,0 +1,57 @@
+cmos chain comparator s=1 vdd=1.65
+load "psp103v4.osdi"
+load "capacitor.osdi"
+include "/usr/local/src/stat-sim/qal/p620a/vacask_port/sg13g2_models.inc"
+model v vsource
+model cmod capacitor
+subckt sg13_lv_nmos (d g s b)
+  parameters w=0.15u l=0.13u
+  m1 (d g s b) sg13g2_nmos w=w l=l
+ends
+subckt sg13_lv_pmos (d g s b)
+  parameters w=0.15u l=0.13u
+  m1 (d g s b) sg13g2_pmos w=w l=l
+ends
+vsup (sup 0) v dc=1.65
+vdi (di 0) v type="pwl" wave=[0,0, 100p,0, 102p,1.65]
+xp1 (d1 di sup sup) sg13_lv_pmos w=1.12u l=0.13u
+xn1 (d1 di 0 0) sg13_lv_nmos w=0.74u l=0.13u
+cd1 (d1 0) cmod c=2f
+xp2 (d2 d1 sup sup) sg13_lv_pmos w=1.12u l=0.13u
+xn2 (d2 d1 0 0) sg13_lv_nmos w=0.74u l=0.13u
+cd2 (d2 0) cmod c=2f
+xp3 (d3 d2 sup sup) sg13_lv_pmos w=1.12u l=0.13u
+xn3 (d3 d2 0 0) sg13_lv_nmos w=0.74u l=0.13u
+cd3 (d3 0) cmod c=2f
+xp4 (d4 d3 sup sup) sg13_lv_pmos w=1.12u l=0.13u
+xn4 (d4 d3 0 0) sg13_lv_nmos w=0.74u l=0.13u
+cd4 (d4 0) cmod c=2f
+xp5 (d5 d4 sup sup) sg13_lv_pmos w=1.12u l=0.13u
+xn5 (d5 d4 0 0) sg13_lv_nmos w=0.74u l=0.13u
+cd5 (d5 0) cmod c=2f
+xp6 (d6 d5 sup sup) sg13_lv_pmos w=1.12u l=0.13u
+xn6 (d6 d5 0 0) sg13_lv_nmos w=0.74u l=0.13u
+cd6 (d6 0) cmod c=2f
+xp7 (d7 d6 sup sup) sg13_lv_pmos w=1.12u l=0.13u
+xn7 (d7 d6 0 0) sg13_lv_nmos w=0.74u l=0.13u
+cd7 (d7 0) cmod c=2f
+xp8 (d8 d7 sup sup) sg13_lv_pmos w=1.12u l=0.13u
+xn8 (d8 d7 0 0) sg13_lv_nmos w=0.74u l=0.13u
+cd8 (d8 0) cmod c=2f
+xp9 (d9 d8 sup sup) sg13_lv_pmos w=1.12u l=0.13u
+xn9 (d9 d8 0 0) sg13_lv_nmos w=0.74u l=0.13u
+cd9 (d9 0) cmod c=2f
+xp10 (d10 d9 sup sup) sg13_lv_pmos w=1.12u l=0.13u
+xn10 (d10 d9 0 0) sg13_lv_nmos w=0.74u l=0.13u
+cd10 (d10 0) cmod c=2f
+xp11 (d11 d10 sup sup) sg13_lv_pmos w=1.12u l=0.13u
+xn11 (d11 d10 0 0) sg13_lv_nmos w=0.74u l=0.13u
+cd11 (d11 0) cmod c=2f
+xp12 (d12 d11 sup sup) sg13_lv_pmos w=1.12u l=0.13u
+xn12 (d12 d11 0 0) sg13_lv_nmos w=0.74u l=0.13u
+cd12 (d12 0) cmod c=2f
+control
+  options tran_method="gear" reltol=1e-05
+  save v(di) v(d1) v(d2) v(d3) v(d4) v(d5) v(d6) v(d7) v(d8) v(d9) v(d10) v(d11) v(d12)
+  analysis tr tran step=0.02p stop=1000p maxstep=0.1p icmode="op"
+endc
