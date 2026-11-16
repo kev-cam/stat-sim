@@ -263,7 +263,7 @@ time-domain one on none.  5.2 GHz agrees the same way (-32.5 dB at 1 m, -18.4 at
 20 dB PA and a 15 dB / 1.5 dB-NF LNA at each end (Python): -27.6 dB at 300 m, -17.7 at 1 km.
 
 Speed: nvc 0.008 x real time (3.9 s for 8320 symbol events, 33 ms of air time, two radios); Python
-time domain 0.07 - 0.12 x.  Not tuned: the per-sample procedures recompute their constants (band
+time domain 0.07 - 0.12 x; the same event model on the GPU 18 - 47 x (next section).  nvc is not tuned: the per-sample procedures recompute their constants (band
 interpolation, dB conversions) on every sample, and the arena regrids the receivers' LO leakage onto
 the transmitter's grid for every antenna on every event.
 
@@ -289,6 +289,51 @@ delay is each line's phase, not a delay of the event (fine while it is shorter t
 the digital FIR / half-band filters are not modelled, only the analog baseband response; no coding in the
 modem, so no packet error rate; AN-2597's own modem (HT-mixed preamble, convolutional coding, 2x2 STBC)
 is not reproduced -- the app note itself could not be opened, its parameters are from ADI's wiki page.
+
+### ad9361/gpu/ -- the same spectral events on the GPU
+
+`smak` (or make) builds `ad9361_gpu`; `an2597_gpu.py` runs the link on it, checks it and times it.
+`ad9361_kernels.h` is the chip's event model once more (transmit; receive before the gain; gain and ADC),
+compiled for the device -- one thread per radio and symbol event, a window of events per launch -- and for
+the host, with the same counter-based random numbers, so the two are compared event by event.  The
+scenario (each radio's constants in its control state, the coupling per pair, the symbols to send) is
+written by Python from the tables in `ad9361.py`.  Per window on the device: transmit; arena (each
+receiver sums the transmitters it hears, with their carrier offsets) and receiver front; the AGC state
+machines over per-sub-block power and peak, sequential per radio, on the host; gain and ADC.
+
+Two things differ from the VHDL, both to run a window's symbols in parallel: LO phase noise starts each
+event from a fresh stationary value (no correlation from one symbol to the next), and the AGC decides
+from the power the ADC would measure without compression (the same decisions unless a sub-block clips,
+where both step down alike).
+
+Check, AN-2597 link as above (10 packets per modulation and distance): EVM within 0.6 dB of the budget
+from 1 m to 300 m (-36.3 / -33.0 / -26.2 / -16.1 / -6.4 dB for 64-QAM at 1 / 10 / 30 / 100 / 300 m), the
+AGC at the same gains as nvc and Python (33.9, 43.9, 53.9, 63.9, 72.9 dB), bit error rates alike; GPU
+against the CPU build of the same code: no gain differs, and the received lines differ by at most one
+ADC code in one sample of an event.
+
+Real-time factor (air time of a window / wall time), RTX 3070 Ti Laptop GPU, float, 20 MSPS, 4 us
+symbols; "held" leaves the gains as they are (no AGC round trip to the host); CPU is the same code on
+the i9-12900H:
+
+| radios | window (air time) | GPU with AGC | GPU, gains held | CPU 1 thread | CPU 20 threads |
+|---|---|---|---|---|---|
+| 2 (the link: one sends, one receives) | 0.42 ms | 1.2 | 1.5 | 0.57 | 0.47 |
+| 2 | 6.7 ms | 18 | 26 | 0.53 | 2.1 |
+| 2 | 27 ms | 30 | 48 | 0.55 | 2.5 |
+| 2 | 107 ms | 38 | 55 | 0.54 | 2.3 |
+| 2 | 426 ms | 47 | 62 | 0.55 | 2.3 |
+| 4, all sending and receiving, all hearing each other | 107 ms | 12 | 16 | 0.12 | 0.67 |
+| 8 | 107 ms | 4.8 | 5.5 | 0.046 | 0.28 |
+| 16 | 107 ms | 1.6 | 1.7 | 0.015 | 0.08 |
+| 32 | 107 ms | 0.47 | 0.50 | 0.005 | 0.025 |
+
+So the two-radio link runs 18 - 47 times faster than real time on the GPU once a window holds a few
+milliseconds of air time (about 0.3 ms of fixed cost per window), against 0.008 for the VHDL in nvc and
+2.3 for the same code on 20 CPU threads.  The all-pairs arena is what limits more radios: each receiver
+does one inverse FFT and one phase ramp per transmitter it hears, so cost grows with the square of the
+number of radios and real time is lost near 20.  Not tried: summing transmitters that share a carrier
+before the transform, distance culling, double precision.
 
 ## Control states
 
