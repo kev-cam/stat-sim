@@ -60,6 +60,7 @@ architecture t of tb_ad9361 is
 begin
     process
         variable cfg : ad9361_config;
+        variable pv : real_vector(0 to AD9361_ACCEL_N - 1);
         variable st : ad9361_state;
         variable s : rf_signal;
         variable c, w : iq_sample;
@@ -139,6 +140,30 @@ begin
         cfg.rx_gain_db := ad9361_rx_gain_legal(2.437e9, 40.0);
         for n in AGC_P'range loop
             say("agc_slow_" & integer'image(n), ad9361_agc_slow(cfg, AGC_P(n)));
+        end loop;
+
+        -- the chip's constants as the accelerator is given them, in two control states
+        cfg := cfg_at(2.437e9);
+        cfg.rx_rf_bw := 18.0e6;
+        cfg.tx_rf_bw := 18.0e6;
+        cfg.xo_ppm := 1.0;
+        cfg.gain_mode := AGC_FAST_ATTACK;
+        cfg.ensm := ENSM_TX;
+        pv := ad9361_accel_params(cfg, 64);
+        for i in pv'range loop
+            say("accel_a_" & integer'image(i), pv(i));
+        end loop;
+        cfg := cfg_at(5.2e9);
+        cfg.rx_rf_bw := 9.0e6;
+        cfg.tx_rf_bw := 9.0e6;
+        cfg.xo_ppm := -1.5;
+        cfg.gain_mode := AGC_MANUAL;
+        cfg.rx_gain_db := 40.0;
+        cfg.tx_atten_db := 10.25;
+        cfg.ensm := ENSM_FDD;
+        pv := ad9361_accel_params(cfg, 64);
+        for i in pv'range loop
+            say("accel_b_" & integer'image(i), pv(i));
         end loop;
 
         -- Monte Carlo on the noisy procedures

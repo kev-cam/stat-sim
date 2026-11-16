@@ -1,4 +1,4 @@
-# rf/ -- spectral RF signals: GPU benchmarks and transistor-level fitting
+# rf/ -- spectral RF signals: GPU benchmarks, transistor-level fitting, and a spectral accelerator for nvc
 
 Prototype work, 2026-11-15, on the RTX 3070 Ti Laptop GPU (CUDA 13.5) and i9-12900H.
 
@@ -197,6 +197,8 @@ model of the same chip is the reference it is checked against.
     ad9361_vhdl.py emit              write ad9361_pkg.vhd from the tables in ad9361.py
     ad9361_vhdl.py check --nvc N     compile the package, run tb_ad9361.vhd, compare with ad9361.py
     an2597_nvc.py --nvc N --compare  the link in nvc, beside the link budget and the Python model
+    an2597_nvc.py --nvc N --accel    the same, its RF path moved out to the spectral accelerator (accel/)
+    radar_nvc.py --nvc N -n 8 --both a phased-array radar in nvc, then with the accelerator
     an2597_link.py                   the same link in Python alone (time domain, sample by sample)
 
 **What is modelled** (`ad9361.py`, same numbers and maths in `ad9361_pkg.vhd`): transmit: 12-bit DAC
@@ -222,21 +224,25 @@ relying on a number.
 
 `ad9361.py check`: every data sheet figure measured back from the model (two-tone tests, full-scale
 tone, noise with no input, EVM of a modulated signal) is within 0.2 dB at 800 MHz, 2.4 GHz and 5.5 GHz.
-`ad9361_vhdl.py check`: 211 values from `tb_ad9361.vhd` in nvc against Python -- the noise-free paths
-bit for bit (RX codes equal, TX envelopes to 6e-16), Monte Carlo NF / noise / EVM / leakage within 0.2 dB.
+`ad9361_vhdl.py check`: 309 values from `tb_ad9361.vhd` in nvc against Python -- the noise-free paths
+bit for bit (RX codes equal, TX envelopes to 6e-16), Monte Carlo NF / noise / EVM / leakage within 0.2 dB,
+and the chip's constants as the accelerator is given them (two control states, 49 values each).
 
 **Spectral event-driven VHDL** (all `--std=2040`):
 
 | file | what |
 |---|---|
-| `rf_spectrum_pkg.vhd` | `rf_spectrum`: 64 lines (complex amplitude per frequency, both polarisations) around a carrier, one value per event; Friis per line, carrier-offset regridding, `arena_resolve` |
+| `rf_spectrum_pkg.vhd` | `rf_spectrum`: 64 lines (complex amplitude per frequency, both polarisations) around a carrier, one value per event; Friis per line, carrier-offset regridding, `arena_resolve` (antennas, platforms whose antennas do not hear each other, point scatterers) |
 | `ad9361_pkg.vhd` | generated: data sheet tables, per-sample transmit and receive procedures |
 | `ad9361_spectral_pkg.vhd` | one event through the chip: filters on the lines, everything non-linear on the 64 samples of the event (DAC/ADC words, compression, AGC changing gain part-way) |
 | `ad9361.vhd` | the chip: RF pins `tx1`, `rx1` (std_logic nets, payload on `'driver` / `'other`), software side `cfg`, `tx_data`, `rx_data` (one symbol period per event) |
-| `rf_spec_antenna.vhd` | antenna: a driver and a receiver in the arena, with a position port (it can move) |
-| `arena_resolver.py` | writes the resolver network: wires between pins and feeds, and the arena -- each antenna's `air'other` is the sum of every other antenna's `air'driver` through free space between their positions |
+| `rf_spec_antenna.vhd` | antenna: a driver and a receiver in the arena, with a position port (it can move) and a platform |
+| `rf_spec_scatterer.vhd` | a point target in the arena: radar cross-section, a position port (it can move: Doppler) |
+| `arena_resolver.py` | writes the resolver network: wires between pins and feeds, the arena -- each antenna's `air'other` is the sum of every other antenna's `air'driver` through free space between their positions, and of every antenna's signal off every scatterer -- and the bridge to the accelerator |
 | `ofdm_soft_pkg.vhd` | software OFDM modem on spectra (802.11a/g numerology, no coding): training, data, carrier-offset estimate and removal, channel estimate, pilots |
 | `an2597_link.vhd` | the link: two chips, four antennas, and two processes as the drone's and the controller's software; the drone flies out and sends packets, the controller's fast AGC and modem receive them |
+| `phased_radar.vhd` | a phased-array radar: n chips on one LO, n transmit and n receive elements, three moving targets, and the radar as one software process (focused beams, range from the lines, speed pulse to pulse, bearing across the elements) |
+| `accel/spectral_accel_pkg.vhd` | nvc's side of the spectral accelerator (next section but one) |
 
 An OFDM packet is 2 short-training, 2 long-training and N data events (plus 2 idle), one per 4 us symbol,
 instead of 80 samples each.  Linear blocks scale lines; the chip goes through the event's time domain
@@ -262,10 +268,13 @@ Python time-domain model up to 100 m (0.8 dB at 300 m); the AGC settles at the s
 time-domain one on none.  5.2 GHz agrees the same way (-32.5 dB at 1 m, -18.4 at 30 m).  With an ideal
 20 dB PA and a 15 dB / 1.5 dB-NF LNA at each end (Python): -27.6 dB at 300 m, -17.7 at 1 km.
 
-Speed: nvc 0.008 x real time (3.9 s for 8320 symbol events, 33 ms of air time, two radios); Python
-time domain 0.07 - 0.12 x; the same event model on the GPU 18 - 47 x (next section).  nvc is not tuned: the per-sample procedures recompute their constants (band
-interpolation, dB conversions) on every sample, and the arena regrids the receivers' LO leakage onto
-the transmitter's grid for every antenna on every event.
+Speed: nvc 0.008 x real time (3.0 s for 6240 symbol events, 25 ms of air time, two radios); the same
+run with its RF path on the spectral accelerator 0.048 x (`accel/`, below); Python time domain 0.07 -
+0.12 x; a standalone GPU program that takes whole windows of events 18 - 47 x (`gpu/`, below).  nvc is
+not tuned: the per-sample procedures recompute their constants (band interpolation, dB conversions) on
+every sample, and the arena regrids the receivers' LO leakage onto the transmitter's grid for every
+antenna on every event.  A position change is not an event (it used to re-resolve the arena): an antenna
+or target that moves changes what the next event sees.
 
 **Things learned about nvc `--std=2040`** (nvc 1.19-devel r619, da8ece172):
 - A pin's `'driver` / `'other` signals exist only in a component that mentions both, and take their type
@@ -282,6 +291,12 @@ the transmitter's grid for every antenna on every event.
   `an2597_nvc.py` sets it, and `an2597_nvc.py --eval-arena` reproduces the crash.  Not fixed in nvc.
 - A process sensitive only to a real signal and comparing it with a constant fails at elaboration
   ("cmp trigger right argument must be integer").
+- Foreign code (`VHPIDIRECT`, library given with `--load`): the subprogram needs a body in VHDL even
+  though it is never run; INTEGER is 64 bits in this mode and an `out real` scalar does not arrive, so
+  the accelerator's interface is reals and `real_vector`s only (arrays are a pointer and a length).
+  `std.env` here is the 2008 one: no `getenv`.  Signals declared in a package, resolved ones driven from
+  many instances included, and external names through `for ... generate` (`.top.dut.g(3).chip.tx1.driver`)
+  work.  A process with megabytes of variables needs `-H` (the heap is 16 MB by default).
 
 Limits: one receive and one transmit channel per chip in the VHDL (the Python model has both and their
 isolation); sample-clock offset is not modelled (the reference error moves the LOs only); propagation
@@ -290,7 +305,122 @@ the digital FIR / half-band filters are not modelled, only the analog baseband r
 modem, so no packet error rate; AN-2597's own modem (HT-mixed preamble, convolutional coding, 2x2 STBC)
 is not reproduced -- the app note itself could not be opened, its parameters are from ADI's wiki page.
 
-### ad9361/gpu/ -- the same spectral events on the GPU
+### ad9361/accel/ -- the spectral accelerator: the RF path's data and processing out of nvc, a thread per frequency line
+
+nvc's accelerators move a subtree's data and processing out of the simulator and can pull them back at
+a settled point, to debug or to suspend (`--accel`: a digital subtree as a compiled state machine,
+demoted back to interpretation on request).  This is that for the spectral RF path.  The design is the
+same VHDL; what moves is the data on its RF nets -- one spectrum per net per event, an array of complex
+lines -- and the processing of the chips' transmit and receive paths, the antennas and the arena.  On
+the accelerator every frequency line is a thread: a block of K threads is one element's spectrum, the
+linear parts (filters, free space, the arena's sums) are done by each line's thread on its own, and
+the chip's non-linear parts by the same K threads as the K samples of the event (an in-block
+transform between the two, a parallel prefix for the LO phase noise, the AGC stepping sub-block by
+sub-block).  Events are processed one at a time in the simulator's order, so the chips' state (AGC,
+phase noise) carries from event to event exactly as the VHDL's does.
+
+    smak                                         (or make) builds accel/libspectral_accel.so
+    an2597_nvc.py --nvc N --accel                the AN-2597 link, RF path on the accelerator
+    an2597_nvc.py --nvc N --accel --schedule 0:out,6ms:in,12.5ms:out,19ms:in     out, back, out, back
+    radar_nvc.py --nvc N -n 64 --accel           the phased-array radar, 64 + 64 elements
+    accel/spectral_accel.py check | radar | mimo the library without a simulator (ctypes)
+
+**How it attaches.**  nvc is not changed: `libspectral_accel.so` is loaded with `--load` and called
+through `VHPIDIRECT` subprograms (`accel/spectral_accel_pkg.vhd`).  Compile `accel/spectral_accel_on.vhd`
+(or `_off.vhd`: no library needed, nothing is called) before the package.  Each chip, antenna and
+scatterer registers itself; the bridge process that `arena_resolver.py` writes into the resolver hands
+over the wiring and the arena, asks the accelerator whether it admits the design (it declines, and the
+design stays in nvc, when a wire is not one chip pin to one antenna feed, an antenna has a polarisation
+angle, or the chips do not share a sample rate), and drives the package signal `sa_mode` from
+`SPECTRAL_ACCEL_SCHEDULE` (default `0:out`).  The chips' constants in their control state reach the
+accelerator as one vector from `ad9361_pkg.ad9361_accel_params`, so both sides compute from the same
+tables.
+
+**Out and back.**  When `sa_mode` goes to `SA_ON_ACCEL` each chip process pushes what it carries from
+event to event (LO phase, carrier-leakage phase, AGC state) and the spectrum on its TX pin.  While out,
+a chip's transmitter only hands the frame at its data port over (`sa_tx`), its receiver only collects
+what the accelerator delivers (`sa_rx`; the first one after new frames runs the event), and the nets in
+nvc stand still: no antenna or resolver process runs.  On the way back (`SA_RESTORING`, then
+`SA_IN_NVC`) the chips pull their state and put the pulled-back spectra on their pins, the VHDL arena
+resolves once so every net shows what the accelerator last had, and the receivers do not treat that as
+a new event.  A switch asked for time t happens 1 fs after t.  `spectral_accel.py check` shows the
+pulled-back state is everything: pull after 97 events, overwrite the accelerator's copy, push back, and
+the next 143 events are bit-identical to an uninterrupted run (and differ if the state is not put
+back).  In nvc, `--schedule 0:out,6.001ms:in,12.5ms:out,19ms:in` on the link (switches in the middle
+of packets): 3109 of 6240 events on the accelerator, every packet still found, EVM as before.
+
+**Checks.**  The AN-2597 link (table above), 64-QAM EVM in dB at 1 / 10 / 30 / 100 / 300 m: budget
+-36.0 / -33.2 / -26.4 / -16.3 / -6.8; nvc alone -36.1 / -33.2 / -26.3 / -16.1 / -5.9; nvc with the
+accelerator within 1.1 dB of the budget for all four modulations (nvc alone: 0.9), the AGC at the same gains (33.9,
+43.9, 53.9, 63.9, 72.9 dB), bit error rates alike.  The device against the same stages run as CPU loops
+with the same random numbers (`SPECTRAL_ACCEL_DEVICE=cpu`), every event of the sweep: no gain differs,
+received lines within one ADC word in one sample.  `spectral_stages.inc` is one text compiled both
+ways.
+
+**A phased-array radar** (`phased_radar.vhd`, `radar_nvc.py`): n transmit and n receive elements half
+a wavelength apart on one LO, the receive array 3 m above the transmit array and hearing it directly
+(the leakage and its phase noise are what limit the small arrays), three targets (10 / 30 / 100 m2 at
+120 / 210 / 160 m, moving at -40 / 75 / 120 m/s), 64 OFDM pulses of 64 lines per look, 100 us apart.
+The radar software focuses both beams on the target's cell, divides the echoes by the pulse, the AGC
+gain and its chips' known filter responses, and reads range off the lines, speed off the pulses and
+bearing off the elements.  From 8 + 8 elements up, nvc alone and nvc with the accelerator find the same
+three targets (range within 2 m, speed within a Doppler cell, bearing within a fraction of the beam);
+at 4 + 4 the leakage's noise hides one or both of the first two targets in either.  Steady-state time
+per pulse (each pulse is 2 n events at the chips):
+
+| elements | nvc alone | nvc + accelerator | of which on the GPU |
+|---|---|---|---|
+| 4 + 4 | 1.3 ms | 0.22 ms | 0.12 ms |
+| 8 + 8 | 2.9 | 0.27 | 0.12 |
+| 16 + 16 | 7.3 | 0.41 | 0.14 |
+| 32 + 32 | 21 | 0.80 | 0.19 |
+| 64 + 64 | 71 | 1.7 | 0.28 |
+| 128 + 128 | - | 3.2 | 0.40 |
+| 256 + 256 | - | 6.7 | 0.67 |
+
+So 64 + 64 elements run about 43 times faster with the RF path out, and what is left is nvc's own: one
+process activation and one 64-line frame per element at the data ports, and the radar's software.
+
+**The accelerator alone** (`spectral_accel.py radar`, `mimo`; RTX 3070 Ti Laptop GPU, one event per
+call, 64 lines, time from frames in to frames out):
+
+| elements | arrays hear each other (N x N pairs) | arrays isolated, 4 targets | isolated, targets moving every event |
+|---|---|---|---|
+| 8 + 8 | 0.062 ms | 0.054 ms | 0.082 ms |
+| 64 + 64 | 0.10 | 0.072 | 0.10 |
+| 256 + 256 | 0.35 | 0.17 | 0.21 |
+| 512 + 512 | 0.79 | 0.32 | 0.39 |
+
+| base-station antennas, 8 users each on its own LO | 16 | 64 | 256 | 1024 | 4096 |
+|---|---|---|---|---|---|
+| ms per event | 0.062 | 0.067 | 0.10 | 0.35 | 2.5 |
+
+512 + 512 elements all hearing each other is 16.8 million line-pair terms per event, each with its own
+phase, in 0.79 ms; the same stages as CPU loops on 20 threads take 6.2 ms at 256 + 256 (GPU 0.35).
+With 256 lines per event: 0.082 / 0.18 / 0.79 ms at 8 / 64 / 256 elements a side.
+
+**What this is in real time.**  A pulsed radar at a 1 ms repetition interval is real time on the
+accelerator alone at every size in the table, and under nvc up to 32 + 32 elements (1250 pulses a
+second); at 100 us, alone up to 32 + 32 (64 + 64 takes 102 us).  Continuous 20 MSPS OFDM (an event
+every 4 us) is not: one event per call costs about 45 us before any arithmetic (two kernel launches and
+three copies), so the
+two-radio link runs at 0.09 x on the accelerator alone and 0.048 x under nvc.  The earlier `gpu/`
+program below reaches 18 - 47 x on that link by taking thousands of events per launch; doing that
+here means the software handing over and collecting buffers of frames while the design is out, which
+is the next step, together with moving the per-element data-port traffic out of nvc.
+
+Limits and differences from the VHDL: the random numbers are the accelerator's own (the two agree
+statistically, not sample by sample); single precision on the device, geometry in double; with several
+carriers on the air each group of transmitters is filtered on its own grid before the carrier offset
+(the VHDL arena first puts everything on the first transmitter's grid; the same when one carrier
+transmits); the receivers' LO leakage is not scattered off targets; one polarisation; switches come
+from the environment's schedule only (nothing in VHDL can ask for one yet); while the design is out a
+waveform dump of its nets shows them standing still.
+
+### ad9361/gpu/ -- an earlier experiment: whole windows of events in one launch
+
+Not an nvc accelerator: a standalone program with its own copy of the chip model, one thread per radio
+and symbol event, written before `accel/`.  It stays as the measure of what batching events buys.
 
 `smak` (or make) builds `ad9361_gpu`; `an2597_gpu.py` runs the link on it, checks it and times it.
 `ad9361_kernels.h` is the chip's event model once more (transmit; receive before the gain; gain and ADC),

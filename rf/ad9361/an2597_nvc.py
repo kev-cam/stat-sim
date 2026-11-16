@@ -11,6 +11,9 @@ distance the EVM and uncoded bit error rate of each modulation next to the link 
 
     an2597_nvc.py --nvc /usr/local/src/nvc-build/bin/nvc
     an2597_nvc.py --lo 5.2e9 --distances 1 10 30 100 --compare
+    an2597_nvc.py --accel                                  the RF path's data and processing on the spectral
+                                                           accelerator (accel/: build it with smak first)
+    an2597_nvc.py --accel --schedule 0:out,6ms:in,12ms:out moved out, pulled back into nvc at 6 ms, out again
 """
 import argparse
 import math
@@ -30,8 +33,9 @@ import arena_resolver
 import ofdm
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-SOURCES = ("rf_spectrum_pkg.vhd", "ad9361_spectral_pkg.vhd", "ad9361.vhd", "rf_spec_antenna.vhd", "ofdm_soft_pkg.vhd",
-           "an2597_link.vhd")
+SOURCES = ("accel/spectral_accel_%s.vhd", "accel/spectral_accel_pkg.vhd", "rf_spectrum_pkg.vhd", "ad9361_spectral_pkg.vhd", "ad9361.vhd",
+           "rf_spec_antenna.vhd", "ofdm_soft_pkg.vhd", "an2597_link.vhd")
+ACCEL_LIB = os.path.join(HERE, "accel", "libspectral_accel.so")
 WIRES = [["drone_chip.tx1", "drone_ant_tx.feed"], ["drone_chip.rx1", "drone_ant_rx.feed"],
          ["ctrl_chip.tx1", "ctrl_ant_tx.feed"], ["ctrl_chip.rx1", "ctrl_ant_rx.feed"]]
 ARENA = ["drone_ant_tx", "drone_ant_rx", "ctrl_ant_tx", "ctrl_ant_rx"]
@@ -75,6 +79,19 @@ def run(args):
         env.pop("NVC_NO_EVAL_ARENA", None)
     else:
         env["NVC_NO_EVAL_ARENA"] = "1"
+    # the spectral accelerator: the same design, its RF path's data and processing moved out of nvc
+    for k in ("SPECTRAL_ACCEL_SCHEDULE", "SPECTRAL_ACCEL_DEVICE"):
+        env.pop(k, None)
+    load = []
+    if args.accel:
+        if not os.path.isfile(ACCEL_LIB):
+            raise SystemExit("%s is not built: run smak (or make) in %s" % (ACCEL_LIB, os.path.dirname(ACCEL_LIB)))
+        env["SPECTRAL_ACCEL_SEED"] = str(args.seed)
+        if args.schedule:
+            env["SPECTRAL_ACCEL_SCHEDULE"] = args.schedule
+        if args.device:
+            env["SPECTRAL_ACCEL_DEVICE"] = args.device
+        load = ["--load=" + ACCEL_LIB]
 
     def sh(*cmd):
         r = subprocess.run(base + list(cmd), cwd=tmp, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
@@ -85,10 +102,19 @@ def run(args):
         return r.stdout
 
     t0 = time.perf_counter()
-    sh("-a", "ad9361_pkg.vhd", *[os.path.join(HERE, f) for f in SOURCES], "resolver_an2597_link.vhd")
+    sources = [f % ("on" if args.accel else "off") if "%s" in f else f for f in SOURCES]
+    sh("-a", "ad9361_pkg.vhd", *[os.path.join(HERE, f) for f in sources], "resolver_an2597_link.vhd")
     sh("-e", "resolved_an2597_link")
     t1 = time.perf_counter()
-    out = sh("-r", "resolved_an2597_link")
+    out = sh("-r", "--stats", *load, "resolved_an2597_link")
+    accel_note = [l for l in out.splitlines() if l.startswith("spectral-accel:")]
+    t_run = time.perf_counter() - t1
+    m = re.search(r"setup:(\d+)ms run:(\d+)ms", out)          # nvc's own clock for the run phase
+    if m:
+        t_run = float(m.group(2)) * 1e-3
+    m = re.search(r"start-up ([0-9.]+) ms", out)                # the accelerator's start-up (CUDA) is not simulation
+    if m:
+        t_run -= float(m.group(1)) * 1e-3
     t2 = time.perf_counter()
     rows = {}
     for m in re.finditer(r"AN2597 dist=(\S+) mod=(\d) packets=(\d+) detected=(\d+) evm_db=(\S+) bit_errors=(\d+) "
@@ -103,7 +129,7 @@ def run(args):
         print("files kept in %s" % tmp)
     else:
         subprocess.run(["rm", "-rf", tmp])
-    return rows, t1 - t0, t2 - t1
+    return rows, t1 - t0, t_run, accel_note
 
 
 def python_rows(args):
@@ -138,17 +164,25 @@ def main(argv=None):
     ap.add_argument("--seed", type=int, default=1)
     ap.add_argument("--compare", action="store_true", help="also run the Python time-domain model")
     ap.add_argument("--keep", action="store_true", help="keep the scratch directory")
+    ap.add_argument("--accel", action="store_true",
+                    help="move the RF path's data and processing out to the spectral accelerator (accel/)")
+    ap.add_argument("--schedule", help="with --accel: when the design moves out and comes back, e.g. 0:out,20ms:in,40ms:out "
+                    "(default: out from the start)")
+    ap.add_argument("--device", choices=("gpu", "cpu"), help="with --accel: where the accelerator's stages run")
     ap.add_argument("--eval-arena", action="store_true",
                     help="leave nvc's eval arena on (reproduces the nvc crash this script otherwise avoids)")
     args = ap.parse_args(argv)
     args.pa, args.lna, args.lna_nf, args.agc = 0.0, 0.0, None, "fast_attack"
 
-    rows, t_build, t_run = run(args)
+    rows, t_build, t_run, accel_note = run(args)
     events = len(args.distances) * len(MODS) * args.packets * (args.symbols + 6)
     air = events * ofdm.N_FFT * 1.25 / args.fs
-    print("AN-2597 link in nvc --std=2040 (spectral events): LO %.1f MHz, %.0f MHz channel, TX attenuation %.2f dB, "
+    print("AN-2597 link in nvc --std=2040 (spectral events)%s: LO %.1f MHz, %.0f MHz channel, TX attenuation %.2f dB, "
           "antennas %.1f dBi, reference offsets %+.1f / %+.1f ppm"
-          % (args.lo / 1e6, args.fs / 1e6, args.atten, args.ant, args.ppm[0], args.ppm[1]))
+          % (", RF path on the spectral accelerator" + (" (%s)" % args.schedule if args.schedule else "") if args.accel else "",
+             args.lo / 1e6, args.fs / 1e6, args.atten, args.ant, args.ppm[0], args.ppm[1]))
+    for l in accel_note:
+        print(l)
     print("compile and elaborate %.1f s; run %.2f s for %d symbol events (%.1f ms of air time): %.3f x real time"
           % (t_build, t_run, events, air * 1e3, air / t_run))
     ref = python_rows(args) if args.compare else None

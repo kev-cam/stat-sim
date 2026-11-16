@@ -399,7 +399,98 @@ package body ad9361_pkg is
         return ad9361_rx_gain_legal(cfg.rx_lo, g);
     end function;
 end package body;""")
-    return "\n".join(o) + "\n"
+    text = "\n".join(o) + "\n"
+    # the accelerator's view of the chip: the same constants, as one vector
+    assert text.count("\nend package;\n") == 1 and text.count("\nend package body;") == 1
+    text = text.replace("\nend package;\n", ACCEL_DECL + "end package;\n")
+    text = text.replace("\nend package body;", ACCEL_BODY + "end package body;")
+    return text
+
+
+# The chip's constants in a control state as a vector: what an accelerator that runs this model outside
+# the simulator is given (accel/spectral_accel.h: enum SA_P_*; accel/spectral_accel.py: chip_params).
+ACCEL_PARAMS = 49
+ACCEL_DECL = """
+
+    -- The chip's constants in a control state, as one vector: for an accelerator that runs this model
+    -- outside the simulator (accel/spectral_accel.h, enum SA_P_*).  lines: samples per event.
+    constant AD9361_ACCEL_N : positive := %d;      -- its length
+    function ad9361_accel_params(cfg : ad9361_config; lines : positive) return real_vector;
+""" % ACCEL_PARAMS
+ACCEL_BODY = """
+
+    function ad9361_accel_params(cfg : ad9361_config; lines : positive) return real_vector is
+        constant ftx : real := cfg.tx_lo;
+        constant frx : real := cfg.rx_lo;
+        constant att : real := 10.0 ** (-cfg.tx_atten_db / 10.0);
+        constant a   : real := exp(-2.0 * MATH_PI * AD9361_PN_CORNER / cfg.sample_rate);
+        constant e   : real := AD9361_RX_QUAD_GAIN_ERR / 100.0;
+        constant ph  : real := AD9361_RX_QUAD_PHASE_ERR * MATH_PI / 180.0;
+        variable p : real_vector(0 to AD9361_ACCEL_N - 1) := (others => 0.0);
+
+        function flag(b : boolean) return real is
+        begin
+            if b then
+                return 1.0;
+            end if;
+            return 0.0;
+        end function;
+    begin
+        p(0) := 1.0;                                         -- layout version
+        p(1) := real(lines);
+        p(2) := cfg.sample_rate;
+        p(3) := flag(cfg.ensm = ENSM_TX or cfg.ensm = ENSM_FDD);
+        p(4) := flag(cfg.ensm = ENSM_RX or cfg.ensm = ENSM_FDD);
+        p(5) := ad9361_lo_actual(ftx, cfg.xo_ppm);
+        p(6) := ad9361_lo_actual(frx, cfg.xo_ppm);
+        -- transmitter (ad9361_tx_sample)
+        p(7) := sqrt(tx_lin_w(ftx) * att);
+        p(8) := dbm_w(ad9361_band(AD9361_T_TX_OIP3, ftx));
+        p(9) := sqrt(residual(ad9361_band(AD9361_T_TX_EVM, ftx), ad9361_band(AD9361_T_LO_PN_RMS, ftx), 0.0) / 2.0);
+        p(10) := a;
+        p(11) := ad9361_band(AD9361_T_LO_PN_RMS, ftx) * MATH_PI / 180.0 * sqrt(1.0 - a * a);
+        p(12) := sqrt(tx_leak_w(ftx, att));
+        p(13) := sqrt(realmax(dbm_w(ad9361_band(AD9361_T_TX_NOISE, ftx)) * att, K_BOLTZ * T0) * cfg.sample_rate / 2.0);
+        p(14) := AD9361_TX_BBLPF_CORNER * cfg.tx_rf_bw / 2.0;
+        p(15) := AD9361_TX_SECONDARY_CORNER * cfg.tx_rf_bw / 2.0;
+        -- receiver (ad9361_rx_sample)
+        p(16) := sqrt(residual(ad9361_band(AD9361_T_RX_EVM, frx), ad9361_band(AD9361_T_LO_PN_RMS, frx), image_ratio) / 2.0);
+        p(17) := a;
+        p(18) := ad9361_band(AD9361_T_LO_PN_RMS, frx) * MATH_PI / 180.0 * sqrt(1.0 - a * a);
+        p(19) := sqrt(K_BOLTZ * T0 * cfg.sample_rate * 10.0 ** (ad9361_band(AD9361_T_RX_NF, frx) / 10.0) / 2.0);
+        p(20) := 1.0 + e;
+        p(21) := cos(ph);
+        p(22) := sin(ph);
+        p(23) := ad9361_band(AD9361_T_RX_IIP3, frx);
+        p(24) := ad9361_rx_gain_max(frx);
+        p(25) := AD9361_RX_GAIN_MIN;
+        p(26) := AD9361_RX_GAIN_STEP;
+        p(27) := AD9361_RX_IIP3_CEILING;
+        p(28) := dbm_w(AD9361_ADC_FS_AT_0DB);
+        p(29) := AD9361_RX_BBLPF_CORNER * cfg.rx_rf_bw / 2.0;
+        p(30) := AD9361_RX_TIA_CORNER * cfg.rx_rf_bw / 2.0;
+        p(31) := sqrt(dbm_w(ad9361_band(AD9361_T_RX_LO_LEAK, frx)));
+        -- gain control
+        p(32) := real(ad9361_agc_mode'pos(cfg.gain_mode));
+        p(33) := ad9361_rx_gain_legal(frx, cfg.rx_gain_db);
+        p(34) := AD9361_FAST_DETECT;
+        p(35) := AD9361_FAST_TARGET;
+        p(36) := AD9361_FAST_CLIP_STEP;
+        p(37) := AD9361_FAST_STRONGER;
+        p(38) := AD9361_FAST_LOST;
+        p(39) := real(AD9361_FAST_BLOCK);
+        p(40) := real(AD9361_FAST_SETTLE_ITERATIONS);
+        p(41) := real(AD9361_FAST_LOST_BLOCKS);
+        p(42) := round(AD9361_AGC_PERIOD * cfg.sample_rate);
+        p(43) := AD9361_AGC_INNER_HIGH;
+        p(44) := AD9361_AGC_INNER_LOW;
+        p(45) := AD9361_AGC_OUTER_HIGH;
+        p(46) := AD9361_AGC_OUTER_LOW;
+        p(47) := AD9361_AGC_STEP_INNER;
+        p(48) := AD9361_AGC_STEP_OUTER;
+        return p;
+    end function;
+"""
 
 
 # ---------------------------------------------------------------------------------------------
@@ -464,6 +555,22 @@ def python_reference():
         ref["mc_tx_evm_" + tag] = (ad9361.band("tx_evm", lo), 0.3, "abs")
         ref["mc_rx_evm_" + tag] = (ad9361.band("rx_evm", lo), 0.4, "abs")
         ref["mc_tx_leak_" + tag] = (ad9361.band("tx_leak_0db", lo), 0.2, "abs")
+    # the chip's constants as the accelerator is given them (accel/spectral_accel.py chip_params)
+    sys.path.insert(0, os.path.join(HERE, "accel"))
+    import spectral_accel
+    for tag, lo, bw, ppm, mode, gain, atten, ensm in (("a", 2.437e9, 18e6, 1.0, "fast_attack", None, 0.0, "tx"),
+                                                      ("b", 5.2e9, 9e6, -1.5, "manual", 40.0, 10.25, "fdd")):
+        r = ad9361.AD9361(seed=1)
+        r.rx_lo = r.tx_lo = lo
+        r.sample_rate = 20e6
+        r.rx_rf_bandwidth = r.tx_rf_bandwidth = bw
+        r.xo_ppm = ppm
+        r.gain_control_mode_chan0 = mode
+        r.rx_hardwaregain_chan0 = r.rx_gain_max if gain is None else gain
+        r.tx_hardwaregain_chan0 = -atten
+        r.ensm_mode = ensm
+        for i, v in enumerate(spectral_accel.chip_params(r, 64)):
+            ref["accel_%s_%d" % (tag, i)] = (v, 1e-9, "rel")
     # slow AGC decisions
     r = radio(2.437e9, gain=40.0)
     g = r.rx_hardwaregain_chan0

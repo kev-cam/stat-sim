@@ -136,6 +136,11 @@ package ad9361_pkg is
 
     -- Slow-attack AGC: the gain for the next period from the mean ADC power of the last one (dBFS)
     function ad9361_agc_slow(cfg : ad9361_config; p_dbfs : real) return real;
+
+    -- The chip's constants in a control state, as one vector: for an accelerator that runs this model
+    -- outside the simulator (accel/spectral_accel.h, enum SA_P_*).  lines: samples per event.
+    constant AD9361_ACCEL_N : positive := 49;      -- its length
+    function ad9361_accel_params(cfg : ad9361_config; lines : positive) return real_vector;
 end package;
 
 package body ad9361_pkg is
@@ -407,5 +412,77 @@ package body ad9361_pkg is
             g := g + AD9361_AGC_STEP_INNER;
         end if;
         return ad9361_rx_gain_legal(cfg.rx_lo, g);
+    end function;
+
+    function ad9361_accel_params(cfg : ad9361_config; lines : positive) return real_vector is
+        constant ftx : real := cfg.tx_lo;
+        constant frx : real := cfg.rx_lo;
+        constant att : real := 10.0 ** (-cfg.tx_atten_db / 10.0);
+        constant a   : real := exp(-2.0 * MATH_PI * AD9361_PN_CORNER / cfg.sample_rate);
+        constant e   : real := AD9361_RX_QUAD_GAIN_ERR / 100.0;
+        constant ph  : real := AD9361_RX_QUAD_PHASE_ERR * MATH_PI / 180.0;
+        variable p : real_vector(0 to AD9361_ACCEL_N - 1) := (others => 0.0);
+
+        function flag(b : boolean) return real is
+        begin
+            if b then
+                return 1.0;
+            end if;
+            return 0.0;
+        end function;
+    begin
+        p(0) := 1.0;                                         -- layout version
+        p(1) := real(lines);
+        p(2) := cfg.sample_rate;
+        p(3) := flag(cfg.ensm = ENSM_TX or cfg.ensm = ENSM_FDD);
+        p(4) := flag(cfg.ensm = ENSM_RX or cfg.ensm = ENSM_FDD);
+        p(5) := ad9361_lo_actual(ftx, cfg.xo_ppm);
+        p(6) := ad9361_lo_actual(frx, cfg.xo_ppm);
+        -- transmitter (ad9361_tx_sample)
+        p(7) := sqrt(tx_lin_w(ftx) * att);
+        p(8) := dbm_w(ad9361_band(AD9361_T_TX_OIP3, ftx));
+        p(9) := sqrt(residual(ad9361_band(AD9361_T_TX_EVM, ftx), ad9361_band(AD9361_T_LO_PN_RMS, ftx), 0.0) / 2.0);
+        p(10) := a;
+        p(11) := ad9361_band(AD9361_T_LO_PN_RMS, ftx) * MATH_PI / 180.0 * sqrt(1.0 - a * a);
+        p(12) := sqrt(tx_leak_w(ftx, att));
+        p(13) := sqrt(realmax(dbm_w(ad9361_band(AD9361_T_TX_NOISE, ftx)) * att, K_BOLTZ * T0) * cfg.sample_rate / 2.0);
+        p(14) := AD9361_TX_BBLPF_CORNER * cfg.tx_rf_bw / 2.0;
+        p(15) := AD9361_TX_SECONDARY_CORNER * cfg.tx_rf_bw / 2.0;
+        -- receiver (ad9361_rx_sample)
+        p(16) := sqrt(residual(ad9361_band(AD9361_T_RX_EVM, frx), ad9361_band(AD9361_T_LO_PN_RMS, frx), image_ratio) / 2.0);
+        p(17) := a;
+        p(18) := ad9361_band(AD9361_T_LO_PN_RMS, frx) * MATH_PI / 180.0 * sqrt(1.0 - a * a);
+        p(19) := sqrt(K_BOLTZ * T0 * cfg.sample_rate * 10.0 ** (ad9361_band(AD9361_T_RX_NF, frx) / 10.0) / 2.0);
+        p(20) := 1.0 + e;
+        p(21) := cos(ph);
+        p(22) := sin(ph);
+        p(23) := ad9361_band(AD9361_T_RX_IIP3, frx);
+        p(24) := ad9361_rx_gain_max(frx);
+        p(25) := AD9361_RX_GAIN_MIN;
+        p(26) := AD9361_RX_GAIN_STEP;
+        p(27) := AD9361_RX_IIP3_CEILING;
+        p(28) := dbm_w(AD9361_ADC_FS_AT_0DB);
+        p(29) := AD9361_RX_BBLPF_CORNER * cfg.rx_rf_bw / 2.0;
+        p(30) := AD9361_RX_TIA_CORNER * cfg.rx_rf_bw / 2.0;
+        p(31) := sqrt(dbm_w(ad9361_band(AD9361_T_RX_LO_LEAK, frx)));
+        -- gain control
+        p(32) := real(ad9361_agc_mode'pos(cfg.gain_mode));
+        p(33) := ad9361_rx_gain_legal(frx, cfg.rx_gain_db);
+        p(34) := AD9361_FAST_DETECT;
+        p(35) := AD9361_FAST_TARGET;
+        p(36) := AD9361_FAST_CLIP_STEP;
+        p(37) := AD9361_FAST_STRONGER;
+        p(38) := AD9361_FAST_LOST;
+        p(39) := real(AD9361_FAST_BLOCK);
+        p(40) := real(AD9361_FAST_SETTLE_ITERATIONS);
+        p(41) := real(AD9361_FAST_LOST_BLOCKS);
+        p(42) := round(AD9361_AGC_PERIOD * cfg.sample_rate);
+        p(43) := AD9361_AGC_INNER_HIGH;
+        p(44) := AD9361_AGC_INNER_LOW;
+        p(45) := AD9361_AGC_OUTER_HIGH;
+        p(46) := AD9361_AGC_OUTER_LOW;
+        p(47) := AD9361_AGC_STEP_INNER;
+        p(48) := AD9361_AGC_STEP_OUTER;
+        return p;
     end function;
 end package body;

@@ -53,6 +53,15 @@ package rf_spectrum_pkg is
     function rf_distance(a, b : rf_position) return real;
     -- arena: what each antenna receives from all the others (drv(i) is what antenna i radiates)
     function arena_resolve(drv : rf_spectrum_vector; pos : rf_position_vector; t0 : real) return rf_spectrum_vector;
+    -- the same with platforms and scatterers.  plat(i): antennas on the same platform (not 0) do not hear
+    -- each other directly (an array's elements, shielded from each other by construction).  A scatterer
+    -- is a point target of radar cross-section srcs (m2) at spos: every antenna hears every antenna's
+    -- signal (its own too) off every scatterer; scatterers do not light each other (single bounce).
+    function arena_resolve(drv : rf_spectrum_vector; pos : rf_position_vector; plat : integer_vector;
+                           spos : rf_position_vector; srcs : real_vector; t0 : real) return rf_spectrum_vector;
+    -- a field arriving at a scatterer of cross-section rcs, re-radiated over `distance` metres: per line
+    -- sqrt(4 pi rcs) / lambda, times free space
+    function spec_echo(s : rf_spectrum; distance : real; rcs : real) return rf_spectrum;
     -- wire: what each end of a wire receives from all the others
     function wire_resolve(drv : rf_spectrum_vector; t0 : real) return rf_spectrum_vector;
 
@@ -64,12 +73,34 @@ package rf_spectrum_pkg is
     function lines_power(x : spec_lines) return real;
     function lines_rotate(x : spec_lines; phase : real) return spec_lines;
     impure function sim_time return real;                                   -- now, in seconds
+    -- lines as (re, im) pairs in a real_vector, and back: how spectra cross to foreign code
+    function lines_to_reals(x : spec_lines) return real_vector;
+    function reals_to_lines(v : real_vector) return spec_lines;
 end package;
 
 package body rf_spectrum_pkg is
     impure function sim_time return real is
     begin
         return real(now / 1 ns) * 1.0e-9;
+    end function;
+
+    function lines_to_reals(x : spec_lines) return real_vector is
+        variable v : real_vector(0 to 2 * SPEC_N - 1);
+    begin
+        for k in x'range loop
+            v(2 * k) := x(k).i;
+            v(2 * k + 1) := x(k).q;
+        end loop;
+        return v;
+    end function;
+
+    function reals_to_lines(v : real_vector) return spec_lines is
+        variable x : spec_lines;
+    begin
+        for k in x'range loop
+            x(k) := (i => v(v'low + 2 * k), q => v(v'low + 2 * k + 1));
+        end loop;
+        return x;
     end function;
 
     function spec_silent(seq : positive) return rf_spectrum is
@@ -156,7 +187,7 @@ package body rf_spectrum_pkg is
         variable r : rf_spectrum := s;
         variable f, a, ph, c, sn : real;
     begin
-        if spec_is_silent(s) then
+        if spec_is_silent(s) or distance <= 0.0 then          -- two things in one place do not hear each other
             return spec_silent(s.seq + 1);
         end if;
         for k in r.h'range loop
@@ -268,6 +299,53 @@ package body rf_spectrum_pkg is
                 if j /= i then
                     acc := spec_add(acc, spec_friis(drv(j), rf_distance(pos(i), pos(j))), t0);
                 end if;
+            end loop;
+            r(i) := acc;
+        end loop;
+        return r;
+    end function;
+
+    function spec_echo(s : rf_spectrum; distance : real; rcs : real) return rf_spectrum is
+        variable r : rf_spectrum := s;
+        variable a, f, ph, c, sn : real;
+    begin
+        if spec_is_silent(s) or distance <= 0.0 then
+            return spec_silent(s.seq + 1);
+        end if;
+        a := sqrt(4.0 * MATH_PI * rcs) / (4.0 * MATH_PI * distance);     -- the same at every line
+        for k in r.h'range loop
+            f := s.freq + spec_line_offset(k, s.df);
+            ph := -2.0 * MATH_PI * (f * distance / SPEED_OF_LIGHT mod 1.0);
+            c := a * cos(ph);
+            sn := a * sin(ph);
+            r.h(k) := (s.h(k).i * c - s.h(k).q * sn, s.h(k).i * sn + s.h(k).q * c);
+            r.v(k) := (s.v(k).i * c - s.v(k).q * sn, s.v(k).i * sn + s.v(k).q * c);
+        end loop;
+        return r;
+    end function;
+
+    function arena_resolve(drv : rf_spectrum_vector; pos : rf_position_vector; plat : integer_vector;
+                           spos : rf_position_vector; srcs : real_vector; t0 : real) return rf_spectrum_vector is
+        variable r : rf_spectrum_vector(drv'range);
+        variable field : rf_spectrum_vector(spos'range);
+        variable acc : rf_spectrum;
+    begin
+        for s in spos'range loop                       -- what arrives at each scatterer
+            acc := spec_silent(1);
+            for j in drv'range loop
+                acc := spec_add(acc, spec_friis(drv(j), rf_distance(spos(s), pos(j))), t0);
+            end loop;
+            field(s) := acc;
+        end loop;
+        for i in drv'range loop
+            acc := spec_silent(1);
+            for j in drv'range loop
+                if j /= i and not (plat(i) /= 0 and plat(i) = plat(j)) then
+                    acc := spec_add(acc, spec_friis(drv(j), rf_distance(pos(i), pos(j))), t0);
+                end if;
+            end loop;
+            for s in spos'range loop
+                acc := spec_add(acc, spec_echo(field(s), rf_distance(pos(i), spos(s)), srcs(s)), t0);
             end loop;
             r(i) := acc;
         end loop;
