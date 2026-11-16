@@ -185,6 +185,111 @@ here to compare against.
 OsciBear (ucb-ee290c, sky130) has no RF in its public GDS: SAR ADC, Rocket core and SRAMs only;
 its analog sources are on a private Berkeley server.
 
+## ad9361/ -- AD9361 behavioural model; the AN-2597 link in nvc (--std=2040, spectral events)
+
+A model of the Analog Devices AD9361 transceiver at its data port, driven from software rather than
+RTL, and the drone / controller link of ADI's AN-2597 ("An OFDM-Based HDL Reference Modem Using the
+AD936x RF Transceivers": ADRV9361-Z7035 at each end, 5 / 10 / 20 MHz channels at 2.4 and 5.2 GHz,
+BPSK to 64-QAM) built from it.  The model that runs is VHDL in nvc's `--std=2040` mode; a Python
+model of the same chip is the reference it is checked against.
+
+    ad9361.py check                  the Python model measured the way the data sheet measures the chip
+    ad9361_vhdl.py emit              write ad9361_pkg.vhd from the tables in ad9361.py
+    ad9361_vhdl.py check --nvc N     compile the package, run tb_ad9361.vhd, compare with ad9361.py
+    an2597_nvc.py --nvc N --compare  the link in nvc, beside the link budget and the Python model
+    an2597_link.py                   the same link in Python alone (time domain, sample by sample)
+
+**What is modelled** (`ad9361.py`, same numbers and maths in `ad9361_pkg.vhd`): transmit: 12-bit DAC
+word, analog baseband filters, attenuator (0.25 dB steps), third-order compression set by OIP3, carrier
+leakage (the data sheet's 0 dB and 40 dB points), noise floor, LO phase noise and a residual that brings
+the EVM to the data sheet's; receive: noise figure, third-order compression (input intercept rising as
+gain falls), filters, quadrature gain and phase error, gain in 1 dB steps, 12-bit ADC with clipping, the
+same EVM treatment, LO leakage out of the RX pin, and three gain modes (manual, slow attack, a
+fast-attack burst AGC with acquire / stronger-signal / energy-lost).  Controls are the ones a program
+sets through the Linux IIO driver (pyadi-iio's names: `rx_lo`, `sample_rate`, `gain_control_mode_chan0`,
+`tx()`, `rx()` ...); there is no SPI register map and no LVDS/CMOS port timing.
+
+**Where the numbers come from.**  `ad9361.py spec` prints every value with its status.  The data sheet
+PDF could not be opened from the machine this was written on (analog.com and the distributor copies
+refused or timed out), so the 'ds' values were read from published text of Table 1 returned by web
+searches (Rev. F / G copies), not off the page: gain, NF, IIP3, EVM, LO leakage, output power, OIP3,
+TX noise, carrier leakage, isolation, ranges.  'rec' values are from recollection and unchecked: the
+integrated LO phase noise (0.13 / 0.37 / 0.59 deg), TX EVM and 40 dB carrier leakage at 5.5 GHz, the
+sample-rate limits, the filter-corner multipliers.  ADC full scale (0.625 V peak, +5.9 dBm at 0 dB gain)
+is from an EngineerZone staff reply.  What the data sheet gives only as plots (NF and IIP3 against gain,
+AGC timing) is the model's own assumption, listed in `MODEL`.  Check all of it against Rev. G before
+relying on a number.
+
+`ad9361.py check`: every data sheet figure measured back from the model (two-tone tests, full-scale
+tone, noise with no input, EVM of a modulated signal) is within 0.2 dB at 800 MHz, 2.4 GHz and 5.5 GHz.
+`ad9361_vhdl.py check`: 211 values from `tb_ad9361.vhd` in nvc against Python -- the noise-free paths
+bit for bit (RX codes equal, TX envelopes to 6e-16), Monte Carlo NF / noise / EVM / leakage within 0.2 dB.
+
+**Spectral event-driven VHDL** (all `--std=2040`):
+
+| file | what |
+|---|---|
+| `rf_spectrum_pkg.vhd` | `rf_spectrum`: 64 lines (complex amplitude per frequency, both polarisations) around a carrier, one value per event; Friis per line, carrier-offset regridding, `arena_resolve` |
+| `ad9361_pkg.vhd` | generated: data sheet tables, per-sample transmit and receive procedures |
+| `ad9361_spectral_pkg.vhd` | one event through the chip: filters on the lines, everything non-linear on the 64 samples of the event (DAC/ADC words, compression, AGC changing gain part-way) |
+| `ad9361.vhd` | the chip: RF pins `tx1`, `rx1` (std_logic nets, payload on `'driver` / `'other`), software side `cfg`, `tx_data`, `rx_data` (one symbol period per event) |
+| `rf_spec_antenna.vhd` | antenna: a driver and a receiver in the arena, with a position port (it can move) |
+| `arena_resolver.py` | writes the resolver network: wires between pins and feeds, and the arena -- each antenna's `air'other` is the sum of every other antenna's `air'driver` through free space between their positions |
+| `ofdm_soft_pkg.vhd` | software OFDM modem on spectra (802.11a/g numerology, no coding): training, data, carrier-offset estimate and removal, channel estimate, pilots |
+| `an2597_link.vhd` | the link: two chips, four antennas, and two processes as the drone's and the controller's software; the drone flies out and sends packets, the controller's fast AGC and modem receive them |
+
+An OFDM packet is 2 short-training, 2 long-training and N data events (plus 2 idle), one per 4 us symbol,
+instead of 80 samples each.  Linear blocks scale lines; the chip goes through the event's time domain
+for what is not linear; a carrier offset between two radios is a regrid (exact for the event) plus the
+offset's phase at the event's start.
+
+Result at 2.437 GHz, 20 MHz channel, bare chips (full-scale tone 7.5 dBm, packets 12 dB under: -4.5 dBm
+average), 2 dBi antennas, +1.0 / -1.5 ppm references (6.1 kHz carrier offset), 10 packets of 20 symbols
+per point; "budget" is thermal noise in the used subcarriers plus the two EVM floors, times 1.5 for a
+two-symbol channel estimate:
+
+| distance | Prx | AGC gain | budget EVM | nvc EVM (64-QAM) | Python EVM | uncoded BER 16-QAM / 64-QAM (nvc) |
+|---|---|---|---|---|---|---|
+| 1 m | -40.7 dBm | 33.9 dB | -36.0 | -36.1 | -36.2 | 0 / 0 |
+| 10 m | -60.7 | 53.9 | -33.2 | -33.2 | -33.4 | 0 / 0 |
+| 30 m | -70.2 | 63.9 | -26.4 | -26.3 | -26.4 | 0 / 0 |
+| 100 m | -80.7 | 72.9 (max) | -16.3 | -16.1 | -16.4 | 2.0e-3 / 4.4e-2 |
+| 300 m | -90.2 | 72.9 | -6.8 | -5.9 | -6.7 | 0.12 / 0.22 |
+
+All four modulations are within 0.9 dB of the budget from 1 m to 300 m in nvc, and within 0.5 dB of the
+Python time-domain model up to 100 m (0.8 dB at 300 m); the AGC settles at the same gain in both.  At
+1 km (SNR -3 dB) neither receives; the spectral detector still fires on about half the packets, the
+time-domain one on none.  5.2 GHz agrees the same way (-32.5 dB at 1 m, -18.4 at 30 m).  With an ideal
+20 dB PA and a 15 dB / 1.5 dB-NF LNA at each end (Python): -27.6 dB at 300 m, -17.7 at 1 km.
+
+Speed: nvc 0.008 x real time (3.9 s for 8320 symbol events, 33 ms of air time, two radios); Python
+time domain 0.07 - 0.12 x.  Not tuned: the per-sample procedures recompute their constants (band
+interpolation, dB conversions) on every sample, and the arena regrids the receivers' LO leakage onto
+the transmitter's grid for every antenna on every event.
+
+**Things learned about nvc `--std=2040`** (nvc 1.19-devel r619, da8ece172):
+- A pin's `'driver` / `'other` signals exist only in a component that mentions both, and take their type
+  from a typed variable (`v := p'other; p'driver := v;`); a function result or an attribute used as an
+  argument does not type them.
+- An event needs a changed value: two equal spectra in a row are no event, hence `rf_spectrum.seq`;
+  `seq = 0` marks a net never written (its reals are uninitialised and must not be read).
+- A frequency-domain filter has to be applied on the grid the signal is periodic on (the sender's)
+  before a carrier offset is applied; filtering after it wraps the filter's transient round a block
+  whose ends differ by the offset's phase (it cost 4 dB of EVM at 6 kHz offset until fixed).
+- nvc crashes (SIGSEGV in `async_fast_driver` / `split_nexus_slow`, a signal assignment landing on a
+  neighbouring signal's nexus) once a process that allocates and deposits to a `'driver` has run some
+  tens of times.  `NVC_NO_EVAL_ARENA=1` avoids it (so do `NVC_NO_STITCH=1` and `NVC_SCOPE_SCRATCH=1`);
+  `an2597_nvc.py` sets it, and `an2597_nvc.py --eval-arena` reproduces the crash.  Not fixed in nvc.
+- A process sensitive only to a real signal and comparing it with a constant fails at elaboration
+  ("cmp trigger right argument must be integer").
+
+Limits: one receive and one transmit channel per chip in the VHDL (the Python model has both and their
+isolation); sample-clock offset is not modelled (the reference error moves the LOs only); propagation
+delay is each line's phase, not a delay of the event (fine while it is shorter than the guard interval);
+the digital FIR / half-band filters are not modelled, only the analog baseband response; no coding in the
+modem, so no packet error rate; AN-2597's own modem (HT-mixed preamble, convolutional coding, 2x2 STBC)
+is not reproduced -- the app note itself could not be opened, its parameters are from ADI's wiki page.
+
 ## Control states
 
 `rffit.py amp ... --state nominal:VDD=1.8 --state lowvdd:VDD=1.5 --state off:VDD=0` fits one
