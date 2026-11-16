@@ -45,7 +45,7 @@ is while the HB system is solved, so in `.hb` a MOSFET keeps only what is comput
 block: overlap capacitance for BSIM4, nothing for BSIM3.  Upstream (stock build of 2026-05) and
 the kev-cam fork behave the same; BJTs and the level-1 MOSFET are not affected.  One sky130
 nfet, W = 22 um: gate capacitance 19 - 33 fF over bias in `.ac`, 10.8 fF (= cgso + cgdo) at
-every bias in `.hb`.  Fixed in kev-cam/xyce 37c1eca3 (one more term, `|| blockAnalysisFlag_`,
+every bias in `.hb`.  Fixed in kev-cam/xyce fb34a1dc (one more term, `|| blockAnalysisFlag_`,
 in `N_DEV_MOSFET_B3.C`, `_B3SOI.C`, `_B4p61.C`, `_B4p70.C`, `_B4p82.C`), and the installed
 Xyce was rebuilt with it on 2026-11-15 (the previous library is kept beside it as
 `libxyce.so.pre-hbfix-2026-11-15`).  With the fix HB equals `.ac` and transient to 0.01 dB /
