@@ -20,9 +20,10 @@ function of complex amplitude in.
   mixer  two-tone drive (LO fixed, RF swept).  Product (m, n) at m*f_lo + n*f_rf is
              b_mn = u_lo^m * u_rf^n * |a_rf|^|n| * G_mn(|a_rf|)
 
-Validation: every other drive level is held out of the fit, and (amp only) the
-fitted one-tone model is asked to predict a two-tone intermodulation test that
-Xyce then simulates directly.
+Validation: every other drive level is held out of the fit; (amp only) the gain at
+the lowest drive level is compared with Xyce's .ac analysis, which is a different
+code path from harmonic balance; and the fitted one-tone model is asked to predict
+a two-tone intermodulation test that Xyce then simulates directly.
 
 Phasor convention: x(t) = Re{ b * exp(j 2 pi f t) }, amplitudes are peak volts.
 """
@@ -148,7 +149,7 @@ def run_xyce(text, workdir, tag, xyce, timeout):
     try:
         with open(os.path.join(d, "log.txt"), "w") as log:
             rc = subprocess.run([xyce, "run.cir"], cwd=d, stdout=log, stderr=subprocess.STDOUT,
-                                timeout=timeout).returncode
+                                timeout=timeout, env=XYCE_ENV).returncode
     except subprocess.TimeoutExpired:
         return None
     prn = cir + ".HB.FD.prn"
@@ -177,6 +178,10 @@ def xname(expr):
     return expr.upper().replace(" ", "")
 
 
+XYCE_ENV = None         # set in main: BLAS threads per Xyce job, so parallel jobs do not oversubscribe the CPUs
+HB_DIRECT = False        # --hb-direct: direct instead of iterative linear solves in HB
+
+
 def hb_lines(freqs, numfreq, extra, prints):
     nf = ",".join(str(n) for n in numfreq)
     opts = f".options hbint numfreq={nf}"
@@ -184,6 +189,8 @@ def hb_lines(freqs, numfreq, extra, prints):
         opts += f" intmodmax={max(numfreq)}"
     if extra:
         opts += " " + extra
+    if HB_DIRECT:
+        opts += "\n.options linsol-hb type=direct"
     return [".hb " + " ".join(f"{f:.12g}" for f in freqs), opts, ".print hb_fd " + " ".join(prints)]
 
 
@@ -321,9 +328,67 @@ def cmd_amp(args):
     if not model["per_freq"]:
         sys.exit("no frequency converged")
 
+    if not args.no_ac_check:
+        ac_check(args, model, src_nodes)
     if args.twotone:
         twotone(args, model, src_nodes)
     save(args, model)
+
+
+def ac_check(args, model, vin):
+    """Independent check of the small-signal end of the fit: Xyce .ac at each fitted frequency
+    against the HB gain at the lowest drive level.  They must agree if that level is small
+    signal; a difference that does not depend on level means HB and AC are not simulating the
+    same circuit (Xyce's BSIM3/BSIM4 skip their charge model in HB unless patched)."""
+    m = re.match(r"^\s*[vV]\((.+)\)\s*$", args.out)
+    mi = re.match(r"^\s*[vV]\((.+)\)\s*$", vin)
+    if not m or not mi:
+        print("AC cross-check skipped: output is not a node voltage")
+        return
+    prints = f"vr({mi.group(1)}) vi({mi.group(1)}) vr({m.group(1)}) vi({m.group(1)})"
+
+    def one(f):
+        text, _ = prepare(args.netlist, {args.src: [(0.0, f)]}, [], f"rffit ac check f={f:g}", src_dc(args))
+        text = text.replace(" SIN(", " AC 1 SIN(", 1)
+        text = text.replace(".end\n", f".ac lin 1 {f:.12g} {f:.12g}\n.print ac format=noindex {prints}\n.end\n")
+        d = os.path.join(args.work, f"ac_{f:g}")
+        os.makedirs(d, exist_ok=True)
+        open(os.path.join(d, "run.cir"), "w").write(text)
+        try:
+            with open(os.path.join(d, "log.txt"), "w") as log:
+                subprocess.run([args.xyce, "run.cir"], cwd=d, stdout=log, stderr=subprocess.STDOUT,
+                               timeout=args.timeout, env=XYCE_ENV)
+            row = [l.split() for l in open(os.path.join(d, "run.cir.FD.prn")) if l.strip()][1]
+            v = [float(x) for x in row[1:5]]
+            return complex(v[2], v[3]) / complex(v[0], v[1])
+        except (subprocess.TimeoutExpired, OSError, IndexError, ValueError, ZeroDivisionError):
+            return None
+
+    with ThreadPoolExecutor(max_workers=args.jobs) as ex:
+        acs = list(ex.map(one, model["freqs"]))
+    print("\nAC cross-check: HB gain at the lowest drive level against Xyce .ac")
+    rows, worst = [], 0.0
+    for pf, g_ac in zip(model["per_freq"], acs):
+        t = pf["harm"]["1"]
+        k = int(np.argmin(t["table_mag"]))
+        g_hb = complex(t["table_re"][k], t["table_im"][k])
+        if g_ac is None or abs(g_ac) == 0:
+            print(f"  {pf['freq']:10.4g}  .ac run failed")
+            continue
+        if db(g_ac) < -150 and db(g_hb) < -150:
+            print(f"  {pf['freq']:10.4g}  HB {db(g_hb):8.1f} dB, AC {db(g_ac):8.1f} dB: both numerically zero, not compared")
+            continue
+        d_db, d_deg = float(db(g_hb / g_ac)), float(np.degrees(np.angle(g_hb / g_ac)))
+        worst = max(worst, abs(d_db), abs(d_deg) / 10)
+        rows.append({"freq": pf["freq"], "ac_db": float(db(g_ac)), "ac_deg": float(np.degrees(np.angle(g_ac))),
+                     "hb_minus_ac_db": d_db, "hb_minus_ac_deg": d_deg})
+        print(f"  {pf['freq']:10.4g}  HB {db(g_hb):8.2f} dB {np.degrees(np.angle(g_hb)):7.1f} deg   AC {db(g_ac):8.2f} dB"
+              f" {np.degrees(np.angle(g_ac)):7.1f} deg   HB - AC {d_db:+6.2f} dB {d_deg:+6.1f} deg")
+    model["ac_check"] = rows
+    if worst > 0.1:
+        print("  WARNING: HB and AC disagree by more than 0.1 dB / 1 deg.  Either the lowest drive level is not\n"
+              "  small-signal, or HB is not loading the device charges (Xyce BSIM3/BSIM4 without the\n"
+              "  blockAnalysisFlag fix): compare a transient run before trusting the fit.")
 
 
 def amp_fund(model, f, mag, which="table"):
@@ -570,6 +635,8 @@ def main():
         p.add_argument("--outdir", default="models")
         p.add_argument("--work", default=None, help="scratch directory for Xyce runs")
         p.add_argument("--hbopts", default="tahb=1", help="extra '.options hbint' settings")
+        p.add_argument("--hb-direct", action="store_true",
+                       help="direct HB linear solver: slower (dense), a fallback when the iterative one stalls")
         p.add_argument("--xyce", default=shutil.which("Xyce") or "Xyce")
         p.add_argument("--jobs", type=int, default=max(1, (os.cpu_count() or 2) // 2))
         p.add_argument("--timeout", type=float, default=120, help="seconds per Xyce run")
@@ -583,6 +650,7 @@ def main():
     a.add_argument("--src-dc", default=None, help="DC bias for the driven source (default: keep the netlist value)")
     a.add_argument("--state", action="append", help="NAME:SRC=value[,SRC=value...]; repeat to fit one transfer function per control state")
     a.add_argument("--twotone", type=float, default=0, help="tone spacing in Hz for the two-tone check")
+    a.add_argument("--no-ac-check", action="store_true", help="skip the .ac cross-check of the small-signal gain")
     a.set_defaults(fn=cmd_amp)
 
     m = sub.add_parser("mixer", help="two-tone mixer characterisation")
@@ -605,6 +673,10 @@ def main():
     if args.cmd == "vhdl":
         args.fn(args)
         return
+    global HB_DIRECT, XYCE_ENV
+    HB_DIRECT = args.hb_direct
+    nt = str(max(1, (os.cpu_count() or 1) // max(1, args.jobs)))
+    XYCE_ENV = dict(os.environ, OMP_NUM_THREADS=nt, OPENBLAS_NUM_THREADS=nt, MKL_NUM_THREADS=nt)
     states = getattr(args, "state", None)
     if not states:
         if args.work is None:
