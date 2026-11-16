@@ -43,10 +43,15 @@ Results so far (commands in the session; models in `models/`):
 | sky130 2.4 GHz LNA (fit not in repo: source has no licence) | ~/rf_spectral/circuits/chinmay-sky130-lna-2g4/lna_xyce_fit.cir | 24.8 dB at 2.4 GHz, P1dB(in) 102 mV pk; IM3 within 0.5 dB at 2 MHz spacing, 3 dB off at 20 MHz (gain slope ~0.12 dB/MHz) |
 | class-E PA, 850 MHz, BSIM3 | ~/rf_spectral/circuits/asco-classe-pa/classE_xyce.cir | needs `--hbopts tahb=2 --harm 15 --src-dc 1.0`; IM3 within 0.5 dB up to 79 mV/tone, Xyce two-tone fails above |
 
-Known limits: the polynomial form is poor for hard-compressing circuits (use the table;
-the VHDL package currently emits the polynomial); e.g. the
-`ft8_lna4_ext` package used by `vhdl_check/tb.vhd` reports 79.9 dB small-signal at 28 MHz where
-the table has 90.1 dB; the model uses the nearest fitted
+The VHDL package carries the fitted table (resampled to 65 points uniform in ln|a|, linear
+interpolation, held at the end values outside the fitted range), not the polynomial: on the
+extracted FT8 LNA the polynomial was 10 dB low at small signal, the table package matches the
+fit to 0.02 dB in nvc.  With `--state` one package holds every state and
+`<name>_apply(s, st)` takes the control state (`ST_NOMINAL`, ...).  `rffit.py vhdl model.json`
+regenerates a package from a saved fit without re-running Xyce.
+
+Known limits: the VHDL model is fundamental-tone only (harmonics stay in the .json);
+the model uses the nearest fitted
 frequency, so narrowband circuits need per-bin frequency response; the sky130 LNA repo
 has no licence; the IHP SG13G2 circuits in `~/rf_spectral/circuits/ihp-*` do not run (no VBIC level 12
 in this Xyce build).
