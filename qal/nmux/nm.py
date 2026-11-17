@@ -281,3 +281,7 @@ class W:
                 f = (level - v[i - 1]) / (v[i] - v[i - 1])
                 return (tt[i - 1] + f * (tt[i] - tt[i - 1])) * 1e12
         return None
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

@@ -35,3 +35,7 @@ if __name__ == "__main__":
     g = sys.argv[1]
     p, msg, w = C.run("warm_%s.cir" % g, deck(g), timeout=1800)
     print(msg, flush=True)
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

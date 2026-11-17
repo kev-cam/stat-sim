@@ -249,3 +249,7 @@ if __name__ == "__main__":
           (tag, r["worst_gate_pct"], r["A2_value_pass"], r["separation_min_mV"],
            r["rail_min_V"], r["G2_zcs_pass"], r["G3_path_identity_pass"],
            r["E_tank_lost_chain_fJ"]))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

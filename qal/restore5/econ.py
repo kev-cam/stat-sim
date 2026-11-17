@@ -115,3 +115,7 @@ def depth_sweep(qal_stage_ps, t_level_cmos, depths=(1, 2, 4, 10)):
                                 qal_per_level_ps=qal_stage_ps,
                                 ratio_cmos_over_qal=cm / (D * qal_stage_ps)))
     return out
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

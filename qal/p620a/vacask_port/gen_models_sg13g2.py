@@ -59,3 +59,7 @@ def emit(cards, out):
 if __name__ == "__main__":
     cards = parse(open(LIB).read())
     emit(cards, sys.argv[1] if len(sys.argv) > 1 else "sg13g2_models.inc")
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

@@ -155,3 +155,7 @@ if __name__=="__main__":
         if bad: print("WS LINT FAIL",nm,bad[:4]); sys.exit(2)
         open(nm+".cir","w").write(txt); json.dump(meta,open(nm+".meta.json","w"))
         print(f"wrote {nm}.cir ({mode}, duty 1/{d}, {n} ops)")
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

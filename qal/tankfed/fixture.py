@@ -227,3 +227,7 @@ if __name__ == "__main__":
                      r["slope_inject_V_per_ns"])), flush=True)
     json.dump(out, open(os.path.join(HERE, "FIXTURE.json"), "w"), indent=1)
     print("wrote FIXTURE.json")
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

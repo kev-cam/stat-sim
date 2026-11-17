@@ -43,3 +43,7 @@ for v,c in comm.items():
     print("  S @%.2f V  mine %.7f  committed %.7f  rel %.2e"%(v,m,c,abs(m-c)/c))
 i=RAILS.index(1.20); print("  A @1.20 V mine %.7f  committed 0.4594805  rel %.2e"
       %(out["A"]["trip_V"][i],abs(out["A"]["trip_V"][i]-0.4594805)/0.4594805))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

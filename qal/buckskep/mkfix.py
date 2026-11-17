@@ -112,3 +112,7 @@ def deck(path, L=10e-9, TON=35.0, W=10.0, CB=30e-15, VOUT=0.766, CNA=8e-15,
 
 if __name__ == "__main__":
     print(deck("/tmp/x.cir"))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

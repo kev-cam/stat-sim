@@ -125,3 +125,7 @@ def row(cfg, m, S, path=None):
     if path:
         r["deck"] = os.path.basename(path)
     return r
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

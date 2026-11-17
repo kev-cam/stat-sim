@@ -71,3 +71,7 @@ for tag in sorted(rows, key=lambda t: (rows[t].get("k", 99), rows[t].get("T_ps",
     print("    eventual settling at end of tail: %s"
           % {k: round(v["worst"], 2) for k, v in r["eventual_settling_at_end_of_tail"].items()})
     print()
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

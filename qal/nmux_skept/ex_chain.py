@@ -74,3 +74,7 @@ for v in VAR:
         "",FLOOR,depth," ".join("%.0f"%(s/FLOOR) if s>0 else "NEG" for s in seps)))
     print()
 json.dump(allres,open(f"{D}/sk_chain.json","w"),indent=1)
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

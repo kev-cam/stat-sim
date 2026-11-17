@@ -131,3 +131,7 @@ if os.path.exists(os.path.join(HERE, "CERT.json")):
                                       integrator=C["xyce_integrator_vs_offline"]["worst_rel_like_for_like"])
 json.dump(R, open(os.path.join(HERE, "RESULTS.json"), "w"), indent=1)
 print(json.dumps(dict(floors=floors, frontier=frontier), indent=1))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

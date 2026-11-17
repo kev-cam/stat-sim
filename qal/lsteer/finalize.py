@@ -129,3 +129,7 @@ if __name__ == "__main__":
     json.dump(res, open(os.path.join(HERE, "RESULTS.json"), "w"), indent=1)
     print("RESULTS.json written; sharing:", json.dumps(share["measured"]))
     print("rows:", {t: r["status"] for t, r in list(ri.items()) + list(rii.items()) + list(rn.items()) + list(rr.items())})
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

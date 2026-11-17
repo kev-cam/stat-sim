@@ -114,3 +114,7 @@ if __name__=='__main__':
     prn=sys.argv[1]; T=float(sys.argv[2]); lab=sys.argv[3]
     o,_,_,_,_,_,_=analyse(prn,T,lab)
     print(json.dumps(o,indent=1,default=str))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

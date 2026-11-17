@@ -796,3 +796,7 @@ if __name__ == "__main__":
         sys.exit(cmd_sweep(int(a[1]) if len(a) > 1 else 3))
     print("unknown subcommand")
     sys.exit(2)
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

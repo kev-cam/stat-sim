@@ -131,3 +131,7 @@ print()
 print("== SELF TEST ==", json.dumps(out["SELF_TEST_vs_the_committed_VALUE_check"]["link_level"]))
 print("   rows:", json.dumps(out["SELF_TEST_vs_the_committed_VALUE_check"]["row_level"]["agree"]),
       "agree /", len(rowdis), "VALUE-fail-but-functional-PASS /", len(rowdis2), "VALUE-pass-but-functional-FAIL")
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

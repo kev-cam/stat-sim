@@ -23,3 +23,7 @@ XN out in 0 0 sg13_lv_nmos w={wn}u l=0.13u
         open(f"{D}/{n}.cir","w").write(b); names.append(n)
 json.dump(names,open(f"{D}/contnames.json","w"))
 print(len(names),"contention decks")
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

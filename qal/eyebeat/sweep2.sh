@@ -34,3 +34,7 @@ EOF
   ( cd "$EB" && python3 eb.py lane 60 P0 --fine > log_T60fine_P0.txt 2>&1 )
 fi
 echo "SWEEP2 DONE"
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

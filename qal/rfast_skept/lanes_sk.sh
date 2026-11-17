@@ -21,3 +21,7 @@ echo LANES_DONE
 python3 $SK/sk.py seqprobe 15 30 140 > $SK/log_seqA6_T140.txt 2>&1
 echo "seqprobe T140 rc=$?"
 echo ALL_DONE
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

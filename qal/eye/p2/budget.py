@@ -274,3 +274,7 @@ def cmos(II_ps, T_ps, levels_per_bank=1, cl_fF=2.0):
 
 if __name__ == "__main__":
     print(json.dumps({k: v for k, v in M.items()}, indent=1)[:200])
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

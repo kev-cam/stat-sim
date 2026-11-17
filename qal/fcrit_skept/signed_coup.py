@@ -38,3 +38,7 @@ for tag,deck in (("matched_m2","r_bank_matched_m2"),("uniform_m6","r_bank_unifor
             print("    %-7s want_hi=%-5s signed@maxabs=%9.3f  worstHARMFUL=%9.3f mV @%.1f ps"
                   %(r["gate"],r["want_hi"],r["signed_at_max_abs_mV"],r["worst_HARMFUL_mV"],r["at_ps"]))
 json.dump(out,open("SIGNED_COUPLING.json","w"),indent=1)
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

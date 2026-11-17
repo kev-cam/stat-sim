@@ -64,3 +64,7 @@ if __name__ == '__main__':
                r['b1']['rail'], r['b2']['rail'], r['b3']['rail'],
                r['HIGH_1_at_b2_ckpt'], r['HIGH_2_at_b3_ckpt'], r['overdrive_3']))
     json.dump(res, open('sep_out.json', 'w'), indent=1)
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

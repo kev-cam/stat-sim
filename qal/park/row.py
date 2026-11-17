@@ -62,3 +62,7 @@ if __name__=='__main__':
                ('%.4f'%o['Q_pk_net']) if o['Q_pk_net'] is not None else None,
                o['ehi'],o['ehi580'],o['EA_C'],o['IPK']))
         print()
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

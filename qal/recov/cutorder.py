@@ -33,3 +33,7 @@ if __name__ == '__main__':
               'ORDER PASS' if (o['pmos_vs_nmos'] is not None and o['pmos_vs_nmos'] <= 5.0
                                and o['park_vs_nmos'] is not None and o['park_vs_nmos'] >= 0)
               else 'ORDER FAIL'))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

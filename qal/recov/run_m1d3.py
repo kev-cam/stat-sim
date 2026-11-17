@@ -25,3 +25,7 @@ for adv in (6.0, 8.0):
              r['E_hop_open_fJ'], r['completeness_Ehop'], r['cells_settled'],
              r['cut_order'], o['pmos_vs_nmos'], o['park_vs_nmos'], o['cut_vs_zero']))
     rv.save(tag, r)
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

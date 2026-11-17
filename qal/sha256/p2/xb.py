@@ -263,3 +263,7 @@ if __name__ == "__main__":
     print("   outputs", {k: (v["measured"], v["expected"]) for k, v in
                          r["primary_outputs"].items()})
     print("   value fails by bank", {k: v for k, v in r["value_fails_by_bank"].items() if v})
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

@@ -59,3 +59,7 @@ for n in names:
       e["cell"],e["vdd"],e["trip"],e["vout_at_qalhi"],
       "OK" if e["vout_at_qalhi"]<e["vdd"]*0.3 else "** MISREAD **",
       e["vout_at_pass"],"OK" if e["vout_at_pass"]<e["vdd"]*0.3 else "** MISREAD **"))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

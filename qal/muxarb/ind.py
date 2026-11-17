@@ -33,3 +33,7 @@ for Ltgt,name in [(1e-9,'1nH recharge'),(15e-9,'15nH transfer')]:
         dout=din+2*W
         legal = din>=dmin
         print(f'  nr={nr:2d} d_in={din:9.2f} d_min={dmin:8.2f} {"LEGAL " if legal else "ILLEGAL"} d_out={dout:9.2f} oct={OCT*dout*dout:12.1f} um2  bbox={dout*dout:12.1f}  R={Rval(din,w,s,nr):7.2f} ohm')
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

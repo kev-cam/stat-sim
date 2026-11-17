@@ -53,3 +53,7 @@ for ds,rows in out.items():
     print("%-9s %-5d %-7d %-7d %-7d | %d/%d/%d/%d   links n=%d pass90=%d guard=%d"
           %(ds,len(rows),p90,g,fn,cen["PASS"],cen["FAIL_budget"],cen["FAIL_late"],cen["FAIL_never"],n,lp90,lg))
     print("           SELF-TEST rows: VALUEpass_but_funcFAIL=%d   VALUEfail_but_funcPASS=%d"%(vp_ff,vf_fp))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

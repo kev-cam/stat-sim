@@ -269,3 +269,7 @@ P("`PRE_REGISTERED.json` (first file), `mblocks.py` (netlists, levelizer/bank al
   "(deck + log + OUT.json; no waveforms -- raws/prns lived on the scratchpad and were deleted after extraction).")
 open(os.path.join(HERE, "README.md"), "w").write("\n".join(L) + "\n")
 print("README.md written, %d lines" % len(L))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

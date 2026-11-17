@@ -60,3 +60,7 @@ print("RESULTS.json written: %d cell cases, %d wrong@ckpt"%(
     len(allc),len(R["C1_FUNCTION"]["wrong_at_checkpoint"])))
 print("wrong@ckpt:",R["C1_FUNCTION"]["wrong_at_checkpoint"])
 print("wrong@long:",R["C1_FUNCTION"]["wrong_at_long_tail"])
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

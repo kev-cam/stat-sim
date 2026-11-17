@@ -7,3 +7,7 @@ catch { set_load $env(EXTLOAD) [get_nets q1] }
 catch { set_load $env(EXTLOAD) [get_nets n1] }
 set_input_delay 0 -clock clk [all_inputs -no_clocks]
 report_checks -from F1 -to F2 -path_delay max -group_path_count 1 -digits 4
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

@@ -206,3 +206,7 @@ def static_cell(i, fam, rail, gn, cl, drv):
         L.append("CI%s_%d %s %s 0.1f" % (i, k, nd(nm), nd(ref)))
     L.append("CLY%s y%s %s %gf" % (i, i, gn, cl))
     return L, ["y%s" % i], {nm: nd(nm) for nm in d["internal"]}
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

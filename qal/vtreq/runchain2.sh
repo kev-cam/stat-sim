@@ -6,3 +6,7 @@ go d150B -0.15 -0.15 0.373987 0.289653 &
 go d300P 0 -0.30 0.523987 0.139080 &
 wait
 echo "CHAIN SET 2 DONE"
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

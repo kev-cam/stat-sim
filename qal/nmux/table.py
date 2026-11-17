@@ -19,3 +19,7 @@ for r in rows:
         g("select_injection_mV", "%.1f"), g("E_in_H_fJ", "%.4f"),
         g("E_gate_fJ", "%.4f"), g("E_supply_fJ", "%.3g"),
         g("capacitive_tax_mV", "%.1f")))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

@@ -37,3 +37,7 @@ python3 eyerun.py P0 P1 P2 P3 P4 P5 > log_eyerun.txt 2>&1
 say "eyerun rc=$?"
 tail -40 log_eyerun.txt | tee -a lanes.log
 say "ALL DONE"
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

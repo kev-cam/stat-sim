@@ -95,3 +95,7 @@ if __name__ == "__main__" and os.environ.get("LSTEER_COMPOSE"):
     rows = {t: row(t, o) for t, o in R.items()}
     json.dump(compose(rows), open(os.path.join(HERE, "RESULTS_rows.json"), "w"), indent=1)
     print("RESULTS_rows.json written:", len(rows), "rows")
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

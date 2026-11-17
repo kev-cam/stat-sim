@@ -23,3 +23,7 @@ echo "DONE  $DECK rc=$rc elapsed=$(( $(date +%s) - t0 ))s"
 grep -a "build_vae_so" "${DECK%.cir}.log" | sed 's/^/  /'
 grep -aiE "error|fatal|abort|failure" "${DECK%.cir}.log" | grep -vi "no model parameter" | head -10
 exit $rc
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

@@ -247,3 +247,7 @@ if __name__ == "__main__":
     a = sys.argv
     run(a[2], float(a[3]), float(a[4]), float(a[5]), float(a[6]), float(a[7]),
         float(a[8]) if len(a) > 8 else 6.91)
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

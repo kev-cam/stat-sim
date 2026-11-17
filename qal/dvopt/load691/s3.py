@@ -49,3 +49,7 @@ if __name__ == "__main__":
         print("DONE", r.get("tag"), r.get("error", ""))
     elif c == "merge":
         print("merged %d" % len(merge()))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

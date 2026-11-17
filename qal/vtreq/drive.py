@@ -180,3 +180,7 @@ if __name__ == "__main__":
                 rows[fn[:-5]] = json.load(open(os.path.join(ROWD, fn)))
         json.dump(rows, open(os.path.join(HERE, "rows.json"), "w"), indent=1)
         print("merged", len(rows))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

@@ -6,3 +6,7 @@ python3 btw.py row 10 150 4 1.65 free "$1" "$2" "$3" "$4" "$5" > "row_$2_$3_$1.l
 rc=$?
 if [ $rc = 0 ]; then python3 wext.py 10 150 4 1.65 free "$1" "$2" "$3" "$5" >> "row_$2_$3_$1.log" 2>&1; rc=$?; fi
 echo "EXIT $rc cw=$1 $2 $3" >> row_status.txt
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

@@ -56,3 +56,7 @@ else:
     print("ALL CLEAN -- every netlist's gate drive and bank content match its spec.")
 json.dump(bad, open(os.path.join(HERE, "AUDIT.json"), "w"), indent=1)
 sys.exit(1 if bad else 0)
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

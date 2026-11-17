@@ -42,3 +42,7 @@ print("  A4 IZ PASS %s | A4 identity PASS %s | A1 %s | A2 %s | A3 %s | A5 %s | P
          r["A5_restore_outputs_full_swing"], r["PASS"]))
 print("  worst gate %.3f%% at bank %d" % (r["worst_gate_pct_all_banks"],
                                           r["worst_gate_bank"]))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

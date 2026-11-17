@@ -7,3 +7,7 @@ for f in i1_lsweep_L15_W30_dv120 i2_load691_L4_W30_dv165 i3_chain3_f45; do
 done
 wait
 echo "ALLDONE" >> instr.status
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

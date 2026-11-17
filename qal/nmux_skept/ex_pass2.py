@@ -41,3 +41,7 @@ for tol in (10.0,25.0,50.0):
             r0,s0=prev; cross=r0+(v["rail"]-r0)*(tol-s0)/(s-s0)
         prev=(v["rail"],s)
     print("CROSSOVER (293 ps window), shortfall = %5.1f mV  ->  rail = %.4f V"%(tol,cross if cross else float('nan')))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

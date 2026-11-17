@@ -488,3 +488,7 @@ S["Q1_committed_anchor_band"] = {t: [v["g"] * C["ratio_lo"], v["g"] * C["ratio_h
                                  for t, v in best.items()}
 json.dump(S, open(os.path.join(HERE, "SUMMARY.json"), "w"), indent=1)
 print(txt)
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

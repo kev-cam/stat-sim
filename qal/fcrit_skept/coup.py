@@ -99,3 +99,7 @@ for b, v in sorted(R["chain3_own_coupling"].items()):
 if allst:
     print("\nchain3 own step_at_logic: n=%d  min=%.3f  median=%.3f  MAX=%.3f mV"
           % (len(allst), min(allst), float(np.median(allst)), max(allst)))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

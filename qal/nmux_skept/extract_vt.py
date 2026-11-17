@@ -46,3 +46,7 @@ print("%-8s %-12s %-12s %-12s %-12s"%("V_sb","V_sb_meas","Vt@100nW/L","Vt@10n","
 for n in names:
     e=out[n]
     print("%-8.3f %-12.4f %-12.7f %-12.7f %-12.7f"%(e["V_sb_nominal"],e["V_sb_measured"],e["Vt_100n"],e["Vt_10n"],e["Vt_1n"]))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

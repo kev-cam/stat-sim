@@ -9,3 +9,7 @@ for P in W2 W3 W6 W7; do
 done
 wait
 echo "[$(date +%H:%M:%S)] ALL WEIGHTS DONE" >> lanes.log
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

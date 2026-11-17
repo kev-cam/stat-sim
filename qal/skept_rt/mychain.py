@@ -86,3 +86,7 @@ def go(prn, bound, label):
 if __name__ == "__main__":
     j = json.load(open(sys.argv[1]))
     go(j["prn"] if len(sys.argv) < 3 else sys.argv[2], j["bound_ps"], j["tag"])
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

@@ -9,3 +9,7 @@ echo "=== AES row re-run from scratch $(date +%H:%M:%S) ==="
 python3 -u run.py row aes 1150 4.608 1.0
 echo "=== row rc=$? $(date +%H:%M:%S) ==="
 ls -la ROW_aes*.json c_aes*.cir.mt0 2>/dev/null
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

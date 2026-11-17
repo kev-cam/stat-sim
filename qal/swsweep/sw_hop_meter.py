@@ -434,3 +434,7 @@ if __name__ == "__main__":
         rows[des + "_zcs"]["true_zero_ps"] = d
         rows[des + "_zcs"]["timing_convention"] = "TRUE ZCS: open at the probe zero"
         json.dump(rows, open(fn, "w"), indent=1)
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

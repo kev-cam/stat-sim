@@ -10,3 +10,7 @@ module sha_slice(
   assign ch  = (e & f) ^ (~e & g);               // choice
   assign sum = a + b;                            // 8-bit CPA (carry chain)
 endmodule
+
+// SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+// SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+// Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

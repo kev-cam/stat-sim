@@ -209,3 +209,7 @@ if __name__ == "__main__":
     elif st == "show":
         for k, r in sorted(merge().items()):
             print(lsw.brief(r))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

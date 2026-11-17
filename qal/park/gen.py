@@ -191,3 +191,7 @@ if __name__ == '__main__':
         patch('pa_merge_per', tend=1160.0, taps=taps, park=MERGE,
               pcols=' V(xepk) V(xqpk)',
               note='HOLD TEST: merged park + PERIODIC taps')
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

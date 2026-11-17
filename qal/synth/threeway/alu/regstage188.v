@@ -1132,3 +1132,7 @@ module regstage188 (input [187:0] d_L, input [187:0] d_H, input ki, output [187:
   th22 u750 (.a(acc6_0), .b(acc5_2), .y(acc7_0));
   assign ko = acc7_0;
 endmodule
+
+// SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+// SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+// Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

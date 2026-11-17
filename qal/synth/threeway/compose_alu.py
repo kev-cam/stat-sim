@@ -413,3 +413,7 @@ if __name__ == "__main__":
                    "forward_latency_ps": dly,
                    "unmeasured_arc_events_per_op": sum(r["unmeas"].values()),
                    "nv": r["nv"]}, open(jout, "w"), indent=1)
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

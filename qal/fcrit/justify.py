@@ -61,3 +61,7 @@ for ds, tag, path, nbank, mgate, oh, nbn, gi in DATASETS:
 out["JUSTIFICATION_MEASURED"] = agg
 json.dump(out, open(os.path.join(HERE, "JUSTIFY.json"), "w"), indent=1)
 print(json.dumps(agg, indent=1))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

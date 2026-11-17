@@ -54,3 +54,7 @@ print()
 print("CMOS measured          232 fJ/op   -> direct-threshold async = %.2fx CMOS" % (tot/232))
 print("DIMS async (524 cell) 7230 fJ/op   -> direct-threshold is    %.2fx cheaper" % (7230/tot))
 print("QAL  projected        136.8 fJ/op")
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

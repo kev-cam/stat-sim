@@ -44,3 +44,7 @@ if __name__=="__main__":
     print("  => QAL energy-advantage ceiling = alpha/e_floor = %.1fx (real) to %.1fx (wide) -- was ~15-25x projected."%(
         alpha/E_FLOOR_real, alpha/E_FLOOR_wide))
     print("  => the THROUGHPUT / clock-tax-elimination win is UNAFFECTED; only the energy ceiling comes down.")
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

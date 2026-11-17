@@ -382,3 +382,7 @@ if __name__ == "__main__":
     fl = {k: out["banks"][k]["POST_RETURN_FLOOR_EYE2"] for k in out["banks"]}
     print("floors:", json.dumps(fl))
     print("value:", json.dumps({p: (v["bits_wrong"]) for p, v in out["value_check"].items()}))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

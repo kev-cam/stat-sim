@@ -88,3 +88,7 @@ if __name__ == "__main__":
         print("        worst %.2f%% bank %s  %.0fs"
               % (r["worst_gate_pct_all_banks"], r["worst_gate_bank"], r["wall_s"]),
               flush=True)
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

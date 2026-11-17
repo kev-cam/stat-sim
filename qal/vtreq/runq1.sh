@@ -8,3 +8,7 @@ MAXPAR=${MAXPAR:-4}
 TAGS=${TAGS:-"d000 d050P d050N d050B d100P d100N d100B d150P d150N d150B d200P d200N d200B d300P d300N d300B"}
 for t in $TAGS; do echo "$t"; done | xargs -P "$MAXPAR" -I{} sh -c \
   "python3 drive.py $STAGE {} > log_${STAGE}_{}.txt 2>&1; echo \"[\$(date +%H:%M:%S)] done $STAGE {}\""
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

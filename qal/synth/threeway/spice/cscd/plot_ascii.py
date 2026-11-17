@@ -50,3 +50,7 @@ if __name__ == "__main__":
     prn = sys.argv[1]; a = float(sys.argv[2]); b = float(sys.argv[3])
     log = (len(sys.argv) < 5 or sys.argv[4] != "lin")
     render(prn, a, b, log=log)
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

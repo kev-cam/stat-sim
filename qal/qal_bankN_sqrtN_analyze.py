@@ -206,3 +206,7 @@ out = {"_doc": "Analysis of qal_bankN_sqrtN.json. DIRECT = sample spread over th
            for dv in (0.8, 1.0)}}
 json.dump(out, open("/usr/local/src/stat-sim/qal/qal_bankN_sqrtN_analysis.json", "w"), indent=1)
 print("wrote /usr/local/src/stat-sim/qal/qal_bankN_sqrtN_analysis.json")
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

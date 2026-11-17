@@ -58,3 +58,7 @@ for k in (1, 2, 3):
     rec["INTER_LOW_only"] = opening(np.min(lo_all, axis=0))
     out["bank%d" % k] = rec
 print(json.dumps(out, indent=1))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

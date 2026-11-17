@@ -5,3 +5,7 @@ export PYMS_VAE_CACHE=/tmp/claude-1001/-usr-local-src/4921ad0c-f17b-4b84-986a-59
 while pgrep -f "Xyce warm[.]cir" > /dev/null; do sleep 10; done
 /usr/local/src/xyce-build/src/Xyce warm2.cir > warm2.out 2>&1
 echo "WARM2 DONE rc=$?" >> warm2.out
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

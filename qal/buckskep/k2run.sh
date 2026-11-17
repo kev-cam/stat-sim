@@ -16,3 +16,7 @@ for d in K2_fwlate_L10_T40 IC_C9; do
   echo "$d rc=$? degraded=$(grep -c 'retrying without zero-valued' $d.log)" >> k2.status
 done
 echo "K2 QUEUE COMPLETE" >> k2.status
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

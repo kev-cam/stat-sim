@@ -193,3 +193,7 @@ if __name__ == "__main__":
         res["B_ideal_supply_floor"] = anchor_B()
     json.dump(res, open(os.path.join(pg.HERE, "ANCHOR_%s.json" % what), "w"), indent=1)
     print(json.dumps(res, indent=1)[:4000])
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

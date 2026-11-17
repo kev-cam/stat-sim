@@ -13,3 +13,7 @@ printf '%s\n' \
   "m20   4 30 1.65 20" \
   "m1000 4 30 1.65 1000" \
 | xargs -P 3 -I{} bash -c 'run $0' "{}"
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

@@ -41,3 +41,7 @@ P=[("base vs wx2",32,18,13,37),("base vs wx4",32,18,16,34),("base vs lx2",32,18,
    ("wx2@8x vs base@4x",13,37,5,45)]
 for nm,a,b,c,d in P:
     print(f"  {nm:20s} p={fisher(a,b,c,d):.6f}")
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

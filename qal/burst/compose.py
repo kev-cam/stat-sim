@@ -147,3 +147,7 @@ for k in sorted(OUT["crossovers"]):
               % (k, c["T_idle_star_s"], c["duty_star"], c["low_duty_winner"]))
     else:
         print(" %-58s %s" % (k, c["low_duty_winner"]))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

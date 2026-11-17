@@ -24,3 +24,7 @@ echo "=== convergence: T=60 P0 at fine steps, SAME zeros ==="
 mkdir -p T60fine/P0 && cp T60/P0/zeros.json T60fine/P0/zeros.json
 python3 eb.py lane 60 P0 --fine > log_T60fine_P0.txt 2>&1
 echo "SWEEP DONE"
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

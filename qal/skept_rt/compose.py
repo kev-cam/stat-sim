@@ -108,3 +108,7 @@ print("  => the driver choice dominates the 1/T knob by ~%.0fx.  DVFS on T canno
       % (((E_tank + LADDER[-1][1]) / (E_tank + LADDER[1][1])) / 1.260))
 print("     convert a speed gain into an efficiency win here, and there is no speed")
 print("     gain in the legal topology to convert.")
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

@@ -136,3 +136,7 @@ if __name__ == "__main__":
     cols = read_prn(path) if mode.endswith("xyce") else read_raw(path)
     fn = tg15p if mode.startswith("tg15p") else rc
     print(json.dumps(fn(cols), indent=1))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

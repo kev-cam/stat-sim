@@ -369,3 +369,7 @@ if __name__ == "__main__":
     elif st == "leak":
         for v in (1.2, 1.0):
             leak_point(v)
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

@@ -94,3 +94,7 @@ for g in allmg['base']:
     print(f"{g:16s} " + " ".join(f"{allmg[t][g].mean():10.3f}" for t in res))
 print("\n=== pull-DOWN polarity sd (regime check) ===")
 for tag,r in res.items(): print(f"  {tag:8s} pull-up sd {r['pu']:8.3f}  pull-down sd {r['pd']:8.3f}")
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

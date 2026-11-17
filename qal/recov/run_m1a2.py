@@ -11,3 +11,7 @@ for te in (30.0, 60.0, 100.0, 133.0):
         r = go.hop(tag, drives.m1a_edges(tcut=z+dc, te=te, RS=25.0), show=False)
         if r is None: continue
         go._finish_m1(r, te, 25.0, z+dc); r['dcut_ps'] = dc; rv.save(tag, r)
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

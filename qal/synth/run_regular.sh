@@ -8,3 +8,7 @@ cd "$(dirname "$0")"
 yosys -q -p "read_verilog $RTL; hierarchy -top Sha256; synth -top Sha256 -flatten;   dfflibmap -liberty $LIB; abc -liberty $LIB; opt_clean;   tee -o stat.txt stat -liberty $LIB; write_verilog -noattr sha_mapped.v"
 # timing (critical path -> max clock)
 printf 'read_liberty %s\nread_verilog sha_mapped.v\nlink_design Sha256\ncreate_clock -name clk -period 20 [get_ports clk]\nreport_checks -path_delay max -group_count 1 -digits 3\n' "$LIB" | sta -no_splash -exit /dev/stdin
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

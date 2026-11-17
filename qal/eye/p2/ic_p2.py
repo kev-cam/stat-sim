@@ -169,3 +169,7 @@ open(os.path.join(os.path.dirname(os.path.abspath(__file__)),
                   "INSTRUMENT_CHECK_P2.json"), "w").write(
     json.dumps(out, indent=1))
 print(json.dumps(out, indent=1))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

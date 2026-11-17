@@ -638,3 +638,7 @@ if __name__ == "__main__":
     if a.cmd == "deck":
         lines, S = build(a)
         print("\n".join(lines)); print(json.dumps({k: v for k, v in S.items() if k != "gate_edges"}), file=sys.stderr)
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

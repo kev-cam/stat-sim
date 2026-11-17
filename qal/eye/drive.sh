@@ -13,3 +13,7 @@ for P in "$@"; do
 done
 wait
 echo "ALL DONE" >> lanes.log
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

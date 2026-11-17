@@ -49,3 +49,7 @@ c = Counter((v.get("mix"), v.get("vgh")) for v in out.values() if not v.get("err
 print("re-extracted %d rows, %d failed %s, %d not in any spec %s"
       % (len(out) - len(bad), len(bad), bad, len(unspec), unspec))
 print("partition (mix, VGH):", dict(c))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

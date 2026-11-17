@@ -32,3 +32,7 @@ for name, kw in ROWS:
              None if r['width_50_ps'] is None else round(r['width_50_ps'],1),
              None if r['t_zero_meas_ps'] is None else round(r['t_zero_meas_ps'],1)))
     rv.save(tag, r)
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

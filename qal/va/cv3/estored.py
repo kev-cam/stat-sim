@@ -36,3 +36,7 @@ if __name__ == "__main__":
           (estored(0.57632,*fb)*1e15, qof(0.57632,*fb)*1e15))
     # measured anchors for reference
     print("  measured E_stored_full(1.0)=19.220 fJ (transistor slow ramp)")
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

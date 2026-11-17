@@ -15,3 +15,7 @@ for spec in "d150B 1" "d150B 2" "d200B 0.5" "d200B 1" "d200B 2" \
 done
 wait
 echo "L SWEEP DONE"
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

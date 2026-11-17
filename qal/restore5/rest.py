@@ -602,3 +602,7 @@ if __name__ == "__main__":
         k, T, tres = int(a[1]), float(a[2]), float(a[3])
         lines, S = deck(k, T, tres, nbank=NBANK)
         print("\n".join(lines))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

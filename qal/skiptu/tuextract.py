@@ -279,3 +279,7 @@ def row(scheme, mode, T, dv, m, S, fires, l_nh, total_um, ltu, wsw, ton, foff, t
         A2_all_stages_clear_0p4400=out["A2_all_stages_clear_0p4400"],
         A2_min_delivered_high_V=out["A2_min_delivered_high_V"])
     return out
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

@@ -282,3 +282,7 @@ if __name__ == "__main__":
     for name, net in FORMS:
         sets, full, weak = check_ic(net)
         print("  %-32s %s" % (name, " ".join("{%s}" % ",".join(S) for S in sets["yt"])))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

@@ -16,3 +16,7 @@ module sha256_round_dp(
   assign ho=g; assign go=f; assign fo=e; assign eo = d + T1;   // 2-operand add
   assign dao=c; assign co=b; assign bo=a; assign ao = T1 + T2; // 2-operand add
 endmodule
+
+// SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+// SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+// Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

@@ -342,3 +342,7 @@ if __name__ == "__main__":
     if a and a[0] == "cmosidle":
         sys.exit(0 if stage_cmosidle() else 1)
     print("stage?")
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

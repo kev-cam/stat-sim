@@ -132,3 +132,7 @@ if __name__ == "__main__":
     print("merged %d files" % merge())
     print("shared cache holds %d .so after warming (%.0fs total)"
           % (have(SHARED), time.monotonic() - t0))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

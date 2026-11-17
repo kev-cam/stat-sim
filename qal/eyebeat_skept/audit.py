@@ -104,3 +104,7 @@ for T in (150, 200):
     print("T=%-4g RSS(WC,drift)=%.1f -> %s | RSS(RAND,drift)=%.1f -> %s"
           % (T, rss_wc, "PASS" if s > rss_wc else "fail",
              rss_r, "PASS" if s > rss_r else "fail"))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

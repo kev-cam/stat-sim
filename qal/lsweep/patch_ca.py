@@ -28,3 +28,7 @@ s=s.replace('        row = extract(path + ".mt0", l_nh, total_um, th, rs, edge, 
 s=s.replace('            row["xc_VA_open"] = dv - lg["qlt_C"] / CA_FF','            row["xc_VA_open"] = dv - lg["qlt_C"] / ca')
 open(p,'w').write(s)
 import ast; ast.parse(s); print("patch_ca applied, syntax OK")
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

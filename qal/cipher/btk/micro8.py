@@ -359,3 +359,7 @@ if __name__ == "__main__":
                  r["E_textbook_CV2_fJ"]))
     else:
         print(__doc__)
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

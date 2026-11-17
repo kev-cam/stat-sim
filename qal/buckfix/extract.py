@@ -101,3 +101,7 @@ def depth_to_floor(v0, ratio, floor_mV):
     if not (0 < ratio < 1) or v0 <= 0:
         return None
     return math.ceil(math.log((floor_mV * 1e-3) / v0) / math.log(ratio))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

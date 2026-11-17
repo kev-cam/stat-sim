@@ -10,3 +10,7 @@ python3 anchor.py
 echo "=== CBANK ==="
 python3 cb.py
 echo "=== STAGE1 DONE $(date +%T) ==="
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

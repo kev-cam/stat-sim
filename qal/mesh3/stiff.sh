@@ -21,3 +21,7 @@ if p:
     print("EXEMPLAR reproduces committed row (widths+acceptance):", same)
 PY
 echo ALL-STIFF-DONE
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

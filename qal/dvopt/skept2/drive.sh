@@ -12,3 +12,7 @@ while read -r tag L W dv; do
 done < "$LIST"
 wait
 echo "ALL DONE"
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

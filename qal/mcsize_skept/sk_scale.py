@@ -87,3 +87,7 @@ for a,b,pred in [('8x base','8x W x2',1/math.sqrt(2)),('8x base','8x W x4',0.5),
         rs=B['real_sigN']/A['real_sigN']; rp=B['pullup_gate_sd']/A['pullup_gate_sd']
         print(f"  {a} -> {b}: predicted {pred:.4f} | realized DRAW sigma ratio {rs:.4f} "
               f"| realized PULL-UP margin sd ratio {rp:.4f}   (miss {100*(rp/pred-1):+.1f}%)")
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

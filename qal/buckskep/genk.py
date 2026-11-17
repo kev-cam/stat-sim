@@ -47,3 +47,7 @@ if __name__ == "__main__":
     json.dump(m, open(os.path.join(HERE, "KMETA_p%d.json" % pass_no), "w"),
               indent=1, default=str)
     for k in sorted(m): print(k)
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

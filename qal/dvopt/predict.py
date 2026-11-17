@@ -91,3 +91,7 @@ for k, v in out.items():
              v["L_sumopt_nH"], v["SUM_pred_ps"], v["SUM_VBEND_pred"], v["SUM_ratio_to_CMOS"]))
 json.dump(dict(floor_committed=FLOOR, a_W=A, f_W={str(k): v for k, v in F.items()},
                predictions=out), open("predictions.json", "w"), indent=1)
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

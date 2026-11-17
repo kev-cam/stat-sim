@@ -51,3 +51,7 @@ if __name__=="__main__":
     print("  => real static gate SETTLES to its logic value on a ramped supply: any gate, no dual-rail")
     print("     needed for completeness. Settle-not-switch ENERGY = A1b RC/T (NAND full-energy here is")
     print("     bookkeeping-contaminated; trend adiabatic, magnitude from A1b).")
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

@@ -343,3 +343,7 @@ def level_time(path, S, j, k, dv=1.2):
     out["committed_single_hop_t_valid90_ps"] = 123.44311400000001
     out["committed_single_hop_t_settle90_ps"] = 115.570918
     return out
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

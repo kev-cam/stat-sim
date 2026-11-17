@@ -283,3 +283,7 @@ def m1d_harmonic(VGH=1.5, beat=534.0, nh=5, RS=25.0,
     _meter(L, [('gt','VGTS','gts'), ('gtp','VGPS','gps'), ('pk','VPK','pk')])
     pc = 'V(gts) V(gps) V(xegt) V(xegtp) V(xepk) V(xqgt) V(xqgtp) V(xqpk)'
     return L, pc, ['gt','gtp','pk'], ['gt','gtp','pk'], None, None
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

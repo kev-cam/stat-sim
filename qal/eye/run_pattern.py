@@ -69,3 +69,7 @@ def main(pname):
 
 if __name__ == "__main__":
     sys.exit(main(sys.argv[1]))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

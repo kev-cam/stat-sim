@@ -277,3 +277,7 @@ if __name__ == '__main__':
         except Exception as e:
             out[p] = {'ERROR': '%s: %s' % (type(e).__name__, e)}
     print(json.dumps(out, indent=1, sort_keys=True, default=str))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

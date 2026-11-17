@@ -637,3 +637,7 @@ print("FEASIBLE rows: %d" % len(feasible))
 for k, v in list(cser_fit.items())[:3]:
     print("  C_ser fit %s: c0=%.3f fF  c1=%.4f fF/cell  worst resid %.2f%%"
           % (k, v["c0_switch_floor_fF"], v["c1_per_cell_fF"], v["worst_resid_pct"]))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

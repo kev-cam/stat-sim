@@ -47,3 +47,7 @@ for w in (15.0, 30.0, 60.0):
         print("%5.2f %4g | %8.2f %8.2f | %8.4f %8.2f %8.2f | %8.3f"
               % (dv, w, pre, Lb, vb, thop(w,Lb), floor90(vb), mx/92.8))
 json.dump(dict(floor_measured=pts, refined=grid), open("plan.json","w"), indent=1)
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

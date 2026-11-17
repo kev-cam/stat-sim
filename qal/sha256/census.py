@@ -249,3 +249,7 @@ if __name__ == "__main__":
         run_pt("f_%s" % sys.argv[2], sys.argv[2], PT)
     elif c == "merge":
         print("merged %d rows" % len(merge()))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

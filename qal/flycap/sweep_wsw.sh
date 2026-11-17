@@ -27,3 +27,7 @@ for W in 1u 2u 4u 10u 20u; do
   python3 run_c5.py "$OUT" --brief > "sw_w${W}.report" 2>&1
   grep -E "GATES:|RESIDUAL|the number|BREAKDOWN|switch gate drive|switch devices|gate settle|inductive|FLYCAP|bank A max|bank A min|tier voltages|SWAB gate" "sw_w${W}.report"
 done
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

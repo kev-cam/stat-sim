@@ -266,3 +266,7 @@ if __name__ == '__main__':
     elif st == 'm2': stage_m2(ns=tuple(int(x) for x in sys.argv[2].split(','))
                               if len(sys.argv) > 2 else (2, 4, 8))
     else: print('unknown stage')
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

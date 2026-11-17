@@ -15,3 +15,7 @@ for d in K1_buck_L10_T40 K1_nofw_L10_T40 PR_C1 IC_FREE PR_C9 IC_C9 K1_buck_L1_T4
   echo "$d rc=$rc degraded=$deg" >> drive.status
 done
 echo "DRIVE COMPLETE" >> drive.status
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

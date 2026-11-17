@@ -10,3 +10,7 @@ for P in P1 P2 P3 P4 P5; do
 done
 wait
 echo "[$(date +%H:%M:%S)] ALL FULL REPROBES DONE" >> lanes.log
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

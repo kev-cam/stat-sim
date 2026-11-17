@@ -85,3 +85,7 @@ if __name__=="__main__":
     print("  v1's separate generator + 32 freezes were removed (bank arch + resonant switch drive), but")
     print("  the resistive gate-settle floor replaces them -> regime D lands ~same ~5x, for the correct")
     print("  reason. The architecture is cleaner; the gate-level miracle isn't there. PROJECTION (Track C).")
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

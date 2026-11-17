@@ -85,3 +85,7 @@ print("  end-to-end depth-8: t90=%.4f  tcommit=%.4f  GAIN %.4f"
 ss90=(ch[8]["t90"]-ch[2]["t90"])/6.0; ssc=(ch[8]["tc"]-ch[2]["tc"])/6.0
 print("  STEADY-STATE per-stage (stages 3..8): 90%%bar %.4f ps  commitbar %.4f ps  GAIN %.4f"
       %(ss90,ssc,ss90/ssc))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

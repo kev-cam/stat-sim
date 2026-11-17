@@ -9,3 +9,7 @@ run() { S=$(date +%s); /usr/local/src/xyce-build/src/Xyce $1.cir > $1.log 2>&1
 for t in $WAVE; do run $t & done
 wait
 echo "WAVE DONE: $WAVE" >> p2.done
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

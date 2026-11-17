@@ -289,3 +289,7 @@ def main():
               {k: round(v['variance_share'], 4) for k, v in rep['sensitivity_by_class'].items()})
 
 main()
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

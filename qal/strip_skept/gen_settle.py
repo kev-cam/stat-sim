@@ -132,3 +132,7 @@ if __name__ == "__main__":
         print("wrote", nm, "M-cards:", ndev, "checked nodes:", len(meta))
     with open(os.path.join(d, "SETTLE_META.json"), "w") as f:
         json.dump(allmeta, f, indent=1)
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

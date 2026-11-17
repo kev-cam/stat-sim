@@ -110,3 +110,7 @@ if __name__ == "__main__":
     print("  RISK: tier balance -- 5%% imbalance drifts %d mV/200 hops; needs a slow trickle balancer."
           % m["drift_5pct_mV_per_200hops"])
     print("  => BUILD FIRST: permanently-connected 5-tier stack (candidate 5).")
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

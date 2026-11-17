@@ -34,3 +34,7 @@ if __name__=='__main__':
         if r is None: print('%-24s  (no data)'%t); continue
         print('%-24s L=%5.1fnH t_hop=%7.2fps Cser=%7.2ffF Z0=%7.1f Ron=%7.2f Rinst=%7.2f Q=%6.2f VBPK=%.4f VBEND=%.4f VAopen=%.4f IPK=%.4fmA'
               %(r['tag'],r['L_nH'],r['t_hop_ps'],r['Cser_fF'],r['Z0'],r['Ron'],r['Rinst'],r['Q'],r['VBPK'],r['VBEND'],r['VA_open'],r['IPK']*1e3))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

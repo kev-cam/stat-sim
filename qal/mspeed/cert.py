@@ -223,3 +223,7 @@ print(json.dumps({k: R[k] for k in ("anchor_xyce_vs_committed", "extractor_ident
                                     "vacask_reltol_ladder_vs_1e-5", "wall_s", "violations", "value_identical", "erosion_sign")}, indent=1,
                  default=str)[:6000])
 print("same-instant worst rel:", R["margin_same_instant_resample"]["worst_rel"])
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

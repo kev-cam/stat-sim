@@ -44,3 +44,7 @@ print("%-8s %-12s %-12s %-12s"%("rail","nMOS short","TG short","operand short"))
 for n in names:
     e=out[n]; r=e["rail"]
     print("%-8.4f %-12.1f %-12.1f %-12.1f"%(r,(r-e["a20n"])*1e3,(r-e["tg20n"])*1e3,(r-e["operand20n"])*1e3))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

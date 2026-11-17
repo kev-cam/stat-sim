@@ -67,3 +67,7 @@ if __name__=="__main__":
     print("  SPEED win applies to STREAMING / independent-lane workloads (= the GPU-batched north-star lanes);")
     print("  LATENCY-bound serial recurrences (single-stream SHA) INVERT it -- CMOS wins there.")
     print("  Contingent on the UNBUILT high-Q resonant generator (eta~1/3 as-built). PROJECTION pending Track C.")
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

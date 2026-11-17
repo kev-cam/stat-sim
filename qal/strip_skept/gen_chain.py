@@ -135,3 +135,7 @@ if __name__ == "__main__":
         print("wrote %-16s devices=%3d checked_nodes=%d" % (nm, nd, len(meta)))
     json.dump(dict(golden=gl, nodes=allm),
               open(os.path.join(d, "CHAIN_META.json"), "w"), indent=1)
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

@@ -566,3 +566,7 @@ def max_slope(hdr, rows, col, ta, tb):
         if d > best:
             best, bt = d, s[j][0]
     return best, bt
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

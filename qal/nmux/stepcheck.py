@@ -21,3 +21,7 @@ if all("FAIL" not in r for r in rows):
     out["pass_HIGH_delta_mV"] = (a["pass_HIGH_V"] - b["pass_HIGH_V"]) * 1e3
 json.dump(out, open(os.path.join(nm.HERE, "cells_stepcheck.json"), "w"), indent=1)
 print(json.dumps(out.get("delta_relaxed_minus_committed", out), indent=1))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

@@ -121,3 +121,7 @@ json.dump(out, open(os.path.join(HERE, "SK_VERDICT.json"), "w"), indent=1)
 print(json.dumps({k: out[k] for k in ("rows", "S2_S3_damage_attribution")
                   if k in out}, indent=1)[:4000])
 print("\nwrote SK_VERDICT.json")
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

@@ -28,3 +28,7 @@ def firstcross(ts,ys,lev,rise=True,tmin=0.0):
             if b==a: return ts[k]
             return ts[k-1]+(lev-a)/(b-a)*(ts[k]-ts[k-1])
     return None
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

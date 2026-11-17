@@ -59,3 +59,7 @@ def analyse(prn, want, starts, nb=NB, tend=None, label=''):
                     y_at_end=[ys[i][-1] for i in range(4)],
                     rail_end=rail[-1])
     return out
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

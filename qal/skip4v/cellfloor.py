@@ -98,3 +98,7 @@ if __name__ == "__main__":
             "%.1f" % ts[0.75] if ts[0.75] else "NEVER",
             "%.1f" % ts[0.90] if ts[0.90] else "NEVER",
             100.0 * vf / vr, why))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

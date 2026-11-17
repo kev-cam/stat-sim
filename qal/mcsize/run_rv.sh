@@ -7,3 +7,7 @@ for s in 3001 3002 3003; do
    echo "seed=$s RC=$? WALL=$(( $(date +%s) - S ))s" >> rv_mc.done ) &
 done
 wait; echo "ALL RV CHUNKS COMPLETE" >> rv_mc.done
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

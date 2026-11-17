@@ -234,3 +234,7 @@ if __name__ == "__main__":
     print("deck %s: %d cases, %d wrong at checkpoint: %s"
           % (which, len(cs), len(bad), bad[:12]))
     print("cmos_ref t90 = %s (committed 57.143)" % r["zc"].get("t90_ps"))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

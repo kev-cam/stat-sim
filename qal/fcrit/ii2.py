@@ -75,3 +75,7 @@ if tab:
 json.dump({"per_row": out, "earliest_real_only": tab},
           open(os.path.join(HERE, "II_ATTRIB.json"), "w"), indent=1)
 print("\nwrote II_ATTRIB.json")
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

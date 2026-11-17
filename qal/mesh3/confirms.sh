@@ -6,3 +6,7 @@ echo "trap 117 3 P1"; echo "trap 130 3 P1"; echo "sine 70 1 P1"; echo "sine 105 
 echo "sine 117 2 P1"; echo "sine 130 3 P1"; echo "trap 92 3 P2"
 } | xargs -P 7 -n 4 sh -c 'python3 mesh3.py one "$0" "$1" "$2" "$3" >> log_confirms.txt 2>&1; echo "confirm $0 $1 d$2 $3 rc=$?"'
 echo ALL-CONFIRMS-DONE
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

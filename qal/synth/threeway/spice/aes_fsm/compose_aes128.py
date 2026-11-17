@@ -270,3 +270,7 @@ if __name__ == "__main__":
     print("and viable -- the detector just has less floor to hide behind, so keep it <=400 fJ.")
     print("On-the-fly key schedule (260 flops) is the right self-timed AES; prestoring 11 keys")
     print("would fake a SHA-like floor by wasting clock on 1408 idle key flops.")
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

@@ -42,3 +42,7 @@ for nm in ("100n","10n","1n"):
     V=(lo+hi)/2; ceil[nm]=V
     print("%-6s %-10.4f %+13.1f %+13.1f %+13.1f"%(nm,V,(0.755-V)*-1e3,(1.26-V)*-1e3,(1.326-V)*-1e3))
 json.dump({"fit":res,"ceiling":ceil},open(f"{D}/sk_body_fit.json","w"),indent=1)
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

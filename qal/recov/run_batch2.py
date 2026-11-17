@@ -32,3 +32,7 @@ for wfn, wfp in ((0.74, 1.12), (5.0, 10.0)):
     for k in sorted(r):
         if k.startswith('aux_'): print('      %-16s %7.3f fJ' % (k, r[k]))
     rv.save(tag, r)
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

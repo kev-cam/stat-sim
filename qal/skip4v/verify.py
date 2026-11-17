@@ -332,3 +332,7 @@ if __name__ == "__main__":
             print("ERR", tag, repr(e), flush=True)
     json.dump(out, open(os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                      "VERIFY.json"), "w"), indent=1)
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

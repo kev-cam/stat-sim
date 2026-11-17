@@ -3,3 +3,7 @@ module t (input CLK, input RB, input din, input b, input c, output dout);
   sg13g2_dfrbpq_1 F1 (.CLK(CLK), .D(din), .RESET_B(RB), .Q(q1));
   sg13g2_dfrbpq_1 F2 (.CLK(CLK), .D(q1), .RESET_B(RB), .Q(dout));
 endmodule
+
+// SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+// SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+// Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

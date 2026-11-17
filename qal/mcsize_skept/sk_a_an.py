@@ -60,3 +60,7 @@ print(f"{'device':8s} {'kind':5s} {'W_um':>6s} {'L_um':>6s} {'WL':>7s} {'dVt/dDE
 for si,d in [(1,DEV[0]),(2,DEV[1]),(3,DEV[2]),(4,DEV[3]),(5,DEV[4]),(6,DEV[5])]:
     a,b=T[si][d[0]],T[0][d[0]]
     if a and b: print(f"{d[0]:8s} {d[2]:5s} {d[3]:6.2f} {d[4]:6.2f} {d[3]*d[4]:7.4f} {(a-b)/0.010:12.4f}")
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

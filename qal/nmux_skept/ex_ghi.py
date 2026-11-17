@@ -38,3 +38,7 @@ for v in ("sk_ch_nmos_std_w060","sk_ch_tg_std_w060","sk_ch_wire_std_w060"):
                                         for g,s in zip(ghi,src))+"   mV")
     print("%-10s  src>V*: "%""+"".join(("%10s"%("YES" if (s is not None and s>V0) else "no")) for s in src))
     print()
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

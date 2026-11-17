@@ -63,3 +63,7 @@ for tag,dk in [('8x base','p2_k8'),('8x W x2','p2k8_wx2'),('8x W x4','p2k8_wx4')
                      f"[{lo*100:5.1f},{h*100:5.1f}]%")
     print(f"{tag:9s} {np.nanmean(rail):7.4f} {np.nanmean(lv):8.4f} {np.nanstd(lv,ddof=1)*1000:7.3f} | "
           + " | ".join(parts))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

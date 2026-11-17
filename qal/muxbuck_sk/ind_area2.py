@@ -39,3 +39,7 @@ for L,tag in ((1e-9,"1 nH RECHARGE"),(15e-9,"15 nH TRANSFER")):
                 print(f"{w:5.1f} {nr:3d} {d:9.2f} {dm:8.2f} {flag:>4} {dout:9.2f} {A:13,.0f} {R:8.2f}")
             if ok and (best is None or A<best[0]): best=(A,w,nr,R,dout)
     print(f"  -> SMALLEST LEGAL: {best[0]:,.0f} um^2  (w={best[1]}u nr={best[2]}, R={best[3]:.2f} ohm, d_out={best[4]:.1f} um)")
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

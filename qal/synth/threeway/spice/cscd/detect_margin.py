@@ -138,3 +138,7 @@ if __name__ == "__main__":
     prn, tvec, nwin = sys.argv[1], float(sys.argv[2]), int(sys.argv[3])
     cen = json.load(open("activity_census.json"))["windows"]
     main(prn, tvec, nwin, cen)
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

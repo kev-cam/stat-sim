@@ -81,3 +81,7 @@ for nr in (2, 3, 4, 5, 6, 8, 10):
         if best15 is None or g['A_oct'] < best15[0]:
             best15 = (g['A_oct'], w, nr, g['R'])
 print(f"\nSMALLEST 15 nH found: {best15[0]:,.0f} um^2 at w={best15[1]}u nr={best15[2]} (R = {best15[3]:.2f} ohm)")
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

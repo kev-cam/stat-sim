@@ -113,3 +113,7 @@ if __name__ == "__main__":
         else:
             print("   ", r.get("error"), r.get("probe_msg"), r.get("run_msg"))
     print("wrote", outname)
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

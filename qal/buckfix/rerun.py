@@ -50,3 +50,7 @@ if __name__ == "__main__":
             print("   A2 %.6f %s | sep %s" % (w["A2_min_delivered_HIGH_V"], w["A2_pass"], w["separation_mV_by_bank"]))
             print("   charge", r.get("charge_fC"), "Qdel/Qsup", r.get("Qdel_over_Qsup"))
             print("   A6 hop", r["A6_hop"]); print("   A6 topup", r["A6_topup"])
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

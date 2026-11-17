@@ -466,3 +466,7 @@ if __name__ == "__main__":
     elif cmd == "show":
         for k, r in sorted(load().items(), key=lambda x: (-x[1]["L_nH"], x[1]["mode"])):
             print(brief(r))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

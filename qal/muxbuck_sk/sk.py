@@ -195,3 +195,7 @@ if __name__ == "__main__":
     made.append(droop_deck("sk_droop8.cir", ngate=8))
     for m in made:
         print(m)
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

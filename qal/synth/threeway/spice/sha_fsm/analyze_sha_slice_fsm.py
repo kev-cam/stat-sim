@@ -169,3 +169,7 @@ if __name__ == "__main__":
     print("clock-floor win (the completion-detector floor must be charged in separately).")
     if not any_e:
         print("(ENERGY pending: orchestrator must run the decks in Xyce, one at a time.)")
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

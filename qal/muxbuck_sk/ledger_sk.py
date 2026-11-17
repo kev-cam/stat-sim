@@ -51,3 +51,7 @@ print("   -> voltage-ordered service makes the shared-node cost INDEPENDENT of N
 print("      Arbitrary order makes it proportional to N (it does not).")
 print("      Plain round-robin over uniformly phase-staggered banks IS approximately voltage-ordered.")
 print("      WEIGHTED round-robin -- the balance run's recommendation -- deliberately breaks that order.")
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

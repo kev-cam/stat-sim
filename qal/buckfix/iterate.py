@@ -109,3 +109,7 @@ if __name__ == "__main__":
         print("   settling", w["settling_worst_by_stage"], "A1", w["A1_worst_pct"], w["A1_pass"])
         print("   A2 %.6f %s | sep %s" % (w["A2_min_delivered_HIGH_V"], w["A2_pass"], w["separation_mV_by_bank"]))
         print("   charge", r["charge_fC"], "Qd/Qs", r["Qdel_over_Qsup"], "energy", r["energy_fJ"])
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

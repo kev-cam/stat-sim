@@ -218,3 +218,7 @@ def run_one(name):
 
 if __name__ == "__main__":
     print(json.dumps(run_one(sys.argv[1]), indent=1)[:2500])
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

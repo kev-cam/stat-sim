@@ -42,3 +42,7 @@ CLE oe 0 2f
     open(f"{D}/{n}.cir","w").write(b); names.append(n)
 json.dump(names,open(f"{D}/passnames.json","w"))
 print(len(names),"pass decks:", " ".join(names))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

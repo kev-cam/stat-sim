@@ -11,3 +11,7 @@ echo "sk_rep_base RC=$?" >> rep.done
 export PYMS_VAE_CACHE=/usr/local/src/stat-sim/qal/mcsize_skept/vc_k8
 Xyce sk_rep_basek8.cir > sk_rep_basek8.log 2>&1
 echo "sk_rep_basek8 RC=$?" >> rep.done
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

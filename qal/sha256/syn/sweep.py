@@ -31,3 +31,7 @@ for v,ab in VAR.items():
     print("%-10s cells %4d DEPTH %3d  %s"%(v,c,d,pr))
     if best is None or (d,c)<best[0]: best=((d,c),v,outv)
 print("BEST",best)
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

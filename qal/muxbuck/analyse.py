@@ -143,3 +143,7 @@ if __name__ == "__main__":
     print(json.dumps({"self_test_1nH": ind_geom(1e-9),
                       "tank_359.79fF": mim_area_um2(359.79e-15),
                       "mux_TG_um2": cell_area(15.0)}, indent=1))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

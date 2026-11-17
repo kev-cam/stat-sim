@@ -186,3 +186,7 @@ if __name__ == "__main__":
     if a[0] == "stress":
         sys.exit(do_stress(float(a[1]), int(a[2]), a[3], float(a[4])))
     print(__doc__); sys.exit(2)
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

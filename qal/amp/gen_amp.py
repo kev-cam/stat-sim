@@ -137,3 +137,7 @@ def build(name, LP, LN, LBQ=5e-6, QIND=19.0, QBQ=19.0, WX=5.0, WT=2.0, VBG=0.55,
         if s.startswith('.OPTIONS'): out += A
     open(name + ".cir", "w").write("\n".join(out) + "\n")
     return name + ".cir"
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

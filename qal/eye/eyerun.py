@@ -549,3 +549,7 @@ def main(patterns):
 if __name__ == "__main__":
     pats = sys.argv[1:] or sorted(EH.PATTERNS)
     sys.exit(main(pats))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

@@ -11,3 +11,7 @@ while tq <= t1+1e-9:
     i = min(max(i,0), len(rows)-1)
     print("%9.2f " % (t[i]*1e12) + "".join("%12.5f" % rows[i][cols[s.upper()]] for s in sigs))
     tq += step
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

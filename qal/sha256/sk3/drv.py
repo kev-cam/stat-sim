@@ -73,3 +73,7 @@ if __name__ == "__main__":
     print("output-LOW cells v_end:", {k: round(v, 4) for k, v in lows.items()},
           " half-rail = %.4f" % (0.5 * r["VBEND"]), flush=True)
     print("output-LOW s_end:", {i: round(r["s_end"][i], 2) for i in myc.HI}, flush=True)
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

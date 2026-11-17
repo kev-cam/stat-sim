@@ -5,3 +5,7 @@ for d in sk_mx_q1 sk_mx_q4 sk_mx_q16 sk_mx_qe1 sk_mx_qe4 sk_mx_qe16 sk_droop8 sk
   Xyce $d.cir > $d.log 2>&1
   echo "done $d $(date +%T)"
 done
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

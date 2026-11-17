@@ -14,3 +14,7 @@ echo "P2-A done $(date +%H:%M:%S)" >> chain.log
 WAVE="p2_wx2 p2_wx4 p2_lx2" ./run_p2.sh >/dev/null 2>&1
 echo "P2-B done $(date +%H:%M:%S)" >> chain.log
 echo "CHAIN COMPLETE" >> chain.log
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

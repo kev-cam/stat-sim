@@ -32,3 +32,7 @@ for tag in sorted(rows):
         traceback.print_exc()
 json.dump(rows, open(ROWS, "w"), indent=1)
 print("re-extracted %d rows" % len(rows))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

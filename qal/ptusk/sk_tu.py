@@ -489,3 +489,7 @@ def probe_topup_zeros(scheme, T, total_um, l_nh, dv, tag, tz, ltu_nh, wsw, t_on,
         print("   tu-probe bank%d: I(LTU) zero at %.3f ps -> tfw %.3f ps (Ipk %.1f uA)"
               % (k, z, tfw, pk * 1e6), flush=True)
     return out
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

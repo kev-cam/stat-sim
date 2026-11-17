@@ -44,3 +44,7 @@ L += [".tran 1p 10p", ".print tran V(a)", ".end"]
 p, msg = up.run("warm_sk.cir", L, timeout=7200)
 print(msg, flush=True)
 sys.exit(0 if p else 1)
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

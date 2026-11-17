@@ -916,3 +916,7 @@ module regstage152 (input [151:0] d_L, input [151:0] d_H, input ki, output [151:
   th22 u606 (.a(acc6_0), .b(acc4_4), .y(acc7_0));
   assign ko = acc7_0;
 endmodule
+
+// SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+// SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+// Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

@@ -40,3 +40,7 @@ for c in sorted(groups,key=lambda k:-groups[k]['g']['sigma_mV']):
     print(f"{c:22s} {ndev:4d} {cmd:8.4f} {pooled:12.4f} {r:7.4f} {se_ratio:8.4f} {(r-1)/se_ratio:6.2f}  {sum(allv)/len(allv)*1e3:12.4f}")
     out[c]=dict(ndev=ndev,cmd_mV=cmd,pooled_mV=pooled,ratio=r,z=(r-1)/se_ratio)
 json.dump(out,open('/usr/local/src/stat-sim/qal/mcsize_skept/sk_class.json','w'),indent=1)
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

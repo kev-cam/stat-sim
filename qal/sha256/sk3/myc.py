@@ -301,3 +301,7 @@ if __name__ == "__main__":
           % (r["VBEND"], r["t_hop_ps"], r["t_valid90_ps"], r["t_level_ps"],
              r["C1_VALUE"]), flush=True)
     print("s_end", {k: round(v, 2) for k, v in r["s_end"].items()}, flush=True)
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

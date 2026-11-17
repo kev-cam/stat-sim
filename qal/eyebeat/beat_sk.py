@@ -43,3 +43,7 @@ for H in sorted(set(r["H"] for r in rows)):
     print("H=%d  earliest correct beat: 90%%bar %s ps   FUNCTIONAL %s ps   II %s -> %s ps"
           %(H, e90, ef, (H*e90 if e90 else None), (H*ef if ef else None)))
 json.dump(rows,open("BEAT_SKEPT.json","w"),indent=1)
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

@@ -50,3 +50,7 @@ FILES=sys.argv[1:] or ['work/sha_slice_th_clean.v','work/sha_slice_direct_spice.
                        'work/sha_slice_direct_full.v','work/sha_slice_direct_cd.v']
 for f in FILES:
     run(f,'sha_slice'); print()
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

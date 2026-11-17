@@ -507,3 +507,7 @@ if __name__ == "__main__":
         scheme, mode, T, dv = a[1], a[2], float(a[3]), float(a[4])
         tz = json.loads(a[5])
         do_row(scheme, mode, T, 30.0, 15.0, dv, tz)
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

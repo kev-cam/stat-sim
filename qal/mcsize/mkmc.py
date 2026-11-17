@@ -118,3 +118,7 @@ def main():
           f'{ndrop_int} integrator lines dropped, area {tot_area:.3f} um^2')
 
 main()
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

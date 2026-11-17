@@ -17,3 +17,7 @@ for cir in sys.argv[1:]:
     print("%-16s %8.4f %8.4f %8.4f | %8.1f %8.1f | %9.1f %9.1f | %8s | %+7.2f" % (
       os.path.basename(cir).replace('.cir',''), r1, vb2, vb3, m2, m3, worst, 100*worst/120,
       "OK" if vb3>=0.600 else "FAIL", dr))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

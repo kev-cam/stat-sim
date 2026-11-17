@@ -68,3 +68,7 @@ if __name__ == "__main__":
                  L["q_into_bank_fC"], L["Qdel_over_Qsup"] or 0,
                  L["eta_energy"] or 0, r["rail_rise_mV"]))
     print("wrote", name)
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

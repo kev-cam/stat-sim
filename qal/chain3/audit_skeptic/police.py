@@ -106,3 +106,7 @@ if __name__ == '__main__':
             for c in r['banks'][key]['cells']:
                 print('        o3_%d %s V=%+.5f  s=%7.2f%%  guard=%s'
                       % (c['i'], c['kind'], c['V'], c['settle_pct'], 'ok' if c['guard_ok'] else 'FAIL'))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

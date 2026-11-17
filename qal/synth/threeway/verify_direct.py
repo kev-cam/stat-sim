@@ -416,3 +416,7 @@ def qdi_check(N, cells, ports, runs):
 
 if __name__ == "__main__":
     sys.exit(main())
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

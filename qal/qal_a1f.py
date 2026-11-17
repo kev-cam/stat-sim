@@ -84,3 +84,7 @@ if __name__=="__main__":
     print("  data-signature: single-rail 100%% modulated (3.0/0.0 fC) vs dual-rail 0.00%% (2.0/2.0 fC),")
     print("                  mismatch-limited (ΔC/C=x%% -> spread x%%), survives nonlinear C(V).")
     print("  NOT YET SHOWN: ZVS benefit (sim was fragile), finite-RON tracking loss, efficiency number.")
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

@@ -85,3 +85,7 @@ if __name__ == "__main__":
     s3 = sched(fire3, ton3, tz3); s4 = sched(fire4, ton4, tz4)
     build(src, dst, L, s3, s4, mode)
     print(json.dumps(dict(dst=dst, L=L, s3=s3, s4=s4, mode=mode), indent=1))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

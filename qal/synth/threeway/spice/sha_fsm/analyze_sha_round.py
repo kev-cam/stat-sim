@@ -94,3 +94,7 @@ if __name__ == "__main__":
     print("\nPer-op self-timed energy / nops = the ROUND-CORE anchor (fJ/round) for")
     print("composition: E_hash(duty) ~ 64*rounds * E_round + schedule + H-add, with")
     print("the self-timed term DUTY-FLAT and the clocked term carrying the clock floor.")
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

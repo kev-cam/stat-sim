@@ -213,3 +213,7 @@ if __name__ == "__main__":
     shn = sum(res[c]["count"] for c in sh)
     print("\nSHALLOW (binding pMOS rise depth <= 1): %s" % sorted(sh))
     print("cells covered: %d of %d instances" % (shn, tot))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

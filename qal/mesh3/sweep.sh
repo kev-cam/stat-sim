@@ -8,3 +8,7 @@ for w in trap sine; do
   done
 done | xargs -P 7 -n 2 sh -c 'python3 mesh3.py lane "$0" "$1" > "log_lane_$0_tt$1.txt" 2>&1; echo "lane $0 $1 done rc=$?"'
 echo ALL-LANES-DONE
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

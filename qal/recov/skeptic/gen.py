@@ -100,3 +100,7 @@ if __name__ == '__main__':
     # LC zero moves with popcount (qal/timer zc_bankN: 61.6 ps full scale at N=8).
     patch('sk_best_k6', tend=1000, data={0: 0, 2: 0})   # 2 more cells load bkb
     patch('sk_best_k2', tend=1000, data={1: 1, 3: 1})   # 2 fewer
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

@@ -132,3 +132,7 @@ if __name__ == "__main__":
         phases = [float(x) for x in ph.split(",")]
         out[lbl] = ledger(prn, prn.replace(".prn", ".mt0"), phases, lbl)
     print(json.dumps(out, indent=1, default=str))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

@@ -159,3 +159,7 @@ for r in (fn[0], fn[len(fn) // 2], fn[-1]):
           % (r["tag"], r["T"], E_CMOS_120 / i1, E_CMOS_120 / i2,
              E_CMOS_120 / t1, E_CMOS_120 / t2,
              E_CMOS_100 / t1, E_CMOS_100 / t2))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

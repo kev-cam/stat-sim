@@ -30,3 +30,7 @@ for well in ("rail", "vhi"):
             print("   %-3s  t=0 %8.5f | 99ps %8.5f | 110ps %8.5f | 200ps %8.5f | ckpt %8.5f | long %8.5f"
                   % (lbl, pg.at_t(ts,y,0.0), pg.at_t(ts,y,99.0), pg.at_t(ts,y,110.0),
                      pg.at_t(ts,y,200.0), pg.at_t(ts,y,pg.TSTEP+CKPT), pg.at_t(ts,y,pg.TSTEP+LONG)))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

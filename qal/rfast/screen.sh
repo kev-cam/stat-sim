@@ -15,3 +15,7 @@ export RF
 printf '%s\n' "15 30" "15 45" "10 30" "10 45" "10 60" "6 30" "6 45" "6 60" "3 45" "3 60" "3 90" \
  | xargs -P 6 -n 2 bash -c 'run_lane "$0" "$1"'
 echo SCREEN_DONE
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

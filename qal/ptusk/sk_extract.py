@@ -153,3 +153,7 @@ def max_slope(p, name, ta, tb):
     return dict(max_rising_V_per_ns=best_up, at_ps=t_up,
                 max_abs_V_per_ns=best_abs,
                 window_ps=[ta, tb], n_samples=len(w))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

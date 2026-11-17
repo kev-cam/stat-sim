@@ -318,3 +318,7 @@ if __name__ == "__main__":
     print("per_bank_worst_pct", res["per_bank_worst_pct"])
     if res["boundary_fails"]:
         print("BOUNDARY FAILS:", json.dumps(res["boundary_fails"][:10], indent=1))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

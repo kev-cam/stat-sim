@@ -161,3 +161,7 @@ if __name__ == "__main__":
     json.dump(meta, open(os.path.join(HERE, tag + ".meta.json"), "w"))
     p, rc, w = run(tag, nl)
     print(tag, "rc=%d" % rc, "%.1fs" % w, flush=True)
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

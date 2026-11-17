@@ -73,3 +73,7 @@ if __name__=='__main__':
             w.append(y)
             if k<=2: print('  bank%d bit%d  a<-%s(%s)  b<-%s(%s)  tab=%s inv=%s  yi=%d y=%d'%(k,i,af,av,bf,bv,c['tab'],c['has_inv'],yi,y))
         print('DERIVED y%d = %s   (bit0..bit3)'%(k,''.join(map(str,w))))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

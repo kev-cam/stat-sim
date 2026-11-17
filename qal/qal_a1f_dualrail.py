@@ -50,3 +50,7 @@ if __name__=="__main__":
         print("  %-8s %.3f %.3f |   %+.4f       %.4f"%(lbl,m["Tp"],m["Fp"],m["DIFF"],m["SUM"]))
     print("  => DIFF carries data (+/-0.365); SUM common-mode (0.239, data-independent) => feedthrough")
     print("     rejected differentially. Dual-rail payoff vs real device switches. Mismatch -> A3 MC.")
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

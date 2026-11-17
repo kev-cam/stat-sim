@@ -38,3 +38,7 @@ if __name__ == "__main__":
             res[tag] = tz
     json.dump(res, open(os.path.join(HERE, "tz2.json"), "w"), indent=1)
     print(json.dumps(res, indent=1))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

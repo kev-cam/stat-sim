@@ -12,3 +12,7 @@ export -f run_lane
 printf '%s\n' "${LANES_CORE[@]}" | xargs -P 4 -I{} bash -c 'run_lane {}'
 printf '%s\n' "${LANES_FLY[@]}"  | xargs -P 2 -I{} bash -c 'run_lane {}'
 echo "SWEEP DONE"
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

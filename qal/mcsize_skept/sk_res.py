@@ -64,3 +64,7 @@ print("top-5 |r|:", [f"{w[2]}~{w[3]}:{w[1]:+.4f}" for w in worst[:5]])
 print("\n--- per-class pooled sigma ---")
 json.dump(dict(names=names,N=N,mean_r=mc,ident_pairs=ident,
                per_dev=rep), open('/usr/local/src/stat-sim/qal/mcsize_skept/sk_res_out.json','w'),indent=1)
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

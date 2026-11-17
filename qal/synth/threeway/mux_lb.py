@@ -116,3 +116,7 @@ if __name__ == "__main__":
     b = cellmask("th33", [RAILMASK[0], RAILMASK[4], Pa])
     y = cellmask("th12", [a, b])
     print("EXACT" if (y ^ TGT) & FEASMASK == 0 else "MISMATCH")
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

@@ -3,3 +3,7 @@ export PYMS_VAE_CACHE=/tmp/claude-1001/-usr-local-src/4921ad0c-f17b-4b84-986a-59
 cd /usr/local/src/stat-sim/qal/banktank_skept
 python3 bt.py probeT 10 1.2 $1 4 > log_probeT_$1.txt 2>&1
 echo "PROBE $1 rc=$?"
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

@@ -10,3 +10,7 @@ for s in 2001 2002 2003; do
 done
 wait
 echo "ALL BT CHUNKS COMPLETE" >> bt_mc.done
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

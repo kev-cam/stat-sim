@@ -89,3 +89,7 @@ if "w050_Ron_x2" in out and "w200_Ron_x0p5" in out:
                   (k, i, b, h, rat(h), d, rat(d)))
 json.dump(out, open(os.path.join(HERE, "WSCALE.json"), "w"), indent=1)
 print("wrote WSCALE.json")
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

@@ -15,3 +15,7 @@ for w in sorted(pp):
 L+=[".tran 1p 10p",".print tran V(a)",".end"]
 print("warm40 n=%s p=%s"%(sorted(nn),sorted(pp)))
 print(lsw.run("warm40.cir",L,timeout=3000)[1])
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

@@ -426,3 +426,7 @@ def hold_extract(path, rail=HOLD_RAIL, cbank=35.979):
         if v is not None and v0 is not None:
             out["float_droop_%dps_mV" % int(t)] = 1e3 * (v - v0)
     return out
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

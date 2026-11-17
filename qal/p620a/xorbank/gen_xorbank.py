@@ -164,3 +164,7 @@ if __name__ == "__main__":
         "bit i (o%d..o0 order reversed): out_i = a_i xor b_i\n" % (N - 1) + exp + "\n")
     print("wrote xorbank.cir xorbank.sim; expected out bits (i=0 first):")
     print(exp)
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

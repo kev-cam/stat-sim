@@ -132,3 +132,7 @@ if __name__ == "__main__":
               % (k, d["kind"], d.get("well", "-"), "HIGH" if d["hi"] else "LOW ",
                  "inv" if d["driven"] else "ideal",
                  " ".join("%7.3f" % x["loss_ckpt_mV"] for x in d["by_depth"])))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

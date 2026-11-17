@@ -15,3 +15,7 @@ python3 cp.py ROWS_SKEPT.json COUPLING_SKEPT.json
 echo "=== FIXTURE $(date +%T) ==="
 python3 fx.py 479
 echo "=== STAGE2 DONE $(date +%T) ==="
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

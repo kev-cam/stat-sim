@@ -194,3 +194,7 @@ if __name__ == "__main__":
             print("      LULL t=%.3f ns  I=%.4g A  = %.3f%% of peak, %.1fx quiescent"
                   % (L["t_ns"], L["i_A"], 100 * L["frac_of_peak"], L["ratio_to_iq"] or 0))
     print("wrote", out)
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

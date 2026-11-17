@@ -157,3 +157,7 @@ if __name__ == "__main__":
     json.dump(r, open(os.path.join(HERE, "GDRV_%s.json" % tag), "w"), indent=1)
     for k, v in r.items():
         print("  %-42s %s" % (k, v))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

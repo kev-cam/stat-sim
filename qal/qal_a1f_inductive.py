@@ -104,3 +104,7 @@ if __name__=="__main__":
         print("  %6d %5g %8.3f %11.3f %9.1f%%"%(R,q,vb,el,el/(FLOOR*1e15)*100))
     print("  full cell (R=100, freeze+top-up): V(A)->%.3f V(B)->%.3f, per-cycle input=%.3ffJ (%.0fx < floor)"%(
         CELL['VA'],CELL['topup_VB'],CELL['loss_fJ'],FLOOR*1e15/CELL['loss_fJ']))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

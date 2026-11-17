@@ -9,3 +9,7 @@ module sha256_msgsched(
   wire [31:0] s1 = rotr(w2,17)  ^ rotr(w2,19)  ^ (w2  >> 10);
   assign wt = s1 + w7 + s0 + w16;   // 4-operand add
 endmodule
+
+// SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+// SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+// Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

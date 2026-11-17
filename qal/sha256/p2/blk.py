@@ -925,3 +925,7 @@ if __name__ == "__main__":
                                        a[4], float(a[5]), a[6])
         it = int(a[7]) if len(a) > 7 else 2
         sys.exit(0 if stage_row(m, T, dv, lmode, l_ref, tag, it) else 1)
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

@@ -104,3 +104,7 @@ for k, v in out["rows"].items():
     print("%-18s %5d %5d %11.1f %11.1f %7.2f %8.1f %6.2f" % (k, m["cells"], m["depth"],
           d["T_block_perlevel_ps"], d["T_block_globalmax_ps"], d["T_x_CMOS_block"],
           d["E_scaled_by_width_fJ"], d["E_adv_vs_CMOS"]))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

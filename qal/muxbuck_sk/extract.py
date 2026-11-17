@@ -163,3 +163,7 @@ for nm, desc in (("sk_droop8", "8-gate bank, committed R = 10 ohm"),
     print(f"      2*V_tank - V_rail_before = {pred:.6f} V  (predicted stranded rail)")
 
 json.dump(res, open(os.path.join(D, "SK_RAW.json"), "w"), indent=1)
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

@@ -56,3 +56,7 @@ if __name__=="__main__":
         E_INIT_fJ, E_FINAL_fJ, LOSS_5HOP_fJ, (E_INIT_fJ-E_FINAL_fJ-LOSS_5HOP_fJ)/E_INIT_fJ*100,
         LOSS_5HOP_fJ, FLOOR_PER_HOP_fJ*5))
     print("  REPAIRS A2: inductive cell CASCADES; A2's capacitive source-follower was -65%%/hop, dead by hop 2.")
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

@@ -21,3 +21,7 @@ for r in rows:
         print(" ".join("%12.5g" % (r[idx[n]] * (1e12 if n == "TIME" else 1))
                        for n in pick))
         tnext += step
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

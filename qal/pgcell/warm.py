@@ -33,3 +33,7 @@ if __name__ == "__main__":
     typ, w = sys.argv[1], float(sys.argv[2])
     p = pg.run("warm_%s%g.cir" % (typ, w), deck(typ, w), timeout=1500)
     print("warm %s %g -> %s" % (typ, w, "ok" if p else "FAIL"))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

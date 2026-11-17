@@ -16,3 +16,7 @@ for t in p2k8_wx2 p2k8_wx4 p2k8_lx2; do
   echo "$t scored $(date +%H:%M:%S)" >> analyze.log
 done
 echo "WAVE C COMPLETE" >> analyze.log
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

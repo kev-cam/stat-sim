@@ -15,3 +15,7 @@ run3 150
 run3 300
 run3 60
 echo ALL_MAIN_LANES_DONE
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

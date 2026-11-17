@@ -465,3 +465,7 @@ def zero_after_peak(hdr, rows, sig, t_from, t_to):
 if __name__ == "__main__":
     print(json.dumps({k: v for k, v in
                       dict(CACHE=CACHE, DELTA_277p8=delta_ps(277.8)).items()}))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

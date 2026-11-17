@@ -118,3 +118,7 @@ out["scheduling"] = {
 }
 json.dump(out, open("RESULTS.json", "w"), indent=1)
 print(json.dumps(out, indent=1))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

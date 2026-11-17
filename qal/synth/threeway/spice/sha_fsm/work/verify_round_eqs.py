@@ -39,3 +39,7 @@ def digest(msg):
 for s in (b"abc", b"", b"The quick brown fox jumps over the lazy dog"):
     mine=digest(s); ref=hashlib.sha256(s).hexdigest()
     print("%-45r mine=%s %s"%(s,mine,"PASS" if mine==ref else "FAIL ref="+ref))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

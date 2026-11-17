@@ -62,3 +62,7 @@ for v in ("sk_ch_nmos_std_w060","sk_ch_tg_std_w060"):
     print("  %-10s g0: %s"%(v.replace("sk_ch_","").replace("_w060",""),
         " ".join(("%7.4f"%g) if g is not None else "  n/a  " for g in e["g0_V"])))
     print("  %-10s rail:%s"%(""," ".join("%7.4f"%r for r in e["rail_V"])))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

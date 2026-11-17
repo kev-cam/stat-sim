@@ -23,3 +23,7 @@ XN d g s 0 sg13_lv_nmos w=0.74u l=0.13u
     names.append(n)
 json.dump(names,open(f"{D}/vtnames.json","w"))
 print(len(names),"decks")
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

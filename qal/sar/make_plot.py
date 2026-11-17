@@ -109,3 +109,7 @@ S.append("<text x='%.1f' y='%d' font-size='13' fill='#111' text-anchor='middle' 
 S.append("</svg>")
 open(os.path.join(HERE, "sar_observables.svg"), "w").write("\n".join(S))
 print("wrote sar_observables.svg")
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

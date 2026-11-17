@@ -193,3 +193,7 @@ if __name__ == "__main__":
     elif what == "mux":
         for n in (1, 4, 16):
             print(mux_deck(n, f"mb_mux_N{n}.cir"))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

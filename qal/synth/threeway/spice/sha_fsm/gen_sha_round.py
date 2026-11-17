@@ -227,3 +227,7 @@ if __name__ == "__main__":
         open(nm + ".cir", "w").write(txt)
         json.dump(meta, open(nm + ".meta.json", "w"))
         print(f"wrote {nm}.cir ({mode}, duty 1/{d}, {n} ops, replica={REPLICA_STAGES})")
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

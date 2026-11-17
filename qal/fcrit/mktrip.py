@@ -32,3 +32,7 @@ for tag, (wp, wn) in CELLS.items():
     out[tag] = dict(wp=wp, wn=wn, rows=res)
 json.dump(out, open(os.path.join(HERE, "TRIP.json"), "w"), indent=1)
 print("wrote TRIP.json with receivers:", list(out))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

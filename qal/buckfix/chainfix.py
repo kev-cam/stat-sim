@@ -163,3 +163,7 @@ def run(fn, lines, timeout=900):
                         if "rror" in l or "bort" in l)[:400]
         return None, "XYCE FAIL %s (%.1fs) %s" % (fn, w, err or r.stdout[-300:])
     return p, "ran %s in %.1fs" % (fn, w)
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

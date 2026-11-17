@@ -64,3 +64,7 @@ if __name__ == '__main__':
         t, final, pct = t90(*load(path), cname=cname, target=target)
         print("%-16s t90=%-12s final=%.6f V  = %.2f%% of %.4f" % (
             cname, ("%.1f ps" % t) if t is not None else "NEVER", final, pct, target))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

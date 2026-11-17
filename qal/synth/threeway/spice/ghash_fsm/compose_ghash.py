@@ -305,3 +305,7 @@ if __name__ == "__main__":
     print("GCM-AES is a GALS/intermittent-power primitive: parity at line rate, a modest-but-real")
     print("idle win vs good gating, and -- uniquely in the GHASH half -- the sharpest current-sense")
     print("completion the campaign has seen, the natural handshake anchor for a self-timed MACsec datapath.")
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

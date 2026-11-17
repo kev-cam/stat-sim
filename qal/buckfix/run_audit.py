@@ -79,3 +79,7 @@ if __name__ == "__main__":
                   % (X["windows_ps"], X["total_both_on_ps"],
                      X["peak_shootthrough_uA"], X["Q_shootthrough_fC"]))
     print("wrote", p)
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

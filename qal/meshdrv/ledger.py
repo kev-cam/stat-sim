@@ -165,3 +165,7 @@ if __name__ == "__main__":
     fn = {"a": price_A, "b": price_B, "c": price_C}[kind]
     r = fn(tag) if kind == "a" else fn(tag, N)
     print(json.dumps(r, indent=1))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

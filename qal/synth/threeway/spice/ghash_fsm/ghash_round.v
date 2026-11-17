@@ -27,3 +27,7 @@ module ghash_round(
   wire [127:0] xored = Y ^ C;            // absorb the block (static XOR plane)
   ghash_gfmul MUL(.a(xored), .b(H), .prod(Ynext));   // carry-less GF multiply
 endmodule
+
+// SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+// SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+// Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

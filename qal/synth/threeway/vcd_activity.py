@@ -84,3 +84,7 @@ if __name__ == "__main__":
     W = "/usr/local/src/stat-sim/qal/synth/threeway/work/"
     for f in ("sha_slice_th_clean.v", "sha_slice_direct_spice.v", "sha_slice_direct_cd.v"):
         run(W + f, vecs)
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

@@ -269,3 +269,7 @@ if __name__ == "__main__":
     print("      -> the ALU's verdict turns entirely on its LEVELIZATION WIDTH, which the")
     print("         parallel workflow measures. Wide+shallow => QAL viable; a thin tail")
     print("         like sha_slice's 3/2/4/2/3/1/1 => QAL fails there too.")
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

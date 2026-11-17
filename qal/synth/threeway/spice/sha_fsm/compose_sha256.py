@@ -216,3 +216,7 @@ if __name__ == "__main__":
     print("detector negligible -> SHA is a BETTER fit for self-timed than the accumulator.")
     print("Real continuous-miner / streaming SHA sits at d~1 => no win there; the target")
     print("is bursty/event-driven hashing (wake, hash a message, sleep).")
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

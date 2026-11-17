@@ -105,3 +105,7 @@ out.append(".end")
 open("cmos_slice_pwr.cir","w").write("\n".join(out)+"\n")
 print("wrote cmos_slice_pwr.cir: %d stdcell instances, %d input bits, %d vectors"%(len(insts),len(inb),NVEC))
 print("NOTE energy per op = EOP (one window), avg = ETOT/(NVEC-1)")
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

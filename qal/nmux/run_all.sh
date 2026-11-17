@@ -32,3 +32,7 @@ python3 chain.py 0.6
 echo "=== ASSEMBLE $(date +%T) ==="
 python3 assemble.py
 echo "=== ALL DONE $(date +%T) ==="
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

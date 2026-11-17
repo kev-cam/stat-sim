@@ -501,3 +501,7 @@ R["H2_sync_to_QAL"] = h2
 R["H3_sync_QDI"] = h3
 json.dump(R, open(os.path.join(HERE, "RESULTS.json"), "w"), indent=1)
 print("keys:", ", ".join(R))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

@@ -44,3 +44,7 @@ cruxE)
 *) echo "usage: run_sk.sh {chain|crux|cruxE CJ}"; exit 2;;
 esac
 echo "[$(date +%T)] $1 done"
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

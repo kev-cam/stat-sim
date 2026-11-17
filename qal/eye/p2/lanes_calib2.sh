@@ -7,3 +7,7 @@ while read -r mode T H _; do
 done < "$1"
 wait
 echo "[$(date +%T)] CALIB2 COMPLETE"
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

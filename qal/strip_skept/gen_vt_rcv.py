@@ -100,3 +100,7 @@ if __name__ == "__main__":
     open(os.path.join(d, "rcv.cir"), "w").write(t)
     json.dump(m, open(os.path.join(d, "RCV_META.json"), "w"), indent=1)
     print("rcv.cir M-cards:", sum(1 for x in t.splitlines() if x.startswith("X")))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

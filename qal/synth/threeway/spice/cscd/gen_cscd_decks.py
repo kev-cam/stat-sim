@@ -312,3 +312,7 @@ if __name__ == "__main__":
         fn = os.path.join(HERE, "cscd_%s.cir" % nm)
         open(fn, "w").write(build_deck(vecs, tvec, step, f, nm))
         print("wrote", fn)
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

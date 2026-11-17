@@ -20,3 +20,7 @@ for (k,r) in [(1,2),(2,3),(3,4)]:
         v=np.array([s[tg+f'O{r}_{i}'] for s in S])
         print(f"{k}->{r:<3d} {rail.mean():10.5f} {rail.std(ddof=1):8.5f} | o{r}_{i:<5d} {PAT[r][i]:5d} "
               f"{v.mean():11.5f} {v.std(ddof=1):9.5f} {rail.mean()/2:11.5f}")
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

@@ -204,3 +204,7 @@ def pack(nm, val, w=8):
 
 def unpack(nm, x, w=8):
     return {"%s[%d]" % (nm, i): (x >> i) & 1 for i in range(w)}
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

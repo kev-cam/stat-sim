@@ -66,3 +66,7 @@ for k in ("1", "2", "3"):
     print("bank%s censored mine %d sweep %d" %
           (k, mt["draining_censored"], rt["draining_censored_gates"]))
 print("worst eye-field deviations:", {f: round(v, 4) for f, v in worst_dev.items()})
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

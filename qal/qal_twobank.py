@@ -47,3 +47,7 @@ if __name__=="__main__":
     print("  => flycap top-up (separate inductor, simultaneous) compensates the recycle loss -> wave sustains.")
     print("  => DUAL-RAIL NEEDED here: fixed top-up only works if per-bank charge is data-independent")
     print("     (single-rail 100%% data-modulated -> amplitude wanders; dual-rail 0%% -> uniform wave).")
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

@@ -55,3 +55,7 @@ if __name__ == "__main__":
     json.dump(meta, open(os.path.join(HERE, "FIXMETA_%s.json" % which), "w"), indent=1)
     run_batch(jobs, npar=4)
     print("ALL DONE")
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

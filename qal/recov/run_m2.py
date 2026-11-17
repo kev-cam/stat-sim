@@ -28,3 +28,7 @@ for n, wn, wp in ((2, 0.74, 1.12), (4, 0.74, 1.12)):
     for k in sorted(r):
         if k.startswith('aux_') or k.startswith('tank_'): print('      %-22s %s' % (k, r[k]))
     rv.save(tag, r)
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

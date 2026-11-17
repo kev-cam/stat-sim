@@ -294,3 +294,7 @@ if __name__ == "__main__":
             grid(GRIDS[nm](), nm)
     elif what == "probe":
         print(zeros_for(sys.argv[2], float(sys.argv[3]), float(sys.argv[4])))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

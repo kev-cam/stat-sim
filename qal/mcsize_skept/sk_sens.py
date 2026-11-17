@@ -114,3 +114,7 @@ for g,marg in gm.items():
     print(f"{g:18s} {pol[g]:16s} {mu:10.3f} {sd:8.3f} {marg.min():9.3f} {mu/sd:13.2f} {int((marg<0).sum()):6d}")
 json.dump({'agg':{k:{'n':v['n'],'share':v['var']/tot,'rms':math.sqrt(v['var'])} for k,v in agg.items()}},
           open('/usr/local/src/stat-sim/qal/mcsize_skept/sk_sens.json','w'),indent=1)
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

@@ -270,3 +270,7 @@ if __name__ == "__main__":
     path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                         "c_%s_%s_T%g_dv%g.cir" % (scheme, mode, T, dv * 1000))
     print(json.dumps(row_extract(scheme, mode, T, dv, tz, path), indent=1))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

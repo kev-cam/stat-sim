@@ -106,3 +106,7 @@ if __name__ == "__main__":
     open(fn, "w").write(static_deck(vecs[5][1], [{'kind': 'sa', 'net': '_16_', 'val': 0}],
                                     None, "stuck-at-0 _16_ @ V5"))
     print("wrote", fn)
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

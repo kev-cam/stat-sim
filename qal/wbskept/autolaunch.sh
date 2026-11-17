@@ -30,3 +30,7 @@ bash run_sk.sh chain > log_chain_sk.txt 2>&1
 echo "[$(date +%T)] CHAIN done"
 bash run_sk.sh ctl > log_ctl_sk.txt 2>&1
 echo "[$(date +%T)] CTL done -- ALL SIMULATION COMPLETE"
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

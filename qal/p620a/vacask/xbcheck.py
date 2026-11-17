@@ -17,3 +17,7 @@ for i in range(128):
     else: bad += 1; badlist.append((i, round(float(v),4), exp[i]))
 print(json.dumps(dict(t_end=float(t[n-1]), rail_end=float(rail), tnk_end=float(tnk),
                       npoints=n, ok=ok, bad=bad, bad_detail=badlist[:8])))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

@@ -70,3 +70,7 @@ class W:
                 out.append((prev[0] + f*(r[1]-prev[0]))*1e12)
             prev = (r[1], r[i])
         return out
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

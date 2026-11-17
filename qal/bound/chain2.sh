@@ -11,3 +11,7 @@ echo "=== START captax $(date +%T) ==="
 python3 -u bd_s2q.py 1.0:4.0 1.0:8.0 > captax_drive.log 2>&1
 echo "=== DONE captax $(date +%T) rc=$? ==="
 echo "=== CHAIN2 DONE ==="
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

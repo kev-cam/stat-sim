@@ -59,3 +59,7 @@ if __name__=="__main__":
     print("     power (clock included) QAL wins even at speed; the gate-only iso-swing view is pessimistic.")
     print("   * PROJECTION pending Track C: the recycle/topup generator efficiency + the dual-rail/flycap")
     print("     overhead set the real energy; only single-stage hops are measured (A1b/A1f/two-bank).")
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

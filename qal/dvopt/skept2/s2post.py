@@ -108,3 +108,7 @@ for lab, f in (("C2 at +7 ps  (AS PUBLISHED)", lambda r: r["FUNC"]),
 json.dump(dict(grid=T, floor=FL), open(os.path.join(HERE, "s2surfaces.json"), "w"),
           indent=1)
 print("wrote s2surfaces.json (%d rows)" % len(T))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

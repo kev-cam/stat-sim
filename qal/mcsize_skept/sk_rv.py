@@ -82,3 +82,7 @@ rank(mean8,"rx6.py's mean-over-8-lanes (CONTAMINATED)")
 rank(high,"HIGH-lane worst margin (the FAILING/binding half)")
 rank(low,"LOW-lane worst margin (the passing half)")
 rank(worst,"true worst over all 8 lanes")
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

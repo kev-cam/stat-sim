@@ -311,3 +311,7 @@ def show(r, keys=None):
                     'cut_order','order_detail','T_edge_budget']
     for k in keys:
         if k in r: print('    %-24s %s' % (k, r[k]))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

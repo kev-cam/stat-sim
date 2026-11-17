@@ -3,3 +3,7 @@ export PYMS_VAE_CACHE=/tmp/claude-1001/-usr-local-src/4921ad0c-f17b-4b84-986a-59
 cd /usr/local/src/stat-sim/qal/banktank_skept
 python3 bt.py row 10 $1 4 1.2 free $2 > log_row_$1.txt 2>&1
 echo "ROW $1 rc=$?"
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

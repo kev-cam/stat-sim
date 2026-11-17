@@ -44,3 +44,7 @@ for tag, deck, ref in (("matched_m2", "r_bank_matched_m2", 248.997),
         print(" %-11s tail=%4.0f ps : %s   (committed %.3f)"
               % (tag, tail, ["b%d %s %.3f mV @%.1f" % (x["topped_bank"], x["gate"],
                   x["step_at_logic_mV"], x["at_ps"] or -1) for x in r], ref))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

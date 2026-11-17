@@ -85,3 +85,7 @@ if __name__ == "__main__":
     print("DATA-DEPENDENT completion time (2000 random DATA vectors)")
     for f in ("sha_slice_direct_cd.v", "sha_slice_direct_spice.v", "sha_slice_th_clean.v"):
         stats(f, analyse(W + f))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

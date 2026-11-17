@@ -214,3 +214,7 @@ for tag, k, au in (("balance run, as reported", K, 0.979),
 json.dump({k: v for k, v in R.items() if isinstance(v, dict)},
           open(os.path.join(D, "SK_RESULTS.json"), "w"), indent=1, default=str)
 print("\nwrote SK_RESULTS.json")
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

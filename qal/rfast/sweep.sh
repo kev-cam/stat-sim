@@ -30,3 +30,7 @@ for T in 150 130 120 110 100; do python3 $RF/rf.py extract 10 15 $T > $RF/log_x_
 for T in 130 110 100 90 85;   do python3 $RF/rf.py extract 6 15 $T > $RF/log_x_L6W15_T$T.txt 2>&1; echo "x L6 T$T rc=$?"; done
 for T in 100 90 80 70 65;     do python3 $RF/rf.py extract 3 45 $T > $RF/log_x_L3W45_T$T.txt 2>&1; echo "x L3 T$T rc=$?"; done
 echo SWEEP_DONE
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

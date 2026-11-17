@@ -103,3 +103,7 @@ if __name__=="__main__":
         print("%6.2f %8.4f %8.4f %8.4f  %d"%(dV,n0,n1,n2,u))
     print("=> source-follower Vt clamp (bound 3) binds first; single-rail does NOT cascade at usable swing.")
     print("   FD-SOI (body=source) @dV=1.2: 1.099/0.940/0.464 -- body effect removal rescues cascadability.")
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

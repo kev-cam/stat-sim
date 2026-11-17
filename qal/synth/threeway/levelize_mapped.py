@@ -85,3 +85,7 @@ print("profile: %s" % "/".join(map(str, prof)))
 print("sum %d" % sum(prof))
 mix = collections.Counter(ct for ct, _ in comb.values())
 print("top cell types: %s" % mix.most_common(12))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

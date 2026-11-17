@@ -210,3 +210,7 @@ def trace(s, tag, t0, t1, step=0.4):
                             V_na=round(r[ina], 5)))
             nxt += step
     return out
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

@@ -78,3 +78,7 @@ if __name__=="__main__":
         print("1/%-6d %12.1f %12.1f %9.2fx  %s ns"%(d,g['E_fJ'],st['E_fJ'],ratio,g['Ttot_ns']))
     print("\nThe clocked (golden) deck clocks every cycle incl. idle; the self-timed")
     print("deck captures only on ops. Ratio>1 and GROWING with duty = the clock-floor win.")
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

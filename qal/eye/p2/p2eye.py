@@ -168,3 +168,7 @@ if __name__ == "__main__":
     pats = sys.argv[3].split(",")
     label = sys.argv[4] if len(sys.argv) > 4 else "calibrated"
     run(T, H, pats, label, "EYE_P2_T%g_H%d_%s.json" % (T, H, label))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.

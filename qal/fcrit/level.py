@@ -82,3 +82,7 @@ t0 = time.time()
 rc = subprocess.call([XYCE, p], stdout=open(p + ".log", "w"),
                      stderr=subprocess.STDOUT, env=env, cwd=HERE)
 print("rc=%d %.1fs" % (rc, time.time() - t0))
+
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.
