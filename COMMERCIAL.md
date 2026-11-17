@@ -84,6 +84,9 @@ stat-sim that way is acceptance of them. Words defined in the
    for anyone outside your company, or practicing the patented methods other
    than by using stat-sim. Those uses need a negotiated license.
 
+6. **No support.** These default terms come with no support, maintenance or
+   warranty. A negotiated license can include them.
+
 ## Contact
 
 D. Kevin Cameron — <cameron.eda@gmail.com>
