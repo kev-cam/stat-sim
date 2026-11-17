@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+// SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+// Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.
 // AUTO-GENERATED from ncl_th_delay.json by gen_model_header.py -- do not edit.
 #pragma once
 #define NKVT 4

@@ -20,7 +20,10 @@ an8 = [predict_ctx(_m, 8, k) for k in kvt]
 def arr(name, xs, t="double"):
     fmt = "%d" if t == "int" else "%.6f"
     return "static const %s %s[] = {%s};" % (t, name, ", ".join(fmt % x for x in xs))
-H = f"""// AUTO-GENERATED from ncl_th_delay.json by gen_model_header.py -- do not edit.
+H = f"""// SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+// SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+// Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.
+// AUTO-GENERATED from ncl_th_delay.json by gen_model_header.py -- do not edit.
 #pragma once
 #define NKVT {len(kvt)}
 {arr("KVT", kvt, "int")}

@@ -426,7 +426,8 @@ stat-sim is **dual-licensed**:
   organizations. Hand-written source files carry an
   `SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0` tag: a header at the
   top, or under `qal/` a trailing comment, because the experiment records there
-  refer to those files by line number. Generated files, and the experiment
+  refer to those files by line number. Models and tables written by the
+  generators carry it too. Generated files under `qal/`, and the experiment
   instruments whose checksums those records pin, are left as they were.
 - **Commercial use requires a separate, paid license** (royalty-based terms are
   available). Where none has been negotiated, default terms apply to chip
