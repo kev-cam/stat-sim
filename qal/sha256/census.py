@@ -74,7 +74,7 @@ def emit_subckts():
             out.append("CINT%d %s %s 0.1f" % (k, n, ref))
         out.append(".ends")
     os.makedirs(os.path.dirname(SUB), exist_ok=True)
-    open(SUB, "w").write("\n".join(out) + "\n")
+    open(SUB, "w").write("\n".join(out + IHP_NOTICE) + "\n")
     return SUB
 
 
@@ -234,6 +234,33 @@ def merge():
                 rows[r["tag"]] = r
     json.dump(rows, open(os.path.join(HERE, "CENSUS.json"), "w"), indent=1)
     return rows
+
+
+# The PDK's notice, written at the end of the generated cell file.  Defined down here so that
+# no line above this point moves.  The tag is spelled in two parts so that a licence scanner
+# does not read it as this script's own.
+IHP_NOTICE = """
+* The device lines above are taken from the IHP Open PDK (sg13g2_stdcell.spice) and stay
+* under its license. Changed here: only the cells used are kept, each device keeps only
+* w and l, and a 0.1 fF capacitor is added on each internal node.
+* A copy of the license is in LICENSES/Apache-2.0.txt at the top of this repository.
+* The notice of the original file:
+*
+* {tag}: Apache-2.0
+*
+* Copyright 2023 IHP PDK Authors
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*    https://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.""".format(tag="SPDX-License-" + "Identifier").split("\n")
 
 
 if __name__ == "__main__":

@@ -441,4 +441,9 @@ the code *and* a patent license to practice the methods; the PolyForm patent
 grant is scoped to noncommercial use only, so the patents remain an independent
 right for commercial use. Both are conveyed by the commercial license.
 
+Third-party material: a few files under `qal/` hold standard-cell definitions
+taken from the IHP Open PDK (Copyright IHP PDK Authors). Those stay under the
+Apache License 2.0 ([LICENSES/Apache-2.0.txt](LICENSES/Apache-2.0.txt)), carry
+IHP's notice, and are not covered by the terms above.
+
 Copyright (c) 2026 D. Kevin Cameron. Commercial licensing: cameron.eda@gmail.com.

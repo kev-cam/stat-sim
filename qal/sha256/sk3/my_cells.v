@@ -97,3 +97,24 @@ module sg13g2_buf_1 (X, A);
 	 
 
 endmodule
+
+// The module bodies above are taken from the IHP Open PDK (sg13g2_stdcell.v) and stay
+// under its license. The changes are described at the top of this file.
+// A copy of the license is in LICENSES/Apache-2.0.txt at the top of this repository.
+// The notice of the original file:
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+// Copyright 2024 IHP PDK Authors
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.

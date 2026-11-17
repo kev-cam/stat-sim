@@ -38,3 +38,25 @@ CINT5 net6 VSS 0.1f
 XN0 Y A VSS VSS sg13_lv_nmos w=740.00n l=130.00n ng=1 ad=2.516e-13 as=2.516e-13 pd=2.16e-06 ps=2.16e-06 m=1
 XP0 Y A VDD VDD sg13_lv_pmos w=1.12u l=130.00n ng=1 ad=3.808e-13 as=3.808e-13 pd=2.92e-06 ps=2.92e-06 m=1
 .ends
+
+* The device lines above are taken from the IHP Open PDK (sg13g2_stdcell.spice) and stay
+* under its license. Changed here: only the cells used are kept, and a 0.1 fF capacitor
+* is added on each internal node.
+* A copy of the license is in LICENSES/Apache-2.0.txt at the top of this repository.
+* The notice of the original file:
+*
+* SPDX-License-Identifier: Apache-2.0
+*
+* Copyright 2023 IHP PDK Authors
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*    https://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
