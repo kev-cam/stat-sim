@@ -1,3 +1,5 @@
+-- SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+-- SPDX-FileCopyrightText: 2026 D. Kevin Cameron
 -- Part of stat-sim. PolyForm Noncommercial License 1.0.0; commercial use needs a separate license (see LICENSE, COMMERCIAL.md).
 -- Test bench for ad9361_pkg: prints "AD9361 <name> <value>" lines that `ad9361_vhdl.py check` compares
 -- with the Python model (ad9361.py).  Run by hand:

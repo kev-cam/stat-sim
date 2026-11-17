@@ -1,3 +1,6 @@
+/* SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0 */
+/* SPDX-FileCopyrightText: 2026 D. Kevin Cameron */
+/* Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md. */
 /* Independent oracle for the FP-saturation kernels (NOT derived from the simulator).
  * Computes the exact float32 trajectories with IEEE RNE ops (x86-64 SSE, FLT_EVAL_METHOD=0;
  * fmaf -> hardware vfmadd, correctly rounded) and emits post.bin in the rtlmeter DPI

@@ -1,4 +1,7 @@
 #!/bin/bash
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.
 # Simulation-driven EM screen of the real IHP 30mA output pad, via Xyce (WSL).
 # Absolute cd -> immune to the harness's stale-cwd on backgrounding. ONE Xyce
 # transient (heatmap writes SVG+CSV); the alert summary is derived from the CSV.

@@ -1,3 +1,5 @@
+-- SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+-- SPDX-FileCopyrightText: 2026 D. Kevin Cameron
 -- Part of stat-sim. PolyForm Noncommercial License 1.0.0; commercial use needs a separate license (see LICENSE, COMMERCIAL.md).
 --
 -- ad9361: the AD9361 for nvc's --std=2040 spectral event-driven mode, driven from software.

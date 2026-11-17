@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.
 """Statsim ensemble driver with op-manifold startup seeding.
 
 Runs N Monte-Carlo members of a deck template, each with gaussian-sampled

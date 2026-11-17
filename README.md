@@ -423,8 +423,11 @@ stat-sim is **dual-licensed**:
 - **Noncommercial and personal use is free** under the
   [PolyForm Noncommercial License 1.0.0](LICENSE) — research, teaching, personal
   study, hobby, and evaluation use, and use by nonprofit / academic / government
-  organizations. Every source file carries an
-  `SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0` header.
+  organizations. Hand-written source files carry an
+  `SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0` tag: a header at the
+  top, or under `qal/` a trailing comment, because the experiment records there
+  refer to those files by line number. Generated files, and the experiment
+  instruments whose checksums those records pin, are left as they were.
 - **Commercial use requires a separate, paid license** (royalty-based terms are
   available). Where none has been negotiated, default terms apply to chip
   design use: a royalty of 1% of silicon revenue if paid within one year after

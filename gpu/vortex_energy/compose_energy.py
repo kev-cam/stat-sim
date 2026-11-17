@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.
 """Event-driven energy composition of the WHOLE Vortex (mini) over three real
 kernels (hello/saxpy/sgemm), stat-sim style: characterize once on the measured
 physical ALU anchor, compose per module from measured per-scope activity.

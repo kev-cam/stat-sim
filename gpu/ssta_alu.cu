@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+// SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+// Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.
 // Design-scale SSTA on the Vortex ALU — the GPU kernel (step 1).
 // One thread = one lane = one whole-design COHERENT Monte-Carlo sample: each cell draws its
 // delay ONCE (curand), arrival propagates through the levelized DAG reusing that value, so

@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.
 """stat-sim GPU-batching PROTOTYPE — CPU (numpy) reference of the per-lane kernel.
 
 This is the ALGORITHM that the CUDA kernel (statsim_batch.cu) runs one-thread-per-lane.

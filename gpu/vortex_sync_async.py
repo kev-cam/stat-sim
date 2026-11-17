@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.
 """Whole-Vortex execute-cluster: synchronous vs bundled-data async comparison,
 across activity (duty alpha) and supply voltage, grounded in the add8-anchored
 power model (SG13G2 130nm proxy) + the real 40886-cell netlist counts.

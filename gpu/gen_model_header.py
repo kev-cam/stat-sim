@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.
 """Emit statsim_model.h from ncl_th_delay.json: the shared read-only DRIVER (in-context
 stage means, th23 sigma_frac per kvt, rho0) plus the transistor-MC ground truth, baked
 into the binary so the shipped GPU farm needs no JSON parser on the run host."""

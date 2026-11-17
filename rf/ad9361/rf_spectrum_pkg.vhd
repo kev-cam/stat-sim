@@ -1,3 +1,5 @@
+-- SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+-- SPDX-FileCopyrightText: 2026 D. Kevin Cameron
 -- Part of stat-sim. PolyForm Noncommercial License 1.0.0; commercial use needs a separate license (see LICENSE, COMMERCIAL.md).
 --
 -- rf_spectrum_pkg: a wideband RF signal as a spectrum, for event-driven simulation in nvc (--std=2040).

@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.
 """Levelization / bank-population profile + QDI-pipeline legality for a FLATTENED
 yosys gate netlist (generic $_AND_/$_OR_/$_XOR_/$_MUX_/$_NOT_ cells).
 

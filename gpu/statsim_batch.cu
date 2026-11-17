@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+// SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+// Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.
 // stat-sim GPU-batching PROTOTYPE — the SIMT kernel behind "share the driver across warps".
 //
 // One thread = one LANE = one whole-chain coherent Monte-Carlo draw of an N-stage NCL carry

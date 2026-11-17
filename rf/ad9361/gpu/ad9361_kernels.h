@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+// SPDX-FileCopyrightText: 2026 D. Kevin Cameron
 // Part of stat-sim. PolyForm Noncommercial License 1.0.0; commercial use needs a separate license (see LICENSE, COMMERCIAL.md).
 // ad9361_kernels.h -- the AD9361 spectral event model, one OFDM-symbol event per call, for GPU and CPU.
 //

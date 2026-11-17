@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.
 """MEASURED island cut widths: how many net BITS cross each hierarchy boundary.
 
 The GALS converter tax is O(width) (124.7 fJ/bit round trip), so the cut width

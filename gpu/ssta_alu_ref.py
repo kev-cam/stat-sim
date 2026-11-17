@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.
 """Design-scale SSTA on the Vortex ALU — numpy reference of the GPU kernel (step 1).
 
 The point of step 1: the reconvergent COHERENT draw. Each cell instance draws its delay

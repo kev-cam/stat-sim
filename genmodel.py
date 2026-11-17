@@ -144,6 +144,9 @@ endmodule
 """
 
 _SYNC2 = """\
+// SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+// SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+// Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.
 // ===========================================================================
 // {name}_sync2 -- standard 2-flop CDC synchronizer (two {name} chained)
 // First stage absorbs metastability; second resamples. MTBF is set by the

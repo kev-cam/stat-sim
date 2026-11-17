@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+// SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+// Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.
 // Analytic device engine on GPU — batched closed-form LTI/NLDM propagator (no ODE integrator).
 // One thread = one device instance = one 40-stage inverter chain; per stage draws a mismatch
 // factor g (Vt->drive strength) and propagates (delay, slew) with the 2-param alternating model.

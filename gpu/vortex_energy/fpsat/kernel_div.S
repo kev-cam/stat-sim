@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.
 # DIVSQRT variant: same skeleton as kernel_fma.S, inner op = fdiv.s + fsqrt.s chains.
 # Per thread, 8 chains: x_c <- x_c / A (A = 1.00048828125 = 1+2^-11, slow geometric decay,
 # stays normal), y_c = sqrt(x_c) (input changes every step -> sustained divsqrt activity).

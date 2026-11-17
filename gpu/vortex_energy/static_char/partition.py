@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.
 """Compare candidate GALS partitions by MEASURED total crossing bits.
 
 Converter tax is O(width) at 124.7 fJ/bit round trip [campaign anchor], so the

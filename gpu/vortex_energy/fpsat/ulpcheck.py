@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.
 """Offline ulp-bounded check of the div variant's FP outputs.
 usage: ulpcheck.py check.bin post.bin.fpref [maxulp]
 Compares the 1024B FP region at 0x40000 in check.bin (DPI dump of actual memory)

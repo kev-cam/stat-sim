@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.
 """Assemble the per-module dataset for the Vortex whole-design event-driven
 energy composition: join the STATIC half (yosys-flattened netlist islands,
 /home/claude/vortex_static_char + regenerated vortex_flat.json) with the

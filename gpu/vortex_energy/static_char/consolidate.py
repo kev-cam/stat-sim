@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.
 """Consolidated per-island STATIC vector + the two DERIVED fields the rule needs.
 
 W_eff = N_comb / D   -- average level population = the number of gates that settle
 in parallel per logic level. This is the MEASURED replacement for the ASSUMED
-W_eff = 24 at stat-sim/gpu/vortex_sync_async.py:27, and it is exactly the quantity
-the bundled-data delay-line term amortizes over (vortex_sync_async.py:33 uses
+W_eff = 24 at stat-sim/gpu/vortex_sync_async.py:30, and it is exactly the quantity
+the bundled-data delay-line term amortizes over (vortex_sync_async.py:36 uses
 Edl = (3.2/W)*Elog).
 
 cyc_frac = registers that sit on a register-to-register dependency CYCLE / all
@@ -40,12 +43,12 @@ ROWS = [
 ]
 
 # campaign anchors
-E_CLK  = 0.0282     # pJ/DFF/cycle  [vortex_sync_async.py:19]  MEASURED (add8-anchored)
-E_CELL = 0.0076     # pJ/logic cell [vortex_sync_async.py:20]
-E_REG  = 0.045      # pJ/DFF        [vortex_sync_async.py:21]
+E_CLK  = 0.0282     # pJ/DFF/cycle  [vortex_sync_async.py:22]  MEASURED (add8-anchored)
+E_CELL = 0.0076     # pJ/logic cell [vortex_sync_async.py:23]
+E_REG  = 0.045      # pJ/DFF        [vortex_sync_async.py:24]
 K_DL_2PH = 7.5      # delay-line coefficient, 2-phase   (brief: 3.2 is 2.35x too cheap)
 K_DL_4PH = 15.1     # delay-line coefficient, 4-phase   (brief: 3.2 is 4.71x too cheap)
-K_DL_ASIS = 3.2     # as coded at vortex_sync_async.py:33
+K_DL_ASIS = 3.2     # as coded at vortex_sync_async.py:36
 
 SHA_N, SHA_D = 105, 10     # [work/levels.json] MEASURED
 

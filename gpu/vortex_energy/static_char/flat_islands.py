@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.
 """Per-island STATIC vector from the FULLY FLATTENED, in-context Vortex netlist.
 
 After `flatten`, yosys prefixes every cell name with its instance path, so each

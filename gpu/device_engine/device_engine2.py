@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.
 """Analytic device engine v2 — 2-parameter NLDM-style stage (delay DECOUPLED from slew),
 calibrated from transistor slew-sweep (slew_10/slew_150). The single-pole v1 tied delay to
 slew via one tau and was 41% off; separating them (delay = d0 + c*Tin ; out_slew = s0 + b*Tin,

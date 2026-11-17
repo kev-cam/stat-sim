@@ -1,4 +1,7 @@
 #!/bin/bash
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.
 # run_tests.sh -- verify stat-sim: the Python discipline self-tests + the nvc
 # VHDL testbenches (lock-step, end-to-end resolution, and the CDC detection demo).
 #

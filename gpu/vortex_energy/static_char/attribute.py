@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.
 """Attribute the cells sv2v INLINED into the top module back to RTL hierarchy paths.
 
 sv2v inlines every module that has SystemVerilog interface ports (VX_core,

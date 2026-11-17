@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.
 """stat-sim SSTA — cell-level statistical static timing of a composed NCL design,
 from a yosys gate netlist (JSON) + the delay-tier cell probability models.
 

@@ -1,3 +1,5 @@
+-- SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+-- SPDX-FileCopyrightText: 2026 D. Kevin Cameron
 -- Part of stat-sim. PolyForm Noncommercial License 1.0.0; commercial use needs a separate license (see LICENSE, COMMERCIAL.md).
 --
 -- an2597_link: the radio link of Analog Devices AN-2597 in nvc's --std=2040 spectral event-driven mode.

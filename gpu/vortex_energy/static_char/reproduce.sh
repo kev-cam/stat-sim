@@ -1,4 +1,7 @@
 #!/bin/bash
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.
 # Regenerate the Vortex STATIC characterization netlists from the RTL that
 # rtlmeter actually simulates (so the static half composes with the dynamic half).
 #

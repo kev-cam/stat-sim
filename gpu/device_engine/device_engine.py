@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.
 """Analytic device-engine PROVE-OR-KILL (numpy reference of the GPU kernel).
 
 GPU-SIM.md's remaining member: replace Xyce's transient solve with a CLOSED-FORM LTI propagator

@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.
 # FP-SATURATION kernel for Vortex 'mini' (1 core / 4 warps / 4 threads), rv32imf bare-metal.
 # Entry: warp0/thread0 at 0x80000000 (STARTUP_ADDR DCR).
 # Per thread: 8 independent logistic-map chains x <- r*x*(1-x), r=3.9f (chaotic, never

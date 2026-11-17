@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.
 """Live behavioral-model trainer — runs a cycle behind the simulation.
 
 Tails an XYCE_ORACLE_RECORD file while Xyce is still writing it (the

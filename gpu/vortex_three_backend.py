@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.
 """Whole-Vortex three-backend energy map: static / bundled-data async / QAL.
 Extends vortex_sync_async.py with the QAL curve from QAL_PLAN.md sec.6.
 

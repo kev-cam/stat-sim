@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-FileCopyrightText: 2026 D. Kevin Cameron
+# Noncommercial use is free; commercial use needs a license -- see COMMERCIAL.md.
 """Per-ISLAND levelization (QAL bank-population profile) of the logic sv2v INLINED
 into the top module, plus per-island register-cycle legality for QDI pipelining.
 
