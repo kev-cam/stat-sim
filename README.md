@@ -426,7 +426,10 @@ stat-sim is **dual-licensed**:
   organizations. Every source file carries an
   `SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0` header.
 - **Commercial use requires a separate, paid license** (royalty-based terms are
-  available). See **[COMMERCIAL.md](COMMERCIAL.md)**.
+  available). Where none has been negotiated, default terms apply to chip
+  design use: a royalty of 1% of silicon revenue if paid within one year after
+  the revenue is received, 5% if paid later. See
+  **[COMMERCIAL.md](COMMERCIAL.md)**.
 
 Why two: stat-sim implements the author's patented methods — **US 8,478,576 B1**
 (probability-waveform variability; the LEAD method) and **US 2023/0334213 A1**

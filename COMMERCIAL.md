@@ -9,10 +9,12 @@ stat-sim is **dual-licensed**.
   lines and a copy of the license with any copies you distribute.
 
 - **Commercial use requires a separate, paid license** from the copyright and
-  patent holder. "Commercial use" is any use that is not a permitted purpose
-  under the PolyForm Noncommercial License — for example, use in, or in support
-  of, a product or service offered for sale, internal use by a for-profit
-  company in its business, or paid consulting that relies on the tool.
+  patent holder: a negotiated one, or the [default terms](#default-terms) below
+  (a royalty on silicon revenue). "Commercial use" is any use that is not a
+  permitted purpose under the PolyForm Noncommercial License — for example, use
+  in, or in support of, a product or service offered for sale, internal use by
+  a for-profit company in its business, or paid consulting that relies on the
+  tool.
 
 ## Why a separate license is needed (two independent rights)
 
@@ -39,6 +41,48 @@ Commercial licenses are available on negotiated terms, including
 **royalty-based** arrangements (e.g. per-seat, per-design, or a royalty on
 revenue of products that ship using the tool or the methods). Terms are tailored
 to the use case.
+
+Where no license has been negotiated, the default terms below apply.
+
+## Default terms
+
+These terms apply to commercial use of stat-sim (including changed versions and
+new works based on it) to design, verify or characterize integrated circuits,
+unless you hold a separate written license signed by the licensor. Using
+stat-sim that way is acceptance of them. Words defined in the
+[PolyForm Noncommercial License 1.0.0](LICENSE) mean the same here.
+
+1. **License.** You receive the licenses of the PolyForm Noncommercial License
+   1.0.0, on all of its terms and conditions, with designing, verifying and
+   characterizing your own or your company's integrated circuits treated as a
+   permitted purpose. That includes a license under the patents listed above to
+   practice their methods by using stat-sim.
+
+2. **Royalty.** In return you owe the licensor a royalty on Silicon Revenue.
+   For each amount of Silicon Revenue the royalty is:
+
+   - **1%** of that amount, if paid within one year after you or your company
+     receive it;
+   - **5%** of that amount, if paid later.
+
+   Once the year has passed, the royalty is due at the 5% rate as soon as the
+   licensor asks for it in writing.
+
+3. **Silicon Revenue** is all revenue that you or your company receive from
+   selling, leasing or otherwise supplying integrated circuits that stat-sim
+   was used to design, verify or characterize, in any form: wafers, dice,
+   packaged parts, or parts inside modules and systems. It excludes sales taxes
+   and refunded amounts. An integrated circuit supplied inside a larger product
+   without a price of its own counts at the price it would fetch if sold
+   separately.
+
+4. **Payment.** Contact the licensor (below) to arrange payment. State with
+   each payment the revenue and the period it covers.
+
+5. **Not covered.** These default terms do not cover distributing, hosting or
+   embedding stat-sim in a tool or service offered to others, design work done
+   for anyone outside your company, or practicing the patented methods other
+   than by using stat-sim. Those uses need a negotiated license.
 
 ## Contact
 
