@@ -191,7 +191,9 @@ A model of the Analog Devices AD9361 transceiver at its data port, driven from s
 RTL, and the drone / controller link of ADI's AN-2597 ("An OFDM-Based HDL Reference Modem Using the
 AD936x RF Transceivers": ADRV9361-Z7035 at each end, 5 / 10 / 20 MHz channels at 2.4 and 5.2 GHz,
 BPSK to 64-QAM) built from it.  The model that runs is VHDL in nvc's `--std=2040` mode; a Python
-model of the same chip is the reference it is checked against.
+model of the same chip is the reference it is checked against.  For a reader who knows the AD9361 and
+the app note: [ad9361/AN-2597.md](ad9361/AN-2597.md) (what is reproduced and what is not, every number
+with its source, results for both bands and the three channel widths, and what to ask ADI).
 
     ad9361.py check                  the Python model measured the way the data sheet measures the chip
     ad9361_vhdl.py emit              write ad9361_pkg.vhd from the tables in ad9361.py
