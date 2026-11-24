@@ -14,6 +14,9 @@ the physical delay of every path), runs it and tabulates what the devices report
                                              Direct Test Mode range; --compare: ble_host.py's model too
     ble_nvc.py scan [--time 2.0] [--dist 10]
                                              a beacon, a neighbour and an active scanner
+    ble_nvc.py connect [--dist 10] [--events 40] [--time 2.0]
+                                             the tester (a central and its host) puts a peripheral through
+                                             its tests; exit status 1 if a test fails
     ... --fed                                also as two simulations sharing the arena (the transmitting
                                              side and the other), which must report the same lines
 
@@ -34,7 +37,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 RF = os.path.dirname(HERE)
 # None: cc2652r_pkg.vhd, written into the working directory
 SOURCES = [os.path.join(RF, "ad9361", "rf_spectrum_pkg.vhd"), os.path.join(HERE, "ble_phy_pkg.vhd"), None] + [
-    os.path.join(HERE, f) for f in ("cc2652r_spectral_pkg.vhd", "cc2652r.vhd", "rf_spec_antenna_td.vhd", "ble_controller.vhd",
+    os.path.join(HERE, f) for f in ("cc2652r_spectral_pkg.vhd", "cc2652r.vhd", "rf_spec_antenna_td.vhd", "ble_ll_pkg.vhd", "ble_controller.vhd", "ble_tester.vhd",
                                     "ble_link.vhd", "tb_cc2652r.vhd")]
 PHY_CODE = {"1m": 1, "2m": 2, "s8": 3, "s2": 4}
 BAND = "ism2g4_td"
@@ -116,11 +119,11 @@ class Build:
 
 
 def lines_of(text):
-    return [m.group(1) for m in re.finditer(r"(BLE (?:test|adv|scan) .*)$", text, re.M)]
+    return [m.group(1) for m in re.finditer(r"(BLE (?:test|adv|scan|tester|periph) .*)$", text, re.M)]
 
 
 def fields(line):
-    return dict(kv.split("=", 1) for kv in line.split()[2:])
+    return dict(kv.split("=", 1) for kv in line.split()[2:] if "=" in kv)
 
 
 def compare_fed(b, generics, mono, args):
@@ -234,6 +237,38 @@ def cmd_scan(args):
     return compare_fed(b, g, mono, args)
 
 
+def cmd_connect(args):
+    b = Build(args)
+    g = dict(scenario="2", role="0", tx_dbm="%.6f" % args.power, dist="%.6f" % args.dist, packets=str(args.events),
+             run_time="%dus" % round(args.time * 1e6), ppm_a="%.6f" % args.ppm[0], ppm_b="%.6f" % args.ppm[1])
+    if args.lead:
+        g["tx_lead"] = args.lead
+    t0 = time.perf_counter()
+    d = b.generate("mono", g)
+    t_build = time.perf_counter() - t0
+    mono, t_run = b.run(d)
+    print("the tester (central) at 0 m and a CC2652R peripheral at %g m, %g dBm, in nvc --std=2040 (spectral events)"
+          % (args.dist, args.power))
+    print("compile, generate and elaborate %.1f s; run %.1f s" % (t_build, t_run))
+    failed = True
+    for l in mono:
+        f = fields(l)
+        if l.startswith("BLE tester test="):
+            rest = " ".join("%s=%s" % kv for kv in f.items() if kv[0] not in ("test", "verdict"))
+            print("  %-4s %-10s %s" % (f["verdict"], f["test"], rest))
+            if f["test"] == "summary":
+                failed = f["verdict"] != "PASS"
+        elif l.startswith("BLE tester service"):
+            print("       service    handles %s - %s, UUID 0x%s" % (f["start"], f["end"], f["uuid"]))
+    for l in mono:
+        if l.startswith("BLE periph"):
+            f = fields(l)
+            print("  peripheral: %s advertising events, %s connection, %s connection events (%s missed, %s bad CRC), "
+                  "terminated %s, lost %s" % (f["adv_events"], f["connections"], f["events"], f["missed"], f["crc_errors"],
+                                              f["terminated"], f["lost"]))
+    return max(compare_fed(b, g, mono, args), int(failed))
+
+
 def main(argv=None):
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--nvc-build", help="nvc build directory (default: $NB)")
@@ -256,9 +291,13 @@ def main(argv=None):
     s = sub.add_parser("scan")
     s.add_argument("--dist", type=float, default=10.0)
     s.add_argument("--time", type=float, default=2.0)
+    c = sub.add_parser("connect")
+    c.add_argument("--dist", type=float, default=10.0)
+    c.add_argument("--events", type=int, default=40, help="connection events of the packet error test")
+    c.add_argument("--time", type=float, default=2.0, help="the simulations stop then")
     args = p.parse_args(argv)
     sys.path.insert(0, HERE)
-    return {"selftest": cmd_selftest, "range": cmd_range, "scan": cmd_scan}[args.cmd](args)
+    return {"selftest": cmd_selftest, "range": cmd_range, "scan": cmd_scan, "connect": cmd_connect}[args.cmd](args)
 
 
 if __name__ == "__main__":

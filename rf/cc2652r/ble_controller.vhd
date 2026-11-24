@@ -19,7 +19,16 @@
 --   BLE adv node=<name> events=<n> scan_requests=<n> scan_responses=<n>
 --   BLE scan node=<name> from=<last octet of the advertiser's address> adv_ind=<n> adv_nonconn_ind=<n> scan_rsp=<n> rssi=<mean dBm>
 --   BLE scan node=<name> scan_requests=<n> crc_errors=<n>
--- Not modelled: connections, extended advertising, the scanner's backoff, filter policies.
+--
+--   NODE_PERIPHERAL  a connectable advertiser (ADV_IND, answers SCAN_REQs) that accepts a CONNECT_IND
+--                    and follows the connection as its peripheral: LE 1M, channel selection algorithm
+--                    #1, one packet each way in a connection event, acknowledgements, the LL Control
+--                    PDUs a central starts with (version, features, ping, terminate; anything else
+--                    gets LL_UNKNOWN_RSP) and a two-service attribute server (ATT Exchange MTU and
+--                    Read By Group Type).  It advertises again when the connection ends.  Reports
+--                       BLE periph node=<name> adv_events=<n> connections=<n> events=<n> missed=<n> crc_errors=<n> terminated=<n> lost=<n>
+-- Not modelled: extended advertising, the scanner's backoff, filter policies, encryption, PHY and
+-- parameter updates, peripheral latency.
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.math_real.all;
@@ -29,7 +38,7 @@ use work.cc2652r_pkg.all;
 use work.cc2652r_spectral_pkg.all;
 
 package ble_controller_pkg is
-    type ble_controller_kind is (NODE_TEST_TX, NODE_TEST_RX, NODE_ADVERTISER, NODE_SCANNER);
+    type ble_controller_kind is (NODE_TEST_TX, NODE_TEST_RX, NODE_ADVERTISER, NODE_SCANNER, NODE_PERIPHERAL);
     constant BLE_ADV_SPACING : time := 1500 us;         -- between the PDUs of one advertising event (limit: 10 ms)
     -- Direct Test Mode: one packet every this long (the packet and 249 us, rounded up to 625 us)
     function ble_test_interval(phy : ble_phy; length : natural) return time;
@@ -51,6 +60,7 @@ use work.ble_phy_pkg.all;
 use work.cc2652r_pkg.all;
 use work.cc2652r_spectral_pkg.all;
 use work.ble_controller_pkg.all;
+use work.ble_ll_pkg.all;
 
 entity ble_controller is
     generic (
@@ -324,6 +334,212 @@ begin
                 end if;
             end loop;
             report "BLE scan node=" & name & " scan_requests=" & integer'image(requests) & " crc_errors=" & integer'image(bad);
+            wait;
+        end process;
+    end generate;
+
+    peripheral: if kind = NODE_PERIPHERAL generate
+        process
+            constant PHY : ble_phy := PHY_1M;
+            variable c : cc2652r_config := base_cfg;
+            variable s1 : positive := seed + 77;
+            variable s2 : positive := 2 * seed + 1;
+            variable u : real;
+            variable seq, adv_events, connections, events, missed, bad, terminated, lost : natural := 0;
+            variable t_ev, t_listen : time;
+            variable adv : ble_octets(0 to 7 + adv_data_len);
+            variable rsp : ble_octets(0 to 7 + rsp_data_len);
+            variable connected : boolean;
+            -- a connection
+            variable p : ble_conn_params;
+            variable l : ble_link_state;
+            variable t_ref, t_exp, t_late, t_anchor, t_good, t_open, t_close, widen, interval : time;
+            variable unmapped, ch, n : natural;
+            variable synced, heard, fresh, ending, version_sent : boolean;
+            variable pdu : ble_octets(0 to BLE_DATA_MAX + 1);
+
+            procedure send(pdu : ble_octets) is
+            begin
+                seq := seq + 1;
+                tx <= cc2652r_packet_of(pdu, seq);
+                wait until tx_busy;
+                wait until not tx_busy;
+            end procedure;
+
+            function on_data(c : cc2652r_config; p : ble_conn_params; ch : natural; rx_on : boolean) return cc2652r_config is
+                variable r : cc2652r_config := on_channel(c, ch, rx_on);
+            begin
+                r.access_address := ble_bits_of(p.aa);
+                r.crc_init := p.crc_init;
+                return r;
+            end function;
+
+            -- what the peripheral's link layer and host make of a new payload (d: a whole PDU)
+            procedure handle(pdu_in : ble_octets) is
+                constant d : ble_octets(0 to pdu_in'length - 1) := pdu_in;
+                constant llid : natural := d(0) mod 4;
+                constant len : natural := d'length - 2;
+                variable start : natural;
+            begin
+                if llid = BLE_LLID_CTRL and len >= 1 then
+                    case d(2) is
+                        when BLE_LL_TERMINATE_IND =>
+                            ending := true;
+                        when BLE_LL_VERSION_IND =>
+                            if not version_sent then        -- Core 5.2, Texas Instruments
+                                ble_link_push(l, BLE_LLID_CTRL, (BLE_LL_VERSION_IND, 16#0B#, 16#0D#, 16#00#, 16#52#, 16#26#));
+                                version_sent := true;
+                            end if;
+                        when BLE_LL_FEATURE_REQ =>
+                            ble_link_push(l, BLE_LLID_CTRL, (BLE_LL_FEATURE_RSP, 0, 0, 0, 0, 0, 0, 0, 0));
+                        when BLE_LL_PING_REQ =>
+                            ble_link_push(l, BLE_LLID_CTRL, (0 => BLE_LL_PING_RSP));
+                        when BLE_LL_UNKNOWN_RSP | BLE_LL_FEATURE_RSP | BLE_LL_PING_RSP =>
+                            null;
+                        when others =>
+                            ble_link_push(l, BLE_LLID_CTRL, (BLE_LL_UNKNOWN_RSP, d(2)));
+                    end case;
+                elsif llid = BLE_LLID_START and len >= 5 and d(4) = BLE_CID_ATT and d(5) = 0 then
+                    if d(6) = BLE_ATT_MTU_REQ then
+                        ble_link_push(l, BLE_LLID_START, ble_l2cap(BLE_CID_ATT, (BLE_ATT_MTU_RSP, 23, 0)));
+                    elsif d(6) = BLE_ATT_READ_BY_GROUP_REQ and len = 11 and d(11) = 16#00# and d(12) = 16#28# then
+                        start := d(7) + 256 * d(8);         -- primary services: GAP at 1 - 5, GATT at 6 - 9
+                        if start <= 1 then
+                            ble_link_push(l, BLE_LLID_START, ble_l2cap(BLE_CID_ATT, (BLE_ATT_READ_BY_GROUP_RSP, 6, 1, 0, 5, 0, 16#00#, 16#18#)));
+                        elsif start <= 6 then
+                            ble_link_push(l, BLE_LLID_START, ble_l2cap(BLE_CID_ATT, (BLE_ATT_READ_BY_GROUP_RSP, 6, 6, 0, 9, 0, 16#01#, 16#18#)));
+                        else                                -- Attribute Not Found
+                            ble_link_push(l, BLE_LLID_START, ble_l2cap(BLE_CID_ATT, (BLE_ATT_ERROR_RSP, d(6), d(7), d(8), 16#0A#)));
+                        end if;
+                    else                                    -- Request Not Supported
+                        ble_link_push(l, BLE_LLID_START, ble_l2cap(BLE_CID_ATT, (BLE_ATT_ERROR_RSP, d(6), 0, 0, 16#06#)));
+                    end if;
+                end if;
+            end procedure;
+        begin
+            adv := ble_adv_pdu(BLE_ADV_IND, address & pattern(adv_data_len), tx_add => 1);
+            rsp := ble_adv_pdu(BLE_SCAN_RSP, address & pattern(rsp_data_len), tx_add => 1);
+            cfg <= c;
+            uniform(s1, s2, u);
+            cc_wait_until(u * adv_interval);
+            while now < run_time loop
+                t_ev := now;
+                adv_events := adv_events + 1;
+                connected := false;
+                for ach in 37 to 39 loop
+                    cfg <= on_channel(c, ach, false);
+                    send(adv);
+                    -- a SCAN_REQ or a CONNECT_IND starts T_IFS after the advertisement; the longer is 352 us
+                    cfg <= on_channel(c, ach, true);
+                    t_listen := now + BLE_T_IFS + 352 us + 60 us;
+                    while now < t_listen loop
+                        wait on rx for t_listen - now;
+                        if rx'event and rx.crc_ok and rx.len >= 14 and rx.pdu(8 to 13) = address then
+                            if rx.len = 14 and rx.pdu(0) mod 16 = BLE_SCAN_REQ then
+                                cc_wait_until(rx.t_end + BLE_T_IFS);
+                                cfg <= on_channel(c, ach, false);
+                                send(rsp);
+                                exit;
+                            elsif rx.len = 36 and rx.pdu(0) mod 16 = BLE_CONNECT_IND then
+                                p := ble_conn_params_of(rx.pdu(0 to 35));
+                                t_ref := rx.t_end;
+                                connected := true;
+                                exit;
+                            end if;
+                        end if;
+                    end loop;
+                    cfg <= on_channel(c, ach, false);
+                    exit when connected;
+                    if now < t_ev + (ach - 36) * BLE_ADV_SPACING then
+                        cc_wait_until(t_ev + (ach - 36) * BLE_ADV_SPACING);
+                    end if;
+                end loop;
+
+                if connected then
+                    connections := connections + 1;
+                    ble_link_reset(l);
+                    interval := p.interval * 1250 us;
+                    -- the central's first packet starts in the transmit window; until one is heard, the
+                    -- window comes round every interval
+                    t_exp := t_ref + 1250 us + p.win_offset * 1250 us;
+                    t_late := t_exp + p.win_size * 1250 us;
+                    t_anchor := t_exp;
+                    t_good := t_ref;
+                    unmapped := 0;
+                    synced := false;
+                    ending := false;
+                    version_sent := false;
+                    loop
+                        unmapped := (unmapped + p.hop) mod 37;
+                        ch := ble_data_channel(unmapped, p.chm);
+                        -- window widening: 16 us and 1000 ppm of the time since the last anchor point
+                        widen := 16 us + (t_late - t_anchor) / 1000;
+                        t_open := t_exp - widen;
+                        t_close := t_late + widen + ble_packet_time(PHY, BLE_DATA_MAX + 2) + 60 us;
+                        if now < t_open then
+                            cc_wait_until(t_open);
+                        end if;
+                        cfg <= on_data(c, p, ch, true);
+                        heard := false;
+                        while now < t_close loop
+                            wait on rx for t_close - now;
+                            if rx'event then
+                                heard := true;
+                                exit;
+                            end if;
+                        end loop;
+                        events := events + 1;
+                        if heard and rx.crc_ok then
+                            t_anchor := rx.t_end - ble_packet_time(PHY, rx.len);
+                            t_good := rx.t_end;
+                            synced := true;
+                            ble_link_receive(l, rx.pdu(0), fresh);
+                            if fresh and rx.len > 2 and rx.len <= BLE_DATA_MAX + 2 then
+                                handle(rx.pdu(0 to rx.len - 1));
+                            end if;
+                        elsif heard then
+                            bad := bad + 1;
+                        else
+                            missed := missed + 1;
+                        end if;
+                        -- the answer, T_IFS after the central's packet (whatever its CRC)
+                        if heard and now <= rx.t_end + BLE_T_IFS then
+                            cc_wait_until(rx.t_end + BLE_T_IFS);
+                            cfg <= on_data(c, p, ch, false);
+                            ble_link_transmit(l, pdu, n);
+                            send(pdu(0 to n - 1));
+                        end if;
+                        cfg <= on_data(c, p, ch, false);
+                        if ending then
+                            terminated := terminated + 1;
+                            exit;
+                        end if;
+                        if synced then
+                            if heard and rx.crc_ok then
+                                t_exp := t_anchor + interval;
+                            else
+                                t_exp := t_exp + interval;
+                            end if;
+                            t_late := t_exp;
+                        else
+                            t_exp := t_exp + interval;
+                            t_late := t_late + interval;
+                            t_anchor := t_exp;
+                        end if;
+                        -- supervision: six intervals to hear the first packet, connSupervisionTimeout after
+                        if (not synced and t_exp - t_ref > 6 * interval) or (synced and t_exp - t_good > p.timeout * 10 ms) then
+                            lost := lost + 1;
+                            exit;
+                        end if;
+                    end loop;
+                    t_ev := now;
+                end if;
+                uniform(s1, s2, u);
+                cc_wait_until(t_ev + adv_interval + u * 10 ms);
+            end loop;
+            report "BLE periph node=" & name & " adv_events=" & integer'image(adv_events) & " connections=" & integer'image(connections)
+                & " events=" & integer'image(events) & " missed=" & integer'image(missed) & " crc_errors=" & integer'image(bad)
+                & " terminated=" & integer'image(terminated) & " lost=" & integer'image(lost);
             wait;
         end process;
     end generate;

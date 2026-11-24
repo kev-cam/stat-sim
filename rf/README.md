@@ -527,6 +527,7 @@ are not checked; propagation delay is left out of the Python arena; IEEE 802.15.
     ble_nvc.py selftest              tb_cc2652r: packets against ble_phy.py; a packet of each PHY chip to chip
     ble_nvc.py range [--compare]     Direct Test Mode range in nvc; --compare runs ble_host.py beside it
     ble_nvc.py scan                  the beacon, the neighbour and the active scanner in nvc
+    ble_nvc.py connect               the tester (a central and its host) puts a peripheral through its tests
     ... --fed                        the same as two simulations sharing the arena; must report the same lines
     (--nvc-build or NB: an nvc build with the arena support, as for ad9361/an2597_arena.sh)
 
@@ -536,8 +537,10 @@ are not checked; propagation delay is left out of the Python arena; IEEE 802.15.
 | `ble_phy_pkg.vhd` | ble_phy.py in VHDL: packets of the four PHYs, whitening, CRC, the convolutional code, the sequence detector and the Viterbi decoder |
 | `cc2652r_spectral_pkg.vhd`, `cc2652r.vhd` | the chip: one RF pin (`'driver` / `'other`, an rf_spectrum), `cfg`, a packet to send, packets received |
 | `rf_spec_antenna_td.vhd` | the antenna, its air pin an `rf_air_td` |
-| `ble_controller.vhd` | the link layer as the chip's software: test transmitter and receiver, advertiser, scanner |
-| `ble_link.vhd`, `tb_cc2652r.vhd` | the two scenarios of ble_host.py; the self-check bench |
+| `ble_controller.vhd` | the link layer as the chip's software: test transmitter and receiver, advertiser, scanner, peripheral |
+| `ble_ll_pkg.vhd` | what a connection needs: CONNECT_IND, channel selection algorithm #1, data PDUs and their acknowledgement, L2CAP framing |
+| `ble_tester.vhd` | the tester: a central and the little of a host above it that tests a peripheral over the air |
+| `ble_link.vhd`, `tb_cc2652r.vhd` | the two scenarios of ble_host.py and the tester's; the self-check bench |
 
 **How a GFSK signal is a spectral event.**  An OFDM symbol is periodic over its event; a Bluetooth
 packet is not, so a transmission is a run of consecutive events, each the spectrum of the next 64
@@ -588,9 +591,33 @@ at 32 MHz is most of it), nothing while the air is silent: 2 s of the scan scena
 Federated (`--fed`: the transmitting side and the other as two nvc simulations in one arena through
 arena_ctl.py), both scenarios report the same lines as the one simulation.
 
-nvc note: in this nvc (r624, also with --std=2008) a `wait for` is cut short by an event on a signal
+**The tester** (`ble_tester.vhd`, `ble_nvc.py connect`) is a central with a CC2652R for its radio.  The
+device under test is whatever advertises connectably in the arena, in the same simulation or in
+another one of the federation, so a model of somebody else's Bluetooth IC is tested by putting it
+(its own simulation, an antenna on the `ism2g4_td` band) in the arena with the tester.  One pass:
+
+| step | what the tester does and checks |
+|---|---|
+| `adv`, `adv_chan` | hears four ADV_INDs on channel 37: interval 20 ms or more, advDelay within 10 ms; then one on 38 and on 39 |
+| `scan` | three SCAN_REQs, each answered by a SCAN_RSP 150 us (+-2) after it |
+| `connect` | CONNECT_IND; the device answers within the first six connection events |
+| `version`, `features` | LL_VERSION_IND and LL_FEATURE_REQ / LL_FEATURE_RSP exchanges |
+| `mtu`, `services` | ATT Exchange MTU and GATT primary service discovery (generic `host_tests`: the device has a host) |
+| `per` | 40 connection events of empty packets: fewer than 30.8 % unanswered or with a bad CRC |
+| `t_ifs` | the device's T_IFS over the connection, 150 us +-2 (the known path delay taken out) |
+| `terminate` | LL_TERMINATE_IND is acknowledged |
+
+The reference device is ble_controller's `NODE_PERIPHERAL` on a CC2652R: at 10 m all eleven steps pass
+(T_IFS 150.00 us, RSSI -60 dBm, two services found, 48 connection events) in 5 s of run time; at 700 m
+with crystals +20 / -30 ppm (-97 dBm, the chip's sensitivity) the connection holds through 2 unanswered
+events and 4 bad CRCs by retransmission and every step passes but `scan` (one SCAN_RSP of three lost); at
+850 m advertising is heard too rarely and no connection is made.  Federated, tester and peripheral as two
+simulations, the report is the same line for line.  Connections are LE 1M, one packet each way in an
+event, without encryption or the PHY, parameter and channel map update procedures.
+
+nvc note: in nvc before 30bf1386c (also with --std=2008) a `wait for` is cut short by an event on a signal
 that an earlier `wait on` of the same process named; the model waits with `cc_wait_until` (a loop on
-`now`) instead.  A process that reads a pin's `'other` is also woken by every event on it, so the
+`now`) instead, and runs on either.  A process that reads a pin's `'other` is also woken by every event on it, so the
 chip copies its pin to an ordinary signal in a process of its own.  The resolver plugin does not follow
 a pin up through a port of an enclosing entity, so chip, antenna and controller are siblings at the
 top (as in an2597_link).

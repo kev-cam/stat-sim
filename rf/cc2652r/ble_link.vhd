@@ -12,8 +12,12 @@
 --   scenario 1  a beacon (ADV_IND every 100 ms, answers scan requests) at the origin, a neighbour
 --               (ADV_NONCONN_IND every 20 ms) and an active scanner (30 ms of every 60 ms) `dist` away
 --
+--   scenario 2  a tester (ble_tester: a central and the host above it) at the origin puts a peripheral
+--               `dist` away through its tests: advertising, scanning, a connection with link layer
+--               control and attribute exchanges, packet errors, timing
+--
 -- role: 0 everything in one simulation; federated across the arena, 1 is the transmitting side only
--- (tester; beacon and neighbour) and 2 the other (device under test; scanner).
+-- (tester; beacon and neighbour) and 2 the other (device under test; scanner; peripheral).
 -- Run through ble_nvc.py (it generates the resolver network with nvc's plugin and tabulates).
 library ieee;
 use ieee.std_logic_1164.all;
@@ -33,8 +37,8 @@ entity ble_link is
         tx_dbm     : real := 0.0;
         packets    : positive := 40;
         d0, d1, d2, d3, d4, d5, d6, d7 : real := -1.0;      -- scenario 0: distances, m (negative: not used)
-        dist       : real := 10.0;              -- scenario 1
-        run_time   : time := 2 sec;             -- scenario 1
+        dist       : real := 10.0;              -- scenarios 1, 2
+        run_time   : time := 2 sec;             -- scenarios 1, 2
         ppm_a      : real := 0.0;               -- crystal errors of the two sides
         ppm_b      : real := 0.0;
         tx_lead    : time := 0 ns
@@ -57,12 +61,15 @@ architecture sim of ble_link is
     end function;
     constant NDIST : natural := count_used;
     constant WINDOW : time := 2 ms + packets * ble_test_interval(phy, length);
-    function pick(first, second : ble_controller_kind) return ble_controller_kind is
+    function pick(first, second : ble_controller_kind; third : ble_controller_kind := NODE_PERIPHERAL)
+        return ble_controller_kind is
     begin
         if scenario = 0 then
             return first;
+        elsif scenario = 1 then
+            return second;
         end if;
-        return second;
+        return third;
     end function;
     -- RF nets: the payload is on each pin's 'driver / 'other; the generated resolver network joins them
     signal air, feed_a, feed_b, feed_c : std_logic;
@@ -100,6 +107,7 @@ begin
     ant_a: entity work.rf_spec_antenna_td
         generic map (tx_lead => tx_lead)
         port map (feed => feed_a, air => air, position => pos_a);
+   ctrl_a: if scenario /= 2 generate
     host_a: entity work.ble_controller
         generic map (name => "a", kind => pick(NODE_TEST_TX, NODE_ADVERTISER), seed => 11,
                      address => (16#A6#, 16#A5#, 16#A4#, 16#A3#, 16#A2#, 16#C1#), tx_dbm => tx_dbm, xo_ppm => ppm_a,
@@ -107,6 +115,13 @@ begin
                      window => WINDOW, windows => NDIST,
                      adv_interval => 100 ms, scannable => true, adv_data_len => 11, rsp_data_len => 6)
         port map (cfg => cfg_a, tx => tx_a, tx_busy => busy_a, rx => rx_a);
+   end generate;
+   test_a: if scenario = 2 generate
+    host_a: entity work.ble_tester
+        generic map (name => "a", tx_dbm => tx_dbm, xo_ppm => ppm_a, run_time => run_time, per_events => packets,
+                     path_delay => integer(dist / 299792458.0 * 1.0e12) * 1 ps)
+        port map (cfg => cfg_a, tx => tx_a, tx_busy => busy_a, rx => rx_a);
+   end generate;
   end generate;
 
   -- the neighbour (scenario 1), next to the second device
@@ -133,10 +148,11 @@ begin
         generic map (tx_lead => tx_lead)
         port map (feed => feed_b, air => air, position => pos_b);
     host_b: entity work.ble_controller
-        generic map (name => "b", kind => pick(NODE_TEST_RX, NODE_SCANNER), seed => 23,
+        generic map (name => "b", kind => pick(NODE_TEST_RX, NODE_SCANNER, NODE_PERIPHERAL), seed => 23,
                      address => (16#55#, 16#44#, 16#33#, 16#22#, 16#11#, 16#C0#), tx_dbm => tx_dbm, xo_ppm => ppm_b,
                      run_time => run_time, phy => phy, rf_channel => rf_channel, length => length, packets => packets,
                      window => WINDOW, windows => NDIST,
+                     adv_interval => 30 ms, adv_data_len => 11, rsp_data_len => 6,
                      scan_interval => 60 ms, scan_window => 30 ms, active => true)
         port map (cfg => cfg_b, tx => tx_b, tx_busy => busy_b, rx => rx_b);
   end generate;
