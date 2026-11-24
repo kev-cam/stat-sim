@@ -467,6 +467,134 @@ does one inverse FFT and one phase ramp per transmitter it hears, so cost grows 
 number of radios and real time is lost near 20.  Not tried: summing transmitters that share a carrier
 before the transform, distance culling, double precision.
 
+## cc2652r/ -- TI CC2652R Bluetooth LE radio, with the Bluetooth side from the Core Specification
+
+A model of the CC2652R's 2.4 GHz radio in its four Bluetooth LE modes, the counterpart of ad9361/ for a
+chip whose software never sees a sample: it hands the radio a packet and is handed packets back.  The
+data sheet stops at the antenna pin; modulation, packet formats and what a program does with the chip
+are the Bluetooth Core Specification's, so the model is in three layers.  The Python model is the
+reference; the VHDL for nvc's spectral events, in the arena and federated, follows below.
+
+    ble_phy.py check     the Bluetooth physical layer against the specification's own sample data
+    cc2652r.py check     the radio measured the way the data sheet measures the chip, beside the data sheet
+    cc2652r.py fit       adjust the radio to the data sheet (writes cc2652r_fit.py; about 20 minutes a pass)
+    cc2652r.py spec      the data sheet tables, the assumptions, the fitted values
+    ble_host.py range    packet error rate against distance, two controllers in Direct Test Mode
+    ble_host.py scan     an advertiser, an active scanner and a neighbour advertising beside them
+
+| file | what | from |
+|---|---|---|
+| `ble_phy.py` | GFSK, the 40 channels, packets of LE 1M / 2M / Coded S=2 and S=8, whitening, CRC, the Coded PHY's convolutional code and its Viterbi decoder, a sequence detector for the uncoded PHYs | Core Specification 6.1, Vol 6 |
+| `cc2652r.py` | the radio: symbols to an envelope at the set power; envelope through noise, a third-order front end, AGC, the channel filter, the detector and packet search to packets with CRC result and RSSI | data sheet SWRS207J, 8.9 - 8.11 |
+| `cc2652r_fit.py` | per PHY: noise figure, input intercept, the channel filter's rejection at each offset, how far the detector allows for neighbouring symbols | fitted |
+| `ble_host.py` | a controller round the radio, driven by HCI commands (legacy advertising, passive and active scanning, Direct Test Mode), and an arena of controllers in free space | Core Specification, Vol 4 Part E, Vol 6 Part B |
+
+**Where the numbers come from.**  The data sheet PDF (Rev. J) was fetched and its tables read off the
+page: sensitivity, co-channel rejection, selectivity at every offset, intermodulation and out-of-band
+blocking for each PHY, output power and its range, RSSI range.  The specification's HTML edition was
+read for Part A, Part B up to 2.4 and Part C; the CRC polynomial, the whitening register, the FEC
+polynomials and pattern mapper, T_IFS and the advertising and HCI timing rules are from recollection
+(the text would not load), and `ble_phy.py check` reproduces Part C's sample data bit for bit with them:
+five whitening sequences, a complete advertising packet with its CRC, the encoder's output for the
+access address, the reference packet's CRC and durations (15 of 15).  What the data sheet does not give
+is `MODEL` in cc2652r.py: the AGC threshold, the range of what follows the gain, the filter's passband,
+transmit power in 1 dB steps, nothing added to the transmitted signal (no phase noise or spectrum
+figures are given).  The noise figure the fit arrives at (4.6 to 6.8 dB by PHY) and the input intercept
+(-28 dBm; -21 dBm for LE 2M) are what this detector needs to give the data sheet's figures, not
+measurements of the chip.
+
+`cc2652r.py check` (BER 1e-3 by bisection, 300,000 bits a point, a seed the fit did not use; the
+interferer 7.3 kHz off its nominal offset and not symbol-aligned, without which the result depends on
+its phase by 2 dB): sensitivity -105.1 / -100.2 / -97.0 / -91.1 dBm (data sheet -105 / -100 / -97 /
+-91), co-channel within 0.5 dB, intermodulation within 0.2 dB, blocking within 0.1 dB, selectivity
+within 0.5 dB at 33 of 40 offsets.  The other seven are all on the good side: 0.6 to 0.9 dB at
++-2 MHz for LE 1M and -4 MHz for LE 2M, and 0.8 to 2.7 dB at +-2 MHz for the Coded PHY, where the fit
+does not settle.  No errors with the wanted signal at +5 dBm.
+
+`ble_host.py range` (LE 1M, 0 dBm, isotropic antennas, 37-octet test packets, 40 a point): none lost
+at 10 m and 300 m (-89.7 dBm), 25 % at 700 m (-97.1 dBm; BER 1e-3 loses 29 % of such packets), 87 % at
+1 km; the RSSI the receiver reports is within 0.4 dB of the link budget.  `ble_host.py scan`, 2 s:
+the scanner reports 9 ADV_IND of the 57 sent (it listens to one channel in three, half the time), asks
+9 times and gets 9 scan responses, and reports 39 of a neighbour's 240 non-connectable advertisements.
+
+Limits: no connections (CONNECT_IND is ignored), extended or directed advertising, scanner backoff,
+filter policies or privacy; packets are found by correlation on preamble and access address with one
+frequency-offset estimate per packet, and the data sheet's frequency and data-rate error tolerances
+are not checked; propagation delay is left out of the Python arena; IEEE 802.15.4 is not modelled.
+
+### cc2652r/ in nvc (--std=2040, spectral events), in the arena and federated
+
+    ble_nvc.py selftest              tb_cc2652r: packets against ble_phy.py; a packet of each PHY chip to chip
+    ble_nvc.py range [--compare]     Direct Test Mode range in nvc; --compare runs ble_host.py beside it
+    ble_nvc.py scan                  the beacon, the neighbour and the active scanner in nvc
+    ... --fed                        the same as two simulations sharing the arena; must report the same lines
+    (--nvc-build or NB: an nvc build with the arena support, as for ad9361/an2597_arena.sh)
+
+| file | what |
+|---|---|
+| `cc2652r_vhdl.py` | writes `cc2652r_pkg.vhd`: the filter taps of each PHY, symbol timing, detector taps, the modulator's pulse and the scalars, all worked out by cc2652r.py; and reference packets for the bench |
+| `ble_phy_pkg.vhd` | ble_phy.py in VHDL: packets of the four PHYs, whitening, CRC, the convolutional code, the sequence detector and the Viterbi decoder |
+| `cc2652r_spectral_pkg.vhd`, `cc2652r.vhd` | the chip: one RF pin (`'driver` / `'other`, an rf_spectrum), `cfg`, a packet to send, packets received |
+| `rf_spec_antenna_td.vhd` | the antenna, its air pin an `rf_air_td` |
+| `ble_controller.vhd` | the link layer as the chip's software: test transmitter and receiver, advertiser, scanner |
+| `ble_link.vhd`, `tb_cc2652r.vhd` | the two scenarios of ble_host.py; the self-check bench |
+
+**How a GFSK signal is a spectral event.**  An OFDM symbol is periodic over its event; a Bluetooth
+packet is not, so a transmission is a run of consecutive events, each the spectrum of the next 64
+samples (2 us at the model's 32 MHz; lines 500 kHz apart).  That needed one thing the AD9361 arena does
+not have, added to rf_spectrum_pkg as the subtype `rf_air_td` (its own band, `ism2g4_td`): in an
+`rf_air` arena a path's delay is a phase on every line, which rotates the samples of an event round on
+themselves (harmless inside a cyclic prefix, wrong here); in an `rf_air_td` arena the delay is in time
+only (the generated resolver hears every antenna as it was distance / c ago) and a path is one complex
+gain.  Carriers stay on the channel raster and each chip puts its crystal's error in its own samples,
+so signals on different channels add line by line with no time reference.  The receiver sleeps until
+something arrives, then reads its pin every 2 us from half an event after the first arrival, and runs
+the same chain as cc2652r.py on the samples as they come: noise, compression, channel filter,
+discriminator, correlation for preamble and access address, header, packet.  It reports when the
+packet ended at the pin, which is what the link layer times T_IFS from.
+
+Differences from cc2652r.py: one sample rate for all PHYs (cc2652r.py's `check` runs the 1 Msym/s PHYs
+at 16 MHz; at 32 MHz its sensitivity, co-channel and +-1 to 3 MHz selectivity figures are within
+0.5 dB of those); the AGC follows each event's power; a second signal with another path delay is
+taken as it stands at the receiver's reads (under one event of timing error); signals more than
+16 MHz from the receiver's channel are not seen (no blocking by them); the receiver keeps 2^17
+discriminator samples (generic `ring_log2`), enough for any uncoded packet and Coded packets of up
+to 229 (S=2) or 51 (S=8) octets.
+
+Results (WSL, nvc 1.19-devel r624 with the arena support; 40 packets a point, 37 octets, 0 dBm):
+
+| PHY | distance, level | nvc | ble_host.py |
+|---|---|---|---|
+| LE 1M, crystals +10 / -10 ppm | 300 m, -89.7 dBm | 40/40 | 40/40 |
+| | 700 m, -97.1 dBm | 30/40 | 32/40 |
+| | 1000 m, -100.2 dBm | 1/40 | 3/40 |
+| LE 2M | 250 m, -88.2 dBm | 40/40 | 40/40 |
+| | 350 m, -91.1 dBm | 27/40 | 31/40 |
+| | 500 m, -94.2 dBm | 2/40 | 3/40 |
+| LE Coded S=2 | 800 m, -98.3 dBm | 39/40 | 39/40 |
+| | 1000 m, -100.2 dBm | 32/40 | 33/40 |
+| | 1400 m, -103.1 dBm | 3/40 | 1/40 |
+| LE Coded S=8 | 1500 m, -103.7 dBm | 40/40 | 40/40 |
+| | 1800 m, -105.3 dBm | 30/40 | 31/40 |
+| | 2500 m, -108.2 dBm | 0/40 | 0/40 |
+
+The two models draw different noise, so they agree as statistics, not packet for packet; the reported
+RSSI is within 0.2 dB of the link budget where the signal is well above the noise.  `scan`, 2 s,
+crystals +10 / -10 ppm: the beacon makes 20 advertising events, the scanner reports 10 ADV_IND, sends
+10 scan requests, the beacon hears 9 and answers 9, the scanner reports 9 SCAN_RSP and 39
+ADV_NONCONN_IND of the neighbour's, one packet with a bad CRC (ble_host.py: 9, 9, 9, 39, none).
+Speed: about 0.008 x real time while a receiver is hearing a packet (one nvc thread; the 321-tap filter
+at 32 MHz is most of it), nothing while the air is silent: 2 s of the scan scenario take 17 s.
+Federated (`--fed`: the transmitting side and the other as two nvc simulations in one arena through
+arena_ctl.py), both scenarios report the same lines as the one simulation.
+
+nvc note: in this nvc (r624, also with --std=2008) a `wait for` is cut short by an event on a signal
+that an earlier `wait on` of the same process named; the model waits with `cc_wait_until` (a loop on
+`now`) instead.  A process that reads a pin's `'other` is also woken by every event on it, so the
+chip copies its pin to an ordinary signal in a process of its own.  The resolver plugin does not follow
+a pin up through a port of an enclosing entity, so chip, antenna and controller are siblings at the
+top (as in an2597_link).
+
 ## Federation -- the same spectral simulation split across the arena
 
 The air pins' type says how their net resolves: `rf_air` (rf_spectrum_pkg) carries `resolution`

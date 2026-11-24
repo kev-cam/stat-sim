@@ -77,6 +77,24 @@ package rf_spectrum_pkg is
     attribute arena_delay : string;
     attribute arena_delay of rf_air : subtype is "free_space_delay";
 
+    -- The same air for signals that have no guard interval to take a path delay up (a single-carrier radio's
+    -- events are consecutive blocks of its envelope, rf/cc2652r).  In an rf_air arena the delay of a path is
+    -- in the phase of every line, which turns the samples of an event round on themselves; here it is in
+    -- time only (arena_delay: each antenna hears the others as they were distance / c ago) and a path is
+    -- one complex gain, lambda / (4 pi d) and the carrier's phase.  Signals of different carriers are put
+    -- together line by line with no time reference (spec_regrid at t0 = 0), which is exact when the
+    -- carriers differ by whole lines and every event is one period of the grid (1 / df) long: the radios
+    -- of such a band keep their carriers on its raster and put their own frequency errors in the samples.
+    subtype rf_air_td is rf_spectrum;
+    attribute resolution of rf_air_td : subtype is "arena";
+    attribute resolution_func of rf_air_td : subtype is "arena_hear_td_now";
+    attribute arena_place of rf_air_td : subtype is "pos:rf_position:rf_position_vector,plat:integer:integer_vector";
+    attribute arena_band of rf_air_td : subtype is "ism2g4_td";
+    attribute arena_delay of rf_air_td : subtype is "free_space_delay";
+    function spec_friis_td(s : rf_spectrum; distance : real) return rf_spectrum;
+    function arena_hear_td_now(i : natural; drv : rf_spectrum_vector; pos : rf_position_vector;
+                               plat : integer_vector) return rf_spectrum;
+
     function spec_silent(seq : positive) return rf_spectrum;
     function spec_is_silent(s : rf_spectrum) return boolean;
     function spec_power(s : rf_spectrum) return real;                      -- W, all lines
@@ -419,6 +437,36 @@ package body rf_spectrum_pkg is
         variable field : rf_spectrum_vector(0 to -1);
     begin
         return arena_hear(i, drv, pos, plat, none, rcs, field, sim_time);
+    end function;
+
+    function spec_friis_td(s : rf_spectrum; distance : real) return rf_spectrum is
+        variable r : rf_spectrum := s;
+        variable a, ph, c, sn : real;
+    begin
+        if spec_is_silent(s) or distance <= 0.0 then
+            return spec_silent(s.seq + 1);
+        end if;
+        a := SPEED_OF_LIGHT / (4.0 * MATH_PI * distance * s.freq);
+        ph := -2.0 * MATH_PI * (s.freq * distance / SPEED_OF_LIGHT mod 1.0);
+        c := a * cos(ph);
+        sn := a * sin(ph);
+        for k in r.h'range loop
+            r.h(k) := (s.h(k).i * c - s.h(k).q * sn, s.h(k).i * sn + s.h(k).q * c);
+            r.v(k) := (s.v(k).i * c - s.v(k).q * sn, s.v(k).i * sn + s.v(k).q * c);
+        end loop;
+        return r;
+    end function;
+
+    function arena_hear_td_now(i : natural; drv : rf_spectrum_vector; pos : rf_position_vector;
+                               plat : integer_vector) return rf_spectrum is
+        variable acc : rf_spectrum := spec_silent(1);
+    begin
+        for j in drv'range loop
+            if j /= i and not (plat(i) /= 0 and plat(i) = plat(j)) then
+                acc := spec_add(acc, spec_friis_td(drv(j), rf_distance(pos(i), pos(j))), 0.0);
+            end if;
+        end loop;
+        return acc;
     end function;
 
     impure function wire_hear(i : natural; drv : rf_spectrum_vector) return rf_spectrum is
