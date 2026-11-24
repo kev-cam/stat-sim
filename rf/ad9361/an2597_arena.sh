@@ -12,8 +12,12 @@
 #           the slack between them (the shortest antenna-to-antenna delay)
 # fed must match mono line for line.
 #
-#   NB=<nvc build dir> [SV=<nvc>/lib/sv2vhdl] [W=<work dir>] [DISTS="1.0 30.0 ..."] [PK=<packets>] [TRACE=1] \
-#     rf/ad9361/an2597_arena.sh
+#   NB=<nvc build dir> [SV=<nvc>/lib/sv2vhdl] [W=<work dir>] [DISTS="1.0 30.0 ..."] [PK=<packets>] [LEAD=1us] \
+#     [TRACE=1] rf/ad9361/an2597_arena.sh
+#
+# LEAD: every antenna's transmit latency (an2597_link's tx_lead; mono and fed only, ref stays zero-delay).
+# With one, the antennas drive  air'driver <= transport v after LEAD : each value crosses the arena as
+# soon as it is scheduled, and a simulation may run ahead of another by LEAD + the slack.
 #
 # NB is an nvc build with the arena support (lib/sv2vhdl/libarena.so, SV2VHDL.ARENA_PKG, libresolver.so).
 set -e
@@ -36,6 +40,7 @@ timed() {
 }
 GFLAGS=""; GPY=""; i=0
 for d in $DISTS; do GFLAGS="$GFLAGS -gd$i=$d"; GPY="$GPY'd$i': '$d', "; i=$((i+1)); done
+if [ -n "$LEAD" ]; then GFLAGS="$GFLAGS -gtx_lead=$LEAD"; fi
 rm -rf $W; mkdir -p $W; cd $W
 export NVC_NO_EVAL_ARENA=1
 SRC="$W/ad9361_pkg.vhd $AD/accel/spectral_accel_off.vhd $AD/accel/spectral_accel_pkg.vhd $AD/rf_spectrum_pkg.vhd $AD/ad9361_spectral_pkg.vhd $AD/ad9361.vhd $AD/rf_spec_antenna.vhd $AD/ofdm_soft_pkg.vhd $AD/an2597_link.vhd"

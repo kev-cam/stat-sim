@@ -37,8 +37,9 @@ entity an2597_link is
         packets   : positive := 10;         -- per distance and modulation
         symbols   : positive := 20;         -- data symbols per packet
         d0, d1, d2, d3, d4, d5, d6, d7 : real := -1.0;  -- distances in metres (negative: not used)
-        role      : natural := 0            -- 0: the whole link; federated across the arena (rf/federated):
+        role      : natural := 0;           -- 0: the whole link; federated across the arena (an2597_arena.sh):
                                             -- 1 the drone's side only, 2 the controller's side only
+        tx_lead   : time := 0 ns            -- every antenna's transmit latency (> 0: drives scheduled ahead)
 
     );
 end entity;
@@ -94,10 +95,10 @@ begin
         port map (tx1 => n_drone_tx, rx1 => n_drone_rx, cfg => drone_cfg, tx_data => drone_tx, rx_data => drone_rx,
                   rx_gain_db => drone_gain);
     drone_ant_tx: entity work.rf_spec_antenna
-        generic map (gain_dbi => ant_dbi)
+        generic map (gain_dbi => ant_dbi, tx_lead => tx_lead)
         port map (feed => n_drone_tx, air => air, position => drone_tx_pos);
     drone_ant_rx: entity work.rf_spec_antenna
-        generic map (gain_dbi => ant_dbi)
+        generic map (gain_dbi => ant_dbi, tx_lead => tx_lead)
         port map (feed => n_drone_rx, air => air, position => drone_rx_pos);
 
   end generate;
@@ -166,10 +167,10 @@ begin
         port map (tx1 => n_ctrl_tx, rx1 => n_ctrl_rx, cfg => ctrl_cfg, tx_data => ctrl_tx, rx_data => ctrl_rx,
                   rx_gain_db => ctrl_gain);
     ctrl_ant_tx: entity work.rf_spec_antenna
-        generic map (gain_dbi => ant_dbi)
+        generic map (gain_dbi => ant_dbi, tx_lead => tx_lead)
         port map (feed => n_ctrl_tx, air => air, position => ctrl_tx_pos);
     ctrl_ant_rx: entity work.rf_spec_antenna
-        generic map (gain_dbi => ant_dbi)
+        generic map (gain_dbi => ant_dbi, tx_lead => tx_lead)
         port map (feed => n_ctrl_rx, air => air, position => ctrl_rx_pos);
 
     -- The controller's software: receives, and keeps score.

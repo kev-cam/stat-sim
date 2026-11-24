@@ -21,7 +21,9 @@ entity rf_spec_antenna is
     generic (
         gain_dbi  : real := 0.0;
         pol_angle : real := 0.0;              -- polarisation, rad (0: horizontal)
-        platform  : natural := 0              -- antennas on the same platform (not 0) do not hear each other directly
+        platform  : natural := 0;             -- antennas on the same platform (not 0) do not hear each other directly
+        tx_lead   : time := 0 ns              -- transmit latency: what the feed carries leaves the antenna this much
+                                              -- later (> 0: scheduled ahead, so a federation can run ahead by it)
     );
     port (
         feed     : inout std_logic;
@@ -63,7 +65,11 @@ begin
         from_feed := feed'other;
         from_air := air'other;
         to_air := spec_scale(spec_rotate(from_feed, pol_angle), g);
-        air'driver := to_air;
+        if tx_lead > 0 ns then
+            air'driver <= transport to_air after tx_lead;   -- known now, in effect from now + tx_lead
+        else
+            air'driver := to_air;
+        end if;
         feed'driver := spec_scale(spec_rotate(from_air, -pol_angle), g);
     end process;
 end architecture;
