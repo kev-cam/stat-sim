@@ -488,13 +488,18 @@ few tenths of a dB from the zero-delay reference.
 
     NB=/path/to/nvc-build DISTS="1.0 3.0 10.0 30.0 100.0 300.0 1000.0 3000.0" PK=10 ad9361/an2597_arena.sh
 
-Across machines: generate each role on its own host as the script's `gen` step does (same generics
-on both), run the rendezvous on an address both reach, and start each side with its name:
+Across machines, `ad9361/an2597_side.sh` builds and runs one side (same `DISTS`/`PK`/`LEAD` on both):
 
+    NB=<nvc-build> W=/tmp/ctrl  ROLE=2 NAME=ctrl  LEAD=8us ad9361/an2597_side.sh gen     # host B
+    NB=<nvc-build> W=/tmp/drone ROLE=1 NAME=drone LEAD=8us ad9361/an2597_side.sh gen     # host A
     python3 <nvc>/lib/sv2vhdl/arena_ctl.py rendezvous --arena lab-2g4 --listen '[fd00::1]:7600' --expect drone,ctrl
-    FED_NAME=drone FED_ARENAS='ism2g4=lab-2g4@[fd00::1]:7600' nvc --std=2040 -r --load=<nvc-build>/lib/sv2vhdl/libarena.so resolved_an2597_link
+    NB=<nvc-build> W=/tmp/ctrl  NAME=ctrl  RV='[fd00::1]:7600' ad9361/an2597_side.sh run
+    NB=<nvc-build> W=/tmp/drone NAME=drone RV='[fd00::1]:7600' ad9361/an2597_side.sh run
 
-The simulations connect to each other on the address they reach the rendezvous from (any free port).
+The simulations connect to each other on the address they reach the rendezvous from (any free port);
+a side behind NAT only dials out, so give it the lower rank (ROLE=1). Full sweep, drone in WSL and
+ctrl on a second Linux host over the LAN: identical to the single simulation (32/32) both ways; with
+no lead the drone took 8.92 s, 5.3 s of it waiting, and with `LEAD=8us` 6.27 s, 0.10 s waiting.
 Not yet: joining a running arena, more than one arena per simulation, scatterers in the plugin path.
 
 ## Control states
