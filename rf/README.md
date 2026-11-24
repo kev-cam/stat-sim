@@ -467,6 +467,36 @@ does one inverse FFT and one phase ramp per transmitter it hears, so cost grows 
 number of radios and real time is lost near 20.  Not tried: summing transmitters that share a carrier
 before the transform, distance culling, double precision.
 
+## Federation -- the same spectral simulation split across the arena
+
+The air pins' type says how their net resolves: `rf_air` (rf_spectrum_pkg) carries `resolution`
+"arena", `arena_band` "ism2g4" and `arena_delay` "free_space_delay", so nvc's resolver plugin
+(lib/sv2vhdl) generates one resolver per antenna, each hearing every other antenna one path delay
+(distance / c) ago.  Antennas in other simulations come through libarena: the federation controller
+(`arena_ctl.py`) maps each band to a logical arena (later a named IPv6 VLAN from net-chat), runs the
+arena's rendezvous point and launches the simulations with `FED_NAME` / `FED_ARENAS`; after the
+rendezvous they talk to each other directly.  Driver values go out tagged with their time as they
+happen; each simulation reports its time, next event and counts, and runs ahead of another by the
+slack between them -- the shortest delay between their antennas (10 ft: 10 ns) -- without
+speculating.
+
+`ad9361/an2597_arena.sh` runs AN-2597 three ways: hand-written zero-delay resolver, one simulation
+with the delayed plugin resolver, and drone + controller as two simulations in one arena
+(`an2597_link`'s `role` generic).  The federated scoreboard equals the one-simulation one (32 of 32
+lines, 1 m to 3 km, 10 packets: 5.96 s federated vs 6.30 s one simulation); the path delays move EVM a
+few tenths of a dB from the zero-delay reference.
+
+    NB=/path/to/nvc-build DISTS="1.0 3.0 10.0 30.0 100.0 300.0 1000.0 3000.0" PK=10 ad9361/an2597_arena.sh
+
+Across machines: generate each role on its own host as the script's `gen` step does (same generics
+on both), run the rendezvous on an address both reach, and start each side with its name:
+
+    python3 <nvc>/lib/sv2vhdl/arena_ctl.py rendezvous --arena lab-2g4 --listen '[fd00::1]:7600' --expect drone,ctrl
+    FED_NAME=drone FED_ARENAS='ism2g4=lab-2g4@[fd00::1]:7600' nvc --std=2040 -r --load=<nvc-build>/lib/sv2vhdl/libarena.so resolved_an2597_link
+
+The simulations connect to each other on the address they reach the rendezvous from (any free port).
+Not yet: joining a running arena, more than one arena per simulation, scatterers in the plugin path.
+
 ## Control states
 
 `rffit.py amp ... --state nominal:VDD=1.8 --state lowvdd:VDD=1.5 --state off:VDD=0` fits one

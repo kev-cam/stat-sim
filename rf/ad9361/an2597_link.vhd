@@ -36,7 +36,10 @@ entity an2597_link is
         backoff_db : real := 12.0;          -- packet rms under DAC full scale
         packets   : positive := 10;         -- per distance and modulation
         symbols   : positive := 20;         -- data symbols per packet
-        d0, d1, d2, d3, d4, d5, d6, d7 : real := -1.0   -- distances in metres (negative: not used)
+        d0, d1, d2, d3, d4, d5, d6, d7 : real := -1.0;  -- distances in metres (negative: not used)
+        role      : natural := 0            -- 0: the whole link; federated across the arena (rf/federated):
+                                            -- 1 the drone's side only, 2 the controller's side only
+
     );
 end entity;
 
@@ -85,6 +88,7 @@ architecture sim of an2597_link is
 begin
     assert symbols <= MAX_SYMBOLS report "at most 64 data symbols per packet" severity failure;
 
+  drone_side: if role /= 2 generate
     drone_chip: entity work.ad9361
         generic map (seed => 11)
         port map (tx1 => n_drone_tx, rx1 => n_drone_rx, cfg => drone_cfg, tx_data => drone_tx, rx_data => drone_rx,
@@ -96,18 +100,12 @@ begin
         generic map (gain_dbi => ant_dbi)
         port map (feed => n_drone_rx, air => air, position => drone_rx_pos);
 
-    ctrl_chip: entity work.ad9361
-        generic map (seed => 23)
-        port map (tx1 => n_ctrl_tx, rx1 => n_ctrl_rx, cfg => ctrl_cfg, tx_data => ctrl_tx, rx_data => ctrl_rx,
-                  rx_gain_db => ctrl_gain);
-    ctrl_ant_tx: entity work.rf_spec_antenna
-        generic map (gain_dbi => ant_dbi)
-        port map (feed => n_ctrl_tx, air => air, position => ctrl_tx_pos);
-    ctrl_ant_rx: entity work.rf_spec_antenna
-        generic map (gain_dbi => ant_dbi)
-        port map (feed => n_ctrl_rx, air => air, position => ctrl_rx_pos);
+  end generate;
 
-    -- The drone's software: flies, and sends packets.
+    -- The drone's software: flies, and sends packets.  It runs on the controller's side too when the link is
+    -- federated (role 2): there no chip or antenna listens to what it drives, but it keeps the scoreboard
+    -- (what was sent, from the same seeds at the same times).  The drone's antennas are in the other
+    -- simulation, which tells the arena where they are.
     drone_sw: process
         constant amp : real := 32768.0 * 10.0 ** (-backoff_db / 20.0);   -- sample rms, data-port units
         variable seed1 : positive := 4711;
@@ -161,6 +159,18 @@ begin
         report "AN2597 done";
         wait;
     end process;
+
+  ctrl_side: if role /= 1 generate
+    ctrl_chip: entity work.ad9361
+        generic map (seed => 23)
+        port map (tx1 => n_ctrl_tx, rx1 => n_ctrl_rx, cfg => ctrl_cfg, tx_data => ctrl_tx, rx_data => ctrl_rx,
+                  rx_gain_db => ctrl_gain);
+    ctrl_ant_tx: entity work.rf_spec_antenna
+        generic map (gain_dbi => ant_dbi)
+        port map (feed => n_ctrl_tx, air => air, position => ctrl_tx_pos);
+    ctrl_ant_rx: entity work.rf_spec_antenna
+        generic map (gain_dbi => ant_dbi)
+        port map (feed => n_ctrl_rx, air => air, position => ctrl_rx_pos);
 
     -- The controller's software: receives, and keeps score.
     ctrl_sw: process (ctrl_rx, sb_batch)
@@ -243,4 +253,5 @@ begin
             state := IDLE;
         end if;
     end process;
+  end generate;
 end architecture;

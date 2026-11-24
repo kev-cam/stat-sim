@@ -41,6 +41,42 @@ package rf_spectrum_pkg is
     end record;
     type rf_position_vector is array (natural range <>) of rf_position;
 
+    -- What an antenna radiates into the arena and hears from it: the same spectrum, a subtype of its own so
+    -- that nets of it resolve as an arena.  A pin's 'driver takes the type of the value assigned to it
+    -- (p'driver := v), so an antenna drives its air pin from an rf_air and its feed from an rf_spectrum.
+    subtype rf_air is rf_spectrum;
+
+    -- How nvc's resolution-network generator (sv2vhdl resolver plugin, sv2vhdl_resolver.py) resolves nets
+    -- of these types; it reads them from the type of each pin's 'driver:
+    --   rf_spectrum (wires): each end hears the others -- two ends swap, more sum (wire_hear)
+    --   rf_air (the arena):  each antenna has its own resolver, arena_hear_now(i, drivers, positions,
+    --                        platforms): every other antenna through free space; the antenna instance's
+    --                        signals pos and plat say where it is (moving is not an event)
+    attribute resolution : string;
+    attribute resolution_pkg : string;
+    attribute resolution_func : string;
+    attribute resolution_vector : string;
+    attribute arena_place : string;
+    attribute resolution of rf_spectrum : type is "sum";
+    attribute resolution_pkg of rf_spectrum : type is "work.rf_spectrum_pkg";
+    attribute resolution_func of rf_spectrum : type is "wire_hear";
+    attribute resolution_vector of rf_spectrum : type is "rf_spectrum_vector";
+    attribute resolution of rf_air : subtype is "arena";
+    attribute resolution_func of rf_air : subtype is "arena_hear_now";
+    attribute arena_place of rf_air : subtype is "pos:rf_position:rf_position_vector,plat:integer:integer_vector";
+    -- The band an antenna works in.  A band can be put in an arena shared with other simulations (other
+    -- radio systems); which arena, and so who else is in it, is decided when the simulation is launched
+    -- (nvc's arena_ctl.py, FED_ARENAS), not here.  A radio of another band declares its own subtype of
+    -- rf_air with its own arena_band.  Spectra and places cross between simulations as real vectors
+    -- (fed_encode / fed_decode below).
+    attribute arena_band : string;
+    attribute arena_band of rf_air : subtype is "ism2g4";
+    -- How long a signal takes from antenna j to antenna i of the arena (free space: distance / c).  Each
+    -- antenna's resolver hears every other antenna as it was that long ago, so the simulations sharing an
+    -- arena can run up to the shortest such delay apart (its lookahead).
+    attribute arena_delay : string;
+    attribute arena_delay of rf_air : subtype is "free_space_delay";
+
     function spec_silent(seq : positive) return rf_spectrum;
     function spec_is_silent(s : rf_spectrum) return boolean;
     function spec_power(s : rf_spectrum) return real;                      -- W, all lines
@@ -64,6 +100,20 @@ package rf_spectrum_pkg is
     -- a field arriving at a scatterer of cross-section rcs, re-radiated over `distance` metres: per line
     -- sqrt(4 pi rcs) / lambda, times free space
     function spec_echo(s : rf_spectrum; distance : real; rcs : real) return rf_spectrum;
+    -- the same arena one antenna at a time, for an antenna that resolves what it hears itself (a federated
+    -- radio, rf/federated): arena_field is what arrives at each scatterer, arena_hear what antenna i hears.
+    -- arena_resolve is built from these two, so either way the arithmetic is the same.
+    function arena_field(drv : rf_spectrum_vector; pos : rf_position_vector; spos : rf_position_vector;
+                         t0 : real) return rf_spectrum_vector;
+    function arena_hear(i : natural; drv : rf_spectrum_vector; pos : rf_position_vector; plat : integer_vector;
+                        spos : rf_position_vector; srcs : real_vector; field : rf_spectrum_vector;
+                        t0 : real) return rf_spectrum;
+    -- the generator's entry points (the resolution attributes above): antenna i of the arena, no
+    -- scatterers, now; end i of a wire of more than two ends, now
+    impure function arena_hear_now(i : natural; drv : rf_spectrum_vector; pos : rf_position_vector;
+                                   plat : integer_vector) return rf_spectrum;
+    impure function wire_hear(i : natural; drv : rf_spectrum_vector) return rf_spectrum;
+    function free_space_delay(i, j : natural; pos : rf_position_vector; plat : integer_vector) return time;
     -- wire: what each end of a wire receives from all the others
     function wire_resolve(drv : rf_spectrum_vector; t0 : real) return rf_spectrum_vector;
 
@@ -78,6 +128,11 @@ package rf_spectrum_pkg is
     -- lines as (re, im) pairs in a real_vector, and back: how spectra cross to foreign code
     function lines_to_reals(x : spec_lines) return real_vector;
     function reals_to_lines(v : real_vector) return spec_lines;
+    -- a spectrum (4 SPEC_N + 3 reals) and a place (3 reals) as they cross to another simulation
+    function fed_encode(x : rf_spectrum) return real_vector;
+    function fed_decode(v : real_vector; proto : rf_spectrum) return rf_spectrum;
+    function fed_encode(x : rf_position) return real_vector;
+    function fed_decode(v : real_vector; proto : rf_position) return rf_position;
 end package;
 
 package body rf_spectrum_pkg is
@@ -326,9 +381,8 @@ package body rf_spectrum_pkg is
         return r;
     end function;
 
-    function arena_resolve(drv : rf_spectrum_vector; pos : rf_position_vector; plat : integer_vector;
-                           spos : rf_position_vector; srcs : real_vector; t0 : real) return rf_spectrum_vector is
-        variable r : rf_spectrum_vector(drv'range);
+    function arena_field(drv : rf_spectrum_vector; pos : rf_position_vector; spos : rf_position_vector;
+                         t0 : real) return rf_spectrum_vector is
         variable field : rf_spectrum_vector(spos'range);
         variable acc : rf_spectrum;
     begin
@@ -339,17 +393,53 @@ package body rf_spectrum_pkg is
             end loop;
             field(s) := acc;
         end loop;
+        return field;
+    end function;
+
+    function arena_hear(i : natural; drv : rf_spectrum_vector; pos : rf_position_vector; plat : integer_vector;
+                        spos : rf_position_vector; srcs : real_vector; field : rf_spectrum_vector;
+                        t0 : real) return rf_spectrum is
+        variable acc : rf_spectrum := spec_silent(1);
+    begin
+        for j in drv'range loop
+            if j /= i and not (plat(i) /= 0 and plat(i) = plat(j)) then
+                acc := spec_add(acc, spec_friis(drv(j), rf_distance(pos(i), pos(j))), t0);
+            end if;
+        end loop;
+        for s in spos'range loop
+            acc := spec_add(acc, spec_echo(field(s), rf_distance(pos(i), spos(s)), srcs(s)), t0);
+        end loop;
+        return acc;
+    end function;
+
+    impure function arena_hear_now(i : natural; drv : rf_spectrum_vector; pos : rf_position_vector;
+                                   plat : integer_vector) return rf_spectrum is
+        variable none : rf_position_vector(0 to -1);
+        variable rcs : real_vector(0 to -1);
+        variable field : rf_spectrum_vector(0 to -1);
+    begin
+        return arena_hear(i, drv, pos, plat, none, rcs, field, sim_time);
+    end function;
+
+    impure function wire_hear(i : natural; drv : rf_spectrum_vector) return rf_spectrum is
+        variable acc : rf_spectrum := spec_silent(1);
+    begin
+        for j in drv'range loop
+            if j /= i then
+                acc := spec_add(acc, drv(j), sim_time);
+            end if;
+        end loop;
+        return acc;
+    end function;
+
+    function arena_resolve(drv : rf_spectrum_vector; pos : rf_position_vector; plat : integer_vector;
+                           spos : rf_position_vector; srcs : real_vector; t0 : real) return rf_spectrum_vector is
+        variable r : rf_spectrum_vector(drv'range);
+        variable field : rf_spectrum_vector(spos'range);
+    begin
+        field := arena_field(drv, pos, spos, t0);
         for i in drv'range loop
-            acc := spec_silent(1);
-            for j in drv'range loop
-                if j /= i and not (plat(i) /= 0 and plat(i) = plat(j)) then
-                    acc := spec_add(acc, spec_friis(drv(j), rf_distance(pos(i), pos(j))), t0);
-                end if;
-            end loop;
-            for s in spos'range loop
-                acc := spec_add(acc, spec_echo(field(s), rf_distance(pos(i), spos(s)), srcs(s)), t0);
-            end loop;
-            r(i) := acc;
+            r(i) := arena_hear(i, drv, pos, plat, spos, srcs, field, t0);
         end loop;
         return r;
     end function;
@@ -369,4 +459,49 @@ package body rf_spectrum_pkg is
         end loop;
         return r;
     end function;
+    function fed_encode(x : rf_spectrum) return real_vector is
+        variable v : real_vector(0 to 4 * SPEC_N + 2);
+    begin
+        for k in 0 to SPEC_N - 1 loop
+            v(2 * k) := x.h(k).i;
+            v(2 * k + 1) := x.h(k).q;
+            v(2 * SPEC_N + 2 * k) := x.v(k).i;
+            v(2 * SPEC_N + 2 * k + 1) := x.v(k).q;
+        end loop;
+        v(4 * SPEC_N) := x.freq;
+        v(4 * SPEC_N + 1) := x.df;
+        v(4 * SPEC_N + 2) := real(x.seq);
+        return v;
+    end function;
+
+    function fed_decode(v : real_vector; proto : rf_spectrum) return rf_spectrum is
+        constant b : integer := v'low;
+        variable s : rf_spectrum;
+    begin
+        for k in 0 to SPEC_N - 1 loop
+            s.h(k) := (i => v(b + 2 * k), q => v(b + 2 * k + 1));
+            s.v(k) := (i => v(b + 2 * SPEC_N + 2 * k), q => v(b + 2 * SPEC_N + 2 * k + 1));
+        end loop;
+        s.freq := v(b + 4 * SPEC_N);
+        s.df := v(b + 4 * SPEC_N + 1);
+        s.seq := natural(v(b + 4 * SPEC_N + 2));
+        return s;
+    end function;
+
+    function fed_encode(x : rf_position) return real_vector is
+    begin
+        return (x.x, x.y, x.z);
+    end function;
+
+    function fed_decode(v : real_vector; proto : rf_position) return rf_position is
+    begin
+        return (v(v'low), v(v'low + 1), v(v'low + 2));
+    end function;
+
+    function free_space_delay(i, j : natural; pos : rf_position_vector; plat : integer_vector) return time is
+        constant C0 : real := 299792458.0;
+    begin
+        return 1 sec * (rf_distance(pos(i), pos(j)) / C0);
+    end function;
+
 end package body;

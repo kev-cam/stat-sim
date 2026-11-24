@@ -38,9 +38,11 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 SOURCES = ("accel/spectral_accel_%s.vhd", "accel/spectral_accel_pkg.vhd", "rf_spectrum_pkg.vhd", "ad9361_spectral_pkg.vhd", "ad9361.vhd",
            "rf_spec_antenna.vhd", "ofdm_soft_pkg.vhd", "an2597_link.vhd")
 ACCEL_LIB = os.path.join(HERE, "accel", "libspectral_accel.so")
-WIRES = [["drone_chip.tx1", "drone_ant_tx.feed"], ["drone_chip.rx1", "drone_ant_rx.feed"],
-         ["ctrl_chip.tx1", "ctrl_ant_tx.feed"], ["ctrl_chip.rx1", "ctrl_ant_rx.feed"]]
-ARENA = ["drone_ant_tx", "drone_ant_rx", "ctrl_ant_tx", "ctrl_ant_rx"]
+# instance paths: each end of the link is in its own generate (an2597_link's role generic)
+WIRES = [["drone_side.drone_chip.tx1", "drone_side.drone_ant_tx.feed"],
+         ["drone_side.drone_chip.rx1", "drone_side.drone_ant_rx.feed"],
+         ["ctrl_side.ctrl_chip.tx1", "ctrl_side.ctrl_ant_tx.feed"], ["ctrl_side.ctrl_chip.rx1", "ctrl_side.ctrl_ant_rx.feed"]]
+ARENA = ["drone_side.drone_ant_tx", "drone_side.drone_ant_rx", "ctrl_side.ctrl_ant_tx", "ctrl_side.ctrl_ant_rx"]
 MODS = ("bpsk", "qpsk", "16qam", "64qam")
 
 

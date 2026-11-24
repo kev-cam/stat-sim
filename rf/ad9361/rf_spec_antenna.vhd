@@ -57,11 +57,13 @@ begin
 
     process (feed'other, air'other)
         constant g : real := sqrt(db_to_linear(gain_dbi));
-        variable from_feed, from_air : rf_spectrum;
+        variable from_feed : rf_spectrum;
+        variable from_air, to_air : rf_air;       -- the air pin is rf_air: its net resolves as an arena
     begin
         from_feed := feed'other;
         from_air := air'other;
-        air'driver := spec_scale(spec_rotate(from_feed, pol_angle), g);
+        to_air := spec_scale(spec_rotate(from_feed, pol_angle), g);
+        air'driver := to_air;
         feed'driver := spec_scale(spec_rotate(from_air, -pol_angle), g);
     end process;
 end architecture;
