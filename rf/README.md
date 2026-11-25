@@ -652,9 +652,11 @@ layer unchanged, but for handing a packet over `radio_tx_delay` (3.4 us here) ea
 - btle_phy also depends on which clock after reset `tx_start` comes on: one clock off and its upsampler
   drops one sample in eight (the radio resets it before each packet, so the start is always the same).
 
-nvc notes from this: a procedure suspended in a `wait` loses its state once nvc has compiled it (r626; a
-`wait for` of 31 ns became one of 0.1 s; not with NVC_JIT_THRESHOLD set out of reach), so all the waits
-of btle_phy_radio's process are in its body; and `'driver` cannot be assigned in a subprogram.
+nvc notes from this: in nvc r626 a procedure suspended in a `wait` lost its state once it was compiled and
+its process had filled its 64 KB allocation buffer (compiled code put the overflow in an arena that is
+reset at every evaluation; a `wait for` of 31 ns became one of 0.1 s), so all the waits of
+btle_phy_radio's process are in its body.  Fixed in nvc since (regress tlabwait1, tlabwait2); the waits
+stay where they are.  And `'driver` cannot be assigned in a subprogram.
 
 nvc note: in nvc before 30bf1386c (also with --std=2008) a `wait for` is cut short by an event on a signal
 that an earlier `wait on` of the same process named; the model waits with `cc_wait_until` (a loop on

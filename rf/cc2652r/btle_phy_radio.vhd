@@ -21,8 +21,9 @@
 --              (as the CC2652R model's receiver sleeps until something arrives); the baseband is reset
 --              when the clock starts.  Its host clock (clkb: the PDU memories) is pulsed as needed.
 --
--- All of the radio process's waits are in its body, none in a procedure: nvc (1.19-devel r626) loses
--- the state of a procedure suspended in a wait once its code is compiled.  It also needs that nvc's
+-- All of the radio process's waits are in its body, none in a procedure: nvc 1.19-devel r626 lost
+-- the state of a compiled procedure suspended in a wait once the process had filled its allocation
+-- buffer (fixed since: nvc regress tlabwait1, tlabwait2).  It also needs that nvc's
 -- waits (30bf1386c): a `wait for` here must not be cut short by the signals the idle wait names.
 --
 -- The time between a packet handed over on tx and its first sample at the pin is BTLE_TX_DELAY
