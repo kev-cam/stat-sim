@@ -37,8 +37,14 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 RF = os.path.dirname(HERE)
 # None: cc2652r_pkg.vhd, written into the working directory
 SOURCES = [os.path.join(RF, "ad9361", "rf_spectrum_pkg.vhd"), os.path.join(HERE, "ble_phy_pkg.vhd"), None] + [
-    os.path.join(HERE, f) for f in ("cc2652r_spectral_pkg.vhd", "cc2652r.vhd", "rf_spec_antenna_td.vhd", "ble_ll_pkg.vhd", "ble_controller.vhd", "ble_tester.vhd",
+    os.path.join(HERE, f) for f in ("cc2652r_spectral_pkg.vhd", "cc2652r.vhd", "rf_spec_antenna_td.vhd", "ble_ll_pkg.vhd", "btle_phy_radio_pkg.vhd", "ble_controller.vhd", "ble_tester.vhd",
                                     "ble_link.vhd", "tb_cc2652r.vhd")]
+# the modules of btle_phy (github.com/JiaoXianjun/BTLE, verilog/)
+BTLE_MODULES = ("btle_phy btle_rx btle_rx_core gfsk_demodulation search_unique_bit_sequence scramble_core crc24_core "
+                "serial_in_ram_out sdpram_two_clk sdpram_one_clk btle_tx crc24 scramble gfsk_modulation bit_repeat_upsample "
+                "gauss_filter vco").split()
+DUTS = {"cc2652r": ("0", "a CC2652R"), "btle": ("1", "the open BTLE baseband (btle_phy, through sv2ghdl)"),
+        "btle-tail": ("2", "the open BTLE baseband (btle_phy, through sv2ghdl), its last symbol completed")}
 PHY_CODE = {"1m": 1, "2m": 2, "s8": 3, "s2": 4}
 BAND = "ism2g4_td"
 
@@ -62,6 +68,38 @@ class Build:
         with open(self.pkg, "w") as fh:
             fh.write(cc2652r_vhdl.emit())
         self.sources = [self.pkg if f is None else f for f in SOURCES]
+        self.dut = args.dut
+        # entity btle_phy_radio, before ble_link: the baseband and its radio, or nothing
+        at = self.sources.index(os.path.join(HERE, "ble_link.vhd"))
+        if args.dut.startswith("btle"):
+            self.sources[at:at] = [self.translate_btle(args), os.path.join(HERE, "btle_phy_radio.vhd"),
+                                   os.path.join(HERE, "tb_btle_phy_radio.vhd")]
+        else:
+            self.sources[at:at] = [os.path.join(HERE, "btle_phy_radio_none.vhd")]
+
+    def translate_btle(self, args):
+        """btle_phy and what is under it, Verilog to VHDL: sv2ghdl's iverilog wrapper (iverilog -tvhdl over
+        nvc's sv2vhdl library).  Returns the VHDL file."""
+        src = args.btle_src or os.environ.get("BTLE_SRC")
+        sv2ghdl = args.sv2ghdl or os.environ.get("SV2GHDL")
+        if not src or not sv2ghdl:
+            raise SystemExit("--dut btle (or btle-tail) needs --btle-src (or BTLE_SRC: the verilog directory of a JiaoXianjun/BTLE checkout) "
+                             "and --sv2ghdl (or SV2GHDL: an sv2ghdl checkout)")
+        files = [os.path.join(src, m + ".v") for m in BTLE_MODULES]
+        for f in files:
+            if not os.path.isfile(f):
+                raise SystemExit("%s is not there" % f)
+        out = os.path.join(self.work, "btle")
+        shutil.rmtree(out, ignore_errors=True)
+        env = dict(NVC=self.nvc[0])
+        if args.iverilog or os.environ.get("IVERILOG"):
+            env["IVERILOG"] = args.iverilog or os.environ["IVERILOG"]
+        self.sh(self.work, os.path.join(sv2ghdl, "bin", "iverilog-sv2ghdl"), "-g2012", "-o", out, "-s", "btle_phy", *files,
+                env=env, nvc=False)
+        vhd = os.path.join(out, "design.vhd")
+        if not os.path.isfile(vhd):
+            raise SystemExit("sv2ghdl wrote no %s (see %s/iverilog.log)" % (vhd, out))
+        return vhd
 
     def sh(self, cwd, *cmd, env=None, nvc=True, ok=(0,)):
         full = (self.nvc if nvc else []) + list(cmd)
@@ -144,8 +182,9 @@ def cmd_selftest(args):
     d = os.path.join(b.work, "tb")
     os.makedirs(d, exist_ok=True)
     b.sh(d, "-a", *b.sources)
-    b.sh(d, "-e", "tb_cc2652r")
-    out = b.sh(d, "-r", "tb_cc2652r")
+    tb = "tb_btle_phy_radio" if b.dut.startswith("btle") else "tb_cc2652r"
+    b.sh(d, "-e", tb, *(["-gtx_tail=true"] if b.dut == "btle-tail" else []))
+    out = b.sh(d, "-r", tb)
     for m in re.finditer(r"(TB .*)$", out, re.M):
         print(m.group(1))
     m = re.search(r"TB done failures=(\d+)", out)
@@ -209,7 +248,7 @@ def cmd_range(args):
 
 def cmd_scan(args):
     b = Build(args)
-    g = dict(scenario="1", role="0", tx_dbm="%.6f" % args.power, dist="%.6f" % args.dist,
+    g = dict(scenario="1", role="0", dut=DUTS[args.dut][0], tx_dbm="%.6f" % args.power, dist="%.6f" % args.dist,
              run_time="%dus" % round(args.time * 1e6), ppm_a="%.6f" % args.ppm[0], ppm_b="%.6f" % args.ppm[1])
     if args.lead:
         g["tx_lead"] = args.lead
@@ -239,7 +278,7 @@ def cmd_scan(args):
 
 def cmd_connect(args):
     b = Build(args)
-    g = dict(scenario="2", role="0", tx_dbm="%.6f" % args.power, dist="%.6f" % args.dist, packets=str(args.events),
+    g = dict(scenario="2", role="0", dut=DUTS[args.dut][0], tx_dbm="%.6f" % args.power, dist="%.6f" % args.dist, packets=str(args.events),
              run_time="%dus" % round(args.time * 1e6), ppm_a="%.6f" % args.ppm[0], ppm_b="%.6f" % args.ppm[1])
     if args.lead:
         g["tx_lead"] = args.lead
@@ -247,8 +286,8 @@ def cmd_connect(args):
     d = b.generate("mono", g)
     t_build = time.perf_counter() - t0
     mono, t_run = b.run(d)
-    print("the tester (central) at 0 m and a CC2652R peripheral at %g m, %g dBm, in nvc --std=2040 (spectral events)"
-          % (args.dist, args.power))
+    print("the tester (central) at 0 m and a peripheral at %g m whose radio is %s, %g dBm, in nvc --std=2040 (spectral events)"
+          % (args.dist, DUTS[args.dut][1], args.power))
     print("compile, generate and elaborate %.1f s; run %.1f s" % (t_build, t_run))
     failed = True
     for l in mono:
@@ -279,6 +318,13 @@ def main(argv=None):
     p.add_argument("--lead", help="every antenna's transmit latency, e.g. 1us (lets a federation run further ahead)")
     p.add_argument("--ppm", type=float, nargs=2, default=[0.0, 0.0], help="crystal errors of the two sides")
     p.add_argument("--power", type=float, default=0.0)
+    p.add_argument("--dut", default="cc2652r", choices=list(DUTS),
+                   help="the radio of the device under test (selftest, scan, connect): the CC2652R model, or btle: "
+                        "btle_phy of github.com/JiaoXianjun/BTLE translated by sv2ghdl behind btle_phy_radio; btle-tail: "
+                        "the same with the last symbol of its packets, which its modulator cuts off, completed")
+    p.add_argument("--btle-src", help="--dut btle, btle-tail: the verilog directory of a BTLE checkout (default: $BTLE_SRC)")
+    p.add_argument("--sv2ghdl", help="--dut btle, btle-tail: an sv2ghdl checkout (default: $SV2GHDL)")
+    p.add_argument("--iverilog", help="--dut btle, btle-tail: an iverilog with the VHDL back end (default: $IVERILOG, or sv2ghdl's choice)")
     sub = p.add_subparsers(dest="cmd", required=True)
     sub.add_parser("selftest")
     r = sub.add_parser("range")

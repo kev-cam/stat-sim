@@ -93,6 +93,27 @@ begin
         variable l : ble_link_state;
         variable anchor : time;
         variable unmapped, ev, ev_missed, ev_bad, ev_first : natural := 0;
+        variable miss_ch : bit_vector(0 to 36) := (others => '0');     -- data channels of the events not answered
+
+        impure function channels_missed return string is
+            variable r : string(1 to 37 * 3);
+            variable n : natural := 0;
+        begin
+            for i in miss_ch'range loop
+                if miss_ch(i) = '1' then
+                    if n > 0 then
+                        n := n + 1;
+                        r(n) := ',';
+                    end if;
+                    r(n + 1 to n + integer'image(i)'length) := integer'image(i);
+                    n := n + integer'image(i)'length;
+                end if;
+            end loop;
+            if n = 0 then
+                return "none";
+            end if;
+            return r(1 to n);
+        end function;
         variable in_valid : boolean := false;           -- a new payload arrived: in_llid, in_len, in_data
         variable in_llid, in_len : natural := 0;
         variable in_data : ble_octets(0 to BLE_DATA_MAX - 1);
@@ -170,6 +191,8 @@ begin
             end if;
         end procedure;
 
+        variable adv_bad : natural := 0;                -- packets with a wrong CRC heard while looking for advertisements
+
         -- Listen on advertising channel ch until t_stop for an advertisement of the device under test
         -- (the first connectable one heard becomes it); found: it is in rx.
         procedure hear_adv(ch : natural; t_stop : time; found : out boolean) is
@@ -187,6 +210,8 @@ begin
                     dut_add := (rx.pdu(0) / 64) mod 2;
                     found := true;
                     exit;
+                elsif rx'event and not rx.crc_ok then
+                    adv_bad := adv_bad + 1;
                 end if;
             end loop;
         end procedure;
@@ -239,6 +264,7 @@ begin
             end loop;
             if not got then
                 ev_missed := ev_missed + 1;
+                miss_ch(ch) := '1';
             end if;
             cfg <= on_data(ch, false);
             ev := ev + 1;
@@ -301,13 +327,14 @@ begin
             n_adv := n_adv + 1;
         end loop;
         if n_adv = 0 then
-            verdict("adv", false, "seen=0");
+            verdict("adv", false, "seen=0 crc_errors=" & integer'image(adv_bad));
             summary;
             wait;
         end if;
         verdict("adv", n_adv = adv_observe and (n_adv < 2 or (iv_min >= 20.0 and iv_max - iv_min <= 10.0)),
                 "address=" & ble_hex((dut(5), dut(4), dut(3), dut(2), dut(1), dut(0))) & " seen=" & integer'image(n_adv) & " interval_min_ms=" & to_string(iv_min, "%.3f")
-                & " interval_max_ms=" & to_string(iv_max, "%.3f") & " rssi=" & to_string(rssi_sum / real(n_adv), "%.1f"));
+                & " interval_max_ms=" & to_string(iv_max, "%.3f") & " rssi=" & to_string(rssi_sum / real(n_adv), "%.1f")
+                & " crc_errors=" & integer'image(adv_bad));
         rssi_sum := 0.0;
 
         ---------------------------------------------------------------- the other advertising channels
@@ -460,7 +487,7 @@ begin
             exit when ble_link_idle(l);
         end loop;
         verdict("terminate", ble_link_idle(l), "events=" & integer'image(ev) & " not_answered=" & integer'image(ev_missed)
-                & " crc_errors=" & integer'image(ev_bad));
+                & " crc_errors=" & integer'image(ev_bad) & " not_answered_on_channels=" & channels_missed);
         summary;
         wait;
     end process;

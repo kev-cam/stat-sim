@@ -529,7 +529,9 @@ are not checked; propagation delay is left out of the Python arena; IEEE 802.15.
     ble_nvc.py scan                  the beacon, the neighbour and the active scanner in nvc
     ble_nvc.py connect               the tester (a central and its host) puts a peripheral through its tests
     ... --fed                        the same as two simulations sharing the arena; must report the same lines
-    (--nvc-build or NB: an nvc build with the arena support, as for ad9361/an2597_arena.sh)
+    ... --dut btle | btle-tail       the device's radio is an open baseband from Verilog (below), not the CC2652R
+    (--nvc-build or NB: an nvc build with the arena support, as for ad9361/an2597_arena.sh; global options
+    such as --fed and --dut go before the subcommand)
 
 | file | what |
 |---|---|
@@ -540,7 +542,8 @@ are not checked; propagation delay is left out of the Python arena; IEEE 802.15.
 | `ble_controller.vhd` | the link layer as the chip's software: test transmitter and receiver, advertiser, scanner, peripheral |
 | `ble_ll_pkg.vhd` | what a connection needs: CONNECT_IND, channel selection algorithm #1, data PDUs and their acknowledgement, L2CAP framing |
 | `ble_tester.vhd` | the tester: a central and the little of a host above it that tests a peripheral over the air |
-| `ble_link.vhd`, `tb_cc2652r.vhd` | the two scenarios of ble_host.py and the tester's; the self-check bench |
+| `btle_phy_radio.vhd`, `btle_phy_radio_pkg.vhd`, `btle_phy_radio_none.vhd` | a device under test from outside: the open BTLE baseband (translated Verilog) behind an RF front end, with the chip's ports; its transmit latency; the empty stand-in when it is not asked for |
+| `ble_link.vhd`, `tb_cc2652r.vhd`, `tb_btle_phy_radio.vhd` | the two scenarios of ble_host.py and the tester's; the self-check benches |
 
 **How a GFSK signal is a spectral event.**  An OFDM symbol is periodic over its event; a Bluetooth
 packet is not, so a transmission is a run of consecutive events, each the spectrum of the next 64
@@ -605,7 +608,7 @@ another one of the federation, so a model of somebody else's Bluetooth IC is tes
 | `mtu`, `services` | ATT Exchange MTU and GATT primary service discovery (generic `host_tests`: the device has a host) |
 | `per` | 40 connection events of empty packets: fewer than 30.8 % unanswered or with a bad CRC |
 | `t_ifs` | the device's T_IFS over the connection, 150 us +-2 (the known path delay taken out) |
-| `terminate` | LL_TERMINATE_IND is acknowledged |
+| `terminate` | LL_TERMINATE_IND is acknowledged; reports the data channels of the events that were not answered |
 
 The reference device is ble_controller's `NODE_PERIPHERAL` on a CC2652R: at 10 m all eleven steps pass
 (T_IFS 150.00 us, RSSI -60 dBm, two services found, 48 connection events) in 5 s of run time; at 700 m
@@ -614,6 +617,44 @@ events and 4 bad CRCs by retransmission and every step passes but `scan` (one SC
 850 m advertising is heard too rarely and no connection is made.  Federated, tester and peripheral as two
 simulations, the report is the same line for line.  Connections are LE 1M, one packet each way in an
 event, without encryption or the PHY, parameter and channel map update procedures.
+
+**A device under test from outside: the open BTLE baseband** (`--dut btle`).  The Verilog is `btle_phy`
+of [JiaoXianjun/BTLE](https://github.com/JiaoXianjun/BTLE) (Apache-2.0; fetched by the user, not part of
+stat-sim): an LE 1M GFSK modulator and a receiver that decodes in eight sampling phases, 8 samples a
+symbol, no RF part.  ble_nvc.py has sv2ghdl translate it whole (`bin/iverilog-sv2ghdl`: iverilog's VHDL
+back end over nvc's sv2vhdl library; 17 modules, 2 s) and compiles it with `btle_phy_radio.vhd`, which is
+the rest of a radio around it with the ports of entity cc2652r: its samples interpolated to the pin's
+spectral events on the way out; noise, a channel filter, decimation and an ideal AGC on the way in; a
+16 MHz clock that runs only while a packet is sent or the pin has a signal.  ble_controller is its link
+layer unchanged, but for handing a packet over `radio_tx_delay` (3.4 us here) early where T_IFS counts.
+
+    BTLE_SRC=<BTLE checkout>/verilog SV2GHDL=<sv2ghdl checkout> IVERILOG=<an iverilog with -tvhdl>         ble_nvc.py --dut btle selftest | scan | connect
+
+- The translation is exact: a loopback of the translated btle_phy in nvc gives the same 1216 I/Q samples
+  as the Verilog in vvp, and the same receiver result.
+- `selftest` (tb_btle_phy_radio: pin to pin with a CC2652R, 70 dB between): packets on an advertising and
+  a data channel are received both ways, the end of a received packet is timed exactly and the transmit
+  latency is constant.
+- **What the tester found.**  As it is, the device fails the first step: `adv seen=0 crc_errors=29`, every
+  advertisement heard with a wrong CRC.  The modulator's Gaussian filter delays the waveform by one symbol
+  and it stops after exactly 8 samples a bit, so the last symbol, the last bit of the CRC, is not sent
+  (measured on the Verilog in vvp: no phase advance is left in it).  The baseband's own receiver decides
+  on what leaks into the symbol before and does not notice; the CC2652R's receiver gets that bit wrong
+  for some packets (this ADV_IND among them) and right for others.
+- With the last symbol completed by the front end (`--dut btle-tail`: 8 more samples turning the way of
+  the last bit) all eleven steps pass at 10 m: T_IFS 149.75 us, two services found, 48 connection events.
+  Federated, tester and device as two simulations, the report is the same line for line.  1.5 s of the
+  link (enough for the tests) take 49 s to simulate, 5 s take 150 s (the CC2652R model as the device: 9 s).
+- One of those 48 events is not answered: `terminate ... not_answered=1 not_answered_on_channels=0`.  The
+  baseband takes channel number 0 as "not set" and whitens with 63 instead (scramble_core.v), so it
+  neither receives nor sends on data channel 0 (2404 MHz); the connection gets over it by the next event.
+  (crc24_core.v does the same with a CRC initial value of 0.)
+- btle_phy also depends on which clock after reset `tx_start` comes on: one clock off and its upsampler
+  drops one sample in eight (the radio resets it before each packet, so the start is always the same).
+
+nvc notes from this: a procedure suspended in a `wait` loses its state once nvc has compiled it (r626; a
+`wait for` of 31 ns became one of 0.1 s; not with NVC_JIT_THRESHOLD set out of reach), so all the waits
+of btle_phy_radio's process are in its body; and `'driver` cannot be assigned in a subprogram.
 
 nvc note: in nvc before 30bf1386c (also with --std=2008) a `wait for` is cut short by an event on a signal
 that an earlier `wait on` of the same process named; the model waits with `cc_wait_until` (a loop on

@@ -71,6 +71,9 @@ entity ble_controller is
         tx_dbm    : real := 0.0;
         xo_ppm    : real := 0.0;
         run_time  : time := 1 sec;
+        -- how long the radio takes from a packet handed over to its first sample at the pin (the
+        -- CC2652R model: none); packets that keep T_IFS are handed over that much early
+        radio_tx_delay : time := 0 ns;
         -- test modes
         phy       : ble_phy := PHY_1M;
         rf_channel : natural := 19;
@@ -229,7 +232,7 @@ begin
                             if rx'event and rx.crc_ok and rx.len = 14 and rx.pdu(0) mod 16 = BLE_SCAN_REQ
                                and rx.pdu(8 to 13) = address then
                                 requests := requests + 1;
-                                cc_wait_until(rx.t_end + BLE_T_IFS);
+                                cc_wait_until(rx.t_end + BLE_T_IFS - radio_tx_delay);
                                 cfg <= on_channel(c, ch, false);
                                 send(rsp);
                                 responses := responses + 1;
@@ -295,7 +298,7 @@ begin
                                 rssi(who) := rssi(who) + rx.rssi;
                                 if active then
                                     req := ble_adv_pdu(BLE_SCAN_REQ, address & adva, tx_add => 1, rx_add => (rx.pdu(0) / 64) mod 2);
-                                    cc_wait_until(rx.t_end + BLE_T_IFS);
+                                    cc_wait_until(rx.t_end + BLE_T_IFS - radio_tx_delay);
                                     cfg <= on_channel(c, ch, false);
                                     send(req);
                                     requests := requests + 1;
@@ -436,7 +439,7 @@ begin
                         wait on rx for t_listen - now;
                         if rx'event and rx.crc_ok and rx.len >= 14 and rx.pdu(8 to 13) = address then
                             if rx.len = 14 and rx.pdu(0) mod 16 = BLE_SCAN_REQ then
-                                cc_wait_until(rx.t_end + BLE_T_IFS);
+                                cc_wait_until(rx.t_end + BLE_T_IFS - radio_tx_delay);
                                 cfg <= on_channel(c, ach, false);
                                 send(rsp);
                                 exit;
@@ -503,8 +506,8 @@ begin
                             missed := missed + 1;
                         end if;
                         -- the answer, T_IFS after the central's packet (whatever its CRC)
-                        if heard and now <= rx.t_end + BLE_T_IFS then
-                            cc_wait_until(rx.t_end + BLE_T_IFS);
+                        if heard and now <= rx.t_end + BLE_T_IFS - radio_tx_delay then
+                            cc_wait_until(rx.t_end + BLE_T_IFS - radio_tx_delay);
                             cfg <= on_data(c, p, ch, false);
                             ble_link_transmit(l, pdu, n);
                             send(pdu(0 to n - 1));
