@@ -68,6 +68,8 @@ class Build:
         self.work = args.work or tempfile.mkdtemp(prefix="ble_nvc_")
         os.makedirs(self.work, exist_ok=True)
         self.env = dict(os.environ, NVC_NO_EVAL_ARENA="1")
+        if args.accel:
+            self.env["NVC_ACCEL"] = "1"   # nvc --accel: a translated design runs as one compiled model
         import cc2652r_vhdl
         self.pkg = os.path.join(self.work, "cc2652r_pkg.vhd")
         with open(self.pkg, "w") as fh:
@@ -350,6 +352,9 @@ def main(argv=None):
     p.add_argument("--sv2vhdl", help="nvc's lib/sv2vhdl source directory (default: from the build's Makefile)")
     p.add_argument("--work", help="working directory (default: a new temporary one)")
     p.add_argument("--heap", default="256m", help="nvc heap (-H)")
+    p.add_argument("--accel", action="store_true",
+                   help="nvc --accel for the translated design (--dut bmc...); needs sv2ghdl's gen_statemachine, "
+                        "$GEN_STATEMACHINE if it is not where nvc looks; first run compiles the model, minutes")
     p.add_argument("--fed", action="store_true", help="also run as two simulations sharing the arena")
     p.add_argument("--lead", help="every antenna's transmit latency, e.g. 1us (lets a federation run further ahead)")
     p.add_argument("--ppm", type=float, nargs=2, default=[0.0, 0.0], help="crystal errors of the two sides")

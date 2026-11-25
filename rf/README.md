@@ -531,6 +531,7 @@ are not checked; propagation delay is left out of the Python arena; IEEE 802.15.
     ... --fed                        the same as two simulations sharing the arena; must report the same lines
     ... --dut btle | btle-tail       the device's radio is an open baseband from Verilog (below), not the CC2652R
     ... --dut bmc | bmc-txend        ... or the Berkeley baseband-modem, from Chisel (below; slow, give --heap 2g)
+    ... --accel                      nvc --accel: the translated design as one compiled model (below; 18 times faster)
     (--nvc-build or NB: an nvc build with the arena support, as for ad9361/an2597_arena.sh; global options
     such as --fed and --dut go before the subcommand)
 
@@ -707,6 +708,15 @@ ble_nvc.py has sv2ghdl translate that whole (55 s, kept until BMC.v changes) and
   in nvc (every clock moves eight 32-tap filters), some 20 s a packet.  The self-check takes 3.5 minutes;
   the tester's run is cut to what the tests need (`connect --events 10 --time 0.25`: 8 minutes, as it
   is 16, federated 16).  Not run: the scan scenario with this radio as the scanner.
+- `ble_nvc.py --accel` (nvc's `--accel`, NVC_ACCEL=1) takes the cost away: nvc gives the design's Verilog
+  to yosys and runs it as one compiled model (27,794 cells, 8,597 registers) with the translated VHDL's
+  ports as its boundary.  It needs sv2ghdl's `yosys/gen_statemachine` built (`GEN_STATEMACHINE` if it is
+  not at nvc's place for it).  The model's C is 88 MB and takes gcc 13 minutes, once per bench (kept in
+  `~/.cache/nvc/accel`); after that the self-check takes 1.3 minutes and the tester's run 28 s (44 s
+  with compile and elaboration) with the same report, T_IFS included.  nvc needed two repairs for it
+  (the bridge looked for ports by their lower-case VHDL names and silently left out those with a
+  capital in their Verilog name, 85 of this design's 108; and reading the model's text back took 80 s
+  a run).
 - ucb_bmc_radio's waits are in a procedure of its process: it needs nvc from 8da5a95ef on (below), or
   NVC_NO_EVAL_ARENA=1, which ble_nvc.py sets.
 
