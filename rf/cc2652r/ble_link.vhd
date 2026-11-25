@@ -19,7 +19,10 @@
 -- dut: the radio of the second device.  0: a CC2652R.  1: btle_phy_radio, the open BTLE baseband
 -- (github.com/JiaoXianjun/BTLE, translated by sv2ghdl) behind a front end; LE 1M and whitened packets
 -- only, so scenarios 1 and 2.  2: the same with the last symbol of its packets, which its modulator
--- cuts off, completed by the front end (tx_tail).
+-- cuts off, completed by the front end (tx_tail).  3: ucb_bmc_radio, the Berkeley baseband-modem
+-- (github.com/ucb-bar/baseband-modem, its Verilog translated by sv2ghdl) behind a front end and a
+-- host; LE 1M and whitened packets only.  4: the same with the host ending each transmission when
+-- the GFSK modulator has finished (tx_end), not when the design's controller says so.
 --
 -- role: 0 everything in one simulation; federated across the arena, 1 is the transmitting side only
 -- (tester; beacon and neighbour) and 2 the other (device under test; scanner; peripheral).
@@ -32,6 +35,7 @@ use work.ble_phy_pkg.all;
 use work.cc2652r_spectral_pkg.all;
 use work.ble_controller_pkg.all;
 use work.btle_phy_radio_pkg.all;
+use work.ucb_bmc_radio_pkg.all;
 
 entity ble_link is
     generic (
@@ -80,7 +84,9 @@ architecture sim of ble_link is
     end function;
     function tx_delay_b return time is
     begin
-        if dut >= 1 then
+        if dut >= 3 then
+            return BMC_TX_DELAY;
+        elsif dut >= 1 then
             return BTLE_TX_DELAY;
         end if;
         return 0 ns;
@@ -95,7 +101,7 @@ architecture sim of ble_link is
     signal tx_a, tx_b, tx_c, rx_a, rx_b, rx_c : cc2652r_packet := CC2652R_NO_PACKET;
     signal busy_a, busy_b, busy_c : boolean := false;
 begin
-    assert dut = 0 or scenario /= 0 report "ble_link: btle_phy_radio has no test mode (unwhitened packets)" severity failure;
+    assert dut = 0 or scenario /= 0 report "ble_link: btle_phy_radio and ucb_bmc_radio have no test mode (unwhitened packets)" severity failure;
     assert scenario /= 0 or NDIST > 0 report "ble_link: no distance given (d0, d1, ...)" severity failure;
 
     -- where the second device is: scenario 0, at each distance in turn (it moves between windows; both
@@ -161,9 +167,14 @@ begin
         generic map (seed => 23)
         port map (ant => feed_b, cfg => cfg_b, tx => tx_b, tx_busy => busy_b, rx => rx_b);
    end generate;
-   btle_b: if dut >= 1 generate
+   btle_b: if dut = 1 or dut = 2 generate
     chip_b: entity work.btle_phy_radio
         generic map (seed => 23, tx_tail => dut = 2)
+        port map (ant => feed_b, cfg => cfg_b, tx => tx_b, tx_busy => busy_b, rx => rx_b);
+   end generate;
+   bmc_b: if dut >= 3 generate
+    chip_b: entity work.ucb_bmc_radio
+        generic map (seed => 23, tx_end => dut = 4)
         port map (ant => feed_b, cfg => cfg_b, tx => tx_b, tx_busy => busy_b, rx => rx_b);
    end generate;
     ant_b: entity work.rf_spec_antenna_td

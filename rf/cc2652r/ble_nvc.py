@@ -37,14 +37,19 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 RF = os.path.dirname(HERE)
 # None: cc2652r_pkg.vhd, written into the working directory
 SOURCES = [os.path.join(RF, "ad9361", "rf_spectrum_pkg.vhd"), os.path.join(HERE, "ble_phy_pkg.vhd"), None] + [
-    os.path.join(HERE, f) for f in ("cc2652r_spectral_pkg.vhd", "cc2652r.vhd", "rf_spec_antenna_td.vhd", "ble_ll_pkg.vhd", "btle_phy_radio_pkg.vhd", "ble_controller.vhd", "ble_tester.vhd",
+    os.path.join(HERE, f) for f in ("cc2652r_spectral_pkg.vhd", "cc2652r.vhd", "rf_spec_antenna_td.vhd", "ble_ll_pkg.vhd", "btle_phy_radio_pkg.vhd", "ucb_bmc_radio_pkg.vhd", "ble_controller.vhd", "ble_tester.vhd",
                                     "ble_link.vhd", "tb_cc2652r.vhd")]
 # the modules of btle_phy (github.com/JiaoXianjun/BTLE, verilog/)
 BTLE_MODULES = ("btle_phy btle_rx btle_rx_core gfsk_demodulation search_unique_bit_sequence scramble_core crc24_core "
                 "serial_in_ram_out sdpram_two_clk sdpram_one_clk btle_tx crc24 scramble gfsk_modulation bit_repeat_upsample "
                 "gauss_filter vco").split()
 DUTS = {"cc2652r": ("0", "a CC2652R"), "btle": ("1", "the open BTLE baseband (btle_phy, through sv2ghdl)"),
-        "btle-tail": ("2", "the open BTLE baseband (btle_phy, through sv2ghdl), its last symbol completed")}
+        "btle-tail": ("2", "the open BTLE baseband (btle_phy, through sv2ghdl), its last symbol completed"),
+        "bmc": ("3", "the Berkeley baseband-modem (BMC, through sv2ghdl)"),
+        "bmc-txend": ("4", "the Berkeley baseband-modem (BMC, through sv2ghdl), its transmissions ended by the host")}
+# selftest: the bench of a radio and its generics
+BENCH = {"cc2652r": ("tb_cc2652r", []), "btle": ("tb_btle_phy_radio", []), "btle-tail": ("tb_btle_phy_radio", ["-gtx_tail=true"]),
+         "bmc": ("tb_ucb_bmc_radio", []), "bmc-txend": ("tb_ucb_bmc_radio", ["-gtx_end=true"])}
 PHY_CODE = {"1m": 1, "2m": 2, "s8": 3, "s2": 4}
 BAND = "ism2g4_td"
 
@@ -76,6 +81,37 @@ class Build:
                                    os.path.join(HERE, "tb_btle_phy_radio.vhd")]
         else:
             self.sources[at:at] = [os.path.join(HERE, "btle_phy_radio_none.vhd")]
+        # ... and entity ucb_bmc_radio
+        at = self.sources.index(os.path.join(HERE, "ble_link.vhd"))
+        if args.dut.startswith("bmc"):
+            self.sources[at:at] = [self.translate_bmc(args), os.path.join(HERE, "ucb_bmc_radio.vhd"),
+                                   os.path.join(HERE, "tb_ucb_bmc_radio.vhd")]
+        else:
+            self.sources[at:at] = [os.path.join(HERE, "ucb_bmc_radio_none.vhd")]
+
+    def translate_bmc(self, args):
+        """BMC.v (the Berkeley baseband-modem's Verilog, which ucb_bmc/emit.sh makes), Verilog to VHDL by
+        sv2ghdl.  It takes a minute, so the VHDL is kept in the working directory until BMC.v is newer."""
+        src = args.bmc_verilog or os.environ.get("BMC_V")
+        sv2ghdl = args.sv2ghdl or os.environ.get("SV2GHDL")
+        if not src or not sv2ghdl:
+            raise SystemExit("--dut bmc (or bmc-txend) needs --bmc-verilog (or BMC_V: BMC.v, see ucb_bmc/README.md) "
+                             "and --sv2ghdl (or SV2GHDL: an sv2ghdl checkout)")
+        if not os.path.isfile(src):
+            raise SystemExit("%s is not there" % src)
+        out = os.path.join(self.work, "bmc")
+        vhd = os.path.join(out, "design.vhd")
+        if os.path.isfile(vhd) and os.path.getmtime(vhd) >= os.path.getmtime(src):
+            return vhd
+        shutil.rmtree(out, ignore_errors=True)
+        env = dict(NVC=self.nvc[0])
+        if args.iverilog or os.environ.get("IVERILOG"):
+            env["IVERILOG"] = args.iverilog or os.environ["IVERILOG"]
+        self.sh(self.work, os.path.join(sv2ghdl, "bin", "iverilog-sv2ghdl"), "-g2012", "-o", out, "-s", "BMC", src,
+                env=env, nvc=False)
+        if not os.path.isfile(vhd):
+            raise SystemExit("sv2ghdl wrote no %s (see %s/iverilog.log)" % (vhd, out))
+        return vhd
 
     def translate_btle(self, args):
         """btle_phy and what is under it, Verilog to VHDL: sv2ghdl's iverilog wrapper (iverilog -tvhdl over
@@ -182,8 +218,8 @@ def cmd_selftest(args):
     d = os.path.join(b.work, "tb")
     os.makedirs(d, exist_ok=True)
     b.sh(d, "-a", *b.sources)
-    tb = "tb_btle_phy_radio" if b.dut.startswith("btle") else "tb_cc2652r"
-    b.sh(d, "-e", tb, *(["-gtx_tail=true"] if b.dut == "btle-tail" else []))
+    tb, generics = BENCH[b.dut]
+    b.sh(d, "-e", tb, *generics)
     out = b.sh(d, "-r", tb)
     for m in re.finditer(r"(TB .*)$", out, re.M):
         print(m.group(1))
@@ -321,7 +357,10 @@ def main(argv=None):
     p.add_argument("--dut", default="cc2652r", choices=list(DUTS),
                    help="the radio of the device under test (selftest, scan, connect): the CC2652R model, or btle: "
                         "btle_phy of github.com/JiaoXianjun/BTLE translated by sv2ghdl behind btle_phy_radio; btle-tail: "
-                        "the same with the last symbol of its packets, which its modulator cuts off, completed")
+                        "the same with the last symbol of its packets, which its modulator cuts off, completed; bmc: BMC of "
+                        "github.com/ucb-bar/baseband-modem translated by sv2ghdl behind ucb_bmc_radio (slow: some 20 s of run "
+                        "time a packet; give --heap 2g); bmc-txend: the same with its transmissions ended by the host")
+    p.add_argument("--bmc-verilog", help="--dut bmc, bmc-txend: BMC.v, as ucb_bmc/emit.sh makes it (default: $BMC_V)")
     p.add_argument("--btle-src", help="--dut btle, btle-tail: the verilog directory of a BTLE checkout (default: $BTLE_SRC)")
     p.add_argument("--sv2ghdl", help="--dut btle, btle-tail: an sv2ghdl checkout (default: $SV2GHDL)")
     p.add_argument("--iverilog", help="--dut btle, btle-tail: an iverilog with the VHDL back end (default: $IVERILOG, or sv2ghdl's choice)")

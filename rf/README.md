@@ -530,6 +530,7 @@ are not checked; propagation delay is left out of the Python arena; IEEE 802.15.
     ble_nvc.py connect               the tester (a central and its host) puts a peripheral through its tests
     ... --fed                        the same as two simulations sharing the arena; must report the same lines
     ... --dut btle | btle-tail       the device's radio is an open baseband from Verilog (below), not the CC2652R
+    ... --dut bmc | bmc-txend        ... or the Berkeley baseband-modem, from Chisel (below; slow, give --heap 2g)
     (--nvc-build or NB: an nvc build with the arena support, as for ad9361/an2597_arena.sh; global options
     such as --fed and --dut go before the subcommand)
 
@@ -543,7 +544,9 @@ are not checked; propagation delay is left out of the Python arena; IEEE 802.15.
 | `ble_ll_pkg.vhd` | what a connection needs: CONNECT_IND, channel selection algorithm #1, data PDUs and their acknowledgement, L2CAP framing |
 | `ble_tester.vhd` | the tester: a central and the little of a host above it that tests a peripheral over the air |
 | `btle_phy_radio.vhd`, `btle_phy_radio_pkg.vhd`, `btle_phy_radio_none.vhd` | a device under test from outside: the open BTLE baseband (translated Verilog) behind an RF front end, with the chip's ports; its transmit latency; the empty stand-in when it is not asked for |
-| `ble_link.vhd`, `tb_cc2652r.vhd`, `tb_btle_phy_radio.vhd` | the two scenarios of ble_host.py and the tester's; the self-check benches |
+| `ucb_bmc_radio.vhd`, `ucb_bmc_radio_pkg.vhd`, `ucb_bmc_radio_none.vhd` | another one: the Berkeley baseband-modem (translated Verilog from Chisel) behind an RF front end and a host, with the chip's ports; its transmit latency; the empty stand-in |
+| `ucb_bmc/` | `emit.sh`: fetches the baseband-modem, the DMA it uses and rocket-chip and has sbt write `BMC.v` (`build.sbt`, `src/`: the top to emit and the one object the DMA takes from testchipip); `replay.v`: a trace of the translated design's pins put to the Verilog |
+| `ble_link.vhd`, `tb_cc2652r.vhd`, `tb_btle_phy_radio.vhd`, `tb_ucb_bmc_radio.vhd` | the two scenarios of ble_host.py and the tester's; the self-check benches |
 
 **How a GFSK signal is a spectral event.**  An OFDM symbol is periodic over its event; a Bluetooth
 packet is not, so a transmission is a run of consecutive events, each the spectrum of the next 64
@@ -651,6 +654,61 @@ layer unchanged, but for handing a packet over `radio_tx_delay` (3.4 us here) ea
   (crc24_core.v does the same with a CRC initial value of 0.)
 - btle_phy also depends on which clock after reset `tx_start` comes on: one clock off and its upsampler
   drops one sample in eight (the radio resets it before each packet, so the start is always the same).
+
+**Another device from outside: the Berkeley baseband-modem** (`--dut bmc`).  The design is `BMC` of
+[ucb-bar/baseband-modem](https://github.com/ucb-bar/baseband-modem) (Chisel, BSD-3-Clause; fetched by the
+user, not part of stat-sim): the baseband (packet assembler and disassembler, whitening, CRC), the modem
+(a GFSK modulator that drives a VCO's tuning code; a low-IF receiver with image rejection, matched
+filters, clock and data recovery) and the controller of a dual-mode BLE and 802.15.4 peripheral for a
+Chipyard SoC, here without the TileLink registers and the DMA around them.  `ucb_bmc/emit.sh <directory>`
+fetches it with the DMA whose streams it uses and rocket-chip v1.6 and has sbt write `BMC.v` (79 000
+lines, 99 modules; a minute once rocket-chip is compiled; the design's sources are not touched).
+ble_nvc.py has sv2ghdl translate that whole (55 s, kept until BMC.v changes) and compiles it with
+`ucb_bmc_radio.vhd`, which is what the design lacks to be a radio with the ports of entity cc2652r:
+
+- the **host**: the commands a link layer's driver would give (the link's constants, send, receive) and
+  the memory behind the DMA streams the packets come and go by;
+- the **transmitter's VCO**: the tables the design looks its tuning codes up in are loaded here (coarse
+  code: the RF channel; modulation code: 2 + 4 x the modulator's 6-bit frequency index), and a carrier
+  turns by the code, one sample a clock, while the design says it sends;
+- the **receiver's front end**: noise, a channel filter, a mixer to the 2 MHz intermediate frequency the
+  design expects, an ideal AGC (the design's own AGC and offset loops are left off) and two 8-bit ADCs;
+- a 32 MHz **clock** for both of the design's clock inputs, running only while a packet is sent or the
+  pin has a signal.
+
+    ucb_bmc/emit.sh <directory>     (JAVA_HOME: a JDK up to 17; SBT: sbt)
+    BMC_V=<directory>/out/BMC.v SV2GHDL=<sv2ghdl checkout> IVERILOG=<an iverilog with -tvhdl>         ble_nvc.py --heap 2g --dut bmc selftest | connect
+
+- The translation holds: with generic `trace`, ucb_bmc_radio writes what is on the design's pins clock by
+  clock, and `ucb_bmc/replay.v` puts those inputs to the Verilog in vvp and compares the outputs.  A
+  packet each way, 24 626 clocks: no difference, but for 149 clocks at which the Verilog's own value has
+  unknown bits (the design reads registers that have no reset: the modulator's filter as the first packet
+  starts, its state before the first reset), where the translation computes with unknowns as 0.
+- `selftest` (tb_ucb_bmc_radio: pin to pin with a CC2652R, 70 dB between): packets on two advertising
+  channels and two data channels (0 among them) are received both ways with a good CRC, the end of a
+  received packet is timed to 0.2 us and the transmit latency is constant (3.437 us).
+- **What the tester found.**  As it is, the device fails at the second kind of step: `adv` and `adv_chan`
+  pass (its advertisements are heard, CRC good, on all three channels), then `scan requests=3
+  responses=0` and no connection.  The design's controller takes the end of a transmission from its
+  802.15.4 modulator, also when the GFSK one sends: Controller.scala connects the one port of the transmit
+  controller to both modulators and the last connection stands (in BMC.v:
+  `txController_io_modemTXControl_out_done = io_modemControl_mskTX_out_done`).  The 802.15.4 modulator
+  runs a timer of 32 us an octet, so after a BLE packet of n octets the design stays in its transmit
+  state for 32 (n + 8) us where the packet took 8 (n + 9): its transmit enable stays up and it takes no
+  command, so it cannot listen for what answers an advertisement 150 us after it.
+- With the host ending a transmission when the GFSK modulator's state goes back to idle (`--dut
+  bmc-txend`: the carrier goes off and the design is reset before its next use; the state is one a host
+  can read) all eleven steps pass at 10 m: T_IFS 149.91 to 149.94 us, two services found, no event
+  missed.  Federated, tester and device as two simulations, the report is the same line for line.
+- The design whitens with its channel index and looks the VCO's coarse code up at the same index; its
+  documentation calls that index the frequency's (0: 2402 MHz), which would whiten all channels but
+  three as another.  The table is loaded here by BLE channel index, which makes the index both.
+- It is slow: the Verilog takes 28 s a simulated millisecond of its clock in vvp, the translation 40 s
+  in nvc (every clock moves eight 32-tap filters), some 20 s a packet.  The self-check takes 3.5 minutes;
+  the tester's run is cut to what the tests need (`connect --events 10 --time 0.25`: 8 minutes, as it
+  is 16, federated 16).  Not run: the scan scenario with this radio as the scanner.
+- ucb_bmc_radio's waits are in a procedure of its process: it needs nvc from 8da5a95ef on (below), or
+  NVC_NO_EVAL_ARENA=1, which ble_nvc.py sets.
 
 nvc notes from this: in nvc r626 a procedure suspended in a `wait` lost its state once it was compiled and
 its process had filled its 64 KB allocation buffer (compiled code put the overflow in an arena that is
