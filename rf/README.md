@@ -469,6 +469,9 @@ before the transform, distance culling, double precision.
 
 ## cc2652r/ -- TI CC2652R Bluetooth LE radio, with the Bluetooth side from the Core Specification
 
+(The test environment built on this -- tester, outside designs, how to run and attach one, results --
+has its own page: [`cc2652r/README.md`](cc2652r/README.md).)
+
 A model of the CC2652R's 2.4 GHz radio in its four Bluetooth LE modes, the counterpart of ad9361/ for a
 chip whose software never sees a sample: it hands the radio a packet and is handed packets back.  The
 data sheet stops at the antenna pin; modulation, packet formats and what a program does with the chip
@@ -708,7 +711,8 @@ ble_nvc.py has sv2ghdl translate that whole (55 s, kept until BMC.v changes) and
 - It is slow: the Verilog takes 28 s a simulated millisecond of its clock in vvp, the translation 40 s
   in nvc (every clock moves eight 32-tap filters), some 20 s a packet.  The self-check takes 3.5 minutes;
   the tester's run is cut to what the tests need (`connect --events 10 --time 0.25`: 8 minutes, as it
-  is 16, federated 16).  Not run: the scan scenario with this radio as the scanner.
+  is 16, federated 16).  The scan scenario with this radio as the scanner (2 s): 3070 s, and 202 s with
+  `--accel`, the same report as with the BTLE radio.
 - `ble_nvc.py --accel` (nvc's `--accel`, NVC_ACCEL=1) takes the cost away: nvc gives the design's Verilog
   to yosys and runs it as one compiled model (27,794 cells, 8,597 registers) with the translated VHDL's
   ports as its boundary.  It needs sv2ghdl's `yosys/gen_statemachine` built (`GEN_STATEMACHINE` if it is
