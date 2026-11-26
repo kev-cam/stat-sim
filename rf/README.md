@@ -717,6 +717,14 @@ ble_nvc.py has sv2ghdl translate that whole (55 s, kept until BMC.v changes) and
   (the bridge looked for ports by their lower-case VHDL names and silently left out those with a
   capital in their Verilog name, 85 of this design's 108; and reading the model's text back took 80 s
   a run).
+- `--dut btle-tail --accel` gives the plain run's report too, in 3.4 s for 17.9 s.  It took three more
+  repairs.  A port named `rst` was not an input of the model: nvc put the model in its power-on state
+  while the pin was high, memories and all, and btle_phy, reset before every packet, lost its sine
+  tables (sv2ghdl gen_statemachine and nvc: `rst` is an input, the reset is the design's own logic).  A
+  memory was written on the main clock's edges whatever clock its write port has (gen_statemachine;
+  btle_phy's packet memory is written on `clkb`).  And an output behind logic after a register is
+  published two delta cycles after the edge, which nvc did not make happen: with a bench that raises
+  the clock and waits, the outputs came with the clock's fall, where btle_phy_radio reads them.
 - ucb_bmc_radio's waits are in a procedure of its process: it needs nvc from 8da5a95ef on (below), or
   NVC_NO_EVAL_ARENA=1, which ble_nvc.py sets.
 
