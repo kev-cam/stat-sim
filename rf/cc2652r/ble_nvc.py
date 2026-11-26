@@ -14,9 +14,10 @@ the physical delay of every path), runs it and tabulates what the devices report
                                              Direct Test Mode range; --compare: ble_host.py's model too
     ble_nvc.py scan [--time 2.0] [--dist 10]
                                              a beacon, a neighbour and an active scanner
-    ble_nvc.py connect [--dist 10] [--events 40] [--time 2.0]
+    ble_nvc.py connect [--dist 10] [--events 40] [--time 2.0] [--central | --both]
                                              the tester (a central and its host) puts a peripheral through
-                                             its tests; exit status 1 if a test fails
+                                             its tests; exit status 1 if a test fails.  --dut is the
+                                             peripheral's radio; --central: the tester's; --both: both
     ... --fed                                also as two simulations sharing the arena (the transmitting
                                              side and the other), which must report the same lines
 
@@ -322,6 +323,8 @@ def cmd_connect(args):
         g["tx_lead"] = args.lead
     if args.central:
         g["dut_side"] = "1"
+    elif args.both:
+        g["dut_side"] = "2"
     t0 = time.perf_counter()
     d = b.generate("mono", g)
     t_build = time.perf_counter() - t0
@@ -329,6 +332,9 @@ def cmd_connect(args):
     if args.central:
         print("the tester (central) at 0 m, its radio %s, and a peripheral (a CC2652R) at %g m, %g dBm, in nvc --std=2040 "
               "(spectral events)" % (DUTS[args.dut][1], args.dist, args.power))
+    elif args.both:
+        print("the tester (central) at 0 m and a peripheral at %g m, the radio of each %s, %g dBm, in nvc --std=2040 "
+              "(spectral events)" % (args.dist, DUTS[args.dut][1], args.power))
     else:
         print("the tester (central) at 0 m and a peripheral at %g m whose radio is %s, %g dBm, in nvc --std=2040 (spectral events)"
               % (args.dist, DUTS[args.dut][1], args.power))
@@ -391,8 +397,11 @@ def main(argv=None):
     c.add_argument("--dist", type=float, default=10.0)
     c.add_argument("--events", type=int, default=40, help="connection events of the packet error test")
     c.add_argument("--time", type=float, default=2.0, help="the simulations stop then")
-    c.add_argument("--central", action="store_true",
-                   help="--dut is the radio of the tester, the central, and the peripheral is a CC2652R")
+    side = c.add_mutually_exclusive_group()
+    side.add_argument("--central", action="store_true",
+                      help="--dut is the radio of the tester, the central, and the peripheral is a CC2652R")
+    side.add_argument("--both", action="store_true",
+                      help="--dut is the radio of the tester and of the peripheral: the design at both ends of the link")
     args = p.parse_args(argv)
     sys.path.insert(0, HERE)
     return {"selftest": cmd_selftest, "range": cmd_range, "scan": cmd_scan, "connect": cmd_connect}[args.cmd](args)

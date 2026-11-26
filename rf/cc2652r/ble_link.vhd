@@ -26,7 +26,8 @@
 --
 -- dut_side: 0, that radio is the second device's.  1 (scenario 2): it is the tester's, the central's,
 -- and the peripheral is a CC2652R: the outside design then starts the exchanges and sets their
--- timing, and the peripheral's answers show whether it was understood.
+-- timing, and the peripheral's answers show whether it was understood.  2 (scenario 2): it is the
+-- radio of both, the design at each end of the link: two instances of it in one simulation.
 --
 -- role: 0 everything in one simulation; federated across the arena, 1 is the transmitting side only
 -- (tester; beacon and neighbour) and 2 the other (device under test; scanner; peripheral).
@@ -89,7 +90,7 @@ architecture sim of ble_link is
     end function;
     function dut_of(side : natural) return natural is
     begin
-        if side = dut_side then
+        if side = dut_side or dut_side = 2 then
             return dut;
         end if;
         return 0;
@@ -116,7 +117,7 @@ architecture sim of ble_link is
     signal busy_a, busy_b, busy_c : boolean := false;
 begin
     assert dut = 0 or scenario /= 0 report "ble_link: btle_phy_radio and ucb_bmc_radio have no test mode (unwhitened packets)" severity failure;
-    assert dut_side = 0 or (dut_side = 1 and scenario = 2) report "ble_link: dut_side 1 is the tester of scenario 2" severity failure;
+    assert dut_side = 0 or (dut_side <= 2 and scenario = 2) report "ble_link: dut_side 1 and 2 are for the tester's scenario, 2" severity failure;
     assert scenario /= 0 or NDIST > 0 report "ble_link: no distance given (d0, d1, ...)" severity failure;
 
     -- where the second device is: scenario 0, at each distance in turn (it moves between windows; both

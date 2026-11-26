@@ -22,7 +22,8 @@ packet becomes spectral events, the nvc repairs made along the way) is in
 - The **arena** is the air between the antennas: free-space loss and delay by distance.  It can sit
   inside one simulation or be shared by several (`--fed`), each side its own nvc process.
 - The **device under test** is one radio of the pair.  By default it is the peripheral's; with
-  `connect --central` it is the tester's, and the peripheral is the reference radio.
+  `connect --central` it is the tester's, and the peripheral is the reference radio; with
+  `connect --both` it is both, the design talking to itself.
 
 | part | file | what it is |
 |---|---|---|
@@ -49,7 +50,8 @@ sv2ghdl when a run asks for them.
     JDK up to 17; give `--heap 2g`.
 - For `--accel`: sv2ghdl's `yosys/gen_statemachine` built (`GEN_STATEMACHINE` if nvc does not find
   it).  The first run of a design compiles its model (13 minutes for the Berkeley modem); it is
-  kept in `~/.cache/nvc/accel` after that.
+  kept in `~/.cache/nvc/accel` after that.  (nvc before 25caad459 compiled it again for every place
+  the design stood in: the pre-run, the run, the tester's side.)
 
 ## Running it
 
@@ -60,6 +62,7 @@ Global options go before the subcommand.
     ble_nvc.py scan                             a beacon, a neighbour and an active scanner
     ble_nvc.py connect                          the tester puts a peripheral through its tests
     ble_nvc.py connect --central                the device under test is the tester's radio instead
+    ble_nvc.py connect --both                   ... or the radio at both ends of the link
 
     --dut cc2652r | btle | btle-tail | bmc | bmc-txend     the radio under test (default cc2652r)
     --fed                                       also as two simulations sharing the arena
@@ -118,22 +121,25 @@ A device modelled elsewhere needs none of this: it can be its own simulation wit
 
 ## Results so far
 
-At 10 m, 0 dBm, `connect --events 10 --time 0.25`.  "As peripheral" is the default; "as central" is
-`--central`.
+At 10 m, 0 dBm, `connect --events 10 --time 0.25`.  "As peripheral" is the default, "as central" is
+`--central` (the other end is the CC2652R in both), "at both ends" is `--both`.  The time is the
+T_IFS measured.
 
-| radio under test | as peripheral | as central | T_IFS |
+| radio under test | as peripheral | as central | at both ends |
 |---|---|---|---|
-| CC2652R (reference) | 11 of 11 | 11 of 11 | 150.00 us |
-| BTLE as published (`btle`) | fails at `adv`: every advertisement has a bad CRC | `scan` and `connect` fail: the peripheral answers nothing | |
-| BTLE, last symbol completed (`btle-tail`) | 11 of 11 | 11 of 11 | 149.75 us |
-| Berkeley modem as published (`bmc`) | `adv` passes, `scan` and `connect` fail | `scan` and `connect` fail | |
-| Berkeley modem, host ends transmissions (`bmc-txend`) | 11 of 11 | 11 of 11 | 149.91 to 149.94 us |
+| CC2652R (reference) | 11 of 11, 150.00 us | the same pair | the same pair |
+| BTLE as published (`btle`) | fails at `adv`: every advertisement has a bad CRC | `scan` and `connect` fail: the peripheral answers nothing | connects: 10 of 11 with `--time 1.0`, one T_IFS of 152 us |
+| BTLE, last symbol completed (`btle-tail`) | 11 of 11, 149.75 us | 11 of 11, 149.75 us | 11 of 11, 149.56 us |
+| Berkeley modem as published (`bmc`) | `adv` passes, `scan` and `connect` fail | `scan` and `connect` fail | `scan` and `connect` fail |
+| Berkeley modem, host ends transmissions (`bmc-txend`) | 11 of 11, 149.91 to 149.94 us | 11 of 11, 149.91 to 149.94 us | 11 of 11, 149.88 us |
 
 Defects the tester found in the published designs:
 
 - **BTLE: the last symbol of every packet is not sent.**  The modulator's Gaussian filter delays
   the waveform by one symbol and the modulator stops on time, so the last bit of the CRC is cut
   off.  Its own receiver does not notice; another receiver gets that bit wrong for some packets.
+  Against itself the design passes ten of the eleven steps, so a loop-back test would not have
+  found it.
 - **BTLE: data channel 0 does not work.**  Channel number 0 is taken as "not set" and whitened as
   63, so the design neither sends nor receives on 2404 MHz.  A connection loses that event and
   carries on.
@@ -149,6 +155,8 @@ Checks on the environment itself:
 
 - Federated (`--fed`), every working combination reports the same lines as the one simulation.
 - `--accel` gives the same report as the plain run for both designs, in `connect` and in `scan`.
+- With the design at both ends its two instances share one compiled model, each with its own
+  state, and the report is the plain run's (Berkeley modem: 68 s of run for 1266 s).
 - The translations are exact: BTLE's 1216 transmit samples match the Verilog in vvp; the Berkeley
   modem's pins match over 24 626 clocks but where the Verilog itself has unknown bits.
 - The reference radio agrees with the data sheet (sensitivity within 0.2 dB on each PHY) and with

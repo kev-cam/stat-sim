@@ -536,6 +536,7 @@ are not checked; propagation delay is left out of the Python arena; IEEE 802.15.
     ... --dut bmc | bmc-txend        ... or the Berkeley baseband-modem, from Chisel (below; slow, give --heap 2g)
     ... --accel                      nvc --accel: the translated design as one compiled model (below; 18 times faster)
     ... connect --central            --dut is the radio of the tester, the central; the peripheral is a CC2652R
+    ... connect --both               --dut is the radio of both: the design at each end of the link
     (--nvc-build or NB: an nvc build with the arena support, as for ad9361/an2597_arena.sh; global options
     such as --fed and --dut go before the subcommand)
 
@@ -716,7 +717,7 @@ ble_nvc.py has sv2ghdl translate that whole (55 s, kept until BMC.v changes) and
 - `ble_nvc.py --accel` (nvc's `--accel`, NVC_ACCEL=1) takes the cost away: nvc gives the design's Verilog
   to yosys and runs it as one compiled model (27,794 cells, 8,597 registers) with the translated VHDL's
   ports as its boundary.  It needs sv2ghdl's `yosys/gen_statemachine` built (`GEN_STATEMACHINE` if it is
-  not at nvc's place for it).  The model's C is 88 MB and takes gcc 13 minutes, once per bench (kept in
+  not at nvc's place for it).  The model's C is 88 MB and takes gcc 13 minutes, once (kept in
   `~/.cache/nvc/accel`); after that the self-check takes 1.3 minutes and the tester's run 28 s (44 s
   with compile and elaboration) with the same report, T_IFS included.  nvc needed two repairs for it
   (the bridge looked for ports by their lower-case VHDL names and silently left out those with a
@@ -741,6 +742,25 @@ ble_nvc.py has sv2ghdl translate that whole (55 s, kept until BMC.v changes) and
   answer in the connection, but the peripheral did take its CONNECT_IND and heard all six of the
   connection events the tester tried before it gave up: the design sends well and is deaf afterwards,
   still in its transmit state.
+- `connect --both` puts the design at both ends (ble_link `dut_side` 2): two instances of it in one
+  simulation.  `btle-tail` and `bmc-txend` pass all eleven steps against themselves (T_IFS 149.56 us
+  and 149.88 us), plain and with `--accel` the same report (the Berkeley modem: 68 s of run for
+  1266 s), federated the same lines.  `btle` as it is gets through ten of the eleven against itself,
+  given `--time 1.0` (one T_IFS of 152 us, one packet with a bad CRC sent again): its receiver, which
+  decides on what leaks into the symbol before, mostly hears the packets that a CC2652R cannot, so a
+  test of the design against itself would not have found the missing symbol.  `bmc` as it is fails
+  as before: neither end hears an answer.
+- The model's 13 minutes of gcc used to be paid again and again, with nothing changed.  nvc names the
+  compiled object by a hash of the small bridge it writes round the model, and the bridge had the
+  instance's path in its trace lines: the 1 fs run that generates the resolver network (the design
+  under `ble_link`), the run itself (under `resolved_ble_link`) and the design on the tester's side
+  each compiled the whole model again, four objects for one design.  The path is now handed over
+  when the model is bound, and one object serves the design wherever it stands, two instances in one
+  simulation included (each with a state of its own).  A second cause showed with the design on both
+  sides of a federation: two simulations that start together rewrote the one bridge file of the
+  cache, and the one that read it back half-written hashed that and compiled again.  The bridge is
+  now written under a name of the simulation's own and takes the object's name by a rename.  (nvc
+  25caad459; sv2ghdl's accel suite has a case and assertions for it since 0bf7dc4.)
 - ucb_bmc_radio's waits are in a procedure of its process: it needs nvc from 8da5a95ef on (below), or
   NVC_NO_EVAL_ARENA=1, which ble_nvc.py sets.
 
