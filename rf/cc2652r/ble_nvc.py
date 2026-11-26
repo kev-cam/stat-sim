@@ -320,12 +320,18 @@ def cmd_connect(args):
              run_time="%dus" % round(args.time * 1e6), ppm_a="%.6f" % args.ppm[0], ppm_b="%.6f" % args.ppm[1])
     if args.lead:
         g["tx_lead"] = args.lead
+    if args.central:
+        g["dut_side"] = "1"
     t0 = time.perf_counter()
     d = b.generate("mono", g)
     t_build = time.perf_counter() - t0
     mono, t_run = b.run(d)
-    print("the tester (central) at 0 m and a peripheral at %g m whose radio is %s, %g dBm, in nvc --std=2040 (spectral events)"
-          % (args.dist, DUTS[args.dut][1], args.power))
+    if args.central:
+        print("the tester (central) at 0 m, its radio %s, and a peripheral (a CC2652R) at %g m, %g dBm, in nvc --std=2040 "
+              "(spectral events)" % (DUTS[args.dut][1], args.dist, args.power))
+    else:
+        print("the tester (central) at 0 m and a peripheral at %g m whose radio is %s, %g dBm, in nvc --std=2040 (spectral events)"
+              % (args.dist, DUTS[args.dut][1], args.power))
     print("compile, generate and elaborate %.1f s; run %.1f s" % (t_build, t_run))
     failed = True
     for l in mono:
@@ -385,6 +391,8 @@ def main(argv=None):
     c.add_argument("--dist", type=float, default=10.0)
     c.add_argument("--events", type=int, default=40, help="connection events of the packet error test")
     c.add_argument("--time", type=float, default=2.0, help="the simulations stop then")
+    c.add_argument("--central", action="store_true",
+                   help="--dut is the radio of the tester, the central, and the peripheral is a CC2652R")
     args = p.parse_args(argv)
     sys.path.insert(0, HERE)
     return {"selftest": cmd_selftest, "range": cmd_range, "scan": cmd_scan, "connect": cmd_connect}[args.cmd](args)

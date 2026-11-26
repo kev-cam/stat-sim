@@ -532,6 +532,7 @@ are not checked; propagation delay is left out of the Python arena; IEEE 802.15.
     ... --dut btle | btle-tail       the device's radio is an open baseband from Verilog (below), not the CC2652R
     ... --dut bmc | bmc-txend        ... or the Berkeley baseband-modem, from Chisel (below; slow, give --heap 2g)
     ... --accel                      nvc --accel: the translated design as one compiled model (below; 18 times faster)
+    ... connect --central            --dut is the radio of the tester, the central; the peripheral is a CC2652R
     (--nvc-build or NB: an nvc build with the arena support, as for ad9361/an2597_arena.sh; global options
     such as --fed and --dut go before the subcommand)
 
@@ -725,6 +726,17 @@ ble_nvc.py has sv2ghdl translate that whole (55 s, kept until BMC.v changes) and
   btle_phy's packet memory is written on `clkb`).  And an output behind logic after a register is
   published two delta cycles after the edge, which nvc did not make happen: with a bench that raises
   the clock and waits, the outputs came with the clock's fall, where btle_phy_radio reads them.
+- `connect --central` turns the pair round: the outside design is the tester's radio, so it starts the
+  exchanges and sets their timing, and the peripheral is a CC2652R (ble_link `dut_side`; the tester
+  hands its packets over early by the radio's transmit delay, as ble_controller does).  With `--events
+  10 --time 0.25 --accel`: `btle-tail` and `bmc-txend` pass all eleven steps (the peripheral's T_IFS
+  measured as 149.75 us and 149.91 to 149.94 us, so their packets end where they should within
+  0.25 us), federated the same lines.  The designs as they are fail as centrals for the reasons they
+  fail as peripherals.  `btle`: the peripheral answers nothing, the last bit of each packet being cut
+  off (no scan response, no connection).  `bmc`: no scan response is heard and the tester sees no
+  answer in the connection, but the peripheral did take its CONNECT_IND and heard all six of the
+  connection events the tester tried before it gave up: the design sends well and is deaf afterwards,
+  still in its transmit state.
 - ucb_bmc_radio's waits are in a procedure of its process: it needs nvc from 8da5a95ef on (below), or
   NVC_NO_EVAL_ARENA=1, which ble_nvc.py sets.
 

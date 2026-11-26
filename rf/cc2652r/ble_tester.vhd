@@ -25,6 +25,10 @@
 --
 -- Times are those at the tester's antenna pin; path_delay (the set-up knows it) is taken out of a
 -- measured T_IFS twice, which leaves the device's own.
+-- radio_tx_delay: a radio that is not the CC2652R model (an outside baseband behind its front end)
+-- starts a packet that long after it is handed over; the tester hands its packets over that much
+-- early and takes its own packet to end that much later.  The device's T_IFS measured is then from
+-- where the packet should have ended, so it shows the radio's own timing error as well.
 -- LE 1M only; one packet each way in a connection event; channel selection algorithm #1.
 library ieee;
 use ieee.std_logic_1164.all;
@@ -42,6 +46,7 @@ entity ble_tester is
         tx_dbm     : real := 0.0;
         xo_ppm     : real := 0.0;
         path_delay : time := 0 ns;                      -- to the device, one way: taken out of the T_IFS measured
+        radio_tx_delay : time := 0 ns;                  -- of the tester's radio, from a packet on tx to the pin
         run_time   : time := 2 sec;                     -- give up then
         adv_observe : positive := 4;
         scan_count : natural := 3;
@@ -164,7 +169,7 @@ begin
         procedure send(p : ble_octets) is
         begin
             seq := seq + 1;
-            t_tx_end := now + ble_packet_time(PHY, p'length);
+            t_tx_end := now + radio_tx_delay + ble_packet_time(PHY, p'length);
             tx <= cc2652r_packet_of(p, seq);
             wait until tx_busy;
             wait until not tx_busy;
@@ -233,7 +238,7 @@ begin
             variable ch : natural;
             variable fresh : boolean;
         begin
-            cc_wait_until(anchor);
+            cc_wait_until(anchor - radio_tx_delay);
             unmapped := (unmapped + hop) mod 37;
             ch := ble_data_channel(unmapped, channel_map);
             cfg <= on_data(ch, false);
@@ -356,7 +361,7 @@ begin
         for i in 1 to scan_count loop
             hear_adv(37, run_time, got);
             exit when not got;
-            cc_wait_until(rx.t_end + BLE_T_IFS);
+            cc_wait_until(rx.t_end + BLE_T_IFS - radio_tx_delay);
             cfg <= on_adv(37, false);
             send(ble_adv_pdu(BLE_SCAN_REQ, address & dut, tx_add => 1, rx_add => dut_add));
             n_req := n_req + 1;
@@ -386,7 +391,7 @@ begin
             summary;
             wait;
         end if;
-        cc_wait_until(rx.t_end + BLE_T_IFS);
+        cc_wait_until(rx.t_end + BLE_T_IFS - radio_tx_delay);
         cfg <= on_adv(37, false);
         send(ble_connect_pdu(address, dut, PARAMS, tx_add => 1, rx_add => dut_add));
         -- the transmit window opens 1.25 ms after the CONNECT_IND and is 1.25 ms long
