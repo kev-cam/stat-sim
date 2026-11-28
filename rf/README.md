@@ -777,6 +777,21 @@ chip copies its pin to an ordinary signal in a process of its own.  The resolver
 a pin up through a port of an enclosing entity, so chip, antenna and controller are siblings at the
 top (as in an2597_link).
 
+## wifi/ -- IEEE 802.11a/g OFDM: a reference from the standard, and an outside modem run against it
+
+(Its own page, with how to run it, what the bench checks and what it found:
+[`wifi/README.md`](wifi/README.md).)
+
+A start on Wi-Fi along the lines of cc2652r/.  The reference is in Python: `wifi_phy.py` is the 20 MHz
+OFDM physical layer, 6 to 54 Mb/s, encoder and decoder, and `wifi_mac.py` the frames, the FCS and the
+intervals.  `wifi/wiphy/` builds Nuand's bladeRF-wiphy, an 802.11a/g modem in VHDL (GPL-2.0, not part
+of this repository), whole in nvc and puts it on a wire with frames from the reference.  There is no
+radio model, arena or spectral event round it yet: the modem is at its converters' samples.
+
+    wifi_phy.py check                        the physical layer's own checks
+    wifi_mac.py check                        the frame formats and the intervals
+    wiphy/wiphy_pair.py --work <dir> all     the modem against the reference (needs a bladeRF-wiphy checkout)
+
 ## Federation -- the same spectral simulation split across the arena
 
 The air pins' type says how their net resolves: `rf_air` (rf_spectrum_pkg) carries `resolution`
